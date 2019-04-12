@@ -1,0 +1,14 @@
+#ifndef DATA_INTERFACE_MAVLINK_GLOBAL_H
+#define DATA_INTERFACE_MAVLINK_GLOBAL_H
+
+#ifdef _MSC_VER
+#  if defined(DATA_INTERFACE_MAVLINK_LIBRARY)
+#    define DATA_INTERFACE_MAVLINKSHARED_EXPORT __declspec(dllexport)
+#  else
+#    define DATA_INTERFACE_MAVLINKSHARED_EXPORT __declspec(dllexport)
+#  endif
+#else
+#  define DATA_INTERFACE_MAVLINKSHARED_EXPORT
+#endif
+
+#endif // DATA_INTERFACE_MAVLINK_GLOBAL_H

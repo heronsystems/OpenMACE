@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<robot name="firefly" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Instantiate firefly "mechanics" -->
+  <xacro:include filename="$(find sim_vehicles_description)/urdf/asctec_firefly/asctec_firefly.xacro" />
+
+  <!-- Downward facing camera -->
+  <xacro:include filename="$(find sim_sensors_description)/urdf/generic_camera.urdf.xacro" />
+  <xacro:generic_camera name="downward_cam" parent="${namespace}/base_link" ros_topic="camera/image" cam_info_topic="camera/camera_info" update_rate="5" res_x="640" res_y="480" image_format="L8" hfov="100">
+    <origin xyz="0.25 0.0 -0.05" rpy="0 ${M_PI/2} 0"/>
+  </xacro:generic_camera>
+
+</robot>
+

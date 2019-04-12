@@ -1,0 +1,58 @@
+
+#!/usr/bin/env python
+import ossyste
+import subprocess
+import sys
+from sys import argv
+import argparse
+import io
+import pathlib
+import lxml.etree as ET
+#using lxml instead of xml preserved the comments
+
+def generateVehicleXML(id, elPort, sitlPort):
+    with io.open('../Vehicle_Template.xml', encoding="utf8") as f:
+        tree = ET.parse(f)
+        root = tree.getroot()
+
+        for elem in root.getiterator():
+            try:
+                elem.text = elem.text.replace('ETHERNET_PORT_NUMBER', str(elPort))
+                elem.text = elem.text.replace('LISTEN_PORT_NUMBER', str(sitlPort))
+            except AttributeError:
+                pass
+
+
+
+    #tree.write('output.xml', encoding="utf8")
+    # Adding the xml_declaration and method helped keep the header info at the top of the file.
+    current_dir = pathlib.Path(__file__).parent
+    filename = 'Vehicle_{}.xml'.format(id)
+    filepath = os.path.join(current_dir, filename)
+    tree.write(filepath, xml_declaration=True, method='xml', encoding="utf8")
+    return filename
+
+
+
+# Parse command line arguments:
+#parser = argparse.ArgumentParser()
+#parser.add_argument('id', type=str, help='Vehicle ID')
+#parser.add_argument('elPort', type=str, help='TCP port number for External Link comms over Ethernet')
+#parser.add_argument('sitlPort', type=str, help='UDP port number for vehicle to listen on for the ArduPilot SITL instance')
+# parser.add_argument('fp', type=str, help='Relative file path to the launch script JSON configuration file. (e.g.: ./Vehicle_Template.xml')
+#args = parser.parse_args()
+
+# Call function:
+#print(generateVehicleXML(args.id, args.elPort, args.sitlPort))
+
+
+# #!/usr/bin/env python
+# def get_value(*args):
+#     return "Hello World " + ":".join(map(str, args))
+
+# def main(argv):
+#     print(get_value(*argv[1:]))
+
+# if __name__ == "__main__":
+#     import sys
+#     main(sys.argv)

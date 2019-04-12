@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations>
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>	  
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">192.168.1.20</Parameter>
+      <Parameter Name="ListenPortNumber">14550</Parameter>
+    </Parameter>
+	<Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">true</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="ExternalLink" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+    <Parameter Name="DigiMeshParameters">
+      <Parameter Name="PortName">/dev/ttyUSB1</Parameter>
+      <Parameter Name="BaudRate">9600</Parameter>
+    </Parameter>
+  </Module>
+</ModuleConfigurations>

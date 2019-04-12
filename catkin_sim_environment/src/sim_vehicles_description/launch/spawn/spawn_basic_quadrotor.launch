@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="name" default="basic_quadrotor"/>
+  <arg name="namespace" default="$(arg name)"/>
+  <arg name="model" default="$(find sim_vehicles_description)/urdf/basic_quadrotor/basic_quadrotor.gazebo.xacro"/>
+  <arg name="tf_prefix" default="$(optenv ROS_NAMESPACE)"/>
+
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.25"/>
+
+  <arg name="world_frame" default="world"/>
+  <arg name="base_link_frame" default="$(arg tf_prefix)/base_link"/>  
+  <!-- send static transform -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="$(arg namespace)_broadcaster" args="0 0 0 0 0 0 $(arg world_frame) $(arg namespace)$(arg base_link_frame)" />
+
+  <!-- start robot state publisher -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="$(arg namespace)_robot_state_publisher" output="screen" >
+    <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" type="string" value="$(arg namespace)" />
+  </node>
+
+  <!-- send the robot XML to param server -->
+  <param name="robot_description" command="
+    $(find xacro)/xacro.py '$(arg model)'
+    tf_prefix:=$(arg name)
+    base_link_frame:=$(arg base_link_frame)
+    world_frame:=$(arg world_frame)"
+  />
+  <param name="tf_prefix" type="string" value="$(arg tf_prefix)" />
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model"
+        args="-param robot_description
+           -urdf
+           -x $(arg x)
+           -y $(arg y)
+           -z $(arg z)
+           -model $(arg name)"
+        respawn="false" output="screen"/>
+</launch>

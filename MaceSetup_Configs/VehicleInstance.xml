@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations MaceInstance="2">
+   <Module Class="ExternalLink" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V1</Parameter>
+    </Parameter>
+	<Parameter Name="EthernetParameters">
+		<Parameter Name="PortNumber"> 14551 </Parameter>
+	</Parameter>
+	<!--
+    <Parameter Name="TCPParameters">
+      <Parameter Name="ServerAddress">192.168.1.28</Parameter>
+      <Parameter Name="ServerPortNumber">14551</Parameter>
+	  <Parameter Name="SenderAddress">192.168.1.28</Parameter>
+	  <Parameter Name="SenderPortNumber">1235</Parameter>
+    </Parameter>
+	-->
+  </Module>
+  
+
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ID">1</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">192.168.1.28</Parameter>
+      <Parameter Name="ListenPortNumber">14553</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>   
+  
+</ModuleConfigurations>

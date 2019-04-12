@@ -1,0 +1,24 @@
+{
+    "gui": true,
+    "pause": false,
+    "addSensors": false,
+    "worldName": "turtlebot_playground",
+    "octomap": false,
+    "vehicles": {
+        "1": "hokuyo_utm30lx",
+        "2": "hokuyo_utm30lx",
+        "3": "hokuyo_utm30lx",
+        "4": "hokuyo_utm30lx",
+        "5": "hokuyo_utm30lx",
+        "6": "hokuyo_utm30lx",
+        "7": "hokuyo_utm30lx",
+        "8": "hokuyo_utm30lx",
+        "9": "hokuyo_utm30lx",
+        "10": "hokuyo_utm30lx",
+        "11": "hokuyo_utm30lx",
+        "12": "hokuyo_utm30lx",
+        "13": "hokuyo_utm30lx",
+        "14": "hokuyo_utm30lx",
+        "15": "hokuyo_utm30lx"
+    }
+}

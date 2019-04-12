@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="rviz" default="true"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find sim_vehicles_description)/urdf/basic_quadrotor/quadrotor_hokuyo_utm30lx.urdf.xacro'"/>
+  
+  <node name="state_publisher" pkg="test_move" type="state_publisher"/>
+
+<!-- Start rviz visualization with preset config -->
+  <group if="$(arg rviz)">
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(env MACE_ROOT)/catkin_sim_environment/src/test_move/rviz/robot.rviz" />
+  </group>
+</launch>
+
+
+
+

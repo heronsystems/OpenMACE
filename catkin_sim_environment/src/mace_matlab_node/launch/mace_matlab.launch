@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="mace_matlab_node" pkg="mace_matlab_node" type="mace_matlab_node" respawn="false" output="screen">
+  </node>
+
+</launch>
+
+
+
+

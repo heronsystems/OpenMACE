@@ -1,0 +1,14 @@
+#ifndef MODULE_VEHICLE_GENERIC_GLOBAL_H
+#define MODULE_VEHICLE_GENERIC_GLOBAL_H
+
+#ifdef _MSC_VER
+#  if defined(MODULE_VEHICLE_GENERIC_LIBRARY)
+#    define MODULE_VEHICLE_GENERICSHARED_EXPORT __declspec(dllexport)
+#  else
+#    define MODULE_VEHICLE_GENERICSHARED_EXPORT __declspec(dllexport)
+#  endif
+#else
+#  define MODULE_VEHICLE_GENERICSHARED_EXPORT
+#endif
+
+#endif // MODULE_VEHICLE_GENERIC_GLOBAL_H

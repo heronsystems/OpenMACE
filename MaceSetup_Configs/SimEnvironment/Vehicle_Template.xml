@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations MaceInstance="MACE_INSTANCE_ID">
+
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ID">1</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">LISTEN_PORT_NUMBER</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>  
+   
+   
+   <Module Class="ExternalLink" Type="OFFSET_Auctioneer">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	
+	<Parameter Name="EthernetParameters">
+		<Parameter Name="PortNumber"> ETHERNET_PORT_NUMBER </Parameter>
+	</Parameter>
+    <!-- <Parameter Name="DigiMeshParameters"> -->
+      <!-- <Parameter Name="PortName">COM9</Parameter> -->
+      <!-- <Parameter Name="BaudRate">115200</Parameter> -->
+    <!-- </Parameter> -->
+	
+	<Parameter Name="AuctionLogSettings">
+		<Parameter Name="LogToFile">true</Parameter>
+		<Parameter Name="LogToConsole">false</Parameter>
+		<Parameter Name="Frequency">10</Parameter> <!-- seconds -->
+	</Parameter>
+  </Module>
+<!--
+  <Module Class="ROS" Type="OFFSET_Auctioneer">
+      <Parameter Name="ModuleParameters">
+        <Parameter Name="AirborneInstance">false</Parameter>
+      </Parameter>
+  </Module>
+-->
+
+<!--
+  <Module Class="Sensors" Type="NASAPhase2">
+	<Parameter Name="CircularCameraParameters">
+		<Parameter Name="CameraName"> TestCamera </Parameter>
+		<Parameter Name="ViewHalfAngle"> 60 </Parameter>
+		<Parameter Name="AlphaAttenuation"> 0.5 </Parameter>
+		<Parameter Name="BetaAttenuation"> 1.0 </Parameter>
+		<Parameter Name="CertainRangePercent"> 60 </Parameter>
+		<Parameter Name="P_D"> 0.7 </Parameter>
+		<Parameter Name="P_FA"> 0.3 </Parameter>
+	</Parameter>
+	<Parameter Name="TruthBTFile">load_303030.bt</Parameter>
+  </Module>
+-->
+</ModuleConfigurations>

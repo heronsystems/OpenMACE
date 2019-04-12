@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations>
+    <Module Class="ExternalLink" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V1</Parameter>
+    </Parameter>
+    <Parameter Name="SerialParameters">
+      <Parameter Name="PortName">COM10</Parameter>
+      <Parameter Name="BaudRate">57600</Parameter>
+      <Parameter Name="DataBits">8</Parameter>
+      <Parameter Name="StopBits">1</Parameter>
+      <Parameter Name="Parity">false</Parameter>
+      <Parameter Name="FlowControl">1</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="GroundStation" Type="NASAPhase2"/>
+</ModuleConfigurations>

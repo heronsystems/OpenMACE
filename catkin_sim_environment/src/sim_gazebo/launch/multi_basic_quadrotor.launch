@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <arg name="add_sensors" default="false"/>
+  <arg name="vehicle_id" default="1"/>
+  <arg name="model_name" default="kinect"/> <!-- OPTIONS: hokuyo_utm30lx, kinect, asus, asus_with_hokuyo_utm30lx, cam, downward_cam, all_up -->
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.25"/>
+
+  <group if="$(arg add_sensors)">
+    <group ns="basic_quadrotor_$(arg vehicle_id)">
+      <include file="$(find sim_vehicles_description)/launch/spawn/spawn_basic_quadrotor.launch">
+        <arg name="name" value="basic_quadrotor_$(arg vehicle_id)"/>
+        <arg name="model" value="$(find sim_vehicles_description)/urdf/basic_quadrotor/basic_quadrotor_$(arg model_name).gazebo.xacro"/>
+        <arg name="x" value="$(arg x)"/>
+        <arg name="y" value="$(arg y)"/>
+        <arg name="z" value="$(arg z)"/>
+      </include>
+    </group>
+  </group>
+
+
+  <group unless="$(arg add_sensors)">
+    <group ns="basic_quadrotor_$(arg vehicle_id)">
+      <include file="$(find sim_vehicles_description)/launch/spawn/spawn_basic_quadrotor.launch">
+        <arg name="name" value="basic_quadrotor_$(arg vehicle_id)"/>
+        <arg name="model" value="$(find sim_vehicles_description)/urdf/basic_quadrotor/basic_quadrotor.gazebo.xacro"/>
+        <arg name="x" value="$(arg x)"/>
+        <arg name="y" value="$(arg y)"/>
+        <arg name="z" value="$(arg z)"/>
+      </include>
+    </group>
+  </group>
+
+
+  <node
+          pkg="transform_sensors"
+          name="transform_sensors_$(arg vehicle_id)"
+          type="transform_sensors"
+          output="screen"
+          args="$(arg vehicle_id)"
+  />  
+
+</launch>

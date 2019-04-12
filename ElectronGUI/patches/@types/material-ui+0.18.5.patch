@@ -1,0 +1,11 @@
+patch-package
+--- a/node_modules/@types/material-ui/index.d.ts
++++ b/node_modules/@types/material-ui/index.d.ts
+@@ -586,6 +586,7 @@ declare namespace __MaterialUI {
+         title?: React.ReactNode;
+         titleStyle?: React.CSSProperties;
+         zDepth?: number;
++        onLeftIconButtonClick?: React.MouseEventHandler<{}>;
+     }
+     export class AppBar extends React.Component<AppBarProps> {
+     }

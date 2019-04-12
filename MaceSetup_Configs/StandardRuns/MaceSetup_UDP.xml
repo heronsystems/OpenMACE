@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations>
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V1</Parameter>	  
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">192.168.1.216</Parameter>
+      <Parameter Name="ListenPortNumber">14550</Parameter>
+    </Parameter>
+	<Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">true</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="RTA" Type="NASAPhase2" />
+  <Module Class="PathPlanning" Type="NASAPhase2"/>
+  <Module Class="GroundStation" Type="NASAPhase2"/>
+</ModuleConfigurations>

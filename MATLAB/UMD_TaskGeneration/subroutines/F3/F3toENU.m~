@@ -1,0 +1,19 @@
+function [utm_east, utm_north] = F3toENU(eastf3, northf3)
+
+
+refX = 333511.4; % m, UTM 18S
+refY = 4315614.5; % m, UTM 18s
+utm_ref = [refX refY]';
+pos_ref = [eastf3 northf3]';
+angle = -43*pi/180; 
+R = [cos(angle) -sin(angle); sin(angle) cos(angle)];
+
+eastf3 = zeros(size(xutm));
+northf3 = eastf3;
+for i = 1:1:length(xutm)
+    pos_f3 = R*(pos_ref);
+    utm_east(i) = pos_f3(1);
+    utm_north(i) = pos_f3(2);
+end
+
+end

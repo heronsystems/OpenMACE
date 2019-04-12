@@ -1,0 +1,11 @@
+# CMD_TAKEOFF
+# Takeoff to a desired altitude. By default set vehicle to position hold at the latitude, longitude when the command was issued. If lat/lon are provided, takeoff to desired position at desired altitude.
+
+time    timestamp
+uint8   vehicleID
+uint8   commandID
+float64 takeoffAlt
+float64 latitudeDeg
+float64 longitudeDeg
+---
+bool    success

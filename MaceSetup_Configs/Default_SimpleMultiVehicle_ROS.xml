@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations MaceInstance="1">
+
+<!-- Vehicle Comms module for FIRST vehicle -->
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">192.168.1.219</Parameter>
+      <Parameter Name="ListenPortNumber">14551</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>  
+
+<!-- Vehicle Comms module for SECOND vehicle -->
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">192.168.1.219</Parameter>
+      <Parameter Name="ListenPortNumber">14552</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>  
+
+<!-- Ground Station module -->
+  <Module Class="GroundStation" Type="NASAPhase2">
+	<Parameter Name="ID">1</Parameter>
+	<Parameter Name="MACEComms">
+		<Parameter Name="GUIHostAddress">192.168.1.219</Parameter>
+		<Parameter Name="ListenPort">5678</Parameter>
+		<Parameter Name="SendPort">1234</Parameter>
+	</Parameter>
+   </Module>
+</ModuleConfigurations>

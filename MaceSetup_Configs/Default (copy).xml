@@ -1,0 +1,123 @@
+<!--copy and paste line 2-17 to spawn multiple quadrotor-->
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations MaceInstance="2">
+
+
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <!--<Parameter Name="ListenAddress">192.168.1.21</Parameter>-->
+      <Parameter Name="ListenAddress">10.104.255.75</Parameter>
+      <!--<<Parameter Name="ListenAddress">127.0.0.1</Parameter>>-->
+      <Parameter Name="ListenPortNumber">14551</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>  
+  <!--cd ardupilot/ArduCopter
+      sim_vehicle.py -I 1 --console --out=udp:10.104.251.232:14551 --custom-location=37.890425,-76.811910,0,240-->
+
+
+  <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <!--<Parameter Name="ListenAddress">192.168.1.21</Parameter>-->
+      <Parameter Name="ListenAddress">10.104.255.75</Parameter>
+      <Parameter Name="ListenPortNumber">14552</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>  
+  <!--cd ardupilot/ArduCopter
+      sim_vehicle.py -I 2 --console --out=udp:10.104.251.232:14552 --custom-location=37.890425,-76.811910,0,240-->
+
+   <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <!--<Parameter Name="ListenAddress">192.168.1.21</Parameter>-->
+      <Parameter Name="ListenAddress">10.104.255.75</Parameter>
+      <Parameter Name="ListenPortNumber">14553</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>  
+  <!--cd ardupilot/ArduCopter
+      sim_vehicle.py -I 3 --console --out=udp:10.104.251.232:14553 --custom-location=37.890425,-76.811910,0,240-->
+
+
+  <Module Class="RTA" Type="OFFSET_Auctioneer">
+	<Parameter Name="ModuleParameters">
+		<Parameter Name="GlobalInstance">true</Parameter>
+		<Parameter Name="VehicleID">1</Parameter>
+	</Parameter>
+	<Parameter Name="EnvironmentParameters">
+		<Parameter Name="GridSpacing">1</Parameter>
+	</Parameter>
+	<Parameter Name="AuctionLoggingParameters">
+		<Parameter Name="LogToConsole">false</Parameter>
+		<Parameter Name="LogToFile">true</Parameter>
+		<!-- <Parameter Name="LogFilenameBase">AuctionerAgent_</Parameter> -->
+	</Parameter>
+	<Parameter Name="AgentParameters">
+		<Parameter Name="Capabilities">
+			<Parameter Name="Loiter">true</Parameter>
+			<Parameter Name="Survey">true</Parameter>
+		</Parameter>
+		<Parameter Name="Properties">
+			<Parameter Name="Size">10</Parameter>
+			<Parameter Name="MinVelocity">0.0</Parameter>
+			<Parameter Name="MaxVelocity">40.0</Parameter>
+			<Parameter Name="NominalVelocity">20.0</Parameter>
+			<Parameter Name="MaxAcceleration">1.0</Parameter>
+			<Parameter Name="MaxClimbRate">10.0</Parameter>
+			<Parameter Name="NominalClimbRate">5.0</Parameter>
+			<Parameter Name="MaxFuelVolume">1000.0</Parameter>
+			<Parameter Name="FuelCutoffPercentage">0.0</Parameter>
+			<Parameter Name="FuelConsumptionIdle">0.5</Parameter>
+			<Parameter Name="FuelConsumptionTranslational">0.2</Parameter>
+			<Parameter Name="FuelConsumptionClimb">0.2</Parameter>
+		</Parameter>
+		<!-- Acceptable values: UAV_MultiRotor, UAV_Rotary, UAV_FixedWing, UGV_SkidSteer -->
+		<Parameter Name="Type">UAV_Rotary</Parameter> 
+	</Parameter>
+   </Module>
+
+  <Module Class="ExternalLink" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V1</Parameter>
+    </Parameter>
+<!--
+    <Parameter Name="DigiMeshParameters">
+      <Parameter Name="PortName">/dev/ttyUSB0</Parameter>
+      <Parameter Name="BaudRate">9600</Parameter>
+    </Parameter>
+-->
+    <Parameter Name="EthernetParameters">
+      <Parameter Name="PortNumber">16559</Parameter>
+    </Parameter>
+  </Module>
+
+  <Module Class="GroundStation" Type="NASAPhase2">
+	<Parameter Name="ID">1</Parameter>
+	<Parameter Name="MACEComms">
+		<!--<Parameter Name="GUIHostAddress">192.168.1.21</Parameter>-->
+		<Parameter Name="GUIHostAddress">10.104.255.75</Parameter>
+		<!--<<Parameter Name="GUIHostAddress">192.168.1.7</Parameter>-->
+		<Parameter Name="ListenPort">5678</Parameter>
+		<Parameter Name="SendPort">1234</Parameter>
+	</Parameter>
+   </Module>
+</ModuleConfigurations>

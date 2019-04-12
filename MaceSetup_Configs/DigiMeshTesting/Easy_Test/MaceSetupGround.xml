@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations>
+    <Module Class="ExternalLink" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+    <Parameter Name="DigiMeshParameters">
+      <Parameter Name="PortName">COM5</Parameter>
+      <Parameter Name="BaudRate">9600</Parameter>
+    </Parameter>
+		<Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="GroundStation" Type="NASAPhase2">
+	<Parameter Name="ID">1</Parameter>
+	<Parameter Name="MACEComms">
+		<Parameter Name="GUIHostAddress">192.168.1.217</Parameter>
+		<Parameter Name="ListenPort">5678</Parameter>
+		<Parameter Name="SendPort">1234</Parameter>
+	</Parameter>
+   </Module>
+</ModuleConfigurations>

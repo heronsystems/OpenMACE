@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <name>sim_vehicles_description</name>
+  <version>0.0.0</version>
+  <description>The sim_vehicles_description package</description>
+
+  <maintainer email="majorpr13@todo.todo">majorpr13</maintainer>
+
+
+  <!-- One license tag required, multiple allowed, one license per tag -->
+  <!-- Commonly used license strings: -->
+  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
+  <license>TODO</license>
+
+  <!-- <url type="website">http://wiki.ros.org/sim_vehicles_description</url> -->
+
+  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>xacro</build_depend>
+
+  <run_depend>xacro</run_depend>
+  <run_depend>sim_sensors_description</run_depend>
+
+</package>

@@ -1,0 +1,77 @@
+# README
+#####
+# Build & Rebuild with the following command
+# sudo docker build -t ubuntu1604:mace .
+#####
+###
+# Now is a good time to learn how to use screen, otherwise the following commands will help you attach/detach and open new terminals
+###
+### Run and attach with a terminal with:
+# sudo docker run -it ubuntu1604:mace
+###
+# To detach use: Ctrl+p + Ctrl+q
+###
+# To reattach: sudo docker attach [CONTAINER-ID] (you may have to press enter again to get the command line back)
+###
+# To start a new bash shell (so you don't interrupt something else you were running)
+#     sudo docker exec -ti [CONTAINER-ID] bash
+# With a new bash shell run "exit" instead of Ctrl+p + Ctrl+q
+#####
+
+## DON'T CHANGE THIS STUFF
+#Download base image ubuntu 16.04
+FROM ubuntu:16.04
+
+# Update Ubuntu Software repository
+RUN apt-get update
+RUN apt-get install -y screen
+# Some config to get screen working nicely
+RUN echo "termcapinfo xterm* ti@:te@" >> ~/.screenrc
+RUN echo "defshell -bash" >> ~/.screenrc
+## START CHANGING STUFF
+
+# Install tools here, (recommended to use multiple lines so they don't have to all reinstall if you change one)
+RUN apt-get install -y qt5-default cmake
+RUN apt-get install -y git
+RUN apt-get install -y libqt5serialport5-dev
+RUN apt-get install -y build-essential
+RUN apt-get install -y nano
+
+# Install things in order of least likely to change
+
+### Digiwrapper
+RUN git clone https://github.com/heronsystems/MACEDigiWrapper
+WORKDIR /MACEDigiWrapper
+RUN qmake
+RUN make
+RUN make install
+WORKDIR /
+
+### MACE deps
+RUN git clone https://github.com/heronsystems/MACE
+WORKDIR /MACE
+RUN git checkout DockerNetworking
+RUN git pull origin DockerNetworking
+RUN git submodule init
+RUN git submodule update
+## FLANN
+RUN cd ./tools/flann && mkdir build && cd ./build && cmake .. && make && make install
+## Octomap
+RUN cd ./tools/octomap && mkdir build && cd ./build && cmake .. && make && make install
+## Libccd
+RUN cd ./tools/libccd && mkdir build && cd ./build && cmake -G "Unix Makefiles" .. && make && make install
+## FCL
+# RUN cd ./tools/fcl && mkdir build && cd ./build && cmake .. -DEIGEN3_INCLUDE_DIR=/MACE/Eigen/include/eigen3/ && make && make install
+
+### Actual MACE
+## Additional deps
+RUN apt-get install -y libboost-system-dev
+## Env vars
+ENV MACE_ROOT /MACE
+ENV MACE_DIGIMESH_WRAPPER /MACEDigiWrapper
+## LD conf
+RUN echo "/MACE/lib" > /etc/ld.so.conf.d/MACE.conf
+RUN echo "/MACEDigiWrapper/lib" > /etc/ld.so.conf.d/MACEDigiMeshWrapper.conf
+## Build mace
+RUN mkdir build && cd ./build && qmake ../src/src.pro && make && make install
+RUN ldconfig

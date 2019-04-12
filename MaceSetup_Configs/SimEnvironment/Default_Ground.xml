@@ -1,0 +1,31 @@
+<ModuleConfigurations MaceInstance="255">
+  <Module Class="GroundStation" Type="NASAPhase2">
+	<Parameter Name="MACEComms">
+		<Parameter Name="GUIHostAddress">192.168.1.30</Parameter>
+		<Parameter Name="ListenPort">5678</Parameter>
+		<Parameter Name="SendPort">1234</Parameter>
+	</Parameter>
+   </Module>
+   
+   <Module Class="ExternalLink" Type="OFFSET_Auctioneer">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	
+	<Parameter Name="EthernetParameters">
+		<Parameter Name="PortNumber"> 16000 </Parameter>
+	</Parameter>
+    <!-- <Parameter Name="DigiMeshParameters"> -->
+      <!-- <Parameter Name="PortName">COM9</Parameter> -->
+      <!-- <Parameter Name="BaudRate">115200</Parameter> -->
+    <!-- </Parameter> -->
+	
+	<Parameter Name="AuctionLogSettings">
+		<Parameter Name="LogToFile">true</Parameter>
+		<Parameter Name="LogToConsole">false</Parameter>
+		<Parameter Name="Frequency">10</Parameter> <!-- seconds -->
+	</Parameter>
+  </Module>
+   
+</ModuleConfigurations>

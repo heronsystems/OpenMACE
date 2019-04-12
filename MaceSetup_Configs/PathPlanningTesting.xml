@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModuleConfigurations>
+  <Module Class="PathPlanning" Type="NASAPhase2">
+	<Parameter Name="GlobalOrigin">
+	  <Parameter Name="Latitude">37.888308</Parameter>
+	  <Parameter Name="Longitude">-76.813251</Parameter>
+	</Parameter>
+	<Parameter Name="EnvironmentParameters">
+	  <Parameter Name="Vertices">
+	    37.889246, -76.814084;
+	    37.890564, -76.810450;
+	    37.888726, -76.809343;
+	    37.887531, -76.812949
+	  </Parameter>
+	</Parameter>
+  </Module>
+</ModuleConfigurations>

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<robot name="techpod" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Instantiate fixed wing "mechanics" -->
+  <xacro:include filename="$(find sim_vehicles_description)/urdf/techpod/techpod.xacro"/>
+</robot>

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+        "module": "es6",
+        "noImplicitAny": true,
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "sourceMap": false,
+        "allowJs": true,
+        "jsx" : "react",
+        "target": "ES6",
+        "experimentalDecorators": true
+    },
+    "exclude": [
+        "node_modules",
+        "html/Javascript_Functions",
+        "typings",
+        "components/WebViewBridge"
+    ]
+}

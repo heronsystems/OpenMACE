@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="uxv_name" default="asctec_pelican"/>
+  <arg name="model_name" default="base"/>
+  <arg name="world_name" default="turtlebot_playground"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="true"/>
+  <arg name="rviz_run" default="false"/>
+  <arg name="rviz_config" default="-d $(find sim_gazebo)/rviz/default.rviz"/>
+
+
+  <include file="$(find sim_gazebo)/launch/start_world.launch">
+    <arg name="world_name" value="$(find sim_gazebo)/worlds/$(arg world_name).world"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+
+  <group ns="$(arg uxv_name)">
+    <include file="$(find sim_vehicles_description)/launch/spawn/spawn_multirotor.launch">
+      <arg name="uav_name" value="$(arg uxv_name)" />
+      <arg name="model_name" value="$(arg model_name)" />
+    </include>
+  </group>
+
+  <!-- Start rviz visualization with preset config -->
+  <group if="$(arg rviz_run)">
+    <node name="rviz" pkg="rviz" type="rviz" args="$(arg rviz_config)" />
+  </group>
+
+</launch>

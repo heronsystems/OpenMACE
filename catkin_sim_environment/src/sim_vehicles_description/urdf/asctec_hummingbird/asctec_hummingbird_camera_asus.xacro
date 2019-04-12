@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<robot name="hummingbird" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Instantiate hummingbird "mechanics" -->
+  <xacro:include filename="$(find sim_vehicles_description)/urdf/asctec_hummingbird/asctec_hummingbird.xacro" />
+
+  <!-- Asus Xiton Live Pro -->
+  <xacro:include filename="$(find sim_sensors_description)/urdf/asus_camera.urdf.xacro" />
+  <xacro:asus_camera name="camera" parent="${namespace}/base_link">
+    <origin xyz="0.25 0.0 12.0" rpy="0 ${M_PI/2} 0"/>
+  </xacro:asus_camera>
+
+</robot>
+

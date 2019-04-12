@@ -1,0 +1,14 @@
+#ifndef MODULE_GROUND_STATION_GLOBAL_H
+#define MODULE_GROUND_STATION_GLOBAL_H
+
+#ifdef _MSC_VER
+#  if defined(MODULE_GROUND_STATION_LIBRARY)
+#    define MODULE_GROUND_STATIONSHARED_EXPORT  __declspec(dllexport)
+#  else
+#    define MODULE_GROUND_STATIONSHARED_EXPORT  __declspec(dllimport)
+#  endif
+#else
+#  define MODULE_GROUND_STATIONSHARED_EXPORT
+#endif
+
+#endif // MODULE_GROUND_STATION_GLOBAL_H

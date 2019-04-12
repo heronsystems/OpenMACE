@@ -1,0 +1,9 @@
+# CMD_ARM
+# Command each drone to arm or disarm
+
+time    timestamp
+uint8   commandID
+uint8   vehicleID
+bool    armCmd
+---
+bool    success

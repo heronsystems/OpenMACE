@@ -1,0 +1,38 @@
+{
+    "GUIInit": {
+	"guiHostAddress": "127.0.0.1",
+        "mapCenter": {
+            "lat": 37.889231,
+            "lng": -76.810302,
+            "alt": 0
+        },
+        "maxZoom": 21,
+        "mapZoom": 20
+    },
+    "ROSParams": {
+        "enabled": true,
+        "gui": true,
+        "pause": false,
+        "worldName": "turtlebot_playground",
+        "octomap": true
+    },
+    "vehicles": {
+        "1": {
+            "type": "ArduCopter",
+            "frame": "quad",
+            "sensor": "hokuyo_utm30lx",
+            "enableSensor": true,
+            "position": {
+                "lat": 37.890425,
+                "lng": -76.81191,
+                "alt_msl": 0,
+                "heading_deg": 240
+            },
+            "console": false,
+            "simulated": true,
+            "outputIP": "127.0.0.1",
+            "outputPort": 15001,
+            "commPort": "todo..."
+        }
+    }
+}

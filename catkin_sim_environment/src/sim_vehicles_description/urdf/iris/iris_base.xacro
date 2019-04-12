@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<robot name="iris" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Instantiate iris "mechanics" -->
+  <xacro:include filename="$(find sim_vehicles_description)/urdf/iris/iris.xacro" />
+
+</robot>
+

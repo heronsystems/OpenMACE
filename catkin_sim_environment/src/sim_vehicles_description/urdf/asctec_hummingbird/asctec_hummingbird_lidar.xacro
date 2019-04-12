@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<robot name="hummingbird" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Instantiate hummingbird "mechanics" -->
+  <xacro:include filename="$(find sim_vehicles_description)/urdf/asctec_hummingbird/asctec_hummingbird.xacro" />
+
+    <!-- Hokuyo UTM-30LX mounted upside down below the quadrotor body -->
+    <xacro:include filename="$(find sim_sensors_description)/urdf/hokuyo_utm30lx.urdf.xacro" />
+    <xacro:hokuyo_utm30lx name="laser0" parent="${namespace}/base_link" ros_topic="scan" update_rate="40" ray_count="1081" min_angle="-135" max_angle="135">
+      <origin xyz="0.1 0.0 -0.04" rpy="${M_PI} 0 0"/>
+    </xacro:hokuyo_utm30lx>
+
+</robot>
+

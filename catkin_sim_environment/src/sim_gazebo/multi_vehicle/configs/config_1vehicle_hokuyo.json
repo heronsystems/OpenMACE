@@ -1,0 +1,79 @@
+{
+    "GUIInit": {
+        "mapCenter": {
+            "lat": 37.889231,
+            "lng": -76.810302,
+            "alt": 0
+        },
+        "maxZoom": 21,
+        "mapZoom": 20
+    },
+    "ROSParams": {
+        "enabled": true,
+        "gui": true,
+        "pause": false,
+        "worldName": "small_indoor_scenario",
+        "octomap": true
+    },
+    "MACEParams": {
+        "gcsEnabled": true,
+        "pathPlanningEnabled": true,
+        "externalLinkEnabled": true,
+        "id": 1,
+        "guiHostAddress": "192.168.1.47",
+        "guiSendPort": 1234,
+        "guiListenPort": 5678,
+        "globalOrigin": {
+            "lat": 37.889231,
+            "lng": -76.810302
+        },
+        "octomap": {
+            "filename": "test.bt",
+            "project2D": true,
+            "minRange": 0,
+            "maxRange": 9999,
+            "occupancyThreshold": 1,
+            "probabilityOfHit": 0.7,
+            "probabilityOfMiss": 0.4,
+            "minThreshold": 0.12,
+            "maxThreshold": 0.97
+        },
+        "externalLink": {
+            "portName": "COM7",
+            "baudRate": 57600
+        },
+        "boundaryVertices": [
+            {
+                "lat": 37.88956019257111,
+                "lng": -76.81080847978593
+            },
+            {
+                "lat": 37.88955595899373,
+                "lng": -76.8102076649666
+            },
+            {
+                "lat": 37.889335812634876,
+                "lng": -76.81060060858728
+            }
+        ]
+    },
+    "vehicles": {
+        "1": {
+            "type": "ArduCopter",
+            "frame": "quad",
+            "sensor": "hokuyo_utm30lx",
+            "enableSensor": true,
+            "position": {
+                "lat": 37.890425,
+                "lng": -76.81191,
+                "alt_msl": 0,
+                "heading_deg": 240
+            },
+            "console": false,
+            "simulated": true,
+            "outputIP": "192.168.1.47",
+            "outputPort": 14558,
+            "commPort": "COM3"
+        }
+    }
+}

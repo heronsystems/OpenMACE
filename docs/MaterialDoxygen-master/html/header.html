@@ -1,0 +1,41 @@
+<!-- This file defines the header to use when generating documentation with -->
+<!-- DoxyFormat.                                                            -->
+
+<html>
+  <head>
+    <!-- Import Google Icon Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Let the browser know that the website is optimized for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>$projectname : $title</title>
+    <title>$title</title>
+
+    <link rel="shortcut icon" href="VoxelLogoSmall.png">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script type="text/javascript" src="$relpath^dynsections.js"></script>
+    $treeview
+    $mathjax
+
+    <!-- NOTE: We first load the doxygen stylesheet, and then we try and load the stylesheet of the site
+               to which this documentation will belong, and then we load the custom stylesheet
+      -->
+    <link href="doxygen.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/main.css" rel="stylesheet" type="text/css"/>
+    <link href="$relpath^stylesheet.css" rel="stylesheet" type="text/css"/>
+
+    <!-- Load the javascript which converts the doxygen output to material style -->
+    <script type="text/javascript" src="$relpath^DoxyFormat.js"></script>
+  </head>
+
+
+  <body class="site">
+    <div id="top">
+      <div id="content" class="site-content">
+        <div class="row">
+          <div class="col s0 m2 l3"> 
+          </div>
+
+    <!-- The rest is filled by doxygen ... -->

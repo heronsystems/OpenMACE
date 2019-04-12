@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="ModuleConfigurations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Module" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="Parameter" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="Class" type="module_classes_supported" use="required" />
+            <xs:attribute name="Type" type="xs:string" use="required" />
+            
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Parameter">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="Parameter" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="Name" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:simpleType name ="module_classes_supported">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="VehicleComms" />
+      <xs:enumeration value="RTA" />
+      <xs:enumeration value="PathPlanning" />
+	  <xs:enumeration value="GroundStation" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

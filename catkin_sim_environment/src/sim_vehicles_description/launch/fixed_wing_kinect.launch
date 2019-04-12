@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="uxv_name" default="techpod"/>
+  <arg name="world_name" default="turtlebot_playground"/>
+  <arg name="enable_logging" default="false"/>
+  <arg name="enable_ground_truth" default="false"/>
+  <arg name="log_file" default="$(arg uxv_name)"/>
+  <arg name="debug" default="false"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="true"/>
+
+  <!-- sensor arguments -->
+  <arg name="kinect_on" default="true"/>
+
+  <!-- The following line causes gzmsg and gzerr messages to be printed to the console
+      (even when Gazebo is started through roslaunch) -->
+  <arg name="verbose" default="false"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find sim_gazebo)/worlds/$(arg world_name).world"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="paused" value="$(arg paused)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="verbose" value="$(arg verbose)"/>
+  </include>
+
+  <group if="$(arg kinect_on)">
+    <group ns="$(arg uxv_name)">
+      <include file="$(find sim_gazebo)/launch/spawn/spawn_fixed_wing.launch">
+        <arg name="uav_name" value="$(arg uxv_name)" />
+        <arg name="model" value="$(find sim_vehicles_description)/urdf/$(arg uxv_name)/$(arg uxv_name)_kinect.xacro" />
+      </include>
+    </group>
+  </group>
+
+  <group unless="$(arg kinect_on)">
+    <group ns="$(arg uxv_name)">
+      <include file="$(find sim_gazebo)/launch/spawn/spawn_fixed_wing.launch">
+        <arg name="uav_name" value="$(arg uxv_name)" />
+        <arg name="model" value="$(find sim_vehicles_description)/urdf/$(arg uxv_name)/$(arg uxv_name)_base.xacro" />
+      </include>
+    </group>
+  </group>
+
+</launch>
