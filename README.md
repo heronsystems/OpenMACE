@@ -1,5 +1,5 @@
-# MACE_Auctioneer
-Development of a decentralized asynchronous auctioneer strategy for the MACE architecture.
+# OpenMACE
+Open source version of the MACE architecture.
 =======
 ## Table of Contents
 - [Description](#description)
