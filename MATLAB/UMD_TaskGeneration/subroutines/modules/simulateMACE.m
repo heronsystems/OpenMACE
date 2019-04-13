@@ -45,17 +45,15 @@ while ( tNow <= runParams.T )
     
     
     % simulate measurements/update the swarmWorld
-    swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueWorld, targetModel);
+    swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueWorld, targetModel, targetState);
+    
     % update likelihood surface
     swarmWorld = updateLikelihood(swarmWorld, swarmState, swarmModel, trueWorld, targetState, targetModel);
-    % mutual information surface
-    [swarmWorld.mutualInfoSurface, swarmWorld.priorP, swarmWorld.priorQ, swarmWorld.priorR, swarmWorld.predictedNodeProbMat, swarmWorld.nodeDensityEstimate] = mutualInformationSurface( ...
-        swarmModel.maxUnexploredPrior, swarmModel.m, swarmModel.sensorDiscretizationLevels, ...
-        swarmModel.mutualInfoSurfaceBlurFlag, swarmModel.mapping.krigingSigma, trueWorld.xx, trueWorld.yy,  trueWorld.bin2NodeID, ...
-        swarmWorld.exploredGraph, swarmWorld.log_likelihood_env,  swarmWorld.cellStateMat );
-    % simulate targets
-    targetState = targetMotionUpdate(targetState, targetModel, trueWorld, runParams);
+    [swarmWorld.entropyMat, swarmWorld.mutualInfoSurface, swarmWorld.totalEntropy] = mutualInformationMappingTarget(swarmWorld.V, swarmWorld.U, swarmWorld.O, swarmModel.z_VU, swarmModel.z_O, swarmModel.g_V, swarmModel.g_UO);
     
+    % simulate targets
+    integerTime = 1+swarmState.k/floor(swarmModel.Tsamp/runParams.dt);
+    targetState = targetMotionUpdate(targetState, targetModel, trueWorld, runParams, integerTime);
     
     
     
@@ -66,11 +64,17 @@ while ( tNow <= runParams.T )
         % task generation
         [tasks, swarmWorld] = taskGeneration(swarmWorld, swarmModel, trueWorld);
         % task allocation
-        swarmState = taskAllocation(tasks, swarmState, swarmModel, swarmWorld, trueWorld, runParams);
+        [swarmState, swarmWorld] = taskAllocation(tasks, swarmState, swarmModel, swarmWorld, trueWorld, runParams);
         % TODO: check for collision, modify wpts accordingly
-        % dispatch waypoint comamands
-        updateWpts( ROS_MACE, [swarmState.xd swarmState.yd] );
     end
+    
+    
+    [swarmState] = taskManagemnent(swarmState, swarmModel, swarmWorld);
+    
+    % dispatch waypoint comamands
+    updateWpts( ROS_MACE, [swarmState.xd swarmState.yd] );
+    
+    
     % save the swarm world for later use
     swarmWorldHist{s} = swarmWorld;
     swarmStateHist{s} = swarmState;
