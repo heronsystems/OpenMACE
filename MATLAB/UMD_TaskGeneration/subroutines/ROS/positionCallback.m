@@ -33,7 +33,8 @@ function [ outputArgument ] = positionCallback( subscriber, msg )
     drawnow;
     
     % store the new location along with time
-    agentStateHist{msg.VehicleID} = [agentStateHist{msg.VehicleID} [time;xf3;yf3;msg.Altitude]];
+    % uncomment the following line for checkout flight (Sheng)
+%     agentStateHist{msg.VehicleID} = [agentStateHist{msg.VehicleID} [time;xf3;yf3;msg.Altitude]];
     end
 end
     

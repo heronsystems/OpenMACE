@@ -17,11 +17,22 @@ targetState = targetMotionUpdate(targetState, targetModel, trueWorld, runParams)
 while ( tNow <= runParams.T )
     % we continously collect the latest data until the sample time is
     % reached
-    while ( tNow <= tSample )
+    tSampleStart = tic;
+    agentUpdated = zeros(1,ROS_MACE.N);
+    msgCollection = cell(1,ROS_MACE.N);
+    
+    % the following while-loop guarantees as many as agents get an update
+    % within the maximum allowed time
+    while ( toc(tSampleStart) <= tSample/4 ) && (~all(agentUpdated)) 
+        % the factor for tSample depends on the firing rate of 
+        % /MACE/UPDATE_POSITION topic
         msg = ROS_MACE.positionSub.LatestMessage;
-        positionCallback( ROS_MACE.positionSub, msg );
-        % each agent has states [x y xdot ydot]
+        
+        % store the msg from the corresponding agent
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
+        msgCollection{agentIndex} = msg;
+        agentUpdated(agentIndex) = 1;
+        
         switch ROS_MACE.coordSys
             case 'ENU'
                 swarmState.x(4*agentIndex-3,1) = msg.Easting;
@@ -35,14 +46,17 @@ while ( tNow <= runParams.T )
                 swarmState.x(4*agentIndex-1,1) = -1; % unused for now
                 swarmState.x(4*agentIndex,1) = -1;
         end
-        tNow = toc(tStart);
-        pause(0.05);
     end
+    
+    tNow = toc(tStart);
     dt = tNow - tSample + swarmModel.Tsamp;
     tSample = tSample + swarmModel.Tsamp;
     swarmState.t = tNow;
     fprintf('Measurement No. %d (Time = %3.3f sec) \n', swarmState.k, swarmState.t);
     
+    for k = 1:ROS_MACE.N
+        positionCallback( ROS_MACE.positionSub, msgCollection{k} );
+    end
     
     % simulate measurements/update the swarmWorld
     swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueWorld, targetModel, targetState);
@@ -69,10 +83,10 @@ while ( tNow <= runParams.T )
     end
     
     
-    [swarmState] = taskManagemnent(swarmState, swarmModel, swarmWorld);
+    [swarmState] = taskManagement(swarmState, swarmModel, swarmWorld);
     
     % dispatch waypoint comamands
-    updateWpts( ROS_MACE, [swarmState.xd swarmState.yd] );
+    updateWpts( ROS_MACE, [swarmState.xd' swarmState.yd'] );
     
     
     % save the swarm world for later use

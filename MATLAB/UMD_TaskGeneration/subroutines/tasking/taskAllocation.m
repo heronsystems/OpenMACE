@@ -366,7 +366,7 @@ elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
             % find knnNumber+1 nearest neighbor (returns indices of
             % cellCenterOfMass)
             % AW: Why add 1?
-            idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2),'K',swarmModel.knnNumber+1);
+            idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2)','K',swarmModel.knnNumber+1);
             % AW: Why not nearest neighbor ?
             neighborNodes(kk,:) = idx(2:end);  % check if idx is a row vector
             % neighborNodes(kk,:) = idx(1:end);  % check if idx is a row vector

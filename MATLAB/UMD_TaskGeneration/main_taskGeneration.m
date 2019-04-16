@@ -32,7 +32,8 @@ if ~exist('MonteCarloSwitch','var')
     % user should modify loadParams.m as desired for single run
     %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3();
     disp('Running standard (non Monte-Carlo) simulation')
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
+%     [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityBlocksAtF3();
 else
     % for Monte Carlo, specify the IDs of the scenes
     %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
@@ -86,7 +87,7 @@ end
 %     % movie_likelihoodWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     % plots
-%     %plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %         
 %     % debug
