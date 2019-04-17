@@ -44,7 +44,7 @@ colors = ['rbk'];
 
 while( ~all(takeoffAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;   
-    positionCallback( ROS_MACE.positionSub, msg); 
+    positionCallback( ROS_MACE, msg); 
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( takeoffAchieved(agentIndex) == 0 )

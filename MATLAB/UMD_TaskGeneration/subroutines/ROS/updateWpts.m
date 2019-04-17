@@ -18,8 +18,8 @@ for i = 1:1:ROS_MACE.N
     waypointResponse = call(ROS_MACE.waypointClient, waypointRequest, 'Timeout', 10);
        
     if ( waypointResponse.Success )
-        % record the time of successful wpt request
-        % uncomment the following two lines during checkout flight
+%         % record the time of successful wpt request
+%         % uncomment the following two lines during checkout flight
 %         global agentTargetHist tStart
 %         agentTargetHist{i} = [agentTargetHist{i} [toc(tStart); wptsXY(i,1); wptsXY(i,2);waypointRequest.Altitude]];
         fprintf('VehicleID %d Waypoint Command Sent = (%3.1f, %3.1f).\n',ROS_MACE.agentIDs(i),wptsXY(i,1),wptsXY(i,2));

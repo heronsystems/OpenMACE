@@ -3,8 +3,7 @@ function wptManager( ROS_MACE, wpts, captureRadius)
 numWpts = size(wpts{1},1);
 for curWpt = [1:1:numWpts]
     % plot
-    figure(1)
-    subplot(2,1,2)
+    subplot(ROS_MACE.taskAndLocation);
      wptsDesired = [];
     for i = 1:1:ROS_MACE.N
         wptsDesired = [ wptsDesired; wpts{i}(curWpt,:) ];

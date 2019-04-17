@@ -62,8 +62,12 @@ pause(1);
 
 if ~exist('MonteCarloSwitch','var')
     % this is the code for single run
+    if strcmp(runParams.type,'matlab')
+        matFileName = ['runData_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
+    elseif strcmp(runParams.type,'mace')
+        matFileName = ['F3FlightData_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
+    end
     disp('Saving standard (non Monte-Carlo) simulation');    
-    matFileName = ['runData_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
     save(matFileName,'-v7.3');
 else
     % this is for saving Monte Carlo results
@@ -87,7 +91,7 @@ end
 %     % movie_likelihoodWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     % plots
-    plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+%     plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %         
 %     % debug

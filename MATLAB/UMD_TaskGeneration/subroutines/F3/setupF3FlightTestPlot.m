@@ -1,9 +1,9 @@
-function setupF3FlightTestPlot( runParams )
+function ROS_MACE = setupF3FlightTestPlot( runParams, ROS_MACE )
 
 % Set up plotting
-h=figure(1);
-set(h, 'Position', [100, 100, 800, 800]);
-subplot(2,1,1)
+ROS_MACE.realTimePlot=figure(1);
+set(ROS_MACE.realTimePlot, 'Position', [100, 100, 800, 800]);
+ROS_MACE.altitude = subplot(2,1,1);
 %ylim([0 2])
 xlim([0 30])
 xlabel('Time (sec.)')
@@ -13,7 +13,7 @@ set(gca,'FontSize',16)
 grid on;
 hold on;
 
-subplot(2,1,2) 
+ROS_MACE.taskAndLocation = subplot(2,1,2);
 xlabel('X (m)')
 ylabel('Y (m)')
 set(gca,'FontSize',16)

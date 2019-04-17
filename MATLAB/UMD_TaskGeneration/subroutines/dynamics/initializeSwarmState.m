@@ -1,6 +1,6 @@
 function [swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, runParams, ROS_MACE)
 if ( strcmp(runParams.type, 'mace') )
-    setupF3FlightTestPlot( runParams );
+    ROS_MACE = setupF3FlightTestPlot( runParams,ROS_MACE );
     ROS_MACE = launchROS( ROS_MACE );
     swarmState = sendDatumAndWaitForGPS( ROS_MACE );
     armAndTakeoff( ROS_MACE );

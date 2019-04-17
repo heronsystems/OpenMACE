@@ -55,7 +55,7 @@ while ( tNow <= runParams.T )
     fprintf('Measurement No. %d (Time = %3.3f sec) \n', swarmState.k, swarmState.t);
     
     for k = 1:ROS_MACE.N
-        positionCallback( ROS_MACE.positionSub, msgCollection{k} );
+        positionCallback( ROS_MACE, msgCollection{k} );
     end
     
     % simulate measurements/update the swarmWorld
@@ -87,6 +87,27 @@ while ( tNow <= runParams.T )
     
     % dispatch waypoint comamands
     updateWpts( ROS_MACE, [swarmState.xd' swarmState.yd'] );
+    
+    % plot the task bundle using variables ==========
+
+    subplot(ROS_MACE.taskAndLocation);
+    colors=['rbkmgcy'];
+    
+    
+    if isempty(ROS_MACE.tempHandle{1,1})
+        for k = 1:ROS_MACE.N
+            ROS_MACE.tempHandle{1,k} = plot(swarmWorld.cellCenterOfMass(swarmState.wptList(k,:),1),swarmWorld.cellCenterOfMass(swarmState.wptList(k,:),2),[colors(k) '-']);
+            ROS_MACE.tempHandle{2,k} = plot(swarmWorld.cellCenterOfMass(swarmState.wptList(k,swarmState.wptIndex(k)),1),swarmWorld.cellCenterOfMass(swarmState.wptList(k,swarmState.wptIndex(k)),2),[colors(k) '+'],'MarkerSize',4,'linewidth',2);
+        end
+    else
+        for k = 1:ROS_MACE.N
+            set(ROS_MACE.tempHandle{1,k},'XData', swarmWorld.cellCenterOfMass(swarmState.wptList(k,:),1),'YData',swarmWorld.cellCenterOfMass(swarmState.wptList(k,:),2));
+            set(ROS_MACE.tempHandle{2,k},'Xdata', swarmWorld.cellCenterOfMass(swarmState.wptList(k,swarmState.wptIndex(k)),1),'YData',swarmWorld.cellCenterOfMass(swarmState.wptList(k,swarmState.wptIndex(k)),2));
+        end
+    end
+    drawnow;
+    
+    % ========================
     
     
     % save the swarm world for later use
