@@ -10,6 +10,7 @@ switch swarmModel.taskAllocation
                 swarmState.wptIndex(i) = swarmState.wptIndex(i)+1;
                 swarmState.xd(i) = swarmWorld.cellCenterOfMass(swarmState.wptList(i,swarmState.wptIndex(i)),1);
                 swarmState.yd(i) = swarmWorld.cellCenterOfMass(swarmState.wptList(i,swarmState.wptIndex(i)),2);
+%                 newWpt = 1;
             end
             
         end

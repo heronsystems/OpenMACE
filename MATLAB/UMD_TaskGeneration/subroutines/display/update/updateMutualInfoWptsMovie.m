@@ -13,7 +13,7 @@ set(plotHandles.figh_voronoiCenters,'XData',swarmWorld.cellCenterOfMass(:,1), 'Y
 %
 for i = 1:1:swarmModel.N
     set(plotHandles.figh_voronoiCenters,'XData',swarmWorld.cellCenterOfMass(:,1), 'YData',swarmWorld.cellCenterOfMass(:,2));
-    for j = 1:1:size(swarmState.wptList,2)-2
+    for j = 1:1:size(swarmState.wptList,2)%-2
         ind = swarmState.wptList(i,j);
         bundleX(j) = swarmWorld.cellCenterOfMass(ind,1);
         bundleY(j) = swarmWorld.cellCenterOfMass(ind,2);
@@ -44,7 +44,13 @@ for i = 1:1:swarmModel.N
 end
 
 axis equal;
-xlim([trueWorld.minX trueWorld.maxX]);
-ylim([trueWorld.minY trueWorld.maxY]);
-
+% xlim([trueWorld.minX trueWorld.maxX]);
+% ylim([trueWorld.minY trueWorld.maxY]);
+if ( runParams.movie.useBackgroundImg )
+    xlim([trueWorld.minX-runParams.movie.plotBuffer trueWorld.maxX+runParams.movie.plotBuffer]);
+    ylim([trueWorld.minY-runParams.movie.plotBuffer trueWorld.maxY+runParams.movie.plotBuffer]);
+else
+    xlim([trueWorld.minX trueWorld.maxX]);
+    ylim([trueWorld.minY trueWorld.maxY]);
+end
 end

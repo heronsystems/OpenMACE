@@ -66,6 +66,7 @@ if ~exist('MonteCarloSwitch','var')
         matFileName = ['runData_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
     elseif strcmp(runParams.type,'mace')
         matFileName = ['F3FlightData_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
+        diary off
     end
     disp('Saving standard (non Monte-Carlo) simulation');    
     save(matFileName,'-v7.3');

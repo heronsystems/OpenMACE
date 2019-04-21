@@ -247,7 +247,8 @@ echo "Launching MACE..."
 #  then
 #    MACE ./MaceSetup_Configs/$CONFIG_XML</dev/null &>/dev/null &
 #  else
-    gnome-terminal -e "bash -c \"MACE ./MaceSetup_Configs/$CONFIG_XML; exec /bin/bash\""
+    #gnome-terminal -e "bash -c \"MACE ./MaceSetup_Configs/$CONFIG_XML; exec /bin/bash\""
+    gnome-terminal -e "bash -c \"MACE MaceSetup_Configs/$CONFIG_XML; exec /bin/bash\""
 #fi
 sleep 5s
 

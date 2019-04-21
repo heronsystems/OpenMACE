@@ -4,7 +4,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
-runParams.T = 60*3; % total simulation/mission time
+runParams.T = 60*1; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -254,5 +254,8 @@ elseif ( strcmp(runParams.type, 'mace') )
     yInit = ones(1,ROS_MACE.N)*ROS_MACE.yInit;
     % create arducopter script with these initial conditions
     generateArducopterCmds( ROS_MACE , xInit , yInit );
+    
+    diary off;
+    diary 1
 end
 end

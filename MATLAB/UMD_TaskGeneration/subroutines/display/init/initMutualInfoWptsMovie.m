@@ -2,7 +2,7 @@ function plotHandles = initMutualInfoWptsMovie(swarmWorld, swarmState, targetSta
 subplot(plotHandles.subplotHandle)
 plotHandles.figh_subplot2 = imagesc(trueWorld.xcp,trueWorld.ycp, swarmWorld.samplingPriority );
 set(gca,'YDir','normal')
-%title('Sampling Priority Surface')
+title('Mutual Information Surface')
 colorbar;
 caxis([0 1])
 set(gca,'FontSize',14)
@@ -28,7 +28,7 @@ end
 % 
 for i = 1:1:swarmModel.N
     set(plotHandles.figh_voronoiCenters,'XData',swarmWorld.cellCenterOfMass(:,1), 'YData',swarmWorld.cellCenterOfMass(:,2));
-    for j = 1:1:size(swarmState.wptList,2)-2
+    for j = 1:1:size(swarmState.wptList,2)%-2
         ind = swarmState.wptList(i,j);
         bundleX(j) = swarmWorld.cellCenterOfMass(ind,1);
         bundleY(j) = swarmWorld.cellCenterOfMass(ind,2);        

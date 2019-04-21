@@ -52,7 +52,7 @@ if ( ~strcmp(trueWorld.type,'osmAtF3') )
     xlabel('X(m)')
 end
 ylabel('Y(m)')
-%title('Occupancy Graph')
+title('Occupancy Graph')
 
 if ( ~isempty(swarmWorld.exploredGraph.Nodes) )
     switch swarmModel.mappingSensorType
