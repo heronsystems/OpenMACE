@@ -8,6 +8,7 @@ end
 
 % prepare run
 tStart = tic;
+tSampleStart = tic;
 tSample = swarmModel.Tsamp;
 t(1) = 0;
 tNow = 0;
@@ -16,18 +17,18 @@ k = 2;
 targetState = targetMotionUpdate(targetState, targetModel, trueWorld, runParams);
 while ( tNow <= runParams.T )
     tStartWhile = tic;
-    
     % we continously collect the latest data until the sample time is
     % reached
-    tSampleStart = tic;
+    
     agentUpdated = zeros(1,ROS_MACE.N);
     msgCollection = cell(1,ROS_MACE.N);
     
     % the following while-loop guarantees as many as agents get an update
     % within the maximum allowed time
-    while ( toc(tSampleStart) <= tSample )  %&& (~all(agentUpdated))
-        % the factor for tSample depends on the firing rate of
-        % /MACE/UPDATE_POSITION topic
+    while (~all(agentUpdated)) || ( toc(tSampleStart) <= tSample ) 
+        % when not all agents are updated OR tSample has not been reached, stay in the while loop
+        % but if tSample has been passed, then grab one immediate position update and jump out of the while loop
+        
         msg = ROS_MACE.positionSub.LatestMessage;
         
         % store the msg from the corresponding agent
@@ -49,6 +50,10 @@ while ( tNow <= runParams.T )
                 swarmState.x(4*agentIndex,1) = -1;
         end
         
+        if ( toc(tSampleStart) > tSample )
+            break;
+        end
+        
         if ( isfield(swarmState,'wptList') )
             [swarmState] = taskManagement(swarmState, swarmModel, swarmWorld);
             updateWpts( ROS_MACE, [swarmState.xd' swarmState.yd'], swarmState.wptIndex );
@@ -56,9 +61,11 @@ while ( tNow <= runParams.T )
         
     end
     
+    tSampleStart = tic;
+    
     time_stamp = toc(tStartWhile);
     fprintf('Position loop took %3.3f sec \n',time_stamp);
-        
+    
     tNow = toc(tStart);
     dt = tNow - tSample + swarmModel.Tsamp;
     swarmState.t = tNow;
@@ -110,15 +117,15 @@ while ( tNow <= runParams.T )
     
     
     [swarmState] = taskManagement(swarmState, swarmModel, swarmWorld);
-        
+    
     % dispatch waypoint comamands
     updateWpts( ROS_MACE, [swarmState.xd' swarmState.yd'], swarmState.wptIndex );
     
     fprintf('taskManagement/updateWpts took %3.3f sec \n',toc(tStartWhile)-time_stamp);
     time_stamp = toc(tStartWhile);
     
-    % plot the task bundle using variables 
-    ROS_MACE = plotTaskBundleRealTime(swarmWorld, swarmState, ROS_MACE);    
+    % plot the task bundle using variables
+    ROS_MACE = plotTaskBundleRealTime(swarmWorld, swarmState, ROS_MACE);
     
     % save the swarm world for later use
     swarmWorldHist{s} = swarmWorld;
@@ -129,7 +136,7 @@ while ( tNow <= runParams.T )
     targetState.k = s;
     
     fprintf('While Loop Took %3.3f ---------------------- \n',toc(tStartWhile));
-        
+    
 end
 land( ROS_MACE );
 % TODO: Check batteries and land if low

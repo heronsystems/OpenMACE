@@ -4,7 +4,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
-runParams.T = 60*2; % total simulation/mission time
+runParams.T = 60*3; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -66,7 +66,7 @@ swarmModel.vmax = 2; % maximum speed
 swarmModel.umax = 2; % max acceleration
 swarmModel.kp_wpt = 10.0; % agent waypoint control, proportional gain
 swarmModel.kd_wpt = 5.0; % derivative gain
-swarmModel.Tsamp = 1; % sample time
+swarmModel.Tsamp = 3; % sample time
 
 % agents follow a double integrator model with xdot = Ax + Bu and
 % saturation on the input u. A, and B are defined below.

@@ -1,6 +1,6 @@
 % use it after running the simulation/experiment to see how the error decreases
 
-for i = 2
+for i = 1
 %     error{i} = zeros(1,size(agentStateHist{i},2));
 %     for k = 1:size(error{i},2)
 %         index = max(find(agentStateHist{i}(1,k)-agentTargetHist{i}(1,:)>=0));
