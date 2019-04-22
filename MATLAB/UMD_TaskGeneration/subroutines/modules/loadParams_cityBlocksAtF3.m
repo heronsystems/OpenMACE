@@ -4,7 +4,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
-runParams.T = 60*1; % total simulation/mission time
+runParams.T = 60*2; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -256,6 +256,7 @@ elseif ( strcmp(runParams.type, 'mace') )
     generateArducopterCmds( ROS_MACE , xInit , yInit );
     
     diary off;
-    diary 1
+    diaryFileName = ['F3DiaryLog_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.txt'];
+    diary(diaryFileName);
 end
 end
