@@ -40,10 +40,24 @@ INCLUDEPATH += $$PWD/../../mavlink_cpp/Stable/common/
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../speedLog/
 
-unix {
-    target.path = /usr/lib
+# Unix lib Install
+unix:!symbian {
+    target.path = $$(MACE_ROOT)/lib
     INSTALLS += target
 }
+
+# Windows lib install
+lib.path    = $$(MACE_ROOT)/lib
+win32:CONFIG(release, debug|release):       lib.files   += release/example_vehicle_module.lib release/example_vehicle_module.dll
+else:win32:CONFIG(debug, debug|release):    lib.files   += debug/example_vehicle_module.lib debug/example_vehicle_module.dll
+INSTALLS += lib
+
+
+#Header file copy
+INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET
+INSTALL_HEADERS = $$HEADERS
+include(../headerinstall.pri)
+
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
