@@ -25,7 +25,7 @@ while ( tNow <= runParams.T )
     
     % the following while-loop guarantees as many as agents get an update
     % within the maximum allowed time
-    while (~all(agentUpdated)) || ( toc(tSampleStart) <= tSample ) 
+    while (~all(agentUpdated)) %|| ( toc(tSampleStart) <= tSample )
         % when not all agents are updated OR tSample has not been reached, stay in the while loop
         % but if tSample has been passed, then grab one immediate position update and jump out of the while loop
         
@@ -50,9 +50,9 @@ while ( tNow <= runParams.T )
                 swarmState.x(4*agentIndex,1) = -1;
         end
         
-        if ( toc(tSampleStart) > tSample )
-            break;
-        end
+        %         if ( toc(tSampleStart) > tSample )
+        %             break;
+        %         end
         
         if ( isfield(swarmState,'wptList') )
             [swarmState] = taskManagement(swarmState, swarmModel, swarmWorld);
@@ -134,6 +134,9 @@ while ( tNow <= runParams.T )
     s = s + 1;
     swarmState.k = s;
     targetState.k = s;
+    
+    while ( toc( tStartWhile ) <= tSample )
+    end
     
     fprintf('While Loop Took %3.3f ---------------------- \n',toc(tStartWhile));
     

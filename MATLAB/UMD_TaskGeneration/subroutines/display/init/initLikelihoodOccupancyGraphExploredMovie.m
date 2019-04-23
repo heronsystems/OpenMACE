@@ -34,7 +34,7 @@ for i = 1:1:swarmModel.N
     xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
     xc = xcnom + xk(1);
     yc = ycnom + xk(2);
-    plotHandles.figh_sensingRadius(i) = plot(xc,yc,'k-');
+    plotHandles.figh_sensingRadius(i) = plot(xc,yc,'m-','LineWidth',2);
 end
 % plot target locations
 for i = 1:1:targetModel.M

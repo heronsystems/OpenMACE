@@ -16,6 +16,11 @@ while( rosStarted == 0 )
     end
     pause(3);
 end
+
+% set rate of loop
+r = robotics.Rate(30);
+reset(r);
+
 % List ROS topics:
 disp('Waiting for MACE topics...')
 topiclist = rostopic('list');

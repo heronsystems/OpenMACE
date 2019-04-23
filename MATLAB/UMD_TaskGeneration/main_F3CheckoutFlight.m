@@ -183,7 +183,7 @@ ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 global agentStateHist
 global agentTargetHist
 
-ROS_MACE.deltaAhead = 1.4; % the look-ahead distance, tunable
+ROS_MACE.deltaAhead = 1.2; % the look-ahead distance, tunable
 
 for i = 1:1:length(ROS_MACE.agentIDs)
     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
@@ -203,13 +203,13 @@ wpts{2} = [[5 7];zeros(39,2)];
 for i = 1:ROS_MACE.N
     % towards negative x direction
     for k = 2:20
-        wpts{i}(k,1) = [ wpts{i}(k-1,1)+(1+k*0.1)*cos(pi + (-1)^k*4*k/90*pi/2)];
-        wpts{i}(k,2) = [ wpts{i}(k-1,2)+(1+k*0.1)*sin(pi + (-1)^k*4*k/90*pi/2)];
+        wpts{i}(k,1) = [ wpts{i}(k-1,1)+2*(1+k*0.1)*cos(pi + (-1)^k*4*k/90*pi/2)];
+        wpts{i}(k,2) = [ wpts{i}(k-1,2)+2*(1+k*0.1)*sin(pi + (-1)^k*4*k/90*pi/2)];
     end
     % towards positive x direction
     for k = 21:40
-        wpts{i}(k,1) = [wpts{i}(k-1,1)+(1+(21-(k-20))*0.1)*cos((-1)^(k-20)*4*(k-20)/90*pi/2)];
-        wpts{i}(k,2) = [wpts{i}(k-1,2)+(1+(21-(k-20))*0.1)*sin((-1)^(k-20)*4*(k-20)/90*pi/2)];
+        wpts{i}(k,1) = [wpts{i}(k-1,1)+2*(1+(21-(k-20))*0.1)*cos((-1)^(k-20)*4*(k-20)/90*pi/2)];
+        wpts{i}(k,2) = [wpts{i}(k-1,2)+2*(1+(21-(k-20))*0.1)*sin((-1)^(k-20)*4*(k-20)/90*pi/2)];
     end
 end
 

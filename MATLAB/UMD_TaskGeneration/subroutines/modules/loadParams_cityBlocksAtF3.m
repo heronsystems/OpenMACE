@@ -125,8 +125,8 @@ switch swarmModel.taskGeneration
     case 'mutualInfoWpts'
         swarmModel.numTasks = 100;
         swarmModel.stepSizeGain = 0.2;
-        swarmModel.percentTol = 0.03;
-        swarmModel.maxIters = 500;
+        swarmModel.percentTol = 0.05;
+        swarmModel.maxIters = 250;
     case 'likelihoodWpts'
         swarmModel.numTasks = 200;
         swarmModel.stepSizeGain = 0.2;
@@ -134,7 +134,7 @@ switch swarmModel.taskGeneration
         swarmModel.maxIters = 500;
 end
 
-swarmModel.mapping.krigingSigma = 10; % controls how much kriging interp diffuses
+swarmModel.mapping.krigingSigma = 3; % controls how much kriging interp diffuses
 swarmModel.utilityComputation = 'computeInformationGain'; % options are: 'computeEnergyAndPenalty' or 'computeInformationGain'
 swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
 
@@ -143,7 +143,7 @@ swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runP
 swarmModel.mappingSensorType = 'noisy'; % 'noisy' or 'perfect'
 if ( strcmp(swarmModel.mappingSensorType,'noisy') )
     if ( nargin ~=3 )
-        swarmModel.mG = 3; % sensitivity
+        swarmModel.mG = 4; % sensitivity
     end
     swarmModel.nG = 100; % number of discrete sensor levels
     swarmModel.mapConfLevel = 0.95;

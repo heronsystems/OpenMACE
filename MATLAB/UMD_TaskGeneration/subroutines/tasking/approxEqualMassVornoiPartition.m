@@ -118,6 +118,8 @@ while ( maxOffsetSqPercent > percentTol && i < maxIters )
     % update index
     i = i + 1;
 end
+disp('Voronoi Partition Complete');
+cellCenterOfMass
 
 % if ( i >= maxIters )
 %    disp('approxEqualMassVornoiPartition: Warning, terminated due to max iterations.'); 
