@@ -18,7 +18,7 @@ while( rosStarted == 0 )
 end
 
 % set rate of loop
-r = robotics.Rate(30);
+r = robotics.Rate(30); % shall we make it to 5?
 reset(r);
 
 % List ROS topics:
