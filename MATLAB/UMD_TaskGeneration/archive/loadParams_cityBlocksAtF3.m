@@ -9,8 +9,8 @@ ROS_MACE = struct;
 swarmModel = struct;
 swarmModel.N = 2; % number of agents
 if ( strcmp(runParams.type, 'mace') )
-    ROS_MACE.operationalAlt = [4 8]; % m
-    ROS_MACE.agentIDs = [1 2]; % m
+    ROS_MACE.operationalAlt = [4 8]; % m [4 8 3 5]
+    ROS_MACE.agentIDs = [1 2]; % m [1 2 3 4]
     ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
     for i = 1:1:length(ROS_MACE.agentIDs)
         ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;

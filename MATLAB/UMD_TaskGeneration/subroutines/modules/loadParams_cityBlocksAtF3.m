@@ -11,8 +11,8 @@ runParams.T = 60*3; % total simulation/mission time
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = struct;
-    ROS_MACE.operationalAlt = [4 8]; % m
-    ROS_MACE.agentIDs = [1 2]; % m
+    ROS_MACE.operationalAlt = [4 8]; % m OR [4 8 2 6]; if running four quads
+    ROS_MACE.agentIDs = [1 2]; % m OR [1 2 3 4]; if running four quads
     ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
     for i = 1:1:length(ROS_MACE.agentIDs)
         ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
@@ -60,7 +60,7 @@ end
 % Swarm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 swarmModel = struct;
-swarmModel.N = 2; % number of agents
+swarmModel.N = 2; % number of agents OR 4; if running four quads
 swarmModel.Rsense = 1.5; % sensing radius
 swarmModel.vmax = 2; % maximum speed
 swarmModel.umax = 2; % max acceleration
