@@ -1,0 +1,21 @@
+# BUNDLE_REQUEST
+# Provide vehicleID to the service and the bundle ID and contents will be returned
+
+uint8   vehicleID
+---
+uint8   bundleID
+float64 northing_1
+float64 easting_1
+float64 altitude_1
+float64 northing_2
+float64 easting_2
+float64 altitude_2
+float64 northing_3
+float64 easting_3
+float64 altitude_3
+float64 northing_4
+float64 easting_4
+float64 altitude_4
+float64 northing_5
+float64 easting_5
+float64 altitude_5

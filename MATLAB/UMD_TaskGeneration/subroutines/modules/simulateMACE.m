@@ -1,5 +1,16 @@
 function [swarmWorldHist, swarmStateHist, targetStateHist] = simulateMACE(targetState, targetModel, swarmState, swarmModel, swarmWorld, trueWorld, runParams, ROS_MACE)
 
+global bundleSource
+if isempty(bundleSource)
+    % the global bundleSource stores the current bundles.
+    % each row represents the bundle of an agent
+    % the first column is the current bundle number, starting from 1
+    % the second column is the waypoint altitude
+    % the third to the twelfth columns represent easting1, northing1, easting 2, northing 2,..., easting5, northing 5
+    bundleSource = zeros(swarmModel.N,1+1+2*swarmModel.bundleSize);
+    bundleSource(:,1) = 0;
+end
+
 s = 1;
 for i = 1:1:swarmModel.N
     swarmEast(s,i) = swarmState.x(4*i-3,1);
@@ -112,7 +123,16 @@ while ( tNow <= runParams.T )
         fprintf('taskAllocation took %3.3f \n',toc(tStartWhile)-time_stamp);
         time_stamp = toc(tStartWhile);
         
-        % TODO: check for collision, modify wpts accordingly
+        % TODO: check for collision, modify wpts accordingly (this is outsourced to the bundle_manager ROS service server)
+        % insert global variable to record the bundles
+        bundleSource(:,1) = bundleSource(:,1) + 1;
+        bundleSource(:,2) = ROS_MACE.operationalAlt';
+        for k = 1:swarmModel.N
+            for j = 1:swarmModel.bundleSize
+                bundleSource(k,j*2+1:j*2+2) = swarmWorld.cellCenterOfMass(swarmState.wptList(k,j),:);
+            end
+        end
+           
     end
     
     
