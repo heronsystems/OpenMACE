@@ -52,6 +52,28 @@ ROS_MACE.landClient = rossvcclient('command_land');
 ROS_MACE.datumClient = rossvcclient('command_datum');
 ROS_MACE.waypointClient = rossvcclient('command_waypoint');
 
+% if using standalone wptCoordinator, then a service and a callback
+% function must be defined
+if strcmp(ROS_MACE.wptCoordinator,'standalone')
+    ROS_MACE.bundleServer = rossvcserver('/bundle_server','bundle_manager/BUNDLE_REQUEST',@test_ROSserver);
+    servicelist = rosservice('list');
+    bundleServerReadyFlag = 0;
+    while ( bundleServerReadyFlag == 0 )
+        for i = 1:1:length(servicelist)
+            % check list
+            if ( ~isempty(strfind(servicelist{i}, 'bundle_server')) )
+                bundleServerReadyFlag = 1;
+            end
+            % update server list
+%             bundleServer = rossvcserver('/bundle_server','bundle_manager/BUNDLE_REQUEST',@test_ROSserver);
+            servicelist = rosservice('list');
+        end
+    end
+    rosservice list
+%     bundleClient = rossvcclient('/bundle_server'); % this line is added to prevent /bundle_server from disappearing for unknown reason
+    fprintf('/bundle_server initialized \n');
+end
+
 % Example workflow:
 %   1) Set datum
 %   2) Arm vehicle

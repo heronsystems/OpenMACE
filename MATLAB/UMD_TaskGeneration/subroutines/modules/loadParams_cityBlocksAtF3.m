@@ -4,7 +4,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
-runParams.T = 60*3; % total simulation/mission time
+runParams.T = 120; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -30,6 +30,8 @@ if ( strcmp(runParams.type, 'mace') )
     ROS_MACE.LongRef = -76.921897;
     ROS_MACE.startOnPerimeter = 1; % 0/1 flag
     ROS_MACE.trails = 10; % length of visual trail, in no. samples
+    
+    ROS_MACE.wptCoordinator = 'standalone'; % options are 'integrated' and 'standalone'
 end
 
 runParams.dt = 0.1; % time-step (even if MACE is running, Sheng needs this for cost computation)

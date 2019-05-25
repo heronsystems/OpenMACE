@@ -3,6 +3,12 @@ if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = setupF3FlightTestPlot( runParams,ROS_MACE );
     ROS_MACE = launchROS( ROS_MACE );
     swarmState = sendDatumAndWaitForGPS( ROS_MACE );
+    % start the standalone wptCoordinator in another matlab instance
+%     if strcmp(ROS_MACE.wptCoordinator,'standalone')
+%         !matlab -r standaloneWptCoordinator &
+%         fprintf('Wait for the StandalongWptCoordinator to start \n');
+%         pause(5);
+%     end
     armAndTakeoff( ROS_MACE );
     if ( ROS_MACE.startOnPerimeter )
         dispatchSwarmToPerimeter( ROS_MACE , trueWorld );
