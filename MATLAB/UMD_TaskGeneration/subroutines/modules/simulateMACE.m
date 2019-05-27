@@ -1,5 +1,9 @@
 function [swarmWorldHist, swarmStateHist, targetStateHist] = simulateMACE(targetState, targetModel, swarmState, swarmModel, swarmWorld, trueWorld, runParams, ROS_MACE)
 
+if exist('bundleSource','var')
+    clear global bundleSource
+end
+
 global bundleSource
 if strcmp(ROS_MACE.wptCoordinator,'standalone')
     if isempty(bundleSource)
@@ -10,15 +14,7 @@ if strcmp(ROS_MACE.wptCoordinator,'standalone')
         % the third to the twelfth columns represent easting1, northing1, easting 2, northing 2,..., easting5, northing 5
         bundleSource = zeros(swarmModel.N,1+1+2*swarmModel.bundleSize);
         bundleSource(:,1) = 0;
-        
     end
-end
-
-% start another matlab instance to run the wpt coordinator
-if strcmp(ROS_MACE.wptCoordinator,'standalone')
-    !matlab -r standaloneWptCoordinator &
-    fprintf('***Wait for the StandalongWptCoordinator to start*** \n');
-    countdownVerbose(5);
 end
 
 s = 1;
@@ -179,6 +175,9 @@ while ( tNow <= runParams.T )
     
 end
 land( ROS_MACE );
+if strcmp(ROS_MACE.wptCoordinator,'standalone')
+    clear global bundleSource;
+end
 % TODO: Check batteries and land if low
 % TODO: Put main while loop in a try-catch, handle errors by landing quads
 

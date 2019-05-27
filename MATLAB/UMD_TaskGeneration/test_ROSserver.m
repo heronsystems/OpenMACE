@@ -3,23 +3,30 @@ function resp = test_ROSserver(~,req,resp)
 global bundleSource
 
 VehicleID = req.VehicleID;
-resp.BundleID = bundleSource(VehicleID,1);
-resp.Altitude1 = bundleSource(VehicleID,2);
-resp.Altitude2 = bundleSource(VehicleID,2);
-resp.Altitude3 = bundleSource(VehicleID,2);
-resp.Altitude4 = bundleSource(VehicleID,2);
-resp.Altitude5 = bundleSource(VehicleID,2);
 
-resp.Easting1 = bundleSource(VehicleID,3);
-resp.Northing1 = bundleSource(VehicleID,4);
-resp.Easting2 = bundleSource(VehicleID,5);
-resp.Northing2 = bundleSource(VehicleID,6);
-resp.Easting3 = bundleSource(VehicleID,7);
-resp.Northing3 = bundleSource(VehicleID,8);
-resp.Easting4 = bundleSource(VehicleID,9);
-resp.Northing4 = bundleSource(VehicleID,10);
-resp.Easting5 = bundleSource(VehicleID,11);
-resp.Northing5 = bundleSource(VehicleID,12);
+if isempty(bundleSource)
+    source = zeros(12);
+else
+    source = bundleSource;
+end
+
+resp.BundleID = source(VehicleID,1);
+resp.Altitude1 = source(VehicleID,2);
+resp.Altitude2 = source(VehicleID,2);
+resp.Altitude3 = source(VehicleID,2);
+resp.Altitude4 = source(VehicleID,2);
+resp.Altitude5 = source(VehicleID,2);
+
+resp.Easting1 = source(VehicleID,3);
+resp.Northing1 = source(VehicleID,4);
+resp.Easting2 = source(VehicleID,5);
+resp.Northing2 = source(VehicleID,6);
+resp.Easting3 = source(VehicleID,7);
+resp.Northing3 = source(VehicleID,8);
+resp.Easting4 = source(VehicleID,9);
+resp.Northing4 = source(VehicleID,10);
+resp.Easting5 = source(VehicleID,11);
+resp.Northing5 = source(VehicleID,12);
 
 % if req.VehicleID == 1
 %     resp.BundleID = 10;

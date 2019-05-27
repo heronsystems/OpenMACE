@@ -3,12 +3,16 @@ if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = setupF3FlightTestPlot( runParams,ROS_MACE );
     ROS_MACE = launchROS( ROS_MACE );
     swarmState = sendDatumAndWaitForGPS( ROS_MACE );
-    % start the standalone wptCoordinator in another matlab instance
-%     if strcmp(ROS_MACE.wptCoordinator,'standalone')
-%         !matlab -r standaloneWptCoordinator &
-%         fprintf('Wait for the StandalongWptCoordinator to start \n');
-%         pause(5);
-%     end
+    
+    if strcmp(ROS_MACE.wptCoordinator,'standalone')
+        %     !matlab -r standaloneWptCoordinator 120 &
+        eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ',' num2str(swarmModel.Rsense) ')'' &']);
+        %         eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ')'' &']);
+        % -desktop will start a new MATLAB window for debugging
+        fprintf('***Wait for the StandalongWptCoordinator to start*** \n');
+        countdownVerbose(3);
+    end
+    
     armAndTakeoff( ROS_MACE );
     if ( ROS_MACE.startOnPerimeter )
         dispatchSwarmToPerimeter( ROS_MACE , trueWorld );
@@ -16,6 +20,10 @@ if ( strcmp(runParams.type, 'mace') )
     disp('Press a key to begin the run...')
     pause;
     countdownVerbose(3);
+    % start another matlab instance to run the wpt coordinator
+
+
+        
 elseif ( strcmp(runParams.type, 'matlab') )
     switch swarmModel.communicationTopology
         case 'centralized'
