@@ -1,4 +1,4 @@
-function resp = test_ROSserver(~,req,resp)
+function resp = ROSBundleServer(~,req,resp)
 
 global bundleSource
 
