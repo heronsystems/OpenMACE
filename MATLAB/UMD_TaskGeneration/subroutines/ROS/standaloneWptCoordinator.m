@@ -125,7 +125,8 @@ while toc(loopStart) <= runTime+10
         
         % if the time inside the while loop goes beyond
         % positionUpdateTimeout, then quit while loop
-        if toc(positionUpdateStart) >= positionUpdateTimeout
+        if toc(positionUpdateStart) >= positionUpdateTimeout            
+            fprintf('Position update time out!\n Vehicle %d not updated.\n',find(agentUpdated==0));
             break;
         end
     end
@@ -147,9 +148,11 @@ while toc(loopStart) <= runTime+10
                 waypointRequest.Northing = north; % Relative northing position to Datum
                 waypointRequest.Altitude = agentAltitude(k);
                 waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
+                fprintf('Command to quad %d done at %1.1f\n',k,toc(iterationStart));
             end
         end
-        fprintf('Command done at %1.1f\n',toc(iterationStart));
+%         fprintf('Command done at %1.1f\n',toc(iterationStart)); %
+%         originally the above line is uncommented on June 18, 2019.
     end
     fprintf('Iteration time before waitfor(r): %1.1f\n',toc(iterationStart));
     waitfor(r);
