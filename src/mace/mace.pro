@@ -56,9 +56,9 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/releas
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/debug/ -lcommsMAVLINK
 else:unix: LIBS += -L$$OUT_PWD/../commsMAVLINK/ -lcommsMAVLINK
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsExample/release/ -lcommsExample
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsExample/debug/ -lcommsExample
-else:unix: LIBS += -L$$OUT_PWD/../commsExample/ -lcommsExample
+#win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsExample/release/ -lcommsExample
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsExample/debug/ -lcommsExample
+#else:unix: LIBS += -L$$OUT_PWD/../commsExample/ -lcommsExample
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/release/ -lcommsMACE
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/debug/ -lcommsMACE
@@ -146,9 +146,9 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardu
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/debug/ -lmodule_vehicle_ardupilot
 else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/ -lmodule_vehicle_ardupilot
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../example_vehicle_module/release/ -lexample_vehicle_module
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../example_vehicle_module/debug/ -lexample_vehicle_module
-else:unix: LIBS += -L$$OUT_PWD/../example_vehicle_module/ -lexample_vehicle_module
+#win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../example_vehicle_module/release/ -lexample_vehicle_module
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../example_vehicle_module/debug/ -lexample_vehicle_module
+#else:unix: LIBS += -L$$OUT_PWD/../example_vehicle_module/ -lexample_vehicle_module
 
 #win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../voropp/release/ -lvoropp
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../voropp/debug/ -lvoropp

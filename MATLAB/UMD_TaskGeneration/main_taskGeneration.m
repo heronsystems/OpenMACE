@@ -2,9 +2,6 @@
 % A. Wolek, S. Cheng, Feb. 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% User's guide, see README.txt and also:
-trueWorldREADME()
-
 % MATLAB Initialization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % check if this is a monte-carlo run, if not clear the workspace

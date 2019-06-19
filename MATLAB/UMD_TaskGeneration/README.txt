@@ -82,4 +82,3 @@ For any questions regarding how to run this code please contact the UMD team:
   Artur Wolek (wolek@umd.edu)
   Sheng Cheng (cheng@umd.edu)
   Derek Paley (dpaley@umd.edu)
-  Timothy Horiuchi (timmer@umd.edu)

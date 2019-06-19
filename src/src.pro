@@ -35,14 +35,14 @@ SUBDIRS += \
     module_ROS \
     module_ROS_UMD \
     mace \
-    module_generic_MAVLINK \
+    module_generic_MAVLINK 
     #TestMaps \
     #example \
     #Testing \
     #Testing_CommsLink \
     #TestGraph \
-    commsExample \
-    example_vehicle_module
+    #commsExample \
+    #example_vehicle_module
 
 
 base.depends = common
@@ -58,7 +58,7 @@ data_generic_command_item.depends = data_generic_state_item
 mace_core.depends = data_generic_command_item
 commsMAVLINK.depends = mace_core
 commsMACEHelper.depends = mace_core
-commsExample.depends = mace_core
+#commsExample.depends = mace_core
 data_generic_item_topic.depends = data_generic_item
 data_generic_state_item_topic.depends = data_generic_state_item
 data_generic_command_item_topic.depends = data_generic_state_item_topic
