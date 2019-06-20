@@ -76,6 +76,7 @@ Running the code (MACE):
   - Run updatePath.m to make sure all of the subroutines/data/external
     files are in your path
   - Run main_taskGeneration.m
+  - Wait until GPS origin is set before sending the datum
   - Once a simulation is complete, press any key to playback the video.
 
 For any questions regarding how to run this code please contact the UMD team:

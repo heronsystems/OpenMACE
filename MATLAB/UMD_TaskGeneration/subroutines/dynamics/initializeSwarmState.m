@@ -2,6 +2,8 @@ function [swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, ru
 if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = setupF3FlightTestPlot( runParams,ROS_MACE );
     ROS_MACE = launchROS( ROS_MACE );
+    disp('Wait to set datum');
+    countdownVerbose(30);
     swarmState = sendDatumAndWaitForGPS( ROS_MACE );
     
     if strcmp(ROS_MACE.wptCoordinator,'standalone')
