@@ -4,14 +4,14 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
-runParams.T = 120; % total simulation/mission time
+runParams.T = 240; % total simulation/mission time
 
 
 % F3 Flight Test
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = struct;
-    ROS_MACE.operationalAlt = [4 8]; % m OR [4 8 2 6]; if running four quads
+    ROS_MACE.operationalAlt = [3 5]; % m OR [4 8 2 6]; if running four quads
     ROS_MACE.agentIDs = [1 2]; % m OR [1 2 3 4]; if running four quads
     ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
     for i = 1:1:length(ROS_MACE.agentIDs)
@@ -64,11 +64,11 @@ end
 swarmModel = struct;
 swarmModel.N = 2; % number of agents OR 4; if running four quads
 swarmModel.Rsense = 1.5; % sensing radius
-swarmModel.vmax = 2; % maximum speed
-swarmModel.umax = 2; % max acceleration
+swarmModel.vmax = 0.30; % maximum speed
+swarmModel.umax = 0.5; % max acceleration
 swarmModel.kp_wpt = 10.0; % agent waypoint control, proportional gain
 swarmModel.kd_wpt = 5.0; % derivative gain
-swarmModel.Tsamp = 3; % sample time
+swarmModel.Tsamp = 2; % sample time
 
 % agents follow a double integrator model with xdot = Ax + Bu and
 % saturation on the input u. A, and B are defined below.
@@ -77,9 +77,9 @@ swarmModel.A = [0 0 1 0; 0 0 0 1; 0 0 -swarmModel.d 0; 0 0 0 -swarmModel.d];
 swarmModel.B = [0 0; 0 0; 1 0; 0 1];
 runParams.Tsamp = swarmModel.Tsamp; % make a copy
 
-swarmModel.samplesPerTask = 2; 
-swarmModel.taskGeneration = 'frontierWpts'; % 'randomWpts', or 'frontierWpts' 
-swarmModel.Told = 60; % sec, time used for saturated pixel "age".
+%swarmModel.samplesPerTask = 2; 
+%swarmModel.taskGeneration = 'frontierWpts'; % 'randomWpts', or 'frontierWpts' 
+%swarmModel.Told = 60; % sec, time used for saturated pixel "age".
 % Note, even if MACE is running we need these for prediction (i.e., Sheng's
 % cost function)
 
@@ -97,10 +97,10 @@ switch swarmModel.taskAllocation
         swarmModel.bundleSize = 5;
         swarmModel.neighborMethod = 'knn';  % options are: 'VoronoiGraph' or 'knn'
     case 'stepwiseHungarian_unique' % original
-        swarmModel.samplesPerTask = 10;
+        swarmModel.samplesPerTask = 15;
         swarmModel.bundleSize = 5;
         swarmModel.neighborMethod = 'knn';  
-        swarmModel.knnNumber = 10;
+        swarmModel.knnNumber = 15;
     case 'stepwiseHungarian_max' % original
         swarmModel.samplesPerTask = 10;
         swarmModel.bundleSize = 4;
@@ -136,7 +136,7 @@ switch swarmModel.taskGeneration
         swarmModel.maxIters = 500;
 end
 
-swarmModel.mapping.krigingSigma = 3; % controls how much kriging interp diffuses
+swarmModel.mapping.krigingSigma = 0.5; % controls how much kriging interp diffuses
 swarmModel.utilityComputation = 'computeInformationGain'; % options are: 'computeEnergyAndPenalty' or 'computeInformationGain'
 swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
 
@@ -229,10 +229,10 @@ trueWorld.binWidth = 0.5; % distance used to declare two nodes as connected (use
 trueWorld.folder = './data/'; % folder with map file
 % trueWorld.boxlength = 400;
 % trueWorld.boxwidth = 400;
-trueWorld.buffer = 3;
+trueWorld.buffer = 0;
 trueWorld.fileName = 'cityblocksAtF3';
-trueWorld.blockLength = 5;
-trueWorld.numBlocks = 4;
+trueWorld.blockLength = 6;
+trueWorld.numBlocks = 3;
 
 % derived world model parameters
 trueWorld = loadEnvironment(trueWorld, targetModel);

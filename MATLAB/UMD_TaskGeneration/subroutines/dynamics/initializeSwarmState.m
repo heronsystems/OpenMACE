@@ -2,17 +2,18 @@ function [swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, ru
 if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = setupF3FlightTestPlot( runParams,ROS_MACE );
     ROS_MACE = launchROS( ROS_MACE );
-    disp('Wait to set datum');
-    countdownVerbose(30);
+    disp('Press key when IMU01 using GPS across all quads');
+    pause;
+    disp('Setting datum');
     swarmState = sendDatumAndWaitForGPS( ROS_MACE );
     
     if strcmp(ROS_MACE.wptCoordinator,'standalone')
         %     !matlab -r standaloneWptCoordinator 120 &
-        %eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ',' num2str(swarmModel.Rsense) ')'' &']);
-        %         eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ')'' &']);
+        eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ',' num2str(swarmModel.Rsense) ')'' &']);
+        %eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ')'' &']);
         % -desktop will start a new MATLAB window for debugging
-        %fprintf('***Wait for the StandalongWptCoordinator to start*** \n');
-        %countdownVerbose(3);
+        fprintf('***Wait for the StandalongWptCoordinator to start*** \n');
+        countdownVerbose(3);
     end
     
     armAndTakeoff( ROS_MACE );

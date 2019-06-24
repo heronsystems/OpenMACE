@@ -8,7 +8,7 @@ package="launchMACE_AtF3"
 cwd=$(pwd)
 
 # default values
-NUM_REAL_AGENTS=0
+NUM_REAL_AGENTS=2
 # give USB ports here:
 REAL_AGENT_USB[1]=0
 REAL_AGENT_USB[2]=1
@@ -18,10 +18,12 @@ REAL_AGENT_ID[2]=2
 
 
 # default values
-NUM_SIM_AGENTS=2
+NUM_SIM_AGENTS=0
 # give sim agent is
 SIM_AGENT_ID[1]=1
 SIM_AGENT_ID[2]=2
+SIM_AGENT_ID[3]=3
+SIM_AGENT_ID[4]=4
 
 
 #IP_ADDRESS=192.168.1.62 # Kim Lab
@@ -49,7 +51,7 @@ LAUNCH_ROS=1
 GUI=1
 OPEN_TERMINALS=1
 ARDUCOPTER_CMD_LIST="arduCopter.sh"
-ARDUCOPTER_CMD=1
+ARDUCOPTER_CMD=0 # 0 do not wati for aducopter
 
 while test $# -gt 0; do
         case "$1" in
