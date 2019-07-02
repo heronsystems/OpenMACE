@@ -1,16 +1,9 @@
-
-[submodule "mavlink_cpp/V2"]
-	path = mavlink_cpp/V2
-	url = https://github.com/mavlink/c_library_v2.git
 [submodule "tools/octomap"]
 	path = tools/octomap
 	url = https://github.com/OctoMap/octomap.git
 [submodule "tools/flann"]
 	path = tools/flann
 	url = https://github.com/mariusmuja/flann.git
-[submodule "tools/fcl"]
-	path = tools/fcl
-	url = https://github.com/flexible-collision-library/fcl.git
 [submodule "tools/libccd"]
 	path = tools/libccd
 	url = https://github.com/danfis/libccd.git
