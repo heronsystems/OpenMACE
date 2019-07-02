@@ -8,7 +8,7 @@
 #include "commsmace_global.h"
 #include "common/common.h"
 
-#include "mace_digimesh_wrapper.h"
+#include "MACEDigiMeshWrapper/mace_digimesh_wrapper.h"
 
 namespace CommsMACE
 {
