@@ -1,5 +1,5 @@
 % Main simulation script for Heron-UMD task generation.
-% A. Wolek, S. Cheng, Feb. 2019
+% A. Wolek, S. Cheng, July 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % MATLAB Initialization

@@ -2,7 +2,7 @@ function standaloneWptCoordinator(runTime,cptRadius)
 
 diaryFileName = ['WptCoordinatorLog_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.txt'];
 diary(diaryFileName);
-
+    
 rosshutdown
 N = 2;
 
@@ -65,12 +65,12 @@ while toc(loopStart) <= runTime+10
     iterationStart = tic;
     if mod(iterationCounter,10) == 1
         % get bundle information every certain iterations
-        for k = 1:N
+        for k = 1:N           
             bundleRequest.VehicleID = k;
             try
                 bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
             catch
-                % If the code catches an error at this moment, then it must be that
+                % If the code catches an error at this moment, then it must be that 
                 % main program stops. We will issue an exit to the while
                 % loop.
                 breakWhileLoop = 1;
@@ -107,7 +107,7 @@ while toc(loopStart) <= runTime+10
     end
     
     agentUpdated = zeros(1,N);
-    positionUpdateStart = tic;
+    positionUpdateStart = tic; 
     
     while (~all(agentUpdated))
         % when not all agents are updated OR tSample has not been reached, stay in the while loop
@@ -125,7 +125,7 @@ while toc(loopStart) <= runTime+10
         
         % if the time inside the while loop goes beyond
         % positionUpdateTimeout, then quit while loop
-        if toc(positionUpdateStart) >= positionUpdateTimeout
+        if toc(positionUpdateStart) >= positionUpdateTimeout            
             fprintf('Position update time out!\n Vehicle %d not updated.\n',find(agentUpdated==0));
             break;
         end
@@ -144,22 +144,19 @@ while toc(loopStart) <= runTime+10
                 waypointRequest.Timestamp = rostime('now');
                 waypointRequest.VehicleID = k;   % Vehicle ID
                 waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
-                fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2),k);
+                
+                
+                fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(bundleWptCounter(k),1), 
                 [east, north] = F3toENU(bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2));
                 waypointRequest.Easting = east; % Relative easting position to Datum
                 waypointRequest.Northing = north; % Relative northing position to Datum
                 waypointRequest.Altitude = agentAltitude(k);
                 waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
-                if ( waypointResponse.Success )
-                    fprintf('VehicleID %d Wpt Command Sent.\n',k);
-                else
-                    fprintf('VehicleID %d Wpt Command Failed.\n',k);
-                end
                 fprintf('Command to quad %d done at %1.1f\n',k,toc(iterationStart));
             end
         end
-        %         fprintf('Command done at %1.1f\n',toc(iterationStart)); %
-        %         originally the above line is uncommented on June 18, 2019.
+%         fprintf('Command done at %1.1f\n',toc(iterationStart)); %
+%         originally the above line is uncommented on June 18, 2019.
     end
     fprintf('Iteration time before waitfor(r): %1.1f\n',toc(iterationStart));
     waitfor(r);

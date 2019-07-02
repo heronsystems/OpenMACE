@@ -64,10 +64,12 @@ end
 swarmModel = struct;
 swarmModel.N = 2; % number of agents OR 4; if running four quads
 swarmModel.Rsense = 1.5; % sensing radius
-swarmModel.vmax = 0.30; % maximum speed
-swarmModel.umax = 0.5; % max acceleration
-swarmModel.kp_wpt = 10.0; % agent waypoint control, proportional gain
-swarmModel.kd_wpt = 5.0; % derivative gain
+
+swarmModel.delay = 1.3564;
+swarmModel.vmax = 0.7167; % maximum speed
+swarmModel.umax = 0.3782; % max acceleration
+swarmModel.kp_wpt = 2.8156; % agent waypoint control, proportional gain
+swarmModel.kd_wpt = 13.8507; % derivative gain
 swarmModel.Tsamp = 2; % sample time
 
 % agents follow a double integrator model with xdot = Ax + Bu and

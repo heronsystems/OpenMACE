@@ -32,6 +32,7 @@ switch swarmModel.utilityComputation
         % first propogate the state to compute all future control actions and the
         % terminal state
         time = 0;
+        
         for k = 1:round(swarmModel.planningHorizon/simParams.dt)
             u = [u waypointController(x,taskLocation(1),taskLocation(2),swarmModel.kp_wpt,swarmModel.kd_wpt,swarmModel.umax)];
             x = x + simParams.dt*(swarmModel.A*x + swarmModel.B*u(:,end));
