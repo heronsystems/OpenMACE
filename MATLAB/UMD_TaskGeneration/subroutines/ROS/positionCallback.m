@@ -11,7 +11,7 @@ function [ outputArgument ] = positionCallback( ROS_MACE, msg)
 %       EastSpeed: 0
 
     global tStart;
-    colors=['rbkmgcy'];
+    colors=['rbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcy'];
     time = toc(tStart);
     if ( ~isempty(msg) )   
     subplot(ROS_MACE.altitude);

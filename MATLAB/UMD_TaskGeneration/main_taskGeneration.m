@@ -80,7 +80,8 @@ end
 
 % % movie
 % if ( runParams.flags.movie && ~exist('MonteCarloSwitch','var'))
-% 
+%      movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+%    
 %     % various movie profiles can be specified here
 %     movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )    
 %     % movie_nodesInView( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )

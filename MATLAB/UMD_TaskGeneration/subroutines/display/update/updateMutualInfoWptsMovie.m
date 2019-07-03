@@ -47,8 +47,10 @@ axis equal;
 % xlim([trueWorld.minX trueWorld.maxX]);
 % ylim([trueWorld.minY trueWorld.maxY]);
 if ( runParams.movie.useBackgroundImg )
-    xlim([trueWorld.minX-runParams.movie.plotBuffer trueWorld.maxX+runParams.movie.plotBuffer]);
-    ylim([trueWorld.minY-runParams.movie.plotBuffer trueWorld.maxY+runParams.movie.plotBuffer]);
+%     xlim([trueWorld.minX-runParams.movie.plotBuffer trueWorld.maxX+runParams.movie.plotBuffer]);
+%     ylim([trueWorld.minY-runParams.movie.plotBuffer trueWorld.maxY+runParams.movie.plotBuffer]);
+    xlim([trueWorld.minX trueWorld.maxX]);
+    ylim([trueWorld.minY trueWorld.maxY]);
 else
     xlim([trueWorld.minX trueWorld.maxX]);
     ylim([trueWorld.minY trueWorld.maxY]);

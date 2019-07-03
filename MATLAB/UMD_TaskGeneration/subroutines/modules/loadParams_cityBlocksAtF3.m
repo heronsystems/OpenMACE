@@ -4,7 +4,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
-runParams.T = 240; % total simulation/mission time
+runParams.T = 5*60; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -65,11 +65,11 @@ swarmModel = struct;
 swarmModel.N = 2; % number of agents OR 4; if running four quads
 swarmModel.Rsense = 1.5; % sensing radius
 
-swarmModel.delay = 1.3564;
-swarmModel.vmax = 0.7167; % maximum speed
-swarmModel.umax = 0.3782; % max acceleration
-swarmModel.kp_wpt = 2.8156; % agent waypoint control, proportional gain
-swarmModel.kd_wpt = 13.8507; % derivative gain
+%swarmModel.delay = 1.3564;
+swarmModel.vmax = 1.2145; % maximum speed
+swarmModel.umax = 0.3478; % max acceleration
+swarmModel.kp_wpt = 2.0816; % agent waypoint control, proportional gain
+swarmModel.kd_wpt = 13.9315; % derivative gain
 swarmModel.Tsamp = 2; % sample time
 
 % agents follow a double integrator model with xdot = Ax + Bu and
@@ -99,7 +99,7 @@ switch swarmModel.taskAllocation
         swarmModel.bundleSize = 5;
         swarmModel.neighborMethod = 'knn';  % options are: 'VoronoiGraph' or 'knn'
     case 'stepwiseHungarian_unique' % original
-        swarmModel.samplesPerTask = 15;
+        swarmModel.samplesPerTask = 10;
         swarmModel.bundleSize = 5;
         swarmModel.neighborMethod = 'knn';  
         swarmModel.knnNumber = 15;

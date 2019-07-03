@@ -53,5 +53,6 @@ for i = 1:1:swarmModel.N
     yc = ycnom + xk(2);
     plotHandles.figh_sensingRadius(i) = plot(xc,yc,'m-','LineWidth',2);
 end
-
+    xlim([trueWorld.minX trueWorld.maxX]);
+    ylim([trueWorld.minY trueWorld.maxY]);
 end

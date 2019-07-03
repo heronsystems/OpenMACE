@@ -1,6 +1,9 @@
 function standaloneWptCoordinator(runTime,cptRadius)
 
+
+wptCoordStart = tic;
 diaryFileName = ['WptCoordinatorLog_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.txt'];
+matFileName =  ['WptCoordinatorMat_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat'];
 diary(diaryFileName);
 
 rosshutdown
@@ -61,6 +64,7 @@ currentBundleID = zeros(N,1);
 breakWhileLoop = 0;  % exit switch
 
 while toc(loopStart) <= runTime+10
+    disp('--------------------------------------');
     % start main loop
     iterationStart = tic;
     if mod(iterationCounter,10) == 1
@@ -82,7 +86,7 @@ while toc(loopStart) <= runTime+10
                     bundleResponse.Easting2 bundleResponse.Northing2;
                     bundleResponse.Easting3 bundleResponse.Northing3;
                     bundleResponse.Easting4 bundleResponse.Northing4;
-                    bundleResponse.Easting5 bundleResponse.Northing5];
+                    bundleResponse.Easting5 bundleResponse.Northing5]
                 agentAltitude(k) = bundleResponse.Altitude1;
                 bundleWptCounter(k) = 1;
                 % update the currentBundleID
@@ -97,6 +101,13 @@ while toc(loopStart) <= runTime+10
                 waypointRequest.Northing = north; % Relative northing position to Datum
                 waypointRequest.Altitude = agentAltitude(k);
                 waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
+                fprintf('Forcing 1st waypoint of new bundle now!\n');
+                fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(1,1), bundle{k}(1,2),k);
+                if ( waypointResponse.Success )
+                    fprintf('VehicleID %d Wpt Command Sent.\n',k);
+                else
+                    fprintf('VehicleID %d Wpt Command Failed.\n',k);
+                end
             end
         end
         fprintf('bundleRequested at %1.1f\n',toc(iterationStart));
@@ -136,27 +147,30 @@ while toc(loopStart) <= runTime+10
     % only examine the quads that have updated locations
     for k = 1:N
         if agentUpdated(k) == 1
-            if norm(agentLocation(k,:)-bundle{k}(bundleWptCounter(k),:)) <= captureRadius
-                if bundleWptCounter(k) < 5
+            distToWpt = norm(agentLocation(k,:)-bundle{k}(bundleWptCounter(k),:));
+            fprintf('Distance of agent %d to wpt is %3.3f (capture radius = %3.3f) \n', k, distToWpt, captureRadius);
+            if distToWpt <= captureRadius
+                if bundleWptCounter(k) < 5 % TODO: fix this hardcode
                     bundleWptCounter(k) = bundleWptCounter(k) + 1;
                 end
-                % packup a command packet and send it to quad
-                waypointRequest.Timestamp = rostime('now');
-                waypointRequest.VehicleID = k;   % Vehicle ID
-                waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
-                fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2),k);
-                [east, north] = F3toENU(bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2));
-                waypointRequest.Easting = east; % Relative easting position to Datum
-                waypointRequest.Northing = north; % Relative northing position to Datum
-                waypointRequest.Altitude = agentAltitude(k);
-                waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
-                if ( waypointResponse.Success )
-                    fprintf('VehicleID %d Wpt Command Sent.\n',k);
-                else
-                    fprintf('VehicleID %d Wpt Command Failed.\n',k);
-                end
-                fprintf('Command to quad %d done at %1.1f\n',k,toc(iterationStart));
+                fprintf('Updating bundle wpt counter to %d\n',bundleWptCounter(k));
             end
+            % packup a command packet and send it to quad
+            waypointRequest.Timestamp = rostime('now');
+            waypointRequest.VehicleID = k;   % Vehicle ID
+            waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
+            fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2),k);
+            [east, north] = F3toENU(bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2));
+            waypointRequest.Easting = east; % Relative easting position to Datum
+            waypointRequest.Northing = north; % Relative northing position to Datum
+            waypointRequest.Altitude = agentAltitude(k);
+            waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
+            if ( waypointResponse.Success )
+                fprintf('VehicleID %d Wpt Command Sent.\n',k);
+            else
+                fprintf('VehicleID %d Wpt Command Failed.\n',k);
+            end
+            fprintf('Command to quad %d done at %1.1f\n',k,toc(iterationStart));
         end
         %         fprintf('Command done at %1.1f\n',toc(iterationStart)); %
         %         originally the above line is uncommented on June 18, 2019.
@@ -165,8 +179,11 @@ while toc(loopStart) <= runTime+10
     waitfor(r);
     iterationCounter = iterationCounter + 1;
     fprintf('Iteration %d done using %1.1f\n',iterationCounter,toc(iterationStart));
+    toc(wptCoordStart);
+    data.bundles{iterationCounter} = bundle;
 end
 rosshutdown;
+save(matFileName);
 diary off;
 quit;
 end

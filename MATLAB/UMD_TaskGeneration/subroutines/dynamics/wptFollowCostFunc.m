@@ -5,7 +5,7 @@ params.kp = p(1);
 params.kd = p(2);
 params.umax = p(3);
 params.vmax = p(4);
-params.delay = p(5);
+%params.delay = p(5);
 
 % 
 params.d = params.umax/params.vmax; % agent damping parameter
@@ -19,16 +19,16 @@ for k = 2:1:numPts
     delt  = thist(k) - thist(k-1);
     %x0 = [ xsim(k-1,4*j-3); xsim(k-1,4*j-2); xsim(k-1,4*j-1); xsim(k-1,4*j)];
     x0 = xsim(k-1,:);
-    % lookup waypoint desired
-    if ( thist(k) > params.delay )
-        tdelay = thist(k)-params.delay;
-        params.xd  = interp1(thist,xd,tdelay);
-        params.yd = interp1(thist,yd,tdelay);
-        
-    else               
+%     % lookup waypoint desired
+%     if ( thist(k) > params.delay )
+%         tdelay = thist(k)-params.delay;
+%         params.xd  = interp1(thist,xd,tdelay);
+%         params.yd = interp1(thist,yd,tdelay);
+%         
+%     else               
         params.xd = xd(k,:);
         params.yd = yd(k,:);
-    end
+%     end
     % call ode45
     [tout,xout] = ode45(@(t,x) swarmWptODE(t,x,params),[0 delt],x0);
     % package output

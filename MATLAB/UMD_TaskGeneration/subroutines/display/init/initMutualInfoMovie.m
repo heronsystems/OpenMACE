@@ -10,7 +10,10 @@ set(gca,'FontSize',14)
 xlabel('X (m)')
 ylabel('Y (m)')
 axis equal;
-axis tight;
+%axis tight;
+xlim([trueWorld.minX trueWorld.maxX]);
+ylim([trueWorld.minY trueWorld.maxY]);
+disp('axes set');
 hold off;
 
 end

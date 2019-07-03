@@ -142,6 +142,7 @@ while ( tNow <= runParams.T )
                     bundleSource(k,j*2+1:j*2+2) = swarmWorld.cellCenterOfMass(swarmState.wptList(k,j),:);
                 end
             end
+            swarmState.bundleSource = bundleSource;
         end
            
     end

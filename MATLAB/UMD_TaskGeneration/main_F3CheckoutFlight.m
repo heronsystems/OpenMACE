@@ -74,10 +74,14 @@ tStart = tic;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Test: Two Quad Takeoff, Wpt Mission, and Land
 
-ROS_MACE.N = 2;
-ROS_MACE.operationalAlt = [4 8]; % m
-ROS_MACE.agentIDs = [1 2]; % m
+ROS_MACE.N = 1;
+%ROS_MACE.operationalAlt = [4 8]; % m
+%ROS_MACE.agentIDs = [1 2]; % m
+ROS_MACE.operationalAlt = [3]; % m
+ROS_MACE.agentIDs = [11]; % m
+
 ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+ROS_MACE.wptCoordinator = 'integrated';
 
 for i = 1:1:length(ROS_MACE.agentIDs)
     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
