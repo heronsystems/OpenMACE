@@ -42,7 +42,7 @@ RUN pip install --upgrade virtualenv
 RUN apt-get update
 RUN apt-get install -y lsb-release
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-RUN apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 RUN apt-get update
 RUN apt-get install -y ros-kinetic-desktop-full
 RUN rosdep init
@@ -52,7 +52,6 @@ RUN /bin/bash -c "source ~/.bashrc"
 RUN apt-get install -y python-rosinstall
 RUN apt-get install -y python-rosinstall-generator
 RUN apt-get install -y python-wstool
-RUN apt-get install -y build-essential
 RUN apt-get install -y libboost-system-dev
 RUN apt-get install -y ros-kinetic-octomap*
 RUN apt-get install -y ros-kinetic-tf*
@@ -63,14 +62,37 @@ RUN pip install rospkg
 ### MACE deps
 RUN git clone https://github.com/heronsystems/OpenMACE
 WORKDIR /OpenMACE
+
+# TESTING
+RUN git checkout MACEDigiWrapper_Migration
+# END TESTING
+
 RUN git submodule init
 RUN git submodule update
 ## FLANN
-RUN cd ./tools/flann && mkdir build && cd ./build && cmake .. && make && make install
+WORKDIR /OpenMACE/tools/flann
+RUN mkdir build
+WORKDIR /OpenMACE/tools/flann/build
+RUN CXXFLAGS=-std=c++11 cmake ..
+RUN make -j1
+RUN make install
+
 ## Octomap
-RUN cd ./tools/octomap && mkdir build && cd ./build && cmake .. && make && make install
+WORKDIR /OpenMACE/tools/octomap
+RUN mkdir build
+WORKDIR /OpenMACE/tools/octomap/build
+RUN cmake ..
+RUN make
+RUN make install
+
 ## Libccd
-RUN cd ./tools/libccd && mkdir build && cd ./build && cmake -G "Unix Makefiles" .. && make && make install
+WORKDIR /OpenMACE/tools/libccd
+RUN mkdir build
+WORKDIR /OpenMACE/tools/libccd/build
+RUN cmake -G "Unix Makefiles" ..
+RUN make
+RUN make install
+
 ## FCL
 # RUN cd ./tools/fcl && mkdir build && cd ./build && cmake .. -DEIGEN3_INCLUDE_DIR=/MACE/Eigen/include/eigen3/ && make && make install
 
@@ -87,7 +109,11 @@ RUN echo "source /OpenMACE/catkin_sim_environment/devel/setup.bash" >> ~/.bashrc
 RUN /bin/bash -c "source ~/.bashrc"
 
 ## Build mace
-RUN mkdir build && cd ./build && qmake ../src/src.pro && make && make install
+RUN mkdir build
+RUN WORKDIR /OpenMACE/build
+RUN qmake ../src/src.pro
+RUN make
+RUN make install
 RUN ldconfig
 
 
