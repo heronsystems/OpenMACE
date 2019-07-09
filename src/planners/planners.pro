@@ -98,8 +98,10 @@ DEPENDPATH += $$PWD/../maps
 #INCLUDEPATH += $$PWD/../../tools/flann/build
 #DEPENDPATH += $$PWD/../../tools/flann/build
 
+unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann
 unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 
+unix: LIBS += -llz4
