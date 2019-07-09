@@ -231,7 +231,7 @@ win32:INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/release/ -lDigiMesh
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/debug/ -lDigiMesh
-else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMesh/ -lDigiMesh
+else:unix:!macx: LIBS += -L$$OUT_PWD/../DigiMesh/ -lDigiMesh
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/release/ -lMACEDigiMeshWrapper
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
