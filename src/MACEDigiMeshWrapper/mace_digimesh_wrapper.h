@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <mutex>
 #include <thread>
+#include <functional>
 
 #include "digi_common/digi_mesh_baud_rates.h"
 #include "digi_common/transmit_status_types.h"
@@ -87,37 +88,37 @@ public:
 
 
 
-    /**
-     * @brief Add handler to be called when a new vehicle is added to the network
-     * @param lambda Lambda function whoose parameters are the vehicle ID and node address of new vechile.
-     */
-    template <const char* T>
-    void AddHandler_NewRemoteComponentItem(const std::function<void(int, uint64_t)> &lambda)
-    {
-        InteropComponent::AddHandler_NewRemoteComponentItem(T, lambda);
-    }
+//    /**
+//     * @brief Add handler to be called when a new vehicle is added to the network
+//     * @param lambda Lambda function whoose parameters are the vehicle ID and node address of new vechile.
+//     */
+//    template <const char* T>
+//    void AddHandler_NewRemoteComponentItem(const std::function<void(int, uint64_t)> &lambda)
+//    {
+//        InteropComponent::AddHandler_NewRemoteComponentItem(T, lambda);
+//    }
 
 
-    /**
-     * @brief Add handler to be called when a new vehicle has been removed from the network
-     * @param lambda Lambda function whoose parameters are the vehicle ID of removed vechile.
-     */
-    template <const char* T>
-    void AddHandler_RemovedRemoteComponentItem(const std::function<void(int)> &lambda)
-    {
-        InteropComponent::AddHandler_RemoteComponentItemRemoved(T, lambda);
-    }
+//    /**
+//     * @brief Add handler to be called when a new vehicle has been removed from the network
+//     * @param lambda Lambda function whoose parameters are the vehicle ID of removed vechile.
+//     */
+//    template <const char* T>
+//    void AddHandler_RemovedRemoteComponentItem(const std::function<void(int)> &lambda)
+//    {
+//        InteropComponent::AddHandler_RemoteComponentItemRemoved(T, lambda);
+//    }
 
 
-    /**
-     * @brief Add handler to be called when tranmission to a vehicle failed for some reason.
-     * @param lambda Lambda function to pass vehicle ID and status code
-     */
-    template <const char* T>
-    void AddHandler_ComponentItemTransmitError(const std::function<void(int vehicle, TransmitStatusTypes status)> &lambda)
-    {
-        InteropComponent::AddHandler_ComponentItemTransmitError(T, lambda);
-    }
+//    /**
+//     * @brief Add handler to be called when tranmission to a vehicle failed for some reason.
+//     * @param lambda Lambda function to pass vehicle ID and status code
+//     */
+//    template <const char* T>
+//    void AddHandler_ComponentItemTransmitError(const std::function<void(int vehicle, TransmitStatusTypes status)> &lambda)
+//    {
+//        InteropComponent::AddHandler_ComponentItemTransmitError(T, lambda);
+//    }
 
 
     void AddResource(const ResourceKey &key, const ResourceValue &value) // recursive variadic function
