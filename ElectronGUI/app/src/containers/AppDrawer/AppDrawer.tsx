@@ -44,7 +44,7 @@ export class AppDrawer extends React.Component<Props, State> {
 
                     <Divider />
 
-                    <MenuItem onTouchTap={() => this.props.onDrawerAction("TestButton1")}>
+                    <MenuItem onClick={() => this.props.onDrawerAction("TestButton1")}>
                         <FlatButton
                             labelStyle={styles.drawerItemLabelStyle}
                             label="TESTING 1"
@@ -55,7 +55,7 @@ export class AppDrawer extends React.Component<Props, State> {
                         />
                     </MenuItem>
 
-                    <MenuItem onTouchTap={() => this.props.onDrawerAction("TestButton2")}>
+                    <MenuItem onClick={() => this.props.onDrawerAction("TestButton2")}>
                         <FlatButton
                             labelStyle={styles.drawerItemLabelStyle}
                             label="TESTING 2"
@@ -66,7 +66,7 @@ export class AppDrawer extends React.Component<Props, State> {
                         />
                     </MenuItem>
 
-                    <MenuItem onTouchTap={() => this.props.onDrawerAction("EditEnvironment")}>
+                    <MenuItem onClick={() => this.props.onDrawerAction("EditEnvironment")}>
                         <FlatButton
                             labelStyle={styles.drawerItemLabelStyle}
                             label="Environment"
@@ -78,7 +78,7 @@ export class AppDrawer extends React.Component<Props, State> {
                     </MenuItem>
 
                     {/*
-                    <MenuItem onTouchTap={() => this.props.onDrawerAction("Logging")}>
+                    <MenuItem onClick={() => this.props.onDrawerAction("Logging")}>
                         <FlatButton
                         labelStyle={drawerItemLabelStyle}
                         label="Logging"
@@ -90,7 +90,7 @@ export class AppDrawer extends React.Component<Props, State> {
                     <Divider />
 
                     <MenuItem
-                        onTouchTap={() =>
+                        onClick={() =>
                             this.setState({
                                 openSettingsSubmenu: !this.state.openSettingsSubmenu
                             })
@@ -113,7 +113,7 @@ export class AppDrawer extends React.Component<Props, State> {
                         />
                         {this.state.openSettingsSubmenu && (
                             <div>
-                                <MenuItem onTouchTap={() => this.props.onDrawerAction("MACEConfig")}>
+                                <MenuItem onClick={() => this.props.onDrawerAction("MACEConfig")}>
                                     <FlatButton
                                         labelStyle={styles.drawerItemLabelStyle}
                                         label="MACE Config"
@@ -123,7 +123,7 @@ export class AppDrawer extends React.Component<Props, State> {
                                         hoverColor={"rgba(0,0,0, 0.0)"}
                                     />
                                 </MenuItem>
-                                <MenuItem onTouchTap={() => this.props.onDrawerAction("Messages")}>
+                                <MenuItem onClick={() => this.props.onDrawerAction("Messages")}>
                                     <FlatButton
                                         labelStyle={styles.drawerItemLabelStyle}
                                         label="Messages"
@@ -133,7 +133,7 @@ export class AppDrawer extends React.Component<Props, State> {
                                         hoverColor={"rgba(0,0,0, 0.0)"}
                                     />
                                 </MenuItem>
-                                <MenuItem onTouchTap={() => this.props.onDrawerAction("Takeoff")}>
+                                <MenuItem onClick={() => this.props.onDrawerAction("Takeoff")}>
                                     <FlatButton
                                         labelStyle={styles.drawerItemLabelStyle}
                                         label="Takeoff"

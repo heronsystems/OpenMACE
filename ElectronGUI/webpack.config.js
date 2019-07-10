@@ -44,7 +44,7 @@ var config = {
      * the test. Then it will apply the loader to that file. I haven't
      * installed ts-loader yet, but will do that shortly.
      */
-    loaders: [
+    rules: [
       {
         test: /\.tsx?$/,
         loader: "babel-loader!ts-loader",
@@ -61,7 +61,8 @@ var config = {
         loader: "style-loader!css-loader"
       },
       {
-        test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000'
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/, 
+        loader: 'url-loader?limit=100000'
       }
     ]
   }
