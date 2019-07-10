@@ -1,6 +1,6 @@
 {
   "name": "mace-gui",
-  "productName": "MACE_Map",
+  "productName": "MACE_GUI",
   "version": "1.0.0",
   "description": "MACE GUI for development purposes",
   "main": "main.js",
@@ -16,7 +16,8 @@
     "prepare": "node ./node_modules/patch-package/index.js",
     "launch": "cross-env PORT=$npm_package_config_port parallel \"watch --mace-gui:port=$npm_package_config_port\" \"start --mace-gui:port=$npm_package_config_port\"",
     "build:launch": "cross-env PORT=$npm_package_config_port parallel \"build:prod --mace-gui:port=$npm_package_config_port\" \"launch --mace-gui:port=$npm_package_config_port\"",
-    "lint": "tslint -c tslint.json -p tsconfig.json -t stylish"
+    "lint": "tslint -c tslint.json -p tsconfig.json -t stylish",
+    "build:release": "electron-packager . MACE_GUI --overwrite --all --prune=true --out=release-builds"
   },
   "author": "Scotch",
   "license": "MIT",
@@ -63,6 +64,7 @@
     "@types/react-leaflet": "2.2.1",
     "@types/react-notification-system": "0.2.39",
     "browserify": "13.1.0",
+    "electron-packager": "^14.0.1",
     "electron-rebuild": "1.6.0",
     "npm-parallel": "^2.0.1",
     "patch-package": "^5.0.0",
