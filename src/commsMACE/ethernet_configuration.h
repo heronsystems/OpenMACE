@@ -21,10 +21,10 @@ public:
     EthernetConfiguration(const uint32_t portNumber);
     EthernetConfiguration(EthernetConfiguration* copy);
 
-    ~EthernetConfiguration();
+    virtual ~EthernetConfiguration();
 
 
-    const uint32_t portNumber() const  { return _portNumber; }
+    uint32_t portNumber() const  { return _portNumber; }
 
     void setPortName        (const uint32_t& portNumber);
 

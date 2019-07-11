@@ -141,13 +141,13 @@ export class ConfigDialog extends React.Component<Props, State> {
         let actions = [];
         if (this.state.activeTab !== "vehicle") {
             actions = [
-                <FlatButton label="Cancel" onTouchTap={this.handleCancel} />,
-                <FlatButton label="Save and reload" labelStyle={styles.flatButtonLabel} onTouchTap={() => this.handleSave(true)} />
+                <FlatButton label="Cancel" onClick={this.handleCancel} />,
+                <FlatButton label="Save and reload" labelStyle={styles.flatButtonLabel} onClick={() => this.handleSave(true)} />
             ];
         } else {
             actions = [
-                <FlatButton label="Cancel" onTouchTap={this.handleCancel} />,
-                <FlatButton label="Save" labelStyle={styles.flatButtonLabel} onTouchTap={() => this.handleSave()} />
+                <FlatButton label="Cancel" onClick={this.handleCancel} />,
+                <FlatButton label="Save" labelStyle={styles.flatButtonLabel} onClick={() => this.handleSave()} />
             ];
         }
 

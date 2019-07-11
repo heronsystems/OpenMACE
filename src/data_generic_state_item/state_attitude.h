@@ -77,10 +77,10 @@ public:
 
 public:
     double roll;
-    double rollRate;
     double pitch;
-    double pitchRate;
     double yaw;
+    double rollRate;
+    double pitchRate;
     double yawRate;
 
 };

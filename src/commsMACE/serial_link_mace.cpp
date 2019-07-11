@@ -50,7 +50,7 @@ SerialLink::SerialLink(const SerialConfiguration &config) :
     _config(config)
 {
     m_bytesRead = 0;
-    m_port     = NULL;
+    m_port     = nullptr;
     m_stopp    = false;
     m_reqReset = false;
 
@@ -95,6 +95,8 @@ void SerialLink::AddResource(const Resource &resource)
 
 bool SerialLink::HasResource(const Resource &resource) const
 {
+    UNUSED(resource);
+
     return true;
 }
 
@@ -281,7 +283,7 @@ bool SerialLink::_hardwareConnect(QSerialPort::SerialPortError& error, QString& 
         EmitEvent([&](const ILinkEvents *ptr){ptr->CommunicationUpdate(this, getPortName(), "Error opening port: " + errorString.toStdString());});
         m_port->close();
         delete m_port;
-        m_port = NULL;
+        m_port = nullptr;
         return false; // couldn't open serial port
     }
 

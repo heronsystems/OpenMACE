@@ -95,8 +95,8 @@ export class VehicleHomeDialog extends React.Component<Props, State> {
 
     render() {
         const actions = [
-            <FlatButton label="Cancel" onTouchTap={this.props.handleClose} />,
-            <FlatButton label="Save" labelStyle={{ color: colors.orange700 }} onTouchTap={this.handleSave} />
+            <FlatButton label="Cancel" onClick={this.props.handleClose} />,
+            <FlatButton label="Save" labelStyle={{ color: colors.orange700 }} onClick={this.handleSave} />
         ];
 
         let vehicleIDs: JSX.Element[] = [];
