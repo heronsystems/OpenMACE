@@ -50,8 +50,8 @@ export class MessagesDialog extends React.Component<Props, State> {
 
     render() {
         const actions = [
-            <FlatButton label="Cancel" onTouchTap={this.handleCancel} />,
-            <FlatButton label="Save" labelStyle={styles.labelStyle} onTouchTap={this.handleSave} />
+            <FlatButton label="Cancel" onClick={this.handleCancel} />,
+            <FlatButton label="Save" labelStyle={styles.labelStyle} onClick={this.handleSave} />
         ];
 
         return (

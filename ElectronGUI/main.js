@@ -23,7 +23,7 @@ function createWindow () {
   mainWindow.loadURL('file://' + __dirname + '/html/index.html');
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
-  // module.paths.push("C:\\Code\\NASA_GUI\\app\\build\\containers");
+  // module.paths.push("C:\\Code\\MACE_GUI\\app\\build\\containers");
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
