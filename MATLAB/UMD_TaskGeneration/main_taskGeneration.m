@@ -15,7 +15,6 @@ if ~exist('MonteCarloSwitch','var')
     rng(1);
 end
 
-
 % comment out if running the auctioneer (also refer to /archive/loadParams_mapping() for parameters)
 clear taskAllocation_decentralized
 

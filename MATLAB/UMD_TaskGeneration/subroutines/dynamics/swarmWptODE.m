@@ -14,6 +14,4 @@ for j = 1:1:N
     xdot(4*(j-1)+1:4*j,1) = A*xj + B*u;
 end
 
-% saturate speed?
-
 end
