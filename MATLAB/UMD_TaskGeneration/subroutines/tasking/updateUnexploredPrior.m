@@ -33,10 +33,17 @@ end
 if ( ~isempty(measurements) )
     
 
-    forecast = ordinaryKrig(xx,yy,measurements,krigingSigma);
+%     forecast = ordinaryKrig(xx,yy,measurements,krigingSigma);
+%     forecast(forecast > 1) = 1;
+%     forecast(forecast < 0) = 0;
+    
+    ax = 1.5;
+    ay = 0.1;
+    forecast = anisotropicKrig( xx, yy,measurements,ax,ay);
     forecast(forecast > 1) = 1;
     forecast(forecast < 0) = 0;
 
+    
 %     % deviation from mean
 %     %vals(:,3) = vals(:,3) - voidDensityEstimate;
 %     

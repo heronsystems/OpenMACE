@@ -1,0 +1,3 @@
+clear; close all; clc;
+
+load('data/cityBlocks_cityblocks_full.mat')

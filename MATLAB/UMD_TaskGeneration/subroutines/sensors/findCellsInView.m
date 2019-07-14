@@ -21,6 +21,7 @@ binXEnd = min( binX + halfWidth + 1, numBinsX );
 binYStart = max( binY - halfWidth + 1, 1);
 binYEnd = min( binY + halfWidth + 1, numBinsY );
 % create search bin vectors to search locally around each agent
+cellsInView = [];
 for bx = [binXStart:1:binXEnd]
     for by = [binYStart:1:binYEnd]
         controlPt = [xcp(bx) ycp(by)];

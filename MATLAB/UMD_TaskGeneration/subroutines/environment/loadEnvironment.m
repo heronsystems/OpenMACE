@@ -14,6 +14,8 @@ if ( exist([trueWorld.folder trueWorld.fileName '_' trueWorld.type '_full.mat'],
         case 'osmAtF3'
             [ nodeXY ] = loadOpenStreetMapNodes_atF3(trueWorld.fileName, trueWorld.refX, trueWorld.refY, trueWorld.boxlength, ...
                 trueWorld.angle, trueWorld.buffer, trueWorld.binWidth, trueWorld.f3Workspace);
+        case 'randomRoadsAtF3'
+            [nodeXY] = loadRandomRoads_atF3(trueWorld.nodeFile, trueWorld.edgeFile, trueWorld.binWidth, trueWorld.f3Workspace);
     end
     disp('Computing Additional Properties for trueWorld...');
     

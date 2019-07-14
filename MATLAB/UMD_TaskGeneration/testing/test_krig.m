@@ -1,11 +1,11 @@
 %
 clear all; close all; clc;
-
-curPath = '/home/wolek/Desktop/Research/Projects/UMD/Heron/MACE_DecentralizedRTA/MATLAB/UMD_TaskGeneration/testing';
-rootPath = '/home/wolek/Desktop/Research/Projects/UMD/Heron/MACE_DecentralizedRTA/MATLAB/UMD_TaskGeneration/';
-addpath(curPath);
-addpath(rootPath);
-updatePath(rootPath,curPath);
+addpath('../')
+%curPath = '/home/wolek/Desktop/Research/Projects/UMD/Heron/MACE_DecentralizedRTA/MATLAB/UMD_TaskGeneration/testing';
+%rootPath = '/home/wolek/Desktop/Research/Projects/UMD/Heron/MACE_DecentralizedRTA/MATLAB/UMD_TaskGeneration/';
+%addpath(curPath);
+%addpath(rootPath);
+%updatePath(rootPath,curPath);
 
 load('krigData_90sec')
 

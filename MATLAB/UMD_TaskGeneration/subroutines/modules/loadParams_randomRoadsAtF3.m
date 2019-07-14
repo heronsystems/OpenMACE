@@ -1,15 +1,15 @@
-function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityBlocksAtF3()
+function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_randomRoadsAtF3()
 
 % simulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 1*30; % total simulation/mission time
+runParams.T = 1*60; % total simulation/mission time
 
 
 % F3 Flight Test
+ROS_MACE=[];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ROS_MACE = [];
 if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = struct;
     ROS_MACE.operationalAlt = [3 5]; % m OR [4 8 2 6]; if running four quads
@@ -225,7 +225,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % load environment 
 trueWorld = struct;
-trueWorld.type = 'cityblocksAtF3'; % 'cityblocks', %'openStreetMap', 'osmAtF3'
+trueWorld.type = 'randomRoadsAtF3'; % 'cityblocks', %'openStreetMap', 'osmAtF3'
 trueWorld.f3Workspace = 'right-square'; % 'full', 'right-square'
 trueWorld.borderOffset = 0; % used for adding padding to the map
 trueWorld.binWidth = 0.5; % distance used to declare two nodes as connected (use 7 for open street map)
@@ -233,9 +233,9 @@ trueWorld.folder = './data/'; % folder with map file
 % trueWorld.boxlength = 400;
 % trueWorld.boxwidth = 400;
 trueWorld.buffer = 0;
-trueWorld.fileName = 'cityblocksAtF3';
-trueWorld.blockLength = 6;
-trueWorld.numBlocks = 3;
+trueWorld.fileName = 'randomRoadsAtF3';
+trueWorld.nodeFile = './external/road-network/node-list';
+trueWorld.edgeFile = './external/road-network/edge-list';
 
 % derived world model parameters
 trueWorld = loadEnvironment(trueWorld, targetModel);
