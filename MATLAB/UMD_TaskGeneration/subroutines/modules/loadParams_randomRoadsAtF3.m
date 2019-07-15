@@ -4,7 +4,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 1*60; % total simulation/mission time
+runParams.T = 3*60; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -47,7 +47,7 @@ if ( runParams.movie.useBackgroundImg )
     runParams.movie.backgroundImgBottomLeftCornerY = -30;
     runParams.movie.backgroundImgWidth = 108;
     runParams.movie.backgroundImgHeight = 50;
-    runParams.movie.plotBuffer = 5;
+    runParams.movie.plotBuffer = 3;
 end
 
 runParams.movie.plotF3Obstacles = 1;
@@ -67,10 +67,10 @@ swarmModel.N = 2; % number of agents OR 4; if running four quads
 swarmModel.Rsense = 1.5; % sensing radius
 
 %swarmModel.delay = 1.3564;
-swarmModel.vmax = 1.2145; % maximum speed
-swarmModel.umax = 0.3478; % max acceleration
-swarmModel.kp_wpt = 2.0816; % agent waypoint control, proportional gain
-swarmModel.kd_wpt = 13.9315; % derivative gain
+swarmModel.vmax = 0.25; % maximum speed
+swarmModel.umax = 0.63; % max acceleration
+swarmModel.kp_wpt = 3.0; % agent waypoint control, proportional gain
+swarmModel.kd_wpt = 13.8; % derivative gain
 swarmModel.Tsamp = 2; % sample time
 
 % agents follow a double integrator model with xdot = Ax + Bu and
@@ -100,8 +100,8 @@ switch swarmModel.taskAllocation
         swarmModel.bundleSize = 5;
         swarmModel.neighborMethod = 'knn';  % options are: 'VoronoiGraph' or 'knn'
     case 'stepwiseHungarian_unique' % original
-        swarmModel.samplesPerTask = 10;
-        swarmModel.bundleSize = 5;
+        swarmModel.samplesPerTask = 1;
+        swarmModel.bundleSize = 3;
         swarmModel.neighborMethod = 'knn';  
         swarmModel.knnNumber = 15;
     case 'stepwiseHungarian_max' % original
@@ -121,27 +121,16 @@ if ( nargin ~=3 ) % if running a single-run, use this value:
     swarmModel.taskGeneration = 'mutualInfoWpts'; % 'randomWpts', or 'frontierWpts', 'lawnmower' 'mutualInfoWpts'
 end
 switch swarmModel.taskGeneration
-    case 'frontierWpts'
-        swarmModel.wptChangePeriod = 10; % sec, how often we generate a new random wpt
-        swarmModel.mapping.method = 'frontierAndBlob'; % options are: 'frontierOnly' or 'frontierAndBlob'
-        swarmModel.mapping.minBlobArea = pi*swarmModel.Rsense^2*2;  % threshold for the minimum area of a blob
-        swarmModel.mapping.maxMajorMinorAxisRatio = 10; % threshold for the ratio between majoraxislength and minor axis length of a subblob, give inf if you do not want to apply this filter
-        swarmModel.mapping.blobCostScale = 1.4; % scale the cost for reaching a subblob centroid by this amount
     case 'mutualInfoWpts'
-        swarmModel.numTasks = 100;
+        swarmModel.numTasks = 150;
         swarmModel.stepSizeGain = 0.2;
-        swarmModel.percentTol = 0.05;
-        swarmModel.maxIters = 250;
-    case 'likelihoodWpts'
-        swarmModel.numTasks = 200;
-        swarmModel.stepSizeGain = 0.2;
-        swarmModel.percentTol = 0.03;
-        swarmModel.maxIters = 500;
+        swarmModel.percentTol = 0.01;
+        swarmModel.maxIters = 400;
 end
 
 swarmModel.mapping.krigingSigma = 0.5; % controls how much kriging interp diffuses
 swarmModel.utilityComputation = 'computeInformationGain'; % options are: 'computeEnergyAndPenalty' or 'computeInformationGain'
-swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
+swarmModel.planningHorizon = 1E10; %swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
 
 % Mapping
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -227,12 +216,12 @@ end
 trueWorld = struct;
 trueWorld.type = 'randomRoadsAtF3'; % 'cityblocks', %'openStreetMap', 'osmAtF3'
 trueWorld.f3Workspace = 'right-square'; % 'full', 'right-square'
-trueWorld.borderOffset = 0; % used for adding padding to the map
+trueWorld.borderOffset = 3; % used for adding padding to the map
 trueWorld.binWidth = 0.5; % distance used to declare two nodes as connected (use 7 for open street map)
 trueWorld.folder = './data/'; % folder with map file
 % trueWorld.boxlength = 400;
 % trueWorld.boxwidth = 400;
-trueWorld.buffer = 0;
+trueWorld.buffer = 3;
 trueWorld.fileName = 'randomRoadsAtF3';
 trueWorld.nodeFile = './external/road-network/node-list';
 trueWorld.edgeFile = './external/road-network/edge-list';

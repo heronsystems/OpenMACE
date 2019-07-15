@@ -42,7 +42,8 @@ switch swarmModel.utilityComputation
             % adaptive terminal time: if the agents is close to the taskLocation by
             % Rsense, then we terminate the process of computing trajectory and
             % effort
-            if sqrt((x(1)-taskLocation(1))^2+(x(2)-taskLocation(2))^2) <= swarmModel.Rsense/10
+            if sqrt((x(1)-taskLocation(1))^2+(x(2)-taskLocation(2))^2) <= swarmModel.Rsense/25
+                %disp('wpt reached in planner');
                 break;
             end
         end
@@ -120,14 +121,20 @@ end
 % end
 
 % if terminal state is required, return this vector
-if nOutputs == 2
+if nOutputs >= 2
     varargout{2} = x;
 end
 
 % if the resulting info surface is required, return the surface
-if nOutputs == 3
+if nOutputs >= 3
     varargout{3} = (1-reachedCell).*mutualInfoSurface;
 end
+
+if nOutputs >= 4
+    varargout{4} = path;
+end
+
+
 % check if the task is within sensing range, if so set its value equal to
 % zero
 % x = state';

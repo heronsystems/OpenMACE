@@ -283,8 +283,9 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian') || strcmp(swarmModel.ta
                                 utilityMatrix(kk,jj) = temp1;
                                 terminalState{kk,jj} = temp2;
                             else
+                                path = [];
                                 utilityMatrix(kk,jj) = -10; % if not connected, then the utitily is -10
-                            end
+                            end                            
                         end
                     end
                     %                 elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_2ndOrder')
@@ -362,10 +363,10 @@ elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
         % if the agent is in one of them
         initialNodes = [];
         neighborNodes = zeros(swarmModel.N,swarmModel.knnNumber);
+        state = zeros(swarmModel.N,4);        
         for kk = 1:swarmModel.N
             % find knnNumber+1 nearest neighbor (returns indices of
             % cellCenterOfMass)
-            % TODO: Some issue here with transmose on swarmState
             idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2),'K',swarmModel.knnNumber+1);
             neighborNodes(kk,:) = idx(2:end);  % check if idx is a row vector
             % neighborNodes(kk,:) = idx(1:end);  % check if idx is a row vector
@@ -383,22 +384,13 @@ elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
             if length(initialNodes) < kk % if no Voronoi cell contains the agent, just give the cell of closet centroid to the agent.
                 initialNodes = [initialNodes; idx(1)];
             end
-        end
-        
-        
+            state(kk,:) = swarmState.x(4*(kk-1)+1:4*(kk-1)+4);
+        end                
         q = swarmModel.bundleSize; % queue size
         
         % columns give assignements, rows give each agent,
-        bundleSteps = initialNodes;
-        
-        % load initial states
-        state = zeros(swarmModel.N,4);
-        for kk = 1:swarmModel.N
-            state(kk,:) = swarmState.x(4*(kk-1)+1:4*(kk-1)+4);
-        end
-        
-        infoSurfaceForAssignment = swarmWorld.mutualInfoSurface;
-        
+        bundleSteps = initialNodes;        
+        infoSurfaceForAssignment = swarmWorld.mutualInfoSurface;        
         terminateBundle = 0;
         % build the bundle
         for p = 1:q
@@ -435,14 +427,20 @@ elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
                     % go through all of connected targetNodes
                     for jj = 1:length(targetNodes)
                         if adjacencyMatrix(kk,jj) == 1 % if these two edges are connected
-                            [temp1,temp2] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(targetNodes(jj),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); % maybe should also return the ending state
+                            [temp1,temp2,~,path] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(targetNodes(jj),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); % maybe should also return the ending state
+                            %[temp1,temp2] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(targetNodes(jj),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); % maybe should also return the ending state                            
                             utilityMatrix(kk,jj) = temp1;
-                            terminalState{kk,jj} = temp2;
+                            terminalState{kk,jj} = temp2;                            
                         else
                             utilityMatrix(kk,jj) = -1e5; % if not connected, then the utitily is -10
+                            path = [];
                         end
+                        swarmWorld.pathHistory{kk,p,jj} = path;
                     end
                 end
+                
+                swarmWorld.initialNodes{p} = initialNodes;
+                swarmWorld.targetNodes{p} = targetNodes;
                 
                 % Hungarian
                 assignmentIndex = munkres(-utilityMatrix);
@@ -494,6 +492,7 @@ elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
                 end
             end
         end
+        
         %             disp('bundle built')
         %             toc;
         swarmState.wptList = bundleSteps(:,2:end);
