@@ -22,8 +22,9 @@ enum class COMMANDITEM : uint8_t{
     CI_ACT_GOTO = 11,
     CI_ACT_MISSIONCOMMAND = 12,
     CI_ACT_MOTORTEST = 13,
-    CI_UNKNOWN = 14,
-    COMMANDITEMEND = 15
+    CI_ACT_TARGET = 14,
+    CI_UNKNOWN = 15,
+    COMMANDITEMEND = 16
 };
 
 inline std::string CommandItemToString(const COMMANDITEM &commandItemType) {

@@ -51,7 +51,9 @@ SOURCES += module_vehicle_ardupilot.cpp \
     ardupilot_states/abstract_root_state.cpp \
     ardupilot_states/state_flight_guided_goto.cpp \
     ardupilot_states/state_flight_guided_queue.cpp \
-    ardupilot_states/state_flight_guided_idle.cpp
+    ardupilot_states/state_flight_guided_idle.cpp \
+    ardupilot_states/state_flight_guided_target.cpp \
+    guided_timeout_controller.cpp
 
 HEADERS += module_vehicle_ardupilot.h\
         module_vehicle_ardupilot_global.h \
@@ -91,7 +93,9 @@ HEADERS += module_vehicle_ardupilot.h\
     ardupilot_states/abstract_root_state.h \
     ardupilot_states/state_flight_guided_goto.h \
     ardupilot_states/state_flight_guided_queue.h \
-    ardupilot_states/state_flight_guided_idle.h
+    ardupilot_states/state_flight_guided_idle.h \
+    ardupilot_states/state_flight_guided_target.h \
+    guided_timeout_controller.h
 
 
 INCLUDEPATH += $$PWD/../

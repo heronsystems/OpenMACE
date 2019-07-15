@@ -20,22 +20,13 @@
 
 namespace ardupilot{
 
-MACE_CLASS_FORWARD(GuidedTimeoutController);
-
-class ArdupilotTimeout_Interface
-{
-public:
-    virtual void cbiArdupilotTimeout_TargetLocal(const TargetItem::CartesianDynamicTarget &target) = 0;
-    virtual void cbiArdupilotTimeout_TargetGlobal(const TargetItem::GeodeticDynamicTarget &target) = 0;
-};
-
 namespace state{
 
 class State_FlightGuided_GoTo;
 class State_FlightGuided_Idle;
 class State_FlightGuided_Queue;
 
-class State_FlightGuided : public AbstractStateArdupilot, public ArdupilotTimeout_Interface
+class State_FlightGuided : public AbstractStateArdupilot
 {
 public:
     State_FlightGuided();
@@ -67,8 +58,6 @@ private:
     void announceTargetState(const TargetItem::CartesianDynamicTarget &target, const double &targetDistance);
 
 private:
-
-    GuidedTimeoutController* guidedTimeout;
 
     TargetItem::DynamicMissionQueue* currentQueue;
 
@@ -119,110 +108,6 @@ public:
 
 } //end of namespace state
 } //end of namespace arudpilot
-
-#include "common/thread_manager.h"
-
-namespace ardupilot{
-
-class GuidedTimeoutController : public Thread
-{
-public:
-    GuidedTimeoutController(ArdupilotTimeout_Interface* callback, const unsigned int &timeout):
-        currentTarget(nullptr)
-    {
-        this->m_CB = callback;
-        this->timeout = timeout;
-    }
-
-    ~GuidedTimeoutController() {
-        std::cout << "Destructor on guided timeout controller" << std::endl;
-        mToExit = true;
-    }
-
-    void start() override
-    {
-        this->m_Timeout.start();
-        Thread::start();
-    }
-
-    void run()
-    {
-        while(true)
-        {
-            if(mToExit == true) {
-                clearPendingTasks();
-                m_Timeout.stop();
-                break;
-            }
-
-            this->RunPendingTasks();
-
-            //The current state we can find out how much time has passed.
-            //If one of the lambda expressions has fired the clock should
-            //be reset right at the end, thus making this value small and
-            //improbable the next function will fire
-            double timeElapsed = m_Timeout.elapsedMilliseconds();
-
-            if(timeElapsed >= timeout)
-            {
-                //For the moment we are removing the callback timeout
-                if((currentTarget != nullptr) && (m_CB != nullptr))
-                    m_CB->cbiArdupilotTimeout_TargetLocal(*currentTarget);
-                m_Timeout.reset();
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(timeout/2));
-        }
-    }
-
-    void updateTarget(const TargetItem::CartesianDynamicTarget &target)
-    {
-        m_LambdasToRun.push_back([this, target]{
-            currentTarget = new TargetItem::CartesianDynamicTarget(target);
-            //reset the timeout and send this new command
-        });
-    }
-
-    void clearTarget()
-    {
-        delete currentTarget;
-        currentTarget = nullptr;
-    }
-
-    void setCallbackFunction(ArdupilotTimeout_Interface* callback)
-    {
-        m_CB = callback;
-    }
-
-protected:
-    ArdupilotTimeout_Interface* m_CB;
-
-private:
-    Timer m_Timeout;
-    unsigned int timeout;
-
-protected:
-    TargetItem::CartesianDynamicTarget* currentTarget;
-
-protected:
-    std::list<std::function<void()>> m_LambdasToRun;
-
-    void clearPendingTasks()
-    {
-        m_LambdasToRun.clear();
-    }
-
-    void RunPendingTasks() {
-        while(m_LambdasToRun.size() > 0) {
-            auto lambda = m_LambdasToRun.front();
-            m_LambdasToRun.pop_front();
-            lambda();
-        }
-    }
-
-};
-
-} //end of namespace ardupilot
 
 
 #endif // STATE_FLIGHT_GUIDED_H
