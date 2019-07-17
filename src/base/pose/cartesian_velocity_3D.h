@@ -15,7 +15,7 @@ class CartesianVelocity_3D: public AbstractVelocity<CartesianVelocity_3D, misc::
 {
 public:
     CartesianVelocity_3D():
-        AbstractVelocity(AbstractVelocity::VelocityType::CARTESIAN, CoordinateFrame::CF_LOCAL_ENU)
+        AbstractVelocity(AbstractVelocity::VelocityType::CARTESIAN, CoordinateFrameTypes::CF_LOCAL_ENU)
     {
 
     }
@@ -29,9 +29,9 @@ public:
     }
 
     CartesianVelocity_3D(const double x, const double &y, const double &z):
-        AbstractVelocity(AbstractVelocity::VelocityType::CARTESIAN, CoordinateFrame::CF_LOCAL_ENU)
+        AbstractVelocity(AbstractVelocity::VelocityType::CARTESIAN, CoordinateFrameTypes::CF_LOCAL_ENU)
     {
-        this->data.setData(x,y,z);
+        this->data.setData_2D(x,y,z);
     }
 
     State* getStateClone() const override
@@ -47,7 +47,7 @@ public:
 public:
     void updateVelocity(const double &xVel, const double &yVel, const double &zVel)
     {
-        this->data.setData(xVel,yVel,zVel);
+        this->data.setData_2D(xVel,yVel,zVel);
     }
 
     void setXVelocity(const double &xVel)

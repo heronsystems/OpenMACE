@@ -49,10 +49,6 @@ public:
 
     /** Implied through inheritance of AbstractPoint */
 public:
-    virtual bool is3D() const
-    {
-        return false;
-    }
 
     //!
     //! \brief getDataYFlag
@@ -79,14 +75,14 @@ public:
     //! \brief setData
     //! \param data2D
     //!
-    void setData(const Data2D &data2D);
+    void setData_2D(const Data2D &data2D);
 
     //!
     //! \brief setData
     //! \param x
     //! \param y
     //!
-    void setData(const double &x, const double &y);
+    void setData_2D(const double &x, const double &y);
 
     //!
     //! \brief setX

@@ -21,6 +21,15 @@ CF_GLOBAL_RELATIVE_ALT_INT, /* Global coordinate frame, WGS84 coordinate system,
 CF_GLOBAL_TERRAIN_ALT, /* Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees, second value / y: longitude in degrees, third value / z: positive altitude in meters with 0 being at ground level in terrain model. | */ \
 CF_GLOBAL_TERRAIN_ALT_INT /* Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model. | */
 
+#define ALTITUDE_FRAMES REF_ALT_UNKNOWN, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
+REF_ALT_MSL, /* positive altitude over mean sea level (MSL) | */ \
+REF_ALT_RELATIVE, /* positive altitude with 0 being at the altitude of the home location. | */ \
+REF_ALT_OFFSET, /* Offset to the current altitude. | */ \
+REF_ALT_TERRAIN /* positive altitude in meters with 0 being at ground level in terrain model. | */
+
+enum class AltitudeReferenceTypes: uint8_t{
+    ALTITUDE_FRAMES
+};
 
 enum class CartesianFrameTypes: uint8_t{
     LOCAL_FRAMES
@@ -30,7 +39,7 @@ enum class GeodeticFrameTypes : uint8_t{
     GLOBAL_FRAMES
 };
 
-enum class CoordinateFrame : uint8_t{
+enum class CoordinateFrameTypes : uint8_t{
     GLOBAL_FRAMES,
     LOCAL_FRAMES,
     CF_UNKNOWN
@@ -48,52 +57,52 @@ enum class CoordinateFrame : uint8_t{
 //    CF_UNKNOWN = 11
 };
 
-inline CoordinateFrame getCoordinateFrame(const CartesianFrameTypes &frame)
+inline CoordinateFrameTypes getCoordinateFrame(const CartesianFrameTypes &frame)
 {
     switch (frame) {
     case CartesianFrameTypes::CF_LOCAL_NED:
-        return CoordinateFrame::CF_LOCAL_NED;
+        return CoordinateFrameTypes::CF_LOCAL_NED;
         break;
     case CartesianFrameTypes::CF_LOCAL_ENU:
-        return CoordinateFrame::CF_LOCAL_ENU;
+        return CoordinateFrameTypes::CF_LOCAL_ENU;
         break;
     case CartesianFrameTypes::CF_LOCAL_OFFSET_NED:
-        return CoordinateFrame::CF_LOCAL_OFFSET_NED;
+        return CoordinateFrameTypes::CF_LOCAL_OFFSET_NED;
         break;
     case CartesianFrameTypes::CF_BODY_NED:
-        return CoordinateFrame::CF_BODY_NED;
+        return CoordinateFrameTypes::CF_BODY_NED;
         break;
     case CartesianFrameTypes::CF_BODY_OFFSET_NED:
-        return CoordinateFrame::CF_BODY_OFFSET_NED;
+        return CoordinateFrameTypes::CF_BODY_OFFSET_NED;
         break;
     default:
-        return CoordinateFrame::CF_LOCAL_ENU;
+        return CoordinateFrameTypes::CF_LOCAL_ENU;
         break;
     }
 }
 
-inline CoordinateFrame getCoordinateFrame(const GeodeticFrameTypes &frame)
+inline CoordinateFrameTypes getCoordinateFrame(const GeodeticFrameTypes &frame)
 {
-    CoordinateFrame currentFrameType = CoordinateFrame::CF_UNKNOWN;
+    CoordinateFrameTypes currentFrameType = CoordinateFrameTypes::CF_UNKNOWN;
 
     switch (frame) {
     case GeodeticFrameTypes::CF_GLOBAL_UNKNOWN:
-        currentFrameType = CoordinateFrame::CF_GLOBAL_UNKNOWN;
+        currentFrameType = CoordinateFrameTypes::CF_GLOBAL_UNKNOWN;
         break;
     case GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT:
-        currentFrameType = CoordinateFrame::CF_GLOBAL_RELATIVE_ALT;
+        currentFrameType = CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT;
         break;
     case GeodeticFrameTypes::CF_GLOBAL_INT:
-        currentFrameType = CoordinateFrame::CF_GLOBAL_INT;
+        currentFrameType = CoordinateFrameTypes::CF_GLOBAL_INT;
         break;
     case GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
-        currentFrameType = CoordinateFrame::CF_GLOBAL_RELATIVE_ALT_INT;
+        currentFrameType = CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT;
         break;
     case GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT:
-        currentFrameType = CoordinateFrame::CF_GLOBAL_TERRAIN_ALT;
+        currentFrameType = CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT;
         break;
     case GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT:
-        currentFrameType = CoordinateFrame::CF_GLOBAL_TERRAIN_ALT_INT;
+        currentFrameType = CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT;
         break;
     default:
         break;
@@ -102,58 +111,58 @@ inline CoordinateFrame getCoordinateFrame(const GeodeticFrameTypes &frame)
     return currentFrameType;
 }
 
-inline std::string CoordinateFrameToString(const CoordinateFrame &frame) {
+inline std::string CoordinateFrameToString(const CoordinateFrameTypes &frame) {
     switch (frame) {
-    case CoordinateFrame::CF_GLOBAL_UNKNOWN:
+    case CoordinateFrameTypes::CF_GLOBAL_UNKNOWN:
         return "CF_GLOBAL";
-    case CoordinateFrame::CF_LOCAL_NED:
+    case CoordinateFrameTypes::CF_LOCAL_NED:
         return "CF_LOCAL_NED";
-    case CoordinateFrame::CF_GLOBAL_RELATIVE_ALT:
+    case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT:
         return "CF_GLOBAL_RELATIVE_ALT";
-    case CoordinateFrame::CF_LOCAL_ENU:
+    case CoordinateFrameTypes::CF_LOCAL_ENU:
         return "CF_LOCAL_ENU";
-    case CoordinateFrame::CF_GLOBAL_INT:
+    case CoordinateFrameTypes::CF_GLOBAL_INT:
         return "CF_GLOBAL_INT";
-    case CoordinateFrame::CF_GLOBAL_RELATIVE_ALT_INT:
+    case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
         return "CF_GLOBAL_RELATIVE_ALT_INT";
-    case CoordinateFrame::CF_LOCAL_OFFSET_NED:
+    case CoordinateFrameTypes::CF_LOCAL_OFFSET_NED:
         return "CF_LOCAL_OFFSET_NED";
-    case CoordinateFrame::CF_BODY_NED:
+    case CoordinateFrameTypes::CF_BODY_NED:
         return "CF_BODY_NED";
-    case CoordinateFrame::CF_BODY_OFFSET_NED:
+    case CoordinateFrameTypes::CF_BODY_OFFSET_NED:
         return "CF_BODY_OFFSET_NED";
-    case CoordinateFrame::CF_GLOBAL_TERRAIN_ALT:
+    case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT:
         return "CF_GLOBAL_TERRAIN_ALT";
-    case CoordinateFrame::CF_GLOBAL_TERRAIN_ALT_INT:
+    case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT:
         return "CF_GLOBAL_TERRAIN_ALT_INT";
     default:
         throw std::runtime_error("Unknown coordinate system seen");
     }
 }
 
-inline CoordinateFrame CoordinateFrameFromString(const std::string &str) {
+inline CoordinateFrameTypes CoordinateFrameFromString(const std::string &str) {
     if(str == "CF_GLOBAL")
-        return CoordinateFrame::CF_GLOBAL_UNKNOWN;
+        return CoordinateFrameTypes::CF_GLOBAL_UNKNOWN;
     if(str == "CF_LOCAL_NED")
-        return CoordinateFrame::CF_LOCAL_NED;
+        return CoordinateFrameTypes::CF_LOCAL_NED;
     if(str == "CF_GLOBAL_RELATIVE_ALT")
-        return CoordinateFrame::CF_GLOBAL_RELATIVE_ALT;
+        return CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT;
     if(str == "CF_LOCAL_ENU")
-        return CoordinateFrame::CF_LOCAL_ENU;
+        return CoordinateFrameTypes::CF_LOCAL_ENU;
     if(str == "CF_GLOBAL_INT")
-        return CoordinateFrame::CF_GLOBAL_INT;
+        return CoordinateFrameTypes::CF_GLOBAL_INT;
     if(str == "CF_GLOBAL_RELATIVE_ALT_INT")
-        return CoordinateFrame::CF_GLOBAL_RELATIVE_ALT_INT;
+        return CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT;
     if(str == "CF_LOCAL_OFFSET_NED")
-        return CoordinateFrame::CF_LOCAL_OFFSET_NED;
+        return CoordinateFrameTypes::CF_LOCAL_OFFSET_NED;
     if(str == "CF_BODY_NED")
-        return CoordinateFrame::CF_BODY_NED;
+        return CoordinateFrameTypes::CF_BODY_NED;
     if(str == "CF_BODY_OFFSET_NED")
-        return CoordinateFrame::CF_BODY_OFFSET_NED;
+        return CoordinateFrameTypes::CF_BODY_OFFSET_NED;
     if(str == "CF_GLOBAL_TERRAIN_ALT")
-        return CoordinateFrame::CF_GLOBAL_TERRAIN_ALT;
+        return CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT;
     if(str == "CF_GLOBAL_TERRAIN_ALT_INT")
-        return CoordinateFrame::CF_GLOBAL_TERRAIN_ALT_INT;
+        return CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT;
     throw std::runtime_error("Unknown coordinate system seen");
 }
 

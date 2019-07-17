@@ -20,7 +20,7 @@ public:
 public:
     virtual ~AbstractVelocity() = default;
 
-    AbstractVelocity(const VelocityType &desiredType, const CoordinateFrame &desiredFrame)
+    AbstractVelocity(const VelocityType &desiredType, const CoordinateFrameTypes &desiredFrame)
     {
         this->type = desiredType;
         this->frame = desiredFrame;
@@ -52,7 +52,7 @@ public:
     //! \brief getCoordinateFrame
     //! \return
     //!
-    CoordinateFrame getCoordinateFrame() const
+    CoordinateFrameTypes getCoordinateFrame() const
     {
         return frame;
     }
@@ -82,7 +82,7 @@ protected:
     //! \brief setCoordinateFrame
     //! \param desiredFrame
     //!
-    void setCoordinateFrame(const CoordinateFrame &desiredFrame)
+    void setCoordinateFrame(const CoordinateFrameTypes &desiredFrame)
     {
         this->frame = desiredFrame;
     }
@@ -197,7 +197,7 @@ public:
     }
 
 protected:
-    CoordinateFrame frame = CoordinateFrame::CF_UNKNOWN;
+    CoordinateFrameTypes frame = CoordinateFrameTypes::CF_UNKNOWN;
     VelocityType type = VelocityType::UNKNOWN;
 
     DIM data;

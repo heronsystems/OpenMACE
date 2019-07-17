@@ -21,24 +21,24 @@ Data1D::~Data1D()
 
 Data1D::Data1D(const Data1D &copy)
 {
-    this->x = copy.x;
-    this->dataXFlag = copy.dataXFlag;
+    this->z = copy.z;
+    this->dataZFlag = copy.dataZFlag;
 }
 
 Data1D::Data1D(const double &z)
 {
-    this->setData(z);
+    this->setData_1D(z);
 }
 
-void Data1D::setData(const Data1D &data1D)
+void Data1D::setData_1D(const Data1D &data1D)
 {
-    this->x = data1D.x;
-    this->dataXFlag = data1D.dataXFlag;
+    this->z = data1D.z;
+    this->dataZFlag = data1D.dataZFlag;
 }
 
-void Data1D::setData(const double &x)
+void Data1D::setData_1D(const double &z)
 {
-    this->setX(x);
+    this->setZ(z);
 }
 
 } //end of namespace misc

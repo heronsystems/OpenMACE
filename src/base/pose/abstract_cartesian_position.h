@@ -1,5 +1,6 @@
 #ifndef ABSTRACT_CARTESIAN_POSITION_H
 #define ABSTRACT_CARTESIAN_POSITION_H
+
 #include <sstream>
 
 #include <Eigen/Core>
@@ -19,7 +20,7 @@ class Abstract_CartesianPosition : public Position, public PositionInterface<Abs
 public:
     Abstract_CartesianPosition(const CartesianFrameTypes &explicitFrame, const std::string &posName = "Position Object");
 
-    Abstract_CartesianPosition(const CartesianFrameTypes &explicitFrame, const std::string &posName = "Position Object", const double &x, const double &y);
+    Abstract_CartesianPosition(const CartesianFrameTypes &explicitFrame, const double &x, const double &y, const std::string &posName = "Position Object");
 
     Abstract_CartesianPosition(const Abstract_CartesianPosition &copy);
 
@@ -28,14 +29,14 @@ public:
 public:
     PositionType getPositionType() const override;
 
-    CoordinateFrame getExplicitCoordinateFrame() const override;
+    CoordinateFrameTypes getExplicitCoordinateFrame() const override;
 
     /** Assignment Operators */
 public:
     void operator = (const Abstract_CartesianPosition &rhs)
     {
         Position::operator =(rhs);
-        this->explicitFrameType = rhs.explicitFrameType;
+        this->cartesianFrameType = rhs.cartesianFrameType;
     }
 
     /** Relational Operators */
@@ -50,7 +51,7 @@ public:
         if(!Position::operator ==(rhs))
             return false;
 
-        if(this->explicitFrameType != rhs.explicitFrameType){
+        if(this->cartesianFrameType != rhs.cartesianFrameType){
             return false;
         }
         return true;
@@ -66,7 +67,7 @@ public:
     }
 
 protected:
-    CartesianFrameTypes explicitFrameType = CartesianFrameTypes::CF_LOCAL_UNKNOWN;
+    CartesianFrameTypes cartesianFrameType = CartesianFrameTypes::CF_LOCAL_UNKNOWN;
 };
 
 } //end of namespace pose

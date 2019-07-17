@@ -24,10 +24,10 @@ Data2D::Data2D(const Data2D &copy)
 
 Data2D::Data2D(const double &x, const double &y)
 {
-    this->setData(x,y);
+    this->setData_2D(x,y);
 }
 
-void Data2D::setData(const Data2D &data2D)
+void Data2D::setData_2D(const Data2D &data2D)
 {
     this->x = data2D.x;
     this->dataXFlag = data2D.dataXFlag;
@@ -36,7 +36,7 @@ void Data2D::setData(const Data2D &data2D)
     this->dataYFlag = data2D.dataYFlag;
 }
 
-void Data2D::setData(const double &x, const double &y)
+void Data2D::setData_2D(const double &x, const double &y)
 {
     this->setX(x);
     this->setY(y);

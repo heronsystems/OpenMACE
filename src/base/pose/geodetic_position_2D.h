@@ -14,7 +14,7 @@ class GeodeticPosition_2D : public AbstractPosition<GeodeticPosition_2D, misc::D
 {
 public:
     GeodeticPosition_2D():
-        AbstractPosition(AbstractPosition::PositionType::GEODETIC, CoordinateFrame::CF_GLOBAL_RELATIVE_ALT)
+        AbstractPosition(AbstractPosition::PositionType::GEODETIC, CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT)
     {
 
     }
@@ -26,7 +26,7 @@ public:
     }
 
     GeodeticPosition_2D(const double latitude, const double &longitude):
-        AbstractPosition(AbstractPosition::PositionType::CARTESIAN, CoordinateFrame::CF_GLOBAL_RELATIVE_ALT)
+        AbstractPosition(AbstractPosition::PositionType::CARTESIAN, CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT)
     {
         this->data.setData(latitude,longitude);
     }

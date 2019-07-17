@@ -87,7 +87,7 @@ public:
 
     void getCorners(CartesianPosition_2D &topLeft, CartesianPosition_2D &bottomRight) const override;
 
-    mace::pose::CoordinateFrame getVertexCoordinateFrame() const override;
+    mace::pose::CoordinateFrameTypes getVertexCoordinateFrame() const override;
 
     void applyCoordinateShift(const double &distance, const double &bearing);
 

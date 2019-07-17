@@ -34,42 +34,25 @@ public:
     //! \param x
     //! \param y
     //!
-    Data1D(const double &x);
+    Data1D(const double &z);
 
 
     Data1D norm() const
     {
-        double length = sqrt(x*x);
+        double length = sqrt(z*z);
         if(fabs(length) < std::numeric_limits<double>::epsilon())
             return Data1D();
         else
-            return Data1D(x/length);
-    }
-
-    /** Implied through inheritance of AbstractPoint */
-public:
-    virtual bool is3D() const
-    {
-        return false;
-    }
-
-    virtual bool is2D() const
-    {
-        return false;
-    }
-
-    virtual bool is1D() const
-    {
-        return true;
+            return Data1D(z/length);
     }
 
     //!
     //! \brief getDataYFlag
     //! \return
     //!
-    bool getDataXFlag() const
+    bool getDataZFlag() const
     {
-        return this->dataXFlag;
+        return this->dataZFlag;
     }
 
     /** Common among all point classes */
@@ -79,23 +62,23 @@ public:
     //! \brief setData
     //! \param data1D
     //!
-    void setData(const Data1D &data1D);
+    void setData_1D(const Data1D &data1D);
 
     //!
     //! \brief setData
     //! \param x
     //! \param y
     //!
-    void setData(const double &x);
+    void setData_1D(const double &z);
 
     //!
     //! \brief setX
     //! \param posX
     //!
-    void setX(const double &posX)
+    void setZ(const double &posX)
     {
-        this->x = posX;
-        this->dataXFlag = true;
+        this->z = posX;
+        this->dataZFlag = true;
     }
 
     //!
@@ -104,7 +87,7 @@ public:
     //!
     double getZ() const
     {
-        return this->x;
+        return this->z;
     }
 
     /** Arithmetic Operators */
@@ -117,7 +100,7 @@ public:
     //!
     Data1D operator + (const Data1D &that) const
     {
-        double newZ = this->x + that.x;
+        double newZ = this->z + that.z;
         Data1D newPoint(newZ);
         return newPoint;
     }
@@ -129,26 +112,26 @@ public:
     //!
     Data1D operator - (const Data1D &that) const
     {
-        double newZ = this->x - that.x;
+        double newZ = this->z - that.z;
         Data1D newPoint(newZ);
         return newPoint;
     }
 
     Data1D operator * (const double &value) const
     {
-        Data1D newPoint(x*value);
+        Data1D newPoint(z*value);
         return newPoint;
     }
 
     Data1D operator / (const double &value) const
     {
-        Data1D newPoint(x/value);
+        Data1D newPoint(z/value);
         return newPoint;
     }
 
     double dot(const Data1D &that) const
     {
-        return x * that.x;
+        return z * that.z;
     }
 
     /** Relational Operators */
@@ -161,7 +144,7 @@ public:
     //!
     bool operator < (const Data1D &rhs) const
     {
-        if(this->x >= rhs.x)
+        if(this->z >= rhs.z)
             return false;
         return true;
     }
@@ -183,7 +166,7 @@ public:
     //!
     bool operator > (const Data1D &rhs) const
     {
-        if(this->x <= rhs.x)
+        if(this->z <= rhs.z)
             return false;
         return true;
     }
@@ -205,10 +188,10 @@ public:
     //!
     bool operator == (const Data1D &rhs) const
     {
-        if(fabs(this->x - rhs.x) > std::numeric_limits<double>::epsilon()){
+        if(fabs(this->z - rhs.z) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->dataXFlag != rhs.dataXFlag){
+        if(this->dataZFlag != rhs.dataZFlag){
             return false;
         }
         return true;
@@ -233,8 +216,8 @@ public:
     //!
     Data1D& operator = (const Data1D &rhs)
     {
-        this->x = rhs.x;
-        this->dataXFlag = rhs.dataXFlag;
+        this->z = rhs.z;
+        this->dataZFlag = rhs.dataZFlag;
         return *this;
     }
 
@@ -245,7 +228,7 @@ public:
     //!
     Data1D& operator += (const Data1D &rhs)
     {
-        this->x += rhs.x;
+        this->z += rhs.z;
         return *this;
     }
 
@@ -256,7 +239,7 @@ public:
     //!
     Data1D& operator -= (const Data1D &rhs)
     {
-        this->x -= rhs.x;
+        this->z -= rhs.z;
         return *this;
     }
 
@@ -264,14 +247,14 @@ public:
     /** Protected Members */
 protected:
     //!
-    //! \brief x
+    //! \brief z
     //!
-    double x = 0.0;
+    double z = 0.0;
 
     //!
-    //! \brief dataXFlag
+    //! \brief dataZFlag
     //!
-    bool dataXFlag = false;
+    bool dataZFlag = false;
 
 };
 

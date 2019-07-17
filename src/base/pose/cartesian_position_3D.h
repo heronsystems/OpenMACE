@@ -1,42 +1,42 @@
 #ifndef CARTESIAN_POSITION_3D_H
 #define CARTESIAN_POSITION_3D_H
 
-#include "base_position.h"
-#include "cartesian_position_2D.h"
 #include "base/state_space/state.h"
+#include "abstract_cartesian_position.h"
+#include "abstract_altitude.h"
 
 using namespace mace::math;
 
 namespace mace {
 namespace pose {
 
-class CartesianPosition_3D : public Abstract_CartesianPosition, public misc::Data3D,
+class CartesianPosition_3D : public Abstract_CartesianPosition, public Abstract_Altitude,
         public state_space::State
 {
 public:
     CartesianPosition_3D(const std::string &pointName):
-        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Data3D(), State()
+        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Abstract_Altitude(), State()
     {
-
+        this->dimension = 3;
     }
 
     CartesianPosition_3D(const std::string &pointName = "Position Point", const double &x = 0.0, const double &y = 0.0, const double &z = 0.0):
-        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Data3D(x,y,z), State()
+        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, x, y, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE,z), State()
     {
-
+        this->dimension = 3;
     }
 
     CartesianPosition_3D(const CartesianPosition_3D &copy):
-        Abstract_CartesianPosition(copy), Data3D(copy), state_space::State(copy)
+        Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy)
     {
 
     }
 
-    CartesianPosition_3D(const CartesianPosition_2D &copy):
-        Abstract_CartesianPosition(copy), Data3D(copy), state_space::State(copy)
-    {
+//    CartesianPosition_3D(const CartesianPosition_2D &copy):
+//        Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy)
+//    {
 
-    }
+//    }
 
     ~CartesianPosition_3D() override = default;
 
@@ -54,7 +54,8 @@ public:
 public:
     void updatePosition(const double &x, const double &y, const double &z)
     {
-        this->setData(x,y,z);
+        this->setData_2D(x,y);
+        this->setData_1D(z);
     }
 
     void setXPosition(const double &x)
@@ -113,6 +114,38 @@ public:
     double deltaY(const CartesianPosition_3D &that) const;
     double deltaZ(const CartesianPosition_3D &that) const;
 
+    /** Interface imposed via AltitudeInterface */
+
+    //!
+    //! \brief hasAltitudeBeenSet
+    //! \return
+    //!
+    virtual bool hasAltitudeBeenSet() const override;
+
+
+    //!
+    //! \brief elevationFromOrigin
+    //! \return
+    //!
+    virtual double elevationFromOrigin() const override;
+
+
+    //!
+    //! \brief deltaAltitude
+    //! \param pos
+    //! \return
+    //!
+    virtual double deltaAltitude(const Abstract_Altitude* pos) const override;
+
+
+    //!
+    //! \brief elevationAngleTo
+    //! \param position
+    //! \return
+    //!
+    virtual double elevationAngleTo(const Abstract_CartesianPosition* position) const;
+
+
 
     /** Interface imposed via state_space::State */
 public:
@@ -143,7 +176,7 @@ public:
 public:
     bool hasBeenSet() const override
     {
-        return hasXBeenSet() || hasYBeenSet();
+        return hasXBeenSet() || hasYBeenSet() || hasZBeenSet();
     }
 
     //!
@@ -164,6 +197,8 @@ public:
     //! \return
     //!
     double distanceBetween2D(const Abstract_CartesianPosition* pos) const override;
+
+    double distanceBetween3D(const Abstract_CartesianPosition* pos) const;
 
     //!
     //! \brief distanceTo
@@ -204,8 +239,11 @@ public:
 
     void applyPositionalShiftFromPolar(const double &distance, const double &bearing) override;
 
+    void applyPositionalShiftFromPolar(const double &distance, const double &bearing, const double &elevation);
+
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
 
+    void applyPositionalShiftFromCompass(const double &distance, const double &bearing, const double &elevation);
 
     /** Arithmetic Operators */
 public:

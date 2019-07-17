@@ -28,40 +28,65 @@ double CartesianPosition_3D::polarBearingFromOrigin() const
     return atan2(this->getYPosition(),this->getXPosition());
 }
 
+bool CartesianPosition_3D::hasAltitudeBeenSet() const
+{
+    return this->hasZBeenSet();
+}
+
 double CartesianPosition_3D::elevationFromOrigin() const
 {
     CartesianPosition_3D origin;
-    double distanceXY = distanceBetween2D(origin);
+    double distanceXY = distanceBetween2D(&origin);
     return atan2(this->getZPosition(),distanceXY); //we should check here for the discontinuity if they are both 0
 }
 
-double CartesianPosition_3D::elevationAngleTo(const CartesianPosition_3D &position) const
+double CartesianPosition_3D::elevationAngleTo(const Abstract_CartesianPosition* pos) const
 {
-    double distance2D = distanceBetween2D(position);
-    return atan2(deltaAltitude(position),distance2D);
+    double elevationAngle = 0.0;
+
+    if(pos->is3D())
+    {
+        const CartesianPosition_3D* tmpPos = pos->positionAs<CartesianPosition_3D>();
+        double distance2D = distanceBetween2D(pos);
+        elevationAngle = atan2(deltaAltitude(tmpPos),distance2D);
+    }
+    return elevationAngle;
 }
 
-double CartesianPosition_3D::deltaAltitude(const CartesianPosition_3D &pos) const
+double CartesianPosition_3D::deltaAltitude(const Abstract_Altitude* pos) const
 {
-    return this->deltaZ(pos);
+    return this->getZPosition() - pos->getZ();
 }
 
 
-double CartesianPosition_3D::distanceBetween2D(const CartesianPosition_3D &pos) const
+double CartesianPosition_3D::distanceBetween2D(const Abstract_CartesianPosition* pos) const
 {
-    double deltaX = this->deltaX(pos);
-    double deltaY = this->deltaY(pos);
+    const CartesianPosition_3D* tmpPos = pos->positionAs<CartesianPosition_3D>();
+    double deltaX = this->getXPosition() - tmpPos->getXPosition();
+    double deltaY = this->getYPosition() - tmpPos->getYPosition();
+
     double distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
     return distance;
 }
 
-double CartesianPosition_3D::distanceBetween3D(const CartesianPosition_3D &pos) const
+double CartesianPosition_3D::distanceBetween3D(const Abstract_CartesianPosition* pos) const
 {
-    return sqrt(pow(this->distanceBetween2D(pos),2) + pow(this->deltaAltitude(pos),2));
+    double distance = 0.0;
+    if(pos->is3D())
+    {
+        const CartesianPosition_3D* tmpPos = pos->positionAs<CartesianPosition_3D>();
+        distance = sqrt(pow(this->distanceBetween2D(tmpPos),2) + pow(this->deltaAltitude(tmpPos),2));
+    }
+    else
+    {
+        distance = this->distanceBetween2D(pos);
+    }
+
+    return distance;
 }
 
 // ** DEPRECATED ** //
-double CartesianPosition_3D::distanceTo(const CartesianPosition_3D &pos) const
+double CartesianPosition_3D::distanceTo(const Abstract_CartesianPosition* pos) const
 {
     return this->distanceBetween2D(pos);
 }
@@ -71,9 +96,11 @@ double CartesianPosition_3D::distanceTo(const CartesianPosition_3D &pos) const
 //! \param pos
 //! \return polar
 //!
-double CartesianPosition_3D::polarBearingTo(const CartesianPosition_3D &pos) const
+double CartesianPosition_3D::polarBearingTo(const Abstract_CartesianPosition* pos) const
 {
-    return atan2(deltaY(pos),deltaX(pos));
+    double deltaY = this->getYPosition() - pos->getY();
+    double deltaX = this->getXPosition() - pos->getX();
+    return atan2(deltaY,deltaX);
 }
 
 //!
@@ -81,25 +108,25 @@ double CartesianPosition_3D::polarBearingTo(const CartesianPosition_3D &pos) con
 //! \param pos
 //! \return polar
 //!
-double CartesianPosition_3D::compassBearingTo(const CartesianPosition_3D &pos) const
+double CartesianPosition_3D::compassBearingTo(const Abstract_CartesianPosition* pos) const
 {
-    return polarToCompassBearing(polarBearingTo(pos));
+    return math::polarToCompassBearing(polarBearingTo(pos));
 }
 
 //!
-//! \brief CartesianPosition_3D::newPositionFromPolar
+//! \brief CartesianPosition_2D::newPositionFromPolar
 //! \param distance
 //! \param bearing
 //! \return
 //!
-CartesianPosition_3D CartesianPosition_3D::newPositionFromPolar(const double &distance, const double &bearing) const
+void CartesianPosition_3D::newPositionFromPolar(Abstract_CartesianPosition *newObject, const double &distance, const double &bearing) const
 {
-    CartesianPosition_3D newPos;
-
-    newPos.setXPosition(this->getXPosition() + cos(bearing) * distance);
-    newPos.setYPosition(this->getYPosition() + sin(bearing) * distance);
-    newPos.setZPosition(this->getZPosition());
-    return newPos;
+    if(newObject->isGreaterThan1D())
+    {
+        CartesianPosition_3D* tmpPos = newObject->positionAs<CartesianPosition_3D>();
+        tmpPos->setXPosition(this->getXPosition() + cos(bearing) * distance);
+        tmpPos->setYPosition(this->getYPosition() + sin(bearing) * distance);
+    }
 }
 
 
@@ -109,9 +136,9 @@ CartesianPosition_3D CartesianPosition_3D::newPositionFromPolar(const double &di
 //! \param bearing
 //! \return
 //!
-CartesianPosition_3D CartesianPosition_3D::newPositionFromCompass(const double &distance, const double &bearing) const
+void CartesianPosition_3D::newPositionFromCompass(Abstract_CartesianPosition* newObject, const double &distance, const double &bearing) const
 {
-    return newPositionFromPolar(distance,compassToPolarBearing(bearing));
+    return newPositionFromPolar(newObject, distance,compassToPolarBearing(bearing));
 }
 
 void CartesianPosition_3D::applyPositionalShiftFromPolar(const double &distance, const double &bearing)

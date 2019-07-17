@@ -7,8 +7,8 @@
 namespace mace{
 namespace pose{
 
-template <typename T>
-class PositionInterface : public T
+template <typename T, class DATA>
+class PositionInterface : public DATA
 {
 public:
 
@@ -16,9 +16,16 @@ public:
 
     virtual ~PositionInterface() = default;
 
-    template <typename NEWT>
-    PositionInterface(const PositionInterface<NEWT> &ref):
-        T(ref)
+    template <class NEWDATA>
+    PositionInterface(const PositionInterface<T, NEWDATA> &ref):
+        DATA(ref)
+    {
+
+    }
+
+    template<typename ... Arg>
+    PositionInterface(const Arg ... arg):
+        DATA(arg ...)
     {
 
     }
@@ -38,15 +45,6 @@ public:
     //! \return
     //!
     virtual double polarBearingFromOrigin() const = 0;
-
-    //!
-    //! \brief elevationFromOrigin
-    //! \return
-    //!
-    virtual double elevationFromOrigin() const
-    {
-        return 0.0;
-    }
 
     //!
     //! \brief distanceBetween2D
@@ -99,13 +97,13 @@ public:
 public:
     PositionInterface& operator = (const PositionInterface &rhs)
     {
-        T::operator=(rhs);
+        DATA::operator=(rhs);
         return *this;
     }
 
     bool operator == (const PositionInterface &rhs) const
     {
-        if(!T::operator ==(rhs))
+        if(!DATA::operator ==(rhs))
             return false;
         return true;
     }

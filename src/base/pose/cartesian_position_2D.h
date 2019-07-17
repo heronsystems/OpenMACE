@@ -14,28 +14,28 @@ public:
     CartesianPosition_2D(const std::string &pointName):
         Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State()
     {
-
+        this->dimension = 2;
     }
 
     CartesianPosition_2D(const std::string &pointName = "Position Point", const double &x = 0.0, const double &y = 0.0):
-        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Data2D(x,y), State()
+        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State()
     {
-
+        this->dimension = 2;
     }
 
     ~CartesianPosition_2D() override = default;
 
     CartesianPosition_2D(const CartesianPosition_2D &copy):
-        Abstract_CartesianPosition(copy), Data2D(copy), state_space::State(copy)
+        Abstract_CartesianPosition(copy), state_space::State(copy)
     {
 
     }
 
-    CartesianPosition_2D(const CartesianPosition_3D &copy):
-        Abstract_CartesianPosition(copy), Data2D(copy), state_space::State(copy)
-    {
+//    CartesianPosition_2D(const CartesianPosition_3D &copy):
+//        Abstract_CartesianPosition(copy), Data2D(copy), state_space::State(copy)
+//    {
 
-    }
+//    }
 
     std::string printInfo() const override
     {
@@ -52,7 +52,7 @@ public:
 public:
     void updatePosition(const double &x, const double &y)
     {
-        this->setData(x,y);
+        this->setData_2D(x,y);
     }
 
     void setXPosition(const double &x)

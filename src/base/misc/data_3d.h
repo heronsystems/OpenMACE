@@ -76,7 +76,7 @@ public:
     /** Common functions among all Point3D objects */
 public:
 
-    void setData(const double &compX, const double &compY, const double &compZ)
+    void setData_2D(const double &compX, const double &compY, const double &compZ)
     {
         this->setX(compX);
         this->setY(compY);

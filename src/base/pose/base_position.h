@@ -33,7 +33,7 @@ public:
 
     virtual PositionType getPositionType() const = 0;
 
-    virtual CoordinateFrame getExplicitCoordinateFrame() const = 0;
+    virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
 
 public:
 

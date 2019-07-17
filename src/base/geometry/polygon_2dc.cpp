@@ -186,9 +186,9 @@ void Polygon_Cartesian::getCorners(CartesianPosition_2D &topLeft, CartesianPosit
     bottomRight = getBottomRight();
 }
 
-CoordinateFrame Polygon_Cartesian::getVertexCoordinateFrame() const
+CoordinateFrameTypes Polygon_Cartesian::getVertexCoordinateFrame() const
 {
-    return CoordinateFrame::CF_LOCAL_ENU;
+    return CoordinateFrameTypes::CF_LOCAL_ENU;
 }
 
 void Polygon_Cartesian::applyCoordinateShift(const double &distance, const double &bearing)

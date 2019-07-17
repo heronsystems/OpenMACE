@@ -28,7 +28,7 @@ public:
 
     ~DynamicTarget() = default;
 
-    CoordinateFrame getPositionalCoordinateFrame() const
+    CoordinateFrameTypes getPositionalCoordinateFrame() const
     {
         return this->position.getCoordinateFrame();
     }
