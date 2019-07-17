@@ -16,7 +16,7 @@ public:
 
     Polygon_Cartesian(const std::string &descriptor = "2D Cartesian Polygon");
 
-    Polygon_Cartesian(const std::vector<Abstract_CartesianPosition> &vector, const std::string &descriptor = "2D Cartesian Polygon");
+    Polygon_Cartesian(const std::vector<CartesianPosition_2D> &vector, const std::string &descriptor = "2D Cartesian Polygon");
 
     Polygon_Cartesian(const Polygon_Cartesian &copy);
 

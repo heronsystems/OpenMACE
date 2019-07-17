@@ -11,11 +11,17 @@ Position::Position(const std::string &posName):
 Position::Position(const Position &copy)
 {
     this->name = copy.name;
+    this->dimension = copy.dimension;
 }
 
 Position::~Position()
 {
 
+}
+
+void Position::updatePositionName(const std::string &stringName)
+{
+    this->name = stringName;
 }
 
 std::string Position::getName() const

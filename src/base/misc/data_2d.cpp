@@ -3,7 +3,8 @@
 namespace mace {
 namespace misc {
 
-Data2D::Data2D()
+Data2D::Data2D():
+    Eigen::Vector2d()
 {
 
 }

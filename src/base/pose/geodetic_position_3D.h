@@ -1,203 +1,182 @@
 #ifndef GEODETIC_POSITION_3D_H
 #define GEODETIC_POSITION_3D_H
 
-#include "base_position.h"
 #include "base/state_space/state.h"
-
-using namespace mace::math;
+#include "abstract_geodetic_position.h"
+#include "abstract_altitude.h"
 
 namespace mace {
 namespace pose {
 
-class GeodeticPosition_3D : public AbstractPosition<GeodeticPosition_3D, misc::Data3D>, public GeodeticPosition,
-        public state_space::State
+class GeodeticPosition_3D : public Abstract_GeodeticPosition, public Abstract_Altitude,
+    public state_space::State
 {
 public:
-    GeodeticPosition_3D():
-        AbstractPosition(AbstractPosition::PositionType::GEODETIC, CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT)
-    {
 
+    GeodeticPosition_3D(const GeodeticFrameTypes &frameType = GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
+                        const double &latitude = 0.0, const double &longitude = 0.0,
+                        const AltitudeReferenceTypes &altitudeType = AltitudeReferenceTypes::REF_ALT_UNKNOWN, const double &altitude = 0.0,
+                        const std::string &pointName = "Geodetic Point");
+
+    GeodeticPosition_3D(const std::string &pointName,
+                        const double &latitude, const double &longitude, const double &altitude);
+
+    GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude);
+
+    //!
+    //! \brief GeodeticPosition_2D
+    //! \param copy
+    //!
+    GeodeticPosition_3D(const GeodeticPosition_3D &copy);
+
+    GeodeticPosition_3D(const GeodeticPosition_2D &copy);
+
+    ~GeodeticPosition_3D() override = default;
+
+    //!
+    //! \brief printInfo
+    //! \return
+    //!
+    std::string printInfo() const override
+    {
+        std::string rtn = "Geodetic Position 3D: " + std::to_string((getLatitude())) + ", " + std::to_string(getLongitude()) + ", " + std::to_string(getAltitude()) + ".";
+        return rtn;
     }
 
-    GeodeticPosition_3D(const GeodeticPosition_3D &copy):
-        AbstractPosition(copy), state_space::State(copy)
-    {
+    bool areEquivalentFrames(const GeodeticPosition_3D &obj) const;
 
+    //!
+    //! \brief updatePosition
+    //! \param latitude
+    //! \param longitude
+    //!
+    void updatePosition(const double &latitude, const double &longitude, const double &altitude)
+    {
+        this->updateTranslationalComponent(latitude,longitude);
+        this->updateElevationComponent(altitude);
     }
 
-    GeodeticPosition_3D(const double latitude, const double &longitude, const double &altitude):
-        AbstractPosition(AbstractPosition::PositionType::CARTESIAN, CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT)
+    void updateTranslationalComponent(const double &latitude, const double &longitude)
     {
-        this->data.setData(latitude,longitude,altitude);
+        this->setData_2D(latitude,longitude);
     }
 
+    void updateElevationComponent(const double &altitude)
+    {
+        this->setData_1D(altitude);
+    }
+
+    //!
+    //! \brief hasBeenSet
+    //! \return
+    //!
+    bool hasBeenSet() const override
+    {
+        return hasLatitudeBeenSet() || hasLongitudeBeenSet() || hasAltitudeBeenSet();
+    }
+
+public:
+
+    //!
+    //! \brief getAsVector
+    //! \return
+    //!
+    Eigen::Vector3d getAsVector()
+    {
+        Eigen::Vector3d vec(this->getLatitude(), this->getLongitude(), this->getAltitude());
+        return vec;
+    }
+
+
+public:
+
+    double distanceBetween3D(const GeodeticPosition_3D &position) const;
+
+    double elevationAngleTo(const GeodeticPosition_3D &position) const;
+
+
+    /** Interface imposed via state_space::State */
+public:
+    //!
+    //! \brief getStateClone
+    //! \return
+    //!
     State* getStateClone() const override
     {
         return (new GeodeticPosition_3D(*this));
     }
 
+    //!
+    //! \brief getStateClone
+    //! \param state
+    //!
     void getStateClone(State** state) const override
     {
         *state = new GeodeticPosition_3D(*this);
     }
 
-public:
-    void updatePosition(const double &latitude, const double &longitude)
-    {
-        this->data.setData(latitude,longitude,this->getAltitude());
-    }
 
-    void updatePosition(const double &latitude, const double &longitude, const double &altitude)
-    {
-        this->data.setData(latitude,longitude,altitude);
-    }
-
-    void setLatitude(const double &latitude)
-    {
-        this->data.setX(latitude);
-    }
-
-    void setLongitude(const double &longitude)
-    {
-        this->data.setY(longitude);
-    }
-
-    void setAltitude(const double &altitude)
-    {
-        this->data.setZ(altitude);
-    }
-
-    double getLatitude() const
-    {
-        return this->data.getX();
-    }
-
-    double getLongitude() const
-    {
-        return this->data.getY();
-    }
-
-    double getAltitude() const
-    {
-        return this->data.getZ();
-    }
-
-    Eigen::Vector3d getAsVector()
-    {
-        Eigen::Vector3d vec(this->data.getX(), this->data.getY(), this->data.getZ());
-        return vec;
-    }
-
-    bool hasLatitudeBeenSet() const
-    {
-        return this->data.getDataXFlag();
-    }
-
-    bool hasLongitudeBeenSet() const
-    {
-        return this->data.getDataXFlag();
-    }
-
-    bool hasAltitudeBeenSet() const
-    {
-        return this->data.getDataZFlag();
-    }
+    /** Interface imposed via Abstract_CartesianPosition */
 
 public:
-    double deltaLatitude(const GeodeticPosition_3D &that) const;
-    double deltaLongitude(const GeodeticPosition_3D &that) const;
-public:
-    void setCoordinateFrame(const GeodeticFrameTypes &desiredFrame)
-    {
-        this->frame = mace::pose::getCoordinateFrame(desiredFrame);
-    }
-
-    /** Arithmetic Operators */
-public:
-
     //!
-    //! \brief operator +
-    //! \param that
+    //! \brief getPositionalClone
     //! \return
     //!
-    GeodeticPosition_3D operator + (const GeodeticPosition_3D &that) const
+    Position* getPositionalClone() const override
     {
-        GeodeticPosition_3D newPoint(*this);
-        newPoint.data = this->data + that.data;
-        return newPoint;
+        return (new GeodeticPosition_3D(*this));
     }
 
     //!
-    //! \brief operator -
-    //! \param that
-    //! \return
+    //! \brief getPositionalClone
+    //! \param state
     //!
-    GeodeticPosition_3D operator - (const GeodeticPosition_3D &that) const
+    void getPositionalClone(Position** state) const override
     {
-        GeodeticPosition_3D newPoint(*this);
-        newPoint.data = this->data - that.data;
-        return newPoint;
+        *state = new GeodeticPosition_3D(*this);
     }
-
 
 public:
-
-    bool hasBeenSet() const override
-    {
-        return hasLatitudeBeenSet() || hasLongitudeBeenSet() || hasAltitudeBeenSet();
-    }
     //!
-    //! \brief deltaAltitude
-    //! \param position
+    //! \brief distanceFromOrigin
     //! \return
     //!
-    double deltaAltitude(const GeodeticPosition_3D &position) const;
+    double distanceFromOrigin() const override;
+
+    //!
+    //! \brief polarBearingFromOrigin
+    //! \return
+    //!
+    double polarBearingFromOrigin() const override;
 
     //!
     //! \brief distanceBetween2D
     //! \param position
     //! \return
     //!
-    double distanceBetween2D(const GeodeticPosition_3D &pos) const override;
-
-    //!
-    //! \brief distanceBetween3D
-    //! \param position
-    //! \return
-    //!
-    double distanceBetween3D(const GeodeticPosition_3D &position) const;
+    double distanceBetween2D(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief distanceTo
     //! \param position
     //! \return
     //!
-    double distanceTo(const GeodeticPosition_3D &pos) const override;
-
-    double distanceFromOrigin() const override;
-
-    double polarBearingFromOrigin() const override;
+    double distanceTo(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief polarBearingTo
     //! \param position
     //! \return
     //!
-    double polarBearingTo(const GeodeticPosition_3D &pos) const override;
+    double polarBearingTo(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief polarBearingTo
     //! \param position
     //! \return
     //!
-    double compassBearingTo(const GeodeticPosition_3D &pos) const override;
-
-    //!
-    //! \brief polarAzimuthTo
-    //! \param position
-    //! \return
-    //!
-    double elevationAngleTo(const GeodeticPosition_3D &position) const;
+    double compassBearingTo(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief newPositionFromPolar
@@ -205,8 +184,15 @@ public:
     //! \param compassBearing
     //! \return
     //!
-    GeodeticPosition_3D newPositionFromPolar(const double &distance, const double &bearing) const override;
+    void newPositionFromPolar(Abstract_GeodeticPosition* newObject, const double &distance, const double &bearing) const override;
 
+    //!
+    //! \brief newPositionFromPolar
+    //! \param distance
+    //! \param bearing
+    //! \param elevation
+    //! \return
+    //!
     GeodeticPosition_3D newPositionFromPolar(const double &distance, const double &bearing, const double &elevation) const;
 
     //!
@@ -215,7 +201,8 @@ public:
     //! \param compassBearing
     //! \return
     //!
-    GeodeticPosition_3D newPositionFromCompass(const double &distance, const double &bearing) const override;
+    void newPositionFromCompass(Abstract_GeodeticPosition *newObject, const double &distance, const double &bearing) const override;
+
 
     //!
     //! \brief applyPositionalShiftFromPolar
@@ -230,6 +217,89 @@ public:
     //! \param bearing
     //!
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
+
+    /** Assignment Operators */
+public:
+    GeodeticPosition_3D& operator = (const GeodeticPosition_3D &rhs)
+    {
+        Abstract_GeodeticPosition::operator =(rhs);
+        Abstract_Altitude::operator =(rhs);
+        return *this;
+    }
+
+    /** Arithmetic Operators */
+public:
+
+    //!
+    //! \brief operator +
+    //! \param that
+    //! \return
+    //!
+    GeodeticPosition_3D operator + (const GeodeticPosition_3D &rhs) const
+    {
+        GeodeticPosition_3D newPoint(*this);
+
+        if(this->areEquivalentFrames(rhs))
+        {
+            newPoint.x = newPoint.x + rhs.x;
+            newPoint.y = newPoint.y + rhs.y;
+            newPoint.z = newPoint.z + rhs.z;
+        }
+        else
+        {
+            throw std::logic_error("Tried to perform a + operation between 3DGeodetic of differnet coordinate frames.");
+        }
+
+        return newPoint;
+    }
+
+    //!
+    //! \brief operator -
+    //! \param that
+    //! \return
+    //!
+    GeodeticPosition_3D operator - (const GeodeticPosition_3D &rhs) const
+    {
+        GeodeticPosition_3D newPoint(*this);
+
+        if(this->areEquivalentFrames(rhs))
+        {
+            newPoint.x = newPoint.x - rhs.x;
+            newPoint.y = newPoint.y - rhs.y;
+            newPoint.z = newPoint.z - rhs.z;
+        }
+        else
+        {
+            throw std::logic_error("Tried to perform a - operation between 3DGeodetic of differnet coordinate frames.");
+        }
+
+        return newPoint;
+    }
+
+    /** Relational Operators */
+public:
+    //!
+    //! \brief operator ==
+    //! \param rhs
+    //! \return
+    //!
+    bool operator == (const GeodeticPosition_3D &rhs) const
+    {
+        if(!Abstract_GeodeticPosition::operator ==(rhs))
+            return false;
+        if(!Abstract_Altitude::operator ==(rhs))
+            return false;
+        return true;
+    }
+
+    //!
+    //! \brief operator !=
+    //! \param rhs
+    //! \return
+    //!
+    bool operator != (const GeodeticPosition_3D &rhs) const {
+        return !(*this == rhs);
+    }
 };
 
 } //end of namespace pose

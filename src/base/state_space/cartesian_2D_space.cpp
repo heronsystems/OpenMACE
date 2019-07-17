@@ -35,7 +35,7 @@ bool Cartesian2DSpace::interpolateStates(const State *begin, const State *end, c
     pose::CartesianPosition_2D castBegin(*begin->stateAs<pose::CartesianPosition_2D>());
     pose::CartesianPosition_2D castEnd(*end->stateAs<pose::CartesianPosition_2D>());
 
-    double distance = castBegin.distanceTo(castEnd);
+    double distance = castBegin.distanceTo(&castEnd);
 
     /**
      * Let v = (x1,y1) - (x0,y0) and u = v/magnitude(v)

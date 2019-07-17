@@ -47,6 +47,7 @@ public:
 //        if(mace::misc::details::OrientationTypeHelper<DIM>::static_size > 2)
 //            return true;
 //        return false;
+        return false;
     }
 
     /** Relational Operators */

@@ -11,37 +11,29 @@ class CartesianPosition_2D : public Abstract_CartesianPosition,
         public state_space::State
 {
 public:
-    CartesianPosition_2D(const std::string &pointName):
-        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State()
-    {
-        this->dimension = 2;
-    }
 
-    CartesianPosition_2D(const std::string &pointName = "Position Point", const double &x = 0.0, const double &y = 0.0):
-        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State()
-    {
-        this->dimension = 2;
-    }
+    explicit CartesianPosition_2D(const CartesianFrameTypes &frameType = CartesianFrameTypes::CF_LOCAL_UNKNOWN,
+                        const double &x = 0.0, const double &y = 0.0,
+                        const std::string &pointName = "Cartesian Point");
+    explicit CartesianPosition_2D(const std::string &pointName,
+                        const double &x, const double &y);
+
+    explicit CartesianPosition_2D(const double &x, const double &y);
+
+    CartesianPosition_2D(const CartesianPosition_2D &copy);
+
+    CartesianPosition_2D(const CartesianPosition_3D &copy);
+
 
     ~CartesianPosition_2D() override = default;
-
-    CartesianPosition_2D(const CartesianPosition_2D &copy):
-        Abstract_CartesianPosition(copy), state_space::State(copy)
-    {
-
-    }
-
-//    CartesianPosition_2D(const CartesianPosition_3D &copy):
-//        Abstract_CartesianPosition(copy), Data2D(copy), state_space::State(copy)
-//    {
-
-//    }
 
     std::string printInfo() const override
     {
         std::string rtn = "Cartesian Position 2D: " + std::to_string(getXPosition()) + ", " + std::to_string(getYPosition()) + ".";
         return rtn;
     }
+
+    bool areEquivalentFrames(const CartesianPosition_2D &obj) const;
 
 public:
 
@@ -147,6 +139,9 @@ public:
     //!
     double distanceBetween2D(const Abstract_CartesianPosition* pos) const override;
 
+
+    double distanceBetween2D(const CartesianPosition_2D &pos) const;
+
     //!
     //! \brief distanceTo
     //! \param position
@@ -188,6 +183,13 @@ public:
 
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
 
+    /** Assignment Operators */
+public:
+    CartesianPosition_2D& operator = (const CartesianPosition_2D &rhs)
+    {
+        Abstract_CartesianPosition::operator =(rhs);
+        return *this;
+    }
 
     /** Arithmetic Operators */
 public:
@@ -197,12 +199,19 @@ public:
     //! \param that
     //! \return
     //!
-    CartesianPosition_2D operator + (const CartesianPosition_2D &that) const
+    CartesianPosition_2D operator + (const CartesianPosition_2D &rhs) const
     {
         CartesianPosition_2D newPoint(*this);
-        newPoint.x = this->x + that.x;
-        newPoint.y = this->y + that.y;
+        newPoint.x = this->x + rhs.x;
+        newPoint.y = this->y + rhs.y;
         return newPoint;
+    }
+
+    CartesianPosition_2D& operator += (const CartesianPosition_2D &rhs)
+    {
+        this->x += rhs.x;
+        this->y += rhs.y;
+        return *this;
     }
 
     //!
@@ -210,14 +219,35 @@ public:
     //! \param that
     //! \return
     //!
-    CartesianPosition_2D operator - (const CartesianPosition_2D &that) const
+    CartesianPosition_2D operator - (const CartesianPosition_2D &rhs) const
     {
         CartesianPosition_2D newPoint(*this);
-
-        newPoint.x = this->x - that.x;
-        newPoint.y = this->y - that.y;
-
+        newPoint.x = this->x - rhs.x;
+        newPoint.y = this->y - rhs.y;
         return newPoint;
+    }
+
+    /** Relational Operators */
+public:
+    //!
+    //! \brief operator ==
+    //! \param rhs
+    //! \return
+    //!
+    bool operator == (const CartesianPosition_2D &rhs) const
+    {
+        if(!Abstract_CartesianPosition::operator ==(rhs))
+            return false;
+        return true;
+    }
+
+    //!
+    //! \brief operator !=
+    //! \param rhs
+    //! \return
+    //!
+    bool operator != (const CartesianPosition_2D &rhs) const {
+        return !(*this == rhs);
     }
 
 public:

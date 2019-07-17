@@ -13,7 +13,7 @@ namespace pose {
 
 MACE_CLASS_FORWARD(Abstract_GeodeticPosition);
 MACE_CLASS_FORWARD(GeodeticPosition_2D);
-MACE_CLASS_FORWARD(GeodeticPosition_2D);
+MACE_CLASS_FORWARD(GeodeticPosition_3D);
 
 class Abstract_GeodeticPosition : public Position, public PositionInterface<Abstract_GeodeticPosition, misc::Data2D>
 {
@@ -26,17 +26,99 @@ public:
 
     ~Abstract_GeodeticPosition() override = default;
 
+    bool areEquivalentGeodeticFrames(const Abstract_GeodeticPosition &obj) const;
+
+public:
+    //!
+    //! \brief setLatitude
+    //! \param latitude
+    //!
+    void setLatitude(const double &latitude)
+    {
+        this->setY(latitude);
+    }
+
+    //!
+    //! \brief setLongitude
+    //! \param longitude
+    //!
+    void setLongitude(const double &longitude)
+    {
+        this->setX(longitude);
+    }
+
+    //!
+    //! \brief getLatitude
+    //! \return
+    //!
+    double getLatitude() const
+    {
+        return this->getY();
+    }
+
+    //!
+    //! \brief getLongitude
+    //! \return
+    //!
+    double getLongitude() const
+    {
+        return this->getX();
+    }
+
+    //!
+    //! \brief hasLatitudeBeenSet
+    //! \return
+    //!
+    bool hasLatitudeBeenSet() const
+    {
+        return this->getDataYFlag();
+    }
+
+    //!
+    //! \brief hasLongitudeBeenSet
+    //! \return
+    //!
+    bool hasLongitudeBeenSet() const
+    {
+        return this->getDataXFlag();
+    }
+
+    //!
+    //! \brief deltaLatitude
+    //! \param that
+    //! \return
+    //!
+    double deltaLatitude(const Abstract_GeodeticPosition* that) const
+    {
+        return this->getLatitude() - that->getLatitude();
+    }
+
+    //!
+    //! \brief deltaLongitude
+    //! \param that
+    //! \return
+    //!
+    double deltaLongitude(const Abstract_GeodeticPosition* that) const
+    {
+        return this->getLongitude() - that->getLongitude();
+    }
+
 public:
     PositionType getPositionType() const override;
+
+    void setCoordinateFrame(const GeodeticFrameTypes &explicitFrame);
+
+    GeodeticFrameTypes getGeodeticCoordinateFrame() const;
 
     CoordinateFrameTypes getExplicitCoordinateFrame() const override;
 
     /** Assignment Operators */
 public:
-    void operator = (const Abstract_GeodeticPosition &rhs)
+    Abstract_GeodeticPosition& operator = (const Abstract_GeodeticPosition &rhs)
     {
         Position::operator =(rhs);
         this->geodeticFrameType = rhs.geodeticFrameType;
+        return *this;
     }
 
     /** Relational Operators */
@@ -67,7 +149,7 @@ public:
     }
 
 protected:
-    GeodeticFrameTypes geodeticFrameType = CartesianFrameTypes::CF_LOCAL_UNKNOWN;
+    GeodeticFrameTypes geodeticFrameType = GeodeticFrameTypes::CF_GLOBAL_UNKNOWN;
 };
 
 } //end of namespace pose

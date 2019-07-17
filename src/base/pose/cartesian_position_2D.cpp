@@ -1,7 +1,46 @@
 #include "cartesian_position_2D.h"
+#include "cartesian_position_3D.h"
 
 namespace mace{
 namespace pose{
+
+CartesianPosition_2D::CartesianPosition_2D(const CartesianFrameTypes &frameType,
+                    const double &x, const double &y,
+                    const std::string &pointName):
+    Abstract_CartesianPosition(frameType, x, y, pointName), State()
+{
+    this->dimension = 2;
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const std::string &pointName,
+                    const double &x, const double &y):
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, x, y, pointName), State()
+{
+    this->dimension = 2;
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const double &x, const double &y):
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, x, y, "Cartesian Point"), State()
+{
+    this->dimension = 2;
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_2D &copy):
+    Abstract_CartesianPosition(copy), state_space::State(copy)
+{
+
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
+    Abstract_CartesianPosition(copy), state_space::State(copy)
+{
+    this->dimension = 2;
+}
+
+bool CartesianPosition_2D::areEquivalentFrames(const CartesianPosition_2D &obj) const
+{
+    return this->getCartesianFrameType() == obj.getCartesianFrameType();
+}
 
 double CartesianPosition_2D::deltaX(const CartesianPosition_2D &that) const
 {
@@ -35,6 +74,11 @@ double CartesianPosition_2D::distanceBetween2D(const Abstract_CartesianPosition*
         distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
     }
     return distance;
+}
+
+double CartesianPosition_2D::distanceBetween2D(const CartesianPosition_2D &pos) const
+{
+    return distanceBetween2D(&pos);
 }
 
 double CartesianPosition_2D::distanceTo(const Abstract_CartesianPosition* pos) const

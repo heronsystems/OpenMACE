@@ -2,6 +2,7 @@
 #define BASE_POSITION_H
 
 #include <iostream>
+#include <exception>
 
 #include "common/common.h"
 #include "common/class_forward.h"
@@ -29,6 +30,9 @@ public:
     virtual ~Position();
 
 public:
+
+    void updatePositionName(const std::string &nameString);
+
     std::string getName() const;
 
     virtual PositionType getPositionType() const = 0;

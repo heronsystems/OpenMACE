@@ -9,7 +9,7 @@ Abstract_GeodeticPosition::Abstract_GeodeticPosition(const GeodeticFrameTypes &e
 }
 
 Abstract_GeodeticPosition::Abstract_GeodeticPosition(const GeodeticFrameTypes &explicitFrame, const double &latitude, const double &longitude, const std::string &posName):
-    Position (posName), geodeticFrameType(explicitFrame), PositionInterface(longitude,latitude)
+    Position (posName), PositionInterface(longitude,latitude), geodeticFrameType(explicitFrame)
 {
 
 }
@@ -21,9 +21,24 @@ Abstract_GeodeticPosition::Abstract_GeodeticPosition(const Abstract_GeodeticPosi
     this->geodeticFrameType = copy.geodeticFrameType;
 }
 
+bool Abstract_GeodeticPosition::areEquivalentGeodeticFrames(const Abstract_GeodeticPosition &obj) const
+{
+    return this->geodeticFrameType == obj.geodeticFrameType;
+}
+
 PositionType Abstract_GeodeticPosition::getPositionType() const
 {
     return PositionType::GEODETIC;
+}
+
+void Abstract_GeodeticPosition::setCoordinateFrame(const GeodeticFrameTypes &explicitFrame)
+{
+    this->geodeticFrameType = explicitFrame;
+}
+
+GeodeticFrameTypes Abstract_GeodeticPosition::getGeodeticCoordinateFrame() const
+{
+    return this->geodeticFrameType;
 }
 
 CoordinateFrameTypes Abstract_GeodeticPosition::getExplicitCoordinateFrame() const

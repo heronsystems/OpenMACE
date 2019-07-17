@@ -15,7 +15,7 @@ MACE_CLASS_FORWARD(Abstract_CartesianPosition);
 MACE_CLASS_FORWARD(CartesianPosition_2D);
 MACE_CLASS_FORWARD(CartesianPosition_3D);
 
-class Abstract_CartesianPosition : public Position, public PositionInterface<Abstract_CartesianPosition, misc::Data2D>
+class Abstract_CartesianPosition : public Position, protected PositionInterface<Abstract_CartesianPosition, misc::Data2D>
 {
 public:
     Abstract_CartesianPosition(const CartesianFrameTypes &explicitFrame, const std::string &posName = "Position Object");
@@ -29,14 +29,21 @@ public:
 public:
     PositionType getPositionType() const override;
 
+    void setCoordinateFrame(const CartesianFrameTypes &explicitFrame);
+
+    CartesianFrameTypes getCartesianFrameType() const;
+
     CoordinateFrameTypes getExplicitCoordinateFrame() const override;
+
+    bool areEquivalentCartesianFrames(const Abstract_CartesianPosition &obj) const;
 
     /** Assignment Operators */
 public:
-    void operator = (const Abstract_CartesianPosition &rhs)
+    Abstract_CartesianPosition& operator = (const Abstract_CartesianPosition &rhs)
     {
         Position::operator =(rhs);
         this->cartesianFrameType = rhs.cartesianFrameType;
+        return *this;
     }
 
     /** Relational Operators */

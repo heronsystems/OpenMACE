@@ -46,20 +46,3 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbas
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
 else:unix:!macx: LIBS += -L$$OUT_PWD/../base/ -lbase
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
-else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-win32:INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../maps/release/ -lmaps
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lmaps
-else:unix: LIBS += -L$$OUT_PWD/../maps/ -lmaps
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../task_generation_UMD/release/ -ltask_generation_UMD
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../task_generation_UMD/debug/ -ltask_generation_UMD
-else:unix:!macx: LIBS += -L$$OUT_PWD/../task_generation_UMD/ -ltask_generation_UMD

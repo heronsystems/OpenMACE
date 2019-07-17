@@ -72,8 +72,6 @@ public:
     //!
     bool is3D() const
     {
-        if(mace::misc::details::PositionTypeHelper<T,DIM>::static_size > 2)
-            return true;
         return false;
     }
 

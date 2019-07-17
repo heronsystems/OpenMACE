@@ -158,11 +158,6 @@ public:
     double getTraversalCost(const State *begin, const State *end, const bool &neighbor = false) const;
 
 
-private:
-    /**
-     * @brief isSetup
-     */
-    bool isSetup;
 
 protected:
     StateSpacePtr m_stateSpace;
@@ -170,6 +165,13 @@ protected:
     AbstractStateValidityCheckPtr m_stateValidCheck;
     AbstractMotionValidityCheckPtr m_motionValidCheck;
     StateSamplerPtr m_stateSampler;
+
+private:
+    /**
+     * @brief isSetup
+     */
+    bool isSetup;
+
 };
 
 } //end of namespace state_space

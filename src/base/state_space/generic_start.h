@@ -84,6 +84,8 @@ public:
 
     }
 
+    virtual ~StartSampler() = default;
+
     virtual void sampleStart(State* sample) = 0;
 
     virtual void setSampleFunction(const SampleFunction &distFun) {

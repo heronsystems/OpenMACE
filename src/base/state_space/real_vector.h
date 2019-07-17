@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 
+#include "common/common.h"
+
 namespace mace {
 namespace state {
 
@@ -16,9 +18,9 @@ public:
 public:
     void addDimension(double minBound = 0.0, double maxBound = 0.0);
 
-    const std::string getDimensionName(const size_t &index) const;
+    std::string getDimensionName(const size_t &index) const;
 
-    const void setDimensionName(const size_t &index, const std::string &name);
+    void setDimensionName(const size_t &index, const std::string &name);
 
 
 protected:

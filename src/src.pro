@@ -36,9 +36,8 @@ SUBDIRS += \
     module_ROS_UMD \
     mace \
     module_generic_MAVLINK \
-    #TestMaps \
+    TestMaps \
     #example \
-    #Testing \
     #Testing_CommsLink \
     #TestGraph \
     commsExample \

@@ -144,7 +144,9 @@ Polygon_Cartesian Polygon_Cartesian::getBoundingRect() const
 
 pose::CartesianPosition_2D Polygon_Cartesian::getCenter() const
 {
-    CartesianPosition_2D center("Center");
+    CartesianPosition_2D center;
+    center.updatePositionName("Center");
+
     size_t size = polygonSize();
     for (size_t i = 0; i < size; i++)
     {
@@ -157,26 +159,26 @@ pose::CartesianPosition_2D Polygon_Cartesian::getCenter() const
 
 CartesianPosition_2D Polygon_Cartesian::getTopLeft() const
 {
-    CartesianPosition_2D UL("Upper Left",xMin,yMax);
+    CartesianPosition_2D UL("Upper Left", xMin, yMax);
     return UL;
 }
 
 CartesianPosition_2D Polygon_Cartesian::getTopRight() const
 {
-    CartesianPosition_2D UL("Upper Right",xMax,yMax);
+    CartesianPosition_2D UL("Upper Right", xMax, yMax);
     return UL;
 }
 
 CartesianPosition_2D Polygon_Cartesian::getBottomRight() const
 {
-    CartesianPosition_2D LR("Lower Right",xMax,yMin);
+    CartesianPosition_2D LR("Lower Right", xMax, yMin);
     return LR;
 }
 
 
 CartesianPosition_2D Polygon_Cartesian::getBottomLeft() const
 {
-    CartesianPosition_2D BL("Bottom Left",xMin,yMin);
+    CartesianPosition_2D BL("Bottom Left", xMin, yMin);
     return BL;
 }
 

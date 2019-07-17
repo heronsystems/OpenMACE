@@ -11,9 +11,9 @@ namespace pose {
 //!
 void DynamicsAid::GlobalPositionToLocal(const GeodeticPosition_3D &origin, const GeodeticPosition_3D &position, CartesianPosition_3D &local)
 {
-    double distance = origin.distanceBetween2D(position);
-    double bearing = origin.compassBearingTo(position);
-    double deltaAltitude = origin.deltaAltitude(position);
+    double distance = origin.distanceBetween2D(&position);
+    double bearing = origin.compassBearingTo(&position);
+    double deltaAltitude = origin.deltaAltitude(&position);
     local.applyPositionalShiftFromCompass(distance,convertDegreesToRadians(bearing));
     local.setZPosition(-deltaAltitude);
 }
@@ -29,7 +29,7 @@ void DynamicsAid::LocalPositionToGlobal(const GeodeticPosition_3D &origin, const
     double distance = position.distanceFromOrigin();
     double bearing = position.polarBearingFromOrigin();
     double elevation = position.elevationFromOrigin();
-    global = origin.newPositionFromPolar(distance,bearing,elevation);
+    global = origin.newPositionFromPolar(distance, bearing, elevation);
 }
 
 } //end of namespace pose

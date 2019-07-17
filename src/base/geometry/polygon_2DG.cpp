@@ -9,7 +9,7 @@ Polygon_2DG::Polygon_2DG(const std::string &descriptor):
 
 }
 
-Polygon_2DG::Polygon_2DG(const std::vector<Position<GeodeticPosition_2D>> &vector, const std::string &descriptor):
+Polygon_2DG::Polygon_2DG(const std::vector<GeodeticPosition_2D> &vector, const std::string &descriptor):
     PolygonBase(vector, descriptor)
 {
     updateBoundingBox();
@@ -21,7 +21,7 @@ Polygon_2DG::Polygon_2DG(const Polygon_2DG &copy):
     updateBoundingBox();
 }
 
-std::vector<bool> Polygon_2DG::contains(std::vector<Position<GeodeticPosition_2D>> &checkVector, const bool &onLineCheck)
+std::vector<bool> Polygon_2DG::contains(std::vector<GeodeticPosition_2D> &checkVector, const bool &onLineCheck)
 {
     std::vector<bool> rtnCheck;
 
@@ -30,7 +30,7 @@ std::vector<bool> Polygon_2DG::contains(std::vector<Position<GeodeticPosition_2D
 
     GeodeticPosition_3D origin3D(m_vertex.at(0).getLatitude(),m_vertex.at(0).getLongitude(),0.0);
 
-    std::vector<Position<CartesianPosition_2D>> checkLocalVector;
+    std::vector<CartesianPosition_2D> checkLocalVector;
     for(size_t i = 0; i < checkVector.size(); i++)
     {
         mace::pose::CartesianPosition_3D vertex3D;
@@ -53,7 +53,7 @@ bool Polygon_2DG::contains(const double &latitude, const double &longitude, cons
     return contains(point,onLineCheck);
 }
 
-bool Polygon_2DG::contains(const Position<GeodeticPosition_2D> &point, const bool &onLineCheck) const
+bool Polygon_2DG::contains(const GeodeticPosition_2D &point, const bool &onLineCheck) const
 {
     CartesianPosition_3D localVertex;
     GeodeticPosition_3D checkPoint(point.getLatitude(),point.getLongitude(),0.0);
@@ -110,10 +110,10 @@ Polygon_2DG Polygon_2DG::getBoundingRect() const
 {
     Polygon_2DG polygon("Bounding Polygon");
 
-    Position<GeodeticPosition_2D> LL("Lower Left",xMin,yMin);
-    Position<GeodeticPosition_2D> UL("Upper Left",xMin,yMax);
-    Position<GeodeticPosition_2D> UR("Upper Right",xMax,yMax);
-    Position<GeodeticPosition_2D> LR("Lower Right",xMax,yMin);
+    GeodeticPosition_2D LL("Lower Left",xMin,yMin);
+    GeodeticPosition_2D UL("Upper Left",xMin,yMax);
+    GeodeticPosition_2D UR("Upper Right",xMax,yMax);
+    GeodeticPosition_2D LR("Lower Right",xMax,yMin);
 
     polygon.appendVertex(LL);
     polygon.appendVertex(UL);
@@ -124,10 +124,12 @@ Polygon_2DG Polygon_2DG::getBoundingRect() const
 }
 
 
-Position<pose::GeodeticPosition_2D> Polygon_2DG::getCenter() const
+GeodeticPosition_2D Polygon_2DG::getCenter() const
 {
 
-    Position<GeodeticPosition_2D> center2DG("Center");
+    GeodeticPosition_2D center2DG;
+    center2DG.updatePositionName("Center");
+
     GeodeticPosition_3D center3DG;
 
     CartesianPosition_2D center2DC = m_localPolygon.getCenter();
@@ -139,32 +141,32 @@ Position<pose::GeodeticPosition_2D> Polygon_2DG::getCenter() const
     return center2DG;
 }
 
-Position<GeodeticPosition_2D> Polygon_2DG::getTopLeft() const
+GeodeticPosition_2D Polygon_2DG::getTopLeft() const
 {
-    Position<GeodeticPosition_2D> UL("Upper Left",xMin,yMax);
+    GeodeticPosition_2D UL("Upper Left", xMin, yMax);
     return UL;
 }
 
-Position<GeodeticPosition_2D> Polygon_2DG::getTopRight() const
+GeodeticPosition_2D Polygon_2DG::getTopRight() const
 {
-    Position<GeodeticPosition_2D> UL("Upper Right",xMax,yMax);
+    GeodeticPosition_2D UL("Upper Right", xMax, yMax);
     return UL;
 }
 
-Position<GeodeticPosition_2D> Polygon_2DG::getBottomRight() const
+GeodeticPosition_2D Polygon_2DG::getBottomRight() const
 {
-    Position<GeodeticPosition_2D> LR("Lower Right",xMax,yMin);
+    GeodeticPosition_2D LR("Lower Right", xMax, yMin);
     return LR;
 }
 
 
-Position<GeodeticPosition_2D> Polygon_2DG::getBottomLeft() const
+GeodeticPosition_2D Polygon_2DG::getBottomLeft() const
 {
-    Position<GeodeticPosition_2D> BL("Bottom Left",xMin,yMin);
+    GeodeticPosition_2D BL("Bottom Left", xMin, yMin);
     return BL;
 }
 
-void Polygon_2DG::getCorners(Position<GeodeticPosition_2D> &topLeft, Position<GeodeticPosition_2D> &bottomRight) const
+void Polygon_2DG::getCorners(GeodeticPosition_2D &topLeft, GeodeticPosition_2D &bottomRight) const
 {
     topLeft = getTopLeft();
     bottomRight = getBottomRight();

@@ -8,7 +8,7 @@ namespace mace{
 namespace pose{
 
 template <typename T, class DATA>
-class PositionInterface : public DATA
+class PositionInterface : protected DATA
 {
 public:
 
@@ -20,7 +20,7 @@ public:
     PositionInterface(const PositionInterface<T, NEWDATA> &ref):
         DATA(ref)
     {
-
+        std::cout<<"I am in this constructo pr"<<std::endl;
     }
 
     template<typename ... Arg>

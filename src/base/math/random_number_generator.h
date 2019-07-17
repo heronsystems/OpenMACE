@@ -6,6 +6,9 @@
 
 #include <random>
 
+#include "common/common.h"
+
+
 namespace mace {
 namespace math {
 

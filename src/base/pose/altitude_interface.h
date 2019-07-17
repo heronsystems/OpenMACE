@@ -7,28 +7,14 @@
 namespace mace{
 namespace pose{
 
-template <typename T, class DATA>
-class AltitudeInterface : public DATA
+template <typename T>
+class AltitudeInterface
 {
 public:
 
     AltitudeInterface() = default;
 
     virtual ~AltitudeInterface() = default;
-
-    template <typename NEWDATA>
-    AltitudeInterface(const AltitudeInterface<T, NEWDATA> &ref):
-        DATA(ref)
-    {
-
-    }
-
-    template<typename ... Arg>
-    AltitudeInterface(const Arg ... arg):
-        DATA(arg ...)
-    {
-
-    }
 
 public:
 
@@ -52,27 +38,6 @@ public:
     //! \return
     //!
     virtual double deltaAltitude(const T* pos) const = 0;
-
-
-
-public:
-    AltitudeInterface& operator = (const AltitudeInterface &rhs)
-    {
-        DATA::operator=(rhs);
-        return *this;
-    }
-
-    bool operator == (const AltitudeInterface &rhs) const
-    {
-        if(!DATA::operator ==(rhs))
-            return false;
-        return true;
-    }
-
-    bool operator !=(const AltitudeInterface &rhs) const
-    {
-        return !(*this == rhs);
-    }
 
 };
 

@@ -1,38 +1,82 @@
 #include "geodetic_position_2D.h"
+#include "geodetic_position_3D.h"
 
 namespace mace{
 namespace pose{
 
-double GeodeticPosition_2D::deltaLatitude(const GeodeticPosition_2D &that) const
+//!
+//! \brief GeodeticPosition_2D
+//! \param pointName
+//! \param latitude
+//! \param longitude
+//!
+GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticFrameTypes &frameType,
+                    const double &latitude, const double &longitude,
+                    const std::string &pointName):
+    Abstract_GeodeticPosition(frameType, latitude, longitude, pointName), State()
 {
-    return this->getLatitude() - that.getLatitude();
+    this->dimension = 2;
 }
 
-double GeodeticPosition_2D::deltaLongitude(const GeodeticPosition_2D &that) const
+GeodeticPosition_2D::GeodeticPosition_2D(const std::string &pointName,
+                    const double &latitude, const double &longitude):
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, latitude, longitude, pointName), State()
 {
-    return this->getLongitude() - that.getLongitude();
+    this->dimension = 2;
 }
+
+GeodeticPosition_2D::GeodeticPosition_2D(const double &latitude, const double &longitude):
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, latitude, longitude, "Geodetic Point"), State()
+{
+    this->dimension = 2;
+}
+
+
+//!
+//! \brief GeodeticPosition_2D
+//! \param copy
+//!
+GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_2D &copy):
+    Abstract_GeodeticPosition(copy), state_space::State(copy)
+{
+
+}
+
+GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_3D &copy):
+    Abstract_GeodeticPosition(copy), state_space::State(copy)
+{
+
+}
+
+bool GeodeticPosition_2D::areEquivalentFrames(const GeodeticPosition_2D &obj) const
+{
+    return this->areEquivalentGeodeticFrames(obj);
+}
+
 
 double GeodeticPosition_2D::distanceFromOrigin() const
 {
     GeodeticPosition_2D origin;
-    return distanceBetween2D(origin);
+    return distanceBetween2D(&origin);
 }
 
 double GeodeticPosition_2D::polarBearingFromOrigin() const
 {
     GeodeticPosition_2D origin;
-    return origin.polarBearingTo(*this);
+    return origin.polarBearingTo(this);
 }
 
-double GeodeticPosition_2D::distanceBetween2D(const GeodeticPosition_2D &position) const
+double GeodeticPosition_2D::distanceBetween2D(const Abstract_GeodeticPosition* pos) const
 {
+    const GeodeticPosition_2D* tmpPos = pos->positionAs<GeodeticPosition_2D>();
+
     double earthRadius = 6371000; //approximate value in meters
 
-    double originLatitude = convertDegreesToRadians(this->getLatitude());
-    double originLongitude = convertDegreesToRadians(this->getLongitude());
-    double finalLatitude = convertDegreesToRadians(position.getLatitude());
-    double finalLongitude = convertDegreesToRadians(position.getLongitude());
+    double originLatitude = math::convertDegreesToRadians(this->getLatitude());
+    double originLongitude = math::convertDegreesToRadians(this->getLongitude());
+
+    double finalLatitude = math::convertDegreesToRadians(tmpPos->getLatitude());
+    double finalLongitude = math::convertDegreesToRadians(tmpPos->getLongitude());
 
     double deltaLatitude = finalLatitude - originLatitude;
     double deltaLongitude = finalLongitude - originLongitude;
@@ -48,7 +92,7 @@ double GeodeticPosition_2D::distanceBetween2D(const GeodeticPosition_2D &positio
     return distance;
 }
 
-double GeodeticPosition_2D::distanceTo(const GeodeticPosition_2D &pos) const
+double GeodeticPosition_2D::distanceTo(const Abstract_GeodeticPosition* pos) const
 {
     return this->distanceBetween2D(pos);
 }
@@ -58,12 +102,15 @@ double GeodeticPosition_2D::distanceTo(const GeodeticPosition_2D &pos) const
 //! \param pos
 //! \return polar
 //!
-double GeodeticPosition_2D::polarBearingTo(const GeodeticPosition_2D &pos) const
+double GeodeticPosition_2D::polarBearingTo(const Abstract_GeodeticPosition* pos) const
 {
-    double originLatitude = convertDegreesToRadians(this->getLatitude());
-    double originLongitude = convertDegreesToRadians(this->getLongitude());
-    double finalLatitude = convertDegreesToRadians(pos.getLatitude());
-    double finalLongitude = convertDegreesToRadians(pos.getLongitude());
+    const GeodeticPosition_2D* tmpPos = pos->positionAs<GeodeticPosition_2D>();
+
+    double originLatitude = math::convertDegreesToRadians(this->getLatitude());
+    double originLongitude = math::convertDegreesToRadians(this->getLongitude());
+
+    double finalLatitude = math::convertDegreesToRadians(tmpPos->getLatitude());
+    double finalLongitude = math::convertDegreesToRadians(tmpPos->getLongitude());
 
     double deltaLongitude = finalLongitude - originLongitude;
 
@@ -80,9 +127,9 @@ double GeodeticPosition_2D::polarBearingTo(const GeodeticPosition_2D &pos) const
 //! \param pos
 //! \return polar
 //!
-double GeodeticPosition_2D::compassBearingTo(const GeodeticPosition_2D &pos) const
+double GeodeticPosition_2D::compassBearingTo(const Abstract_GeodeticPosition* pos) const
 {
-    return correctBearing(polarBearingTo(pos));
+    return math::correctBearing(polarBearingTo(pos));
 }
 
 
@@ -92,9 +139,9 @@ double GeodeticPosition_2D::compassBearingTo(const GeodeticPosition_2D &pos) con
 //! \param bearing
 //! \return
 //!
-GeodeticPosition_2D GeodeticPosition_2D::newPositionFromPolar(const double &distance, const double &bearing) const
+void GeodeticPosition_2D::newPositionFromPolar(Abstract_GeodeticPosition* newObject, const double &distance, const double &bearing) const
 {
-    return newPositionFromCompass(distance,polarToCompassBearing(bearing));
+    return newPositionFromCompass(newObject, distance, math::polarToCompassBearing(bearing));
 }
 
 //!
@@ -103,35 +150,39 @@ GeodeticPosition_2D GeodeticPosition_2D::newPositionFromPolar(const double &dist
 //! \param bearing
 //! \return
 //!
-GeodeticPosition_2D GeodeticPosition_2D::newPositionFromCompass(const double &distance, const double &bearing) const
+void GeodeticPosition_2D::newPositionFromCompass(Abstract_GeodeticPosition* newObject, const double &distance, const double &bearing) const
 {
     double earthRadius = 6371000; //approximate value in meters
-    double latitudeRad = convertDegreesToRadians(this->getLatitude());
-    double longitudeRad = convertDegreesToRadians(this->getLongitude());
+    double latitudeRad = math::convertDegreesToRadians(this->getLatitude());
+    double longitudeRad = math::convertDegreesToRadians(this->getLongitude());
 
     double distanceRatio = distance / earthRadius;
 
     double newLat = asin(sin(latitudeRad) * cos(distanceRatio) + cos(latitudeRad) * sin(distanceRatio) * cos(bearing));
     double newLon = longitudeRad + atan2(sin(bearing) * sin(distanceRatio) * cos(latitudeRad),
                                          cos(distanceRatio) - sin(latitudeRad) * sin(newLat));
-
-    GeodeticPosition_2D newPos(convertRadiansToDegrees(newLat),convertRadiansToDegrees(newLon));
-
-    return newPos;
+    if(newObject->isGreaterThan1D())
+    {
+        GeodeticPosition_2D* tmpPos = newObject->positionAs<GeodeticPosition_2D>();
+        tmpPos->setLatitude(math::convertRadiansToDegrees(newLat));
+        tmpPos->setLongitude(math::convertRadiansToDegrees(newLon));
+    }
 }
 
 void GeodeticPosition_2D::applyPositionalShiftFromPolar(const double &distance, const double &bearing)
 {
-    GeodeticPosition_2D newPosition = newPositionFromPolar(distance,bearing);
-    this->setLatitude(newPosition.getLatitude());
-    this->setLongitude(newPosition.getLongitude());
+    GeodeticPosition_2D tmpPosition;
+    newPositionFromPolar(&tmpPosition, distance, bearing);
+    this->setLatitude(tmpPosition.getLatitude());
+    this->setLongitude(tmpPosition.getLongitude());
 }
 
 void GeodeticPosition_2D::applyPositionalShiftFromCompass(const double &distance, const double &bearing)
 {
-    GeodeticPosition_2D newPosition = newPositionFromCompass(distance,bearing);
-    this->setLatitude(newPosition.getLatitude());
-    this->setLongitude(newPosition.getLongitude());
+    GeodeticPosition_2D tmpPosition;
+    newPositionFromCompass(&tmpPosition, distance, bearing);
+    this->setLatitude(tmpPosition.getLatitude());
+    this->setLongitude(tmpPosition.getLongitude());
 }
 
 } //end of namespace pose

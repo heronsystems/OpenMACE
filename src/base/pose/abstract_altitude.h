@@ -6,7 +6,9 @@
 namespace mace {
 namespace pose {
 
-class Abstract_Altitude : public AltitudeInterface<Abstract_Altitude, misc::Data1D>
+MACE_CLASS_FORWARD(Abstract_Altitude);
+
+class Abstract_Altitude : protected AltitudeInterface<Abstract_Altitude>, protected misc::Data1D
 {
 public:
     Abstract_Altitude(const AltitudeReferenceTypes &explicitFrame = AltitudeReferenceTypes::REF_ALT_UNKNOWN);
@@ -18,12 +20,28 @@ public:
     ~Abstract_Altitude() override = default;
 
 public:
+    void setAltitude(const double &altitude);
+
+    double getAltitude() const;
+
+    double deltaAltitude(const Abstract_Altitude* pos) const override;
+
+    bool hasAltitudeBeenSet() const override;
+
+    virtual double elevationFromOrigin() const override;
+
+public:
     AltitudeReferenceTypes getAltitudeReferenceFrame() const;
+
+    void setAltitudeReferenceFrame(const AltitudeReferenceTypes &explicitType);
+
+    bool areEquivalentAltitudeFrames(const Abstract_Altitude &obj) const;
 
     /** Assignment Operators */
 public:
     void operator = (const Abstract_Altitude &rhs)
     {
+        Data1D::operator=(rhs);
         this->altitudeFrameType = rhs.altitudeFrameType;
     }
 
@@ -36,7 +54,7 @@ public:
     //!
     bool operator == (const Abstract_Altitude &rhs) const
     {
-        if(!AltitudeInterface::operator ==(rhs))
+        if(!Data1D::operator ==(rhs))
             return false;
 
         if(this->altitudeFrameType != rhs.altitudeFrameType){

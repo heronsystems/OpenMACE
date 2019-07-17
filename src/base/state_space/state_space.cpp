@@ -38,7 +38,7 @@ void StateSpace::removeState(State* state) const
 //!
 State* StateSpace::copyState(const State* state) const
 {
-    return nullptr;
+    return state->getStateClone();
 }
 
 //!
@@ -56,6 +56,7 @@ void StateSpace::removeStates(std::vector<State*> states) const
 
 bool StateSpace::interpolateStates(const State *begin, const State *end, const double &distance, State** interState)
 {
+    UNUSED(end); UNUSED(distance);
     *interState = begin->getStateClone();
     return false;
 }
@@ -67,6 +68,7 @@ double StateSpace::traversalCost(const State *begin, const State *end)
 
 std::vector<State*> StateSpace::getNeighboringStates(const state_space::State* currentState) const
 {
+    UNUSED(currentState);
     std::vector<State*> rtn;
     return rtn;
 }

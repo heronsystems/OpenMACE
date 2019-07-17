@@ -14,29 +14,16 @@ class CartesianPosition_3D : public Abstract_CartesianPosition, public Abstract_
         public state_space::State
 {
 public:
-    CartesianPosition_3D(const std::string &pointName):
-        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Abstract_Altitude(), State()
-    {
-        this->dimension = 3;
-    }
+    CartesianPosition_3D(const std::string &pointName);
 
-    CartesianPosition_3D(const std::string &pointName = "Position Point", const double &x = 0.0, const double &y = 0.0, const double &z = 0.0):
-        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, x, y, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE,z), State()
-    {
-        this->dimension = 3;
-    }
+    CartesianPosition_3D(const double &x, const double &y, const double &z);
 
-    CartesianPosition_3D(const CartesianPosition_3D &copy):
-        Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy)
-    {
+    CartesianPosition_3D(const std::string &pointName = "Position Point", const double &x = 0.0, const double &y = 0.0, const double &z = 0.0);
 
-    }
+    CartesianPosition_3D(const CartesianPosition_3D &copy);
 
-//    CartesianPosition_3D(const CartesianPosition_2D &copy):
-//        Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy)
-//    {
+    CartesianPosition_3D(const CartesianPosition_2D &copy);
 
-//    }
 
     ~CartesianPosition_3D() override = default;
 
@@ -45,6 +32,8 @@ public:
         std::string rtn = "Cartesian Position 3D: " + std::to_string(getXPosition()) + ", " + std::to_string(getYPosition()) + ", " + std::to_string(getZPosition()) +  ".";
         return rtn;
     }
+
+    bool areEquivalentFrames(const CartesianPosition_3D &obj) const;
 
 public:
     void normalize();
@@ -120,14 +109,14 @@ public:
     //! \brief hasAltitudeBeenSet
     //! \return
     //!
-    virtual bool hasAltitudeBeenSet() const override;
+    bool hasAltitudeBeenSet() const override;
 
 
     //!
     //! \brief elevationFromOrigin
     //! \return
     //!
-    virtual double elevationFromOrigin() const override;
+    double elevationFromOrigin() const override;
 
 
     //!
@@ -135,7 +124,7 @@ public:
     //! \param pos
     //! \return
     //!
-    virtual double deltaAltitude(const Abstract_Altitude* pos) const override;
+    double deltaAltitude(const Abstract_Altitude* pos) const override;
 
 
     //!
@@ -143,7 +132,7 @@ public:
     //! \param position
     //! \return
     //!
-    virtual double elevationAngleTo(const Abstract_CartesianPosition* position) const;
+    double elevationAngleTo(const Abstract_CartesianPosition* position) const;
 
 
 
@@ -245,43 +234,93 @@ public:
 
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing, const double &elevation);
 
+
+    /** Assignment Operators */
+public:
+    CartesianPosition_3D& operator = (const CartesianPosition_3D &rhs)
+    {
+        Abstract_CartesianPosition::operator =(rhs);
+        Abstract_Altitude::operator =(rhs);
+        return *this;
+    }
+
     /** Arithmetic Operators */
 public:
-
-    //!
-    //! \brief operator +
-    //! \param that
-    //! \return
-    //!
-    CartesianPosition_3D operator + (const CartesianPosition_3D &that) const
-    {
-        CartesianPosition_3D newPoint(*this);
-        newPoint.x = this->x + that.x;
-        newPoint.y = this->y + that.y;
-        newPoint.z = this->y + that.z;
-        return newPoint;
-    }
-
-
-    //!
-    //! \brief operator -
-    //! \param that
-    //! \return
-    //!
-    CartesianPosition_3D operator - (const CartesianPosition_3D &that) const
+    CartesianPosition_3D operator+ (const CartesianPosition_3D &rhs)
     {
         CartesianPosition_3D newPoint(*this);
 
-        newPoint.x = this->x - that.x;
-        newPoint.y = this->y - that.y;
-        newPoint.z = this->z - that.z;
+        if(this->areEquivalentFrames(rhs))
+        {
+            newPoint.x = newPoint.x + rhs.x;
+            newPoint.y = newPoint.y + rhs.y;
+            newPoint.z = newPoint.z + rhs.z;
+        }
+        else
+        {
+            throw std::logic_error("Tried to perform a + operation between 3DCartesians of differnet coordinate frames.");
+        }
+
         return newPoint;
     }
 
+    CartesianPosition_3D& operator += (const CartesianPosition_3D &rhs)
+    {
+        if(this->areEquivalentFrames(rhs))
+        {
+            this->x += rhs.x;
+            this->y += rhs.y;
+            this->z += rhs.z;
+        }
+        else
+            throw std::logic_error("Tried to perform a + operation between 3DCartesians of differnet coordinate frames.");
 
+        return *this;
+    }
+
+    CartesianPosition_3D operator- (const CartesianPosition_3D &rhs)
+    {
+        CartesianPosition_3D newPoint(*this);
+
+        if(this->areEquivalentFrames(rhs))
+        {
+            newPoint.x = newPoint.x - rhs.x;
+            newPoint.y = newPoint.y - rhs.y;
+            newPoint.z = newPoint.z - rhs.z;
+        }
+        else
+            throw std::logic_error("Tried to perform a - operation between 3DCartesians of differnet coordinate frames.");
+        return newPoint;
+    }
+
+    /** Relational Operators */
+public:
+    //!
+    //! \brief operator ==
+    //! \param rhs
+    //! \return
+    //!
+    bool operator == (const CartesianPosition_3D &rhs) const
+    {
+        if(!Abstract_CartesianPosition::operator ==(rhs))
+            return false;
+        if(!Abstract_Altitude::operator ==(rhs))
+            return false;
+        return true;
+    }
+
+    //!
+    //! \brief operator !=
+    //! \param rhs
+    //! \return
+    //!
+    bool operator != (const CartesianPosition_3D &rhs) const {
+        return !(*this == rhs);
+    }
 public:
     friend std::ostream& operator<<(std::ostream& os, const CartesianPosition_3D& t);
 };
+
 
 } //end of namespace pose
 } //end of namespace mace

@@ -1,6 +1,8 @@
 #ifndef DATA_2D_H
 #define DATA_2D_H
 
+#include <Eigen/Core>
+
 #include <iostream>
 #include <cmath>
 #include <numeric>
@@ -13,7 +15,7 @@ namespace misc {
 
 MACE_CLASS_FORWARD(Data2D);
 
-class Data2D
+class Data2D : public Eigen::Vector2d
 {
 public:
     //!
@@ -40,7 +42,7 @@ public:
 
     Data2D norm() const
     {
-        double length = sqrt(x*x + y*y);
+        double length = std::sqrt(x*x + y*y);
         if(fabs(length) < std::numeric_limits<double>::epsilon())
             return Data2D();
         else
@@ -90,7 +92,7 @@ public:
     //!
     void setX(const double &posX)
     {
-        this->x = posX;
+        this->x() = posX;
         this->dataXFlag = true;
     }
 
@@ -100,7 +102,7 @@ public:
     //!
     double getX() const
     {
-        return this->x;
+        return this->x();
     }
 
     //!
@@ -109,7 +111,7 @@ public:
     //!
     void setY(const double &posY)
     {
-        this->y = posY;
+        this->y() = posY;
         this->dataYFlag = true;
     }
 
@@ -228,12 +230,14 @@ public:
     //!
     bool operator == (const Data2D &rhs) const
     {
-        if(fabs(this->x - rhs.x) > std::numeric_limits<double>::epsilon()){
+        if(!this->isApprox(rhs))
             return false;
-        }
-        if(fabs(this->y - rhs.y) > std::numeric_limits<double>::epsilon()){
-            return false;
-        }
+//        if(fabs(this->x - rhs.x) > std::numeric_limits<double>::epsilon()){
+//            return false;
+//        }
+//        if(fabs(this->y - rhs.y) > std::numeric_limits<double>::epsilon()){
+//            return false;
+//        }
         if(this->dataXFlag != rhs.dataXFlag){
             return false;
         }
@@ -262,8 +266,9 @@ public:
     //!
     Data2D& operator = (const Data2D &rhs)
     {
-        this->x = rhs.x;
-        this->y = rhs.y;
+        Eigen::Vector2d::operator=(rhs);
+//        this->x = rhs.x;
+//        this->y = rhs.y;
         this->dataXFlag = rhs.dataXFlag;
         this->dataYFlag = rhs.dataYFlag;
         return *this;
@@ -274,37 +279,38 @@ public:
     //! \param that
     //! \return
     //!
-    Data2D& operator += (const Data2D &rhs)
-    {
-        this->x += rhs.x;
-        this->y += rhs.y;
-        return *this;
-    }
+//    Data2D& operator += (const Data2D &rhs)
+//    {
+//        this->x -= rhs.x;
+//        this->y -= rhs.y;
+//        return *this;
+//    }
 
     //!
     //! \brief operator -=
     //! \param that
     //! \return
     //!
-    Data2D& operator -= (const Data2D &rhs)
-    {
-        this->x -= rhs.x;
-        this->y -= rhs.y;
-        return *this;
-    }
+//    Data2D& operator -= (const Data2D &rhs)
+//    {
+//        this->x -= rhs.x;
+//        this->y -= rhs.y;
+//        return *this;
+//    }
 
 
     /** Protected Members */
 protected:
+
     //!
     //! \brief x
     //!
-    double x = 0.0;
+//    double x = 0.0;
 
     //!
     //! \brief y
     //!
-    double y = 0.0;
+//    double y = 0.0;
 
     //!
     //! \brief dataXFlag

@@ -13,13 +13,13 @@ namespace geometry {
 
 using namespace pose;
 
-class Polygon_2DG : public PolygonBase<Position<GeodeticPosition_2D>>
+class Polygon_2DG : public PolygonBase<GeodeticPosition_2D>
 {
 public:
 
     Polygon_2DG(const std::string &descriptor = "2D Geodetic Polygon");
 
-    Polygon_2DG(const std::vector<Position<GeodeticPosition_2D>> &vector, const std::string &descriptor = "2D Geodetic Polygon");
+    Polygon_2DG(const std::vector<GeodeticPosition_2D> &vector, const std::string &descriptor = "2D Geodetic Polygon");
 
     Polygon_2DG(const Polygon_2DG &copy);
 
@@ -41,7 +41,7 @@ public:
     //! \param onLineCheck
     //! \return
     //!
-    bool contains(const Position<GeodeticPosition_2D> &point, const bool &onLineCheck = false) const;
+    bool contains(const GeodeticPosition_2D &point, const bool &onLineCheck = false) const;
 
     //!
     //! \brief contains
@@ -58,19 +58,19 @@ public:
     //! \param onLineCheck
     //! \return
     //!
-    std::vector<bool> contains(std::vector<Position<GeodeticPosition_2D>> &checkVector, const bool &onLineCheck = false);
+    std::vector<bool> contains(std::vector<GeodeticPosition_2D> &checkVector, const bool &onLineCheck = false);
 
     //!
     //! \brief getCenter
     //! \return
     //!
-    Position<GeodeticPosition_2D> getCenter() const;
+    GeodeticPosition_2D getCenter() const;
 
     std::vector<int> findUndefinedVertices() const override
     {
         int index = 0;
         std::vector<int> nullItems;
-        for(std::vector<Position<GeodeticPosition_2D>>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
+        for(std::vector<GeodeticPosition_2D>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
             if(!it->hasLatitudeBeenSet() && !it->hasLongitudeBeenSet())
             {
                 //This should see that the value is null
@@ -82,13 +82,13 @@ public:
     }
 
 public:
-    Position<GeodeticPosition_2D> getTopLeft() const override;
-    Position<GeodeticPosition_2D> getTopRight() const override;
+    GeodeticPosition_2D getTopLeft() const override;
+    GeodeticPosition_2D getTopRight() const override;
 
-    Position<GeodeticPosition_2D> getBottomLeft() const override;
-    Position<GeodeticPosition_2D> getBottomRight() const override;
+    GeodeticPosition_2D getBottomLeft() const override;
+    GeodeticPosition_2D getBottomRight() const override;
 
-    void getCorners(Position<GeodeticPosition_2D> &topLeft, Position<GeodeticPosition_2D> &bottomRight) const override;
+    void getCorners(GeodeticPosition_2D &topLeft, GeodeticPosition_2D &bottomRight) const override;
 
     mace::pose::CoordinateFrameTypes getVertexCoordinateFrame() const override;
 
@@ -143,7 +143,7 @@ public:
     //!
     bool operator == (const Polygon_2DG &rhs) const
     {
-        if(!PolygonBase<Position<GeodeticPosition_2D>>::operator ==(rhs))
+        if(!PolygonBase<GeodeticPosition_2D>::operator ==(rhs))
         {
             return false;
         }

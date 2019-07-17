@@ -1,7 +1,44 @@
+#include "cartesian_position_2D.h"
 #include "cartesian_position_3D.h"
 
 namespace mace{
 namespace pose{
+
+
+CartesianPosition_3D::CartesianPosition_3D(const std::string &pointName):
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Abstract_Altitude(), State()
+{
+    this->dimension = 3;
+}
+
+CartesianPosition_3D::CartesianPosition_3D(const double &x, const double &y, const double &z):
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, x, y, "Cartesian Point"), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE,z), State()
+{
+    this->dimension = 3;
+}
+
+CartesianPosition_3D::CartesianPosition_3D(const std::string &pointName, const double &x, const double &y, const double &z):
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, x, y, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE,z), State()
+{
+    this->dimension = 3;
+}
+
+CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_3D &copy):
+    Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy)
+{
+    this->dimension = 3;
+}
+
+CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_2D &copy):
+    Abstract_CartesianPosition(copy), Abstract_Altitude(), state_space::State(copy)
+{
+    this->dimension = 3;
+}
+
+bool CartesianPosition_3D::areEquivalentFrames(const CartesianPosition_3D &obj) const
+{
+    return this->areEquivalentCartesianFrames(obj) && this->areEquivalentAltitudeFrames(obj);
+}
 
 double CartesianPosition_3D::deltaX(const CartesianPosition_3D &that) const
 {
@@ -48,14 +85,17 @@ double CartesianPosition_3D::elevationAngleTo(const Abstract_CartesianPosition* 
     {
         const CartesianPosition_3D* tmpPos = pos->positionAs<CartesianPosition_3D>();
         double distance2D = distanceBetween2D(pos);
-        elevationAngle = atan2(deltaAltitude(tmpPos),distance2D);
+        double distanceAlt = deltaAltitude(tmpPos);
+
+        if(fabs(distance2D) > std::numeric_limits<double>::epsilon() || fabs(distanceAlt) > std::numeric_limits<double>::epsilon())
+                elevationAngle = atan2(deltaAltitude(tmpPos),distance2D);
     }
     return elevationAngle;
 }
 
 double CartesianPosition_3D::deltaAltitude(const Abstract_Altitude* pos) const
 {
-    return this->getZPosition() - pos->getZ();
+    return this->getZPosition() - pos->getAltitude();
 }
 
 
@@ -98,9 +138,17 @@ double CartesianPosition_3D::distanceTo(const Abstract_CartesianPosition* pos) c
 //!
 double CartesianPosition_3D::polarBearingTo(const Abstract_CartesianPosition* pos) const
 {
-    double deltaY = this->getYPosition() - pos->getY();
-    double deltaX = this->getXPosition() - pos->getX();
-    return atan2(deltaY,deltaX);
+    double polarBearing = 0.0;
+
+    if(pos->isGreaterThan1D())
+    {
+        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
+        double deltaY = this->getYPosition() - tmpPos->getYPosition();
+        double deltaX = this->getXPosition() - tmpPos->getXPosition();
+        polarBearing = atan2(deltaY,deltaX);
+    }
+
+    return polarBearing;
 }
 
 //!
@@ -168,6 +216,7 @@ void CartesianPosition_3D::applyPositionalShiftFromCompass(const double &distanc
 {
     applyPositionalShiftFromPolar(distance,compassToPolarBearing(bearing),elevation);
 }
+
 
 } //end of namespace pose
 } //end of namespace mace
