@@ -1,8 +1,8 @@
-function standaloneWptCoordinator(runTime,cptRadius)
+function standaloneWptCoordinator(runTime,cptRadius,N)
 
 
 % parameters
-N = 2;
+% N = number of agents is given by the input argument
 positionUpdateTimeout = 0.5; % in seconds
 rosLoopRate = 4;
 bundleUpdateIters = 10;

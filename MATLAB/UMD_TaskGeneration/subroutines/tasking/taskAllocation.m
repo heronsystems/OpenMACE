@@ -42,7 +42,7 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian') || strcmp(swarmModel.ta
             initialNodes = [];
             
             for kk = 1:swarmModel.N
-                idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2),'K',5); % find four nearest neighbors
+                idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2)','K',5); % find four nearest neighbors
                 for ii = 1:5
                     VC = swarmWorld.voronoiVertices(swarmWorld.voronoiCells{idx(ii)},:);
                     initialNodeIndex = find(inpolygon(swarmState.x(4*(kk-1)+1),swarmState.x(4*(kk-1)+2),VC(:,1),VC(:,2)));
@@ -218,7 +218,7 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian') || strcmp(swarmModel.ta
             neighborNodes = zeros(swarmModel.N,knnNumber);
             
             for kk = 1:swarmModel.N
-                idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2),'K',knnNumber+1); % find knnNumber nearest neighbors
+                idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2)','K',knnNumber+1); % find knnNumber nearest neighbors
                 neighborNodes(kk,:) = idx(2:end);  % check if idx is a row vector
                 for ii = 1:5
                     VC = swarmWorld.voronoiVertices(swarmWorld.voronoiCells{idx(ii)},:);
@@ -367,7 +367,7 @@ elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
         for kk = 1:swarmModel.N
             % find knnNumber+1 nearest neighbor (returns indices of
             % cellCenterOfMass)
-            idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2),'K',swarmModel.knnNumber+1);
+            idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2)','K',swarmModel.knnNumber+1);
             neighborNodes(kk,:) = idx(2:end);  % check if idx is a row vector
             % neighborNodes(kk,:) = idx(1:end);  % check if idx is a row vector
             for ii = 1:5
@@ -546,7 +546,7 @@ elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_max')
         initialNodes = [];
         
         for kk = 1:swarmModel.N
-            idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2),'K',5); % find four nearest neighbors
+            idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2)','K',5); % find four nearest neighbors
             for ii = 1:5
                 VC = swarmWorld.voronoiVertices(swarmWorld.voronoiCells{idx(ii)},:);
                 initialNodeIndex = find(inpolygon(swarmState.x(4*(kk-1)+1),swarmState.x(4*(kk-1)+2),VC(:,1),VC(:,2)));

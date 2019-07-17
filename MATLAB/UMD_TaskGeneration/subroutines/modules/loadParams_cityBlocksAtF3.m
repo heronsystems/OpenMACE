@@ -3,8 +3,8 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % simulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
-runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 1*30; % total simulation/mission time
+runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
+runParams.T = 4*30; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -12,8 +12,8 @@ runParams.T = 1*30; % total simulation/mission time
 ROS_MACE = [];
 if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = struct;
-    ROS_MACE.operationalAlt = [3 5]; % m OR [4 8 2 6]; if running four quads
-    ROS_MACE.agentIDs = [1 2]; % m OR [1 2 3 4]; if running four quads
+    ROS_MACE.operationalAlt = [3 5 7 9]; % m OR [4 8 2 6]; if running four quads
+    ROS_MACE.agentIDs = [1 2 3 4]; % m OR [1 2 3 4]; if running four quads
     ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
     for i = 1:1:length(ROS_MACE.agentIDs)
         ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
@@ -63,7 +63,7 @@ end
 % Swarm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 swarmModel = struct;
-swarmModel.N = 2; % number of agents OR 4; if running four quads
+swarmModel.N = 4; % number of agents OR 4; if running four quads
 swarmModel.Rsense = 1.5; % sensing radius
 
 %swarmModel.delay = 1.3564;
