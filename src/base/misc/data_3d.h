@@ -6,6 +6,8 @@
 namespace mace {
 namespace misc {
 
+MACE_CLASS_FORWARD(Data3D);
+
 class Data3D : public Data2D
 {
 
@@ -13,9 +15,9 @@ public:
     //!
     //! \brief Data3D
     //!
-    Data3D() = default;
+    Data3D();
 
-    virtual ~Data3D() = default;
+    virtual ~Data3D();
 
     //!
     //! \brief Data3D
@@ -60,7 +62,7 @@ public:
     Data3D norm() const
     {
         double length = vectorLength();
-        if(length == 0)
+        if(fabs(length) < std::numeric_limits<double>::epsilon())
             return Data3D();
         else
             return Data3D(x / length, y / length, z / length);
@@ -230,7 +232,7 @@ public:
     {
         if(!Data2D::operator ==(rhs))
             return false;
-        if(this->z != rhs.z){
+        if(fabs(this->z - rhs.z) > std::numeric_limits<double>::epsilon()){
             return false;
         }
         if(this->dataZFlag != rhs.dataZFlag){

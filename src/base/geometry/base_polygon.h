@@ -21,6 +21,8 @@ class PolygonAbstract
 
     }
 
+    virtual ~PolygonAbstract() = default;
+
     template <class T>
     T *as()
     {
@@ -112,8 +114,7 @@ public:
     void initializePolygon(const unsigned int &size)
     {
         if(size <= 0){
-            // TODO-Ken/Pat: Throw a message with exception
-            std::cout << "Cannot initialize queue of 0" << std::endl;
+            std::cout << "Cannot initialize a polygon of size 0." << std::endl;
             throw std::exception();
         }
         m_vertex.clear();
@@ -244,7 +245,6 @@ protected:
     }
 
 protected:
-    std::string name;
     std::vector<T> m_vertex;
 };
 

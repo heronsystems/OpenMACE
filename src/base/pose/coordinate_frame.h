@@ -7,13 +7,14 @@
 namespace mace {
 namespace pose {
 
-#define LOCAL_FRAMES CF_LOCAL_NED, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
+#define LOCAL_FRAMES CF_LOCAL_UNKNOWN, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
+CF_LOCAL_NED, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
 CF_LOCAL_ENU, /* Local coordinate frame, Z-down (x: east, y: north, z: up) | */ \
 CF_LOCAL_OFFSET_NED, /* Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position. | */ \
 CF_BODY_NED, /* Setpoint in body NED frame. This makes sense if all position control is externalized - e.g. useful to command 2 m/s^2 acceleration to the right. | */ \
 CF_BODY_OFFSET_NED /* Offset in body NED frame. This makes sense if adding setpoints to the current flight path, to avoid an obstacle - e.g. useful to command 2 m/s^2 acceleration to the east. | */
 
-#define GLOBAL_FRAMES     CF_GLOBAL, /* Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL) | */ \
+#define GLOBAL_FRAMES CF_GLOBAL_UNKNOWN, /* Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL) | */ \
 CF_GLOBAL_RELATIVE_ALT, /* Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude, second value / y: longitude, third value / z: positive altitude with 0 being at the altitude of the home location. | */ \
 CF_GLOBAL_INT, /* Global coordinate frame, WGS84 coordinate system. First value / x: latitude in degrees*1.0e-7, second value / y: longitude in degrees*1.0e-7, third value / z: positive altitude over mean sea level (MSL) | */ \
 CF_GLOBAL_RELATIVE_ALT_INT, /* Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude with 0 being at the altitude of the home location. | */ \
@@ -21,11 +22,11 @@ CF_GLOBAL_TERRAIN_ALT, /* Global coordinate frame with above terrain level altit
 CF_GLOBAL_TERRAIN_ALT_INT /* Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model. | */
 
 
-enum class LocalFrameType: uint8_t{
+enum class CartesianFrameTypes: uint8_t{
     LOCAL_FRAMES
 };
 
-enum class GlobalFrameType : uint8_t{
+enum class GeodeticFrameTypes : uint8_t{
     GLOBAL_FRAMES
 };
 
@@ -47,22 +48,22 @@ enum class CoordinateFrame : uint8_t{
 //    CF_UNKNOWN = 11
 };
 
-inline CoordinateFrame getCoordinateFrame(const LocalFrameType &frame)
+inline CoordinateFrame getCoordinateFrame(const CartesianFrameTypes &frame)
 {
     switch (frame) {
-    case LocalFrameType::CF_LOCAL_NED:
+    case CartesianFrameTypes::CF_LOCAL_NED:
         return CoordinateFrame::CF_LOCAL_NED;
         break;
-    case LocalFrameType::CF_LOCAL_ENU:
+    case CartesianFrameTypes::CF_LOCAL_ENU:
         return CoordinateFrame::CF_LOCAL_ENU;
         break;
-    case LocalFrameType::CF_LOCAL_OFFSET_NED:
+    case CartesianFrameTypes::CF_LOCAL_OFFSET_NED:
         return CoordinateFrame::CF_LOCAL_OFFSET_NED;
         break;
-    case LocalFrameType::CF_BODY_NED:
+    case CartesianFrameTypes::CF_BODY_NED:
         return CoordinateFrame::CF_BODY_NED;
         break;
-    case LocalFrameType::CF_BODY_OFFSET_NED:
+    case CartesianFrameTypes::CF_BODY_OFFSET_NED:
         return CoordinateFrame::CF_BODY_OFFSET_NED;
         break;
     default:
@@ -71,36 +72,39 @@ inline CoordinateFrame getCoordinateFrame(const LocalFrameType &frame)
     }
 }
 
-inline CoordinateFrame getCoordinateFrame(const GlobalFrameType &frame)
+inline CoordinateFrame getCoordinateFrame(const GeodeticFrameTypes &frame)
 {
+    CoordinateFrame currentFrameType = CoordinateFrame::CF_UNKNOWN;
+
     switch (frame) {
-    case GlobalFrameType::CF_GLOBAL:
-        return CoordinateFrame::CF_GLOBAL;
+    case GeodeticFrameTypes::CF_GLOBAL_UNKNOWN:
+        currentFrameType = CoordinateFrame::CF_GLOBAL_UNKNOWN;
         break;
-    case GlobalFrameType::CF_GLOBAL_RELATIVE_ALT:
-        return CoordinateFrame::CF_GLOBAL_RELATIVE_ALT;
+    case GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT:
+        currentFrameType = CoordinateFrame::CF_GLOBAL_RELATIVE_ALT;
         break;
-    case GlobalFrameType::CF_GLOBAL_INT:
-        return CoordinateFrame::CF_GLOBAL_INT;
+    case GeodeticFrameTypes::CF_GLOBAL_INT:
+        currentFrameType = CoordinateFrame::CF_GLOBAL_INT;
         break;
-    case GlobalFrameType::CF_GLOBAL_RELATIVE_ALT_INT:
-        return CoordinateFrame::CF_GLOBAL_RELATIVE_ALT_INT;
+    case GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
+        currentFrameType = CoordinateFrame::CF_GLOBAL_RELATIVE_ALT_INT;
         break;
-    case GlobalFrameType::CF_GLOBAL_TERRAIN_ALT:
-        return CoordinateFrame::CF_GLOBAL_TERRAIN_ALT;
+    case GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT:
+        currentFrameType = CoordinateFrame::CF_GLOBAL_TERRAIN_ALT;
         break;
-    case GlobalFrameType::CF_GLOBAL_TERRAIN_ALT_INT:
-        return CoordinateFrame::CF_GLOBAL_TERRAIN_ALT_INT;
+    case GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT:
+        currentFrameType = CoordinateFrame::CF_GLOBAL_TERRAIN_ALT_INT;
         break;
     default:
-        return CoordinateFrame::CF_GLOBAL;
         break;
     }
+
+    return currentFrameType;
 }
 
 inline std::string CoordinateFrameToString(const CoordinateFrame &frame) {
     switch (frame) {
-    case CoordinateFrame::CF_GLOBAL:
+    case CoordinateFrame::CF_GLOBAL_UNKNOWN:
         return "CF_GLOBAL";
     case CoordinateFrame::CF_LOCAL_NED:
         return "CF_LOCAL_NED";
@@ -129,7 +133,7 @@ inline std::string CoordinateFrameToString(const CoordinateFrame &frame) {
 
 inline CoordinateFrame CoordinateFrameFromString(const std::string &str) {
     if(str == "CF_GLOBAL")
-        return CoordinateFrame::CF_GLOBAL;
+        return CoordinateFrame::CF_GLOBAL_UNKNOWN;
     if(str == "CF_LOCAL_NED")
         return CoordinateFrame::CF_LOCAL_NED;
     if(str == "CF_GLOBAL_RELATIVE_ALT")

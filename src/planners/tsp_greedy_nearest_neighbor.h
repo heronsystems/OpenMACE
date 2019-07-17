@@ -7,7 +7,7 @@
 
 #include "planners_global.h"
 #include "planners.h"
-#include "base/pose/abstract_position.h"
+#include "base/pose/position_interface.h"
 #include "base/pose/cartesian_position_2D.h"
 
 namespace mace {

@@ -3,6 +3,17 @@
 namespace mace{
 namespace misc{
 
+Data3D::Data3D():
+    Data2D()
+{
+
+}
+
+Data3D::~Data3D()
+{
+
+}
+
 Data3D::Data3D(const Data3D &copy):
     Data2D(copy)
 {

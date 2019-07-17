@@ -27,6 +27,13 @@ public:
     //!
     StateGlobalPosition();
 
+
+    virtual ~StateGlobalPosition() = default;
+
+    //!
+    //! \brief StateGlobalPosition
+    //! \param position
+    //!
     StateGlobalPosition(const mace::pose::GeodeticPosition_3D &position);
 
     //!
@@ -47,7 +54,7 @@ public:
     //! \param longitude
     //! \param altitude
     //!
-    StateGlobalPosition(const float &latitude, const float &longitude, const float &altitude);
+    StateGlobalPosition(const double &latitude, const double &longitude, const double &altitude);
 
     //!
     //! \brief StateGlobalPosition
@@ -115,8 +122,18 @@ public:
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
 
 public:
+    //!
+    //! \brief convertDegreesToRadians
+    //! \param degrees
+    //! \return
+    //!
     static double convertDegreesToRadians(const double &degrees);
 
+    //!
+    //! \brief convertRadiansToDegrees
+    //! \param radians
+    //! \return
+    //!
     static double convertRadiansToDegrees(const double &radians);
 
 //virtual functions derived from AbstractPosition

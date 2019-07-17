@@ -68,7 +68,7 @@ public:
         return !(*this == rhs);
     }
 
-private:
+private:  
     DynamicTarget<CartesianPosition_3D,CartesianVelocity_3D> target;
     TargetCompletion state;
 };

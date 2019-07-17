@@ -1,33 +1,33 @@
-#ifndef POLYGON_2DC_H
-#define POLYGON_2DC_H
+#ifndef POLYGON_CARTESIAN_H
+#define POLYGON_CARTESIAN_H
 
 #include "base_polygon.h"
 #include "list"
-#include "base/pose/cartesian_position_2D.h"
+#include "base/pose/abstract_cartesian_position.h"
 
 namespace mace{
 namespace geometry {
 
 using namespace pose;
 
-class Polygon_2DC : public PolygonBase<Position<CartesianPosition_2D>>
+class Polygon_Cartesian : public PolygonBase<CartesianPosition_2D>
 {
 public:
 
-    Polygon_2DC(const std::string &descriptor = "2D Cartesian Polygon");
+    Polygon_Cartesian(const std::string &descriptor = "2D Cartesian Polygon");
 
-    Polygon_2DC(const std::vector<Position<CartesianPosition_2D>> &vector, const std::string &descriptor = "2D Cartesian Polygon");
+    Polygon_Cartesian(const std::vector<Abstract_CartesianPosition> &vector, const std::string &descriptor = "2D Cartesian Polygon");
 
-    Polygon_2DC(const Polygon_2DC &copy);
+    Polygon_Cartesian(const Polygon_Cartesian &copy);
 
 
-    ~Polygon_2DC() = default;
+    ~Polygon_Cartesian() override = default;
 
     //!
     //! \brief getBoundingRect
     //! \return
     //!
-    Polygon_2DC getBoundingRect() const;
+    Polygon_Cartesian getBoundingRect() const;
 
 
     void getBoundingValues(double &xMin, double &minY, double &maxX, double &maxY) const;
@@ -38,7 +38,7 @@ public:
     //! \param onLineCheck
     //! \return
     //!
-    bool contains(const Position<CartesianPosition_2D> &point, const bool &onLineCheck = false) const;
+    bool contains(const CartesianPosition_2D &point, const bool &onLineCheck = false) const;
 
     //!
     //! \brief contains
@@ -55,19 +55,19 @@ public:
     //! \param onLineCheck
     //! \return
     //!
-    std::vector<bool> contains(std::vector<Position<CartesianPosition_2D>> &checkVector, const bool &onLineCheck = false);
+    std::vector<bool> contains(std::vector<CartesianPosition_2D> &checkVector, const bool &onLineCheck = false);
 
     //!
     //! \brief getCenter
     //! \return
     //!
-    Position<CartesianPosition_2D> getCenter() const;    
+    CartesianPosition_2D getCenter() const;
 
     std::vector<int> findUndefinedVertices() const override
     {
         int index = 0;
         std::vector<int> nullItems;
-        for(std::vector<Position<CartesianPosition_2D>>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
+        for(std::vector<CartesianPosition_2D>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
             if(!it->hasXBeenSet() && !it->hasYBeenSet())
             {
                 //This should see that the value is null
@@ -79,13 +79,13 @@ public:
     }
 
 public:
-    Position<CartesianPosition_2D> getTopLeft() const override;
-    Position<CartesianPosition_2D> getTopRight() const override;
+    CartesianPosition_2D getTopLeft() const override;
+    CartesianPosition_2D getTopRight() const override;
 
-    Position<CartesianPosition_2D> getBottomLeft() const override;
-    Position<CartesianPosition_2D> getBottomRight() const override;
+    CartesianPosition_2D getBottomLeft() const override;
+    CartesianPosition_2D getBottomRight() const override;
 
-    void getCorners(Position<CartesianPosition_2D> &topLeft, Position<CartesianPosition_2D> &bottomRight) const override;
+    void getCorners(CartesianPosition_2D &topLeft, CartesianPosition_2D &bottomRight) const override;
 
     mace::pose::CoordinateFrame getVertexCoordinateFrame() const override;
 
@@ -123,7 +123,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    Polygon_2DC& operator = (const Polygon_2DC &rhs)
+    Polygon_Cartesian& operator = (const Polygon_Cartesian &rhs)
     {
         PolygonBase::operator =(rhs);
         this->xMin = rhs.xMin;
@@ -138,25 +138,25 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator == (const Polygon_2DC &rhs) const
+    bool operator == (const Polygon_Cartesian &rhs) const
     {
-        if(!PolygonBase<Position<CartesianPosition_2D>>::operator ==(rhs))
+        if(!PolygonBase<CartesianPosition_2D>::operator ==(rhs))
         {
             return false;
         }
-        if(this->xMin != rhs.xMin)
+        if(fabs(this->xMin - rhs.xMin) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->xMax != rhs.xMax)
+        if(fabs(this->xMax - rhs.xMax) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->yMin != rhs.yMin)
+        if(fabs(this->yMin - rhs.yMin) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->yMax != rhs.yMax)
+        if(fabs(this->yMax - rhs.yMax) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
@@ -168,7 +168,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator != (const Polygon_2DC &rhs) const {
+    bool operator != (const Polygon_Cartesian &rhs) const {
         return !(*this == rhs);
     }
 

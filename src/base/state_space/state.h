@@ -40,7 +40,7 @@ public:
      *
      */
     template <class T>
-    const T *as() const
+    const T *stateAs() const
     {
         //ensure that we are attempting to cast it to a type of state
         return static_cast<const T *>(this);
@@ -50,7 +50,7 @@ public:
      *
      */
     template <class T>
-    T *as()
+    T *stateAs()
     {
         //ensure that we are attempting to cast it to a type of state
         return static_cast<T *>(this);
@@ -68,13 +68,13 @@ public:
      * @brief getClone
      * @return
      */
-    virtual State* getClone() const = 0;
+    virtual State* getStateClone() const = 0;
 
     /**
      * @brief getClone
      * @param state
      */
-    virtual void getClone(State** state) const = 0;
+    virtual void getStateClone(State** state) const = 0;
 
 };
 
@@ -102,13 +102,13 @@ public:
 
     State_TimeExpanded(const State_TimeExpanded &copy)
     {
-        this->m_State = copy.m_State->getClone();
+        this->m_State = copy.m_State->getStateClone();
         this->m_Time = copy.m_Time;
     }
 
     void setState(const State* state)
     {
-        m_State = state->getClone();
+        m_State = state->getStateClone();
     }
 
 

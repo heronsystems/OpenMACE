@@ -28,7 +28,7 @@ public:
     //! \param state State to copy
     //!
     RootNode(const state_space::State &state):
-        currentState(state.getClone()), parentNode(nullptr)
+        currentState(state.getStateClone()), parentNode(nullptr)
     {
 
     }
@@ -47,7 +47,7 @@ public:
     void setCurrentState(const state_space::State &state) {
 
         state_space::State* tmp = this->currentState;
-        this->currentState = state.getClone();
+        this->currentState = state.getStateClone();
         delete tmp;
     }
     void setParentNode(RootNode* node) { this->parentNode = node; }

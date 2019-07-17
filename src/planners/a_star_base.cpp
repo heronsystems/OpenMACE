@@ -16,7 +16,7 @@ void AStarBase::retracePath(const GraphNode* start, const GraphNode* end, std::v
     path.clear();
     for(int i = backwardsPath.size() - 1; i >= 0; i--)
     {
-        path.push_back(backwardsPath.at(i)->getClone());
+        path.push_back(backwardsPath.at(i)->getStateClone());
         std::cout<<"The position here is: "<<backwardsPath.at(i)->printInfo()<<std::endl;
     }
 }

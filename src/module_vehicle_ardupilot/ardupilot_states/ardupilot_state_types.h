@@ -26,16 +26,17 @@ enum class ArdupilotFlightState{
     STATE_FLIGHT_GUIDED_IDLE = 13, /**< */
     STATE_FLIGHT_GUIDED_GOTO = 14, /**< */
     STATE_FLIGHT_GUIDED_QUEUE = 15, /**< */
-    STATE_FLIGHT_AUTO = 16, /**< */
-    STATE_FLIGHT_BRAKE= 17, /**< */
-    STATE_FLIGHT_RTL = 18, /**< */
-    STATE_FLIGHT_LAND = 19,
-    STATE_FLIGHT_UNKNOWN = 20,
-    STATE_LANDING= 21, /**< */
-    STATE_LANDING_TRANSITIONING = 22, /**< */
-    STATE_LANDING_DESCENDING = 23, /**< */
-    STATE_LANDING_COMPLETE = 24, /**< */
-    STATE_UNKNOWN = 25 /**< */
+    STATE_FLIGHT_GUIDED_TARGET = 16, /**< */
+    STATE_FLIGHT_AUTO = 17, /**< */
+    STATE_FLIGHT_BRAKE= 18, /**< */
+    STATE_FLIGHT_RTL = 19, /**< */
+    STATE_FLIGHT_LAND = 20,
+    STATE_FLIGHT_UNKNOWN = 21,
+    STATE_LANDING= 22, /**< */
+    STATE_LANDING_TRANSITIONING = 23, /**< */
+    STATE_LANDING_DESCENDING = 24, /**< */
+    STATE_LANDING_COMPLETE = 25, /**< */
+    STATE_UNKNOWN = 26 /**< */
 };
 
 //!

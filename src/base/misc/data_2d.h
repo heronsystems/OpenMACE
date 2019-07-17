@@ -3,11 +3,15 @@
 
 #include <iostream>
 #include <cmath>
+#include <numeric>
+#include <limits>
 
-#include "abstract_data.h"
+#include "common/class_forward.h"
 
 namespace mace {
 namespace misc {
+
+MACE_CLASS_FORWARD(Data2D);
 
 class Data2D
 {
@@ -15,10 +19,10 @@ public:
     //!
     //! \brief Data2D
     //!
-    Data2D() = default;
+    Data2D();
 
     //!
-    virtual ~Data2D() = default;
+    virtual ~Data2D();
 
     //!
     //! \brief Data2D
@@ -37,7 +41,7 @@ public:
     Data2D norm() const
     {
         double length = sqrt(x*x + y*y);
-        if(length == 0)
+        if(fabs(length) < std::numeric_limits<double>::epsilon())
             return Data2D();
         else
             return Data2D(x / length, y / length);
@@ -228,10 +232,10 @@ public:
     //!
     bool operator == (const Data2D &rhs) const
     {
-        if(this->x != rhs.x){
+        if(fabs(this->x - rhs.x) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->y != rhs.y){
+        if(fabs(this->y - rhs.y) > std::numeric_limits<double>::epsilon()){
             return false;
         }
         if(this->dataXFlag != rhs.dataXFlag){

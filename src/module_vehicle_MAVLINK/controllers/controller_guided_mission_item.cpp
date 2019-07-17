@@ -20,9 +20,9 @@ namespace MAVLINKVehicleControllers {
             mavlinkItem.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
         }
 
-        mavlinkItem.x = pos.getY();
-        mavlinkItem.y = pos.getX();
-        mavlinkItem.z = pos.getZ();
+        mavlinkItem.x = static_cast<float>(pos.getY());
+        mavlinkItem.y = static_cast<float>(pos.getX());
+        mavlinkItem.z = static_cast<float>(pos.getZ());
     }
 
 }// end of namespace MAVLINKVehicleControllers

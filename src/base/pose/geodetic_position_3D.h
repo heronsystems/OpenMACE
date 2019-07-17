@@ -31,12 +31,12 @@ public:
         this->data.setData(latitude,longitude,altitude);
     }
 
-    State* getClone() const override
+    State* getStateClone() const override
     {
         return (new GeodeticPosition_3D(*this));
     }
 
-    void getClone(State** state) const override
+    void getStateClone(State** state) const override
     {
         *state = new GeodeticPosition_3D(*this);
     }
@@ -107,7 +107,7 @@ public:
     double deltaLatitude(const GeodeticPosition_3D &that) const;
     double deltaLongitude(const GeodeticPosition_3D &that) const;
 public:
-    void setCoordinateFrame(const GlobalFrameType &desiredFrame)
+    void setCoordinateFrame(const GeodeticFrameTypes &desiredFrame)
     {
         this->frame = mace::pose::getCoordinateFrame(desiredFrame);
     }

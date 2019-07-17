@@ -1,46 +1,40 @@
 #ifndef CARTESIAN_POSITION_2D_H
 #define CARTESIAN_POSITION_2D_H
 
-#include "base_position.h"
+#include "abstract_cartesian_position.h"
 #include "base/state_space/state.h"
-
-using namespace mace::math;
 
 namespace mace{
 namespace pose {
 
-class CartesianPosition_2D : public AbstractPosition<CartesianPosition_2D, misc::Data2D>, public CartesianPosition,
+class CartesianPosition_2D : public Abstract_CartesianPosition,
         public state_space::State
 {
 public:
-    CartesianPosition_2D():
-        AbstractPosition(AbstractPosition::PositionType::CARTESIAN, CoordinateFrame::CF_LOCAL_ENU)
+    CartesianPosition_2D(const std::string &pointName):
+        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State()
     {
 
     }
 
-    ~CartesianPosition_2D() = default;
+    CartesianPosition_2D(const std::string &pointName = "Position Point", const double &x = 0.0, const double &y = 0.0):
+        Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Data2D(x,y), State()
+    {
+
+    }
+
+    ~CartesianPosition_2D() override = default;
 
     CartesianPosition_2D(const CartesianPosition_2D &copy):
-        AbstractPosition(copy), state_space::State(copy)
+        Abstract_CartesianPosition(copy), Data2D(copy), state_space::State(copy)
     {
 
     }
 
-    CartesianPosition_2D(const double &x, const double &y):
-        AbstractPosition(AbstractPosition::PositionType::CARTESIAN, CoordinateFrame::CF_LOCAL_ENU)
+    CartesianPosition_2D(const CartesianPosition_3D &copy):
+        Abstract_CartesianPosition(copy), Data2D(copy), state_space::State(copy)
     {
-        this->data.setData(x,y);
-    }
 
-    State* getClone() const override
-    {
-        return (new CartesianPosition_2D(*this));
-    }
-
-    void getClone(State** state) const override
-    {
-        *state = new CartesianPosition_2D(*this);
     }
 
     std::string printInfo() const override
@@ -50,89 +44,85 @@ public:
     }
 
 public:
-    void updatePosition(const double &x, const double &y)
-    {
-        this->data.setData(x,y);
-    }
-
-    void setXPosition(const double &x)
-    {
-        this->data.setX(x);
-    }
-
-    void setYPosition(const double &y)
-    {
-        this->data.setY(y);
-    }
-
-    double getXPosition() const
-    {
-        return this->data.getX();
-    }
-
-    double getYPosition() const
-    {
-        return this->data.getY();
-    }
-
-    Eigen::Vector2d getAsVector()
-    {
-        Eigen::Vector2d vec(this->data.getX(), this->data.getY());
-        return vec;
-    }
-
-    bool hasXBeenSet() const
-    {
-        return this->data.getDataXFlag();
-    }
-
-    bool hasYBeenSet() const
-    {
-        return this->data.getDataYFlag();
-    }
-public:
-    double deltaX(const CartesianPosition_2D &that) const;
-    double deltaY(const CartesianPosition_2D &that) const;
-public:
-    void setCoordinateFrame(const LocalFrameType &desiredFrame)
-    {
-        this->frame = mace::pose::getCoordinateFrame(desiredFrame);
-    }
-
-    /** Arithmetic Operators */
-public:
-
-    //!
-    //! \brief operator +
-    //! \param that
-    //! \return
-    //!
-    CartesianPosition_2D operator + (const CartesianPosition_2D &that) const
-    {
-        CartesianPosition_2D newPoint(*this);
-        newPoint.data = this->data + that.data;
-        return newPoint;
-    }
-
-    //!
-    //! \brief operator -
-    //! \param that
-    //! \return
-    //!
-    CartesianPosition_2D operator - (const CartesianPosition_2D &that) const
-    {
-        CartesianPosition_2D newPoint(*this);
-        newPoint.data = this->data - that.data;
-        return newPoint;
-    }
-
-
-public:
 
     void normalize();
 
     void scale(const double &value);
 
+public:
+    void updatePosition(const double &x, const double &y)
+    {
+        this->setData(x,y);
+    }
+
+    void setXPosition(const double &x)
+    {
+        this->setX(x);
+    }
+
+    void setYPosition(const double &y)
+    {
+        this->setY(y);
+    }
+
+    double getXPosition() const
+    {
+        return this->getX();
+    }
+
+    double getYPosition() const
+    {
+        return this->getY();
+    }
+
+    Eigen::Vector2d getAsVector()
+    {
+        Eigen::Vector2d vec(this->getX(), this->getY());
+        return vec;
+    }
+
+    bool hasXBeenSet() const
+    {
+        return this->getDataXFlag();
+    }
+
+    bool hasYBeenSet() const
+    {
+        return this->getDataYFlag();
+    }
+public:
+    double deltaX(const CartesianPosition_2D &that) const;
+    double deltaY(const CartesianPosition_2D &that) const;
+
+
+
+    /** Interface imposed via state_space::State */
+public:
+    State* getStateClone() const override
+    {
+        return (new CartesianPosition_2D(*this));
+    }
+
+    void getStateClone(State** state) const override
+    {
+        *state = new CartesianPosition_2D(*this);
+    }
+
+
+    /** Interface imposed via Abstract_CartesianPosition */
+
+public:
+    Position* getPositionalClone() const override
+    {
+        return (new CartesianPosition_2D(*this));
+    }
+
+    void getPositionalClone(Position** state) const override
+    {
+        *state = new CartesianPosition_2D(*this);
+    }
+
+public:
     bool hasBeenSet() const override
     {
         return hasXBeenSet() || hasYBeenSet();
@@ -155,28 +145,28 @@ public:
     //! \param position
     //! \return
     //!
-    double distanceBetween2D(const CartesianPosition_2D &pos) const override;
+    double distanceBetween2D(const Abstract_CartesianPosition* pos) const override;
 
     //!
     //! \brief distanceTo
     //! \param position
     //! \return
     //!
-    double distanceTo(const CartesianPosition_2D &pos) const override;
+    double distanceTo(const Abstract_CartesianPosition* pos) const override;
 
     //!
     //! \brief polarBearingTo
     //! \param position
     //! \return
     //!
-    double polarBearingTo(const CartesianPosition_2D &pos) const override;
+    double polarBearingTo(const Abstract_CartesianPosition* pos) const override;
 
     //!
     //! \brief polarBearingTo
     //! \param position
     //! \return
     //!
-    double compassBearingTo(const CartesianPosition_2D &pos) const override;
+    double compassBearingTo(const Abstract_CartesianPosition* pos) const override;
 
     //!
     //! \brief newPositionFromPolar
@@ -184,7 +174,7 @@ public:
     //! \param compassBearing
     //! \return
     //!
-    CartesianPosition_2D newPositionFromPolar(const double &distance, const double &bearing) const override;
+    void newPositionFromPolar(Abstract_CartesianPosition* newObject, const double &distance, const double &bearing) const override;
 
     //!
     //! \brief newPositionFromPolar
@@ -192,12 +182,43 @@ public:
     //! \param compassBearing
     //! \return
     //!
-    CartesianPosition_2D newPositionFromCompass(const double &distance, const double &bearing) const override;
+    void newPositionFromCompass(Abstract_CartesianPosition *newObject, const double &distance, const double &bearing) const override;
 
     void applyPositionalShiftFromPolar(const double &distance, const double &bearing) override;
 
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
 
+
+    /** Arithmetic Operators */
+public:
+
+    //!
+    //! \brief operator +
+    //! \param that
+    //! \return
+    //!
+    CartesianPosition_2D operator + (const CartesianPosition_2D &that) const
+    {
+        CartesianPosition_2D newPoint(*this);
+        newPoint.x = this->x + that.x;
+        newPoint.y = this->y + that.y;
+        return newPoint;
+    }
+
+    //!
+    //! \brief operator -
+    //! \param that
+    //! \return
+    //!
+    CartesianPosition_2D operator - (const CartesianPosition_2D &that) const
+    {
+        CartesianPosition_2D newPoint(*this);
+
+        newPoint.x = this->x - that.x;
+        newPoint.y = this->y - that.y;
+
+        return newPoint;
+    }
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const CartesianPosition_2D& t);

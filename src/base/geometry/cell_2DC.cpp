@@ -4,26 +4,26 @@ namespace mace {
 namespace geometry{
 
 Cell_2DC::Cell_2DC(const std::string &descriptor):
-    Polygon_2DC(descriptor)
+    Polygon_Cartesian(descriptor)
 {
 
 }
 
-Cell_2DC::Cell_2DC(const std::vector<Position<CartesianPosition_2D>> &vector, const std::string &descriptor):
-    Polygon_2DC(vector, descriptor)
+Cell_2DC::Cell_2DC(const std::vector<CartesianPosition_2D> &vector, const std::string &descriptor):
+    Polygon_Cartesian(vector, descriptor)
 {
 
 }
 
 Cell_2DC::Cell_2DC(const Cell_2DC &copy):
-    Polygon_2DC(copy)
+    Polygon_Cartesian(copy)
 {
     this->m_nodes = copy.m_nodes;
 }
 
-void Cell_2DC::insertNodes(std::list<Position<CartesianPosition_2D>*> &checkVector, const bool &onLineCheck)
+void Cell_2DC::insertNodes(std::list<CartesianPosition_2D*> &checkVector, const bool &onLineCheck)
 {
-    std::list<Position<CartesianPosition_2D>*>::iterator i = checkVector.begin();
+    std::list<CartesianPosition_2D*>::iterator i = checkVector.begin();
     while (i != checkVector.end())
     {
         if(contains((*i)->getXPosition(),(*i)->getYPosition(),onLineCheck))
@@ -36,7 +36,7 @@ void Cell_2DC::insertNodes(std::list<Position<CartesianPosition_2D>*> &checkVect
     }
 }
 
-std::vector<Position<CartesianPosition_2D>*> Cell_2DC::getNodes() const
+std::vector<CartesianPosition_2D*> Cell_2DC::getNodes() const
 {
     return this->m_nodes;
 }

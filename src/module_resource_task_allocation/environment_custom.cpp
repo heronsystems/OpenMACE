@@ -20,7 +20,7 @@ double rnd() {return double(rand())/RAND_MAX;}
  * @param verts Vector of vertices that make up the environment boundary
  * @param gridSpacing Spacing between grid points
  */
-Environment_Map::Environment_Map(const Polygon_2DC &boundingPolygon, const double &gridSpacing, const bool &globalInstance) :
+Environment_Map::Environment_Map(const Polygon_Cartesian &boundingPolygon, const double &gridSpacing, const bool &globalInstance) :
     m_boundary(boundingPolygon), m_globalInstance(globalInstance) {
 
     // Only generated and insert nodes if the RTA instance is a local instance (i.e. onboard a vehicle that needs to generate nodes)
@@ -59,7 +59,7 @@ bool Environment_Map::computeBalancedVoronoi(const std::map<int, Position<Cartes
         }
         else {
             std::vector<Cell_2DC> cellsVec;
-            std::vector<Polygon_2DC> polygons = polygon.getPolygons();
+            std::vector<Polygon_Cartesian> polygons = polygon.getPolygons();
             for(auto polygon : polygons) {
                 std::vector<Position<CartesianPosition_2D> > coords;
                 std::vector<Position<CartesianPosition_2D> > vertices = polygon.getVector();

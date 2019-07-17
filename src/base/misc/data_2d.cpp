@@ -3,6 +3,16 @@
 namespace mace {
 namespace misc {
 
+Data2D::Data2D()
+{
+
+}
+
+Data2D::~Data2D()
+{
+
+}
+
 Data2D::Data2D(const Data2D &copy)
 {
     this->x = copy.x;

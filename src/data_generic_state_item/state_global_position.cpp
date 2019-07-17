@@ -32,7 +32,7 @@ StateGlobalPosition::StateGlobalPosition(const Data::CoordinateFrameType &frame)
 
 }
 
-StateGlobalPosition::StateGlobalPosition(const float &latitude, const float &longitude, const float &altitude):
+StateGlobalPosition::StateGlobalPosition(const double &latitude, const double &longitude, const double &altitude):
     Base3DPosition(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT,latitude,longitude,altitude)
 {
 

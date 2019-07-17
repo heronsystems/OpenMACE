@@ -2,7 +2,7 @@
 #define POLYGON_2DG_H
 
 #include "base_polygon.h"
-#include "polygon_2DC.h"
+#include "polygon_cartesian.h"
 
 #include "list"
 #include "base/pose/geodetic_position_2D.h"
@@ -180,7 +180,7 @@ private:
     double yMin, yMax;
 
 private:
-    Polygon_2DC m_localPolygon;
+    Polygon_Cartesian m_localPolygon;
 };
 
 } //end of namespace geometry

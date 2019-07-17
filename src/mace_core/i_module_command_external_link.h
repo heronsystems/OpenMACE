@@ -17,7 +17,7 @@
 #include "command_marshler.h"
 #include "module_characteristics.h"
 
-#include "base/geometry/polygon_2DC.h"
+#include "base/geometry/polygon_cartesian.h"
 
 #include "i_module_command_generic_boundaries.h"
 

@@ -12,7 +12,7 @@ Bounded2DGrid::Bounded2DGrid(const double &x_min, const double &x_max,
 
 }
 
-Bounded2DGrid::Bounded2DGrid(const geometry::Polygon_2DC &boundingPolygon,
+Bounded2DGrid::Bounded2DGrid(const geometry::Polygon_Cartesian &boundingPolygon,
                              const double &x_res, const double &y_res,
                              const Position<CartesianPosition_2D> *fill_value):
     Dynamic2DGrid(boundingPolygon.getXMin(),boundingPolygon.getXMax(),
@@ -22,7 +22,7 @@ Bounded2DGrid::Bounded2DGrid(const geometry::Polygon_2DC &boundingPolygon,
     setBoundingPolygon(boundingPolygon);
 }
 
-std::vector<Position<CartesianPosition_2D> *> Bounded2DGrid::setBoundingPolygon(const geometry::Polygon_2DC &polygon)
+std::vector<Position<CartesianPosition_2D> *> Bounded2DGrid::setBoundingPolygon(const geometry::Polygon_Cartesian &polygon)
 {
     this->clearData();
 

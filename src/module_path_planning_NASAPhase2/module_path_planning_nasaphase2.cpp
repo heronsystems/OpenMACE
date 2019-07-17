@@ -35,7 +35,7 @@ ModulePathPlanningNASAPhase2::ModulePathPlanningNASAPhase2() :
     auto stateValidityCheck = ([this](const mace::state_space::State *state){
         if(m_ProjectedOccupancyMap != nullptr)
         {
-            const mace::pose::CartesianPosition_2D* castState = state->as<const mace::pose::CartesianPosition_2D>();
+            const mace::pose::CartesianPosition_2D* castState = state->stateAs<const mace::pose::CartesianPosition_2D>();
             OccupiedResult* result = m_ProjectedOccupancyMap->getCellByPos(castState->getXPosition(),castState->getYPosition());
             if(*result == OccupiedResult::NOT_OCCUPIED)
                 return true;
@@ -416,7 +416,7 @@ void ModulePathPlanningNASAPhase2::NewlyAvailableMission(const MissionItem::Miss
 
 void ModulePathPlanningNASAPhase2::cbiPlanner_SampledState(const mace::state_space::State *sampleState)
 {
-    const mace::pose::CartesianPosition_2D* sampledState = sampleState->as<mace::pose::CartesianPosition_2D>();
+    const mace::pose::CartesianPosition_2D* sampledState = sampleState->stateAs<mace::pose::CartesianPosition_2D>();
     std::shared_ptr<mace::poseTopic::Cartesian_2D_Topic> ptrSampledState= std::make_shared<mace::poseTopic::Cartesian_2D_Topic>(*sampledState);
 
     MaceCore::TopicDatagram topicDatagram;
@@ -431,10 +431,10 @@ void ModulePathPlanningNASAPhase2::cbiPlanner_NewConnection(const mace::state_sp
 {
     mace::geometry::Line_2DC newLine;
 
-    const mace::pose::CartesianPosition_2D* begState = beginState->as<mace::pose::CartesianPosition_2D>();
+    const mace::pose::CartesianPosition_2D* begState = beginState->stateAs<mace::pose::CartesianPosition_2D>();
     newLine.beginLine(*begState);
 
-    const mace::pose::CartesianPosition_2D* endState = secondState->as<mace::pose::CartesianPosition_2D>();
+    const mace::pose::CartesianPosition_2D* endState = secondState->stateAs<mace::pose::CartesianPosition_2D>();
     newLine.endLine(*endState);
 
     std::shared_ptr<mace::geometryTopic::Line_2DC_Topic> ptrLine= std::make_shared<mace::geometryTopic::Line_2DC_Topic>(newLine);
@@ -498,7 +498,7 @@ void ModulePathPlanningNASAPhase2::replanRRT()
 
             for (int i = 0; i < solution.size(); i++)
             {
-                mace::state_space::StatePtr state(solution[i]->getClone());
+                mace::state_space::StatePtr state(solution[i]->getStateClone());
 
                 CartesianPosition_3D pos;
                 pos.setXPosition(state->as<mace::pose::CartesianPosition_2D>()->getXPosition());

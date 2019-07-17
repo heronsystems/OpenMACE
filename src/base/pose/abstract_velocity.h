@@ -1,7 +1,7 @@
 #ifndef ABSTRACT_VELOCITY_H
 #define ABSTRACT_VELOCITY_H
 
-#include "base/misc/abstract_data.h"
+#include "base/misc/data_components.h"
 #include "coordinate_frame.h"
 
 namespace mace{

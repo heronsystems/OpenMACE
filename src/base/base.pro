@@ -51,27 +51,25 @@ SOURCES += \
     pose/geodetic_position_3D.cpp \
     pose/dynamics_aid.cpp \
     geometry/polygon_2DG.cpp \
-    pose/cartesian_velocity_3D.cpp
+    pose/cartesian_velocity_3D.cpp \
+    pose/base_position.cpp \
+    pose/cartesian_position_base.cpp
 
 HEADERS +=\
     base_global.h \
     math/helper_pi.h \
-    pose/abstract_position.h \
     pose/cartesian_position_2D.h \
     pose/coordinate_frame.h \
     pose/base_position.h \
     pose/cartesian_position_3D.h \
     misc/data_2d.h \
     misc/data_3d.h \
-    misc/data_forward_definition.h \
     geometry/base_polygon.h \
     state_space/real_vector.h \
     geometry/geometry_helper.h \
     pose/orientation_2D.h \
     pose/orientation_3D.h \
-    math/math_forward.h \
     state_space/real_vector_bounds.h \
-    misc/abstract_data.h \
     pose/geodetic_position_2D.h \
     state_space/state_sampler.h \
     state_space/state_space_types.h \
@@ -92,7 +90,6 @@ HEADERS +=\
     geometry/base_polygon.h \
     geometry/cell_2DC.h \
     geometry/geometry_helper.h \
-    geometry/polygon_2DC.h \
     geometry/base_line.h \
     pose/abstract_velocity.h \
     misc/data_1d.h \
@@ -103,7 +100,13 @@ HEADERS +=\
     geometry/polygon_2DG.h \
     pose/cartesian_velocity_3D.h \
     pose/abstract_orientation.h \
-    geometry/rotate_2d.h
+    geometry/rotate_2d.h \
+    misc/data_components.h \
+    math/math_components.h \
+    pose/abstract_cartesian_position.h \
+    pose/position_interface.h \
+    geometry/polygon_cartesian.h \
+    pose/elevation_interface.h
 
 # Unix lib Install
 unix:!symbian {

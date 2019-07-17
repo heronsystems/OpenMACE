@@ -1,27 +1,27 @@
-#include "polygon_2DC.h"
+#include "polygon_cartesian.h"
 
 namespace mace{
 namespace geometry {
 
-Polygon_2DC::Polygon_2DC(const std::string &descriptor):
+Polygon_Cartesian::Polygon_Cartesian(const std::string &descriptor):
     PolygonBase(descriptor)
 {
 
 }
 
-Polygon_2DC::Polygon_2DC(const std::vector<Position<CartesianPosition_2D>> &vector, const std::string &descriptor):
+Polygon_Cartesian::Polygon_Cartesian(const std::vector<CartesianPosition_2D> &vector, const std::string &descriptor):
     PolygonBase(vector, descriptor)
 {
     updateBoundingBox();
 }
 
-Polygon_2DC::Polygon_2DC(const Polygon_2DC &copy):
+Polygon_Cartesian::Polygon_Cartesian(const Polygon_Cartesian &copy):
     PolygonBase(copy)
 {
     updateBoundingBox();
 }
 
-std::vector<bool> Polygon_2DC::contains(std::vector<Position<CartesianPosition_2D>> &checkVector, const bool &onLineCheck)
+std::vector<bool> Polygon_Cartesian::contains(std::vector<CartesianPosition_2D> &checkVector, const bool &onLineCheck)
 {
     std::vector<bool> rtnVector;
     const size_t size = checkVector.size();
@@ -36,7 +36,7 @@ std::vector<bool> Polygon_2DC::contains(std::vector<Position<CartesianPosition_2
     return rtnVector;
 }
 
-bool Polygon_2DC::contains(const double &x, const double &y, const bool &onLineCheck) const
+bool Polygon_Cartesian::contains(const double &x, const double &y, const bool &onLineCheck) const
 {
     const size_t num = this->m_vertex.size();
 
@@ -87,12 +87,12 @@ bool Polygon_2DC::contains(const double &x, const double &y, const bool &onLineC
     return counter != 0;
 }
 
-bool Polygon_2DC::contains(const Position<CartesianPosition_2D> &point, const bool &onLineCheck) const
+bool Polygon_Cartesian::contains(const CartesianPosition_2D &point, const bool &onLineCheck) const
 {
-    return contains(point.getXPosition(), point.getYPosition(),onLineCheck);
+    return contains(point.getXPosition(), point.getYPosition(), onLineCheck);
 }
 
-void Polygon_2DC::updateBoundingBox()
+void Polygon_Cartesian::updateBoundingBox()
 {
     if (m_vertex.size() >= 3)
     {
@@ -116,7 +116,7 @@ void Polygon_2DC::updateBoundingBox()
     }
 }
 
-void Polygon_2DC::getBoundingValues(double &minX, double &minY, double &maxX, double &maxY) const
+void Polygon_Cartesian::getBoundingValues(double &minX, double &minY, double &maxX, double &maxY) const
 {
     minX = xMin;
     minY = yMin;
@@ -124,14 +124,14 @@ void Polygon_2DC::getBoundingValues(double &minX, double &minY, double &maxX, do
     maxY = yMax;
 }
 
-Polygon_2DC Polygon_2DC::getBoundingRect() const
+Polygon_Cartesian Polygon_Cartesian::getBoundingRect() const
 {
-    Polygon_2DC polygon("Bounding Polygon");
+    Polygon_Cartesian polygon("Bounding Polygon");
 
-    Position<CartesianPosition_2D> LL("Lower Left",xMin,yMin);
-    Position<CartesianPosition_2D> UL("Upper Left",xMin,yMax);
-    Position<CartesianPosition_2D> UR("Upper Right",xMax,yMax);
-    Position<CartesianPosition_2D> LR("Lower Right",xMax,yMin);
+    CartesianPosition_2D LL("Lower Left",xMin,yMin);
+    CartesianPosition_2D UL("Upper Left",xMin,yMax);
+    CartesianPosition_2D UR("Upper Right",xMax,yMax);
+    CartesianPosition_2D LR("Lower Right",xMax,yMin);
 
     polygon.appendVertex(LL);
     polygon.appendVertex(UL);
@@ -142,9 +142,9 @@ Polygon_2DC Polygon_2DC::getBoundingRect() const
 }
 
 
-Position<pose::CartesianPosition_2D> Polygon_2DC::getCenter() const
+pose::CartesianPosition_2D Polygon_Cartesian::getCenter() const
 {
-    Position<CartesianPosition_2D> center("Center");
+    CartesianPosition_2D center("Center");
     size_t size = polygonSize();
     for (size_t i = 0; i < size; i++)
     {
@@ -155,43 +155,43 @@ Position<pose::CartesianPosition_2D> Polygon_2DC::getCenter() const
     return center;
 }
 
-Position<CartesianPosition_2D> Polygon_2DC::getTopLeft() const
+CartesianPosition_2D Polygon_Cartesian::getTopLeft() const
 {
-    Position<CartesianPosition_2D> UL("Upper Left",xMin,yMax);
+    CartesianPosition_2D UL("Upper Left",xMin,yMax);
     return UL;
 }
 
-Position<CartesianPosition_2D> Polygon_2DC::getTopRight() const
+CartesianPosition_2D Polygon_Cartesian::getTopRight() const
 {
-    Position<CartesianPosition_2D> UL("Upper Right",xMax,yMax);
+    CartesianPosition_2D UL("Upper Right",xMax,yMax);
     return UL;
 }
 
-Position<CartesianPosition_2D> Polygon_2DC::getBottomRight() const
+CartesianPosition_2D Polygon_Cartesian::getBottomRight() const
 {
-    Position<CartesianPosition_2D> LR("Lower Right",xMax,yMin);
+    CartesianPosition_2D LR("Lower Right",xMax,yMin);
     return LR;
 }
 
 
-Position<CartesianPosition_2D> Polygon_2DC::getBottomLeft() const
+CartesianPosition_2D Polygon_Cartesian::getBottomLeft() const
 {
-    Position<CartesianPosition_2D> BL("Bottom Left",xMin,yMin);
+    CartesianPosition_2D BL("Bottom Left",xMin,yMin);
     return BL;
 }
 
-void Polygon_2DC::getCorners(Position<CartesianPosition_2D> &topLeft, Position<CartesianPosition_2D> &bottomRight) const
+void Polygon_Cartesian::getCorners(CartesianPosition_2D &topLeft, CartesianPosition_2D &bottomRight) const
 {
     topLeft = getTopLeft();
     bottomRight = getBottomRight();
 }
 
-CoordinateFrame Polygon_2DC::getVertexCoordinateFrame() const
+CoordinateFrame Polygon_Cartesian::getVertexCoordinateFrame() const
 {
     return CoordinateFrame::CF_LOCAL_ENU;
 }
 
-void Polygon_2DC::applyCoordinateShift(const double &distance, const double &bearing)
+void Polygon_Cartesian::applyCoordinateShift(const double &distance, const double &bearing)
 {
     for (size_t i = 0; i < polygonSize(); i++)
     {

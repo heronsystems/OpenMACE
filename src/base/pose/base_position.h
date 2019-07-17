@@ -2,81 +2,125 @@
 #define BASE_POSITION_H
 
 #include <iostream>
-#include <cmath>
-#include <Eigen/Core>
-#include "abstract_position.h"
-#include "base/misc/data_2d.h"
-#include "base/misc/data_3d.h"
 
-#include "base/math/helper_pi.h"
+#include "common/common.h"
+#include "common/class_forward.h"
+#include "base/math/math_components.h"
+#include "base/misc/data_components.h"
+
+#include "coordinate_frame.h"
 
 namespace mace{
 namespace pose{
 
-
-class CartesianPosition
-{
-public:
-    CartesianPosition() = default;
-
-    virtual ~CartesianPosition() = default;
+enum class PositionType : uint8_t{
+    CARTESIAN = 0,
+    GEODETIC = 1,
+    UNKNOWN = 2
 };
 
-class GeodeticPosition
+class Position
 {
 public:
-    GeodeticPosition() = default;
+    Position(const std::string &posName = "Position Object");
 
-    virtual ~GeodeticPosition() = default;
-};
+    Position(const Position &copy);
 
-template<typename T>
-class Position : public T
-{
-public:
-
-    Position() = default;
-
-    ~Position() = default;
-
-    template <typename NEWT>
-    Position(const Position<NEWT> &ref):
-        T(ref)
-    {
-        this->name = ref.name;
-    }
-
-    template<typename ... Arg>
-    Position(const Arg ... arg):
-        T(arg ...),
-        name("Position Object")
-    {
-    }
-
-    template<typename ... Arg>
-    Position(const char *str, const Arg ... arg):
-        T(arg ...),
-        name(str)
-    {
-    }
+    virtual ~Position();
 
 public:
-    std::string getName() const
+    std::string getName() const;
+
+    virtual PositionType getPositionType() const = 0;
+
+    virtual CoordinateFrame getExplicitCoordinateFrame() const = 0;
+
+public:
+
+    //!
+    //! \brief is3D
+    //! \return
+    //!
+    virtual bool isGreaterThan1D() const
     {
-        return this->name;
+        return dimension > 1;
+    }
+
+    //!
+    //! \brief is3D
+    //! \return
+    //!
+    virtual bool is2D() const
+    {
+        return dimension == 2;
+    }
+
+    //!
+    //! \brief is3D
+    //! \return
+    //!
+    virtual bool isGreaterThan2D() const
+    {
+        return dimension > 2;
+    }
+
+    //!
+    //! \brief is3D
+    //! \return
+    //!
+    virtual bool is3D() const
+    {
+        return dimension == 3;
     }
 
 public:
-    Position& operator = (const Position &copy)
+    /**
+     *
+     */
+    template <class T>
+    const T *positionAs() const
     {
-        T::operator=(copy);
-        this->name = copy.name;
+        //ensure that we are attempting to cast it to a type of state
+        return static_cast<const T *>(this);
+    }
+
+    /**
+     *
+     */
+    template <class T>
+    T *positionAs()
+    {
+        //ensure that we are attempting to cast it to a type of state
+        return static_cast<T *>(this);
+    }
+
+    /**
+     * @brief getClone
+     * @return
+     */
+    virtual Position* getPositionalClone() const = 0;
+
+    /**
+     * @brief getClone
+     * @param state
+     */
+    virtual void getPositionalClone(Position** position) const = 0;
+
+
+public:
+    Position& operator = (const Position &rhs)
+    {
+        this->name = rhs.name;
+        this->dimension = rhs.dimension;
         return *this;
     }
 
     bool operator == (const Position &rhs) const
     {
         if(this->name != rhs.name){
+            return false;
+        }
+        if(this->dimension != rhs.dimension){
             return false;
         }
         return true;
@@ -87,11 +131,74 @@ public:
         return !(*this == rhs);
     }
 
-
-private:
+protected:
     std::string name;
+
+    uint8_t dimension = 0;
 };
 
+
+
+
+
+/*
+template<typename T>
+class Position : public BasePosition, public T
+{
+public:
+
+    Position() = default;
+
+    ~Position() = default;
+
+    template <typename NEWT>
+    Position(const Position<NEWT> &ref):
+        BasePosition (ref),
+        T(ref)
+    {
+
+    }
+
+    template<typename ... Arg>
+    Position(const Arg ... arg):
+        BasePosition (),
+        T(arg ...)
+    {
+    }
+
+    template<typename ... Arg>
+    Position(const char *str, const PositionType &posType, const Arg ... arg):
+        BasePosition (str, posType),
+        T(arg ...)
+    {
+
+    }
+
+public:
+    Position& operator = (const Position &copy)
+    {
+        BasePosition::operator=(copy);
+        T::operator=(copy);
+        return *this;
+    }
+
+    bool operator == (const Position &rhs) const
+    {
+        if(!BasePosition::operator ==(rhs))
+            return false;
+        if(!T::operator ==(rhs))
+            return false;
+        return true;
+    }
+
+    bool operator !=(const Position &rhs) const
+    {
+        return !(*this == rhs);
+    }
+
+};
+
+*/
 
 
 } // end of namespace pose

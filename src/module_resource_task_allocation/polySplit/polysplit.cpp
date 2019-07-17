@@ -5,7 +5,7 @@
  * @param boundary boundary polygon that defines the environment
  * @param numVehicles Number of vehicles we are splitting the polygon for
  */
-void PolySplit::initPolygon(const mace::geometry::Polygon_2DC &boundary, const int &numVehicles)
+void PolySplit::initPolygon(const mace::geometry::Polygon_Cartesian &boundary, const int &numVehicles)
 {
     polygon.clear();
     std::vector<mace::pose::Position<mace::pose::CartesianPosition_2D>> boundaryVector = boundary.getVector();
@@ -62,10 +62,10 @@ std::vector<mace::geometry::Position<mace::pose::CartesianPosition_2D> > PolySpl
  * @brief getPolygons Return the equal area polygons
  * @return Vector of polygons
  */
-std::vector<mace::geometry::Polygon_2DC> PolySplit::getPolygons() const {
-    std::vector<mace::geometry::Polygon_2DC> polygons;
+std::vector<mace::geometry::Polygon_Cartesian> PolySplit::getPolygons() const {
+    std::vector<mace::geometry::Polygon_Cartesian> polygons;
     for(auto polygon : splitPolygons) {
-        mace::geometry::Polygon_2DC tmpPoly;
+        mace::geometry::Polygon_Cartesian tmpPoly;
         std::vector<mace::geometry::Position<mace::geometry::CartesianPosition_2D> > verts;
         std::vector<Vector> tmpVerts = polygon.getVectors();
         for(auto vert : tmpVerts) {

@@ -56,7 +56,7 @@ void StateSpace::removeStates(std::vector<State*> states) const
 
 bool StateSpace::interpolateStates(const State *begin, const State *end, const double &distance, State** interState)
 {
-    *interState = begin->getClone();
+    *interState = begin->getStateClone();
     return false;
 }
 

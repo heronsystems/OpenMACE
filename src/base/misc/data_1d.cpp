@@ -3,10 +3,26 @@
 namespace mace {
 namespace misc {
 
+//!
+//! \brief Data1D::Data1D
+//!
+Data1D::Data1D()
+{
+
+}
+
+//!
+//! \brief Data1D::~Data1D
+//!
+Data1D::~Data1D()
+{
+
+}
+
 Data1D::Data1D(const Data1D &copy)
 {
-    this->z = copy.z;
-    this->dataZFlag = copy.dataZFlag;
+    this->x = copy.x;
+    this->dataXFlag = copy.dataXFlag;
 }
 
 Data1D::Data1D(const double &z)
@@ -16,13 +32,13 @@ Data1D::Data1D(const double &z)
 
 void Data1D::setData(const Data1D &data1D)
 {
-    this->z = data1D.z;
-    this->dataZFlag = data1D.dataZFlag;
+    this->x = data1D.x;
+    this->dataXFlag = data1D.dataXFlag;
 }
 
-void Data1D::setData(const double &z)
+void Data1D::setData(const double &x)
 {
-    this->setZ(z);
+    this->setX(x);
 }
 
 } //end of namespace misc

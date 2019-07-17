@@ -114,7 +114,7 @@ std::vector<state_space::State*> RRTBase::solve()
 
     for(unsigned int i = 0; i < path.size(); i++)
     {
-        std::string str = std::to_string(path.at(i)->as<mace::pose::CartesianPosition_2D>()->getXPosition()) + "," + std::to_string(path.at(i)->as<mace::pose::CartesianPosition_2D>()->getYPosition());
+        std::string str = std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition()) + "," + std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition());
         mLog->debug(str);
     }
 
@@ -123,7 +123,7 @@ std::vector<state_space::State*> RRTBase::solve()
 
     for(unsigned int i = 0; i < path.size(); i++)
     {
-        std::string str = std::to_string(path.at(i)->as<mace::pose::CartesianPosition_2D>()->getXPosition()) + "," + std::to_string(path.at(i)->as<mace::pose::CartesianPosition_2D>()->getYPosition());
+        std::string str = std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition()) + "," + std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition());
         mLog->debug(str);
     }
 

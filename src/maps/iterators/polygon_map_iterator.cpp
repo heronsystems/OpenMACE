@@ -4,7 +4,7 @@
 namespace mace{
 namespace maps{
 
-PolygonMapIterator::PolygonMapIterator(const BaseGridMap *map, const geometry::Polygon_2DC &polygon)
+PolygonMapIterator::PolygonMapIterator(const BaseGridMap *map, const geometry::Polygon_Cartesian &polygon)
 {
     it = new GenericMapIterator(map);
     this->polygon = polygon;
@@ -100,7 +100,7 @@ bool PolygonMapIterator::isInside() const
     return false;
 }
 
-void PolygonMapIterator::boundSubmap(const geometry::Polygon_2DC &boundary)
+void PolygonMapIterator::boundSubmap(const geometry::Polygon_Cartesian &boundary)
 {
     //First, grab the most furthest edges of the iterator. We will need to map this into the actual map space
     //This will prvent iterators that are on the edges of the map going oob

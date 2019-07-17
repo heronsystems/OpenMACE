@@ -6,7 +6,7 @@
 #include "base/pose/base_position.h"
 #include "base/pose/cartesian_position_2D.h"
 
-#include "base/geometry/polygon_2DC.h"
+#include "base/geometry/polygon_cartesian.h"
 
 #include "dynamic_2D_grid.h"
 
@@ -24,11 +24,11 @@ public:
                   const double &x_res = 0.5, const double &y_res = 0.5,
                    const Position<CartesianPosition_2D> *fill_value = nullptr);
 
-    Bounded2DGrid(const geometry::Polygon_2DC &boundingPolygon,
+    Bounded2DGrid(const geometry::Polygon_Cartesian &boundingPolygon,
                   const double &x_res = 0.5, const double &y_res = 0.5,
                   const Position<CartesianPosition_2D> *fill_value = nullptr);
 
-    std::vector<Position<CartesianPosition_2D> *> setBoundingPolygon(const geometry::Polygon_2DC &polygon);
+    std::vector<Position<CartesianPosition_2D> *> setBoundingPolygon(const geometry::Polygon_Cartesian &polygon);
 
     std::vector<Position<CartesianPosition_2D> *> getBoundedDataVector() const;
 
@@ -39,7 +39,7 @@ private:
     void clearData();
 
 protected:
-    geometry::Polygon_2DC m_boundary;
+    geometry::Polygon_Cartesian m_boundary;
     std::vector<Position<CartesianPosition_2D> *> m_constrainedData;
 };
 

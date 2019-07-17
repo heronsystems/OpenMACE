@@ -20,7 +20,7 @@ public:
 
     }
 
-    ~CartesianVelocity_3D() = default;
+    ~CartesianVelocity_3D() override = default;
 
     CartesianVelocity_3D(const CartesianVelocity_3D &copy):
         AbstractVelocity(copy), state_space::State(copy)
@@ -34,12 +34,12 @@ public:
         this->data.setData(x,y,z);
     }
 
-    State* getClone() const override
+    State* getStateClone() const override
     {
         return (new CartesianVelocity_3D(*this));
     }
 
-    void getClone(State** state) const override
+    void getStateClone(State** state) const override
     {
         *state = new CartesianVelocity_3D(*this);
     }

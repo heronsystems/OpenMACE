@@ -4,8 +4,8 @@ namespace mace {
 namespace pose {
 
 Orientation_3D::Orientation_3D():
-    theta(0.0), psi(0.0), phi(0.0),
-    updatedEuler(true)
+    updatedEuler(true),
+    theta(0.0), psi(0.0), phi(0.0)
 {
     this->updateMatrix();
 }

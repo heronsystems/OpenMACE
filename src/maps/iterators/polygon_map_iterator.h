@@ -3,7 +3,7 @@
 
 #include "maps/iterators/generic_map_iterator.h"
 
-#include "base/geometry/polygon_2DC.h"
+#include "base/geometry/polygon_cartesian.h"
 #include "maps/base_grid_map.h"
 
 namespace mace{
@@ -12,7 +12,7 @@ namespace maps{
 class PolygonMapIterator
 {
 public:
-    PolygonMapIterator(const BaseGridMap *map, const geometry::Polygon_2DC &polygon);
+    PolygonMapIterator(const BaseGridMap *map, const geometry::Polygon_Cartesian &polygon);
 
     PolygonMapIterator(const PolygonMapIterator* copy);
 
@@ -48,13 +48,13 @@ public:
 private:
     bool isInside() const;
 
-    void boundSubmap(const geometry::Polygon_2DC &boundary);
+    void boundSubmap(const geometry::Polygon_Cartesian &boundary);
 
     void findValidStartIndex();
 
 private:
     GenericMapIterator* it;
-    geometry::Polygon_2DC polygon;
+    geometry::Polygon_Cartesian polygon;
 };
 
 } //end of namepsace mace

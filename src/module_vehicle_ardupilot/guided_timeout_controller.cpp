@@ -15,7 +15,7 @@ GuidedTimeoutController::~GuidedTimeoutController() {
     mToExit = true;
 }
 
-void GuidedTimeoutController::start() override
+void GuidedTimeoutController::start()
 {
     this->m_Timeout.start();
     Thread::start();

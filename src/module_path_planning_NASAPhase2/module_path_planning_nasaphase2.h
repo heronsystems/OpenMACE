@@ -162,7 +162,7 @@ private:
     mace::pose::GeodeticPosition_3D m_globalOrigin;
 
     mace::geometry::Polygon_2DG m_GlobalOperationalBoundary;
-    mace::geometry::Polygon_2DC m_LocalOperationalBoundary;
+    mace::geometry::Polygon_Cartesian m_LocalOperationalBoundary;
 
 
     maps::Data2DGrid<OccupiedResult>* m_ProjectedOccupancyMap;

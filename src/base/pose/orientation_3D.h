@@ -205,13 +205,13 @@ public:
     //!
     bool operator == (const Orientation_3D &rhs) const
     {
-        if(this->theta != rhs.theta){
+        if(fabs(this->theta - rhs.theta) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->psi != rhs.psi){
+        if(fabs(this->psi - rhs.psi) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->phi != rhs.phi){
+        if(fabs(this->phi - rhs.phi) > std::numeric_limits<double>::epsilon()){
             return false;
         }
         if(this->matrixRot != rhs.matrixRot){

@@ -3,7 +3,7 @@
 
 #include "common/common.h"
 
-#include "base/geometry/polygon_2DC.h"
+#include "base/geometry/polygon_cartesian.h"
 #include "base/geometry/polygon_2DG.h"
 
 #include "boundary_key.h"
@@ -72,11 +72,11 @@ public:
 
 public:
 
-    mace::geometry::Polygon_2DC getBoundary() {
+    mace::geometry::Polygon_Cartesian getBoundary() {
         return boundingPolygon;
     }
 
-    void setBoundary(const mace::geometry::Polygon_2DC &boundary) {
+    void setBoundary(const mace::geometry::Polygon_Cartesian &boundary) {
         boundingPolygon = boundary;
     }
 
@@ -101,7 +101,7 @@ public:
 private:
 
 public:
-    mace::geometry::Polygon_2DC boundingPolygon;
+    mace::geometry::Polygon_Cartesian boundingPolygon;
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const BoundaryList& t);

@@ -23,15 +23,21 @@ double CartesianPosition_2D::polarBearingFromOrigin() const
     return atan2(this->getYPosition(),this->getXPosition());
 }
 
-double CartesianPosition_2D::distanceBetween2D(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::distanceBetween2D(const Abstract_CartesianPosition* pos) const
 {
-    double deltaX = this->data.getX() - pos.data.getX();
-    double deltaY = this->data.getY() - pos.data.getY();
-    double distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
+    double distance = 0.0;
+
+    if(pos->isGreaterThan1D())
+    {
+        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
+        double deltaX = this->getX() - tmpPos->getX();
+        double deltaY = this->getY() - tmpPos->getY();
+        distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
+    }
     return distance;
 }
 
-double CartesianPosition_2D::distanceTo(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::distanceTo(const Abstract_CartesianPosition* pos) const
 {
     return this->distanceBetween2D(pos);
 }
@@ -41,9 +47,16 @@ double CartesianPosition_2D::distanceTo(const CartesianPosition_2D &pos) const
 //! \param pos
 //! \return polar
 //!
-double CartesianPosition_2D::polarBearingTo(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::polarBearingTo(const Abstract_CartesianPosition* pos) const
 {
-    return atan2(deltaY(pos),deltaX(pos));
+    double polarBearing = 0.0;
+    if(pos->isGreaterThan1D())
+    {
+        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
+        polarBearing = atan2(deltaY(*tmpPos),deltaX(*tmpPos));
+    }
+
+    return polarBearing;
 }
 
 //!
@@ -51,9 +64,9 @@ double CartesianPosition_2D::polarBearingTo(const CartesianPosition_2D &pos) con
 //! \param pos
 //! \return polar
 //!
-double CartesianPosition_2D::compassBearingTo(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::compassBearingTo(const Abstract_CartesianPosition* pos) const
 {
-    return polarToCompassBearing(polarBearingTo(pos));
+    return math::polarToCompassBearing(polarBearingTo(pos));
 }
 
 //!
@@ -62,14 +75,14 @@ double CartesianPosition_2D::compassBearingTo(const CartesianPosition_2D &pos) c
 //! \param bearing
 //! \return
 //!
-CartesianPosition_2D CartesianPosition_2D::newPositionFromPolar(const double &distance, const double &bearing) const
+void CartesianPosition_2D::newPositionFromPolar(Abstract_CartesianPosition *newObject, const double &distance, const double &bearing) const
 {
-    CartesianPosition_2D newPos;
-
-    newPos.setXPosition(this->getXPosition() + cos(bearing) * distance);
-    newPos.setYPosition(this->getYPosition() + sin(bearing) * distance);
-
-    return newPos;
+    if(newObject->isGreaterThan1D())
+    {
+        CartesianPosition_2D* tmpPos = newObject->positionAs<CartesianPosition_2D>();
+        tmpPos->setXPosition(this->getXPosition() + cos(bearing) * distance);
+        tmpPos->setYPosition(this->getYPosition() + sin(bearing) * distance);
+    }
 }
 
 //!
@@ -78,9 +91,9 @@ CartesianPosition_2D CartesianPosition_2D::newPositionFromPolar(const double &di
 //! \param bearing
 //! \return
 //!
-CartesianPosition_2D CartesianPosition_2D::newPositionFromCompass(const double &distance, const double &bearing) const
+void CartesianPosition_2D::newPositionFromCompass(Abstract_CartesianPosition* newObject, const double &distance, const double &bearing) const
 {
-    return newPositionFromPolar(distance,compassToPolarBearing(bearing));
+    return newPositionFromPolar(newObject, distance, math::compassToPolarBearing(bearing));
 }
 
 void CartesianPosition_2D::applyPositionalShiftFromPolar(const double &distance, const double &bearing)
@@ -93,7 +106,7 @@ void CartesianPosition_2D::applyPositionalShiftFromPolar(const double &distance,
 
 void CartesianPosition_2D::applyPositionalShiftFromCompass(const double &distance, const double &bearing)
 {
-    double polarBearing = compassToPolarBearing(bearing);
+    double polarBearing = math::compassToPolarBearing(bearing);
     applyPositionalShiftFromPolar(distance,polarBearing);
 }
 

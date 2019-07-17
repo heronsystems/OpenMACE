@@ -1,19 +1,14 @@
 #include "state_flight_guided_target.h"
 
-State_FlightGuided_Target::State_FlightGuided_Target()
-{
-
-}
-
 namespace ardupilot{
 namespace state{
 
 State_FlightGuided_Target::State_FlightGuided_Target():
     AbstractStateArdupilot()
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_GOTO"<<std::endl;
-    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO;
-    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO;
+    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_TARGET"<<std::endl;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET;
 }
 
 void State_FlightGuided_Target::OnExit()
@@ -48,7 +43,7 @@ hsm::Transition State_FlightGuided_Target::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from State_FlightGuided_Target."<<std::endl;
             break;
         }
     }

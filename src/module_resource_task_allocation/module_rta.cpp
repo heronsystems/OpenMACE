@@ -13,7 +13,7 @@ ModuleRTA::ModuleRTA():
     m_globalInstance(true), m_gridSpacing(1)
 {
     std::vector<Position<CartesianPosition_2D> > localBoundaryVerts;
-    Polygon_2DC poly(localBoundaryVerts);
+    Polygon_Cartesian poly(localBoundaryVerts);
 
     environment = std::make_shared<Environment_Map>(poly, m_gridSpacing, m_globalInstance);
 }
@@ -207,7 +207,7 @@ void ModuleRTA::updateEnvironment(const BoundaryItem::BoundaryList &boundary)
 {
     std::cout<<"Update environment (RTA)."<<std::endl;
 
-    Polygon_2DC poly = boundary.boundingPolygon;
+    Polygon_Cartesian poly = boundary.boundingPolygon;
 //    m_gridSpacing = this->getDataObject()->GetGridSpacing();
 
     environment = std::make_shared<Environment_Map>(poly, m_gridSpacing, m_globalInstance);
@@ -301,7 +301,7 @@ void ModuleRTA::NewlyAvailableBoundary(const uint8_t &key, const OptionalParamet
         for(auto vehicleCell : m_vehicleCells) {
             int vehicleID = vehicleCell.first;
             BoundaryItem::BoundaryList resourceFence;
-            mace::geometry::Polygon_2DC polyBoundary;
+            mace::geometry::Polygon_Cartesian polyBoundary;
             for(auto vertex : vehicleCell.second.getVector()) {
                 polyBoundary.appendVertex(vertex);
             }

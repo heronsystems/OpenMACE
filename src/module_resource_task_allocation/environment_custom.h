@@ -49,7 +49,7 @@ public:
      * @param gridSpacing Spacing between grid points
      * @param globalOrigin Global origin for environment
      */
-    Environment_Map(const Polygon_2DC &boundingPolygon, const double &gridSpacing, const bool &globalInstance);
+    Environment_Map(const Polygon_Cartesian &boundingPolygon, const double &gridSpacing, const bool &globalInstance);
 
     ~Environment_Map()
     {
@@ -87,7 +87,7 @@ public:
      * @brief getBoundingBox Return the bounding polygon
      * @return Polygon representing the boundary
      */
-    Polygon_2DC getBoundingPolygon() { return m_boundary; }
+    Polygon_Cartesian getBoundingPolygon() { return m_boundary; }
 
 
     /**
@@ -130,7 +130,7 @@ private:
      * that define the boundary in which the environment is valid for vehicle
      * movement.
      */
-    mace::geometry::Polygon_2DC m_boundary;
+    mace::geometry::Polygon_Cartesian m_boundary;
 
     /**
      * @brief boundaryVerts Vertices that make up the environment boundary

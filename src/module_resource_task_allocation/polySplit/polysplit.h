@@ -23,7 +23,7 @@ public:
      * @param boundary Boundary vertices
      * @param numVehicles Number of vehicles we are splitting the polygon for
      */
-    void initPolygon(const mace::geometry::Polygon_2DC &boundary, const int &numVehicles);
+    void initPolygon(const mace::geometry::Polygon_Cartesian &boundary, const int &numVehicles);
 
     /**
      * @brief getCentroids Return the centroids of the areas split from the environment boundary
@@ -35,7 +35,7 @@ public:
      * @brief getPolygons Return the equal area polygons
      * @return Vector of polygons
      */
-    std::vector<mace::geometry::Polygon_2DC> getPolygons() const;
+    std::vector<mace::geometry::Polygon_Cartesian> getPolygons() const;
 
 private:
     /**

@@ -63,14 +63,14 @@ inline double distanceToLine(const pose::CartesianPosition_2D &l0, const pose::C
     return distanceToLine(l0,l1,p0.getXPosition(),p0.getYPosition());
 }
 
-inline double isOnLine(const pose::CartesianPosition_2D &l0, const pose::CartesianPosition_2D &l1, const double &x, const double &y, const double limit = std::numeric_limits<double>::epsilon())
+inline bool isOnLine(const pose::CartesianPosition_2D &l0, const pose::CartesianPosition_2D &l1, const double &x, const double &y, const double limit = std::numeric_limits<double>::epsilon())
 {
     if(distanceToLine(l0,l1,x,y) < limit)
         return true;
     return false;
 }
 
-inline double isOnLine(const pose::CartesianPosition_2D &l0, const pose::CartesianPosition_2D &l1, const pose::CartesianPosition_2D &p0, const double limit = std::numeric_limits<double>::epsilon())
+inline bool isOnLine(const pose::CartesianPosition_2D &l0, const pose::CartesianPosition_2D &l1, const pose::CartesianPosition_2D &p0, const double limit = std::numeric_limits<double>::epsilon())
 {
     if(distanceToLine(l0,l1,p0.getXPosition(),p0.getYPosition()) < limit)
         return true;

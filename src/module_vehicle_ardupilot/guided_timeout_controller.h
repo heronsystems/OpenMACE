@@ -9,7 +9,7 @@
 #include "common/thread_manager.h"
 #include "common/class_forward.h"
 
-#include "../ardupilot_target_progess.h"
+#include "ardupilot_target_progess.h"
 
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
@@ -22,6 +22,9 @@
 
 class ArdupilotTimeout_Interface
 {
+public:
+    virtual ~ArdupilotTimeout_Interface() = default;
+
 public:
     virtual void cbiArdupilotTimeout_TargetLocal(const TargetItem::CartesianDynamicTarget &target) = 0;
     virtual void cbiArdupilotTimeout_TargetGlobal(const TargetItem::GeodeticDynamicTarget &target) = 0;
@@ -36,7 +39,7 @@ class GuidedTimeoutController : public Thread
 public:
     GuidedTimeoutController(ArdupilotTimeout_Interface* callback, const unsigned int &timeout);
 
-    ~GuidedTimeoutController();
+    ~GuidedTimeoutController() override;
 
     void start() override;
 

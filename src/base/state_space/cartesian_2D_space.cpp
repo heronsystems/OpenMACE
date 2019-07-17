@@ -16,24 +16,24 @@ void Cartesian2DSpace_Sampler::sampleUniform(State *state)
 
 void Cartesian2DSpace_Sampler::sampleUniformNear(State *sample, const State *near, const double distance)
 {
-
+    UNUSED(sample); UNUSED(near); UNUSED(distance);
 }
 
 void Cartesian2DSpace_Sampler::sampleGaussian(State *sample, const State *mean, const double stdDev)
 {
-
+    UNUSED(sample); UNUSED(mean); UNUSED(stdDev);
 }
 
 double Cartesian2DSpace::distanceBetween(const State *lhs, const State *rhs) const
 {
-    return lhs->as<pose::CartesianPosition_2D>()->distanceBetween2D(*rhs->as<pose::CartesianPosition_2D>());
+    return lhs->stateAs<pose::CartesianPosition_2D>()->distanceBetween2D(*rhs->stateAs<pose::CartesianPosition_2D>());
 }
 
 bool Cartesian2DSpace::interpolateStates(const State *begin, const State *end, const double &percentage, State** interState)
 {
 
-    pose::CartesianPosition_2D castBegin(*begin->as<pose::CartesianPosition_2D>());
-    pose::CartesianPosition_2D castEnd(*end->as<pose::CartesianPosition_2D>());
+    pose::CartesianPosition_2D castBegin(*begin->stateAs<pose::CartesianPosition_2D>());
+    pose::CartesianPosition_2D castEnd(*end->stateAs<pose::CartesianPosition_2D>());
 
     double distance = castBegin.distanceTo(castEnd);
 
