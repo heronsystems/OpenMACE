@@ -15,7 +15,7 @@ namespace misc {
 
 MACE_CLASS_FORWARD(Data2D);
 
-class Data2D : public Eigen::Vector2d
+class Data2D
 {
 public:
     //!
@@ -92,7 +92,7 @@ public:
     //!
     void setX(const double &posX)
     {
-        this->x() = posX;
+        this->x = posX;
         this->dataXFlag = true;
     }
 
@@ -102,7 +102,7 @@ public:
     //!
     double getX() const
     {
-        return this->x();
+        return this->x;
     }
 
     //!
@@ -111,7 +111,7 @@ public:
     //!
     void setY(const double &posY)
     {
-        this->y() = posY;
+        this->y = posY;
         this->dataYFlag = true;
     }
 
@@ -230,14 +230,12 @@ public:
     //!
     bool operator == (const Data2D &rhs) const
     {
-        if(!this->isApprox(rhs))
+        if(fabs(this->x - rhs.x) > std::numeric_limits<double>::epsilon()){
             return false;
-//        if(fabs(this->x - rhs.x) > std::numeric_limits<double>::epsilon()){
-//            return false;
-//        }
-//        if(fabs(this->y - rhs.y) > std::numeric_limits<double>::epsilon()){
-//            return false;
-//        }
+        }
+        if(fabs(this->y - rhs.y) > std::numeric_limits<double>::epsilon()){
+            return false;
+        }
         if(this->dataXFlag != rhs.dataXFlag){
             return false;
         }
@@ -266,9 +264,8 @@ public:
     //!
     Data2D& operator = (const Data2D &rhs)
     {
-        Eigen::Vector2d::operator=(rhs);
-//        this->x = rhs.x;
-//        this->y = rhs.y;
+        this->x = rhs.x;
+        this->y = rhs.y;
         this->dataXFlag = rhs.dataXFlag;
         this->dataYFlag = rhs.dataYFlag;
         return *this;
@@ -279,24 +276,24 @@ public:
     //! \param that
     //! \return
     //!
-//    Data2D& operator += (const Data2D &rhs)
-//    {
-//        this->x -= rhs.x;
-//        this->y -= rhs.y;
-//        return *this;
-//    }
+    Data2D& operator += (const Data2D &rhs)
+    {
+        this->x -= rhs.x;
+        this->y -= rhs.y;
+        return *this;
+    }
 
     //!
     //! \brief operator -=
     //! \param that
     //! \return
     //!
-//    Data2D& operator -= (const Data2D &rhs)
-//    {
-//        this->x -= rhs.x;
-//        this->y -= rhs.y;
-//        return *this;
-//    }
+    Data2D& operator -= (const Data2D &rhs)
+    {
+        this->x -= rhs.x;
+        this->y -= rhs.y;
+        return *this;
+    }
 
 
     /** Protected Members */
@@ -305,12 +302,12 @@ protected:
     //!
     //! \brief x
     //!
-//    double x = 0.0;
+    double x = 0.0;
 
     //!
     //! \brief y
     //!
-//    double y = 0.0;
+    double y = 0.0;
 
     //!
     //! \brief dataXFlag
