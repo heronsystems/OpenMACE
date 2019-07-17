@@ -54,7 +54,8 @@ SOURCES += \
     pose/cartesian_velocity_3D.cpp \
     pose/base_position.cpp \
     pose/abstract_cartesian_position.cpp \
-    pose/abstract_altitude.cpp
+    pose/abstract_altitude.cpp \
+    pose/abstract_geodetic_position.cpp
 
 HEADERS +=\
     base_global.h \
@@ -108,7 +109,8 @@ HEADERS +=\
     pose/position_interface.h \
     geometry/polygon_cartesian.h \
     pose/altitude_interface.h \
-    pose/abstract_altitude.h
+    pose/abstract_altitude.h \
+    pose/abstract_geodetic_position.h
 
 # Unix lib Install
 unix:!symbian {
