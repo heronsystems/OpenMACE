@@ -71,7 +71,9 @@ export class VehicleHUD extends React.Component<Props, State> {
             }
         } else if (lastHeardSeconds > 30) {
             if (this.state.heartbeatSyncRequested === false) {
-                this.syncVehicle();
+                // TODO-PAT: Uncomment line below to force vehicle sync after not hearing for 30 seconds
+                // this.syncVehicle();
+
                 this.setState({ heartbeatSyncRequested: true });
             }
         }

@@ -4,10 +4,12 @@ const lightMuiTheme = getMuiTheme();
 import FlatButton from "material-ui/FlatButton";
 import * as React from "react";
 
-import { VehicleHUD } from "../../components/VehicleHUD/VehicleHUD";
-import { VehicleMessages } from "../../components/VehicleMessages/VehicleMessages";
+// import { VehicleHUD } from "../../components/VehicleHUD/VehicleHUD";
+// import { VehicleMessages } from "../../components/VehicleMessages/VehicleMessages";
 import { Vehicle } from "../../util/Vehicle/Vehicle";
 import { styles } from "./styles";
+
+import { ConnectedVehicleHUDs } from "../ConnectedVehicleHUDs/ConnectedVehicleHUDs";
 
 type Props = {
     connectedVehicles: { [id: string]: Vehicle };
@@ -36,31 +38,43 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
     };
 
     render() {
-        let vehicleHUDs: JSX.Element[] = [];
-        let vehicleMessages: JSX.Element[] = [];
-        for (let key in this.props.connectedVehicles) {
-            if (key) {
-                let vehicle = this.props.connectedVehicles[key];
-                let now = new Date();
-                const lastHeardSeconds = (now.getTime() - vehicle.general.lastHeard.getTime()) / 1000; // Time in seconds
-                if (lastHeardSeconds <= 60) {
-                    vehicleHUDs.push(
-                        <VehicleHUD
-                            key={key}
-                            vehicleID={key}
-                            aircraft={vehicle}
-                            handleAircraftCommand={this.handleAircraftCommand}
-                            handleChangeSelectedVehicle={this.props.handleChangeSelectedVehicle}
-                            highlightColor={this.props.connectedVehicles[key].highlightColor}
-                        />
-                    );
 
-                    vehicleMessages.push(<VehicleMessages key={key} vehicleID={key} aircraft={vehicle} />);
-                } else {
-                    this.props.onDisconnectedVehicle(key);
-                }
-            }
-        }
+        let vehicleHUDs: JSX.Element =
+                    <ConnectedVehicleHUDs
+                        connectedVehicles={this.props.connectedVehicles}
+                        onAircraftCommand={this.handleAircraftCommand}
+                        handleChangeSelectedVehicle={this.props.handleChangeSelectedVehicle}
+                        selectedVehicleID={this.props.selectedVehicleID}
+                        onDisconnectedVehicle={this.props.onDisconnectedVehicle}
+                    />;
+
+        let vehicleMessages: JSX.Element[] = [];
+
+        // let vehicleHUDs: JSX.Element[] = [];
+        // let vehicleMessages: JSX.Element[] = [];
+        // for (let key in this.props.connectedVehicles) {
+        //     if (key) {
+        //         let vehicle = this.props.connectedVehicles[key];
+        //         let now = new Date();
+        //         const lastHeardSeconds = (now.getTime() - vehicle.general.lastHeard.getTime()) / 1000; // Time in seconds
+        //         if (lastHeardSeconds <= 60) {
+        //             vehicleHUDs.push(
+        //                 <VehicleHUD
+        //                     key={key}
+        //                     vehicleID={key}
+        //                     aircraft={vehicle}
+        //                     handleAircraftCommand={this.handleAircraftCommand}
+        //                     handleChangeSelectedVehicle={this.props.handleChangeSelectedVehicle}
+        //                     highlightColor={this.props.connectedVehicles[key].highlightColor}
+        //                 />
+        //             );
+
+        //             vehicleMessages.push(<VehicleMessages key={key} vehicleID={key} aircraft={vehicle} />);
+        //         } else {
+        //             this.props.onDisconnectedVehicle(key);
+        //         }
+        //     }
+        // }
 
         return (
             <MuiThemeProvider muiTheme={lightMuiTheme}>
@@ -69,7 +83,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
                         <div style={styles.connectedVehiclesContainer}>
                             <div>
                                 <FlatButton
-                                    label={this.state.showHUDs ? "Vehicle Messages" : "Vehicle HUDs"}
+                                    label={this.state.showHUDs ? "Show Vehicle Messages" : "Show Vehicle HUDs"}
                                     labelPosition="after"
                                     onClick={() =>
                                         this.setState({
