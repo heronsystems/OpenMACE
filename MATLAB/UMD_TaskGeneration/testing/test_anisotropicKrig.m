@@ -13,7 +13,7 @@ axis equal;
 xlim([trueWorld.minX trueWorld.maxX]);
 ylim([trueWorld.minY trueWorld.maxY]);
 
-numSamples = 30;
+numSamples = 50;
 R = 1.25;
 %R = 30;
 ax = 1.5;
@@ -54,10 +54,10 @@ end
 for i = 1:1:size(cellsInView,1)
     bx = cellsInView(i,1);
     by = cellsInView(i,2);
-    measurements(i,1) = trueWorld.xcp(by);
-    measurements(i,2) = trueWorld.ycp(bx);
+    measurements(i,1) = trueWorld.xcp(bx);
+    measurements(i,2) = trueWorld.ycp(by);
     
-    if (trueWorld.bin2NodeID(bx,by)==0)
+    if (trueWorld.bin2NodeID(by,bx)==0)
         plot(trueWorld.xcp(bx), trueWorld.ycp(by), 'b.');
         measurements(i,3) = 0;
     else
@@ -71,7 +71,7 @@ forecast = ordinaryKrig(trueWorld.xx,trueWorld.yy,measurements,krigingSigma);
 
 
 figure;
-imagesc(forecast','XData', trueWorld.xcp, 'YData', trueWorld.ycp); hold on;
+imagesc(forecast,'XData', trueWorld.xcp, 'YData', trueWorld.ycp); hold on;
 set(gca,'YDir','Normal');
 for i = 1:1:numSamples
     plot(xr(i) + xc, yr(i) + yc, 'r-'); hold on;
@@ -87,7 +87,7 @@ forecast = anisotropicKrig(trueWorld.xx,trueWorld.yy,measurements,ax,ay);
 
 
 figure;
-imagesc(forecast','XData', trueWorld.xcp, 'YData', trueWorld.ycp); hold on;
+imagesc(forecast,'XData', trueWorld.xcp, 'YData', trueWorld.ycp); hold on;
 set(gca,'YDir','Normal');
 for i = 1:1:numSamples
     plot(xr(i) + xc, yr(i) + yc, 'r-'); hold on;

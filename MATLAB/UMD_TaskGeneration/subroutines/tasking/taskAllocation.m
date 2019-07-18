@@ -356,7 +356,7 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian') || strcmp(swarmModel.ta
     end
     
 elseif strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
-    if ( strcmp(swarmModel.taskGeneration,'mutualInfoWpts') || strcmp(swarmModel.taskGeneration,'likelihoodWpts') )
+    if ( strcmp(swarmModel.taskGeneration,'mutualInfoWpts') )
         % initial cells are given by the cells where agents
         % reside
         % first determine the closest four cell centers and see

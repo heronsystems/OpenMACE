@@ -4,7 +4,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 3*60; % total simulation/mission time
+runParams.T = 5*60; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -100,7 +100,7 @@ switch swarmModel.taskAllocation
         swarmModel.bundleSize = 5;
         swarmModel.neighborMethod = 'knn';  % options are: 'VoronoiGraph' or 'knn'
     case 'stepwiseHungarian_unique' % original
-        swarmModel.samplesPerTask = 1;
+        swarmModel.samplesPerTask = 10;
         swarmModel.bundleSize = 3;
         swarmModel.neighborMethod = 'knn';  
         swarmModel.knnNumber = 15;

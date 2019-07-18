@@ -116,7 +116,9 @@ end
 %     varargout{1} = sum(sum(reachedCell.*mutualInfoSurface))/effort;
     % info/arriving time
     
-    varargout{1} = sum(sum(reachedCell.*mutualInfoSurface))/time;
+    eta = 0.95;
+    %varargout{1} = 0.95;
+    varargout{1} = eta*max(max(reachedCell.*mutualInfoSurface))/time + (1-eta)*sum(sum(reachedCell.*mutualInfoSurface))/time;
     
 % end
 

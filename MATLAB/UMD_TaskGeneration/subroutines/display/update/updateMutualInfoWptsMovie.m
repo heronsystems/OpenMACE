@@ -28,12 +28,26 @@ end
 for i = 1:1:swarmModel.N
     if (swarmState.wptIndex(i) > 1)
         %
-        if ( isfield(plotHandles,'figh_visitedWpt') && isgraphics(plotHandles.figh_visitedWpt(i)) )
+        if ( isfield(plotHandles,'figh_visitedWpt') )
+        if ( length(isgraphics(plotHandles.figh_visitedWpt)) >= i )
+        if ( isgraphics(plotHandles.figh_visitedWpt(i)) )
             set(plotHandles.figh_visitedWpt(i),'XData',bundleX(i,1:swarmState.wptIndex(i)-1),'YData',bundleY(i,1:swarmState.wptIndex(i)-1));
+        end
+        end
         else
             plotHandles.figh_visitedWpt(i) = plot(bundleX(i,1:swarmState.wptIndex(i)-1),bundleY(i,1:swarmState.wptIndex(i)-1),'mo','linewidth',2,'MarkerFaceColor','m');
+        end    
+    else
+        if ( isfield(plotHandles,'figh_visitedWpt') )
+        if ( length(isgraphics(plotHandles.figh_visitedWpt)) >= i )
+        if ( isgraphics(plotHandles.figh_visitedWpt(i)) )
+            set(plotHandles.figh_visitedWpt(i),'XData',[],'YData',[]);
         end
+        end
+        end        
     end
+        
+        
 end
 
 % plot Path
