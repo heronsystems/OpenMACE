@@ -26,8 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    misc/data_2d.cpp \
-    misc/data_3d.cpp \
     pose/orientation_2d.cpp \
     pose/orientation_3d.cpp \
     state_space/real_vector.cpp \
@@ -45,27 +43,23 @@ SOURCES += \
     state_space/discrete_motion_validity_check.cpp \
     state_space/special_validity_check.cpp \
     geometry/cell_2DC.cpp \
-    geometry/polygon_2dc.cpp \
-    misc/data_1d.cpp \
     state_space/start_state.cpp \
     pose/geodetic_position_3D.cpp \
     pose/dynamics_aid.cpp \
     geometry/polygon_2DG.cpp \
-    pose/cartesian_velocity_3D.cpp \
     pose/base_position.cpp \
     pose/abstract_cartesian_position.cpp \
     pose/abstract_altitude.cpp \
-    pose/abstract_geodetic_position.cpp
+    pose/abstract_geodetic_position.cpp \
+    pose/base_velocity.cpp \
+    geometry/polygon_2DC.cpp
 
 HEADERS +=\
     base_global.h \
     math/helper_pi.h \
     pose/cartesian_position_2D.h \
-    pose/coordinate_frame.h \
     pose/base_position.h \
     pose/cartesian_position_3D.h \
-    misc/data_2d.h \
-    misc/data_3d.h \
     geometry/base_polygon.h \
     state_space/real_vector.h \
     geometry/geometry_helper.h \
@@ -94,23 +88,26 @@ HEADERS +=\
     geometry/geometry_helper.h \
     geometry/base_line.h \
     pose/abstract_velocity.h \
-    misc/data_1d.h \
     state_space/start_state.h \
     state_space/generic_start.h \
     pose/geodetic_position_3D.h \
     pose/dynamics_aid.h \
     geometry/polygon_2DG.h \
-    pose/cartesian_velocity_3D.h \
     pose/abstract_orientation.h \
     geometry/rotate_2d.h \
-    misc/data_components.h \
     math/math_components.h \
     pose/abstract_cartesian_position.h \
     pose/position_interface.h \
     geometry/polygon_cartesian.h \
     pose/altitude_interface.h \
     pose/abstract_altitude.h \
-    pose/abstract_geodetic_position.h
+    pose/abstract_geodetic_position.h \
+    misc/local_coordindate_frames.h \
+    misc/global_coordinate_frames.h \
+    misc/altitude_coordinate_frames.h \
+    misc/coordinate_frame_components.h \
+    misc/kinematic_definitions.h \
+    pose/base_velocity.h
 
 # Unix lib Install
 unix:!symbian {

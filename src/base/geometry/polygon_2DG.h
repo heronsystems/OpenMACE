@@ -71,11 +71,11 @@ public:
         int index = 0;
         std::vector<int> nullItems;
         for(std::vector<GeodeticPosition_2D>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
-            if(!it->hasLatitudeBeenSet() && !it->hasLongitudeBeenSet())
-            {
-                //This should see that the value is null
-                nullItems.push_back(index);
-            }
+//            if(!it->hasLatitudeBeenSet() && !it->hasLongitudeBeenSet())
+//            {
+//                //This should see that the value is null
+//                nullItems.push_back(index);
+//            }
             index++;
         }
         return nullItems;
@@ -90,7 +90,7 @@ public:
 
     void getCorners(GeodeticPosition_2D &topLeft, GeodeticPosition_2D &bottomRight) const override;
 
-    mace::pose::CoordinateFrameTypes getVertexCoordinateFrame() const override;
+    mace::CoordinateFrameTypes getVertexCoordinateFrame() const override;
 
     void applyCoordinateShift(const double &distance, const double &bearing);
 
@@ -147,19 +147,19 @@ public:
         {
             return false;
         }
-        if(this->xMin != rhs.xMin)
+        if(fabs(this->xMin - rhs.xMin) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->xMax != rhs.xMax)
+        if(fabs(this->xMax - rhs.xMax) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->yMin != rhs.yMin)
+        if(fabs(this->yMin - rhs.yMin) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->yMax != rhs.yMax)
+        if(fabs(this->yMax - rhs.yMax) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }

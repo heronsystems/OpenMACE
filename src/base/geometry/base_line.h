@@ -49,17 +49,7 @@ protected:
     T end;
 };
 
-class Line_2DC : public LineBase<pose::CartesianPosition_2D>
-{
-public:
-    Line_2DC(const std::string &descriptor = "Line_2DC"):
-        LineBase(descriptor)
-    {
-
-    }
-
-
-};
+typedef LineBase<mace::pose::CartesianPosition_2D> 2DCartesianLine;
 
 } //end of namepsace geometry
 } //end of namespace mace

@@ -14,11 +14,6 @@ Position::Position(const Position &copy)
     this->dimension = copy.dimension;
 }
 
-Position::~Position()
-{
-
-}
-
 void Position::updatePositionName(const std::string &stringName)
 {
     this->name = stringName;

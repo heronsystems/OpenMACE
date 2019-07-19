@@ -1,207 +1,148 @@
 #ifndef ABSTRACT_VELOCITY_H
 #define ABSTRACT_VELOCITY_H
 
-#include "base/misc/data_components.h"
-#include "coordinate_frame.h"
+#include <iostream>
+#include <exception>
+
+#include "common/common.h"
+#include "common/class_forward.h"
+#include "base/math/math_components.h"
+
+#include "base/misc/coordinate_frame_components.h"
 
 namespace mace{
 namespace pose{
 
-template <class T, class DIM>
-class AbstractVelocity
+class Velocity : public Kinematic_BaseInterface
 {
 public:
-    enum class VelocityType{
-        CARTESIAN = 0,
-        GEODETIC = 1,
-        UNKNOWN = 2
-    };
+    Velocity(const std::string &velName = "Velocity Object");
+
+    Velocity(const Velocity &copy);
+
+    virtual ~Velocity() override = default;
+
+    /** Interface imposed via Kinemnatic_BaseInterace */
+    KinematicTypes getKinematicType() const override
+    {
+        return KinematicTypes::VELOCITY;
+    }
+
+    /** End of interface imposed via Kinemnatic_BaseInterace */
 
 public:
-    virtual ~AbstractVelocity() = default;
 
-    AbstractVelocity(const VelocityType &desiredType, const CoordinateFrameTypes &desiredFrame)
-    {
-        this->type = desiredType;
-        this->frame = desiredFrame;
-    }
+    void updateVelocityName(const std::string &nameString);
 
-    AbstractVelocity(const AbstractVelocity &copy)
-    {
-        this->type = copy.type;
-        this->frame = copy.frame;
-        this->data = copy.data;
-    }
+    std::string getName() const;
 
-    AbstractVelocity* getAbstractClone() const
-    {
-        return new AbstractVelocity(*this);
-    }
-
-    AbstractVelocity& operator = (const AbstractVelocity &copy)
-    {
-        this->type = copy.type;
-        this->frame = copy.frame;
-        this->data = copy.data;
-        return *this;
-    }
+    virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
 
 public:
 
     //!
-    //! \brief getCoordinateFrame
+    //! \brief is3D
     //! \return
     //!
-    CoordinateFrameTypes getCoordinateFrame() const
+    virtual bool isGreaterThan1D() const
     {
-        return frame;
-    }
-
-    //!
-    //! \brief getVelocityType
-    //! \return
-    //!
-    VelocityType getVelocityType() const
-    {
-        return type;
+        return dimension > 1;
     }
 
     //!
     //! \brief is3D
     //! \return
     //!
-    bool is3D() const
+    virtual bool is2D() const
     {
-        return false;
-    }
-
-protected:
-    //!
-    //! \brief setCoordinateFrame
-    //! \param desiredFrame
-    //!
-    void setCoordinateFrame(const CoordinateFrameTypes &desiredFrame)
-    {
-        this->frame = desiredFrame;
+        return dimension == 2;
     }
 
     //!
-    //! \brief setVelocityType
-    //! \param desiredType
+    //! \brief is3D
+    //! \return
     //!
-    void setVelocityType(const VelocityType &desiredType)
+    virtual bool isGreaterThan2D() const
     {
-        this->type = desiredType;
+        return dimension > 2;
     }
 
-    /** Relational Operators */
+    //!
+    //! \brief is3D
+    //! \return
+    //!
+    virtual bool is3D() const
+    {
+        return dimension == 3;
+    }
+
 public:
-
-    //!
-    //! \brief operator <
-    //! \param rhs
-    //! \return
-    //!
-    bool operator < (const AbstractVelocity &rhs) const
+    /**
+     *
+     */
+    template <class T>
+    const T *velocityAs() const
     {
-        if(this->data >= rhs.data)
-            return false;
-        return true;
+        //ensure that we are attempting to cast it to a type of state
+        return static_cast<const T *>(this);
     }
 
-    //!
-    //! \brief operator >=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator >= (const AbstractVelocity &rhs) const
+    /**
+     *
+     */
+    template <class T>
+    T *velocityAs()
     {
-        return !(*this < rhs);
+        //ensure that we are attempting to cast it to a type of state
+        return static_cast<T *>(this);
     }
 
-    //!
-    //! \brief operator >
-    //! \param rhs
-    //! \return
-    //!
-    bool operator > (const AbstractVelocity &rhs) const
+    /**
+     * @brief getClone
+     * @return
+     */
+    virtual Velocity* getPositionalClone() const = 0;
+
+    /**
+     * @brief getClone
+     * @param state
+     */
+    virtual void getPositionalClone(Velocity** vel) const = 0;
+
+
+public:
+    Velocity& operator = (const Velocity &rhs)
     {
-        if(this->data <= rhs.data)
-            return false;
-        return true;
+        this->name = rhs.name;
+        this->dimension = rhs.dimension;
+        return *this;
     }
 
-    //!
-    //! \brief operator <=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator <= (const AbstractVelocity &rhs) const
+    bool operator == (const Velocity &rhs) const
     {
-        return !(*this > rhs);
-    }
-
-    //!
-    //! \brief operator ==
-    //! \param rhs
-    //! \return
-    //!
-    bool operator == (const AbstractVelocity &rhs) const
-    {
-        if(this->data != rhs.data){
+        if(this->name != rhs.name){
             return false;
         }
-        if(this->frame != rhs.frame){
-            return false;
-        }
-        if(this->type != rhs.type){
+        if(this->dimension != rhs.dimension){
             return false;
         }
         return true;
     }
 
-    //!
-    //! \brief operator !=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator != (const AbstractVelocity &rhs) const {
+    bool operator !=(const Velocity &rhs) const
+    {
         return !(*this == rhs);
     }
 
-    /** Assignment Operators */
-public:
-
-    //!
-    //! \brief operator +=
-    //! \param that
-    //! \return
-    //!
-    AbstractVelocity& operator += (const AbstractVelocity &rhs)
-    {
-        this->data += rhs.data;
-        return *this;
-    }
-
-    //!
-    //! \brief operator -=
-    //! \param that
-    //! \return
-    //!
-    AbstractVelocity& operator -= (const AbstractVelocity &rhs)
-    {
-        this->data -= rhs.data;
-        return *this;
-    }
-
 protected:
-    CoordinateFrameTypes frame = CoordinateFrameTypes::CF_UNKNOWN;
-    VelocityType type = VelocityType::UNKNOWN;
+    std::string name;
 
-    DIM data;
+    uint8_t dimension = 0;
 };
 
-} //end of namespace pose
-} //end of namespace mace
+
+
+} // end of namespace pose
+} // end of namespace mace
 
 #endif // ABSTRACT_VELOCITY_H

@@ -9,7 +9,6 @@ GoalState::GoalState(const StateSpacePtr &space, const double &value):
     this->setSampleFunction([this](State* sample)
     {
         sample = goalState;
-        UNUSED(sample);
     });
 }
 

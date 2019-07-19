@@ -68,11 +68,11 @@ public:
         int index = 0;
         std::vector<int> nullItems;
         for(std::vector<CartesianPosition_2D>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
-            if(!it->hasXBeenSet() && !it->hasYBeenSet())
-            {
-                //This should see that the value is null
-                nullItems.push_back(index);
-            }
+//            if(!it->hasXBeenSet() && !it->hasYBeenSet())
+//            {
+//                //This should see that the value is null
+//                nullItems.push_back(index);
+//            }
             index++;
         }
         return nullItems;
@@ -87,7 +87,7 @@ public:
 
     void getCorners(CartesianPosition_2D &topLeft, CartesianPosition_2D &bottomRight) const override;
 
-    mace::pose::CoordinateFrameTypes getVertexCoordinateFrame() const override;
+    mace::CoordinateFrameTypes getVertexCoordinateFrame() const override;
 
     void applyCoordinateShift(const double &distance, const double &bearing);
 

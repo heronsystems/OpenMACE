@@ -15,12 +15,10 @@ MACE_CLASS_FORWARD(Abstract_GeodeticPosition);
 MACE_CLASS_FORWARD(GeodeticPosition_2D);
 MACE_CLASS_FORWARD(GeodeticPosition_3D);
 
-class Abstract_GeodeticPosition : public Position, public PositionInterface<Abstract_GeodeticPosition, misc::Data2D>
+class Abstract_GeodeticPosition : public Position, public PositionInterface<Abstract_GeodeticPosition>
 {
 public:
     Abstract_GeodeticPosition(const GeodeticFrameTypes &explicitFrame, const std::string &posName = "Position Object");
-
-    Abstract_GeodeticPosition(const GeodeticFrameTypes &explicitFrame, const double &latitude, const double &longitude, const std::string &posName = "Position Object");
 
     Abstract_GeodeticPosition(const Abstract_GeodeticPosition &copy);
 
@@ -33,55 +31,25 @@ public:
     //! \brief setLatitude
     //! \param latitude
     //!
-    void setLatitude(const double &latitude)
-    {
-        this->setY(latitude);
-    }
+    virtual void setLatitude(const double &latitude) = 0;
 
     //!
     //! \brief setLongitude
     //! \param longitude
     //!
-    void setLongitude(const double &longitude)
-    {
-        this->setX(longitude);
-    }
+    virtual void setLongitude(const double &longitude) = 0;
 
     //!
     //! \brief getLatitude
     //! \return
     //!
-    double getLatitude() const
-    {
-        return this->getY();
-    }
+    virtual double getLatitude() const = 0;
 
     //!
     //! \brief getLongitude
     //! \return
     //!
-    double getLongitude() const
-    {
-        return this->getX();
-    }
-
-    //!
-    //! \brief hasLatitudeBeenSet
-    //! \return
-    //!
-    bool hasLatitudeBeenSet() const
-    {
-        return this->getDataYFlag();
-    }
-
-    //!
-    //! \brief hasLongitudeBeenSet
-    //! \return
-    //!
-    bool hasLongitudeBeenSet() const
-    {
-        return this->getDataXFlag();
-    }
+    virtual double getLongitude() const = 0;
 
     //!
     //! \brief deltaLatitude
@@ -104,7 +72,7 @@ public:
     }
 
 public:
-    PositionType getPositionType() const override;
+    CoordinateSystemTypes getCoordinateSystemType() const override;
 
     void setCoordinateFrame(const GeodeticFrameTypes &explicitFrame);
 

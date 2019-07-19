@@ -13,20 +13,20 @@ namespace pose{
 GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticFrameTypes &frameType,
                     const double &latitude, const double &longitude,
                     const std::string &pointName):
-    Abstract_GeodeticPosition(frameType, latitude, longitude, pointName), State()
+    Abstract_GeodeticPosition(frameType, pointName), State(), data(longitude, latitude)
 {
     this->dimension = 2;
 }
 
 GeodeticPosition_2D::GeodeticPosition_2D(const std::string &pointName,
                     const double &latitude, const double &longitude):
-    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, latitude, longitude, pointName), State()
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, pointName), State(), data(longitude, latitude)
 {
     this->dimension = 2;
 }
 
 GeodeticPosition_2D::GeodeticPosition_2D(const double &latitude, const double &longitude):
-    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, latitude, longitude, "Geodetic Point"), State()
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, "Geodetic Point"), State(), data(longitude, latitude)
 {
     this->dimension = 2;
 }
@@ -37,7 +37,7 @@ GeodeticPosition_2D::GeodeticPosition_2D(const double &latitude, const double &l
 //! \param copy
 //!
 GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_2D &copy):
-    Abstract_GeodeticPosition(copy), state_space::State(copy)
+    Abstract_GeodeticPosition(copy), state_space::State(copy), data(copy.data)
 {
 
 }
@@ -45,7 +45,7 @@ GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_2D &copy):
 GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_3D &copy):
     Abstract_GeodeticPosition(copy), state_space::State(copy)
 {
-
+    this->updateTranslationalComponents(copy.getLatitude(), copy.getLongitude());
 }
 
 bool GeodeticPosition_2D::areEquivalentFrames(const GeodeticPosition_2D &obj) const
@@ -81,11 +81,11 @@ double GeodeticPosition_2D::distanceBetween2D(const Abstract_GeodeticPosition* p
     double deltaLatitude = finalLatitude - originLatitude;
     double deltaLongitude = finalLongitude - originLongitude;
 
-    double tmpA = sin(deltaLatitude/2) * sin(deltaLatitude/2) +
-            cos(originLatitude) * cos(finalLatitude) *
-            sin(deltaLongitude/2) * sin(deltaLongitude/2);
+    double tmpA = std::sin(deltaLatitude/2) * std::sin(deltaLatitude/2) +
+            std::cos(originLatitude) * std::cos(finalLatitude) *
+            std::sin(deltaLongitude/2) * std::sin(deltaLongitude/2);
 
-    double tmpC = 2 * atan2(sqrt(tmpA),sqrt(1-tmpA));
+    double tmpC = 2 * atan2(std::sqrt(tmpA),std::sqrt(1-tmpA));
 
     double distance = earthRadius * tmpC;
 
@@ -114,10 +114,10 @@ double GeodeticPosition_2D::polarBearingTo(const Abstract_GeodeticPosition* pos)
 
     double deltaLongitude = finalLongitude - originLongitude;
 
-    double tmpY = sin(deltaLongitude) * cos(finalLatitude);
-    double tmpX = cos(originLatitude) * sin(finalLatitude) -
-            sin(originLatitude) * cos(finalLatitude) *
-            cos(deltaLongitude);
+    double tmpY = std::sin(deltaLongitude) * std::cos(finalLatitude);
+    double tmpX = std::cos(originLatitude) * std::sin(finalLatitude) -
+            std::sin(originLatitude) * std::cos(finalLatitude) *
+            std::cos(deltaLongitude);
     double bearing = atan2(tmpY,tmpX);
     return bearing;
 }
@@ -158,9 +158,9 @@ void GeodeticPosition_2D::newPositionFromCompass(Abstract_GeodeticPosition* newO
 
     double distanceRatio = distance / earthRadius;
 
-    double newLat = asin(sin(latitudeRad) * cos(distanceRatio) + cos(latitudeRad) * sin(distanceRatio) * cos(bearing));
-    double newLon = longitudeRad + atan2(sin(bearing) * sin(distanceRatio) * cos(latitudeRad),
-                                         cos(distanceRatio) - sin(latitudeRad) * sin(newLat));
+    double newLat = asin(std::sin(latitudeRad) * std::cos(distanceRatio) + std::cos(latitudeRad) * std::sin(distanceRatio) * std::cos(bearing));
+    double newLon = longitudeRad + atan2(std::sin(bearing) * std::sin(distanceRatio) * std::cos(latitudeRad),
+                                         std::cos(distanceRatio) - std::sin(latitudeRad) * std::sin(newLat));
     if(newObject->isGreaterThan1D())
     {
         GeodeticPosition_2D* tmpPos = newObject->positionAs<GeodeticPosition_2D>();

@@ -8,8 +8,7 @@
 namespace mace {
 namespace pose {
 
-class GeodeticPosition_3D : public Abstract_GeodeticPosition, public Abstract_Altitude,
-    public state_space::State
+class GeodeticPosition_3D : public Abstract_GeodeticPosition, public Abstract_Altitude, public state_space::State
 {
 public:
 
@@ -18,10 +17,7 @@ public:
                         const AltitudeReferenceTypes &altitudeType = AltitudeReferenceTypes::REF_ALT_UNKNOWN, const double &altitude = 0.0,
                         const std::string &pointName = "Geodetic Point");
 
-    GeodeticPosition_3D(const std::string &pointName,
-                        const double &latitude, const double &longitude, const double &altitude);
-
-    GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude);
+    GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude, const std::string &pointName = "Geodetic Point");
 
     //!
     //! \brief GeodeticPosition_2D
@@ -52,41 +48,74 @@ public:
     //!
     void updatePosition(const double &latitude, const double &longitude, const double &altitude)
     {
-        this->updateTranslationalComponent(latitude,longitude);
-        this->updateElevationComponent(altitude);
-    }
-
-    void updateTranslationalComponent(const double &latitude, const double &longitude)
-    {
-        this->setData_2D(latitude,longitude);
-    }
-
-    void updateElevationComponent(const double &altitude)
-    {
-        this->setData_1D(altitude);
+        this->updateTranslationalComponents(latitude,longitude);
+        this->setAltitude(altitude);
     }
 
     //!
-    //! \brief hasBeenSet
+    //! \brief updatePosition
+    //! \param latitude
+    //! \param longitude
+    //!
+    void updateTranslationalComponents(const double &latitude, const double &longitude)
+    {
+        this->setLongitude(longitude);
+        this->setLatitude(latitude);
+    }
+
+    //!
+    //! \brief setLatitude
+    //! \param latitude
+    //!
+    void setLatitude(const double &latitude) override
+    {
+        this->data(1) = latitude;
+    }
+
+    //!
+    //! \brief setLongitude
+    //! \param longitude
+    //!
+    void setLongitude(const double &longitude) override
+    {
+        this->data(0) = longitude;
+    }
+
+    //!
+    //! \brief setAltitude
+    //! \param altitude
+    //!
+    void setAltitude(const double &altitude) override
+    {
+        this->data(2) = altitude;
+    }
+
+    //!
+    //! \brief getLatitude
     //! \return
     //!
-    bool hasBeenSet() const override
+    double getLatitude() const override
     {
-        return hasLatitudeBeenSet() || hasLongitudeBeenSet() || hasAltitudeBeenSet();
+        return  this->data(1);
     }
 
-public:
-
     //!
-    //! \brief getAsVector
+    //! \brief getLongitude
     //! \return
     //!
-    Eigen::Vector3d getAsVector()
+    double getLongitude() const override
     {
-        Eigen::Vector3d vec(this->getLatitude(), this->getLongitude(), this->getAltitude());
-        return vec;
+        return this->data(0);
     }
 
+    //!
+    //! \brief getAltitude
+    //! \return
+    //!
+    double getAltitude() const override
+    {
+        return this->data(2);
+    }
 
 public:
 
@@ -224,56 +253,8 @@ public:
     {
         Abstract_GeodeticPosition::operator =(rhs);
         Abstract_Altitude::operator =(rhs);
+        this->data = rhs.data;
         return *this;
-    }
-
-    /** Arithmetic Operators */
-public:
-
-    //!
-    //! \brief operator +
-    //! \param that
-    //! \return
-    //!
-    GeodeticPosition_3D operator + (const GeodeticPosition_3D &rhs) const
-    {
-        GeodeticPosition_3D newPoint(*this);
-
-        if(this->areEquivalentFrames(rhs))
-        {
-            newPoint.x = newPoint.x + rhs.x;
-            newPoint.y = newPoint.y + rhs.y;
-            newPoint.z = newPoint.z + rhs.z;
-        }
-        else
-        {
-            throw std::logic_error("Tried to perform a + operation between 3DGeodetic of differnet coordinate frames.");
-        }
-
-        return newPoint;
-    }
-
-    //!
-    //! \brief operator -
-    //! \param that
-    //! \return
-    //!
-    GeodeticPosition_3D operator - (const GeodeticPosition_3D &rhs) const
-    {
-        GeodeticPosition_3D newPoint(*this);
-
-        if(this->areEquivalentFrames(rhs))
-        {
-            newPoint.x = newPoint.x - rhs.x;
-            newPoint.y = newPoint.y - rhs.y;
-            newPoint.z = newPoint.z - rhs.z;
-        }
-        else
-        {
-            throw std::logic_error("Tried to perform a - operation between 3DGeodetic of differnet coordinate frames.");
-        }
-
-        return newPoint;
     }
 
     /** Relational Operators */
@@ -289,6 +270,8 @@ public:
             return false;
         if(!Abstract_Altitude::operator ==(rhs))
             return false;
+        if(!this->data.isApprox(rhs.data, std::numeric_limits<double>::epsilon()))
+            return false;
         return true;
     }
 
@@ -300,7 +283,22 @@ public:
     bool operator != (const GeodeticPosition_3D &rhs) const {
         return !(*this == rhs);
     }
+
+
+public:
+    Eigen::Vector3d data;
 };
+
+/*!
+ * @brief Overloaded plus operator for Vectors.
+ */
+BASESHARED_EXPORT GeodeticPosition_3D operator +(const GeodeticPosition_3D &a, const GeodeticPosition_3D &b ) = delete;
+
+
+/*!
+ * @brief Overloaded minus operator for Vectors.
+ */
+BASESHARED_EXPORT GeodeticPosition_3D operator -(const GeodeticPosition_3D &a, const GeodeticPosition_3D &b ) = delete;
 
 } //end of namespace pose
 } //end of namespace mace

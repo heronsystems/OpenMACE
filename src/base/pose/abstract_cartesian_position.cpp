@@ -8,22 +8,16 @@ Abstract_CartesianPosition::Abstract_CartesianPosition(const CartesianFrameTypes
 
 }
 
-Abstract_CartesianPosition::Abstract_CartesianPosition(const CartesianFrameTypes &explicitFrame, const double &x, const double &y, const std::string &posName):
-    Position (posName), PositionInterface(x,y), cartesianFrameType(explicitFrame)
-{
-
-}
-
 
 Abstract_CartesianPosition::Abstract_CartesianPosition(const Abstract_CartesianPosition &copy):
-    Position (copy), PositionInterface(copy)
+    Position (copy)
 {
     this->cartesianFrameType = copy.cartesianFrameType;
 }
 
-PositionType Abstract_CartesianPosition::getPositionType() const
+CoordinateSystemTypes Abstract_CartesianPosition::getCoordinateSystemType() const
 {
-    return PositionType::CARTESIAN;
+    return CoordinateSystemTypes::CARTESIAN;
 }
 
 void Abstract_CartesianPosition::setCoordinateFrame(const CartesianFrameTypes &explicitFrame)
@@ -31,12 +25,12 @@ void Abstract_CartesianPosition::setCoordinateFrame(const CartesianFrameTypes &e
     this->cartesianFrameType = explicitFrame;
 }
 
-CartesianFrameTypes Abstract_CartesianPosition::getCartesianFrameType() const
+mace::CartesianFrameTypes Abstract_CartesianPosition::getCartesianFrameType() const
 {
     return this->cartesianFrameType;
 }
 
-CoordinateFrameTypes Abstract_CartesianPosition::getExplicitCoordinateFrame() const
+mace::CoordinateFrameTypes Abstract_CartesianPosition::getExplicitCoordinateFrame() const
 {
     return getCoordinateFrame(cartesianFrameType);
 }

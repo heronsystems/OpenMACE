@@ -7,8 +7,7 @@
 namespace mace {
 namespace pose {
 
-class GeodeticPosition_2D : public Abstract_GeodeticPosition,
-        public state_space::State
+class GeodeticPosition_2D : public Abstract_GeodeticPosition, public state_space::State
 {
 
 public:
@@ -51,24 +50,52 @@ public:
     }
 
 public:
+
     //!
     //! \brief updatePosition
     //! \param latitude
     //! \param longitude
     //!
-    void updatePosition(const double &latitude, const double &longitude)
+    void updateTranslationalComponents(const double &latitude, const double &longitude)
     {
-        this->setData_2D(latitude,longitude);
+        this->setLongitude(longitude);
+        this->setLatitude(latitude);
     }
 
     //!
-    //! \brief getAsVector
+    //! \brief setLatitude
+    //! \param latitude
+    //!
+    void setLatitude(const double &latitude) override
+    {
+        this->data(1) = latitude;
+    }
+
+    //!
+    //! \brief setLongitude
+    //! \param longitude
+    //!
+    void setLongitude(const double &longitude) override
+    {
+        this->data(0) = longitude;
+    }
+
+    //!
+    //! \brief getLatitude
     //! \return
     //!
-    Eigen::Vector2d getAsVector()
+    double getLatitude() const override
     {
-        Eigen::Vector2d vec(this->getX(), this->getY());
-        return vec;
+        return  this->data(1);
+    }
+
+    //!
+    //! \brief getLongitude
+    //! \return
+    //!
+    double getLongitude() const override
+    {
+        return this->data(0);
     }
 
 
@@ -115,14 +142,6 @@ public:
     }
 
 public:
-    //!
-    //! \brief hasBeenSet
-    //! \return
-    //!
-    bool hasBeenSet() const override
-    {
-        return hasLatitudeBeenSet() || hasLongitudeBeenSet();
-    }
 
     //!
     //! \brief distanceFromOrigin
@@ -200,55 +219,10 @@ public:
     GeodeticPosition_2D& operator = (const GeodeticPosition_2D &rhs)
     {
         Abstract_GeodeticPosition::operator =(rhs);
+        this->data = rhs.data;
         return *this;
     }
 
-    /** Arithmetic Operators */
-public:
-
-    //!
-    //! \brief operator +
-    //! \param that
-    //! \return
-    //!
-    GeodeticPosition_2D operator + (const GeodeticPosition_2D &rhs) const
-    {
-        GeodeticPosition_2D newPoint(*this);
-
-        if(this->areEquivalentFrames(rhs))
-        {
-            newPoint.x = newPoint.x + rhs.x;
-            newPoint.y = newPoint.y + rhs.y;
-        }
-        else
-        {
-            throw std::logic_error("Tried to perform a + operation between 3DGeodetic of differnet coordinate frames.");
-        }
-
-        return newPoint;
-    }
-
-    //!
-    //! \brief operator -
-    //! \param that
-    //! \return
-    //!
-    GeodeticPosition_2D operator - (const GeodeticPosition_2D &rhs) const
-    {
-        GeodeticPosition_2D newPoint(*this);
-
-        if(this->areEquivalentFrames(rhs))
-        {
-            newPoint.x = newPoint.x - rhs.x;
-            newPoint.y = newPoint.y - rhs.y;
-        }
-        else
-        {
-            throw std::logic_error("Tried to perform a - operation between 3DGeodetic of differnet coordinate frames.");
-        }
-
-        return newPoint;
-    }
     /** Relational Operators */
 public:
     //!
@@ -259,6 +233,8 @@ public:
     bool operator == (const GeodeticPosition_2D &rhs) const
     {
         if(!Abstract_GeodeticPosition::operator ==(rhs))
+            return false;
+        if(!this->data.isApprox(rhs.data, std::numeric_limits<double>::epsilon()))
             return false;
         return true;
     }
@@ -271,7 +247,21 @@ public:
     bool operator != (const GeodeticPosition_2D &rhs) const {
         return !(*this == rhs);
     }
+
+public:
+    Eigen::Vector2d data;
 };
+
+/*!
+ * @brief Overloaded plus operator for Vectors.
+ */
+BASESHARED_EXPORT GeodeticPosition_2D operator +(const GeodeticPosition_2D &a, const GeodeticPosition_2D &b ) = delete;
+
+
+/*!
+ * @brief Overloaded minus operator for Vectors.
+ */
+BASESHARED_EXPORT GeodeticPosition_2D operator -(const GeodeticPosition_2D &a, const GeodeticPosition_2D &b ) = delete;
 
 } //end of namespace pose
 } //end of namespace mace

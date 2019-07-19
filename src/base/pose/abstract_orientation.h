@@ -1,10 +1,7 @@
 #ifndef ABSTRACT_ORIENTATION_H
 #define ABSTRACT_ORIENTATION_H
 
-#include "base/misc/data_components.h"
-#include "coordinate_frame.h"
 
-using namespace mace::misc::details;
 
 namespace mace{
 namespace pose{

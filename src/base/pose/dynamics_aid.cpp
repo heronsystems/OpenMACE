@@ -28,7 +28,7 @@ void DynamicsAid::LocalPositionToGlobal(const GeodeticPosition_3D &origin, const
 {
     double distance = position.distanceFromOrigin();
     double bearing = position.polarBearingFromOrigin();
-    double elevation = position.elevationFromOrigin();
+    double elevation = position.elevationAngleFromOrigin();
     global = origin.newPositionFromPolar(distance, bearing, elevation);
 }
 

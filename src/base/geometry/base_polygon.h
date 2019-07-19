@@ -40,7 +40,7 @@ class PolygonAbstract
         this->name = copy.name;
     }
 
-    virtual mace::pose::CoordinateFrameTypes getVertexCoordinateFrame() const = 0;
+    virtual mace::CoordinateFrameTypes getVertexCoordinateFrame() const = 0;
 
 public:
 

@@ -15,19 +15,17 @@ MACE_CLASS_FORWARD(Abstract_CartesianPosition);
 MACE_CLASS_FORWARD(CartesianPosition_2D);
 MACE_CLASS_FORWARD(CartesianPosition_3D);
 
-class Abstract_CartesianPosition : public Position, protected PositionInterface<Abstract_CartesianPosition, misc::Data2D>
+class Abstract_CartesianPosition : public Position, public PositionInterface<Abstract_CartesianPosition>
 {
 public:
     Abstract_CartesianPosition(const CartesianFrameTypes &explicitFrame, const std::string &posName = "Position Object");
-
-    Abstract_CartesianPosition(const CartesianFrameTypes &explicitFrame, const double &x, const double &y, const std::string &posName = "Position Object");
 
     Abstract_CartesianPosition(const Abstract_CartesianPosition &copy);
 
     ~Abstract_CartesianPosition() override = default;
 
 public:
-    PositionType getPositionType() const override;
+    CoordinateSystemTypes getCoordinateSystemType() const override;
 
     void setCoordinateFrame(const CartesianFrameTypes &explicitFrame);
 

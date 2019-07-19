@@ -1,24 +1,25 @@
 #ifndef CARTESIAN_POSITION_3D_H
 #define CARTESIAN_POSITION_3D_H
 
-#include "base/state_space/state.h"
-#include "abstract_cartesian_position.h"
 #include "abstract_altitude.h"
+#include "abstract_cartesian_position.h"
+#include "base/state_space/state.h"
 
 using namespace mace::math;
 
 namespace mace {
 namespace pose {
 
-class CartesianPosition_3D : public Abstract_CartesianPosition, public Abstract_Altitude,
-        public state_space::State
+class CartesianPosition_3D : public Abstract_CartesianPosition, public Abstract_Altitude, public state_space::State
 {
 public:
-    CartesianPosition_3D(const std::string &pointName);
 
-    CartesianPosition_3D(const double &x, const double &y, const double &z);
+    CartesianPosition_3D(const CartesianFrameTypes &frameType = CartesianFrameTypes::CF_LOCAL_UNKNOWN,
+                        const double &x = 0.0, const double &y = 0.0,
+                        const AltitudeReferenceTypes &altitudeType = AltitudeReferenceTypes::REF_ALT_UNKNOWN, const double &z = 0.0,
+                        const std::string &pointName = "Cartesian Point");
 
-    CartesianPosition_3D(const std::string &pointName = "Position Point", const double &x = 0.0, const double &y = 0.0, const double &z = 0.0);
+    CartesianPosition_3D(const double &x, const double &y, const double &z, const std::string &pointName = "Cartesian Point");
 
     CartesianPosition_3D(const CartesianPosition_3D &copy);
 
@@ -36,66 +37,45 @@ public:
     bool areEquivalentFrames(const CartesianPosition_3D &obj) const;
 
 public:
-    void normalize();
-
-    void scale(const double &value);
-
-public:
     void updatePosition(const double &x, const double &y, const double &z)
     {
-        this->setData_2D(x,y);
-        this->setData_1D(z);
+        this->setTranslationalPosition(x,y);
+        this->setAltitude(z);
     }
 
+    void setTranslationalPosition(const double &x, const double &y)
+    {
+        this->setXPosition(x);
+        this->setYPosition(y);
+    }
     void setXPosition(const double &x)
     {
-        this->setX(x);
+        this->data(0) = x;
     }
 
     void setYPosition(const double &y)
     {
-        this->setY(y);
+        this->data(1) = y;
     }
 
     void setZPosition(const double &z)
     {
-        this->setZ(z);
+        this->data(2) = z;
     }
 
     double getXPosition() const
     {
-        return this->getX();
+        return this->data(0);
     }
 
     double getYPosition() const
     {
-        return this->getY();
+        return this->data(1);
     }
 
     double getZPosition() const
     {
-        return this->getZ();
-    }
-
-    Eigen::Vector3d getAsVector()
-    {
-        Eigen::Vector3d vec(this->getX(), this->getY(), this->getZ());
-        return vec;
-    }
-
-    bool hasXBeenSet() const
-    {
-        return this->getDataXFlag();
-    }
-
-    bool hasYBeenSet() const
-    {
-        return this->getDataYFlag();
-    }
-
-    bool hasZBeenSet() const
-    {
-        return this->getDataZFlag();
+        return this->data(2);
     }
 
 public:
@@ -106,26 +86,22 @@ public:
     /** Interface imposed via AltitudeInterface */
 
     //!
-    //! \brief hasAltitudeBeenSet
+    //! \brief setAltitude
+    //! \param altitude
+    //!
+    void setAltitude(const double &altitude) override;
+
+    //!
+    //! \brief getAltitude
     //! \return
     //!
-    bool hasAltitudeBeenSet() const override;
-
+    double getAltitude() const override;
 
     //!
-    //! \brief elevationFromOrigin
+    //! \brief elevationAngleFromOrigin
     //! \return
     //!
-    double elevationFromOrigin() const override;
-
-
-    //!
-    //! \brief deltaAltitude
-    //! \param pos
-    //! \return
-    //!
-    double deltaAltitude(const Abstract_Altitude* pos) const override;
-
+    double elevationAngleFromOrigin() const override;
 
     //!
     //! \brief elevationAngleTo
@@ -163,11 +139,6 @@ public:
     }
 
 public:
-    bool hasBeenSet() const override
-    {
-        return hasXBeenSet() || hasYBeenSet() || hasZBeenSet();
-    }
-
     //!
     //! \brief distanceFromOrigin
     //! \return
@@ -241,56 +212,8 @@ public:
     {
         Abstract_CartesianPosition::operator =(rhs);
         Abstract_Altitude::operator =(rhs);
+        this->data = rhs.data;
         return *this;
-    }
-
-    /** Arithmetic Operators */
-public:
-    CartesianPosition_3D operator+ (const CartesianPosition_3D &rhs)
-    {
-        CartesianPosition_3D newPoint(*this);
-
-        if(this->areEquivalentFrames(rhs))
-        {
-            newPoint.x = newPoint.x + rhs.x;
-            newPoint.y = newPoint.y + rhs.y;
-            newPoint.z = newPoint.z + rhs.z;
-        }
-        else
-        {
-            throw std::logic_error("Tried to perform a + operation between 3DCartesians of differnet coordinate frames.");
-        }
-
-        return newPoint;
-    }
-
-    CartesianPosition_3D& operator += (const CartesianPosition_3D &rhs)
-    {
-        if(this->areEquivalentFrames(rhs))
-        {
-            this->x += rhs.x;
-            this->y += rhs.y;
-            this->z += rhs.z;
-        }
-        else
-            throw std::logic_error("Tried to perform a + operation between 3DCartesians of differnet coordinate frames.");
-
-        return *this;
-    }
-
-    CartesianPosition_3D operator- (const CartesianPosition_3D &rhs)
-    {
-        CartesianPosition_3D newPoint(*this);
-
-        if(this->areEquivalentFrames(rhs))
-        {
-            newPoint.x = newPoint.x - rhs.x;
-            newPoint.y = newPoint.y - rhs.y;
-            newPoint.z = newPoint.z - rhs.z;
-        }
-        else
-            throw std::logic_error("Tried to perform a - operation between 3DCartesians of differnet coordinate frames.");
-        return newPoint;
     }
 
     /** Relational Operators */
@@ -306,6 +229,8 @@ public:
             return false;
         if(!Abstract_Altitude::operator ==(rhs))
             return false;
+        if(!this->data.isApprox(rhs.data, std::numeric_limits<double>::epsilon()))
+            return false;
         return true;
     }
 
@@ -319,8 +244,33 @@ public:
     }
 public:
     friend std::ostream& operator<<(std::ostream& os, const CartesianPosition_3D& t);
+
+    CartesianPosition_3D& operator+= (const CartesianPosition_3D &rhs)
+    {
+
+        if(this->areEquivalentFrames(rhs))
+        {
+            this->data += rhs.data;
+            return *this;
+        }
+        else
+            throw std::logic_error("Tried to perform a + operation between 2DCartesians of differnet coordinate frames.");
+    }
+
+public:
+    Eigen::Vector3d data;
 };
 
+
+/*!
+ * @brief Overloaded plus operator for Vectors.
+ */
+BASESHARED_EXPORT CartesianPosition_3D operator +(const CartesianPosition_3D &a, const CartesianPosition_3D &b );
+
+/*!
+ * @brief Overloaded minus operator for Vectors.
+ */
+BASESHARED_EXPORT CartesianPosition_3D operator -(const CartesianPosition_3D &a, const CartesianPosition_3D &b );
 
 } //end of namespace pose
 } //end of namespace mace

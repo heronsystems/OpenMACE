@@ -1,6 +1,8 @@
 #ifndef ABSTRACT_ALTITUDE_H
 #define ABSTRACT_ALTITUDE_H
 
+#include "base/misc/coordinate_frame_components.h"
+#include "base_position.h"
 #include "altitude_interface.h"
 
 namespace mace {
@@ -8,40 +10,29 @@ namespace pose {
 
 MACE_CLASS_FORWARD(Abstract_Altitude);
 
-class Abstract_Altitude : protected AltitudeInterface<Abstract_Altitude>, protected misc::Data1D
+class Abstract_Altitude : public AltitudeInterface<Abstract_Altitude>
 {
 public:
     Abstract_Altitude(const AltitudeReferenceTypes &explicitFrame = AltitudeReferenceTypes::REF_ALT_UNKNOWN);
 
-    Abstract_Altitude(const AltitudeReferenceTypes &explicitFrame, const double &z);
-
     Abstract_Altitude(const Abstract_Altitude &copy);
 
-    ~Abstract_Altitude() override = default;
-
-public:
-    void setAltitude(const double &altitude);
-
-    double getAltitude() const;
-
-    double deltaAltitude(const Abstract_Altitude* pos) const override;
-
-    bool hasAltitudeBeenSet() const override;
-
-    virtual double elevationFromOrigin() const override;
+    virtual ~Abstract_Altitude() = default;
 
 public:
     AltitudeReferenceTypes getAltitudeReferenceFrame() const;
 
     void setAltitudeReferenceFrame(const AltitudeReferenceTypes &explicitType);
 
-    bool areEquivalentAltitudeFrames(const Abstract_Altitude &obj) const;
+    bool areEquivalentAltitudeFrames(const Abstract_Altitude *obj) const;
+
+    double deltaAltitude(const Abstract_Altitude* pos) const override;
+
 
     /** Assignment Operators */
 public:
     void operator = (const Abstract_Altitude &rhs)
     {
-        Data1D::operator=(rhs);
         this->altitudeFrameType = rhs.altitudeFrameType;
     }
 
@@ -54,9 +45,6 @@ public:
     //!
     bool operator == (const Abstract_Altitude &rhs) const
     {
-        if(!Data1D::operator ==(rhs))
-            return false;
-
         if(this->altitudeFrameType != rhs.altitudeFrameType){
             return false;
         }

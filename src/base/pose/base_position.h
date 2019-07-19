@@ -7,35 +7,34 @@
 #include "common/common.h"
 #include "common/class_forward.h"
 #include "base/math/math_components.h"
-#include "base/misc/data_components.h"
 
-#include "coordinate_frame.h"
+#include "base/misc/coordinate_frame_components.h"
 
 namespace mace{
 namespace pose{
 
-enum class PositionType : uint8_t{
-    CARTESIAN = 0,
-    GEODETIC = 1,
-    UNKNOWN = 2
-};
-
-class Position
+class Position : public Kinematic_BaseInterface
 {
 public:
     Position(const std::string &posName = "Position Object");
 
     Position(const Position &copy);
 
-    virtual ~Position();
+    virtual ~Position() override = default;
+
+    /** Interface imposed via Kinemnatic_BaseInterace */
+    KinematicTypes getKinematicType() const override
+    {
+        return KinematicTypes::POSITION;
+    }
+
+    /** End of interface imposed via Kinemnatic_BaseInterace */
 
 public:
 
     void updatePositionName(const std::string &nameString);
 
     std::string getName() const;
-
-    virtual PositionType getPositionType() const = 0;
 
     virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
 
@@ -141,68 +140,6 @@ protected:
     uint8_t dimension = 0;
 };
 
-
-
-
-
-/*
-template<typename T>
-class Position : public BasePosition, public T
-{
-public:
-
-    Position() = default;
-
-    ~Position() = default;
-
-    template <typename NEWT>
-    Position(const Position<NEWT> &ref):
-        BasePosition (ref),
-        T(ref)
-    {
-
-    }
-
-    template<typename ... Arg>
-    Position(const Arg ... arg):
-        BasePosition (),
-        T(arg ...)
-    {
-    }
-
-    template<typename ... Arg>
-    Position(const char *str, const PositionType &posType, const Arg ... arg):
-        BasePosition (str, posType),
-        T(arg ...)
-    {
-
-    }
-
-public:
-    Position& operator = (const Position &copy)
-    {
-        BasePosition::operator=(copy);
-        T::operator=(copy);
-        return *this;
-    }
-
-    bool operator == (const Position &rhs) const
-    {
-        if(!BasePosition::operator ==(rhs))
-            return false;
-        if(!T::operator ==(rhs))
-            return false;
-        return true;
-    }
-
-    bool operator !=(const Position &rhs) const
-    {
-        return !(*this == rhs);
-    }
-
-};
-
-*/
 
 
 } // end of namespace pose

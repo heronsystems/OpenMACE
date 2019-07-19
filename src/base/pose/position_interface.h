@@ -2,38 +2,14 @@
 #define POSITION_INTERFACE_H
 
 #include "base_position.h"
-#include "coordinate_frame.h"
 
 namespace mace{
 namespace pose{
 
-template <typename T, class DATA>
-class PositionInterface : protected DATA
+template <typename T>
+class PositionInterface
 {
 public:
-
-    PositionInterface() = default;
-
-    virtual ~PositionInterface() = default;
-
-    template <class NEWDATA>
-    PositionInterface(const PositionInterface<T, NEWDATA> &ref):
-        DATA(ref)
-    {
-        std::cout<<"I am in this constructo pr"<<std::endl;
-    }
-
-    template<typename ... Arg>
-    PositionInterface(const Arg ... arg):
-        DATA(arg ...)
-    {
-
-    }
-
-public:
-
-    virtual bool hasBeenSet() const = 0;
-
     //!
     //! \brief distanceFromOrigin
     //! \return
@@ -93,26 +69,6 @@ public:
     virtual void applyPositionalShiftFromPolar(const double &distance, const double &bearing)  = 0;
 
     virtual void applyPositionalShiftFromCompass(const double &distance, const double &bearing)  = 0;
-
-public:
-    PositionInterface& operator = (const PositionInterface &rhs)
-    {
-        DATA::operator=(rhs);
-        return *this;
-    }
-
-    bool operator == (const PositionInterface &rhs) const
-    {
-        if(!DATA::operator ==(rhs))
-            return false;
-        return true;
-    }
-
-    bool operator !=(const PositionInterface &rhs) const
-    {
-        return !(*this == rhs);
-    }
-
 
 };
 

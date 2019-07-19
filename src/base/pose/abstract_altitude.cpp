@@ -3,48 +3,15 @@
 using namespace mace::pose;
 
 Abstract_Altitude::Abstract_Altitude(const AltitudeReferenceTypes &explicitFrame):
-    AltitudeInterface(), misc::Data1D(), altitudeFrameType(explicitFrame)
+    AltitudeInterface(), altitudeFrameType(explicitFrame)
 {
 
 }
-
-Abstract_Altitude::Abstract_Altitude(const AltitudeReferenceTypes &explicitFrame, const double &z):
-     AltitudeInterface(), misc::Data1D (z), altitudeFrameType(explicitFrame)
-{
-
-}
-
 
 Abstract_Altitude::Abstract_Altitude(const Abstract_Altitude &copy):
-    AltitudeInterface(), misc::Data1D (copy)
+    AltitudeInterface()
 {
     this->altitudeFrameType = copy.altitudeFrameType;
-}
-
-
-void Abstract_Altitude::setAltitude(const double &altitude)
-{
-    this->setData_1D(altitude);
-}
-
-double Abstract_Altitude::getAltitude() const
-{
-    return this->getZ();
-}
-
-double Abstract_Altitude::deltaAltitude(const Abstract_Altitude *pos) const
-{
-    return this->getZ() - pos->getZ();
-}
-
-bool Abstract_Altitude::hasAltitudeBeenSet() const
-{
-    return this->getDataZFlag();
-}
-
-double Abstract_Altitude::elevationFromOrigin() const
-{
-    return 0.0;
 }
 
 void Abstract_Altitude::setAltitudeReferenceFrame(const AltitudeReferenceTypes &explicitType)
@@ -52,12 +19,21 @@ void Abstract_Altitude::setAltitudeReferenceFrame(const AltitudeReferenceTypes &
     this->altitudeFrameType = explicitType;
 }
 
-AltitudeReferenceTypes Abstract_Altitude::getAltitudeReferenceFrame() const
+mace::AltitudeReferenceTypes Abstract_Altitude::getAltitudeReferenceFrame() const
 {
     return this->altitudeFrameType;
 }
 
-bool Abstract_Altitude::areEquivalentAltitudeFrames(const Abstract_Altitude &obj) const
+bool Abstract_Altitude::areEquivalentAltitudeFrames(const Abstract_Altitude* obj) const
 {
-    return this->altitudeFrameType == obj.getAltitudeReferenceFrame();
+    return this->altitudeFrameType == obj->getAltitudeReferenceFrame();
 }
+
+double Abstract_Altitude::deltaAltitude(const Abstract_Altitude *pos) const
+{
+    if(this->areEquivalentAltitudeFrames(pos))
+        return this->getAltitude() - pos->getAltitude();
+    else
+        throw std::logic_error("The deltaAltitude operation method has been called with incompatible coordinate frames.");
+}
+
