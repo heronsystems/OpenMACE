@@ -45,7 +45,7 @@ public:
 
     bool areEquivalentFrames(const CartesianPosition_2D &obj) const;
 
-    Eigen::VectorXd getDataVector() const
+    Eigen::VectorXd getDataVector() const override
     {
         return this->data;
     }

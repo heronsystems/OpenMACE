@@ -22,7 +22,7 @@ public:
 
     Topic_CartesianPosition(const Topic_CartesianPosition &copyObj);
 
-    Topic_CartesianPosition(const mace::pose::Abstract_GeodeticPosition *posObj);
+    Topic_CartesianPosition(const mace::pose::Abstract_CartesianPosition *posObj);
 
     virtual ~Topic_CartesianPosition()
     {
@@ -42,4 +42,5 @@ private:
 
 } //end of namespace BaseTopic
 } //end of namespace pose
+
 #endif // TOPIC_CARTESIAN_POSITION_H

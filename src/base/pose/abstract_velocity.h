@@ -1,6 +1,8 @@
 #ifndef ABSTRACT_VELOCITY_H
 #define ABSTRACT_VELOCITY_H
 
+#include <Eigen/Core>
+
 #include <iostream>
 #include <exception>
 
@@ -13,14 +15,14 @@
 namespace mace{
 namespace pose{
 
-class Velocity : public Kinematic_BaseInterface
+class Abstract_Velocity : public Kinematic_BaseInterface
 {
 public:
-    Velocity(const std::string &velName = "Velocity Object");
+    Abstract_Velocity(const std::string &velName = "Velocity Object");
 
-    Velocity(const Velocity &copy);
+    Abstract_Velocity(const Abstract_Velocity &copy);
 
-    virtual ~Velocity() override = default;
+    virtual ~Abstract_Velocity() override = default;
 
     /** Interface imposed via Kinemnatic_BaseInterace */
     KinematicTypes getKinematicType() const override
@@ -31,50 +33,17 @@ public:
     /** End of interface imposed via Kinemnatic_BaseInterace */
 
 public:
+    virtual Eigen::VectorXd getDataVector() const = 0;
+
+    virtual void updateDataVector(const Eigen::VectorXd &vecObj) const = 0;
+
+public:
 
     void updateVelocityName(const std::string &nameString);
 
     std::string getName() const;
 
     virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
-
-public:
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool isGreaterThan1D() const
-    {
-        return dimension > 1;
-    }
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool is2D() const
-    {
-        return dimension == 2;
-    }
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool isGreaterThan2D() const
-    {
-        return dimension > 2;
-    }
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool is3D() const
-    {
-        return dimension == 3;
-    }
 
 public:
     /**
@@ -101,24 +70,24 @@ public:
      * @brief getClone
      * @return
      */
-    virtual Velocity* getPositionalClone() const = 0;
+    virtual Abstract_Velocity* getVelocityClone() const = 0;
 
     /**
      * @brief getClone
      * @param state
      */
-    virtual void getPositionalClone(Velocity** vel) const = 0;
+    virtual void getVelocityClone(Abstract_Velocity** vel) const = 0;
 
 
 public:
-    Velocity& operator = (const Velocity &rhs)
+    Abstract_Velocity& operator = (const Abstract_Velocity &rhs)
     {
         this->name = rhs.name;
         this->dimension = rhs.dimension;
         return *this;
     }
 
-    bool operator == (const Velocity &rhs) const
+    bool operator == (const Abstract_Velocity &rhs) const
     {
         if(this->name != rhs.name){
             return false;
@@ -129,15 +98,13 @@ public:
         return true;
     }
 
-    bool operator !=(const Velocity &rhs) const
+    bool operator !=(const Abstract_Velocity &rhs) const
     {
         return !(*this == rhs);
     }
 
 protected:
     std::string name;
-
-    uint8_t dimension = 0;
 };
 
 

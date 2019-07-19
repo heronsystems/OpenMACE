@@ -11,6 +11,9 @@ enum TopicType{
 };
 
 class ITopicComponentDataObject : public MaceCore::ITopicComponentPrototype {
+
+public:
+    virtual ~ITopicComponentDataObject() = default;
 public:
     const char* name;
 };

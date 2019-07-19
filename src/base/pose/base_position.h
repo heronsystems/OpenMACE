@@ -1,6 +1,8 @@
 #ifndef BASE_POSITION_H
 #define BASE_POSITION_H
 
+#include <Eigen/Core>
+
 #include <iostream>
 #include <exception>
 
@@ -31,55 +33,15 @@ public:
     /** End of interface imposed via Kinemnatic_BaseInterace */
 
 public:
+    virtual Eigen::VectorXd getDataVector() const = 0;
 
-    void updatePositionName(const std::string &nameString);
+public:
+
+    void setName(const std::string &nameString);
 
     std::string getName() const;
 
     virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
-
-public:
-
-    uint8_t getDimension() const
-    {
-        return this->dimension;
-    }
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool isGreaterThan1D() const
-    {
-        return dimension > 1;
-    }
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool is2D() const
-    {
-        return dimension == 2;
-    }
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool isGreaterThan2D() const
-    {
-        return dimension > 2;
-    }
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    virtual bool is3D() const
-    {
-        return dimension == 3;
-    }
 
 public:
     /**
@@ -141,8 +103,6 @@ public:
 
 protected:
     std::string name;
-
-    uint8_t dimension = 0;
 };
 
 

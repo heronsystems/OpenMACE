@@ -2,6 +2,7 @@
 #define BASE_VELOCITY_H
 
 #include <Eigen/Core>
+#include <type_traits>
 
 #include "abstract_velocity.h"
 
@@ -9,20 +10,50 @@ namespace mace{
 namespace pose{
 
 template<typename CFDATA, class DATA>
-class Base_Velocity: public Velocity
+class Base_Velocity: public Abstract_Velocity
 {
 public:
     Base_Velocity(const CFDATA &frame):
-        Velocity(), explicitFrame(frame)
+        Abstract_Velocity(), explicitFrame(frame)
     {
-
+        if(typeid (CFDATA).name() == typeid (CartesianFrameTypes).name())
+        {
+            explicitType = CoordinateSystemTypes::CARTESIAN;
+        }
     }
 
     Base_Velocity(const Base_Velocity &copy):
-        Velocity(copy)
+        Abstract_Velocity(copy)
     {
         explicitFrame = copy.explicitFrame;
     }
+
+    Eigen::VectorXd getDataVector() const override
+    {
+        return this->data;
+    }
+    void updateDataVector(const Eigen::VectorXd &vecObj) const override
+    {
+
+    }
+
+
+public:
+    Abstract_Velocity* getVelocityClone() const override
+    {
+        return (new Base_Velocity<CFDATA,DATA>(*this));
+    }
+
+    void getVelocityClone(Abstract_Velocity** state) const override
+    {
+        *state = new Base_Velocity<CFDATA,DATA>(*this);
+    }
+
+    CoordinateSystemTypes getCoordinateSystemType() const override
+    {
+        return explicitType;
+    }
+
 
 public:
     CoordinateFrameTypes getExplicitCoordinateFrame() const
@@ -36,6 +67,7 @@ public:
     }
 
 private:
+    CoordinateSystemTypes explicitType = CoordinateSystemTypes::UNKNOWN;
     CFDATA explicitFrame;
 
 public:

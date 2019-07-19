@@ -6,6 +6,7 @@
 #include "base/pose/geodetic_position_2D.h"
 #include "base/pose/geodetic_position_3D.h"
 
+namespace pose {
 namespace BaseTopic {
 
 extern const char TopicName_GeodeticPosition[];
@@ -25,7 +26,7 @@ public:
 
     virtual ~Topic_GeodeticPosition()
     {
-        delete positionObj;
+        delete m_PositionObject;
     }
 
 public:
@@ -36,9 +37,10 @@ public:
     mace::pose::Abstract_GeodeticPosition* getPositionObj() const;
 
 private:
-    mace::pose::Abstract_GeodeticPosition* positionObj;
+    mace::pose::Abstract_GeodeticPosition* m_PositionObject;
 };
 
 } //end of namespace BaseTopic
+} //end of namespace pose
 
 #endif // TOPIC_GEODETIC_POSITION_H

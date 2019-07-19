@@ -145,7 +145,7 @@ Polygon_Cartesian Polygon_Cartesian::getBoundingRect() const
 pose::CartesianPosition_2D Polygon_Cartesian::getCenter() const
 {
     CartesianPosition_2D center;
-    center.updatePositionName("Center");
+    center.setName("Center");
 
     size_t size = polygonSize();
     for (size_t i = 0; i < size; i++)

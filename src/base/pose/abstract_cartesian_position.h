@@ -29,9 +29,6 @@ public:
     virtual void getCartesianClone(Abstract_CartesianPosition** state) const = 0;
 
 public:
-    virtual Eigen::VectorXd getDataVector() const = 0;
-
-public:
     CoordinateSystemTypes getCoordinateSystemType() const override;
 
     void setCoordinateFrame(const CartesianFrameTypes &explicitFrame);

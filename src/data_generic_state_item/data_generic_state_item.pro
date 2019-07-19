@@ -28,39 +28,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    state_attitude.cpp \
-    state_global_position.cpp \
-    state_local_position.cpp \
-    state_global_velocity.cpp \
-    state_local_velocity.cpp \
-    state_global_position_ex.cpp \
-    state_local_position_ex.cpp \
     state_airspeed.cpp \
-    base_3d_position.cpp \
-    abstract_3d_position.cpp \
-    base_2d_position.cpp \
-    abstract_position.cpp \
-    abstract_2d_position.cpp \
-    positional_aid.cpp \
     state_item_boundary.cpp
 
 HEADERS +=\
         data_generic_state_item_global.h \
-    state_attitude.h \
-    state_global_position.h \
-    state_local_position.h \
-    state_global_velocity.h \
-    state_local_velocity.h \
     state_item_components.h \
-    state_global_position_ex.h \
-    state_local_position_ex.h \
     state_airspeed.h \
-    base_3d_position.h \
-    abstract_3d_position.h \
-    base_2d_position.h \
-    abstract_position.h \
-    abstract_2d_position.h \
-    positional_aid.h \
     state_item_boundary.h
 
 # Unix lib Install

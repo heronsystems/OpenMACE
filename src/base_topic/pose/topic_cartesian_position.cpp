@@ -4,9 +4,9 @@ namespace pose{
 
 using namespace BaseTopic;
 
-const char TopicName_GeodeticPosition[] = "TOPIC_CARTESIANPOSITION";
+const char TopicName_CartesianPosition[] = "TOPIC_CARTESIANPOSITION";
 
-const MaceCore::TopicComponentStructure GlobalPositionTopic_structure = []{
+const MaceCore::TopicComponentStructure Structure_CartesianPosition = []{
     MaceCore::TopicComponentStructure structure;
     structure.AddTerminal<std::string>("Position Name");
     structure.AddTerminal<mace::CartesianFrameTypes>("Explicit Coordinate Frame");
@@ -38,7 +38,7 @@ void Topic_CartesianPosition::CreateFromDatagram(const MaceCore::TopicDatagram &
     if(dimension == 2)
     {
         mace::pose::CartesianPosition_2D* tmpObj = new mace::pose::CartesianPosition_2D();
-        tmpObj->updatePositionName(datagram.GetTerminal<std::string>("Position Name"));
+        tmpObj->setName(datagram.GetTerminal<std::string>("Position Name"));
         tmpObj->setCoordinateFrame(datagram.GetTerminal<mace::CartesianFrameTypes>("Explicit Coordinate Frame"));
 
         Eigen::Vector2d data = datagram.GetTerminal<Eigen::VectorXd>("Data");
@@ -49,9 +49,9 @@ void Topic_CartesianPosition::CreateFromDatagram(const MaceCore::TopicDatagram &
     else if(dimension == 3)
     {
         mace::pose::CartesianPosition_3D* tmpObj = new mace::pose::CartesianPosition_3D();
-        tmpObj->updatePositionName(datagram.GetTerminal<std::string>("Position Name"));
+        tmpObj->setName(datagram.GetTerminal<std::string>("Position Name"));
         tmpObj->setCoordinateFrame(datagram.GetTerminal<mace::CartesianFrameTypes>("Explicit Coordinate Frame"));
-        tmpObj->setCoordinateFrame(datagram.GetTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame"));
+        tmpObj->setAltitudeReferenceFrame(datagram.GetTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame"));
 
         Eigen::Vector3d data = datagram.GetTerminal<Eigen::VectorXd>("Data");
         tmpObj->updatePosition(data(0),data(1),data(2));
@@ -66,7 +66,7 @@ Topic_CartesianPosition::Topic_CartesianPosition():
 
 }
 
-Topic_CartesianPosition::Topic_CartesianPosition(const mace::pose::Abstract_CartesianPosition *posObj):
+Topic_CartesianPosition::Topic_CartesianPosition(const mace::pose::Abstract_CartesianPosition *posObj)
 {
     delete positionObj; positionObj = nullptr;
     //copy the contents of that point to the current pointer object

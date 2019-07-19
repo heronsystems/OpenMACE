@@ -128,7 +128,7 @@ GeodeticPosition_2D Polygon_2DG::getCenter() const
 {
 
     GeodeticPosition_2D center2DG;
-    center2DG.updatePositionName("Center");
+    center2DG.setName("Center");
 
     GeodeticPosition_3D center3DG;
 

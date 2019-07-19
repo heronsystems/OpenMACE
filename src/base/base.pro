@@ -51,9 +51,9 @@ SOURCES += \
     pose/abstract_cartesian_position.cpp \
     pose/abstract_altitude.cpp \
     pose/abstract_geodetic_position.cpp \
-    pose/base_velocity.cpp \
     geometry/polygon_2DC.cpp \
-    pose/base_altitude.cpp
+    pose/base_altitude.cpp \
+    pose/abstract_velocity.cpp
 
 HEADERS +=\
     base_global.h \

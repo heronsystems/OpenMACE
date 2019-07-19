@@ -2,6 +2,7 @@
 #define ALTITUDE_COORDINATE_FRAMES_H
 
 #include <string>
+#include <stdexcept>
 
 namespace mace {
 

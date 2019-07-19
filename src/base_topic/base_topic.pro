@@ -28,14 +28,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     vehicle_topics.cpp \
     pose/topic_geodetic_position.cpp \
-    pose/topic_cartesian_position.cpp
+    pose/topic_cartesian_position.cpp \
+    pose/topic_cartesian_velocity.cpp
 
 HEADERS += \
     base_topic_global.h \
     base_topic_components.h \
     vehicle_topics.h \
     pose/topic_geodetic_position.h \
-    pose/topic_cartesian_position.h
+    pose/topic_cartesian_position.h \
+    pose/topic_cartesian_velocity.h
 
 # Unix lib Install
 unix:!symbian {
