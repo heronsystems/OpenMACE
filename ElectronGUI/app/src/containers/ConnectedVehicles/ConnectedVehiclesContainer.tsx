@@ -105,7 +105,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
         return (
             <MuiThemeProvider muiTheme={lightMuiTheme}>
                 <div>
-                    {Object.keys(this.props.connectedVehicles).length > 0 ? (
+                    {/* {Object.keys(this.props.connectedVehicles).length > 0 ? ( */}
                         <div style={styles.connectedVehiclesContainer}>
                             <div>
                                 <FlatButton
@@ -127,7 +127,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
                             </div>
 
                             <div style={styles.rangeSelectStyle}>
-                                {Object.keys(this.props.connectedVehicles).length > 1 &&
+                                {/* {Object.keys(this.props.connectedVehicles).length > 1 && */}
                                     <SelectField
                                             floatingLabelText="Range"
                                             style={styles.selectField}
@@ -139,7 +139,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
                                             <MenuItem value={"4"} primaryText={"4"} label={"4"} />
                                             <MenuItem value={"5"} primaryText={"5"} label={"5"} />
                                     </SelectField>
-                                }
+                                {/* } */}
 
 
                                 <FlatButton
@@ -161,7 +161,8 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
 
                                 {this.state.showRangeSelect ?
                                     <RangeSelect
-                                        numVehicles={Object.keys(this.props.connectedVehicles).length}
+                                        // numVehicles={Object.keys(this.props.connectedVehicles).length}
+                                        numVehicles={10}
                                         onSelectRange={this.handleSelectRange}
                                         selectedMin={this.state.minRange}
                                         selectedMax={this.state.maxRange}
@@ -191,7 +192,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
                                 />
                             }
                         </div>
-                    ) : null}
+                    // ) : null}
                 </div>
             </MuiThemeProvider>
         );

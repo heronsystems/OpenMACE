@@ -5,10 +5,12 @@ const lightMuiTheme = getMuiTheme();
 import * as React from "react";
 
 import { VehicleHUD } from "../../components/VehicleHUD/VehicleHUD";
+// import { Card } from "material-ui/Card";
 import { Vehicle } from "../../util/Vehicle/Vehicle";
 import { styles } from "./styles";
+import { orange400 } from "material-ui/styles/colors";
 
-// import { RangeSelect } from "../../components/RangeSelect/RangeSelect";
+import * as GlobalTypes from "../../types/globalTypings";
 
 type Props = {
     connectedVehicles: { [id: string]: Vehicle };
@@ -38,30 +40,54 @@ export class ConnectedVehicleHUDs extends React.Component<Props, State> {
 
     render() {
 
-        let vehicleHUDs: JSX.Element[] = [];
-        for (let key in this.props.connectedVehicles) {
-            if (key) {
-                if (parseInt(key) >= this.props.minRange && parseInt(key) <= this.props.maxRange) {
-                    let vehicle = this.props.connectedVehicles[key];
-                    let now = new Date();
-                    const lastHeardSeconds = (now.getTime() - vehicle.general.lastHeard.getTime()) / 1000; // Time in seconds
-                    if (lastHeardSeconds <= 60) {
-                        vehicleHUDs.push(
-                            <VehicleHUD
-                                key={key}
-                                vehicleID={key}
-                                aircraft={vehicle}
-                                handleAircraftCommand={this.handleAircraftCommand}
-                                handleChangeSelectedVehicle={this.props.handleChangeSelectedVehicle}
-                                highlightColor={this.props.connectedVehicles[key].highlightColor}
-                            />
-                        );
+        // let vehicleHUDs: JSX.Element[] = [];
+        // for (let key in this.props.connectedVehicles) {
+        //     if (key) {
+        //         if (parseInt(key) >= this.props.minRange && parseInt(key) <= this.props.maxRange) {
+        //             let vehicle = this.props.connectedVehicles[key];
+        //             let now = new Date();
+        //             const lastHeardSeconds = (now.getTime() - vehicle.general.lastHeard.getTime()) / 1000; // Time in seconds
+        //             if (lastHeardSeconds <= 60) {
+        //                 vehicleHUDs.push(
+        //                     <VehicleHUD
+        //                         key={key}
+        //                         vehicleID={key}
+        //                         aircraft={vehicle}
+        //                         handleAircraftCommand={this.handleAircraftCommand}
+        //                         handleChangeSelectedVehicle={this.props.handleChangeSelectedVehicle}
+        //                         highlightColor={this.props.connectedVehicles[key].highlightColor}
+        //                     />
+        //                 );
 
-                    } else {
-                        this.props.onDisconnectedVehicle(key);
-                    }
-                }
-            }
+        //             } else {
+        //                 this.props.onDisconnectedVehicle(key);
+        //             }
+        //         }
+        //     }
+        // }
+
+        let vehicleHUDs: JSX.Element[] = [];
+        for (let i = 0; i < 10; i ++) {
+            let position: GlobalTypes.PositionType = {
+                alt: i,
+                lat: i,
+                lng: i
+            };
+            let attitude: GlobalTypes.AttitudeType = {
+                roll: i,
+                pitch: i,
+                yaw: i
+            };
+            vehicleHUDs.push(
+                <VehicleHUD
+                    key={i}
+                    vehicleID={i.toString()}
+                    aircraft={new Vehicle(i, position, attitude)}
+                    handleAircraftCommand={this.handleAircraftCommand}
+                    handleChangeSelectedVehicle={this.props.handleChangeSelectedVehicle}
+                    highlightColor={orange400}
+                />
+            )
         }
 
         return (

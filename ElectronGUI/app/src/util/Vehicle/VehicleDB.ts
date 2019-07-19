@@ -37,6 +37,15 @@ export class VehicleDB {
             console.log("Connected vehicles return: " + jsonVehicles.connectedVehicles.ids);
 
 
+            // // ********** TESTING
+            // jsonVehicles.connectedVehicles.ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+            // jsonVehicles.connectedVehicles.modes = ["STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE", "STABILIZE"];
+            // console.log("TEST Connected vehicles return: " + jsonVehicles.connectedVehicles.ids);
+            // // ********** END TESTING
+
+
+
+
             // Check if vehicle is already in the map. If so, update mode. If not, add it:
             for (let i = 0; i < jsonVehicles.connectedVehicles.ids.length; i++) {
                 if (stateCopy[jsonVehicles.connectedVehicles.ids[i].toString()] !== undefined) {

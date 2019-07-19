@@ -17,7 +17,7 @@ export const styles = {
         flexDirection: "column" as "column",
         maxHeight: height - 165,
         height: height,
-        overflowY: "hidden" as "hidden",
+        // overflowY: "hidden" as "hidden",
         overflowX: "hidden" as "hidden"
     },
     rangeSelectStyle: {
