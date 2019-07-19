@@ -40,6 +40,11 @@ public:
 
 public:
 
+    uint8_t getDimension() const
+    {
+        return this->dimension;
+    }
+
     //!
     //! \brief is3D
     //! \return
