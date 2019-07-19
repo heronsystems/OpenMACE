@@ -14,6 +14,10 @@ import { VehicleMessagesHUDs } from "../VehicleMessagesHUDs/VehicleMessagesHUDs"
 
 import { RangeSelect } from "../../components/RangeSelect/RangeSelect";
 
+import MenuItem from "material-ui/MenuItem";
+import SelectField from "material-ui/SelectField";
+
+
 type Props = {
     connectedVehicles: { [id: string]: Vehicle };
     onAircraftCommand: (vehicleID: string, tcpCommand: string, vehicleCommand: string) => void;
@@ -63,9 +67,6 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
     };
 
     incrementSelectedRange = () => {
-        console.log(this.state.maxRange + this.state.rangeSize);
-        console.log(Object.keys(this.props.connectedVehicles).length);
-
         if (this.state.minRange + this.state.rangeSize < Object.keys(this.props.connectedVehicles).length) {
             let tmpMinRange = this.state.minRange + this.state.rangeSize;
             let tmpMaxRange = this.state.maxRange + this.state.rangeSize;
@@ -86,7 +87,20 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
         });
     }
 
+    // handleTextChange = (event: any) => {
+    //     this.setState({ rangeSize: event.target.value });
+    // };
+
+    handleDropdownChange = (event: any, index: number, value: string) => {
+        this.setState({ rangeSize: parseInt(value) });
+    };
+
     render() {
+
+        // let rangeValues: JSX.Element[] = [];
+        // for (let i = 0; i < Object.keys(this.props.connectedVehicles).length; i++) {
+        //     rangeValues.push(<MenuItem key={i} value={i} primaryText={i} label={i} />);
+        // }
 
         return (
             <MuiThemeProvider muiTheme={lightMuiTheme}>
@@ -113,6 +127,21 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
                             </div>
 
                             <div style={styles.rangeSelectStyle}>
+                                {Object.keys(this.props.connectedVehicles).length > 1 &&
+                                    <SelectField
+                                            floatingLabelText="Range"
+                                            style={styles.selectField}
+                                            value={this.state.rangeSize.toString()}
+                                            onChange={this.handleDropdownChange}
+                                        >
+                                            <MenuItem value={"2"} primaryText={"2"} label={"2"} />
+                                            <MenuItem value={"3"} primaryText={"3"} label={"3"} />
+                                            <MenuItem value={"4"} primaryText={"4"} label={"4"} />
+                                            <MenuItem value={"5"} primaryText={"5"} label={"5"} />
+                                    </SelectField>
+                                }
+
+
                                 <FlatButton
                                     onClick={this.decrementSelectedRange}
                                     icon={<i className="material-icons">keyboard_arrow_left</i>}
