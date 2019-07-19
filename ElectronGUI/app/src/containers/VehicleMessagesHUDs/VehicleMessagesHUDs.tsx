@@ -4,26 +4,22 @@ const lightMuiTheme = getMuiTheme();
 // import FlatButton from "material-ui/FlatButton";
 import * as React from "react";
 
-import { VehicleHUD } from "../../components/VehicleHUD/VehicleHUD";
+import { VehicleMessages } from "../../components/VehicleMessages/VehicleMessages";
 import { Vehicle } from "../../util/Vehicle/Vehicle";
 import { styles } from "./styles";
 
-// import { RangeSelect } from "../../components/RangeSelect/RangeSelect";
 
 type Props = {
     connectedVehicles: { [id: string]: Vehicle };
-    onAircraftCommand: (vehicleID: string, tcpCommand: string, vehicleCommand: string) => void;
-    handleChangeSelectedVehicle: (vehicleID: string) => void;
-    selectedVehicleID: string;
-    onDisconnectedVehicle: (vehicleID: string) => void;
     minRange: number;
     maxRange: number;
+    handleChangeSelectedVehicle: (vehicleID: string) => void;
 };
 
 type State = {
 };
 
-export class ConnectedVehicleHUDs extends React.Component<Props, State> {
+export class VehicleMessagesHUDs extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -31,14 +27,8 @@ export class ConnectedVehicleHUDs extends React.Component<Props, State> {
         };
     }
 
-    handleAircraftCommand = (vehicleID: string, tcpCommand: string, vehicleCommand: string) => {
-        console.log("Command: " + vehicleCommand + " for vehicleID: " + vehicleID);
-        this.props.onAircraftCommand(vehicleID, tcpCommand, vehicleCommand);
-    };
-
     render() {
-
-        let vehicleHUDs: JSX.Element[] = [];
+        let vehicleMessages: JSX.Element[] = [];
         for (let key in this.props.connectedVehicles) {
             if (key) {
                 if (parseInt(key) >= this.props.minRange && parseInt(key) <= this.props.maxRange) {
@@ -46,19 +36,14 @@ export class ConnectedVehicleHUDs extends React.Component<Props, State> {
                     let now = new Date();
                     const lastHeardSeconds = (now.getTime() - vehicle.general.lastHeard.getTime()) / 1000; // Time in seconds
                     if (lastHeardSeconds <= 60) {
-                        vehicleHUDs.push(
-                            <VehicleHUD
+                        vehicleMessages.push(
+                            <VehicleMessages
                                 key={key}
                                 vehicleID={key}
                                 aircraft={vehicle}
-                                handleAircraftCommand={this.handleAircraftCommand}
                                 handleChangeSelectedVehicle={this.props.handleChangeSelectedVehicle}
-                                highlightColor={this.props.connectedVehicles[key].highlightColor}
                             />
                         );
-
-                    } else {
-                        this.props.onDisconnectedVehicle(key);
                     }
                 }
             }
@@ -66,8 +51,8 @@ export class ConnectedVehicleHUDs extends React.Component<Props, State> {
 
         return (
             <MuiThemeProvider muiTheme={lightMuiTheme}>
-                <div style={styles.connectedVehicleHUDsContainer}>
-                    {vehicleHUDs}
+                <div style={styles.vehicleMessagesHUDsContainer}>
+                    {vehicleMessages}
                 </div>
             </MuiThemeProvider>
 

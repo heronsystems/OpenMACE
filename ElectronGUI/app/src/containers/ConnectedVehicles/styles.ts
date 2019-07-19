@@ -16,12 +16,12 @@ export const styles = {
         height: height,
         // overflowY: "scroll" as "scroll",
         overflowX: "hidden" as "hidden"
+    },
+    rangeSelectStyle: {
+        position: "relative" as "relative",
+        display: "flex",
+        justifyContent: "center" as "center",
+        alignItems: "center" as "center",
+        zIndex: 9999
     }
-    // openButtonContainer: {
-    //     position: 'absolute',
-    //     top: 15,
-    //     right: 15,
-    //     zIndex: 999,
-    //     backgroundColor: "rgba(255,255,255,1)"
-    // }
 }
