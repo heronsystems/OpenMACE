@@ -49,7 +49,7 @@ protected:
     T end;
 };
 
-typedef LineBase<mace::pose::CartesianPosition_2D> 2DCartesianLine;
+typedef LineBase<mace::pose::CartesianPosition_2D> Line_Cartesian2D;
 
 } //end of namepsace geometry
 } //end of namespace mace

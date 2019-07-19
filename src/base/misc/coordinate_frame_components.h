@@ -30,8 +30,8 @@ inline CoordinateFrameTypes getCoordinateFrame(const CartesianFrameTypes &frame)
         return CoordinateFrameTypes::CF_LOCAL_OFFSET_NED;
     case CartesianFrameTypes::CF_BODY_NED:
         return CoordinateFrameTypes::CF_BODY_NED;
-    case CartesianFrameTypes::CF_BODY_OFFSET_NED:
-        return CoordinateFrameTypes::CF_BODY_OFFSET_NED;
+    case CartesianFrameTypes::CF_BODY_ENU:
+        return CoordinateFrameTypes::CF_BODY_ENU;
     default:
         return CoordinateFrameTypes::CF_LOCAL_UNKNOWN;
     }
@@ -75,8 +75,8 @@ inline std::string CoordinateFrameToString(const CoordinateFrameTypes &frame) {
         return "CF_LOCAL_OFFSET_NED";
     case CoordinateFrameTypes::CF_BODY_NED:
         return "CF_BODY_NED";
-    case CoordinateFrameTypes::CF_BODY_OFFSET_NED:
-        return "CF_BODY_OFFSET_NED";
+    case CoordinateFrameTypes::CF_BODY_ENU:
+        return "CF_BODY_ENU";
     case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT:
         return "CF_GLOBAL_TERRAIN_ALT";
     case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT:
@@ -103,8 +103,8 @@ inline CoordinateFrameTypes CoordinateFrameFromString(const std::string &str) {
         return CoordinateFrameTypes::CF_LOCAL_OFFSET_NED;
     if(str == "CF_BODY_NED")
         return CoordinateFrameTypes::CF_BODY_NED;
-    if(str == "CF_BODY_OFFSET_NED")
-        return CoordinateFrameTypes::CF_BODY_OFFSET_NED;
+    if(str == "CF_BODY_ENU")
+        return CoordinateFrameTypes::CF_BODY_ENU;
     if(str == "CF_GLOBAL_TERRAIN_ALT")
         return CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT;
     if(str == "CF_GLOBAL_TERRAIN_ALT_INT")

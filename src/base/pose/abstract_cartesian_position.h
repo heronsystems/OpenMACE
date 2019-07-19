@@ -24,6 +24,13 @@ public:
 
     ~Abstract_CartesianPosition() override = default;
 
+    virtual Abstract_CartesianPosition* getCartesianClone() const = 0;
+
+    virtual void getCartesianClone(Abstract_CartesianPosition** state) const = 0;
+
+public:
+    virtual Eigen::VectorXd getDataVector() const = 0;
+
 public:
     CoordinateSystemTypes getCoordinateSystemType() const override;
 

@@ -52,7 +52,8 @@ SOURCES += \
     pose/abstract_altitude.cpp \
     pose/abstract_geodetic_position.cpp \
     pose/base_velocity.cpp \
-    geometry/polygon_2DC.cpp
+    geometry/polygon_2DC.cpp \
+    pose/base_altitude.cpp
 
 HEADERS +=\
     base_global.h \
@@ -107,7 +108,8 @@ HEADERS +=\
     misc/altitude_coordinate_frames.h \
     misc/coordinate_frame_components.h \
     misc/kinematic_definitions.h \
-    pose/base_velocity.h
+    pose/base_velocity.h \
+    pose/base_altitude.h
 
 # Unix lib Install
 unix:!symbian {

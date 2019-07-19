@@ -36,8 +36,23 @@ public:
 
     ~GeodeticPosition_2D() override = default;
 
+
+    Abstract_GeodeticPosition* getGeodeticClone() const override
+    {
+        return (new GeodeticPosition_2D(*this));
+    }
+
+    void getGeodeticClone(Abstract_GeodeticPosition** state) const override
+    {
+        *state = new GeodeticPosition_2D(*this);
+    }
+
     bool areEquivalentFrames(const GeodeticPosition_2D &obj) const;
 
+    Eigen::VectorXd getDataVector() const
+    {
+        return this->data;
+    }
 
     //!
     //! \brief printInfo

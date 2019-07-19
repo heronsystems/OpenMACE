@@ -24,9 +24,16 @@ public:
 
     ~Abstract_GeodeticPosition() override = default;
 
+    virtual Abstract_GeodeticPosition* getGeodeticClone() const = 0;
+
+    virtual void getGeodeticClone(Abstract_GeodeticPosition** state) const = 0;
+
     bool areEquivalentGeodeticFrames(const Abstract_GeodeticPosition &obj) const;
 
 public:
+
+    virtual Eigen::VectorXd getDataVector() const = 0;
+
     //!
     //! \brief setLatitude
     //! \param latitude

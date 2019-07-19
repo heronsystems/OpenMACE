@@ -28,6 +28,16 @@ public:
 
     ~CartesianPosition_3D() override = default;
 
+    Abstract_CartesianPosition* getCartesianClone() const override
+    {
+        return (new CartesianPosition_3D(*this));
+    }
+
+    void getCartesianClone(Abstract_CartesianPosition** state) const override
+    {
+        *state = new CartesianPosition_3D(*this);
+    }
+
     std::string printInfo() const override
     {
         std::string rtn = "Cartesian Position 3D: " + std::to_string(getXPosition()) + ", " + std::to_string(getYPosition()) + ", " + std::to_string(getZPosition()) +  ".";
@@ -35,6 +45,11 @@ public:
     }
 
     bool areEquivalentFrames(const CartesianPosition_3D &obj) const;
+
+    Eigen::VectorXd getDataVector() const
+    {
+        return this->data;
+    }
 
 public:
     void updatePosition(const double &x, const double &y, const double &z)

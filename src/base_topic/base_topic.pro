@@ -26,18 +26,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    geometry/line_2DC_topic.cpp \
-    pose/cartesian_2D_topic.cpp \
     vehicle_topics.cpp \
-    pose/topic_geodetic_position.cpp
+    pose/topic_geodetic_position.cpp \
+    pose/topic_cartesian_position.cpp
 
 HEADERS += \
     base_topic_global.h \
-    geometry/line_2DC_topic.h \
-    pose/cartesian_2D_topic.h \
     base_topic_components.h \
     vehicle_topics.h \
-    pose/topic_geodetic_position.h
+    pose/topic_geodetic_position.h \
+    pose/topic_cartesian_position.h
 
 # Unix lib Install
 unix:!symbian {

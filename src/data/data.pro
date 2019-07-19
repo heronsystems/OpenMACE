@@ -49,12 +49,9 @@ HEADERS += data_global.h \
     controller_comms_state.h \
     environment_time.h \
     topic_components/altitude.h \
-    reference_altitude.h \
     topic_prototypes/altitude.h \
     topic_prototypes/position_georeference.h \
-    reference_georeference.h \
     topic_components/position_global.h \
-    reference_cartesian.h \
     topic_components/position_local.h \
     topic_prototypes/position_cartesian_3d.h \
     topic_components/topic_component_string.h \

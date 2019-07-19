@@ -29,6 +29,21 @@ public:
 
     ~GeodeticPosition_3D() override = default;
 
+    Abstract_GeodeticPosition* getGeodeticClone() const override
+    {
+        return (new GeodeticPosition_3D(*this));
+    }
+
+    void getGeodeticClone(Abstract_GeodeticPosition** state) const override
+    {
+        *state = new GeodeticPosition_3D(*this);
+    }
+
+    Eigen::VectorXd getDataVector() const
+    {
+        return this->data;
+    }
+
     //!
     //! \brief printInfo
     //! \return

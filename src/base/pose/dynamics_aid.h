@@ -15,9 +15,6 @@ namespace pose {
 class DynamicsAid
 {
 public:
-    DynamicsAid() = default;
-
-    ~DynamicsAid() = default;
 
     //!
     //! \brief GlobalPositionToLocal

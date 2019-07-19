@@ -23,17 +23,22 @@ public:
 
     Topic_GeodeticPosition(const mace::pose::Abstract_GeodeticPosition *posObj);
 
-    virtual ~Topic_GeodeticPosition() = default;
+    virtual ~Topic_GeodeticPosition()
+    {
+        delete positionObj;
+    }
 
 public:
     virtual MaceCore::TopicDatagram GenerateDatagram() const;
 
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
+    mace::pose::Abstract_GeodeticPosition* getPositionObj() const;
+
 private:
     mace::pose::Abstract_GeodeticPosition* positionObj;
 };
 
-} //end of namespace DataStateTopic
+} //end of namespace BaseTopic
 
 #endif // TOPIC_GEODETIC_POSITION_H
