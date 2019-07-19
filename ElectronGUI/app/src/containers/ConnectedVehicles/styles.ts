@@ -14,7 +14,7 @@ export const styles = {
         flexDirection: "column" as "column",
         maxHeight: height - 165,
         height: height,
-        overflowY: "scroll" as "scroll",
+        // overflowY: "scroll" as "scroll",
         overflowX: "hidden" as "hidden"
     }
     // openButtonContainer: {

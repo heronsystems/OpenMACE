@@ -39,7 +39,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
 
     render() {
 
-        let vehicleHUDs: JSX.Element =
+        let connectedVehicleHUDs: JSX.Element =
                     <ConnectedVehicleHUDs
                         connectedVehicles={this.props.connectedVehicles}
                         onAircraftCommand={this.handleAircraftCommand}
@@ -99,7 +99,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
                                     }
                                 />
                             </div>
-                            {this.state.showHUDs ? vehicleHUDs : vehicleMessages}
+                            {this.state.showHUDs ? connectedVehicleHUDs : vehicleMessages}
                         </div>
                     ) : null}
                 </div>

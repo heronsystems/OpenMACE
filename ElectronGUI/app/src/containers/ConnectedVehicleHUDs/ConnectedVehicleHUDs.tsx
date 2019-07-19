@@ -110,7 +110,7 @@ export class ConnectedVehicleHUDs extends React.Component<Props, State> {
 
         return (
             <MuiThemeProvider muiTheme={lightMuiTheme}>
-                <div style={styles.connectedVehicleHUDsContainer}>
+                <div style={styles.rangeSelectStyle}>
                     <FlatButton
                         onClick={this.decrementSelectedRange}
                         icon={<i className="material-icons">keyboard_arrow_left</i>}
@@ -139,9 +139,15 @@ export class ConnectedVehicleHUDs extends React.Component<Props, State> {
                     :
                         null
                     }
-
                 </div>
+                <div style={styles.connectedVehicleHUDsContainer}>
+                    {vehicleHUDs}
+                </div>
+
             </MuiThemeProvider>
+
+
+
         );
     }
 }
