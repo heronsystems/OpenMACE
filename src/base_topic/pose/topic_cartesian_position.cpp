@@ -2,7 +2,7 @@
 
 namespace pose{
 
-using namespace BaseTopic;
+namespace BaseTopic{
 
 const char TopicName_CartesianPosition[] = "TOPIC_CARTESIANPOSITION";
 
@@ -83,4 +83,5 @@ mace::pose::Abstract_CartesianPosition* Topic_CartesianPosition::getPositionObj(
     return this->positionObj;
 }
 
+} //end of namespace BaseTopic
 } //end of namespace pose

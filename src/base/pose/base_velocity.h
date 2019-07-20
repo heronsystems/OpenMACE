@@ -9,23 +9,22 @@
 namespace mace{
 namespace pose{
 
-template<typename CFDATA, class DATA>
+template<const CoordinateSystemTypes coordType, typename CFDATA, class DATA>
 class Base_Velocity: public Abstract_Velocity
 {
 public:
     Base_Velocity(const CFDATA &frame):
         Abstract_Velocity(), explicitFrame(frame)
     {
-        if(typeid (CFDATA).name() == typeid (CartesianFrameTypes).name())
-        {
-            explicitType = CoordinateSystemTypes::CARTESIAN;
-        }
+        explicitType = coordType;
     }
 
     Base_Velocity(const Base_Velocity &copy):
         Abstract_Velocity(copy)
     {
+        explicitType = copy.explicitType;
         explicitFrame = copy.explicitFrame;
+        data = copy.data;
     }
 
     Eigen::VectorXd getDataVector() const override
@@ -74,12 +73,12 @@ public:
     DATA data;
 };
 
-typedef Base_Velocity<CartesianFrameTypes, Eigen::Vector2d> Cartesian_Velocity2D;
-typedef Base_Velocity<CartesianFrameTypes, Eigen::Vector3d> Cartesian_Velocity3D;
+typedef Base_Velocity<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector2d> Cartesian_Velocity2D;
+typedef Base_Velocity<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector3d> Cartesian_Velocity3D;
 
 
-typedef Base_Velocity<GeodeticFrameTypes, Eigen::Vector2d> Geodetic_Velocity2D;
-typedef Base_Velocity<GeodeticFrameTypes, Eigen::Vector3d> Geodetic_Velocity3D;
+typedef Base_Velocity<CoordinateSystemTypes::GEODETIC, GeodeticFrameTypes, Eigen::Vector2d> Geodetic_Velocity2D;
+typedef Base_Velocity<CoordinateSystemTypes::GEODETIC, GeodeticFrameTypes, Eigen::Vector3d> Geodetic_Velocity3D;
 
 } // end of namespace pose
 } // end of namespace mace

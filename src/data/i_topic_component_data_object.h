@@ -23,7 +23,8 @@ template<const char* CompName, const MaceCore::TopicComponentStructure *Structur
 class NamedTopicComponentDataObject : public ITopicComponentDataObject{
 
 public:
-    NamedTopicComponentDataObject()
+    NamedTopicComponentDataObject():
+        ITopicComponentDataObject()
     {
         name = CompName;
     }

@@ -30,9 +30,9 @@ public:
     }
 
 public:
-    virtual MaceCore::TopicDatagram GenerateDatagram() const;
+    MaceCore::TopicDatagram GenerateDatagram() const override;
 
-    virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
+    void CreateFromDatagram(const MaceCore::TopicDatagram &datagram) override;
 
     mace::pose::Abstract_CartesianPosition* getPositionObj() const;
 

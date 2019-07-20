@@ -24,7 +24,6 @@ HEADERS += common.h\
     pointer_collection.h \
     transmit_queue.h \
     thread_manager.h \
-    chain inheritance.h \
     chain_inheritance.h \
     object_int_tuple.h \
     background_tasks.h \

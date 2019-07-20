@@ -2,7 +2,7 @@
 
 namespace pose{
 
-using namespace BaseTopic;
+namespace BaseTopic{
 
 const char TopicName_CartesianVelocity[] = "TOPIC_CARTESIANVELOCITY";
 
@@ -71,4 +71,5 @@ mace::pose::Abstract_Velocity* Topic_CartesianVelocity::getVelocityObj() const
     return this->m_VelocityObj;
 }
 
+} //end of namespace BaseTopic
 } //end of namespace pose

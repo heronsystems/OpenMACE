@@ -18,12 +18,6 @@ CONFIG += object_parallel_to_source
 SOURCES += \
     system_description.cpp \
     environment_time.cpp \
-    topic_components/altitude.cpp \
-    topic_prototypes/altitude.cpp \
-    topic_prototypes/position_georeference.cpp \
-    topic_components/position_global.cpp \
-    topic_components/position_local.cpp \
-    topic_prototypes/position_cartesian_3d.cpp \
     topic_components/topic_component_string.cpp \
     topic_components/topic_component_void.cpp
 
@@ -48,12 +42,6 @@ HEADERS += data_global.h \
     command_validity_type.h \
     controller_comms_state.h \
     environment_time.h \
-    topic_components/altitude.h \
-    topic_prototypes/altitude.h \
-    topic_prototypes/position_georeference.h \
-    topic_components/position_global.h \
-    topic_components/position_local.h \
-    topic_prototypes/position_cartesian_3d.h \
     topic_components/topic_component_string.h \
     topic_components/topic_component_void.h \
     topic_components/mission_key.h \
