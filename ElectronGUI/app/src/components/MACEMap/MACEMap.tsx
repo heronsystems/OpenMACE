@@ -88,6 +88,8 @@ export default class MACEMap extends React.Component<Props, State> {
             iconAnchor: [12, 41], // point of the icon which will correspond to marker's location
             popupAnchor: [0, -38] // point from which the popup should open relative to the iconAnchor
         });
+
+
         for (let i = 0; i < this.props.drawPolygonPts.length; i++) {
             drawingMarkers.push(<Marker key={i} position={this.props.drawPolygonPts[i]} title={i.toString()} icon={icon} draggable={false} />);
         }
