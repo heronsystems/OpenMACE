@@ -1,6 +1,9 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    digi_common \
+    DigiMesh\
+    MACEDigiMeshWrapper \
     common \
     base \
     data \
@@ -34,24 +37,25 @@ SUBDIRS += \
     module_resource_task_allocation \
     module_ROS \
     module_ROS_UMD \
+    commsExample \
+    example_vehicle_module \
     mace \
-    module_generic_MAVLINK \
+    module_generic_MAVLINK
     #TestMaps \
     #example \
     #Testing \
     #Testing_CommsLink \
     #TestGraph \
-    commsExample \
-    example_vehicle_module
 
-
+DigiMesh.depends = digi_common
+MACEDigiMeshWrapper.depends = DigiMesh
 base.depends = common
 data.depends = common
 maps.depends = base
 planners.depends = maps
 baseTopic.depends = base
 comms.depends = common
-commsMACE.depends = data
+commsMACE.depends = data MACEDigiMeshWrapper
 data_generic_item.depends = data
 data_generic_state_item.depends = data_generic_item
 data_generic_command_item.depends = data_generic_state_item

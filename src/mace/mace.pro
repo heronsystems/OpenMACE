@@ -30,6 +30,9 @@ INSTALLS += target
 
 INCLUDEPATH += $$(MACE_ROOT)/include
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
+else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
@@ -179,6 +182,7 @@ INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 win32: LIBS += -limagehlp
 
 unix: LIBS += -lboost_system
+unix: LIBS += -llz4
 
 unix {
     exists(/opt/ros/kinetic/lib/) {
@@ -225,8 +229,17 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap
 win32:INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
 
-INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
-LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
+#INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
+#LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/release/ -lDigiMesh
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/debug/ -lDigiMesh
+else:unix:!macx: LIBS += -L$$OUT_PWD/../DigiMesh/ -lDigiMesh
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/release/ -lMACEDigiMeshWrapper
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
+else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/ -lMACEDigiMeshWrapper
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
@@ -235,7 +248,7 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctoma
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
 
-
+unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann
 unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp

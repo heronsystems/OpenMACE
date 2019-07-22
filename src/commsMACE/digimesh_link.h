@@ -18,7 +18,7 @@
 
 #include "i_link_mace.h"
 
-#include "mace_digimesh_wrapper.h"
+#include "MACEDigiMeshWrapper/mace_digimesh_wrapper.h"
 
 
 
