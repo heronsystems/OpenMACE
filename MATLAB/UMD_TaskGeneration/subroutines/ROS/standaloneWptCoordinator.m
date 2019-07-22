@@ -82,6 +82,7 @@ while toc(loopStart) <= runTime+10
                 % If the code catches an error at this moment, then it must be that
                 % main program stops. We will issue an exit to the while
                 % loop.
+                
                 breakWhileLoop = 1;
                 break;
             end

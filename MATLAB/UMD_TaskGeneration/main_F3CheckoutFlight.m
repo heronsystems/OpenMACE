@@ -78,7 +78,7 @@ ROS_MACE.N = 1;
 %ROS_MACE.operationalAlt = [4 8]; % m
 %ROS_MACE.agentIDs = [1 2]; % m
 ROS_MACE.operationalAlt = [3]; % m
-ROS_MACE.agentIDs = [11]; % m
+ROS_MACE.agentIDs = [3]; % m
 
 ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 ROS_MACE.wptCoordinator = 'integrated';
