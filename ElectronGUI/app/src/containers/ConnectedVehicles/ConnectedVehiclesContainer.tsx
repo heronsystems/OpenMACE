@@ -161,8 +161,7 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
 
                                 {this.state.showRangeSelect ?
                                     <RangeSelect
-                                        // numVehicles={Object.keys(this.props.connectedVehicles).length}
-                                        numVehicles={10}
+                                        numVehicles={Object.keys(this.props.connectedVehicles).length}
                                         onSelectRange={this.handleSelectRange}
                                         selectedMin={this.state.minRange}
                                         selectedMax={this.state.maxRange}

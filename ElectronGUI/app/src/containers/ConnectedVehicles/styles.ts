@@ -8,6 +8,8 @@ export const styles = {
     connectedVehiclesContainer: {
         position: "absolute" as "absolute",
         top: 64,
+        // top: 0,
+        // paddingTop: 64,
         right: 0,
         zIndex: 999,
         width: 20 + "%",
@@ -17,6 +19,8 @@ export const styles = {
         flexDirection: "column" as "column",
         maxHeight: height - 165,
         height: height,
+        // maxHeight: "100%",
+        // height: "100%",
         // overflowY: "hidden" as "hidden",
         overflowX: "hidden" as "hidden"
     },

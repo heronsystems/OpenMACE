@@ -7,7 +7,7 @@ export const styles = {
         width: width + "px"
     },
     mapStyle: {
-        top: 64,
+        top: 40,
         left: 0,
         height: height + "px",
         width: width + "px"

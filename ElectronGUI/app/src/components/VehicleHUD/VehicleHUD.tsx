@@ -179,7 +179,7 @@ export class VehicleHUD extends React.Component<Props, State> {
                         <span>ID: {this.props.vehicleID}</span>
                     </div>
                     <div className="col-xs-12" style={styles.col_flat}>
-                        <Menu desktop={true} style={styles.menuStyle}>
+                        <Menu desktop={true} disableAutoFocus style={styles.menuStyle}>
                             <MenuItem
                                 style={styles.menuItem}
                                 primaryText={this.props.aircraft.vehicleMode}
