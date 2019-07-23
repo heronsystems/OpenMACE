@@ -6,11 +6,11 @@
 
 namespace mace {
 
-#define ALTITUDE_FRAMES REF_ALT_UNKNOWN, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
-REF_ALT_MSL, /* positive altitude over mean sea level (MSL) | */ \
-REF_ALT_RELATIVE, /* positive altitude with 0 being at the altitude of the home location. | */ \
-REF_ALT_OFFSET, /* Offset to the current altitude. | */ \
-REF_ALT_TERRAIN /* positive altitude in meters with 0 being at ground level in terrain model. | */
+#define ALTITUDE_FRAMES REF_ALT_UNKNOWN, /* Current reference frame for altitude is currently undefined. | */ \
+REF_ALT_MSL, /* Positive altitude over mean sea level (MSL) | */ \
+REF_ALT_RELATIVE, /* Positive altitude with 0 being referenced to the home location (traditionally the starting location). | */ \
+REF_ALT_OFFSET, /* Offset relative to the current altitude. | */ \
+REF_ALT_TERRAIN /* Positive altitude in meters with 0 being at ground level in terrain model or as currently measured (traditionally a LiDAR or similar ranging device). | */
 
 enum class AltitudeReferenceTypes: uint8_t{
     ALTITUDE_FRAMES

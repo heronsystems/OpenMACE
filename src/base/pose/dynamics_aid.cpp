@@ -9,13 +9,28 @@ namespace pose {
 //! \param position
 //! \param local
 //!
-void DynamicsAid::GlobalPositionToLocal(const GeodeticPosition_3D &origin, const GeodeticPosition_3D &position, CartesianPosition_3D &local)
+void DynamicsAid::GlobalPositionToLocal(const Abstract_GeodeticPosition* origin, const Abstract_GeodeticPosition* refPosition, Abstract_CartesianPosition* targetPosition)
 {
-    double distance = origin.distanceBetween2D(&position);
-    double bearing = origin.compassBearingTo(&position);
-    double deltaAltitude = origin.deltaAltitude(&position);
-    local.applyPositionalShiftFromCompass(distance,convertDegreesToRadians(bearing));
-    local.setZPosition(-deltaAltitude);
+    //First handle the translational components of the position object
+    double distance = origin->distanceBetween2D(refPosition);
+    double bearing = origin->compassBearingTo(refPosition);
+    targetPosition->applyPositionalShiftFromCompass(distance,convertDegreesToRadians(bearing));
+
+    //Second, handle the altitude component if the ref position and the origin contain the appropriate items
+    if(targetPosition->is3D()) //Only if the object is considered a 3D position object can we do the following
+    {
+        CartesianPosition_3D* targetObj = targetPosition->positionAs<CartesianPosition_3D>();
+        if(refPosition->is3D() && origin->is3D())
+        {
+            double deltaAltitude = origin->positionAs<GeodeticPosition_3D>()->deltaAltitude(refPosition->positionAs<GeodeticPosition_3D>());
+            targetObj->setZPosition(-deltaAltitude);
+        }
+        else if(refPosition->is3D())
+        {
+            targetObj->setZPosition(refPosition->positionAs<GeodeticPosition_3D>()->getAltitude());
+        }
+    }
+
 }
 
 //!
@@ -24,12 +39,29 @@ void DynamicsAid::GlobalPositionToLocal(const GeodeticPosition_3D &origin, const
 //! \param position
 //! \param global
 //!
-void DynamicsAid::LocalPositionToGlobal(const GeodeticPosition_3D &origin, const CartesianPosition_3D &position, GeodeticPosition_3D &global)
+void DynamicsAid::LocalPositionToGlobal(const Abstract_GeodeticPosition* origin, const Abstract_CartesianPosition* refPosition, Abstract_GeodeticPosition* targetPosition)
 {
-    double distance = position.distanceFromOrigin();
-    double bearing = position.polarBearingFromOrigin();
-    double elevation = position.elevationAngleFromOrigin();
-    global = origin.newPositionFromPolar(distance, bearing, elevation);
+    double distance = refPosition->distanceFromOrigin();
+    double bearing = refPosition->polarBearingFromOrigin();
+
+    if(targetPosition->is3D())
+    {
+        if(refPosition->is3D() && origin->is3D())
+        {
+            double elevation = refPosition->positionAs<CartesianPosition_3D>()->elevationAngleFromOrigin();
+            *targetPosition = origin->positionAs<GeodeticPosition_3D>()->newPositionFromPolar(distance, bearing, elevation);
+        }
+        else if(refPosition->is3D() && origin->is2D())
+        {
+            origin->newPositionFromPolar(targetPosition, distance, bearing);
+            targetPosition->positionAs<GeodeticPosition_3D>()->setAltitude(refPosition->positionAs<CartesianPosition_3D>()->getAltitude());
+        }
+    }
+    else if(targetPosition->is2D())
+    {
+        origin->newPositionFromPolar(targetPosition, distance, bearing);
+    }
+
 }
 
 } //end of namespace pose

@@ -35,7 +35,7 @@ std::vector<bool> Polygon_2DG::contains(std::vector<GeodeticPosition_2D> &checkV
     {
         mace::pose::CartesianPosition_3D vertex3D;
         mace::pose::GeodeticPosition_3D checkVertex(checkVector[i].getLatitude(),checkVector[i].getLongitude(),0.0);
-        mace::pose::DynamicsAid::GlobalPositionToLocal(origin3D,checkVertex,vertex3D);
+        mace::pose::DynamicsAid::GlobalPositionToLocal(&origin3D,&checkVertex,&vertex3D);
         mace::pose::CartesianPosition_2D vertex2D;
         vertex2D.setXPosition(vertex3D.getXPosition());
         vertex2D.setYPosition(vertex3D.getYPosition());
@@ -58,7 +58,7 @@ bool Polygon_2DG::contains(const GeodeticPosition_2D &point, const bool &onLineC
     CartesianPosition_3D localVertex;
     GeodeticPosition_3D checkPoint(point.getLatitude(),point.getLongitude(),0.0);
     GeodeticPosition_3D origin(m_vertex.at(0).getLatitude(),m_vertex.at(0).getLongitude(),0.0);
-    mace::pose::DynamicsAid::GlobalPositionToLocal(origin,checkPoint,localVertex);
+    mace::pose::DynamicsAid::GlobalPositionToLocal(&origin,&checkPoint,&localVertex);
 
     return m_localPolygon.contains(localVertex.getXPosition(), localVertex.getYPosition(),onLineCheck);
 }
@@ -71,7 +71,7 @@ void Polygon_2DG::updateBoundingBox()
     {
         CartesianPosition_3D localVertex3D;
         GeodeticPosition_3D vertex(m_vertex.at(i).getLatitude(), m_vertex.at(i).getLongitude(),0.0);
-        mace::pose::DynamicsAid::GlobalPositionToLocal(origin,vertex,localVertex3D);
+        mace::pose::DynamicsAid::GlobalPositionToLocal(&origin,&vertex,&localVertex3D);
         CartesianPosition_2D localVertex2D;
         m_localPolygon.appendVertex(localVertex2D);
     }
@@ -135,7 +135,7 @@ GeodeticPosition_2D Polygon_2DG::getCenter() const
     CartesianPosition_2D center2DC = m_localPolygon.getCenter();
     CartesianPosition_3D center3DC(center2DC.getXPosition(),center2DC.getYPosition(),0.0);
     GeodeticPosition_3D origin(m_vertex.at(0).getLatitude(), m_vertex.at(0).getLongitude(), 0.0);
-    mace::pose::DynamicsAid::LocalPositionToGlobal(origin,center3DC,center3DG);
+    mace::pose::DynamicsAid::LocalPositionToGlobal(&origin,&center3DC,&center3DG);
     center2DG.setLatitude(center3DG.getLatitude());
     center2DG.setLongitude(center3DG.getLongitude());
     return center2DG;

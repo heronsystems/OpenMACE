@@ -24,7 +24,7 @@ public:
 
     CoordinateFrameTypes getExplicitCoordinateFrame() const override
     {
-        return CoordinateFrameTypes::CF_UNKNOWN;
+        return CoordinateFrameTypes::CF_NOT_RELEVANT;
     }
 
     /**

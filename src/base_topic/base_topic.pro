@@ -29,7 +29,8 @@ SOURCES += \
     vehicle_topics.cpp \
     pose/topic_geodetic_position.cpp \
     pose/topic_cartesian_position.cpp \
-    pose/topic_cartesian_velocity.cpp
+    pose/topic_cartesian_velocity.cpp \
+    pose/topic_altitude.cpp
 
 HEADERS += \
     base_topic_global.h \
@@ -37,7 +38,8 @@ HEADERS += \
     vehicle_topics.h \
     pose/topic_geodetic_position.h \
     pose/topic_cartesian_position.h \
-    pose/topic_cartesian_velocity.h
+    pose/topic_cartesian_velocity.h \
+    pose/topic_altitude.h
 
 # Unix lib Install
 unix:!symbian {
