@@ -1,7 +1,7 @@
 #ifndef GEODETIC_POSITION_3D_H
 #define GEODETIC_POSITION_3D_H
 
-#include "base/state_space/state.h"
+#include "../state_space/state.h"
 #include "abstract_geodetic_position.h"
 #include "abstract_altitude.h"
 

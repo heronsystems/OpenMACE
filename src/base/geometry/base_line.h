@@ -3,53 +3,98 @@
 
 #include <vector>
 #include <stdlib.h>
+#include <type_traits>
 
 #include "geometry_helper.h"
 
-#include "base/pose/cartesian_position_2D.h"
-#include "base/pose/cartesian_position_3D.h"
+#include "../misc/kinematic_definitions.h"
+
+#include "../pose/abstract_cartesian_position.h"
+#include "../pose/abstract_geodetic_position.h"
 
 namespace mace{
 namespace geometry{
 
-template <class T>
+template <const CoordinateSystemTypes coordType, class T>
 class LineBase
 {
+    static_assert (std::is_base_of<pose::Position, T>::value,"Line Base template argument T is invalid: Must derive from position."); //This will enforce the interface that we require in order to be able to clone the pointer
+
 public:
+    //!
+    //! \brief LineBase
+    //! \param descriptor
+    //!
     LineBase(const std::string &descriptor = "Line"):
         name(descriptor)
     {
 
     }
 
+    //!
+    //! \brief getCoordinateSystemType
+    //! \return
+    //!
+    virtual CoordinateSystemTypes getCoordinateSystemType() const
+    {
+        return coordType;
+    }
+
+
+    //!
+    //! \brief ~LineBase
+    //!
+    virtual ~LineBase()
+    {
+        delete begin; begin = nullptr;
+        delete end; end = nullptr;
+    }
+
 public:
-    virtual void beginLine(const T &obj)
+    //!
+    //! \brief beginLine
+    //! \param obj
+    //!
+    virtual void beginLine(const T obj)
     {
-        begin = obj;
+        begin = obj->getPositionalClone();
     }
 
-    virtual void endLine(const T &obj)
+    //!
+    //! \brief endLine
+    //! \param obj
+    //!
+    virtual void endLine(const T* obj)
     {
-        end = obj;
+        end = obj->getPositionalClone();
     }
 
-    virtual T getBeginLine() const
+    //!
+    //! \brief getBeginLine
+    //! \return
+    //!
+    virtual T* getBeginLine() const
     {
         return begin;
     }
 
-    virtual T getEndLine() const
+    //!
+    //! \brief getEndLine
+    //! \return
+    //!
+    virtual T* getEndLine() const
     {
         return end;
     }
 
 protected:
     std::string name;
-    T begin;
-    T end;
+    T* begin;
+    T* end;
 };
 
-typedef LineBase<mace::pose::CartesianPosition_2D> Line_Cartesian2D;
+typedef LineBase<CoordinateSystemTypes::CARTESIAN, mace::pose::Abstract_CartesianPosition> Line_Cartesian;
+typedef LineBase<CoordinateSystemTypes::GEODETIC, mace::pose::Abstract_GeodeticPosition> Line_Geodetic;
 
 } //end of namepsace geometry
 } //end of namespace mace

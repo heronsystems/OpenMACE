@@ -172,11 +172,6 @@ void Polygon_2DG::getCorners(GeodeticPosition_2D &topLeft, GeodeticPosition_2D &
     bottomRight = getBottomRight();
 }
 
-CoordinateFrameTypes Polygon_2DG::getVertexCoordinateFrame() const
-{
-    return CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT;
-}
-
 void Polygon_2DG::applyCoordinateShift(const double &distance, const double &bearing)
 {
     for (size_t i = 0; i < polygonSize(); i++)

@@ -3,68 +3,33 @@
 namespace mace {
 namespace pose {
 
-Orientation_2D::Orientation_2D():
-  updatedTrig(false),cosPhi(0.0),sinPhi(0.0),
-angleFlag(false), phi(0.0)
+Orientation_2D::Orientation_2D(const std::string &name):
+    Eigen::Rotation2D<double>()
 {
-
+    this->name = name;
 }
 
 Orientation_2D::Orientation_2D(const Orientation_2D &copy):
-    updatedTrig(false),cosPhi(0.0),sinPhi(0.0),
-  angleFlag(false), phi(0.0)
+    Eigen::Rotation2D<double> (copy.angle())
 {
-    this->phi = copy.phi;
-    this->angleFlag = copy.angleFlag;
+    this->name = copy.name;
 }
 
 Orientation_2D::Orientation_2D(const double &angle):
-    updatedTrig(false),cosPhi(0.0),sinPhi(0.0),
-  angleFlag(false), phi(0.0)
+    Eigen::Rotation2D<double>(angle)
 {
-    this->setPhi(angle);
+
 }
 
 void Orientation_2D::setPhi(const double &angle)
 {
-    this->phi = angle;
-    this->angleFlag = true;
-
-    this->updatedTrig = false;
+    this->angle() = angle;
 }
 
 double Orientation_2D::getPhi() const
 {
-    return this->phi;
+    return this->angle();
 }
-
-void Orientation_2D::getRotationMatrix(Eigen::Matrix2d &rotM) const
-{
-    this->updateTrigCache();
-
-    rotM(0,0) = cosPhi;
-    rotM(1,0) = -sinPhi;
-    rotM(1,0) = sinPhi;
-    rotM(1,1) = cosPhi;
-}
-
-void Orientation_2D::getRotationMatrix(Eigen::Matrix3d &rotM) const
-{
-    this->updateTrigCache();
-
-    rotM(0,0) = cosPhi;
-    rotM(0,1) = -sinPhi;
-    rotM(0,2) = 0.0;
-
-    rotM(1,0) = sinPhi;
-    rotM(1,1) = cosPhi;
-    rotM(1,2) = 0.0;
-
-    rotM(2,0) = 0.0;
-    rotM(2,1) = 0.0;
-    rotM(2,2) = 1.0;
-}
-
 
 
 } //end of namespace pose

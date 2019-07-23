@@ -188,11 +188,6 @@ void Polygon_Cartesian::getCorners(CartesianPosition_2D &topLeft, CartesianPosit
     bottomRight = getBottomRight();
 }
 
-CoordinateFrameTypes Polygon_Cartesian::getVertexCoordinateFrame() const
-{
-    return CoordinateFrameTypes::CF_LOCAL_ENU;
-}
-
 void Polygon_Cartesian::applyCoordinateShift(const double &distance, const double &bearing)
 {
     for (size_t i = 0; i < polygonSize(); i++)

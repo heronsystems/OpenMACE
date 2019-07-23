@@ -1,14 +1,19 @@
 #ifndef ORIENTATION_3D_H
 #define ORIENTATION_3D_H
 
+#include <iostream>
 #include <cmath>
 
-#include "Eigen/Core"
+#include <Eigen/Geometry>
+#include <Eigen_Unsupported/EulerAngles>
 
 #include "abstract_orientation.h"
 
 namespace mace {
 namespace pose {
+
+typedef Eigen::EulerSystem<Eigen::EULER_Z, Eigen::EULER_Y, Eigen::EULER_X> AgentRotationSystem;
+typedef Eigen::EulerAngles<double, AgentRotationSystem> EulerAngleRotation;
 
 /** A class used to the store the heading anlge (phi) rotation as a functional
  * rotation matrix. This is only to be used when the dimension of the space
@@ -18,13 +23,12 @@ namespace pose {
 
 class Orientation_3D
 {
+
 public:
     //!
     //! \brief Orientation_2D
     //!
-    Orientation_3D();
-
-    ~Orientation_3D();
+    Orientation_3D(const std::string &name = "Orientation 3D");
 
     //!
     //! \brief Orientation_3D
@@ -32,11 +36,14 @@ public:
     //!
     Orientation_3D(const Orientation_3D &copy);
 
+
+    ~Orientation_3D();
+
     //!
     //! \brief Orientation_3D
     //! \param angle
     //!
-    Orientation_3D(const double &roll, const double &pitch, const double &yaw);
+    Orientation_3D(const double &roll, const double &pitch, const double &yaw, const std::string &name = "");
 
 public:
 
@@ -46,27 +53,17 @@ public:
     //!
     void setRotation(const Eigen::Matrix3d &rotation);
 
-
-    //!
-    //! \brief getRotationMatrix
-    //! \return
-    //!
-    void getRotationMatrix(Eigen::Matrix3d &rotM) const;
-
-
-    //!
-    //! \brief getRotationVector
-    //! \param rotV
-    //!
-    void getRotationVector(Eigen::Vector3d &rotV) const;
-
     //!
     //! \brief getEuler
     //! \param roll
     //! \param pitch
     //! \param yaw
     //!
-    void getEuler(double &roll, double &pitch, double &yaw) const;
+    void getDiscreteEuler(double &roll, double &pitch, double &yaw) const;
+
+    EulerAngleRotation getEulerRotation() const;
+
+    Eigen::Matrix3d getRotationMatrix() const;
 
     //!
     //! \brief setEuler
@@ -74,13 +71,13 @@ public:
     //! \param pitch
     //! \param yaw
     //!
-    void setEuler(const double &roll, const double &pitch, const double &yaw);
+    void updateFromEuler(const double &roll, const double &pitch, const double &yaw);
 
     //!
     //! \brief setRoll
     //! \param angle
     //!
-    void setRoll(const double &angle);
+    void updateRoll(const double &angle);
 
     //!
     //! \brief getRoll
@@ -92,7 +89,7 @@ public:
     //! \brief setPitch
     //! \param angle
     //!
-    void setPitch(const double &angle);
+    void updatePitch(const double &angle);
 
     //!
     //! \brief getPitch
@@ -104,7 +101,7 @@ public:
     //! \brief setYaw
     //! \param angle
     //!
-    void setYaw(const double &angle);
+    void updateYaw(const double &angle);
 
     //!
     //! \brief getYaw
@@ -112,61 +109,16 @@ public:
     //!
     double getYaw() const;
 
-private:
-    //!
-    //! \brief updateTrigCache
-    //!
-    inline void updateEuler() const
-    {
-        if(updatedEuler)
-            return;
-        psi = std::atan2(matrixRot(2,0),std::hypot(matrixRot(0,0),matrixRot(1,0)));
-
-        //Check for the gimbal lock case based on some numeric that is sufficiently close to where we cannot decipher the condition
-        if((std::fabs(matrixRot(2,1)) + std::fabs(matrixRot(2,2))) < 10 * std::numeric_limits<double>::epsilon()){
-            theta = 0.0;
-            if (psi > 0)
-                phi = std::atan2(matrixRot(1,2), matrixRot(0,2));
-            else
-                phi = std::atan2(-matrixRot(1,2), -matrixRot(0,2));
-        }else{
-            theta = std::atan2(matrixRot(2,1), matrixRot(2,2));
-            phi = std::atan2(matrixRot(1,0), matrixRot(0,0));
-        }
-
-        updatedEuler = true;
-    }
-
-    //!
-    //! \brief updateMatrix
-    //!
-    inline void updateMatrix() const
-    {
-        const double cr = std::cos(theta);
-        const double sr = std::sin(theta);
-
-        const double cp = std::cos(psi);
-        const double sp = std::sin(psi);
-
-        const double cy = std::cos(phi);
-        const double sy = std::sin(phi);
-
-        matrixRot(0,0) = cy * cp;
-        matrixRot(0,1) = cy * sp * sr - sy * cr;
-        matrixRot(0,2) = cy * sp * cr + sy * sr;
-
-        matrixRot(1,0) = sy * cp;
-        matrixRot(1,1) = sy * sp * sr + cy * cr;
-        matrixRot(1,2) = sy * sp * cr - cy * sr;
-
-        matrixRot(2,0) = -sp;
-        matrixRot(2,1) = cp * sr;
-        matrixRot(2,2) = cp * cr;
-    }
-
 
     /** Arithmetic Operators */
 public:
+
+    Orientation_3D operator * (const Eigen::Matrix3d &that) const
+    {
+        Orientation_3D newObj(*this);
+        newObj.m_QRotation = this->m_QRotation * that;
+        return newObj;
+    }
 
     //!
     //! \brief operator +
@@ -175,10 +127,16 @@ public:
     //!
     Orientation_3D operator + (const Orientation_3D &that) const
     {
-        double newPhi = this->phi + that.phi;
-        double newTheta = this->theta + that.theta;
-        double newPsi = this->psi + that.psi;
-        Orientation_3D newObj(newPhi, newTheta, newPsi);
+        Orientation_3D newObj(*this);
+
+        double currentRoll, currentPitch, currentYaw;
+        double rhsRoll, rhsPitch, rhsYaw;
+
+        newObj.getDiscreteEuler(currentRoll, currentPitch, currentYaw);
+        that.getDiscreteEuler(rhsRoll, rhsPitch, rhsYaw);
+
+        newObj.updateFromEuler(currentRoll+rhsRoll, currentPitch+rhsPitch, currentYaw+rhsYaw);
+
         return newObj;
     }
 
@@ -189,10 +147,16 @@ public:
     //!
     Orientation_3D operator - (const Orientation_3D &that) const
     {
-        double newPhi = this->phi + that.phi;
-        double newTheta = this->theta + that.theta;
-        double newPsi = this->psi + that.psi;
-        Orientation_3D newObj(newPhi, newTheta, newPsi);
+        Orientation_3D newObj(*this);
+
+        double currentRoll, currentPitch, currentYaw;
+        double rhsRoll, rhsPitch, rhsYaw;
+
+        newObj.getDiscreteEuler(currentRoll, currentPitch, currentYaw);
+        that.getDiscreteEuler(rhsRoll, rhsPitch, rhsYaw);
+
+        newObj.updateFromEuler(currentRoll-rhsRoll, currentPitch-rhsPitch, currentYaw-rhsYaw);
+
         return newObj;
     }
 
@@ -205,16 +169,7 @@ public:
     //!
     bool operator == (const Orientation_3D &rhs) const
     {
-        if(fabs(this->theta - rhs.theta) > std::numeric_limits<double>::epsilon()){
-            return false;
-        }
-        if(fabs(this->psi - rhs.psi) > std::numeric_limits<double>::epsilon()){
-            return false;
-        }
-        if(fabs(this->phi - rhs.phi) > std::numeric_limits<double>::epsilon()){
-            return false;
-        }
-        if(this->matrixRot != rhs.matrixRot){
+        if(!this->m_QRotation.isApprox(rhs.m_QRotation,std::numeric_limits<double>::epsilon())){
             return false;
         }
         return true;
@@ -239,10 +194,15 @@ public:
     //!
     Orientation_3D& operator = (const Orientation_3D &rhs)
     {
-        this->phi = rhs.phi;
-        this->theta = rhs.theta;
-        this->psi = rhs.psi;
-        this->matrixRot = rhs.matrixRot;
+        double rhsRoll, rhsPitch, rhsYaw;
+        rhs.getDiscreteEuler(rhsRoll, rhsPitch, rhsYaw);
+        this->updateFromEuler(rhsRoll, rhsPitch, rhsYaw);
+        return *this;
+    }
+
+    Orientation_3D operator *= (const Eigen::Matrix3d &that)
+    {
+        this->m_QRotation = this->m_QRotation * that;
         return *this;
     }
 
@@ -253,10 +213,13 @@ public:
     //!
     Orientation_3D& operator += (const Orientation_3D &rhs)
     {
-        this->phi += rhs.phi;
-        this->theta += rhs.theta;
-        this->psi += rhs.psi;
-        this->updateMatrix();
+        double currentRoll, currentPitch, currentYaw;
+        double rhsRoll, rhsPitch, rhsYaw;
+
+        this->getDiscreteEuler(currentRoll, currentPitch, currentYaw);
+        rhs.getDiscreteEuler(rhsRoll, rhsPitch, rhsYaw);
+
+        this->updateFromEuler(currentRoll+rhsRoll, currentPitch+rhsPitch, currentYaw+rhsYaw);
         return *this;
     }
 
@@ -267,43 +230,48 @@ public:
     //!
     Orientation_3D& operator -= (const Orientation_3D &rhs)
     {
-        this->phi -= rhs.phi;
-        this->theta -= rhs.theta;
-        this->psi -= rhs.psi;
-        this->updateMatrix();
+        double currentRoll, currentPitch, currentYaw;
+        double rhsRoll, rhsPitch, rhsYaw;
+
+        this->getDiscreteEuler(currentRoll, currentPitch, currentYaw);
+        rhs.getDiscreteEuler(rhsRoll, rhsPitch, rhsYaw);
+
+        this->updateFromEuler(currentRoll-rhsRoll, currentPitch-rhsPitch, currentYaw-rhsYaw);
         return *this;
     }
 
-
     /** Private Members */
-private:
-    //!
-    //! \brief updatedTrig
-    //!
-    mutable bool updatedEuler = false;
+public:
+    std::string name = "";
 
-    /** Protected Members */
-protected:
-    mutable Eigen::Matrix3d matrixRot;
+    /** Public Members */
+public:
 
     /** The vector defining the sequence of rotation shall be [yaw, pitch, roll]
      * which yields a [phi, theta, psi] notation.
      * */
+    Eigen::Quaterniond m_QRotation;
 
+    /** The vector defining the sequence of rotation shall be [yaw, pitch, roll]
+     * which yields a [phi, theta, psi] notation or [Z,Y,X] from conventional literature.
+     * */
+
+    /*
     //!
     //! \brief value containing the roll rotation angle
     //!
-    mutable double theta = 0.0;
+    mutable double phi = 0.0; //referred to as gamma in literature
 
     //!
     //! \brief value containing the pitch rotation angle
     //!
-    mutable double psi = 0.0;
+    mutable double theta = 0.0; //referred to as beta in literature
 
     //!
     //! \brief value containing the yaw rotation angle
     //!
-    mutable double phi = 0.0;
+    mutable double psi = 0.0; //referred to as alpha in literature
+    */
 
 };
 

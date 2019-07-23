@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 
-#include "base/pose/cartesian_position_2D.h"
+#include "../pose/cartesian_position_2D.h"
 
 namespace mace {
 namespace geometry{
@@ -37,7 +37,7 @@ inline double distanceToLine(const pose::CartesianPosition_2D &l0, const pose::C
     double len_sq = C * C + D * D;
     double param = -1;
 
-    if (len_sq != 0) //in case of 0 length line
+    if (len_sq <= std::numeric_limits<double>::epsilon()) //in case of 0 length line
         param = dot / len_sq;
 
     double dx , dy;

@@ -1,8 +1,8 @@
 #ifndef GEODETIC_POSITION_2D_H
 #define GEODETIC_POSITION_2D_H
 
-#include "base/state_space/state.h"
 #include "abstract_geodetic_position.h"
+#include "../state_space/state.h"
 
 namespace mace {
 namespace pose {

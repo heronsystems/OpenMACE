@@ -1,13 +1,14 @@
 #include "orientation_3D.h"
 
+using namespace Eigen;
+
 namespace mace {
 namespace pose {
 
-Orientation_3D::Orientation_3D():
-    updatedEuler(true),
-    theta(0.0), psi(0.0), phi(0.0)
+Orientation_3D::Orientation_3D(const std::string &name)
 {
-    this->updateMatrix();
+    this->name = name;
+    this->m_QRotation.setIdentity();
 }
 
 Orientation_3D::~Orientation_3D()
@@ -17,94 +18,95 @@ Orientation_3D::~Orientation_3D()
 
 Orientation_3D::Orientation_3D(const Orientation_3D &copy)
 {
-    this->theta = copy.theta;
-    this->psi = copy.psi;
-    this->phi = copy.phi;
-    this->matrixRot = copy.matrixRot;
-    this->updatedEuler = copy.updatedEuler;
+    this->name = copy.name;
+    this->m_QRotation.setIdentity();
+    this->m_QRotation = copy.m_QRotation;
 }
 
-Orientation_3D::Orientation_3D(const double &roll, const double &pitch, const double &yaw)
+Orientation_3D::Orientation_3D(const double &roll, const double &pitch, const double &yaw, const std::string &name)
 {
-    this->setEuler(roll,pitch,yaw);
+    this->name = name;
+    this->m_QRotation.setIdentity();
+    this->updateFromEuler(roll,pitch,yaw);
 }
 
 /** Set functions for all rotation angle information **/
 
-void Orientation_3D::setEuler(const double &roll, const double &pitch, const double &yaw)
-{    
-    this->theta = roll;
-    this->psi = pitch;
-    this->phi = yaw;
-    this->updatedEuler = true;
+void Orientation_3D::updateFromEuler(const double &roll, const double &pitch, const double &yaw)
+{
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    currentRotation.alpha() = yaw;
+    currentRotation.beta() = pitch;
+    currentRotation.gamma() = roll;
 
-    this->updateMatrix();
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
 }
 
 void Orientation_3D::setRotation(const Eigen::Matrix3d &rotation)
 {
-    this->matrixRot = rotation;
-    this->updatedEuler = false;
+    this->m_QRotation = Eigen::Quaterniond(rotation);
 }
 
-void Orientation_3D::setRoll(const double &angle)
+void Orientation_3D::updateRoll(const double &angle)
 {
-    this->theta = angle;
-    this->updateMatrix();
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    currentRotation.gamma() = angle;
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
 }
 
-void Orientation_3D::setPitch(const double &angle)
+void Orientation_3D::updatePitch(const double &angle)
 {
-    this->psi = angle;
-    this->updateMatrix();
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    currentRotation.beta() = angle;
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
 }
 
 
-void Orientation_3D::setYaw(const double &angle)
+void Orientation_3D::updateYaw(const double &angle)
 {
-    this->phi = angle;
-    this->updateMatrix();
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    currentRotation.alpha() = angle;
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
 }
 
 
 /** Get functions for all rotation angle information **/
 
-void Orientation_3D::getEuler(double &roll, double &pitch, double &yaw) const
+void Orientation_3D::getDiscreteEuler(double &roll, double &pitch, double &yaw) const
 {
-   this->updateEuler();
-    roll = this->theta;
-    pitch = this->psi;
-    yaw = this->phi;
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation.toRotationMatrix());
+    roll = currentRotation.gamma();
+    pitch = currentRotation.beta();
+    yaw = currentRotation.alpha();
+}
+
+EulerAngleRotation Orientation_3D::getEulerRotation() const
+{
+    return EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation.toRotationMatrix());
+}
+
+Eigen::Matrix3d Orientation_3D::getRotationMatrix() const
+{
+    return this->m_QRotation.toRotationMatrix();
 }
 
 double Orientation_3D::getRoll() const
 {
-    return this->theta;
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    return currentRotation.gamma();
 }
 
 double Orientation_3D::getPitch() const
 {
-    return this->psi;
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    return currentRotation.beta();
 }
 
 double Orientation_3D::getYaw() const
 {
-    return this->phi;
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    return currentRotation.alpha();
 }
-
-void Orientation_3D::getRotationMatrix(Eigen::Matrix3d &rotM) const
-{
-    rotM = this->matrixRot;
-}
-
-void Orientation_3D::getRotationVector(Eigen::Vector3d &rotV) const
-{
-    this->updateEuler();
-    rotV(0) = phi;
-    rotV(1) = theta;
-    rotV(2) = psi;
-}
-
 
 
 } //end of namespace pose

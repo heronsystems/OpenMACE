@@ -3,14 +3,14 @@
 
 #include "base_polygon.h"
 #include "list"
-#include "base/pose/abstract_cartesian_position.h"
+#include "../pose/abstract_cartesian_position.h"
 
 namespace mace{
 namespace geometry {
 
 using namespace pose;
 
-class Polygon_Cartesian : public PolygonBase<CartesianPosition_2D>
+class Polygon_Cartesian : public PolygonBase<CoordinateSystemTypes::CARTESIAN, CartesianPosition_2D>
 {
 public:
 
@@ -87,8 +87,6 @@ public:
 
     void getCorners(CartesianPosition_2D &topLeft, CartesianPosition_2D &bottomRight) const override;
 
-    mace::CoordinateFrameTypes getVertexCoordinateFrame() const override;
-
     void applyCoordinateShift(const double &distance, const double &bearing);
 
 public:
@@ -140,7 +138,7 @@ public:
     //!
     bool operator == (const Polygon_Cartesian &rhs) const
     {
-        if(!PolygonBase<CartesianPosition_2D>::operator ==(rhs))
+        if(!PolygonBase<CoordinateSystemTypes::CARTESIAN, CartesianPosition_2D>::operator ==(rhs))
         {
             return false;
         }

@@ -30,7 +30,7 @@ public:
     //! \param position
     //! \param global
     //!
-    static void LocalPositionToGlobal(const Abstract_GeodeticPosition* origin, const Abstract_CartesianPosition *refPosition, Abstract_GeodeticPosition* targetPosition);
+    static void LocalPositionToGlobal(const Abstract_GeodeticPosition* origin, const Abstract_CartesianPosition* refPosition, Abstract_GeodeticPosition* targetPosition);
 };
 
 } //end of namespace pose

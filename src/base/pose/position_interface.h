@@ -9,6 +9,7 @@ namespace pose{
 template <typename T>
 class PositionInterface
 {
+    //This class cannot possess a static assert as it is a recursive construction of the object
 public:
     //!
     //! \brief distanceFromOrigin

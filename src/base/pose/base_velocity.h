@@ -40,12 +40,12 @@ public:
 public:
     Abstract_Velocity* getVelocityClone() const override
     {
-        return (new Base_Velocity<CFDATA,DATA>(*this));
+        return (new Base_Velocity<coordType, CFDATA, DATA>(*this));
     }
 
     void getVelocityClone(Abstract_Velocity** state) const override
     {
-        *state = new Base_Velocity<CFDATA,DATA>(*this);
+        *state = new Base_Velocity<coordType, CFDATA, DATA>(*this);
     }
 
     CoordinateSystemTypes getCoordinateSystemType() const override

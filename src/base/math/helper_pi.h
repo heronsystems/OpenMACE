@@ -2,6 +2,7 @@
 #define HELPER_PI_H
 
 #define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <cstddef>
 

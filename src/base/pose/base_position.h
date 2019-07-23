@@ -10,7 +10,7 @@
 #include "common/class_forward.h"
 #include "base/math/math_components.h"
 
-#include "base/misc/coordinate_frame_components.h"
+#include "../misc/coordinate_frame_components.h"
 
 namespace mace{
 namespace pose{

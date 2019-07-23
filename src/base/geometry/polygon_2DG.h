@@ -5,15 +5,15 @@
 #include "polygon_cartesian.h"
 
 #include "list"
-#include "base/pose/geodetic_position_2D.h"
-#include "base/pose/dynamics_aid.h"
+#include "../pose/geodetic_position_2D.h"
+#include "../pose/dynamics_aid.h"
 
 namespace mace{
 namespace geometry {
 
 using namespace pose;
 
-class Polygon_2DG : public PolygonBase<GeodeticPosition_2D>
+class Polygon_2DG : public PolygonBase<CoordinateSystemTypes::GEODETIC, GeodeticPosition_2D>
 {
 public:
 
@@ -24,7 +24,7 @@ public:
     Polygon_2DG(const Polygon_2DG &copy);
 
 
-    ~Polygon_2DG() = default;
+    ~Polygon_2DG() override = default;
 
     //!
     //! \brief getBoundingRect
@@ -90,8 +90,6 @@ public:
 
     void getCorners(GeodeticPosition_2D &topLeft, GeodeticPosition_2D &bottomRight) const override;
 
-    mace::CoordinateFrameTypes getVertexCoordinateFrame() const override;
-
     void applyCoordinateShift(const double &distance, const double &bearing);
 
 public:
@@ -143,7 +141,7 @@ public:
     //!
     bool operator == (const Polygon_2DG &rhs) const
     {
-        if(!PolygonBase<GeodeticPosition_2D>::operator ==(rhs))
+        if(!PolygonBase<CoordinateSystemTypes::GEODETIC, GeodeticPosition_2D>::operator ==(rhs))
         {
             return false;
         }

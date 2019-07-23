@@ -3,7 +3,7 @@
 
 #include "abstract_altitude.h"
 #include "abstract_cartesian_position.h"
-#include "base/state_space/state.h"
+#include "../state_space/state.h"
 
 using namespace mace::math;
 

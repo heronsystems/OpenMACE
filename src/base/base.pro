@@ -13,6 +13,7 @@ TEMPLATE = lib
 DEFINES += BASE_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+#CONFIG += c++14 #This will build in C++14
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -53,7 +54,8 @@ SOURCES += \
     pose/abstract_geodetic_position.cpp \
     geometry/polygon_2DC.cpp \
     pose/base_altitude.cpp \
-    pose/abstract_velocity.cpp
+    pose/abstract_velocity.cpp \
+    geometry/abstract_polygon.cpp
 
 HEADERS +=\
     base_global.h \
@@ -109,7 +111,8 @@ HEADERS +=\
     misc/coordinate_frame_components.h \
     misc/kinematic_definitions.h \
     pose/base_velocity.h \
-    pose/base_altitude.h
+    pose/base_altitude.h \
+    geometry/abstract_polygon.h
 
 # Unix lib Install
 unix:!symbian {

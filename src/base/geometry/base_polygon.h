@@ -5,95 +5,25 @@
 #include <stdlib.h>
 
 #include "geometry_helper.h"
-
-#include "base/pose/cartesian_position_2D.h"
-#include "base/pose/cartesian_position_3D.h"
+#include "abstract_polygon.h"
 
 namespace mace{
 namespace geometry{
 
-class PolygonAbstract
+template <const CoordinateSystemTypes coordType, class T>
+class PolygonBase : Abstract_Polygon
 {
-    public:
-    PolygonAbstract(const std::string &descriptor = "Polygon"):
-        name(descriptor)
-    {
+    static_assert (std::is_base_of<pose::Position, T>::value,"PolygonBase template argument T is invalid: Must derive from position."); //This will enforce the interface that we require in order to be able to clone the pointer
 
-    }
-
-    virtual ~PolygonAbstract() = default;
-
-    template <class T>
-    T *as()
-    {
-        return static_cast<T*>(this);
-    }
-
-    template <class T>
-    const T *as() const
-    {
-        return static_cast<const T*>(this);
-    }
-
-    PolygonAbstract(const PolygonAbstract &copy)
-    {
-        this->name = copy.name;
-    }
-
-    virtual mace::CoordinateFrameTypes getVertexCoordinateFrame() const = 0;
-
-public:
-
-    //!
-    //! \brief operator =
-    //! \param rhs
-    //! \return
-    //!
-    PolygonAbstract& operator = (const PolygonAbstract &rhs)
-    {
-        this->name = rhs.name;
-        return *this;
-    }
-
-    //!
-    //! \brief operator ==
-    //! \param rhs
-    //! \return
-    //!
-    bool operator == (const PolygonAbstract &rhs) const
-    {
-        if(this->name != rhs.name)
-        {
-            return false;
-        }
-        return true;
-    }
-
-    //!
-    //! \brief operator !=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator != (const PolygonAbstract &rhs) const {
-        return !(*this == rhs);
-    }
-
-    protected:
-        std::string name;
-};
-
-template <class T>
-class PolygonBase : PolygonAbstract
-{
 public:
     PolygonBase(const std::string &descriptor = "Polygon"):
-        PolygonAbstract(descriptor)
+        Abstract_Polygon(descriptor)
     {
 
     }
 
     PolygonBase(const std::vector<T> &vector, const std::string &descriptor = "Polygon"):
-        PolygonAbstract(descriptor)
+        Abstract_Polygon(descriptor)
     {
         //this->clearPolygon(); we should not have to call this case since this is in the constructer
         m_vertex = vector;
@@ -101,10 +31,16 @@ public:
     }
 
     PolygonBase(const PolygonBase &copy):
-        PolygonAbstract(copy)
+        Abstract_Polygon(copy)
     {
         this->replaceVector(copy.m_vertex);
     }
+
+    CoordinateSystemTypes getVertexCoordinateSystem() const
+    {
+        return coordType;
+    }
+
 
     bool isValidPolygon() const
     {
@@ -200,7 +136,7 @@ public:
     //!
     PolygonBase& operator = (const PolygonBase &rhs)
     {
-        PolygonAbstract::operator =(rhs);
+        Abstract_Polygon::operator =(rhs);
         this->m_vertex = rhs.m_vertex;
         return *this;
     }
@@ -212,7 +148,7 @@ public:
     //!
     bool operator == (const PolygonBase &rhs) const
     {
-        if(!PolygonAbstract::operator ==(rhs))
+        if(!Abstract_Polygon::operator ==(rhs))
         {
             return false;
         }

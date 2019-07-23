@@ -1,7 +1,7 @@
 #ifndef ABSTRACT_ALTITUDE_H
 #define ABSTRACT_ALTITUDE_H
 
-#include "base/misc/coordinate_frame_components.h"
+#include "../misc/coordinate_frame_components.h"
 #include "base_position.h"
 #include "altitude_interface.h"
 

@@ -1,8 +1,6 @@
 #ifndef ABSTRACT_ORIENTATION_H
 #define ABSTRACT_ORIENTATION_H
 
-
-
 namespace mace{
 namespace pose{
 
