@@ -1,4 +1,6 @@
-#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include "base/pose/orientation_3D.h"
+#include "base/unit_tests/unittests_orientation.h"
 
 #include <QCoreApplication>
 #include <iostream>
@@ -13,17 +15,11 @@ const char kPathSeperator =
 #else
         '/';
 #endif
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-
-    std::cout << "HI" << std::endl;
-    Eigen::Vector2d newVector (0,1);
-    Eigen::VectorXd tempVecotr;
-
-    newVector = tempVecotr;
-
-    std::cout<<"Pausing here"<<std::endl;
+    runOrientationTests();
 
     return 0;
 }

@@ -112,7 +112,8 @@ HEADERS +=\
     misc/kinematic_definitions.h \
     pose/base_velocity.h \
     pose/base_altitude.h \
-    geometry/abstract_polygon.h
+    geometry/abstract_polygon.h \
+    unit_tests/unittests_orientation.h
 
 # Unix lib Install
 unix:!symbian {

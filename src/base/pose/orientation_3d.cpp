@@ -39,7 +39,7 @@ void Orientation_3D::updateFromEuler(const double &roll, const double &pitch, co
     currentRotation.beta() = pitch;
     currentRotation.gamma() = roll;
 
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
 }
 
 void Orientation_3D::setRotation(const Eigen::Matrix3d &rotation)
@@ -51,14 +51,14 @@ void Orientation_3D::updateRoll(const double &angle)
 {
     EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
     currentRotation.gamma() = angle;
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
 }
 
 void Orientation_3D::updatePitch(const double &angle)
 {
     EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
     currentRotation.beta() = angle;
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
 }
 
 
@@ -66,7 +66,7 @@ void Orientation_3D::updateYaw(const double &angle)
 {
     EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
     currentRotation.alpha() = angle;
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ());
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
 }
 
 
@@ -74,7 +74,7 @@ void Orientation_3D::updateYaw(const double &angle)
 
 void Orientation_3D::getDiscreteEuler(double &roll, double &pitch, double &yaw) const
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation.toRotationMatrix());
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<false, false, false>(this->m_QRotation.matrix());
     roll = currentRotation.gamma();
     pitch = currentRotation.beta();
     yaw = currentRotation.alpha();
