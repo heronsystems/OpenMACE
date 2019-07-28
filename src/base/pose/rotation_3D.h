@@ -1,5 +1,5 @@
-#ifndef ORIENTATION_3D_H
-#define ORIENTATION_3D_H
+#ifndef ROTATION_3D_H
+#define ROTATION_3D_H
 
 #include <iostream>
 #include <cmath>
@@ -21,29 +21,28 @@ typedef Eigen::EulerAngles<double, AgentRotationSystem> EulerAngleRotation;
  * matrix SO(3).
  */
 
-class Orientation_3D
+class Rotation_3D : public AbstractOrientation
 {
-
 public:
     //!
     //! \brief Orientation_2D
     //!
-    Orientation_3D(const std::string &name = "Orientation 3D");
+    Rotation_3D(const std::string &name = "Rotation 3D");
 
     //!
     //! \brief Orientation_3D
     //! \param copy
     //!
-    Orientation_3D(const Orientation_3D &copy);
+    Rotation_3D(const Rotation_3D &copy);
 
 
-    ~Orientation_3D();
+    ~Rotation_3D();
 
     //!
     //! \brief Orientation_3D
     //! \param angle
     //!
-    Orientation_3D(const double &roll, const double &pitch, const double &yaw, const std::string &name = "");
+    Rotation_3D(const double &roll, const double &pitch, const double &yaw, const std::string &name = "");
 
 public:
 
@@ -113,9 +112,9 @@ public:
     /** Arithmetic Operators */
 public:
 
-    Orientation_3D operator * (const Eigen::Matrix3d &that) const
+    Rotation_3D operator * (const Eigen::Matrix3d &that) const
     {
-        Orientation_3D newObj(*this);
+        Rotation_3D newObj(*this);
         newObj.m_QRotation = this->m_QRotation * that;
         return newObj;
     }
@@ -125,9 +124,9 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_3D operator + (const Orientation_3D &that) const
+    Rotation_3D operator + (const Rotation_3D &that) const
     {
-        Orientation_3D newObj(*this);
+        Rotation_3D newObj(*this);
 
         double currentRoll, currentPitch, currentYaw;
         double rhsRoll, rhsPitch, rhsYaw;
@@ -145,9 +144,9 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_3D operator - (const Orientation_3D &that) const
+    Rotation_3D operator - (const Rotation_3D &that) const
     {
-        Orientation_3D newObj(*this);
+        Rotation_3D newObj(*this);
 
         double currentRoll, currentPitch, currentYaw;
         double rhsRoll, rhsPitch, rhsYaw;
@@ -167,7 +166,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator == (const Orientation_3D &rhs) const
+    bool operator == (const Rotation_3D &rhs) const
     {
         if(!this->m_QRotation.isApprox(rhs.m_QRotation,std::numeric_limits<double>::epsilon())){
             return false;
@@ -180,7 +179,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator != (const Orientation_3D &rhs) {
+    bool operator != (const Rotation_3D &rhs) {
         return !(*this == rhs);
     }
 
@@ -192,15 +191,16 @@ public:
     //! \param rhs
     //! \return
     //!
-    Orientation_3D& operator = (const Orientation_3D &rhs)
+    Rotation_3D& operator = (const Rotation_3D &rhs)
     {
+        AbstractOrientation::operator=(rhs);
         double rhsRoll, rhsPitch, rhsYaw;
         rhs.getDiscreteEuler(rhsRoll, rhsPitch, rhsYaw);
         this->updateFromEuler(rhsRoll, rhsPitch, rhsYaw);
         return *this;
     }
 
-    Orientation_3D operator *= (const Eigen::Matrix3d &that)
+    Rotation_3D operator *= (const Eigen::Matrix3d &that)
     {
         this->m_QRotation = this->m_QRotation * that;
         return *this;
@@ -211,7 +211,7 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_3D& operator += (const Orientation_3D &rhs)
+    Rotation_3D& operator += (const Rotation_3D &rhs)
     {
         double currentRoll, currentPitch, currentYaw;
         double rhsRoll, rhsPitch, rhsYaw;
@@ -228,7 +228,7 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_3D& operator -= (const Orientation_3D &rhs)
+    Rotation_3D& operator -= (const Rotation_3D &rhs)
     {
         double currentRoll, currentPitch, currentYaw;
         double rhsRoll, rhsPitch, rhsYaw;
@@ -239,10 +239,6 @@ public:
         this->updateFromEuler(currentRoll-rhsRoll, currentPitch-rhsPitch, currentYaw-rhsYaw);
         return *this;
     }
-
-    /** Private Members */
-public:
-    std::string name = "";
 
     /** Public Members */
 public:
@@ -256,26 +252,9 @@ public:
      * which yields a [phi, theta, psi] notation or [Z,Y,X] from conventional literature.
      * */
 
-    /*
-    //!
-    //! \brief value containing the roll rotation angle
-    //!
-    mutable double phi = 0.0; //referred to as gamma in literature
-
-    //!
-    //! \brief value containing the pitch rotation angle
-    //!
-    mutable double theta = 0.0; //referred to as beta in literature
-
-    //!
-    //! \brief value containing the yaw rotation angle
-    //!
-    mutable double psi = 0.0; //referred to as alpha in literature
-    */
-
 };
 
 } //end of namespace pose
 } //end of namespace mace
 
-#endif // ORIENTATION_2D_H
+#endif // ROTATION_3D_H

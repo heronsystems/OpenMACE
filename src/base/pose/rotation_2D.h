@@ -1,9 +1,10 @@
-#ifndef ORIENTATION_2D_H
-#define ORIENTATION_2D_H
+#ifndef ROTATION_2D_H
+#define ROTATION_2D_H
 
 #include <cmath>
 
-#include "Eigen/Geometry"
+#include <Eigen/Geometry>
+#include "abstract_orientation.h"
 
 namespace mace {
 namespace pose {
@@ -14,27 +15,27 @@ namespace pose {
  * matrix SO(2).
  */
 
-class Orientation_2D : public Eigen::Rotation2D<double>
+class Rotation_2D : public AbstractOrientation, public Eigen::Rotation2D<double>
 {
 public:
     //!
     //! \brief Orientation_2D
     //!
-    Orientation_2D(const std::string &name = "Orientation 2D");
+    Rotation_2D(const std::string &name = "Orientation 2D");
 
-    ~Orientation_2D();
+    ~Rotation_2D();
 
     //!
     //! \brief Orientation_2D
     //! \param copy
     //!
-    Orientation_2D(const Orientation_2D &copy);
+    Rotation_2D(const Rotation_2D &copy);
 
     //!
     //! \brief Orientation_2D
     //! \param angle
     //!
-    Orientation_2D(const double &angle);
+    Rotation_2D(const double &angle);
 
 public:
     //!
@@ -58,9 +59,9 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_2D operator + (const Orientation_2D &that) const
+    Rotation_2D operator + (const Rotation_2D &that) const
     {
-        Orientation_2D newObj(*this);
+        Rotation_2D newObj(*this);
         newObj.angle() = newObj.angle() + that.angle();
         return newObj;
     }
@@ -70,9 +71,9 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_2D operator - (const Orientation_2D &that) const
+    Rotation_2D operator - (const Rotation_2D &that) const
     {
-        Orientation_2D newObj(*this);
+        Rotation_2D newObj(*this);
         newObj.angle() = newObj.angle() - that.angle();
         return newObj;
     }
@@ -85,7 +86,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator < (const Orientation_2D &rhs) const
+    bool operator < (const Rotation_2D &rhs) const
     {
         if(this->angle() >= rhs.angle())
             return false;
@@ -97,7 +98,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator >= (const Orientation_2D &rhs) const
+    bool operator >= (const Rotation_2D &rhs) const
     {
         return !(*this < rhs);
     }
@@ -107,7 +108,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator > (const Orientation_2D &rhs) const
+    bool operator > (const Rotation_2D &rhs) const
     {
         if(this->angle() <= rhs.angle())
             return false;
@@ -119,7 +120,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator <= (const Orientation_2D &rhs) const
+    bool operator <= (const Rotation_2D &rhs) const
     {
         return !(this->angle() > rhs.angle());
     }
@@ -129,7 +130,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator == (const Orientation_2D &rhs) const
+    bool operator == (const Rotation_2D &rhs) const
     {
         if(!Eigen::Rotation2D<double>::isApprox(rhs,std::numeric_limits<double>::epsilon()))
             return false;
@@ -141,7 +142,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator != (const Orientation_2D &rhs) {
+    bool operator != (const Rotation_2D &rhs) {
         return !(*this == rhs);
     }
 
@@ -153,8 +154,9 @@ public:
     //! \param rhs
     //! \return
     //!
-    Orientation_2D& operator = (const Orientation_2D &rhs)
+    Rotation_2D& operator = (const Rotation_2D &rhs)
     {
+        AbstractOrientation::operator=(rhs);
         Eigen::Rotation2D<double>::operator=(rhs);
         return *this;
     }
@@ -164,7 +166,7 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_2D& operator += (const Orientation_2D &rhs)
+    Rotation_2D& operator += (const Rotation_2D &rhs)
     {
         Eigen::Rotation2D<double>::operator=(rhs);
 
@@ -176,19 +178,14 @@ public:
     //! \param that
     //! \return
     //!
-    Orientation_2D& operator -= (const Orientation_2D &rhs)
+    Rotation_2D& operator -= (const Rotation_2D &rhs)
     {
         this->angle() -= rhs.angle();
         return *this;
     }
-
-
-    /** Protected Members */
-protected:
-    std::string name = "";
 };
 
 } //end of namespace pose
 } //end of namespace mace
 
-#endif // ORIENTATION_2D_H
+#endif // ROTATION_2D_H

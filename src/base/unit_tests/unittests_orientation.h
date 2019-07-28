@@ -7,15 +7,15 @@
 #include <tuple>
 
 #include "common/logging/macelog.h"
-#include "../pose/orientation_2D.h"
-#include "../pose/orientation_3D.h"
+#include "../pose/rotation_2D.h"
+#include "../pose/rotation_3D.h"
 
 // ********************************* //
 // ** Unit test 1 -- Check Simple Orientation Construction From Euler ** //
 // ********************************* //
 inline bool test_OrientationConstruction(std::string &returnString, std::vector<std::string> &testOutputs) {
 
-    mace::pose::Orientation_3D yaw45(0,0,M_PI/4);
+    mace::pose::Rotation_3D yaw45(0,0,M_PI/4);
 
     Eigen::AngleAxisd comparisonRotation (M_PI/4, Eigen::Vector3d(0, 0, 1));
     Eigen::Matrix3d comparisonMatrix = comparisonRotation.toRotationMatrix();
@@ -36,7 +36,7 @@ inline bool test_OrientationConstruction(std::string &returnString, std::vector<
 // ********************************* //
 inline bool test_EulerReconstruction(std::string &returnString, std::vector<std::string> &testOutputs) {
 
-    mace::pose::Orientation_3D orientationTest(M_PI_4,M_PI_4,M_PI_2);
+    mace::pose::Rotation_3D orientationTest(M_PI_4,M_PI_4,M_PI_2);
     double currentRoll = M_PI_4, currentPitch = M_PI_4, currentYaw = M_PI_2;
     double rxRoll, rxPitch, rxYaw;
     orientationTest.getDiscreteEuler(rxRoll, rxPitch, rxYaw);
@@ -68,9 +68,9 @@ inline bool test_EulerReconstruction(std::string &returnString, std::vector<std:
 // ********************************* //
 inline bool test_EulerArithmetic(std::string &returnString, std::vector<std::string> &testOutputs) {
 
-    mace::pose::Orientation_3D lhs(0,0,M_PI_4);
-    mace::pose::Orientation_3D rhs(0,0,M_PI_4);
-    mace::pose::Orientation_3D desiredResult(0,0,M_PI_2);
+    mace::pose::Rotation_3D lhs(0,0,M_PI_4);
+    mace::pose::Rotation_3D rhs(0,0,M_PI_4);
+    mace::pose::Rotation_3D desiredResult(0,0,M_PI_2);
     lhs+=rhs;
 
     bool success = false;

@@ -669,7 +669,7 @@ public:
     //! \param position Position of sensor
     //! \param orientation Orientation of sensor
     //!
-    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position, const mace::pose::Orientation_3D& orientation) override;
+    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position, const mace::pose::Rotation_3D& orientation) override;
 public:
 
     /////////////////////////////////////////////////////////////////////////

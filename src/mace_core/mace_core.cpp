@@ -1631,7 +1631,7 @@ void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose
 //! \param position Position of sensor
 //! \param orientation Orientation of sensor
 //!
-void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Orientation_3D &orientation)
+void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Rotation_3D &orientation)
 {
     octomap::Pointcloud copyObj = obj;
     m_DataFusion->insertObservation(copyObj, position, orientation);

@@ -26,7 +26,7 @@
 
 #include "maps/map_topic_components.h"
 
-#include "base/pose/orientation_3D.h"
+#include "base/pose/rotation_3D.h"
 
 #include <memory>
 

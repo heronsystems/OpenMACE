@@ -27,8 +27,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    pose/orientation_2d.cpp \
-    pose/orientation_3d.cpp \
     state_space/real_vector.cpp \
     pose/cartesian_position_3D.cpp \
     pose/cartesian_position_2D.cpp \
@@ -55,7 +53,10 @@ SOURCES += \
     geometry/polygon_2DC.cpp \
     pose/base_altitude.cpp \
     pose/abstract_velocity.cpp \
-    geometry/abstract_polygon.cpp
+    geometry/abstract_polygon.cpp \
+    pose/abstract_orientation.cpp \
+    pose/rotation_3D.cpp \
+    pose/rotation_2D.cpp
 
 HEADERS +=\
     base_global.h \
@@ -66,8 +67,6 @@ HEADERS +=\
     geometry/base_polygon.h \
     state_space/real_vector.h \
     geometry/geometry_helper.h \
-    pose/orientation_2D.h \
-    pose/orientation_3D.h \
     state_space/real_vector_bounds.h \
     pose/geodetic_position_2D.h \
     state_space/state_sampler.h \
@@ -113,7 +112,9 @@ HEADERS +=\
     pose/base_velocity.h \
     pose/base_altitude.h \
     geometry/abstract_polygon.h \
-    unit_tests/unittests_orientation.h
+    unit_tests/unittests_orientation.h \
+    pose/rotation_2D.h \
+    pose/rotation_3D.h
 
 # Unix lib Install
 unix:!symbian {

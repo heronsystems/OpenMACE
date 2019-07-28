@@ -34,7 +34,7 @@
 #include "octomap/OcTree.h"
 
 #include "base/pose/cartesian_position_3D.h"
-#include "base/pose/orientation_3D.h"
+#include "base/pose/rotation_3D.h"
 #include "base/geometry/cell_2DC.h"
 
 #include "data_generic_command_item/boundary_items/boundary_type.h"
@@ -784,7 +784,7 @@ public:
     //! \param position Position of the sensor taking the measurement
     //! \param orientation Orientation of the sensor taking the measurement
     //!
-    void insertObservation(octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Orientation_3D &orientation)
+    void insertObservation(octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Rotation_3D &orientation)
     {
         std::lock_guard<std::mutex> guard(m_Mutex_OccupancyMaps);
         m_OctomapWrapper->updateFromPointCloud(&obj, position, orientation);

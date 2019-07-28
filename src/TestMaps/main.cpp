@@ -1,5 +1,5 @@
 #include <Eigen/Geometry>
-#include "base/pose/orientation_3D.h"
+#include "base/pose/rotation_3D.h"
 #include "base/unit_tests/unittests_orientation.h"
 
 #include <QCoreApplication>

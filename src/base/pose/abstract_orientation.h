@@ -1,96 +1,39 @@
 #ifndef ABSTRACT_ORIENTATION_H
 #define ABSTRACT_ORIENTATION_H
 
+#include <string>
+
 namespace mace{
 namespace pose{
 
-template <class DIM>
 class AbstractOrientation
 {
 public:
-    virtual ~AbstractOrientation() = default;
-
-    AbstractOrientation()
-    {
-
-    }
+    AbstractOrientation(const std::string &name = "");
 
     AbstractOrientation(const AbstractOrientation &copy)
     {
-        this->data = copy.data;
+        this->name = copy.name;
     }
 
-    AbstractOrientation* getAbstractClone() const
+    virtual ~AbstractOrientation() = default;
+
+    std::string getObjectName() const;
+
+    void setObjectName(const std::string &name);
+
+    AbstractOrientation* getAbstractOrientation() const
     {
         return new AbstractOrientation(*this);
     }
 
-    AbstractOrientation& operator = (const AbstractOrientation &copy)
+    AbstractOrientation& operator = (const AbstractOrientation &rhs)
     {
-        this->data = copy.data;
+        this->name = rhs.name;
         return *this;
     }
 
 public:
-
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    bool is3D() const
-    {
-//        if(mace::misc::details::OrientationTypeHelper<DIM>::static_size > 2)
-//            return true;
-//        return false;
-        return false;
-    }
-
-    /** Relational Operators */
-public:
-
-    //!
-    //! \brief operator <
-    //! \param rhs
-    //! \return
-    //!
-    bool operator < (const AbstractOrientation &rhs) const
-    {
-        if(this->data >= rhs.data)
-            return false;
-        return true;
-    }
-
-    //!
-    //! \brief operator >=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator >= (const AbstractOrientation &rhs) const
-    {
-        return !(*this < rhs);
-    }
-
-    //!
-    //! \brief operator >
-    //! \param rhs
-    //! \return
-    //!
-    bool operator > (const AbstractOrientation &rhs) const
-    {
-        if(this->data <= rhs.data)
-            return false;
-        return true;
-    }
-
-    //!
-    //! \brief operator <=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator <= (const AbstractOrientation &rhs) const
-    {
-        return !(*this > rhs);
-    }
 
     //!
     //! \brief operator ==
@@ -99,7 +42,7 @@ public:
     //!
     bool operator == (const AbstractOrientation &rhs) const
     {
-        if(this->data != rhs.data){
+        if(this->name != rhs.name){
             return false;
         }
         return true;
@@ -114,33 +57,10 @@ public:
         return !(*this == rhs);
     }
 
-    /** Assignment Operators */
-public:
 
-    //!
-    //! \brief operator +=
-    //! \param that
-    //! \return
-    //!
-    AbstractOrientation& operator += (const AbstractOrientation &rhs)
-    {
-        this->data += rhs.data;
-        return *this;
-    }
-
-    //!
-    //! \brief operator -=
-    //! \param that
-    //! \return
-    //!
-    AbstractOrientation& operator -= (const AbstractOrientation &rhs)
-    {
-        this->data -= rhs.data;
-        return *this;
-    }
-
+    /** Protected Members */
 protected:
-    DIM data;
+    std::string name = "";
 };
 
 
