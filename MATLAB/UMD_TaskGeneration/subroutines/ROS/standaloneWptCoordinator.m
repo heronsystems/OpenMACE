@@ -1,4 +1,4 @@
-function standaloneWptCoordinator(runTime,cptRadius,N)
+function standaloneWptCoordinator(runTime,cptRadius,N,agentIDs)
 
 
 % parameters
@@ -45,7 +45,7 @@ positionSub = rossubscriber('/MACE/UPDATE_POSITION','BufferSize', 10);% @positio
 while 1
     pause(1);
     % need to try to request bundle in while loop
-    bundleRequest.VehicleID = uint8(1);
+    bundleRequest.NumVehicle = uint8(N);
     try
         bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 1);
     catch
@@ -72,36 +72,38 @@ while toc(loopStart) <= runTime+10
     % start main loop
     iterationStart = tic;
     if mod(iterationCounter,bundleUpdateIters) == 1
-        % get bundle information every certain iterations
+        % get bundle of all agents in one shot
+        bundleRequest.NumVehicle = N;
+        try
+            bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
+        catch
+            % If the code catches an error at this moment, then it must be that
+            % main program stops. We will issue an exit to the while
+            % loop.
+            
+            breakWhileLoop = 1;
+            break;
+        end
         for k = 1:N
-            % request bundle from each agent
-            bundleRequest.VehicleID = k;
-            try
-                bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
-            catch
-                % If the code catches an error at this moment, then it must be that
-                % main program stops. We will issue an exit to the while
-                % loop.
-                
-                breakWhileLoop = 1;
-                break;
-            end
-            % update the bundle only if the bundle is new
-            if bundleResponse.BundleID > currentBundleID(k)
-                % TODO: change hardcode
-                bundle{k} = [bundleResponse.Easting1 bundleResponse.Northing1;
-                    bundleResponse.Easting2 bundleResponse.Northing2;
-                    bundleResponse.Easting3 bundleResponse.Northing3;
-                    bundleResponse.Easting4 bundleResponse.Northing4;
-                    bundleResponse.Easting5 bundleResponse.Northing5]
-                agentAltitude(k) = bundleResponse.Altitude1;
+            % update the bundle only if the bundle is new and the bundle is
+            % complete
+            if (bundleResponse.BundleID > currentBundleID(k)) && (bundleResponse.BundleStatus == 1)
+                fprintf('bundle status is %d\n',bundleResponse.BundleStatus);
+                expression = [];
+                for j = 1:5
+                    expression = [expression 'bundleResponse.Agent' num2str(k) 'E' num2str(j) ',bundleResponse.Agent' num2str(k) 'N' num2str(j) ';'];
+                end
+                eval(['bundle{k} = [' expression '];']);
+                eval(['agentAltitude(k) = bundleResponse.Agent' num2str(k) 'Al;']);
+                bundle{k}
+                agentAltitude(k)
                 bundleWptCounter(k) = 1;
                 % update the currentBundleID
                 currentBundleID(k) = bundleResponse.BundleID;
                 
                 % force to command the quad to a new waypoint
                 waypointRequest.Timestamp = rostime('now');
-                waypointRequest.VehicleID = k;   % Vehicle ID
+                waypointRequest.VehicleID = agentIDs(k);   % Vehicle ID
                 waypointRequest.CommandID = 3;
                 [east, north] = F3toENU(bundle{k}(1,1), bundle{k}(1,2));
                 waypointRequest.Easting = east; % Relative easting position to Datum
@@ -116,7 +118,54 @@ while toc(loopStart) <= runTime+10
                     fprintf('VehicleID %d Wpt Command Failed.\n',k);
                 end
             end
-        end
+        end 
+%         % ==== original code: one-by-one request ====
+%         for k = 1:N
+%             % request bundle from each agent
+%             bundleRequest.VehicleID = k;
+%             try
+%                 bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
+%             catch
+%                 % If the code catches an error at this moment, then it must be that
+%                 % main program stops. We will issue an exit to the while
+%                 % loop.
+%                 
+%                 breakWhileLoop = 1;
+%                 break;
+%             end
+%             % update the bundle only if the bundle is new
+%             if bundleResponse.BundleID > currentBundleID(k)
+%                 % TODO: change hardcode
+%                 bundle{k} = [bundleResponse.Easting1 bundleResponse.Northing1;
+%                     bundleResponse.Easting2 bundleResponse.Northing2;
+%                     bundleResponse.Easting3 bundleResponse.Northing3;
+%                     bundleResponse.Easting4 bundleResponse.Northing4;
+%                     bundleResponse.Easting5 bundleResponse.Northing5]
+%                 agentAltitude(k) = bundleResponse.Altitude1;
+%                 bundleWptCounter(k) = 1;
+%                 % update the currentBundleID
+%                 currentBundleID(k) = bundleResponse.BundleID;
+%                 
+%                 % force to command the quad to a new waypoint
+%                 waypointRequest.Timestamp = rostime('now');
+%                 waypointRequest.VehicleID = k;   % Vehicle ID
+%                 waypointRequest.CommandID = 3;
+%                 [east, north] = F3toENU(bundle{k}(1,1), bundle{k}(1,2));
+%                 waypointRequest.Easting = east; % Relative easting position to Datum
+%                 waypointRequest.Northing = north; % Relative northing position to Datum
+%                 waypointRequest.Altitude = agentAltitude(k);
+%                 waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
+%                 fprintf('Forcing 1st waypoint of new bundle now!\n');
+%                 fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(1,1), bundle{k}(1,2),k);
+%                 if ( waypointResponse.Success )
+%                     fprintf('VehicleID %d Wpt Command Sent.\n',k);
+%                 else
+%                     fprintf('VehicleID %d Wpt Command Failed.\n',k);
+%                 end
+%             end
+%         end
+%         
+%         % ==== end original code ====
         fprintf('bundleRequested at %1.1f\n',toc(iterationStart));
     end
     
@@ -164,7 +213,7 @@ while toc(loopStart) <= runTime+10
         end
         % packup a command packet and send it to quad
         waypointRequest.Timestamp = rostime('now');
-        waypointRequest.VehicleID = k;   % Vehicle ID
+        waypointRequest.VehicleID = agentIDs(k);   % Vehicle ID
         waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
         fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2),k);
         [east, north] = F3toENU(bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2));

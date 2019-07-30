@@ -38,9 +38,12 @@ for i = 1:1:swarmModel.N
 end
 % visited wpts
 for i = 1:1:swarmModel.N
-    if (swarmState.wptIndex(i) > 1)
-        plotHandles.figh_visitedWpt(i) = plot([bundleX(1:swarmState.wptIndex(i)-1)],[bundleY(1:swarmState.wptIndex(i)-1)],'mo','linewidth',2,'MarkerFaceColor','m');
-    end      
+%     if (swarmState.wptIndex(i) > 1)
+        plotHandles.figh_visitedWpt(i) = plot([bundleX(1:swarmState.wptIndex(i))],[bundleY(1:swarmState.wptIndex(i))],'mo','linewidth',2,'MarkerFaceColor','m');
+%     end    
+%     if (swarmState.wptIndex(i) > 1)
+%         plotHandles.figh_visitedWpt(i) = plot([bundleX(1:swarmState.wptIndex(i)-1)],[bundleY(1:swarmState.wptIndex(i)-1)],'mo','linewidth',2,'MarkerFaceColor','m');
+%     end  
 end
 % plot Path
 for i = 1:1:swarmModel.N

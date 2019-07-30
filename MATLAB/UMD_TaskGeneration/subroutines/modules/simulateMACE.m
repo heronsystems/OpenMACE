@@ -8,12 +8,18 @@ global bundleSource
 if strcmp(ROS_MACE.wptCoordinator,'standalone')
     if isempty(bundleSource)
         % the global bundleSource stores the current bundles.
-        % each row represents the bundle of an agent
+        % each of the first N rows represents the bundle of an agent
         % the first column is the current bundle number, starting from 1
         % the second column is the waypoint altitude
-        % the third to the twelfth columns represent easting1, northing1, easting 2, northing 2,..., easting5, northing 5
+        % the third to the twelfth columns represent easting1, northing1, easting2, northing2,..., easting5, northing5
         bundleSource = zeros(swarmModel.N,1+1+2*swarmModel.bundleSize);
         bundleSource(:,1) = 0;
+        % the last row is used for status of the bundle
+        % specifically, the first column of the last row has two values: 0 or 1
+        % 0 means the bundleSource is being written and the value is not
+        % complete (temporarily unreliable)
+        % 1 means the bundleSource is ready to be read
+        bundleSource = [bundleSource; zeros(1,1+1+2*swarmModel.bundleSize)];
     end
 end
 
@@ -133,15 +139,18 @@ while ( tNow <= runParams.T )
         time_stamp = toc(tStartWhile);
         
         if strcmp(ROS_MACE.wptCoordinator,'standalone')
-            % TODO: check for collision, modify wpts accordingly (this is outsourced to the bundle_manager ROS service server)
+            % mark the bundle status as 'written in process'
+            bundleSource(end,1) = 0;
             % insert global variable to record the bundles
-            bundleSource(:,1) = bundleSource(:,1) + 1;
-            bundleSource(:,2) = ROS_MACE.operationalAlt';
+            bundleSource(1:end-1,1) = bundleSource(1:end-1,1) + 1;
+            bundleSource(1:end-1,2) = ROS_MACE.operationalAlt';
             for k = 1:swarmModel.N
                 for j = 1:swarmModel.bundleSize
                     bundleSource(k,j*2+1:j*2+2) = swarmWorld.cellCenterOfMass(swarmState.wptList(k,j),:);
                 end
             end
+            % mark the bundle status as 'written complete'
+            bundleSource(end,1) = 1;
             swarmState.bundleSource = bundleSource;
         end
            

@@ -8,7 +8,7 @@ package="launchMACE_AtF3"
 cwd=$(pwd)
 
 # default values
-NUM_REAL_AGENTS=3
+NUM_REAL_AGENTS=0
 # give USB ports here:
 REAL_AGENT_USB[1]=0
 REAL_AGENT_USB[2]=1
@@ -20,12 +20,14 @@ REAL_AGENT_ID[3]=3
 
 
 # default values
-NUM_SIM_AGENTS=0
+NUM_SIM_AGENTS=5
 # give sim agent is
-SIM_AGENT_ID[1]=3
-#SIM_AGENT_ID[2]=2
-#SIM_AGENT_ID[3]=3
-#SIM_AGENT_ID[4]=4
+SIM_AGENT_ID[1]=1
+SIM_AGENT_ID[2]=2
+SIM_AGENT_ID[3]=3
+SIM_AGENT_ID[4]=4
+SIM_AGENT_ID[5]=5
+#SIM_AGENT_ID[6]=6
 
 
 #IP_ADDRESS=192.168.1.62 # Kim Lab
