@@ -2,7 +2,7 @@
 #define ABSTRACT_ALTITUDE_H
 
 #include "../misc/coordinate_frame_components.h"
-#include "base_position.h"
+#include "abstract_position.h"
 #include "altitude_interface.h"
 
 namespace mace {

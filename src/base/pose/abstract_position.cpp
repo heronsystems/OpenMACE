@@ -1,4 +1,4 @@
-#include "base_position.h"
+#include "abstract_position.h"
 
 using namespace mace::pose;
 

@@ -81,6 +81,14 @@ public:
         return !(*this == rhs);
     }
 
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printCommandInfo() const override;
+
+
     friend std::ostream &operator<<(std::ostream &out, const ActionChangeMode &obj)
     {
         out<<"Command Change Mode( Mode: "<<obj.vehicleMode<<")";

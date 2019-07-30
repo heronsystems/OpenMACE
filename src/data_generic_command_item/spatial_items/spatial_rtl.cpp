@@ -45,4 +45,16 @@ SpatialRTL::SpatialRTL(const int &systemOrigin, const int &systemTarget):
 
 }
 
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialRTL::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
 }
+
+} //end of namespace CommandItem

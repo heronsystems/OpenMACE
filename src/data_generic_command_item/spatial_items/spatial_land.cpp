@@ -45,11 +45,23 @@ SpatialLand::SpatialLand(const int &systemOrigin,  const int &systemTarget):
 
 }
 
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialLand::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
+}
+
 std::ostream& operator<<(std::ostream& os, const SpatialLand& t)
 {
     std::stringstream stream;
     stream.precision(6);
-    stream << std::fixed << "Spatial Land: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
+    //stream << std::fixed << "Spatial Land: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
     os << stream.str();
 
     return os;

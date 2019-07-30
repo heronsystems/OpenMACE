@@ -128,6 +128,13 @@ public:
         return !(*this == rhs);
     }
 
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printCommandInfo() const override;
+
     friend std::ostream &operator<<(std::ostream &out, const ActionMotorTest &obj)
     {
         out<<"Command Motor Test( Power: "<<obj.power<<", Motor Number:"<<obj.motorNumber<<", Duration:"<<obj.duration<<")";

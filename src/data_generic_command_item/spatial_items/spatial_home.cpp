@@ -33,12 +33,10 @@ SpatialHome::SpatialHome():
 
 }
 
-SpatialHome::SpatialHome(const pose::GeodeticPosition_3D &position):
+SpatialHome::SpatialHome(const mace::pose::Position* homePosition):
     AbstractSpatialAction(0,0)
 {
-    this->position->setX(position.getLatitude());
-    this->position->setY(position.getLongitude());
-    this->position->setZ(position.getAltitude());
+    this->setPosition(homePosition);
 }
 
 SpatialHome::~SpatialHome()
@@ -58,28 +56,73 @@ SpatialHome::SpatialHome(const int &systemOrigin, const int &systemTarget):
 
 }
 
-mace_home_position_t SpatialHome::getMACECommsObject() const
+bool SpatialHome::getMACECommsObject(mace_home_position_t &obj) const
 {
-    mace_home_position_t homePosition;
-    homePosition.latitude = position->getX() * pow(10,7);
-    homePosition.longitude = position->getY() * pow(10,7);
-    homePosition.altitude = position->getZ() * pow(10,3);
-    return homePosition;
+    bool validRequest = true;
+    if(position->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+    {
+        if(position->is3D())
+        {
+            mace::pose::GeodeticPosition_3D* currentPosition = position->positionAs<mace::pose::GeodeticPosition_3D>();
+            obj.latitude = static_cast<int32_t>(currentPosition->getLatitude() * pow(10,7));
+            obj.longitude = static_cast<int32_t>(currentPosition->getLongitude() * pow(10,7));
+            obj.altitude = static_cast<int32_t>(currentPosition->getAltitude() * pow(10,3));
+        }
+        else if(position->is2D()) {
+            mace::pose::GeodeticPosition_2D* currentPosition = position->positionAs<mace::pose::GeodeticPosition_2D>();
+            obj.latitude = static_cast<int32_t>(currentPosition->getLatitude() * pow(10,7));
+            obj.longitude = static_cast<int32_t>(currentPosition->getLongitude() * pow(10,7));
+        }
+    }
+    else if(position->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
+    {
+        if(position->is3D())
+        {
+            mace::pose::CartesianPosition_3D* currentPosition = position->positionAs<mace::pose::CartesianPosition_3D>();
+            obj.latitude = static_cast<int32_t>(currentPosition->getXPosition() * pow(10,7));
+            obj.longitude = static_cast<int32_t>(currentPosition->getYPosition() * pow(10,7));
+            obj.altitude = static_cast<int32_t>(currentPosition->getAltitude() * pow(10,3));
+        }
+        else if(position->is2D()) {
+            mace::pose::CartesianPosition_2D* currentPosition = position->positionAs<mace::pose::CartesianPosition_2D>();
+            obj.latitude = static_cast<int32_t>(currentPosition->getXPosition() * pow(10,7));
+            obj.longitude = static_cast<int32_t>(currentPosition->getYPosition() * pow(10,7));
+        }
+    }
+    else {
+        validRequest = false;
+    }
+
+    return validRequest;
 }
 
-mace_message_t SpatialHome::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+bool SpatialHome::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan, mace_message_t &msg) const
 {
-    mace_message_t msg;
-    mace_home_position_t homePosition = getMACECommsObject();
-    mace_msg_home_position_encode_chan(systemID,compID,chan,&msg,&homePosition);
-    return msg;
+    mace_home_position_t homeMSG;
+    bool validRequest = getMACECommsObject(homeMSG);
+    if(validRequest)
+        mace_msg_home_position_encode_chan(systemID,compID,chan,&msg,&homeMSG);
+    return validRequest;
+}
+
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialHome::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
 }
 
 std::ostream& operator<<(std::ostream& os, const SpatialHome& t)
 {
+
     std::stringstream stream;
     stream.precision(6);
-    stream << std::fixed << "Spatial Home: "<< t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
+    //stream << std::fixed << "Spatial Home: "<< t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
     os << stream.str();
 
     return os;

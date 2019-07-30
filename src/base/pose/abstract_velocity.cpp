@@ -2,24 +2,24 @@
 
 using namespace mace::pose;
 
-Abstract_Velocity::Abstract_Velocity(const std::string &posName):
+Velocity::Velocity(const std::string &posName):
     name(posName)
 {
 
 }
 
-Abstract_Velocity::Abstract_Velocity(const Abstract_Velocity &copy)
+Velocity::Velocity(const Velocity &copy)
 {
     this->name = copy.name;
     this->dimension = copy.dimension;
 }
 
-void Abstract_Velocity::updateVelocityName(const std::string &nameString)
+void Velocity::updateVelocityName(const std::string &nameString)
 {
     this->name = nameString;
 }
 
-std::string Abstract_Velocity::getName() const
+std::string Velocity::getName() const
 {
     return this->name;
 }

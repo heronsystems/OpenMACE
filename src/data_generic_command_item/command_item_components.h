@@ -29,7 +29,7 @@
 #include "data_generic_command_item/mission_items/mission_key_change.h"
 #include "data_generic_command_item/mission_items/mission_list.h"
 #include "data_generic_command_item/mission_items/mission_state.h"
-#include "data_generic_command_item/mission_items/mission_type.h"
+#include "data_generic_command_item/mission_items/typedef_mission_types.h"
 
 
 #include "data_generic_command_item/target_items/dynamic_mission_queue.h"

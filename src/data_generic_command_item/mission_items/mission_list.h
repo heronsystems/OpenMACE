@@ -29,12 +29,12 @@ public:
 public:
     MissionList();
     MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state);
-    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size);
-    MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size);
+    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
+    MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
     MissionList(const MissionList &rhs);
 
 public:
-    void initializeQueue(const int &size);
+    void initializeQueue(const size_t &size);
     void clearQueue();
     void replaceMissionQueue(const std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> &newQueue);
     void insertMissionItem(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem);

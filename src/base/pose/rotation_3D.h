@@ -7,7 +7,7 @@
 #include <Eigen/Geometry>
 #include <Eigen_Unsupported/EulerAngles>
 
-#include "abstract_orientation.h"
+#include "abstract_rotation.h"
 
 namespace mace {
 namespace pose {
@@ -21,7 +21,7 @@ typedef Eigen::EulerAngles<double, AgentRotationSystem> EulerAngleRotation;
  * matrix SO(3).
  */
 
-class Rotation_3D : public AbstractOrientation
+class Rotation_3D : public AbstractRotation
 {
 public:
     //!
@@ -35,8 +35,13 @@ public:
     //!
     Rotation_3D(const Rotation_3D &copy);
 
+    //!
+    //! \brief Rotation_3D
+    //! \param copy
+    //!
+    Rotation_3D(const Rotation_2D &copy);
 
-    ~Rotation_3D();
+    ~Rotation_3D() override;
 
     //!
     //! \brief Orientation_3D
@@ -45,6 +50,31 @@ public:
     Rotation_3D(const double &roll, const double &pitch, const double &yaw, const std::string &name = "");
 
 public:
+    AbstractRotation* getRotationalClone() const override
+    {
+        return (new Rotation_3D(*this));
+    }
+
+    void getRotationalClone(AbstractRotation** state) const override
+    {
+         *state = new Rotation_3D(*this);
+    }
+
+public:
+
+    mace_attitude_quaternion_t getMACEQuaternion() const override;
+
+    mace_attitude_t getMACEEuler() const override;
+
+    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+
+public:
+
+    //!
+    //! \brief setRotation
+    //! \param rotation
+    //!
+    void setRotation (const Eigen::Quaterniond &rotation);
 
     //!
     //! \brief setRotation
@@ -193,7 +223,7 @@ public:
     //!
     Rotation_3D& operator = (const Rotation_3D &rhs)
     {
-        AbstractOrientation::operator=(rhs);
+        AbstractRotation::operator=(rhs);
         double rhsRoll, rhsPitch, rhsYaw;
         rhs.getDiscreteEuler(rhsRoll, rhsPitch, rhsYaw);
         this->updateFromEuler(rhsRoll, rhsPitch, rhsYaw);
@@ -252,6 +282,8 @@ public:
      * which yields a [phi, theta, psi] notation or [Z,Y,X] from conventional literature.
      * */
 
+public:
+    static const uint8_t rotationalDOF = 3;
 };
 
 } //end of namespace pose

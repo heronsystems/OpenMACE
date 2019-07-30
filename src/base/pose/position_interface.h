@@ -1,7 +1,7 @@
 #ifndef POSITION_INTERFACE_H
 #define POSITION_INTERFACE_H
 
-#include "base_position.h"
+#include "abstract_position.h"
 
 namespace mace{
 namespace pose{
@@ -67,8 +67,18 @@ public:
     //!
     virtual void newPositionFromCompass(T*, const double &distance, const double &bearing) const = 0;
 
+    //!
+    //! \brief applyPositionalShiftFromPolar
+    //! \param distance
+    //! \param bearing
+    //!
     virtual void applyPositionalShiftFromPolar(const double &distance, const double &bearing)  = 0;
 
+    //!
+    //! \brief applyPositionalShiftFromCompass
+    //! \param distance
+    //! \param bearing
+    //!
     virtual void applyPositionalShiftFromCompass(const double &distance, const double &bearing)  = 0;
 
 };

@@ -10,17 +10,17 @@ namespace mace{
 namespace pose{
 
 template<const CoordinateSystemTypes coordType, typename CFDATA, class DATA>
-class Base_Velocity: public Abstract_Velocity
+class Base_Velocity: public Velocity
 {
 public:
     Base_Velocity(const CFDATA &frame):
-        Abstract_Velocity(), explicitFrame(frame)
+        Velocity(), explicitFrame(frame)
     {
         explicitType = coordType;
     }
 
     Base_Velocity(const Base_Velocity &copy):
-        Abstract_Velocity(copy)
+        Velocity(copy)
     {
         explicitType = copy.explicitType;
         explicitFrame = copy.explicitFrame;
@@ -38,12 +38,12 @@ public:
 
 
 public:
-    Abstract_Velocity* getVelocityClone() const override
+    Velocity* getVelocityClone() const override
     {
         return (new Base_Velocity<coordType, CFDATA, DATA>(*this));
     }
 
-    void getVelocityClone(Abstract_Velocity** state) const override
+    void getVelocityClone(Velocity** state) const override
     {
         *state = new Base_Velocity<coordType, CFDATA, DATA>(*this);
     }

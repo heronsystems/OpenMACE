@@ -24,9 +24,6 @@ MaceCore::TopicDatagram Topic_Altitude::GenerateDatagram() const {
 
 void Topic_Altitude::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
 
-    //delete this->altitudeObj; altitudeObj = nullptr;
-
-    mace::pose::CartesianPosition_2D* tmpObj = new mace::pose::CartesianPosition_2D();
     altitudeObj.setName(datagram.GetTerminal<std::string>("Altitude Name"));
     altitudeObj.setAltitudeReferenceFrame(datagram.GetTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame"));
     altitudeObj.setAltitude(datagram.GetTerminal<double>("Data"));

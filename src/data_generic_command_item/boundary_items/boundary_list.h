@@ -63,8 +63,8 @@ public:
 public:
     void initializeBoundary(const int &size);
     void clearQueue();
-    void appendVertexItem(const Position<CartesianPosition_2D> &vertexItem);
-    void replaceVertexItemAtIndex(const Position<CartesianPosition_2D> &vertexItem, const int &index);
+    void appendVertexItem(const Abstract_CartesianPosition* vertexItem);
+    void replaceVertexItemAtIndex(const Abstract_CartesianPosition* vertexItem, const int &index);
 
     Position<CartesianPosition_2D> getBoundaryItemAtIndex(const int &index) const;
     int getQueueSize() const;

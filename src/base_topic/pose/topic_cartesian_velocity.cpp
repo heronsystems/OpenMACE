@@ -54,7 +54,7 @@ Topic_CartesianVelocity::Topic_CartesianVelocity():
 
 }
 
-Topic_CartesianVelocity::Topic_CartesianVelocity(const mace::pose::Abstract_Velocity* velObj)
+Topic_CartesianVelocity::Topic_CartesianVelocity(const mace::pose::Velocity* velObj)
 {
     delete m_VelocityObj; m_VelocityObj = nullptr;
     //copy the contents of that point to the current pointer object
@@ -66,7 +66,7 @@ Topic_CartesianVelocity::Topic_CartesianVelocity(const Topic_CartesianVelocity &
     this->m_VelocityObj = copy.m_VelocityObj->getVelocityClone();
 }
 
-mace::pose::Abstract_Velocity* Topic_CartesianVelocity::getVelocityObj() const
+mace::pose::Velocity* Topic_CartesianVelocity::getVelocityObj() const
 {
     return this->m_VelocityObj;
 }

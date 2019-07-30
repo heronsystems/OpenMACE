@@ -1,6 +1,7 @@
 #ifndef ABSTRACT_MISSION_ITEM_H
 #define ABSTRACT_MISSION_ITEM_H
 
+#include <sstream>
 #include <string>
 
 #include "common/class_forward.h"
@@ -180,6 +181,32 @@ public:
     //!
     bool operator != (const AbstractCommandItem &rhs) {
         return !(*this == rhs);
+    }
+
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    virtual std::string printCommandInfo() const = 0;
+
+    //!
+    //! \brief printPositionLog
+    //! \param os
+    //!
+    virtual void printCommandLog(std::stringstream &stream) const
+    {
+        stream << "CMD|" <<std::to_string(originatingSystem)<<"|"<<std::to_string(targetSystem)<<"|"<<CommandItemToString(this->getCommandType())<<"[";
+        stream << printCommandInfo();
+        stream << "]";
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const AbstractCommandItem* t)
+    {
+        std::stringstream newStream;
+        t->printCommandLog(newStream);
+        os << newStream.str();
+        return os;
     }
 
 protected:

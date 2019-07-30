@@ -33,6 +33,23 @@ double Altitude::getAltitude() const
     return this->z;
 }
 
+mace_message_t Altitude::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+{
+    mace_message_t msg;
+    return msg;
+}
+
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string Altitude::printPositionalInfo() const
+{
+    return "";
+}
+
+
+
 } //end of namespace pose
 } //end of namespace mace
 

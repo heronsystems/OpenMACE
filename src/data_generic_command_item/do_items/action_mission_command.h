@@ -92,6 +92,13 @@ public:
         return true;
     }
 
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printCommandInfo() const override;
+
     bool operator != (const ActionMissionCommand &rhs) {
         return !(*this == rhs);
     }

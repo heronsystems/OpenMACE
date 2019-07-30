@@ -228,6 +228,24 @@ void CartesianPosition_3D::applyPositionalShiftFromCompass(const double &distanc
     applyPositionalShiftFromPolar(distance,compassToPolarBearing(bearing),elevation);
 }
 
+mace_local_position_ned_t CartesianPosition_3D::getMACE_CartesianPositionInt() const
+{
+    mace_local_position_ned_t posObj;
+    posObj.x = static_cast<int32_t>((this->getXPosition() * pow(10,7)));
+    posObj.y = static_cast<int32_t>((this->getYPosition() * pow(10,7)));
+    posObj.z = static_cast<int32_t>((this->getZPosition() * pow(10,7)));
+    posObj.time_boot_ms = 0;
+    return posObj;
+}
+
+mace_message_t CartesianPosition_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+{
+    mace_message_t msg;
+    mace_local_position_ned_t positionObj = getMACE_CartesianPositionInt();
+    mace_msg_local_position_ned_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    return msg;
+}
+
 CartesianPosition_3D operator+ (const CartesianPosition_3D &lhs, const CartesianPosition_3D &rhs)
 {
 

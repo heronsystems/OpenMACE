@@ -45,6 +45,10 @@ ActionArm::ActionArm(const int &systemOrigin, const int &systemTarget):
 
 }
 
+std::string ActionArm::printCommandInfo() const
+{
+
+}
 
 
 

@@ -4,7 +4,7 @@
 #include <cmath>
 
 #include <Eigen/Geometry>
-#include "abstract_orientation.h"
+#include "abstract_rotation.h"
 
 namespace mace {
 namespace pose {
@@ -15,7 +15,7 @@ namespace pose {
  * matrix SO(2).
  */
 
-class Rotation_2D : public AbstractOrientation, public Eigen::Rotation2D<double>
+class Rotation_2D : public AbstractRotation, public Eigen::Rotation2D<double>
 {
 public:
     //!
@@ -23,7 +23,7 @@ public:
     //!
     Rotation_2D(const std::string &name = "Orientation 2D");
 
-    ~Rotation_2D();
+    virtual ~Rotation_2D() override = default;
 
     //!
     //! \brief Orientation_2D
@@ -32,10 +32,34 @@ public:
     Rotation_2D(const Rotation_2D &copy);
 
     //!
+    //! \brief Rotation_2D
+    //! \param copy
+    //!
+    Rotation_2D(const Rotation_3D &copy);
+
+    //!
     //! \brief Orientation_2D
     //! \param angle
     //!
     Rotation_2D(const double &angle);
+
+public:
+    AbstractRotation* getRotationalClone() const override
+    {
+        return (new Rotation_2D(*this));
+    }
+
+    void getRotationalClone(AbstractRotation** state) const override
+    {
+         *state = new Rotation_2D(*this);
+    }
+
+public:
+    mace_attitude_quaternion_t getMACEQuaternion() const override;
+
+    mace_attitude_t getMACEEuler() const override;
+
+    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
 public:
     //!
@@ -156,7 +180,7 @@ public:
     //!
     Rotation_2D& operator = (const Rotation_2D &rhs)
     {
-        AbstractOrientation::operator=(rhs);
+        AbstractRotation::operator=(rhs);
         Eigen::Rotation2D<double>::operator=(rhs);
         return *this;
     }

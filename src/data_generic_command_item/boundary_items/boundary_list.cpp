@@ -26,12 +26,12 @@ void BoundaryList::clearQueue()
     boundingPolygon.clearPolygon();
 }
 
-void BoundaryList::appendVertexItem(const Position<CartesianPosition_2D> &vertexItem)
+void BoundaryList::appendVertexItem(const Abstract_CartesianPosition* vertexItem)
 {
     boundingPolygon.appendVertex(vertexItem);
 }
 
-void BoundaryList::replaceVertexItemAtIndex(const Position<CartesianPosition_2D> &vertexItem, const int &index)
+void BoundaryList::replaceVertexItemAtIndex(const Abstract_CartesianPosition *vertexItem, const int &index)
 {
     boundingPolygon.insertVertexAtIndex(vertexItem, index);
 }

@@ -44,4 +44,9 @@ ActionMotorTest::ActionMotorTest(const int &systemOrigin, const int &systemTarge
 
 }
 
+std::string ActionMotorTest::printCommandInfo() const
+{
+
+}
+
 }

@@ -52,28 +52,40 @@ SpatialWaypoint::~SpatialWaypoint()
 
 mace_command_goto_t SpatialWaypoint::setGoToCommand(mace_command_goto_t &cmd) const
 {
-    cmd.action = (uint16_t)COMMANDITEM::CI_NAV_WAYPOINT;
-    cmd.frame = (uint8_t)this->getPosition().getCoordinateFrame();
-    cmd.param5 = this->getPosition().getX();
-    cmd.param6 = this->getPosition().getY();
-    cmd.param7 = this->getPosition().getZ();
+//    cmd.action = (uint16_t)COMMANDITEM::CI_NAV_WAYPOINT;
+//    cmd.frame = (uint8_t)this->getPosition().getCoordinateFrame();
+//    cmd.param5 = this->getPosition().getX();
+//    cmd.param6 = this->getPosition().getY();
+//    cmd.param7 = this->getPosition().getZ();
 }
 
 void SpatialWaypoint::updateFromGoToCommand(const mace_command_goto_t &cmd)
 {
     //Ken Fix: There has to be a better way to produce target systems. The actions should not have knowledge of this, should be taken care of in the command
-    this->setTargetSystem(cmd.target_system);
-    this->position->setCoordinateFrame((Data::CoordinateFrameType)cmd.frame);
-    this->position->setX(cmd.param5);
-    this->position->setY(cmd.param6);
-    this->position->setZ(cmd.param7);
+//    this->setTargetSystem(cmd.target_system);
+//    this->position->setCoordinateFrame((Data::CoordinateFrameType)cmd.frame);
+//    this->position->setX(cmd.param5);
+//    this->position->setY(cmd.param6);
+//    this->position->setZ(cmd.param7);
+}
+
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialWaypoint::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
 }
 
 std::ostream& operator<<(std::ostream& os, const SpatialWaypoint& t)
 {
     std::stringstream stream;
     stream.precision(6);
-    stream << std::fixed << "Spatial Waypoint: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
+    stream << std::fixed << "Spatial Waypoint: " << t.printSpatialCMDInfo();
     os << stream.str();
 
     return os;

@@ -37,12 +37,6 @@ public:
          *state = new CartesianPosition_2D(*this);
     }
 
-    std::string printInfo() const override
-    {
-        std::string rtn = "Cartesian Position 2D: " + std::to_string(getXPosition()) + ", " + std::to_string(getYPosition()) + ".";
-        return rtn;
-    }
-
     bool areEquivalentFrames(const CartesianPosition_2D &obj) const;
 
     Eigen::VectorXd getDataVector() const override
@@ -176,6 +170,11 @@ public:
 
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
 
+public:
+    mace_local_position_ned_t getMACE_CartesianPositionInt() const;
+
+    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+
     /** Assignment Operators */
 public:
     CartesianPosition_2D& operator = (const CartesianPosition_2D &rhs)
@@ -211,8 +210,6 @@ public:
     }
 
 public:
-    friend std::ostream& operator<<(std::ostream& os, const CartesianPosition_2D& t);
-
     CartesianPosition_2D& operator+= (const CartesianPosition_2D &rhs)
     {
 
@@ -223,6 +220,23 @@ public:
         }
         else
             throw std::logic_error("Tried to perform a + operation between 2DCartesians of differnet coordinate frames.");
+    }
+
+public:
+    std::string printPositionalInfo() const override
+    {
+        std::stringstream stream;
+        stream.precision(6);
+        stream << std::fixed << "X:" << this->getXPosition() << ", Y:"<< this->getYPosition() << ".";
+        return stream.str();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const CartesianPosition_2D& t)
+    {
+        std::stringstream newStream;
+        t.printPositionLog(newStream);
+        os << newStream.str();
+        return os;
     }
 
 public:

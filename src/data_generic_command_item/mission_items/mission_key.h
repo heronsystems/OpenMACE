@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "mission_type.h"
+#include "typedef_mission_types.h"
 #include "mission_state.h"
 
 namespace MissionItem {
@@ -19,8 +19,8 @@ public:
     MissionKey(const int &systemID, const int &creatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &missionState);
     MissionKey(const MissionKey &obj);
 public:
-    int m_systemID;
-    int m_creatorID;
+    unsigned int m_systemID;
+    unsigned int m_creatorID;
 
     //!
     //! \brief m_missionID This descriptor is a unique identifier for the vehicle to reference to

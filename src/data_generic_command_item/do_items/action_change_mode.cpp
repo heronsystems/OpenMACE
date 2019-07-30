@@ -44,5 +44,10 @@ ActionChangeMode::ActionChangeMode(const int &systemOrigin, const int &systemTar
 
 }
 
+std::string ActionChangeMode::printCommandInfo() const
+{
+
+}
+
 }
 

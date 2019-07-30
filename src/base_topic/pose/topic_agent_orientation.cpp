@@ -8,6 +8,8 @@ const char TopicName_AgentOrientation[] = "TOPIC_AGENTORIENTATION";
 const MaceCore::TopicComponentStructure Structure_AgentOrientation = []{
     MaceCore::TopicComponentStructure structure;
     structure.AddTerminal<std::string>("Orientation Name");
+    structure.AddTerminal<uint8_t>("Dimension");
+    structure.AddTerminal<Eigen::Quaterniond>("2DRotation");
     return structure;
 }();
 
@@ -18,55 +20,47 @@ MaceCore::TopicDatagram Topic_AgentOrientation::GenerateDatagram() const {
 
 void Topic_AgentOrientation::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
 
-    delete this->m_PositionObject; m_PositionObject = nullptr;
+    delete this->m_RotationObj; m_RotationObj = nullptr;
 
     uint8_t dimension = datagram.GetTerminal<uint8_t>("Dimension");
-    if(dimension == 2)
+
+    if(dimension == mace::pose::Rotation_2D::rotationalDOF)
     {
-        mace::pose::GeodeticPosition_2D* tmpObj = new mace::pose::GeodeticPosition_2D();
-        tmpObj->setName(datagram.GetTerminal<std::string>("Position Name"));
-        tmpObj->setCoordinateFrame(datagram.GetTerminal<mace::GeodeticFrameTypes>("Explicit Coordinate Frame"));
+        mace::pose::Rotation_2D* tmpObj = new mace::pose::Rotation_2D();
+        tmpObj->setObjectName(datagram.GetTerminal<std::string>("Orientation Name"));
 
-        Eigen::Vector2d data = datagram.GetTerminal<Eigen::VectorXd>("Data");
-        tmpObj->updateTranslationalComponents(data(1),data(0));
-
-        this->m_PositionObject = tmpObj;
+        this->m_RotationObj = tmpObj;
     }
-    else if(dimension == 3)
+    else if(dimension == mace::pose::Rotation_3D::rotationalDOF)
     {
-        mace::pose::GeodeticPosition_3D* tmpObj = new mace::pose::GeodeticPosition_3D();
-        tmpObj->setName(datagram.GetTerminal<std::string>("Position Name"));
-        tmpObj->setCoordinateFrame(datagram.GetTerminal<mace::GeodeticFrameTypes>("Explicit Coordinate Frame"));
-        tmpObj->setAltitudeReferenceFrame(datagram.GetTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame"));
+        mace::pose::Rotation_3D* tmpObj = new mace::pose::Rotation_3D();
+        tmpObj->setObjectName(datagram.GetTerminal<std::string>("Orientation Name"));
 
-        Eigen::Vector3d data = datagram.GetTerminal<Eigen::VectorXd>("Data");
-        tmpObj->updatePosition(data(1),data(0),data(2));
-
-        this->m_PositionObject = tmpObj;
+        this->m_RotationObj = tmpObj;
     }
 }
 
 Topic_AgentOrientation::Topic_AgentOrientation():
-    m_PositionObject(nullptr)
+    m_RotationObj(nullptr)
 {
 
 }
 
-Topic_AgentOrientation::Topic_AgentOrientation(const mace::pose::Abstract_GeodeticPosition *posObj)
+Topic_AgentOrientation::Topic_AgentOrientation(const mace::pose::AbstractRotation *obj)
 {
-    delete m_PositionObject; m_PositionObject = nullptr;
+    delete m_RotationObj; m_RotationObj = nullptr;
     //copy the contents of that point to the current pointer object
-    m_PositionObject = posObj->getGeodeticClone();
+    m_RotationObj = obj->getRotationalClone();
 }
 
 Topic_AgentOrientation::Topic_AgentOrientation(const Topic_AgentOrientation &copy)
 {
-    this->m_PositionObject = copy.m_PositionObject->getGeodeticClone();
+    this->m_RotationObj = copy.m_RotationObj->getRotationalClone();
 }
 
-mace::pose::Abstract_GeodeticPosition* Topic_AgentOrientation::getPositionObj() const
+mace::pose::AbstractRotation* Topic_AgentOrientation::getRotationObj() const
 {
-    return this->m_PositionObject;
+    return this->m_RotationObj;
 }
 
 } //end of namespace BaseTopic

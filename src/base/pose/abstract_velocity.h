@@ -15,14 +15,16 @@
 namespace mace{
 namespace pose{
 
-class Abstract_Velocity : public Kinematic_BaseInterface
+MACE_CLASS_FORWARD(Velocity);
+
+class Velocity : public Kinematic_BaseInterface
 {
 public:
-    Abstract_Velocity(const std::string &velName = "Velocity Object");
+    Velocity(const std::string &velName = "Velocity Object");
 
-    Abstract_Velocity(const Abstract_Velocity &copy);
+    Velocity(const Velocity &copy);
 
-    virtual ~Abstract_Velocity() override = default;
+    virtual ~Velocity() override = default;
 
     /** Interface imposed via Kinemnatic_BaseInterace */
     KinematicTypes getKinematicType() const override
@@ -70,24 +72,24 @@ public:
      * @brief getClone
      * @return
      */
-    virtual Abstract_Velocity* getVelocityClone() const = 0;
+    virtual Velocity* getVelocityClone() const = 0;
 
     /**
      * @brief getClone
      * @param state
      */
-    virtual void getVelocityClone(Abstract_Velocity** vel) const = 0;
+    virtual void getVelocityClone(Velocity** vel) const = 0;
 
 
 public:
-    Abstract_Velocity& operator = (const Abstract_Velocity &rhs)
+    Velocity& operator = (const Velocity &rhs)
     {
         this->name = rhs.name;
         this->dimension = rhs.dimension;
         return *this;
     }
 
-    bool operator == (const Abstract_Velocity &rhs) const
+    bool operator == (const Velocity &rhs) const
     {
         if(this->name != rhs.name){
             return false;
@@ -98,7 +100,7 @@ public:
         return true;
     }
 
-    bool operator !=(const Abstract_Velocity &rhs) const
+    bool operator !=(const Velocity &rhs) const
     {
         return !(*this == rhs);
     }

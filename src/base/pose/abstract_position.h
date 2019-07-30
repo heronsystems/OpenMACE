@@ -1,10 +1,13 @@
-#ifndef BASE_POSITION_H
-#define BASE_POSITION_H
+#ifndef ABSTRACT_POSITION_H
+#define ABSTRACT_POSITION_H
 
 #include <Eigen/Core>
 
+#include <sstream>
 #include <iostream>
 #include <exception>
+
+#include "mace.h"
 
 #include "common/common.h"
 #include "common/class_forward.h"
@@ -15,11 +18,21 @@
 namespace mace{
 namespace pose{
 
+MACE_CLASS_FORWARD(Position);
+
 class Position : public Kinematic_BaseInterface
 {
 public:
+    //!
+    //! \brief Position
+    //! \param posName
+    //!
     Position(const std::string &posName = "Position Object");
 
+    //!
+    //! \brief Position
+    //! \param copy
+    //!
     Position(const Position &copy);
 
     virtual ~Position() override = default;
@@ -36,12 +49,25 @@ public:
     virtual Eigen::VectorXd getDataVector() const = 0;
 
 public:
-
+    //!
+    //! \brief setName
+    //! \param nameString
+    //!
     void setName(const std::string &nameString);
 
+    //!
+    //! \brief getName
+    //! \return
+    //!
     std::string getName() const;
 
+    //!
+    //! \brief getExplicitCoordinateFrame
+    //! \return
+    //!
     virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
+
+    virtual mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const = 0;
 
 public:
     /**
@@ -101,6 +127,23 @@ public:
         return !(*this == rhs);
     }
 
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    virtual std::string printPositionalInfo() const = 0;
+
+    //!
+    //! \brief printPositionLog
+    //! \param os
+    //!
+    virtual void printPositionLog(std::stringstream &stream) const
+    {
+        stream << "POS|" <<name<<"|"<<std::to_string(dimension)<<"|"<<CoordinateFrameToString(this->getExplicitCoordinateFrame())<<"|";
+        stream << printPositionalInfo();
+    }
+
 protected:
     std::string name;
 };
@@ -110,4 +153,4 @@ protected:
 } // end of namespace pose
 } // end of namespace mace
 
-#endif // BASE_POSITION_H
+#endif // ABSTRACT_POSITION_H

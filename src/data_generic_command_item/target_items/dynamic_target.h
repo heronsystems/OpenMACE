@@ -9,17 +9,10 @@
 
 #include "base/pose/geodetic_position_3D.h"
 #include "base/pose/cartesian_position_3D.h"
-#include "base/pose/cartesian_velocity_3D.h"
 
 using namespace mace::pose;
 
 namespace TargetItem {
-
-class DynamicTarget_Test
-{
-
-};
-
 
 template <class POS, class VEL>
 class DynamicTarget{
