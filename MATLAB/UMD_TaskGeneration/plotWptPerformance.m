@@ -6,9 +6,9 @@ format compact;
 %addpath('/home/wolek/Desktop/F3/Flight_Tests/02July2019/')
 %load('/home/wolek/Desktop/F3/Flight_Tests/02July2019/F3FlightData_02_Jul_2019_153651.mat');
 %load('/home/wolek/Desktop/F3/Flight_Tests/02July2019/F3FlightData_02_Jul_2019_154758.mat')
-
-load('WptCoordinatorMat_07_Jul_2019_195542.mat')
-load('F3FlightData_07_Jul_2019_195716.mat');
+%load('WptCoordinatorMat_07_Jul_2019_195542.mat')
+%load('F3FlightData_07_Jul_2019_195716.mat');
+load('F3FlightData_19_Jul_2019_102003.mat');
 
 %load('WptCoordinatorMat_08_Jul_2019_134650.mat');
 %load('F3FlightData_08_Jul_2019_135121.mat');
