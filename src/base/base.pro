@@ -56,8 +56,7 @@ SOURCES += \
     geometry/abstract_polygon.cpp \
     pose/abstract_orientation.cpp \
     pose/rotation_3D.cpp \
-    pose/rotation_2D.cpp \
-    measurement/speed.cpp
+    pose/rotation_2D.cpp
 
 HEADERS +=\
     base_global.h \
@@ -115,8 +114,7 @@ HEADERS +=\
     geometry/abstract_polygon.h \
     unit_tests/unittests_orientation.h \
     pose/rotation_2D.h \
-    pose/rotation_3D.h \
-    measurement/speed.h
+    pose/rotation_3D.h
 
 # Unix lib Install
 unix:!symbian {
