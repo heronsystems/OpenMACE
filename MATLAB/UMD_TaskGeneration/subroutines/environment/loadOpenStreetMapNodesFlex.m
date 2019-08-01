@@ -1,4 +1,4 @@
-function [nodesXY, LatRef, LongRef] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList)
+function [nodesXY, LatRef, LongRef, G, A] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList)
 
 % parse baseline map
 [ways, LatRef, LongRef] = parseOpenStreetMap(fileName);
@@ -122,6 +122,12 @@ nodesXY(nodesToDelete,:) = [];
 A(nodesToDelete,:) = [];
 A(:,nodesToDelete) = [];
 
+nodeProps = table(nodesXY(:,1),nodesXY(:,2),'VariableNames',{'x','y'});
+G = graph(A,nodeProps);
+
+
+plotFlag = 0;
+if (plotFlag)
 % figure;
 figure;
 imagesc(bin2NodeID)
@@ -143,62 +149,8 @@ ylim([ymin ymin+numYpx*dx]);
 
 hold on;
 axis equal;
-    % add nodes/edges to graph
-    % mark cell as visited
-%     
-% 
-% % create the distance matrix
-% N = length(nodesXY(:,1));
-% [xx,yy] = meshgrid(nodesXY(:,1),nodesX,Y(:,2));
-% % last term adds a large factor to prevent self-loops
-% dsq = (xx-xx').^2 + (yy-yy').^2 + eye(N,N)*maxDistConnectivity*maxDistConnectivity*100;
-% % find nodes with edges
-% [i,j] = find(dsq <= maxDistConnectivity*maxDistConnectivity);
-% % define adjacency matrix
-% A = sparse(i,j,1,N,N);
-nodeProps = table(nodesXY(:,1),nodesXY(:,2),'VariableNames',{'x','y'});
-% % obtain graph
-G = graph(A,nodeProps);
 
 figure;
 plot(G,'XData',nodesXY(:,1),'YData',nodesXY(:,2),'NodeLabel',[]);
-1;
-% 
-% 
-% nodeX = nodesXY(:,1);
-% nodeY = nodesXY(:,2);
-% 
-% 
-% nodesXY(:,1) = round(nodesXY(:,1)./dx)*dx;
-% nodesXY(:,2) = round(nodesXY(:,2)./dx)*dx;
-% 
-% % remove duplicates
-% nodesXY = unique(nodesXY,'rows');
-% 
-% %
-% perimXbuffer = [0 1 1 0 0]*(boxlength-2*buffer)+buffer;
-% perimYbuffer = [1 1 0 0 1]*(boxwidth-2*buffer)+buffer;
-% 
-% % remove nodes outside the perimeter or inside obstacle
-% obstacleNode = [];
-% for i = 1:1:length(nodesXY)
-%     if ( ~inpolygon(nodesXY(i,1),nodesXY(i,2), perimXbuffer, perimYbuffer) )
-%         obstacleNode = [obstacleNode i];
-%     end
-% end
-% nodesXY(obstacleNode,:) = [];
-% 
-% % remove edgless nodes
-% edglessNode = [];
-% for i = 1:1:length(nodesXY)
-%     % calculate distance to all other nodes
-%     dvec = (nodesXY(i,:) - nodesXY);
-%     d = sqrt(dvec(:,1).^2 + dvec(:,2).^2);
-%     ind = find(d <= edgeFactor*dx);
-%     if ( length(ind) == 1 )
-%         edglessNode = [edglessNode i];
-%     end
-% end
-% nodesXY(edglessNode,:) = [];
-% 
-% end
+
+end

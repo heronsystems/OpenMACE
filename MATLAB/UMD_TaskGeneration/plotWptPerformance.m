@@ -4,25 +4,26 @@ close all;
 clc;
 format compact;
 %addpath('/home/wolek/Desktop/F3/Flight_Tests/02July2019/')
+addpath('/home/wolek/Desktop/UMD/F3/Flight_Tests/19July2019');
 %load('/home/wolek/Desktop/F3/Flight_Tests/02July2019/F3FlightData_02_Jul_2019_153651.mat');
 %load('/home/wolek/Desktop/F3/Flight_Tests/02July2019/F3FlightData_02_Jul_2019_154758.mat')
 %load('WptCoordinatorMat_07_Jul_2019_195542.mat')
 %load('F3FlightData_07_Jul_2019_195716.mat');
-load('F3FlightData_19_Jul_2019_102003.mat');
+%load('F3FlightData_19_Jul_2019_102003.mat');
 
-%load('WptCoordinatorMat_08_Jul_2019_134650.mat');
-%load('F3FlightData_08_Jul_2019_135121.mat');
+load('WptCoordinatorMat_19_Jul_2019_101519.mat');
+load('F3FlightData_19_Jul_2019_102003.mat');
 
 
 close all;
 rng default % For reproducibility
 
 % flags
-multiStart = 0;
-opt1flag = 0; % double integrator with damping
-opt2flag = 0; % double integrator with damping and delay
-opt3flag = 0; % triple integrator with damping
-opt4flag = 0; % triple integrator with damping and delay
+multiStart = 1;
+opt1flag = 1; % double integrator with damping
+opt2flag = 1; % double integrator with damping and delay
+opt3flag = 1; % triple integrator with damping
+opt4flag = 1; % triple integrator with damping and delay
 wptCoordDataFlag = 1;
 cutOffFlag = 1;
 N = 2;
@@ -56,12 +57,14 @@ else
 end
 
 if (cutOffFlag)
-    cutOffTime = 120;
-    cutOffStep = interp1(t,1:1:length(t),cutOffTime,'nearest');
-    t = t(1:cutOffStep);
-    x = x(1:cutOffStep,:);
-    xd = xd(1:cutOffStep,:);
-    yd = yd(1:cutOffStep,:);
+    cutOffTimeStart = 2;
+    cutOffTimeEnd = 240;
+    cutOffStepStart = interp1(t,1:1:length(t),cutOffTimeStart,'nearest');
+    cutOffStepEnd = interp1(t,1:1:length(t),cutOffTimeEnd,'nearest');
+    t = t(cutOffStepStart:cutOffStepEnd);
+    x = x(cutOffStepStart:cutOffStepEnd,:);
+    xd = xd(cutOffStepStart:cutOffStepEnd,:);
+    yd = yd(cutOffStepStart:cutOffStepEnd,:);
 else
     cutOffStep = length(t);
 end
@@ -149,12 +152,12 @@ end
 % optimize 5 free parameters are kp, kd, amax, vmax, jmax
 if ( opt3flag )
     % vectorize
-    for j = 1:1:cutOffStep
+    for j = cutOffStepStart:1:cutOffStepEnd
         xtemp = [];
         for k = 1:1:swarmModel.N
             xtemp = [xtemp; x(j,4*(k-1)+1:4*(k-1)+2)'; 0; 0; 0; 0];
         end
-        xti(j,:) = xtemp;
+        xti(j-cutOffStepStart+1,:) = xtemp;
     end
     
     lb = [1 1 0.5 0.25 0.25];
@@ -202,12 +205,12 @@ end
 %%
 if ( opt4flag )
     % vectorize
-    for j = 1:1:cutOffStep
+    for j = cutOffStepStart:1:cutOffStepEnd
         xtemp = [];
         for k = 1:1:swarmModel.N
             xtemp = [xtemp; x(j,4*(k-1)+1:4*(k-1)+2)'; 0; 0; 0; 0];
         end
-        xti(j,:) = xtemp;
+        xti(j-cutOffStepStart+1,:) = xtemp;
     end
     
     lb = [1 1 0.5 0.25 0.25 0];

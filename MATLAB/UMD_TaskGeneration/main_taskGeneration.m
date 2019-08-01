@@ -1,5 +1,5 @@
 % Main simulation script for Heron-UMD task generation.
-% A. Wolek, S. Cheng, July 2019
+% A. Wolek, S. Cheng, August 2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % MATLAB Initialization
@@ -26,23 +26,23 @@ tStart = tic;
 
 if ~exist('MonteCarloSwitch','var')
     % user should modify loadParams.m as desired for single run
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3();
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3();
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_Randals();
+    
     disp('Running standard (non Monte-Carlo) simulation')
 %     [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
     %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityBlocksAtF3();
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_randomRoadsAtF3();
-
 else
     % for Monte Carlo, specify the IDs of the scenes
     [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
     disp('Running Monte-Carlo simulation')
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m       
 end
 
-
 % initialize the swarm world, target and swarm states
-[swarmWorld, swarmState, targetState, ROS_MACE] = initializeRun(trueWorld, swarmModel, targetModel, runParams, ROS_MACE);
-disp('Run initialized.')
+swarmWorld = initializeSwarmWorld(trueWorld , swarmModel, runParams);
+targetState = initializeTargetState(trueWorld, targetModel);
+[swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, runParams, ROS_MACE);disp('Run initialized.')
 
 switch runParams.type
     case 'matlab'
@@ -88,7 +88,6 @@ end
 %     % movie_nodesInView( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     %movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
      movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-%     % movie_likelihoodWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 % %     %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 % %     % plots
 %      plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
