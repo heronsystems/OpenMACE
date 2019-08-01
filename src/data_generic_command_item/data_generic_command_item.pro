@@ -52,8 +52,8 @@ SOURCES += \
     target_items/dynamic_target_list.cpp \
     target_items/dynamic_mission_queue.cpp \
     target_items/dynamic_target.cpp \
-    target_items/dynamic_target_storage.cpp \
-    do_items/command_goto.cpp
+    do_items/command_goto.cpp \
+    target_items/dynamic_target_state.cpp
 HEADERS +=\
     do_items/action_arm.h \
     do_items/action_change_mode.h \
@@ -88,11 +88,12 @@ HEADERS +=\
     target_items/dynamic_target_list.h \
     target_items/dynamic_mission_queue.h \
     target_items/dynamic_target.h \
-    target_items/dynamic_target_storage.h \
     do_items/command_goto.h \
     spatial_items/abstract_spatial_action.h \
     spatial_items/spatial_action_factory.h \
-    mission_items/typedef_mission_types.h
+    mission_items/typedef_mission_types.h \
+    target_items/dynamic_target_state.h \
+    mission_items/mission_item_interface.h
 
 # Unix lib Install
 unix:!symbian {

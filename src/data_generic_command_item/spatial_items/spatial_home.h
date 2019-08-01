@@ -50,6 +50,14 @@ public:
     //!
     SpatialHome(const int &systemOrigin, const int &systemTarget = 0);
 
+public:
+    //!
+    //! \brief fromMACEComms_CommandObject
+    //! \param obj
+    //! \return
+    //!
+    bool fromMACEComms_CommandObject(const mace_set_home_position_t &obj);
+
     //!
     //! \brief getMACECommsObject
     //! \return

@@ -1,6 +1,6 @@
 #include "dynamic_mission_queue.h"
 
-namespace TargetItem {
+namespace command_target {
 
 DynamicMissionQueue::DynamicMissionQueue()
 {

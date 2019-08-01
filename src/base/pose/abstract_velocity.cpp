@@ -3,15 +3,15 @@
 using namespace mace::pose;
 
 Velocity::Velocity(const std::string &posName):
-    name(posName)
+    Kinematic_BaseInterface(), name(posName)
 {
 
 }
 
-Velocity::Velocity(const Velocity &copy)
+Velocity::Velocity(const Velocity &copy):
+    Kinematic_BaseInterface (copy)
 {
     this->name = copy.name;
-    this->dimension = copy.dimension;
 }
 
 void Velocity::updateVelocityName(const std::string &nameString)

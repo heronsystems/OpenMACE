@@ -55,19 +55,19 @@ public:
         this->missionKey = key;
     }
 
-    void setVehicleID(const int &vehicleID){
+    void setVehicleID(const unsigned int &vehicleID){
         this->missionKey.m_systemID = vehicleID;
     }
 
-    int getVehicleID() const{
+    unsigned int getVehicleID() const{
         return this->missionKey.m_systemID;
     }
 
-    void setCreatorID(const int &creatorID){
+    void setCreatorID(const unsigned int &creatorID){
         this->missionKey.m_creatorID = creatorID;
     }
 
-    int getCreatorID() const {
+    unsigned int getCreatorID() const {
         return this->missionKey.m_creatorID;
     }
 

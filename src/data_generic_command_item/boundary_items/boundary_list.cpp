@@ -16,7 +16,7 @@ BoundaryList::BoundaryList(const BoundaryList &rhs)
     this->boundingPolygon = rhs.boundingPolygon;
 }
 
-void BoundaryList::initializeBoundary(const int &size)
+void BoundaryList::initializeBoundary(const unsigned int &size)
 {
     boundingPolygon.initializePolygon(size);
 }
@@ -28,21 +28,23 @@ void BoundaryList::clearQueue()
 
 void BoundaryList::appendVertexItem(const Abstract_CartesianPosition* vertexItem)
 {
-    boundingPolygon.appendVertex(vertexItem);
+    if(vertexItem->isGreaterThan1D())
+        boundingPolygon.appendVertex(*vertexItem->positionAs<CartesianPosition_2D>());
 }
 
-void BoundaryList::replaceVertexItemAtIndex(const Abstract_CartesianPosition *vertexItem, const int &index)
+void BoundaryList::replaceVertexItemAtIndex(const Abstract_CartesianPosition *vertexItem, const unsigned int &index)
 {
-    boundingPolygon.insertVertexAtIndex(vertexItem, index);
+    if(vertexItem->isGreaterThan1D())
+        boundingPolygon.insertVertexAtIndex(*vertexItem->positionAs<CartesianPosition_2D>(), index);
 }
 
-Position<CartesianPosition_2D> BoundaryList::getBoundaryItemAtIndex(const int &index) const
+CartesianPosition_2D BoundaryList::getBoundaryItemAtIndex(const unsigned int &index) const
 {
-    Position<CartesianPosition_2D> vertex = boundingPolygon.at(index);
+    CartesianPosition_2D vertex = boundingPolygon.at(static_cast<int>(index));
     return vertex;
 }
 
-int BoundaryList::getQueueSize() const
+size_t BoundaryList::getQueueSize() const
 {
     return boundingPolygon.polygonSize();
 }

@@ -27,12 +27,48 @@ enum class CoordinateSystemTypes : uint8_t{
 class Kinematic_BaseInterface
 {
 public:
+
+    Kinematic_BaseInterface() = default;
+
+    Kinematic_BaseInterface(const Kinematic_BaseInterface &copy)
+    {
+        this->dimension = copy.dimension;
+        this->dimensionMask = copy.dimensionMask;
+    }
+
     virtual ~Kinematic_BaseInterface() = default;
 
     virtual KinematicTypes getKinematicType() const = 0;
 
     virtual CoordinateSystemTypes getCoordinateSystemType() const = 0;
 
+public:
+    //!
+    //! \brief setDimensionMask
+    //! \param mask
+    //!
+    void setDimensionMask(const uint16_t &mask)
+    {
+        this->dimensionMask = mask;
+    }
+
+    //!
+    //! \brief orDimensionMask
+    //! \param orValue
+    //!
+    void orDimensionMask(const uint16_t &orValue)
+    {
+        this->dimensionMask = dimensionMask|orValue;
+    }
+
+    //!
+    //! \brief getDimensionMask
+    //! \return
+    //!
+    uint16_t getDimensionMask() const
+    {
+        return this->dimensionMask;
+    }
 public:
 
     uint8_t getDimension() const
@@ -78,6 +114,9 @@ public:
 
 public:
     uint8_t dimension = 0;
+
+    uint16_t dimensionMask = 0;
+
 };
 
 #endif // KINEMATIC_STATES_H

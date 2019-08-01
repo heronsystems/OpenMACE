@@ -74,6 +74,34 @@ public:
     //!
     double getPhi() const;
 
+public:
+    //!
+    //! \brief setDimensionMask
+    //! \param mask
+    //!
+    void setDimensionMask(const uint16_t &mask)
+    {
+        this->dimensionMask = mask;
+    }
+
+    //!
+    //! \brief orDimensionMask
+    //! \param orValue
+    //!
+    void orDimensionMask(const uint16_t &orValue)
+    {
+        this->dimensionMask = dimensionMask|orValue;
+    }
+
+    //!
+    //! \brief getDimensionMask
+    //! \return
+    //!
+    uint16_t getDimensionMask() const
+    {
+        return this->dimensionMask;
+    }
+
 
     /** Arithmetic Operators */
 public:
@@ -158,6 +186,8 @@ public:
     {
         if(!Eigen::Rotation2D<double>::isApprox(rhs,std::numeric_limits<double>::epsilon()))
             return false;
+        if(this->dimensionMask != rhs.dimensionMask)
+            return false;
         return true;
     }
 
@@ -182,6 +212,7 @@ public:
     {
         AbstractRotation::operator=(rhs);
         Eigen::Rotation2D<double>::operator=(rhs);
+        this->dimensionMask = rhs.dimensionMask;
         return *this;
     }
 
@@ -207,6 +238,10 @@ public:
         this->angle() -= rhs.angle();
         return *this;
     }
+
+private:
+    uint16_t dimensionMask = 0;
+
 };
 
 } //end of namespace pose

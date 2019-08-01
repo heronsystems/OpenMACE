@@ -56,6 +56,17 @@ SpatialHome::SpatialHome(const int &systemOrigin, const int &systemTarget):
 
 }
 
+bool SpatialHome::fromMACEComms_CommandObject(const mace_set_home_position_t &obj)
+{
+    //This object will only be of the type Geodetic Position
+
+//    missionItem.setTargetSystem(target.ModuleID);
+//    missionItem.setOriginatingSystem(target.ModuleID);
+//    missionItem.position->setX(maceItem.latitude / pow(10,7));
+//    missionItem.position->setY(maceItem.longitude / pow(10,7));
+//    missionItem.position->setZ(maceItem.altitude / pow(10,3));
+}
+
 bool SpatialHome::getMACECommsObject(mace_home_position_t &obj) const
 {
     bool validRequest = true;

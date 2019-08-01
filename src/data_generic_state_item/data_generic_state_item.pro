@@ -28,14 +28,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    state_airspeed.cpp \
-    state_item_boundary.cpp
+    state_airspeed.cpp
 
 HEADERS +=\
         data_generic_state_item_global.h \
     state_item_components.h \
-    state_airspeed.h \
-    state_item_boundary.h
+    state_airspeed.h
 
 # Unix lib Install
 unix:!symbian {

@@ -113,10 +113,13 @@ public:
 
     bool operator == (const Position &rhs) const
     {
+        if(this->dimension != rhs.dimension){
+            return false;
+        }
         if(this->name != rhs.name){
             return false;
         }
-        if(this->dimension != rhs.dimension){
+        if(this->dimensionMask != rhs.dimensionMask){
             return false;
         }
         return true;

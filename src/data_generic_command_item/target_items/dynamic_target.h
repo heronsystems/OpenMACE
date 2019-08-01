@@ -2,84 +2,81 @@
 #define DYNAMIC_TARGET_H
 
 #include <iostream>
-#include <stdint.h>
-#include <memory>
-#include <list>
-#include <map>
+#include <string>
+#include <sstream>
 
-#include "base/pose/geodetic_position_3D.h"
-#include "base/pose/cartesian_position_3D.h"
+#include "common/class_forward.h"
+
+#include "base/pose/abstract_position.h"
+#include "base/pose/abstract_velocity.h"
+#include "base/pose/rotation_2D.h"
 
 using namespace mace::pose;
 
-namespace TargetItem {
+namespace command_target {
 
-template <class POS, class VEL>
+MACE_CLASS_FORWARD(DynamicTarget);
+
 class DynamicTarget{
 public:
-    DynamicTarget() = default;
+    DynamicTarget();
 
-    ~DynamicTarget() = default;
+    DynamicTarget(const Position* pos, const Velocity* vel, const Rotation_2D *rot, const Rotation_2D* rotRate);
 
-    CoordinateFrameTypes getPositionalCoordinateFrame() const
-    {
-        return this->position.getCoordinateFrame();
-    }
+    DynamicTarget(const DynamicTarget &copy);
 
-    void setPosition(const POS &pos)
-    {
-        this->position = pos;
-    }
-    void setVelocity(const VEL &vel)
-    {
-        this->velocity = vel;
-    }
-    void setYaw(const double &yaw, const double &yawRate)
-    {
-        this->yaw = yaw;
-        this->yawRate = yawRate;
-    }
+    ~DynamicTarget();
 
-    POS getPosition() const
-    {
-        return this->position;
-    }
+public:
+    void setPosition(const Position* pos);
 
-    VEL getVelocity() const
-    {
-        return this->velocity;
-    }
+    void setVelocity(const Velocity* vel);
 
-    double getYaw() const
-    {
-        return this->yaw;
-    }
+    void setYaw(const Rotation_2D *rot);
 
-    double getYawRate() const
-    {
-        return this->yawRate;
-    }
+    void setYawRate(const Rotation_2D* rotRate);
+
+public:
+    const Position* getPosition() const;
+
+    const Velocity* getVelocity() const;
+
+    const Rotation_2D* getYaw() const;
+
+    const Rotation_2D* getYawRate() const;
+
+    Position* getPosition();
+
+    Velocity* getVelocity();
+
+    Rotation_2D* getYaw();
+
+    Rotation_2D* getYawRate();
+
+public:
+    uint16_t getCurrentTargetMask() const;
+
 public:
     DynamicTarget& operator = (const DynamicTarget &rhs)
     {
-        this->position = rhs.position;
-        this->velocity = rhs.velocity;
-        this->yaw = rhs.yaw;
-        this->yawRate = rhs.yawRate;
+        this->m_Position = rhs.m_Position->getPositionalClone();
+        this->m_Velocity = rhs.m_Velocity->getVelocityClone();
+        this->m_Yaw = rhs.m_Yaw->getRotationalClone()->rotationAs<Rotation_2D>();
+        this->m_YawRate = rhs.m_YawRate->getRotationalClone()->rotationAs<Rotation_2D>();
         return *this;
     }
 
     bool operator == (const DynamicTarget &rhs) const{
-        if(this->position != rhs.position){
+        if(this->m_Position != rhs.m_Position){
             return false;
         }
-        if(this->velocity != rhs.velocity){
+        if(this->m_Velocity != rhs.m_Velocity){
             return false;
         }
-        if(this->yaw != rhs.yaw){
+        if(this->m_Yaw != rhs.m_Yaw){
             return false;
         }
-        if(this->yawRate != rhs.yawRate){
+        if(this->m_YawRate != rhs.m_YawRate){
             return false;
         }
         return true;
@@ -89,16 +86,37 @@ public:
         return !(*this == rhs);
     }
 
-private:
-    POS position;
-    VEL velocity;
-    double yaw = 0.0;
-    double yawRate = 0.0;
+public:
+    std::string printDynamicTarget() const
+    {
+        std::stringstream stream;
+        this->printDynamicTargetLog(stream);
+        return stream.str();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const DynamicTarget& t)
+    {
+        std::stringstream newStream;
+        t.printDynamicTargetLog(newStream);
+        os << newStream.str();
+        return os;
+    }
+
+    void printDynamicTargetLog(std::stringstream &stream) const
+    {
+        stream << "DYNTARGET|";
+
+    }
+
+protected:
+    uint16_t targetMask;
+
+    Position* m_Position;
+    Velocity* m_Velocity;
+    Rotation_2D* m_Yaw;
+    Rotation_2D* m_YawRate;
 };
 
-typedef DynamicTarget<CartesianPosition_3D,CartesianVelocity_3D> CartesianDynamicTarget;
-typedef DynamicTarget<GeodeticPosition_3D,CartesianVelocity_3D> GeodeticDynamicTarget;
-
-} //end of namespace TargetItem
+} //end of namespace command_target
 
 #endif // DYNAMIC_TARGET_H

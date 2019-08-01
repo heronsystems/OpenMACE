@@ -9,7 +9,7 @@ SUBDIRS += \
     comms \
     commsMACE \
     data_generic_item \
-    data_generic_state_item \
+    #data_generic_state_item \
     data_generic_command_item \
     mace_core \
     commsMAVLINK \

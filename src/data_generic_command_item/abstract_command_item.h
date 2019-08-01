@@ -4,6 +4,8 @@
 #include <sstream>
 #include <string>
 
+#include "mace.h"
+
 #include "common/class_forward.h"
 
 #include "command_item_type.h"
@@ -182,6 +184,9 @@ public:
     bool operator != (const AbstractCommandItem &rhs) {
         return !(*this == rhs);
     }
+
+private:
+
 
 public:
     //!
