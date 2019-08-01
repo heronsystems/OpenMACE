@@ -54,16 +54,6 @@ public:
         return this->data;
     }
 
-    //!
-    //! \brief printInfo
-    //! \return
-    //!
-    std::string printInfo() const override
-    {
-        std::string rtn = "Geodetic Position 2D: " + std::to_string(getLatitude()) + ", " + std::to_string(getLongitude()) + ".";
-        return rtn;
-    }
-
 public:
 
     //!
@@ -229,6 +219,11 @@ public:
     //!
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
 
+public:
+    mace_global_position_int_t getMACE_GlobalPositionInt() const;
+
+    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+
     /** Assignment Operators */
 public:
     GeodeticPosition_2D& operator = (const GeodeticPosition_2D &rhs)
@@ -261,6 +256,23 @@ public:
     //!
     bool operator != (const GeodeticPosition_2D &rhs) const {
         return !(*this == rhs);
+    }
+
+public:
+    std::string printPositionalInfo() const override
+    {
+        std::stringstream stream;
+        stream.precision(6);
+        stream << std::fixed << "Geodetic Position 2D: Lat:" << this->getLatitude() << ", Lng:"<< this->getLongitude() << ".";
+        return stream.str();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const GeodeticPosition_2D& t)
+    {
+        std::stringstream newStream;
+        t.printPositionLog(newStream);
+        os << newStream.str();
+        return os;
     }
 
 public:

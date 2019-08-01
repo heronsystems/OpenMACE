@@ -37,6 +37,14 @@ GeodeticPosition_3D::GeodeticPosition_3D(const double &latitude, const double &l
     this->dimension = 3;
 }
 
+GeodeticPosition_3D::GeodeticPosition_3D(const mace_global_position_int_t &pos):
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, ""), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE), state_space::State()
+{
+    setLatitude(pos.lat / pow(10,7));
+    setLongitude(pos.lon / pow(10,7));
+    setAltitude(pos.alt / pow(10,3));
+}
+
 //!
 //! \brief GeodeticPosition_3D::GeodeticPosition_3D
 //! \param copy
@@ -236,6 +244,26 @@ double GeodeticPosition_3D::elevationAngleTo(const GeodeticPosition_3D &position
         return 0.0;
     else
         return atan2(distanceAlt,distance2D);
+}
+
+mace_global_position_int_t GeodeticPosition_3D::getMACE_GlobalPositionInt() const
+{
+    mace_global_position_int_t posObj;
+    posObj.lat = static_cast<int32_t>((this->getLatitude() * pow(10,7)));
+    posObj.lon = static_cast<int32_t>((this->getLongitude() * pow(10,7)));
+    posObj.alt = static_cast<int32_t>((this->getAltitude() * 1000.0));
+    posObj.relative_alt = 0;
+    posObj.hdg = 0;
+    posObj.time_boot_ms = 0;
+    return posObj;
+}
+
+mace_message_t GeodeticPosition_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+{
+    mace_message_t msg;
+    mace_global_position_int_t positionObj = getMACE_GlobalPositionInt();
+    mace_msg_global_position_int_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    return msg;
 }
 
 

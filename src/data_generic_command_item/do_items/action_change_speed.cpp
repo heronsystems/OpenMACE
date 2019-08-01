@@ -44,4 +44,9 @@ ActionChangeSpeed::ActionChangeSpeed(const int &systemOrigin, const int &systemT
 
 }
 
+std::string ActionChangeSpeed::printCommandInfo() const
+{
+
+}
+
 }

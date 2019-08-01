@@ -26,12 +26,12 @@ public:
     SpatialWaypoint(const SpatialWaypoint &obj);
     SpatialWaypoint(const int &systemOrigin, const int &systemTarget = 0);
 
-    ~SpatialWaypoint();
+    ~SpatialWaypoint() override;
 
 public:
-    mace_command_goto_t setGoToCommand(mace_command_goto_t &cmd) const;
+    mace_command_goto_t setGoToCommand(mace_command_goto_t &cmd) const override;
 
-    void updateFromGoToCommand(const mace_command_goto_t &cmd);
+    void updateFromGoToCommand(const mace_command_goto_t &cmd) override;
 
 public:
 
@@ -87,6 +87,13 @@ public:
     bool operator != (const SpatialWaypoint &rhs) {
         return !(*this == rhs);
     }
+
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printSpatialCMDInfo() const override;
 
     friend std::ostream& operator<<(std::ostream& os, const SpatialWaypoint& t);
 

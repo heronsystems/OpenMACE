@@ -46,5 +46,17 @@ SpatialLoiter_Turns::SpatialLoiter_Turns(const int &systemOrigin, const int &sys
 
 }
 
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialLoiter_Turns::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
+}
+
 } //end of namespace CommandItem
 

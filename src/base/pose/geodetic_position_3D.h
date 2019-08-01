@@ -19,6 +19,8 @@ public:
 
     GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude, const std::string &pointName = "Geodetic Point");
 
+    GeodeticPosition_3D(const mace_global_position_int_t &pos);
+
     //!
     //! \brief GeodeticPosition_2D
     //! \param copy
@@ -38,20 +40,16 @@ public:
     {
         *state = new GeodeticPosition_3D(*this);
     }
+public:
+    mace_global_position_int_t getMACE_GlobalPositionInt() const;
 
+
+    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+
+public:
     Eigen::VectorXd getDataVector() const
     {
         return this->data;
-    }
-
-    //!
-    //! \brief printInfo
-    //! \return
-    //!
-    std::string printInfo() const override
-    {
-        std::string rtn = "Geodetic Position 3D: " + std::to_string((getLatitude())) + ", " + std::to_string(getLongitude()) + ", " + std::to_string(getAltitude()) + ".";
-        return rtn;
     }
 
     bool areEquivalentFrames(const GeodeticPosition_3D &obj) const;
@@ -299,6 +297,22 @@ public:
         return !(*this == rhs);
     }
 
+public:
+    std::string printPositionalInfo() const override
+    {
+        std::stringstream stream;
+        stream.precision(6);
+        stream << std::fixed << "Lat:" << this->getLatitude() << ", Lng:"<< this->getLongitude() << ", Alt: "<<this->getAltitude() <<".";
+        return stream.str();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const GeodeticPosition_3D& t)
+    {
+        std::stringstream newStream;
+        t.printPositionLog(newStream);
+        os << newStream.str();
+        return os;
+    }
 
 public:
     Eigen::Vector3d data;

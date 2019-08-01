@@ -46,11 +46,23 @@ SpatialTakeoff::SpatialTakeoff(const int &systemOrigin, const int &systemTarget)
 
 }
 
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialTakeoff::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
+}
+
 std::ostream& operator<<(std::ostream& os, const SpatialTakeoff& t)
 {
     std::stringstream stream;
     stream.precision(6);
-    stream << std::fixed << "Spatial Takeoff: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
+    stream << std::fixed << "Spatial Takeoff: " <<t.printSpatialCMDInfo()<<".";
     os << stream.str();
 
     return os;

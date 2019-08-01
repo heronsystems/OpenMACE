@@ -21,7 +21,7 @@ public:
 
     Topic_CartesianVelocity(const Topic_CartesianVelocity &copyObj);
 
-    Topic_CartesianVelocity(const mace::pose::Abstract_Velocity* velObj);
+    Topic_CartesianVelocity(const mace::pose::Velocity* velObj);
 
     virtual ~Topic_CartesianVelocity()
     {
@@ -33,10 +33,10 @@ public:
 
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
-    mace::pose::Abstract_Velocity* getVelocityObj() const;
+    mace::pose::Velocity* getVelocityObj() const;
 
 private:
-    mace::pose::Abstract_Velocity* m_VelocityObj;
+    mace::pose::Velocity* m_VelocityObj;
 };
 
 } //end of namespace BaseTopic

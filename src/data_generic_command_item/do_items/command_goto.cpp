@@ -51,4 +51,9 @@ CommandGoTo::CommandGoTo(const int &systemOrigin, const int &systemTarget):
 
 }
 
+std::string CommandGoTo::printCommandInfo() const
+{
+
+}
+
 } //end of namespace CommandItem

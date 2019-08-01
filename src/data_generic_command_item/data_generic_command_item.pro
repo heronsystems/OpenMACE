@@ -52,8 +52,8 @@ SOURCES += \
     target_items/dynamic_target_list.cpp \
     target_items/dynamic_mission_queue.cpp \
     target_items/dynamic_target.cpp \
-    target_items/dynamic_target_storage.cpp \
-    do_items/command_goto.cpp
+    do_items/command_goto.cpp \
+    target_items/dynamic_target_state.cpp
 HEADERS +=\
     do_items/action_arm.h \
     do_items/action_change_mode.h \
@@ -79,7 +79,6 @@ HEADERS +=\
     mission_items/mission_item_achieved.h \
     mission_items/mission_item_current.h \
     mission_items/mission_state.h \
-    mission_items/mission_type.h \
     mission_items/mission_key.h \
     mission_items/mission_key_change.h \
     command_item_type.h \
@@ -89,10 +88,12 @@ HEADERS +=\
     target_items/dynamic_target_list.h \
     target_items/dynamic_mission_queue.h \
     target_items/dynamic_target.h \
-    target_items/dynamic_target_storage.h \
     do_items/command_goto.h \
     spatial_items/abstract_spatial_action.h \
-    spatial_items/spatial_action_factory.h
+    spatial_items/spatial_action_factory.h \
+    mission_items/typedef_mission_types.h \
+    target_items/dynamic_target_state.h \
+    mission_items/mission_item_interface.h
 
 # Unix lib Install
 unix:!symbian {
@@ -113,8 +114,9 @@ INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
 
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
@@ -128,9 +130,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldat
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
 else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/release/ -ldata_generic_state_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/debug/ -ldata_generic_state_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item/ -ldata_generic_state_item
 
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 

@@ -1,11 +1,10 @@
 #ifndef TOPIC_AGENTORIENTATION_H
 #define TOPIC_AGENTORIENTATION_H
 
-
 #include "data/i_topic_component_data_object.h"
 
-#include "base/pose/geodetic_position_2D.h"
-#include "base/pose/geodetic_position_3D.h"
+#include "base/pose/rotation_2D.h"
+#include "base/pose/rotation_3D.h"
 
 namespace pose {
 namespace BaseTopic {
@@ -22,11 +21,11 @@ public:
 
     Topic_AgentOrientation(const Topic_AgentOrientation &copyObj);
 
-    Topic_AgentOrientation(const mace::pose::Abstract_GeodeticPosition *posObj);
+    Topic_AgentOrientation(const mace::pose::AbstractRotation *obj);
 
     virtual ~Topic_AgentOrientation()
     {
-        delete m_PositionObject;
+        delete m_RotationObj; m_RotationObj = nullptr;
     }
 
 public:
@@ -34,10 +33,10 @@ public:
 
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
-    mace::pose::Abstract_GeodeticPosition* getPositionObj() const;
+    mace::pose::AbstractRotation* getRotationObj() const;
 
 private:
-    mace::pose::Abstract_GeodeticPosition* m_PositionObject;
+    mace::pose::AbstractRotation* m_RotationObj;
 };
 
 } //end of namespace BaseTopic

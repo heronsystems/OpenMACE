@@ -16,13 +16,13 @@ MissionList::MissionList(const int &targetID, const int &generatorID, const MISS
 
 }
 
-MissionList::MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size) :
+MissionList::MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size) :
     missionKey(targetID,generatorID,0,missionType,state),missionExeState(Data::MissionExecutionState::MESTATE_UNEXECUTED),activeMissionItem(0)
 {
     initializeQueue(size);
 }
 
-MissionList::MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size) :
+MissionList::MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size) :
     missionKey(targetID,generatorID,missionID,missionType,state),missionExeState(Data::MissionExecutionState::MESTATE_UNEXECUTED),activeMissionItem(0)
 {
     initializeQueue(size);
@@ -36,7 +36,7 @@ MissionList::MissionList(const MissionList &rhs)
     this->activeMissionItem = rhs.activeMissionItem;
 }
 
-void MissionList::initializeQueue(const int &size)
+void MissionList::initializeQueue(const size_t &size)
 {
     if(size <= 0){
         // TODO-Ken/Pat: Throw a message with exception
@@ -44,7 +44,7 @@ void MissionList::initializeQueue(const int &size)
         throw std::exception();
     }
     missionQueue.clear();
-    std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> tmpVector(size,NULL);
+    std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> tmpVector(size,nullptr);
     missionQueue = tmpVector;
 }
 

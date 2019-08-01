@@ -5,7 +5,7 @@
 
 #include <Eigen/Core>
 
-#include "base_position.h"
+#include "abstract_position.h"
 #include "position_interface.h"
 
 namespace mace {

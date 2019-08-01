@@ -1,5 +1,5 @@
-#ifndef MISSION_TYPE_H
-#define MISSION_TYPE_H
+#ifndef TYPEDEF_MISSION_TYPES_H
+#define TYPEDEF_MISSION_TYPES_H
 
 #include <stdint.h>
 #include <string>
@@ -53,4 +53,5 @@ inline std::string MissionTypeToString(const MISSIONTYPE &type) {
 }
 
 } //end of namespace MissionItem
-#endif // MISSION_TYPE_H
+
+#endif // TYPEDEF_MISSION_TYPES_H

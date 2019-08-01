@@ -61,13 +61,15 @@ public:
     BoundaryList(const BoundaryList &rhs);
 
 public:
-    void initializeBoundary(const int &size);
+    void initializeBoundary(const unsigned int &size);
     void clearQueue();
-    void appendVertexItem(const Position<CartesianPosition_2D> &vertexItem);
-    void replaceVertexItemAtIndex(const Position<CartesianPosition_2D> &vertexItem, const int &index);
+    void appendVertexItem(const Abstract_CartesianPosition* vertexItem);
+    void replaceVertexItemAtIndex(const Abstract_CartesianPosition* vertexItem, const unsigned int &index);
 
-    Position<CartesianPosition_2D> getBoundaryItemAtIndex(const int &index) const;
-    int getQueueSize() const;
+    CartesianPosition_2D getBoundaryItemAtIndex(const unsigned int &index) const;
+
+    size_t getQueueSize() const;
+
     BoundaryList::BoundaryListStatus getBoundaryListStatus() const;
 
 public:

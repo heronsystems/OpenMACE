@@ -3,7 +3,7 @@
 
 #include <Eigen/Core>
 
-#include "base_position.h"
+#include "abstract_position.h"
 #include "abstract_altitude.h"
 
 namespace mace {
@@ -65,6 +65,16 @@ public:
     //!
     double getAltitude() const override;
 
+
+public:
+    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printPositionalInfo() const override;
 
 private:
     double z;

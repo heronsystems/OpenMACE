@@ -92,6 +92,13 @@ public:
     }
 
 public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printSpatialCMDInfo() const override;
+
+public:
     Data::LoiterDirection direction;
     double radius;
 };

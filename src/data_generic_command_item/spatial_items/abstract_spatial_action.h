@@ -9,11 +9,16 @@
 
 #include "mace.h"
 
-#include "data_generic_state_item/base_3d_position.h"
+#include "base/pose/abstract_position.h"
+
+#include "base/pose/cartesian_position_2D.h"
+#include "base/pose/cartesian_position_3D.h"
+
+#include "base/pose/geodetic_position_2D.h"
+#include "base/pose/geodetic_position_3D.h"
+
 
 #include "data_generic_command_item/abstract_command_item.h"
-
-using namespace DataState;
 
 namespace CommandItem {
 
@@ -26,15 +31,15 @@ class AbstractSpatialAction : public AbstractCommandItem
 {
 public:
     AbstractSpatialAction():
-        AbstractCommandItem(0,0)
+        AbstractCommandItem(0,0), position(nullptr)
     {
-        position = new Base3DPosition();
+
     }
 
     AbstractSpatialAction(const int &systemOrigin, const int &systemTarget = 0):
-        AbstractCommandItem(systemOrigin,systemTarget)
+        AbstractCommandItem(systemOrigin,systemTarget), position(nullptr)
     {
-        position = new Base3DPosition();
+
     }
 
     ~AbstractSpatialAction()
@@ -42,7 +47,7 @@ public:
         if(position)
         {
             delete position;
-            position = NULL;
+            position = nullptr;
         }
     }
 
@@ -51,31 +56,34 @@ public:
     {
         //position is a pointer, so we need to deep copy it if it is non-null
         //allocate the memory
-        position = new Base3DPosition();
         if(copy.position)
         {
             //copy the contents
-            *position = *copy.position;
+            position = copy.position->getPositionalClone();
         }
     }
 
-    void setPosition(const Base3DPosition &pos)
+    bool isPositionSet() const
     {
-        if(this->position != NULL)
-        {
-            delete this->position;
-        }
-        position = new Base3DPosition (pos);
+        return position != nullptr;
     }
 
-    Base3DPosition getPosition()
+    void setPosition(const mace::pose::Position* pos)
     {
-        return *this->position;
+        //first delete and clear the current position
+        delete position; position = nullptr;
+
+        position = pos->getPositionalClone();
     }
 
-    const Base3DPosition getPosition() const
+    mace::pose::Position* getPosition()
     {
-        return *this->position;
+        return this->position;
+    }
+
+    const mace::pose::Position* getPosition() const
+    {
+        return this->position;
     }
 
 
@@ -107,8 +115,8 @@ public:
         if(rhs.position)
         {
             *this->position = *rhs.position;
-        }else{ //test is null
-            position = new Base3DPosition();
+        }else{ //test if the rhs position is null didnt pass
+            delete position; position = nullptr;
         }
 
         return *this;
@@ -141,14 +149,29 @@ public:
         return !(*this == rhs);
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const AbstractSpatialAction& t);
+public:
+
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    virtual std::string printSpatialCMDInfo() const = 0;
+
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printCommandInfo() const override
+    {
+        return printSpatialCMDInfo();
+    }
 
 public:
 
     //!
     //! \brief position
     //!
-    Base3DPosition *position;
+    mace::pose::Position* position;
 };
 
 } //end of namespace CommandItem

@@ -95,6 +95,13 @@ public:
         return !(*this == rhs);
     }
 
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printCommandInfo() const override;
+
     friend std::ostream &operator<<(std::ostream &out, const ActionChangeSpeed &obj)
     {
         out<<"Command Change Speed( Frame: "<<Data::SpeedFrameToString(obj.speedFrame)<<", Speed:"<<obj.desiredSpeed<<")";

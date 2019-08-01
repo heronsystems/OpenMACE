@@ -29,12 +29,12 @@ public:
 public:
     MissionList();
     MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state);
-    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size);
-    MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size);
+    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
+    MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
     MissionList(const MissionList &rhs);
 
 public:
-    void initializeQueue(const int &size);
+    void initializeQueue(const size_t &size);
     void clearQueue();
     void replaceMissionQueue(const std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> &newQueue);
     void insertMissionItem(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem);
@@ -55,19 +55,19 @@ public:
         this->missionKey = key;
     }
 
-    void setVehicleID(const int &vehicleID){
+    void setVehicleID(const unsigned int &vehicleID){
         this->missionKey.m_systemID = vehicleID;
     }
 
-    int getVehicleID() const{
+    unsigned int getVehicleID() const{
         return this->missionKey.m_systemID;
     }
 
-    void setCreatorID(const int &creatorID){
+    void setCreatorID(const unsigned int &creatorID){
         this->missionKey.m_creatorID = creatorID;
     }
 
-    int getCreatorID() const {
+    unsigned int getCreatorID() const {
         return this->missionKey.m_creatorID;
     }
 

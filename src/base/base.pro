@@ -46,7 +46,6 @@ SOURCES += \
     pose/geodetic_position_3D.cpp \
     pose/dynamics_aid.cpp \
     geometry/polygon_2DG.cpp \
-    pose/base_position.cpp \
     pose/abstract_cartesian_position.cpp \
     pose/abstract_altitude.cpp \
     pose/abstract_geodetic_position.cpp \
@@ -54,15 +53,16 @@ SOURCES += \
     pose/base_altitude.cpp \
     pose/abstract_velocity.cpp \
     geometry/abstract_polygon.cpp \
-    pose/abstract_orientation.cpp \
     pose/rotation_3D.cpp \
+    measurements/base_speed.cpp \
+    pose/abstract_rotation.cpp \
+    pose/abstract_position.cpp \
     pose/rotation_2D.cpp
 
 HEADERS +=\
     base_global.h \
     math/helper_pi.h \
     pose/cartesian_position_2D.h \
-    pose/base_position.h \
     pose/cartesian_position_3D.h \
     geometry/base_polygon.h \
     state_space/real_vector.h \
@@ -95,7 +95,6 @@ HEADERS +=\
     pose/geodetic_position_3D.h \
     pose/dynamics_aid.h \
     geometry/polygon_2DG.h \
-    pose/abstract_orientation.h \
     geometry/rotate_2d.h \
     math/math_components.h \
     pose/abstract_cartesian_position.h \
@@ -113,8 +112,11 @@ HEADERS +=\
     pose/base_altitude.h \
     geometry/abstract_polygon.h \
     unit_tests/unittests_orientation.h \
-    pose/rotation_2D.h \
-    pose/rotation_3D.h
+    pose/rotation_3D.h \
+    measurements/base_speed.h \
+    pose/abstract_rotation.h \
+    pose/abstract_position.h \
+    pose/rotation_2D.h
 
 # Unix lib Install
 unix:!symbian {

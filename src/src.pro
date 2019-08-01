@@ -9,7 +9,7 @@ SUBDIRS += \
     comms \
     commsMACE \
     data_generic_item \
-    data_generic_state_item \
+    #data_generic_state_item \
     data_generic_command_item \
     mace_core \
     commsMAVLINK \
@@ -52,12 +52,12 @@ baseTopic.depends = base
 comms.depends = common
 commsMACE.depends = data
 data_generic_item.depends = data
-data_generic_state_item.depends = data_generic_item
-data_generic_command_item.depends = data_generic_state_item
+#data_generic_state_item.depends = data_generic_item
+data_generic_command_item.depends = data_generic_item
 mace_core.depends = data_generic_command_item
 data_generic_item_topic.depends = data_generic_item
-data_generic_state_item_topic.depends = data_generic_state_item
-data_generic_command_item_topic.depends = data_generic_state_item_topic
+#data_generic_state_item_topic.depends = data_generic_state_item
+data_generic_command_item_topic.depends = data_generic_item_topic
 data_generic_mission_item_topic.depends = data_generic_command_item_topic
 data_interface_MAVLINK.depends = data_generic_mission_item_topic
 data_interface_MACE.depends = data_generic_mission_item_topic

@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-#include "base/pose/base_position.h"
+#include "base/pose/abstract_position.h"
 #include "base/pose/cartesian_position_2D.h"
 
 #include "base/geometry/polygon_cartesian.h"

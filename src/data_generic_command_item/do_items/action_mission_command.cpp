@@ -43,4 +43,9 @@ ActionMissionCommand::ActionMissionCommand(const int &systemOrigin, const int &s
 
 }
 
+std::string ActionMissionCommand::printCommandInfo() const
+{
+
+}
+
 }

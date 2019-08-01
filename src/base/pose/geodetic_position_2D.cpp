@@ -185,5 +185,25 @@ void GeodeticPosition_2D::applyPositionalShiftFromCompass(const double &distance
     this->setLongitude(tmpPosition.getLongitude());
 }
 
+mace_global_position_int_t GeodeticPosition_2D::getMACE_GlobalPositionInt() const
+{
+    mace_global_position_int_t posObj;
+    posObj.lat = static_cast<int32_t>((this->getLatitude() * pow(10,7)));
+    posObj.lon = static_cast<int32_t>((this->getLongitude() * pow(10,7)));
+    posObj.alt = 0;
+    posObj.relative_alt = 0;
+    posObj.hdg = 0;
+    posObj.time_boot_ms = 0;
+    return posObj;
+}
+
+mace_message_t GeodeticPosition_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+{
+    mace_message_t msg;
+    mace_global_position_int_t positionObj = getMACE_GlobalPositionInt();
+    mace_msg_global_position_int_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    return msg;
+}
+
 } //end of namespace pose
 } //end of namespace mace

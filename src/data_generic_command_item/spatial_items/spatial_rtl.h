@@ -76,6 +76,13 @@ public:
         return !(*this == rhs);
     }
 
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printSpatialCMDInfo() const override;
+
 };
 
 } //end of namespace MissionItem

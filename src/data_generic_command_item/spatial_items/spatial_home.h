@@ -11,9 +11,6 @@
 
 #include "data_generic_command_item/command_item_type.h"
 
-#include "base/pose/geodetic_position_3D.h"
-#include "data_generic_state_item/base_3d_position.h"
-
 using namespace mace;
 
 namespace CommandItem {
@@ -31,9 +28,13 @@ public:
     //!
     SpatialHome();
 
-    SpatialHome(const pose::GeodeticPosition_3D &position);
+    //!
+    //! \brief SpatialHome
+    //! \param homePosition
+    //!
+    SpatialHome(const mace::pose::Position* homePosition);
 
-    ~SpatialHome();
+    ~SpatialHome() override;
 
     //!
     //! \brief SpatialHome A default copy constructor of a SpatialHome commandItem object.
@@ -49,8 +50,28 @@ public:
     //!
     SpatialHome(const int &systemOrigin, const int &systemTarget = 0);
 
-    mace_home_position_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+public:
+    //!
+    //! \brief fromMACEComms_CommandObject
+    //! \param obj
+    //! \return
+    //!
+    bool fromMACEComms_CommandObject(const mace_set_home_position_t &obj);
+
+    //!
+    //! \brief getMACECommsObject
+    //! \return
+    //!
+    bool getMACECommsObject(mace_home_position_t &obj) const;
+
+    //!
+    //! \brief getMACEMsg
+    //! \param systemID
+    //! \param compID
+    //! \param chan
+    //! \return
+    //!
+    bool getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan, mace_message_t &msg) const;
 
 public:
     //!
@@ -121,6 +142,13 @@ public:
     bool operator != (const SpatialHome &rhs) {
         return !(*this == rhs);
     }
+
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printSpatialCMDInfo() const override;
 
     friend std::ostream& operator<<(std::ostream& os, const SpatialHome& t);
 };

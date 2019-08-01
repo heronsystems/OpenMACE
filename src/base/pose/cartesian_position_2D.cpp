@@ -154,15 +154,22 @@ void CartesianPosition_2D::applyPositionalShiftFromCompass(const double &distanc
     applyPositionalShiftFromPolar(distance,polarBearing);
 }
 
-std::ostream& operator<<(std::ostream& os, const CartesianPosition_2D& t)
+mace_local_position_ned_t CartesianPosition_2D::getMACE_CartesianPositionInt() const
 {
-    std::stringstream stream;
-    stream.precision(6);
-    stream << std::fixed << "Cartesian Position 2D: "<<
-              t.getXPosition() << ", "<< t.getYPosition() << ".";
-    os << stream.str();
+    mace_local_position_ned_t posObj;
+    posObj.x = static_cast<int32_t>((this->getXPosition() * pow(10,7)));
+    posObj.y = static_cast<int32_t>((this->getYPosition() * pow(10,7)));
+    posObj.z = 0.0;
+    posObj.time_boot_ms = 0;
+    return posObj;
+}
 
-    return os;
+mace_message_t CartesianPosition_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+{
+    mace_message_t msg;
+    mace_local_position_ned_t positionObj = getMACE_CartesianPositionInt();
+    mace_msg_local_position_ned_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    return msg;
 }
 
 CartesianPosition_2D operator+ (const CartesianPosition_2D &lhs, const CartesianPosition_2D &rhs)

@@ -29,8 +29,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     command_item_topic.cpp \
     command_item_topic_ack.cpp \
-    command_topic_land.cpp \
-    command_item_topic_takeoff.cpp \
     command_item_topic_change_mode.cpp
 
 
@@ -39,9 +37,7 @@ HEADERS +=\
     command_item_topic.h \
     command_item_topic_components.h \
     command_item_topic_ack.h \
-    command_topic_takeoff.h \
-    command_topic_change_mode.h \
-    command_topic_land.h
+    command_topic_change_mode.h
 
 # Unix lib Install
 unix:!symbian {

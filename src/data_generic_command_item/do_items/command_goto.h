@@ -98,6 +98,13 @@ public:
     bool operator != (const CommandGoTo &rhs) {
         return !(*this == rhs);
     }
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printCommandInfo() const override;
+
 
     friend std::ostream &operator<<(std::ostream &out, const CommandGoTo &obj)
     {
