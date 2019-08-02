@@ -50,6 +50,22 @@ public:
     //!
     SpatialHome(const int &systemOrigin, const int &systemTarget = 0);
 
+
+public:
+    //!
+    //! \brief toMACEComms_MissionItem
+    //! \param obj
+    //! \return
+    //!
+    bool toMACEComms_MissionItem(mace_mission_item_t &obj) const;
+
+    //!
+    //! \brief toMACEComms_MSG
+    //! \param obj
+    //! \return
+    //!
+    mace_message_t toMACEComms_MSG(mace_mission_item_t &obj) const;
+
 public:
     //!
     //! \brief fromMACEComms_CommandObject

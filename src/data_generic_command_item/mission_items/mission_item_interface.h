@@ -3,7 +3,6 @@
 
 #include "mace.h"
 
-template <class T>
 class Interface_MissionItem
 {
 public:
@@ -43,4 +42,5 @@ protected:
 
     }
 };
+
 #endif // MISSION_ITEM_INTERFACE_H

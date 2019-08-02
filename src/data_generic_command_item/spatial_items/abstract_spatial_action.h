@@ -17,6 +17,7 @@
 #include "base/pose/geodetic_position_2D.h"
 #include "base/pose/geodetic_position_3D.h"
 
+#include "../mission_items/mission_item_interface.h"
 
 #include "data_generic_command_item/abstract_command_item.h"
 
@@ -27,7 +28,7 @@ MACE_CLASS_FORWARD(AbstractSpatialAction);
 //!
 //! \brief The AbstractSpatialCommand class
 //!
-class AbstractSpatialAction : public AbstractCommandItem
+class AbstractSpatialAction : public AbstractCommandItem, public Interface_MissionItem
 {
 public:
     AbstractSpatialAction():
@@ -86,6 +87,32 @@ public:
         return this->position;
     }
 
+public:
+    void updateMissionPosition(const mace::pose::Position* pos, mace_mission_item_t &item)
+    {
+        switch (pos->getCoordinateSystemType()) {
+        case CoordinateSystemTypes:
+
+            break;
+        default:
+            break;
+        }
+        if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT){
+            item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        }
+        else if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
+        {
+            item.frame = MAV_FRAME_LOCAL_ENU;
+        }
+        else{
+            //KEN FIX THIS
+            item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        }
+
+        item.x = pos.getX();
+        item.y = pos.getY();
+        item.z = pos.getZ();
+    }
 
 public:
     //Ken Fix: Impose this as a pure virtual for interface with any abstract position formulations

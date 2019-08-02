@@ -56,6 +56,26 @@ SpatialHome::SpatialHome(const int &systemOrigin, const int &systemTarget):
 
 }
 
+//!
+//! \brief toMACEComms_MissionItem
+//! \param obj
+//! \return
+//!
+bool SpatialHome::toMACEComms_MissionItem(mace_mission_item_t &obj) const
+{
+
+}
+
+//!
+//! \brief toMACEComms_MSG
+//! \param obj
+//! \return
+//!
+mace_message_t SpatialHome::toMACEComms_MSG(mace_mission_item_t &obj) const
+{
+
+}
+
 bool SpatialHome::fromMACEComms_CommandObject(const mace_set_home_position_t &obj)
 {
     //This object will only be of the type Geodetic Position

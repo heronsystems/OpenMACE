@@ -93,7 +93,8 @@ HEADERS +=\
     spatial_items/spatial_action_factory.h \
     mission_items/typedef_mission_types.h \
     target_items/dynamic_target_state.h \
-    mission_items/mission_item_interface.h
+    mission_items/mission_item_interface.h \
+    command_item_interface.h
 
 # Unix lib Install
 unix:!symbian {
