@@ -83,7 +83,7 @@ protected:
 
 protected:
 
-    std::shared_ptr<CommandItem::AbstractCommandItem> currentCommand;
+    std::shared_ptr<command_item::AbstractCommandItem> currentCommand;
     bool currentCommandSet;
 
 };

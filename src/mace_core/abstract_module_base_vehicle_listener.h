@@ -42,7 +42,7 @@ public:
         /// or an event to take place when calling these items.
         /////////////////////////////////////////////////////////////////////////
 
-        this->template AddCommandLogic<CommandItem::CommandGoTo>(CT::COMMAND_GOTO, [this](const CommandItem::CommandGoTo &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::CommandGoTo>(CT::COMMAND_GOTO, [this](const command_item::CommandGoTo &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_GoTo(command, sender);
         });
 
@@ -50,33 +50,33 @@ public:
             Request_FullDataSync(targetSystem, sender);
         });
 
-        this->template AddCommandLogic<CommandItem::ActionArm>(CT::CHANGE_VEHICLE_ARM, [this](const CommandItem::ActionArm &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::ActionArm>(CT::CHANGE_VEHICLE_ARM, [this](const command_item::ActionArm &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_SystemArm(command, sender);
         });
 
-        this->template AddCommandLogic<CommandItem::SpatialTakeoff>(CT::REQUEST_VEHICLE_TAKEOFF, [this](const CommandItem::SpatialTakeoff &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::SpatialTakeoff>(CT::REQUEST_VEHICLE_TAKEOFF, [this](const command_item::SpatialTakeoff &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_VehicleTakeoff(command, sender);
         });
 
-        this->template AddCommandLogic<CommandItem::SpatialLand>(CT::REQUEST_VEHICLE_LAND, [this](const CommandItem::SpatialLand &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::SpatialLand>(CT::REQUEST_VEHICLE_LAND, [this](const command_item::SpatialLand &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_Land(command, sender);
         });
 
-        this->template AddCommandLogic<CommandItem::SpatialRTL>(CT::REQUEST_VEHICLE_RTL, [this](const CommandItem::SpatialRTL &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::SpatialRTL>(CT::REQUEST_VEHICLE_RTL, [this](const command_item::SpatialRTL &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_ReturnToLaunch(command, sender);
         });
 
-        this->template AddCommandLogic<CommandItem::ActionMissionCommand>(CT::SET_MISSION_STATE, [this](const CommandItem::ActionMissionCommand &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::ActionMissionCommand>(CT::SET_MISSION_STATE, [this](const command_item::ActionMissionCommand &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_MissionState(command, sender);
         });
 
-        this->template AddCommandLogic<std::shared_ptr<CommandItem::AbstractCommandItem>>(CT::ISSUE_GENERAL_COMMAND, [this](const std::shared_ptr<CommandItem::AbstractCommandItem> &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<std::shared_ptr<command_item::AbstractCommandItem>>(CT::ISSUE_GENERAL_COMMAND, [this](const std::shared_ptr<command_item::AbstractCommandItem> &command, const OptionalParameter<ModuleCharacteristic> &sender){
             UNUSED(sender);
             Command_IssueGeneralCommand(command);
         });
 
 
-        this->template AddCommandLogic<CommandItem::ActionChangeMode>(CT::CHANGE_VEHICLE_MODE, [this](const CommandItem::ActionChangeMode &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::ActionChangeMode>(CT::CHANGE_VEHICLE_MODE, [this](const command_item::ActionChangeMode &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_ChangeSystemMode(command, sender);
         });
 
@@ -154,7 +154,7 @@ public:
             Command_GetHomePosition(vehicleID, sender);
         });
 
-        this->template AddCommandLogic<CommandItem::SpatialHome>(CT::SET_VEHICLE_HOME, [this](const CommandItem::SpatialHome &vehicleHome, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::SpatialHome>(CT::SET_VEHICLE_HOME, [this](const command_item::SpatialHome &vehicleHome, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_SetHomePosition(vehicleHome, sender);
         });
 
@@ -167,7 +167,7 @@ public:
     //! \param command
     //! \param sender
     //!
-    virtual void Command_GoTo(const CommandItem::CommandGoTo &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_GoTo(const command_item::CommandGoTo &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
 
     //!
@@ -181,48 +181,48 @@ public:
     //! \param command Arm/Disarm command
     //! \param sender Sender module
     //!
-    virtual void Command_SystemArm(const CommandItem::ActionArm &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_SystemArm(const command_item::ActionArm &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_VehicleTakeoff Command a vehicle takeoff
     //! \param command Vehicle takeoff command
     //! \param sender Sender module
     //!
-    virtual void Command_VehicleTakeoff(const CommandItem::SpatialTakeoff &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_VehicleTakeoff(const command_item::SpatialTakeoff &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_Land Issue a LAND command
     //! \param command Land command
     //! \param sender Sender module
     //!
-    virtual void Command_Land(const CommandItem::SpatialLand &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_Land(const command_item::SpatialLand &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_ReturnToLaunch Issue an RTL command
     //! \param command RTL command
     //! \param sender Sender module
     //!
-    virtual void Command_ReturnToLaunch(const CommandItem::SpatialRTL &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_ReturnToLaunch(const command_item::SpatialRTL &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_MissionState Issue a mission state update command
     //! \param command Mission state command
     //! \param sender Sender module
     //!
-    virtual void Command_MissionState(const CommandItem::ActionMissionCommand &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_MissionState(const command_item::ActionMissionCommand &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_IssueGeneralCommand Issue a general command
     //! \param command General command
     //!
-    virtual void Command_IssueGeneralCommand(const std::shared_ptr<CommandItem::AbstractCommandItem> &command) = 0;
+    virtual void Command_IssueGeneralCommand(const std::shared_ptr<command_item::AbstractCommandItem> &command) = 0;
 
     //!
     //! \brief Command_ChangeSystemMode Issue a mode change command
     //! \param vehicleMode Mode change command
     //! \param sender Sender module
     //!
-    virtual void Command_ChangeSystemMode(const CommandItem::ActionChangeMode &vehicleMode, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_ChangeSystemMode(const command_item::ActionChangeMode &vehicleMode, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_UploadMission Issue an upload mission command
@@ -288,7 +288,7 @@ public:
     //! \brief Command_SetHomePosition Set a new home position
     //! \param vehicleHome New vehicle home position
     //!
-    virtual void Command_SetHomePosition(const CommandItem::SpatialHome &vehicleHome, const OptionalParameter<ModuleCharacteristic>& = OptionalParameter<ModuleCharacteristic>()) = 0;
+    virtual void Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<ModuleCharacteristic>& = OptionalParameter<ModuleCharacteristic>()) = 0;
 
 
 };

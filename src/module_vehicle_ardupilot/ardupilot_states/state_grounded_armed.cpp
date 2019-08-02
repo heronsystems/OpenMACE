@@ -60,13 +60,13 @@ bool State_GroundedArmed::handleCommand(const std::shared_ptr<AbstractCommandIte
 {
     this->clearCommand();
     switch (command->getCommandType()) {
-    case CommandItem::COMMANDITEM::CI_ACT_ARM:
+    case command_item::COMMANDTYPE::CI_ACT_ARM:
     {
-        if(command->as<CommandItem::ActionArm>()->getRequestArm() == false)
+        if(command->as<command_item::ActionArm>()->getRequestArm() == false)
             desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMING;
         break;
     }
-    case CommandItem::COMMANDITEM::CI_NAV_TAKEOFF:
+    case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
     {
         desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF;
         GetImmediateOuterState()->setDesiredStateEnum(desiredStateEnum);

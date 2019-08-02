@@ -20,26 +20,26 @@ namespace ExternalLink {
 
 using ActionSend_CommandGoTo_Broadcast = Controllers::ActionBroadcast<
     mace_message_t, MaceCore::ModuleCharacteristic,
-    BasicExternalLinkController_ModuleKeyed<CommandItem::CommandGoTo>,
-    CommandItem::CommandGoTo,
+    BasicExternalLinkController_ModuleKeyed<command_item::CommandGoTo>,
+    command_item::CommandGoTo,
     mace_command_goto_t
 >;
 
 using ActionSend_CommandGoTo_TargedWithResponse = Controllers::ActionSend<
     mace_message_t, MaceCore::ModuleCharacteristic,
-    BasicExternalLinkController_ModuleKeyed<CommandItem::CommandGoTo>,
+    BasicExternalLinkController_ModuleKeyed<command_item::CommandGoTo>,
     MaceCore::ModuleCharacteristic,
-    CommandItem::CommandGoTo,
+    command_item::CommandGoTo,
     mace_command_goto_t,
     MACE_MSG_ID_COMMAND_GOTO_ACK
 >;
 
 using ActionSend_CommandGoTo_ReceiveRespond = Controllers::ActionFinalReceiveRespond<
     mace_message_t, MaceCore::ModuleCharacteristic,
-    BasicExternalLinkController_ModuleKeyed<CommandItem::CommandGoTo>,
+    BasicExternalLinkController_ModuleKeyed<command_item::CommandGoTo>,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
-    CommandItem::CommandGoTo,
+    command_item::CommandGoTo,
     mace_command_goto_t,
     mace_command_goto_ack_t,
     MACE_MSG_ID_COMMAND_GOTO
@@ -47,7 +47,7 @@ using ActionSend_CommandGoTo_ReceiveRespond = Controllers::ActionFinalReceiveRes
 
 using ActionFinish_CommandGoTo = Controllers::ActionFinish<
     mace_message_t, MaceCore::ModuleCharacteristic,
-    BasicExternalLinkController_ModuleKeyed<CommandItem::CommandGoTo>,
+    BasicExternalLinkController_ModuleKeyed<command_item::CommandGoTo>,
     MaceCore::ModuleCharacteristic,
     uint8_t,
     mace_command_goto_ack_t,
@@ -55,7 +55,7 @@ using ActionFinish_CommandGoTo = Controllers::ActionFinish<
 >;
 
 
-class Controller_GoTo : public BasicExternalLinkController_ModuleKeyed<CommandItem::CommandGoTo>,
+class Controller_GoTo : public BasicExternalLinkController_ModuleKeyed<command_item::CommandGoTo>,
         public ActionSend_CommandGoTo_Broadcast,
         public ActionSend_CommandGoTo_TargedWithResponse,
         public ActionSend_CommandGoTo_ReceiveRespond,
@@ -71,14 +71,14 @@ private:
 
 protected:
 
-    void FillCommand(const CommandItem::CommandGoTo &commandItem, mace_command_goto_t &cmd) const;
+    void FillCommand(const command_item::CommandGoTo &commandItem, mace_command_goto_t &cmd) const;
 
-    void BuildCommand(const mace_command_goto_t &message, CommandItem::CommandGoTo &data) const;
+    void BuildCommand(const mace_command_goto_t &message, command_item::CommandGoTo &data) const;
 
 
 protected:
 
-    virtual void Construct_Broadcast(const CommandItem::CommandGoTo &data, const MaceCore::ModuleCharacteristic &sender, mace_command_goto_t &cmd)
+    virtual void Construct_Broadcast(const command_item::CommandGoTo &data, const MaceCore::ModuleCharacteristic &sender, mace_command_goto_t &cmd)
     {
         std::cout << "!!!WARNING!!!: Broadcasting a command. Commands should be targeted" << std::endl;
 
@@ -90,7 +90,7 @@ protected:
         FillCommand(data, cmd);
     }
 
-    virtual bool Construct_Send(const CommandItem::CommandGoTo &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_command_goto_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Construct_Send(const command_item::CommandGoTo &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_command_goto_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         queueObj = target;
@@ -113,7 +113,7 @@ protected:
     }
 
 
-    virtual bool Construct_FinalObjectAndResponse(const mace_command_goto_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_command_goto_ack_t &ack, MaceCore::ModuleCharacteristic &key, CommandItem::CommandGoTo &data, MaceCore::ModuleCharacteristic &moduleFor, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Construct_FinalObjectAndResponse(const mace_command_goto_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_command_goto_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::CommandGoTo &data, MaceCore::ModuleCharacteristic &moduleFor, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         moduleFor.MaceInstance = msg.target_system;

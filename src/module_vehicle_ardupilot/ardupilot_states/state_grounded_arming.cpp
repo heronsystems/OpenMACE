@@ -96,7 +96,7 @@ void State_GroundedArming::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    CommandItem::ActionArm action(255, Owner().getMAVLINKID());
+    command_item::ActionArm action(255, Owner().getMAVLINKID());
     action.setVehicleArm(true);
     controllerArm->Send(action, sender, target);
     collection->Insert("armController", controllerArm);

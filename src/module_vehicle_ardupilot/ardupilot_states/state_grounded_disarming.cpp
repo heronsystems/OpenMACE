@@ -46,9 +46,9 @@ hsm::Transition State_GroundedDisarming::GetTransition()
 
 bool State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    COMMANDITEM type = command->getCommandType();
+    COMMANDTYPE type = command->getCommandType();
     switch (type) {
-    case COMMANDITEM::CI_ACT_ARM:
+    case COMMANDTYPE::CI_ACT_ARM:
     {
         break;
     }
@@ -89,7 +89,7 @@ void State_GroundedDisarming::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    CommandItem::ActionArm action(255, Owner().getMAVLINKID());
+    command_item::ActionArm action(255, Owner().getMAVLINKID());
     action.setVehicleArm(false);
     controllerArm->Send(action,sender,target);
     printf("Adding disarmController %x\n", controllerArm);

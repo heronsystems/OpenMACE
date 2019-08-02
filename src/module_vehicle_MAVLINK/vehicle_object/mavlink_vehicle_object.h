@@ -34,7 +34,7 @@ public:
     virtual void cbi_VehicleMissionData(const int &systemID, std::shared_ptr<Data::ITopicComponentDataObject> data) const = 0;
 
     virtual void cbi_VehicleSystemTime(const int &systemID, std::shared_ptr<DataGenericItem::DataGenericItem_SystemTime> systemTime) = 0;
-    virtual void cbi_VehicleHome(const int &systemID, const CommandItem::SpatialHome &home) = 0;
+    virtual void cbi_VehicleHome(const int &systemID, const command_item::SpatialHome &home) = 0;
     virtual void cbi_VehicleMission(const int &systemID, const MissionItem::MissionList &missionList) = 0;
     virtual void cbi_VehicleMissionItemCurrent(const MissionItem::MissionItemCurrent &current) const = 0;
 };

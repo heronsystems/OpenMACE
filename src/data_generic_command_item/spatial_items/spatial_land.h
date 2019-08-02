@@ -9,13 +9,13 @@
 
 #include "abstract_spatial_action.h"
 
-#include "data_generic_command_item/command_item_type.h"
-
 #include "data_generic_command_item/abstract_command_item.h"
+#include "data_generic_command_item/command_item_type.h"
+#include "data_generic_command_item/interface_command_item.h"
 
-namespace CommandItem {
+namespace command_item {
 
-class SpatialLand : public AbstractSpatialAction
+class SpatialLand : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_LAND, mace_command_long_t>
 {
 
 public:
@@ -28,7 +28,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    COMMANDITEM getCommandType() const override;
+    COMMANDTYPE getCommandType() const override;
 
     //!
     //! \brief getDescription
@@ -58,6 +58,12 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
+
+    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
+public:
+    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
+
+    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
 
 public:
     void operator = (const SpatialLand &rhs)

@@ -1,10 +1,10 @@
 #include "spatial_land.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialLand::getCommandType() const
+COMMANDTYPE SpatialLand::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_LAND;
+    return COMMANDTYPE::CI_NAV_LAND;
 }
 
 std::string SpatialLand::getDescription() const
@@ -43,6 +43,12 @@ SpatialLand::SpatialLand(const int &systemOrigin,  const int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
+}
+
+void SpatialLand::toMACEComms_CommandItem(mace_command_long_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    populateCommandItem_FromPosition(obj);
 }
 
 //!

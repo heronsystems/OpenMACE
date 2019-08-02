@@ -157,7 +157,7 @@ void State_FlightGuided::handleGuidedState(const mace::pose::CartesianPosition_3
 
 void State_FlightGuided::announceTargetState(const TargetItem::CartesianDynamicTarget &target, const double &targetDistance)
 {
-    CommandItem::SpatialHome home = Owner().mission->vehicleHomePosition.get();
+    command_item::SpatialHome home = Owner().mission->vehicleHomePosition.get();
     mace::pose::GeodeticPosition_3D homePos(home.getPosition().getX(),home.getPosition().getY(),home.getPosition().getZ());
     mace::pose::GeodeticPosition_3D targetPos;
     DynamicsAid::LocalPositionToGlobal(homePos,target.getPosition(),targetPos);

@@ -1,9 +1,9 @@
 #include "action_mission_command.h"
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM ActionMissionCommand::getCommandType() const
+COMMANDTYPE ActionMissionCommand::getCommandType() const
 {
-    return COMMANDITEM::CI_ACT_MISSIONCOMMAND;
+    return COMMANDTYPE::CI_ACT_MISSIONCOMMAND;
 }
 
 std::string ActionMissionCommand::getDescription() const
@@ -48,4 +48,10 @@ std::string ActionMissionCommand::printCommandInfo() const
 
 }
 
+void ActionMissionCommand::toMACEComms_CommandItem(mace_command_short_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    obj.param = static_cast<float>(this->missionCommand);
 }
+
+} //end of namespace command_item

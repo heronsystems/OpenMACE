@@ -25,11 +25,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += data_interface_mace.cpp \
+SOURCES += \
     MACE_to_COMMS/helper_mission_mace_to_comms.cpp \
     COMMS_to_MACE/helper_mission_comms_to_mace.cpp
 
-HEADERS += data_interface_mace.h\
+HEADERS +=\
         data_interface_mace_global.h \
     generic/helper_previous_command_mace.h \
     generic/helper_previous_guided_mace.h \

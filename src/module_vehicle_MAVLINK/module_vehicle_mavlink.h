@@ -144,7 +144,7 @@ public:
     //! \brief Command_SystemArm Command an ARM/DISARM action
     //! \param vehicleArm Arm action
     //!
-    virtual void Command_SystemArm(const CommandItem::ActionArm &vehicleArm)
+    virtual void Command_SystemArm(const command_item::ActionArm &vehicleArm)
     {
         UNUSED(vehicleArm);
     }
@@ -153,7 +153,7 @@ public:
     //!= \brief Command_ChangeSystemMode Command a CHANGE MODE action
     //! \param vehicleMode Mode to change to
     //!
-    virtual void Command_ChangeSystemMode(const CommandItem::ActionChangeMode &vehicleMode)
+    virtual void Command_ChangeSystemMode(const command_item::ActionChangeMode &vehicleMode)
     {
         UNUSED(vehicleMode);
     }
@@ -279,7 +279,7 @@ public:
     //! \param systemID Vehicle ID generating the vehicle home data
     //! \param home Vehicle home position data
     //!
-    virtual void cbi_VehicleHome(const int &systemID, const CommandItem::SpatialHome &home)
+    virtual void cbi_VehicleHome(const int &systemID, const command_item::SpatialHome &home)
     {
     //    std::stringstream buffer;
     //    buffer << home;

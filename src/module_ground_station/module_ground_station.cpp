@@ -444,7 +444,7 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                 else if(componentsUpdated.at(i) == MissionTopic::MissionHomeTopic::Name()) {
                     std::shared_ptr<MissionTopic::MissionHomeTopic> component = std::make_shared<MissionTopic::MissionHomeTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
-                    CommandItem::SpatialHome castHome = component->getHome();
+                    command_item::SpatialHome castHome = component->getHome();
                     // Write mission items to the GUI:
                     m_toGUIHandler->sendVehicleHome(vehicleID, castHome);
                 }
@@ -525,7 +525,7 @@ void ModuleGroundStation::NewlyAvailableMissionExeState(const MissionItem::Missi
 //! \brief NewlyAvailableHomePosition Subscriber to a new home position
 //! \param home New home position
 //!
-void ModuleGroundStation::NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleGroundStation::NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     std::cout<<"Ground Control: New available home position"<<std::endl;
     m_toGUIHandler->sendVehicleHome(home.getOriginatingSystem(), home);
@@ -537,7 +537,7 @@ void ModuleGroundStation::NewlyAvailableHomePosition(const CommandItem::SpatialH
 void ModuleGroundStation::NewlyUpdatedGlobalOrigin(const mace::pose::GeodeticPosition_3D &position)
 {
     std::cout << "Ground Control: New available global origin" << std::endl;
-    CommandItem::SpatialHome origin(position);
+    command_item::SpatialHome origin(position);
     m_toGUIHandler->sendGlobalOrigin(origin);
 }
 

@@ -13,66 +13,66 @@ Helper_MissionCOMMStoMACE::~Helper_MissionCOMMStoMACE()
 
 }
 
-std::shared_ptr<CommandItem::AbstractCommandItem> Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(const mace_mission_item_t &maceItem, const MaceCore::ModuleCharacteristic &target)
+std::shared_ptr<command_item::AbstractCommandItem> Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(const mace_mission_item_t &maceItem, const MaceCore::ModuleCharacteristic &target)
 {
-    std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = NULL;
+    std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = NULL;
 
-    switch(static_cast<COMMANDITEM>(maceItem.command))
+    switch(static_cast<COMMANDTYPE>(maceItem.command))
     {
-    case COMMANDITEM::CI_ACT_CHANGESPEED:
+    case COMMANDTYPE::CI_ACT_CHANGESPEED:
     {
-        CommandItem::ActionChangeSpeed missionItem;
+        command_item::ActionChangeSpeed missionItem;
         Helper_MissionCOMMStoMACE::convertChangespeed(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::ActionChangeSpeed>(missionItem);
+        newMissionItem = std::make_shared<command_item::ActionChangeSpeed>(missionItem);
         break;
     }
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
-        CommandItem::SpatialLand missionItem;
+        command_item::SpatialLand missionItem;
         Helper_MissionCOMMStoMACE::convertLand(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::SpatialLand>(missionItem);
+        newMissionItem = std::make_shared<command_item::SpatialLand>(missionItem);
         break;
     }        
-    case COMMANDITEM::CI_NAV_LOITER_TIME:
+    case COMMANDTYPE::CI_NAV_LOITER_TIME:
     {
-        CommandItem::SpatialLoiter_Time missionItem;
+        command_item::SpatialLoiter_Time missionItem;
         Helper_MissionCOMMStoMACE::convertLoiterTime(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::SpatialLoiter_Time>(missionItem);
+        newMissionItem = std::make_shared<command_item::SpatialLoiter_Time>(missionItem);
         break;
     }
-    case COMMANDITEM::CI_NAV_LOITER_TURNS:
+    case COMMANDTYPE::CI_NAV_LOITER_TURNS:
     {
-        CommandItem::SpatialLoiter_Turns missionItem;
+        command_item::SpatialLoiter_Turns missionItem;
         Helper_MissionCOMMStoMACE::convertLoiterTurns(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::SpatialLoiter_Turns>(missionItem);
+        newMissionItem = std::make_shared<command_item::SpatialLoiter_Turns>(missionItem);
         break;
     }
-    case COMMANDITEM::CI_NAV_LOITER_UNLIM:
+    case COMMANDTYPE::CI_NAV_LOITER_UNLIM:
     {
-        CommandItem::SpatialLoiter_Unlimited missionItem;
+        command_item::SpatialLoiter_Unlimited missionItem;
         Helper_MissionCOMMStoMACE::convertLoiterUnlimted(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::SpatialLoiter_Unlimited>(missionItem);
+        newMissionItem = std::make_shared<command_item::SpatialLoiter_Unlimited>(missionItem);
         break;
     }
-    case COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH:
+    case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
     {
-        CommandItem::SpatialRTL missionItem;
+        command_item::SpatialRTL missionItem;
         Helper_MissionCOMMStoMACE::convertRTL(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::SpatialRTL>(missionItem);
+        newMissionItem = std::make_shared<command_item::SpatialRTL>(missionItem);
         break;
     }
-    case COMMANDITEM::CI_NAV_TAKEOFF:
+    case COMMANDTYPE::CI_NAV_TAKEOFF:
     {
-        CommandItem::SpatialTakeoff missionItem;
+        command_item::SpatialTakeoff missionItem;
         Helper_MissionCOMMStoMACE::convertTakeoff(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::SpatialTakeoff>(missionItem);
+        newMissionItem = std::make_shared<command_item::SpatialTakeoff>(missionItem);
         break;
     }
-    case COMMANDITEM::CI_NAV_WAYPOINT:
+    case COMMANDTYPE::CI_NAV_WAYPOINT:
     {
-        CommandItem::SpatialWaypoint missionItem;
+        command_item::SpatialWaypoint missionItem;
         Helper_MissionCOMMStoMACE::convertWaypoint(maceItem,missionItem, target);
-        newMissionItem = std::make_shared<CommandItem::SpatialWaypoint>(missionItem);
+        newMissionItem = std::make_shared<command_item::SpatialWaypoint>(missionItem);
         break;
     }
     default:
@@ -90,7 +90,7 @@ std::shared_ptr<CommandItem::AbstractCommandItem> Helper_MissionCOMMStoMACE::Con
 }
 
 
-void Helper_MissionCOMMStoMACE::convertHome(const mace_set_home_position_t &maceItem, CommandItem::SpatialHome &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertHome(const mace_set_home_position_t &maceItem, command_item::SpatialHome &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
@@ -99,7 +99,7 @@ void Helper_MissionCOMMStoMACE::convertHome(const mace_set_home_position_t &mace
     missionItem.position->setZ(maceItem.altitude / pow(10,3));
 }
 
-void Helper_MissionCOMMStoMACE::convertChangespeed(const mace_mission_item_t &maceItem, CommandItem::ActionChangeSpeed &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertChangespeed(const mace_mission_item_t &maceItem, command_item::ActionChangeSpeed &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
@@ -114,14 +114,14 @@ void Helper_MissionCOMMStoMACE::convertChangespeed(const mace_mission_item_t &ma
     }
 }
 
-void Helper_MissionCOMMStoMACE::convertLand(const mace_mission_item_t &maceItem, CommandItem::SpatialLand &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertLand(const mace_mission_item_t &maceItem, command_item::SpatialLand &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
     missionItem.setPosition(Helper_MissionCOMMStoMACE::getBasePosition(maceItem, target));
 }
 
-void Helper_MissionCOMMStoMACE::convertLoiterTime(const mace_mission_item_t &maceItem, CommandItem::SpatialLoiter_Time &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertLoiterTime(const mace_mission_item_t &maceItem, command_item::SpatialLoiter_Time &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
@@ -131,7 +131,7 @@ void Helper_MissionCOMMStoMACE::convertLoiterTime(const mace_mission_item_t &mac
     missionItem.direction = (maceItem.param3 > 0.0) ? Data::LoiterDirection::CW : Data::LoiterDirection::CCW;
 }
 
-void Helper_MissionCOMMStoMACE::convertLoiterTurns(const mace_mission_item_t &maceItem, CommandItem::SpatialLoiter_Turns &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertLoiterTurns(const mace_mission_item_t &maceItem, command_item::SpatialLoiter_Turns &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
@@ -141,7 +141,7 @@ void Helper_MissionCOMMStoMACE::convertLoiterTurns(const mace_mission_item_t &ma
     missionItem.direction = (maceItem.param3 > 0.0) ? Data::LoiterDirection::CW : Data::LoiterDirection::CCW;
 }
 
-void Helper_MissionCOMMStoMACE::convertLoiterUnlimted(const mace_mission_item_t &maceItem, CommandItem::SpatialLoiter_Unlimited &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertLoiterUnlimted(const mace_mission_item_t &maceItem, command_item::SpatialLoiter_Unlimited &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
@@ -152,7 +152,7 @@ void Helper_MissionCOMMStoMACE::convertLoiterUnlimted(const mace_mission_item_t 
     }
 }
 
-void Helper_MissionCOMMStoMACE::convertRTL(const mace_mission_item_t &maceItem, CommandItem::SpatialRTL &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertRTL(const mace_mission_item_t &maceItem, command_item::SpatialRTL &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
@@ -162,14 +162,14 @@ void Helper_MissionCOMMStoMACE::convertRTL(const mace_mission_item_t &maceItem, 
     }
 }
 
-void Helper_MissionCOMMStoMACE::convertTakeoff(const mace_mission_item_t &maceItem, CommandItem::SpatialTakeoff &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertTakeoff(const mace_mission_item_t &maceItem, command_item::SpatialTakeoff &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);
     missionItem.setPosition(Helper_MissionCOMMStoMACE::getBasePosition(maceItem, target));
 }
 
-void Helper_MissionCOMMStoMACE::convertWaypoint(const mace_mission_item_t &maceItem, CommandItem::SpatialWaypoint &missionItem, const MaceCore::ModuleCharacteristic &target)
+void Helper_MissionCOMMStoMACE::convertWaypoint(const mace_mission_item_t &maceItem, command_item::SpatialWaypoint &missionItem, const MaceCore::ModuleCharacteristic &target)
 {
     missionItem.setTargetSystem(target.ModuleID);
     missionItem.setOriginatingSystem(target.ModuleID);

@@ -25,7 +25,7 @@ Ardupilot_TakeoffController::~Ardupilot_TakeoffController() {
 
 }
 
-void Ardupilot_TakeoffController::initializeTakeoffSequence(const CommandItem::SpatialTakeoff &takeoff)
+void Ardupilot_TakeoffController::initializeTakeoffSequence(const command_item::SpatialTakeoff &takeoff)
 {
     missionItem_Takeoff = takeoff;
     std::string mode = vehicleDataObject->state->vehicleFlightMode.get().getFlightModeString();
@@ -47,7 +47,7 @@ void Ardupilot_TakeoffController::initializeTakeoffSequence(const CommandItem::S
     {
         //we are in a mode that we can request the aircraft to arm
         currentStateLogic = DISARMED;
-        CommandItem::ActionArm itemArm;
+        command_item::ActionArm itemArm;
         itemArm.setTargetSystem(vehicleID);
         itemArm.setVehicleArm(true);
         vehicleDataObject->m_CommandController->setSystemArm(itemArm);
@@ -109,7 +109,7 @@ void Ardupilot_TakeoffController::generateControl(const Data::ControllerState &c
         if((currentStateLogic == ALTITUDE_TRANSITION) && (missionItem_Takeoff.position->has3DPositionSet()))
         {
             currentStateLogic = HORIZONTAL_TRANSITION;
-            CommandItem::SpatialWaypoint target;
+            command_item::SpatialWaypoint target;
             target.setTargetSystem(missionItem_Takeoff.getTargetSystem());
             target.setOriginatingSystem(missionItem_Takeoff.getOriginatingSystem());
             target.setPosition(missionItem_Takeoff.getPosition());

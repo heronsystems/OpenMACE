@@ -17,7 +17,7 @@ using CONTROLLER_SYSTEMMODE_TYPE = Controllers::GenericController<
     mace_message_t, MaceCore::ModuleCharacteristic,
     TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMaceMsgIDTuple<MaceCore::ModuleCharacteristic>>,
     uint8_t,
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::ActionChangeMode>
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::ActionChangeMode>
 >;
 
 
@@ -25,7 +25,7 @@ using SystemModeSend = Controllers::ActionSend<
     mace_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_SYSTEMMODE_TYPE,
     MaceCore::ModuleCharacteristic,
-    CommandItem::ActionChangeMode,
+    command_item::ActionChangeMode,
     mace_command_system_mode_t,
     MACE_MSG_ID_SYSTEM_MODE_ACK
 >;
@@ -35,7 +35,7 @@ using SystemMode_FinalReceiveRespond = Controllers::ActionFinalReceiveRespond<
     CONTROLLER_SYSTEMMODE_TYPE,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
-    CommandItem::ActionChangeMode,
+    command_item::ActionChangeMode,
     mace_command_system_mode_t,
     mace_system_mode_ack_t,
     MACE_MSG_ID_COMMAND_SYSTEM_MODE
@@ -67,9 +67,9 @@ private:
 protected:
 
 
-    virtual bool Construct_Send(const CommandItem::ActionChangeMode &commandItem, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_command_system_mode_t &cmd, MaceCore::ModuleCharacteristic &queueObj);
+    virtual bool Construct_Send(const command_item::ActionChangeMode &commandItem, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_command_system_mode_t &cmd, MaceCore::ModuleCharacteristic &queueObj);
 
-    virtual bool Construct_FinalObjectAndResponse(const mace_command_system_mode_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_system_mode_ack_t &ack, MaceCore::ModuleCharacteristic &dataKey, CommandItem::ActionChangeMode &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj);
+    virtual bool Construct_FinalObjectAndResponse(const mace_command_system_mode_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_system_mode_ack_t &ack, MaceCore::ModuleCharacteristic &dataKey, command_item::ActionChangeMode &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj);
 
     virtual bool Finish_Receive(const mace_system_mode_ack_t &msg, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::ModuleCharacteristic &queueObj);
 

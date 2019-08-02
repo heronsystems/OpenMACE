@@ -23,11 +23,11 @@ void Ardupilot_GuidedController::updateCommandACK(const mavlink_command_ack_t &c
 
 
 double Ardupilot_GuidedController::distanceToTarget(){
-    std::shared_ptr<CommandItem::AbstractCommandItem> currentMissionItem = m_CurrentMission.getActiveMissionItem();
+    std::shared_ptr<command_item::AbstractCommandItem> currentMissionItem = m_CurrentMission.getActiveMissionItem();
     double distance = 0.0;
     switch(currentMissionItem->getCommandType())
     {
-    case(CommandItem::COMMANDITEM::CI_NAV_WAYPOINT):
+    case(command_item::COMMANDTYPE::CI_NAV_WAYPOINT):
     {
 //        std::shared_ptr<CommandItem::SpatialWaypoint> castItem = std::dynamic_pointer_cast<CommandItem::SpatialWaypoint>(currentMissionItem);
 //        DataState::StateGlobalPosition currentPosition = vehicleDataObject->data->vehicleGlobalPosition.get();

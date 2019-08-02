@@ -1,10 +1,10 @@
 #include "action_arm.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM ActionArm::getCommandType() const
+COMMANDTYPE ActionArm::getCommandType() const
 {
-    return COMMANDITEM::CI_ACT_ARM;
+    return COMMANDTYPE::CI_ACT_ARM;
 }
 
 std::string ActionArm::getDescription() const
@@ -47,9 +47,13 @@ ActionArm::ActionArm(const int &systemOrigin, const int &systemTarget):
 
 std::string ActionArm::printCommandInfo() const
 {
-
+    return "";
 }
 
-
-
+void ActionArm::toMACEComms_CommandItem(mace_command_short_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    obj.param = this->actionArm;
 }
+
+} //end of namespace command_item

@@ -194,7 +194,7 @@ void VehicleObject_MAVLINK::cbiMissionController_TransmitMissionReq(const mavlin
     transmitMessage(msg);
 }
 
-void VehicleObject_MAVLINK::cbiMissionController_ReceviedHome(const CommandItem::SpatialHome &home)
+void VehicleObject_MAVLINK::cbiMissionController_ReceviedHome(const command_item::SpatialHome &home)
 {
     mission->home.set(home);
     if(m_CB)

@@ -3,12 +3,12 @@
 namespace ExternalLink {
 
     CommandTakeoff::CommandTakeoff(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<CommandItem::SpatialTakeoff, (uint8_t)CommandItem::COMMANDITEM::CI_NAV_TAKEOFF>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::SpatialTakeoff, (uint8_t)command_item::COMMANDTYPE::CI_NAV_TAKEOFF>(cb, queue, linkChan)
     {
 
     }
 
-    void CommandTakeoff::FillCommand(const CommandItem::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const
+    void CommandTakeoff::FillCommand(const command_item::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const
     {
         if(commandItem.position->has2DPositionSet())
         {

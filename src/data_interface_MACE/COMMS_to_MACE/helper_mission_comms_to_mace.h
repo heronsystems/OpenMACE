@@ -16,7 +16,7 @@
 
 #include "mace_core/module_characteristics.h"
 
-using namespace CommandItem;
+using namespace command_item;
 
 namespace DataInterface_MACE {
 
@@ -27,25 +27,25 @@ public:
 
     ~Helper_MissionCOMMStoMACE();
 
-    static std::shared_ptr<CommandItem::AbstractCommandItem> Convert_COMMSTOMACE(const mace_mission_item_t &maceItem, const MaceCore::ModuleCharacteristic &target);
+    static std::shared_ptr<command_item::AbstractCommandItem> Convert_COMMSTOMACE(const mace_mission_item_t &maceItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertHome(const mace_set_home_position_t &maceItem, CommandItem::SpatialHome &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertHome(const mace_set_home_position_t &maceItem, command_item::SpatialHome &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertChangespeed(const mace_mission_item_t &maceItem, CommandItem::ActionChangeSpeed &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertChangespeed(const mace_mission_item_t &maceItem, command_item::ActionChangeSpeed &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertLand(const mace_mission_item_t &maceItem, CommandItem::SpatialLand &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertLand(const mace_mission_item_t &maceItem, command_item::SpatialLand &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertLoiterTime(const mace_mission_item_t &maceItem, CommandItem::SpatialLoiter_Time &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertLoiterTime(const mace_mission_item_t &maceItem, command_item::SpatialLoiter_Time &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertLoiterTurns(const mace_mission_item_t &maceItem, CommandItem::SpatialLoiter_Turns &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertLoiterTurns(const mace_mission_item_t &maceItem, command_item::SpatialLoiter_Turns &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertLoiterUnlimted(const mace_mission_item_t &maceItem, CommandItem::SpatialLoiter_Unlimited &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertLoiterUnlimted(const mace_mission_item_t &maceItem, command_item::SpatialLoiter_Unlimited &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertRTL(const mace_mission_item_t &maceItem, CommandItem::SpatialRTL &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertRTL(const mace_mission_item_t &maceItem, command_item::SpatialRTL &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertTakeoff(const mace_mission_item_t &maceItem, CommandItem::SpatialTakeoff &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertTakeoff(const mace_mission_item_t &maceItem, command_item::SpatialTakeoff &missionItem, const MaceCore::ModuleCharacteristic &target);
 
-    static void convertWaypoint(const mace_mission_item_t &maceItem, CommandItem::SpatialWaypoint &missionItem, const MaceCore::ModuleCharacteristic &target);
+    static void convertWaypoint(const mace_mission_item_t &maceItem, command_item::SpatialWaypoint &missionItem, const MaceCore::ModuleCharacteristic &target);
 
     static DataState::Base3DPosition getBasePosition(const mace_mission_item_t &maceItem, const MaceCore::ModuleCharacteristic &target);
 

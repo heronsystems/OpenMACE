@@ -1,10 +1,10 @@
 #include "spatial_loiter_turns.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialLoiter_Turns::getCommandType() const
+COMMANDTYPE SpatialLoiter_Turns::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_LOITER_TURNS;
+    return COMMANDTYPE::CI_NAV_LOITER_TURNS;
 }
 
 std::string SpatialLoiter_Turns::getDescription() const
@@ -44,6 +44,14 @@ SpatialLoiter_Turns::SpatialLoiter_Turns(const int &systemOrigin, const int &sys
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
+}
+
+void SpatialLoiter_Turns::toMACEComms_CommandItem(mace_command_long_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    populateCommandItem_FromPosition(obj);
+    obj.param1 = static_cast<float>(this->turns);
+    obj.param3 = this->direction == Data::LoiterDirection::CW ? static_cast<float>(fabs(this->radius)) : static_cast<float>(-1 * fabs(this->radius));
 }
 
 //!

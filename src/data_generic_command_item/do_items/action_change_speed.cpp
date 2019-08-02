@@ -1,10 +1,10 @@
 #include "action_change_speed.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM ActionChangeSpeed::getCommandType() const
+COMMANDTYPE ActionChangeSpeed::getCommandType() const
 {
-    return COMMANDITEM::CI_ACT_CHANGESPEED;
+    return COMMANDTYPE::CI_ACT_CHANGESPEED;
 }
 
 std::string ActionChangeSpeed::getDescription() const
@@ -49,4 +49,9 @@ std::string ActionChangeSpeed::printCommandInfo() const
 
 }
 
+void ActionChangeSpeed::toMACEComms_CommandItem(mace_command_short_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
 }
+
+} //end of namespace command_item

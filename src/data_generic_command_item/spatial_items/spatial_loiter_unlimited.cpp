@@ -1,10 +1,10 @@
 #include "spatial_loiter_unlimited.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialLoiter_Unlimited::getCommandType() const
+COMMANDTYPE SpatialLoiter_Unlimited::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_LOITER_UNLIM;
+    return COMMANDTYPE::CI_NAV_LOITER_UNLIM;
 }
 
 std::string SpatialLoiter_Unlimited::getDescription() const
@@ -43,6 +43,13 @@ SpatialLoiter_Unlimited::SpatialLoiter_Unlimited(const int &systemOrigin, const 
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
+}
+
+void SpatialLoiter_Unlimited::toMACEComms_CommandItem(mace_command_long_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    populateCommandItem_FromPosition(obj);
+    obj.param3 = this->direction == Data::LoiterDirection::CW ? static_cast<float>(fabs(this->radius)) : static_cast<float>(-1 * fabs(this->radius));
 }
 
 //!

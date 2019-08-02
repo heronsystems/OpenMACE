@@ -25,27 +25,27 @@ public:
 
     void updateIDS(const int &originatingSystem, const int &originatingComp);
 
-    bool MACEMissionToCOMMSMission(std::shared_ptr<CommandItem::AbstractCommandItem> missionItem, const uint16_t &itemIndex, const uint8_t &chan, mace_message_t &msg);
+    bool MACEMissionToCOMMSMission(std::shared_ptr<command_item::AbstractCommandItem> missionItem, const uint16_t &itemIndex, const uint8_t &chan, mace_message_t &msg);
 
-    static bool MACEMissionToCOMMSMission(std::shared_ptr<CommandItem::AbstractCommandItem> missionItem, const uint16_t &itemIndex, mace_mission_item_t &mavItem);
+    static bool MACEMissionToCOMMSMission(std::shared_ptr<command_item::AbstractCommandItem> missionItem, const uint16_t &itemIndex, mace_mission_item_t &mavItem);
 
-    static mace_mission_item_t convertHome(const CommandItem::SpatialHome &missionItem);
+    static mace_mission_item_t convertHome(const command_item::SpatialHome &missionItem);
 
-    static mace_mission_item_t convertChangeSpeed(const CommandItem::ActionChangeSpeed &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertChangeSpeed(const command_item::ActionChangeSpeed &missionItem, const uint16_t &itemIndex);
 
-    static mace_mission_item_t convertLand(const CommandItem::SpatialLand &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertLand(const command_item::SpatialLand &missionItem, const uint16_t &itemIndex);
 
-    static mace_mission_item_t convertLoiterTime(const CommandItem::SpatialLoiter_Time &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertLoiterTime(const command_item::SpatialLoiter_Time &missionItem, const uint16_t &itemIndex);
 
-    static mace_mission_item_t convertLoiterTurns(const CommandItem::SpatialLoiter_Turns &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertLoiterTurns(const command_item::SpatialLoiter_Turns &missionItem, const uint16_t &itemIndex);
 
-    static mace_mission_item_t convertLoiterUnlimited(const CommandItem::SpatialLoiter_Unlimited &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertLoiterUnlimited(const command_item::SpatialLoiter_Unlimited &missionItem, const uint16_t &itemIndex);
 
-    static mace_mission_item_t convertRTL(const CommandItem::SpatialRTL &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertRTL(const command_item::SpatialRTL &missionItem, const uint16_t &itemIndex);
 
-    static mace_mission_item_t convertTakeoff(const CommandItem::SpatialTakeoff &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertTakeoff(const command_item::SpatialTakeoff &missionItem, const uint16_t &itemIndex);
 
-    static mace_mission_item_t convertWaypoint(const CommandItem::SpatialWaypoint &missionItem, const uint16_t &itemIndex);
+    static mace_mission_item_t convertWaypoint(const command_item::SpatialWaypoint &missionItem, const uint16_t &itemIndex);
 
     static void updateMissionPosition(const DataState::Base3DPosition &pos, mace_mission_item_t &item);
 

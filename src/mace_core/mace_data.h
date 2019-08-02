@@ -245,10 +245,10 @@ public:
     //! \param vehicleID Vehicle ID
     //! \return Vehicle home position
     //!
-    CommandItem::SpatialHome GetVehicleHomePostion(const int &vehicleID) const
+    command_item::SpatialHome GetVehicleHomePostion(const int &vehicleID) const
     {
         std::lock_guard<std::mutex> guard(m_VehicleHomeMutex);
-        CommandItem::SpatialHome vehicleHome = m_VehicleHomeMap.at(vehicleID);
+        command_item::SpatialHome vehicleHome = m_VehicleHomeMap.at(vehicleID);
         return vehicleHome;
     }
 
@@ -325,7 +325,7 @@ private:
     //! \brief UpdateVehicleHomePosition Update the vehicle home position
     //! \param vehicleHome New vehicle home
     //!
-    void UpdateVehicleHomePosition(const uint8_t vehicleID, const CommandItem::SpatialHome &vehicleHome)
+    void UpdateVehicleHomePosition(const uint8_t vehicleID, const command_item::SpatialHome &vehicleHome)
     {
         std::lock_guard<std::mutex> guard(m_VehicleHomeMutex);
         m_VehicleHomeMap[vehicleID] = vehicleHome;
@@ -930,7 +930,7 @@ private:
     std::unordered_map<int, std::string> m_VehicleFlightModeMap;
 
     mutable std::mutex m_VehicleHomeMutex;
-    std::map<int, CommandItem::SpatialHome> m_VehicleHomeMap;
+    std::map<int, command_item::SpatialHome> m_VehicleHomeMap;
     mace::pose::GeodeticPosition_3D m_GlobalOrigin;
     double m_GridSpacing = -1;
 

@@ -52,7 +52,7 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
 bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
-    case COMMANDITEM::CI_ACT_GOTO:
+    case COMMANDTYPE::CI_ACT_GOTO:
     {
         this->currentCommand = command->getClone();
         desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO;

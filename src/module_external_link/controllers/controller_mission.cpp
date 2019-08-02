@@ -166,7 +166,7 @@ namespace ExternalLink {
         if(CONTROLLER_MISSION_TYPE::mLog)
             CONTROLLER_MISSION_TYPE::mLog->info("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + ".");
 
-        std::shared_ptr<CommandItem::AbstractCommandItem> ptrItem = this->m_MissionsUploading.at(sender)[key].getMissionItem(index);
+        std::shared_ptr<command_item::AbstractCommandItem> ptrItem = this->m_MissionsUploading.at(sender)[key].getMissionItem(index);
 
         DataInterface_MACE::Helper_MissionMACEtoCOMMS::MACEMissionToCOMMSMission(ptrItem,index,missionItem);
         DataInterface_MACE::Helper_MissionMACEtoCOMMS::updateMissionKey(key,missionItem);
@@ -220,7 +220,7 @@ namespace ExternalLink {
 
         moduleFor = this->GetHostKey();
 
-        std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = DataInterface_MACE::Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(missionItem, target);
+        std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = DataInterface_MACE::Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(missionItem, target);
         m_MissionsBeingFetching[key].mission.replaceMissionItemAtIndex(newMissionItem, seqReceived);
 
         MissionItem::MissionList::MissionListStatus status = m_MissionsBeingFetching[key].mission.getMissionListStatus();
@@ -287,7 +287,7 @@ namespace ExternalLink {
             return false;
         }
 
-        std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = DataInterface_MACE::Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(missionItem, target);
+        std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = DataInterface_MACE::Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(missionItem, target);
         m_MissionsBeingFetching[key].mission.replaceMissionItemAtIndex(newMissionItem, seqReceived);
 
         MissionItem::MissionList::MissionListStatus status = m_MissionsBeingFetching[key].mission.getMissionListStatus();

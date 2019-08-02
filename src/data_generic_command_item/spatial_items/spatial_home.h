@@ -9,16 +9,18 @@
 
 #include "abstract_spatial_action.h"
 
+#include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
+#include "data_generic_command_item/interface_command_item.h"
 
 using namespace mace;
 
-namespace CommandItem {
+namespace command_item {
 
 //!
 //! \brief The SpatialHome class
 //!
-class SpatialHome : public AbstractSpatialAction
+class SpatialHome : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_HOME, mace_command_long_t>
 {
 public:
     //!
@@ -50,51 +52,12 @@ public:
     //!
     SpatialHome(const int &systemOrigin, const int &systemTarget = 0);
 
-
-public:
-    //!
-    //! \brief toMACEComms_MissionItem
-    //! \param obj
-    //! \return
-    //!
-    bool toMACEComms_MissionItem(mace_mission_item_t &obj) const;
-
-    //!
-    //! \brief toMACEComms_MSG
-    //! \param obj
-    //! \return
-    //!
-    mace_message_t toMACEComms_MSG(mace_mission_item_t &obj) const;
-
-public:
-    //!
-    //! \brief fromMACEComms_CommandObject
-    //! \param obj
-    //! \return
-    //!
-    bool fromMACEComms_CommandObject(const mace_set_home_position_t &obj);
-
-    //!
-    //! \brief getMACECommsObject
-    //! \return
-    //!
-    bool getMACECommsObject(mace_home_position_t &obj) const;
-
-    //!
-    //! \brief getMACEMsg
-    //! \param systemID
-    //! \param compID
-    //! \param chan
-    //! \return
-    //!
-    bool getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan, mace_message_t &msg) const;
-
 public:
     //!
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    COMMANDITEM getCommandType() const override;
+    COMMANDTYPE getCommandType() const override;
 
     //!
     //! \brief getDescription
@@ -124,6 +87,13 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
+
+
+/** Interface imposed via Interface_CommandItem<mace_command_long_t> */
+public:
+    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
+
+/** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
 
 
 public:
@@ -169,6 +139,6 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const SpatialHome& t);
 };
 
-} //end of namespace MissionItem
+} //end of namespace command_item
 
 #endif // SPATIAL_HOME_H

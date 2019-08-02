@@ -54,7 +54,7 @@ ModuleExternalLink::ModuleExternalLink() :
 
 
     auto homeController = new ExternalLink::ControllerHome(this, m_queue, m_LinkChan);
-    homeController->setLambda_DataReceived([this](const MaceCore::ModuleCharacteristic &key, const CommandItem::SpatialHome &home){this->ReceivedHome(key, home);});
+    homeController->setLambda_DataReceived([this](const MaceCore::ModuleCharacteristic &key, const command_item::SpatialHome &home){this->ReceivedHome(key, home);});
     homeController->setLambda_FetchDataFromKey([this](const OptionalParameter<MaceCore::ModuleCharacteristic> &key){return this->FetchHomeFromKey(key);});
     homeController->setLambda_FetchAll([this](const OptionalParameter<MaceCore::ModuleCharacteristic> &module){return this->FetchAllHomeFromModule(module);});
     homeController->setLambda_Finished(FinishedMessage);
@@ -115,7 +115,7 @@ void ModuleExternalLink::ReceivedGoToCommand(const MaceCore::ModuleCharacteristi
     }
 
     AbstractCommandItemPtr copy = command.getClone();
-    CommandItem::CommandGoTo* castObj = copy->as<CommandItem::CommandGoTo>();
+    command_item::CommandGoTo* castObj = copy->as<command_item::CommandGoTo>();
     castObj->setTargetSystem(mavlinkID);
 
     ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsGeneral* ptr){
@@ -455,7 +455,7 @@ Controllers::DataItem<MissionKey, MissionList>::FetchModuleReturn ModuleExternal
 
 
 
-void ModuleExternalLink::ReceivedHome(const MaceCore::ModuleCharacteristic &moduleAppliedTo, const CommandItem::SpatialHome &home)
+void ModuleExternalLink::ReceivedHome(const MaceCore::ModuleCharacteristic &moduleAppliedTo, const command_item::SpatialHome &home)
 {
     if(this->getDataObject()->HasModuleAsMavlinkID(moduleAppliedTo) == false)
     {
@@ -464,7 +464,7 @@ void ModuleExternalLink::ReceivedHome(const MaceCore::ModuleCharacteristic &modu
         return;
     }
 
-    CommandItem::SpatialHome copy(home);
+    command_item::SpatialHome copy(home);
 
     uint8_t targetSystem;
     this->getDataObject()->getMavlinkIDFromModule(moduleAppliedTo, targetSystem);
@@ -486,34 +486,34 @@ void ModuleExternalLink::ReceivedHome(const MaceCore::ModuleCharacteristic &modu
     });
 }
 
-Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchKeyReturn ModuleExternalLink::FetchHomeFromKey(const OptionalParameter<MaceCore::ModuleCharacteristic> &key)
+Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchKeyReturn ModuleExternalLink::FetchHomeFromKey(const OptionalParameter<MaceCore::ModuleCharacteristic> &key)
 {
     if(key.IsSet() == false)
     {
         throw std::runtime_error("Key not set in fetchdatafromkey function");
     }
 
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchKeyReturn rtn;
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchKeyReturn rtn;
 
-    CommandItem::SpatialHome home = this->getDataObject()->GetVehicleHomePostion(key().ModuleID);
+    command_item::SpatialHome home = this->getDataObject()->GetVehicleHomePostion(key().ModuleID);
     rtn.push_back(std::make_tuple(key(), home));
     return rtn;
 }
 
-Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchModuleReturn ModuleExternalLink::FetchAllHomeFromModule(const OptionalParameter<MaceCore::ModuleCharacteristic> &module)
+Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchModuleReturn ModuleExternalLink::FetchAllHomeFromModule(const OptionalParameter<MaceCore::ModuleCharacteristic> &module)
 {
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchModuleReturn rtn;
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchModuleReturn rtn;
 
 
     //Function to fetch missions for given module
     auto func = [this, &rtn](MaceCore::ModuleCharacteristic vehicle)
     {
         //fetch mission
-        CommandItem::SpatialHome home = this->getDataObject()->GetVehicleHomePostion(vehicle.ModuleID);
+        command_item::SpatialHome home = this->getDataObject()->GetVehicleHomePostion(vehicle.ModuleID);
 
-        std::vector<std::tuple<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>> vec = {};
+        std::vector<std::tuple<MaceCore::ModuleCharacteristic, command_item::SpatialHome>> vec = {};
         vec.push_back(std::make_tuple(vehicle, home));
-        std::tuple<MaceCore::ModuleCharacteristic, std::vector<std::tuple<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>>> tmp = std::make_tuple(vehicle, vec);
+        std::tuple<MaceCore::ModuleCharacteristic, std::vector<std::tuple<MaceCore::ModuleCharacteristic, command_item::SpatialHome>>> tmp = std::make_tuple(vehicle, vec);
         rtn.push_back(tmp);
     };
 
@@ -682,7 +682,7 @@ void ModuleExternalLink::Request_FullDataSync(const int &targetSystem, const Opt
     }
 }
 
-void ModuleExternalLink::Command_SystemArm(const CommandItem::ActionArm &systemArm, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_SystemArm(const command_item::ActionArm &systemArm, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     int targetMavlinkSystemID = systemArm.getTargetSystem();
 
@@ -696,7 +696,7 @@ void ModuleExternalLink::Command_SystemArm(const CommandItem::ActionArm &systemA
     }
 }
 
-void ModuleExternalLink::Command_ChangeSystemMode(const CommandItem::ActionChangeMode &vehicleMode, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_ChangeSystemMode(const command_item::ActionChangeMode &vehicleMode, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     std::cout<<"We are trying to change the mode in external link"<<std::endl;
 
@@ -705,7 +705,7 @@ void ModuleExternalLink::Command_ChangeSystemMode(const CommandItem::ActionChang
     m_Controllers.Retreive<ExternalLink::ControllerSystemMode>()->Send(vehicleMode, sender(), target);
 }
 
-void ModuleExternalLink::Command_VehicleTakeoff(const CommandItem::SpatialTakeoff &vehicleTakeoff, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_VehicleTakeoff(const command_item::SpatialTakeoff &vehicleTakeoff, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     int targetMavlinkSystemID = vehicleTakeoff.getTargetSystem();
 
@@ -719,7 +719,7 @@ void ModuleExternalLink::Command_VehicleTakeoff(const CommandItem::SpatialTakeof
     }
 }
 
-void ModuleExternalLink::Command_Land(const CommandItem::SpatialLand &vehicleLand, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_Land(const command_item::SpatialLand &vehicleLand, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     int targetMavlinkSystemID = vehicleLand.getTargetSystem();
 
@@ -733,7 +733,7 @@ void ModuleExternalLink::Command_Land(const CommandItem::SpatialLand &vehicleLan
     }
 }
 
-void ModuleExternalLink::Command_ReturnToLaunch(const CommandItem::SpatialRTL &vehicleRTL, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_ReturnToLaunch(const command_item::SpatialRTL &vehicleRTL, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     if(vehicleRTL.getTargetSystem() == 0)
     {
@@ -745,7 +745,7 @@ void ModuleExternalLink::Command_ReturnToLaunch(const CommandItem::SpatialRTL &v
     }
 }
 
-void ModuleExternalLink::Command_MissionState(const CommandItem::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_MissionState(const command_item::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     MaceCore::ModuleCharacteristic target = this->getDataObject()->GetVehicleFromMAVLINKID(command.getTargetSystem());
 
@@ -758,12 +758,12 @@ void ModuleExternalLink::Command_MissionState(const CommandItem::ActionMissionCo
     }
 }
 
-void ModuleExternalLink::Command_IssueGeneralCommand(const std::shared_ptr<CommandItem::AbstractCommandItem> &command)
+void ModuleExternalLink::Command_IssueGeneralCommand(const std::shared_ptr<command_item::AbstractCommandItem> &command)
 {
     UNUSED(command);
 }
 
-void ModuleExternalLink::Command_EmitHeartbeat(const CommandItem::SpatialTakeoff &heartbeat)
+void ModuleExternalLink::Command_EmitHeartbeat(const command_item::SpatialTakeoff &heartbeat)
 {
 
 }
@@ -783,7 +783,7 @@ void ModuleExternalLink::Command_GetHomePosition(const int &vehicleID, const Opt
     m_Controllers.Retreive<ExternalLink::ControllerHome>()->Request(sender(), target);
 }
 
-void ModuleExternalLink::Command_SetHomePosition(const CommandItem::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_SetHomePosition(const command_item::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     MaceCore::ModuleCharacteristic target = this->getDataObject()->GetVehicleFromMAVLINKID(systemHome.getTargetSystem());
 
@@ -956,7 +956,7 @@ void ModuleExternalLink::NewlyAvailableOnboardMission(const MissionItem::Mission
     }
 }
 
-void ModuleExternalLink::NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     m_Controllers.Retreive<ExternalLink::ControllerHome>()->Broadcast(home, sender());
 }

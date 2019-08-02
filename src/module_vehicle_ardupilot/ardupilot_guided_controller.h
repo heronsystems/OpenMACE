@@ -41,7 +41,7 @@ private:
     bool missionUpdated;
 
     MissionItem::MissionList m_CurrentMission;
-    CommandItem::SpatialHome m_VehicleHome;
+    command_item::SpatialHome m_VehicleHome;
 
 };
 

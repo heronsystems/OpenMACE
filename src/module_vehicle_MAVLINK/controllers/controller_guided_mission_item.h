@@ -73,7 +73,7 @@ protected:
     }
 
 protected:
-    void FillMissionItem(const CommandItem::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem);
+    void FillMissionItem(const command_item::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem);
 
     mavlink_mission_item_t initializeMAVLINKMissionItem()
     {

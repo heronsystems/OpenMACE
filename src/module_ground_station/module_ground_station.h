@@ -144,7 +144,7 @@ public:
     //! \brief NewlyAvailableHomePosition Subscriber to a new home position
     //! \param home New home position
     //!
-    void NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+    void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyAvailableGlobalOrigin Subscriber to a new global origin

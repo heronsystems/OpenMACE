@@ -9,8 +9,6 @@
 
 #include "mace.h"
 
-#include "base/pose/abstract_position.h"
-
 #include "base/pose/cartesian_position_2D.h"
 #include "base/pose/cartesian_position_3D.h"
 
@@ -19,16 +17,16 @@
 
 #include "../mission_items/mission_item_interface.h"
 
-#include "data_generic_command_item/abstract_command_item.h"
+#include "../abstract_command_item.h"
 
-namespace CommandItem {
+namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractSpatialAction);
 
 //!
 //! \brief The AbstractSpatialCommand class
 //!
-class AbstractSpatialAction : public AbstractCommandItem, public Interface_MissionItem
+class AbstractSpatialAction : public AbstractCommandItem
 {
 public:
     AbstractSpatialAction():
@@ -37,13 +35,13 @@ public:
 
     }
 
-    AbstractSpatialAction(const int &systemOrigin, const int &systemTarget = 0):
+    AbstractSpatialAction(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0):
         AbstractCommandItem(systemOrigin,systemTarget), position(nullptr)
     {
 
     }
 
-    ~AbstractSpatialAction()
+    virtual ~AbstractSpatialAction() override
     {
         if(position)
         {
@@ -87,31 +85,36 @@ public:
         return this->position;
     }
 
-public:
-    void updateMissionPosition(const mace::pose::Position* pos, mace_mission_item_t &item)
+protected:
+    void populateCommandItem_FromPosition(mace_command_long_t &obj) const
     {
-        switch (pos->getCoordinateSystemType()) {
-        case CoordinateSystemTypes:
-
+        if(position != nullptr)
+        switch (this->position->getCoordinateSystemType()) {
+        case CoordinateSystemTypes::GEODETIC:
+        {
+            if(this->position->is2D())
+            {
+                const mace::pose::GeodeticPosition_2D* currentPosition = this->position->positionAs<mace::pose::GeodeticPosition_2D>();
+                obj.param5 = static_cast<float>(currentPosition->getLatitude());
+                obj.param6 = static_cast<float>(currentPosition->getLongitude());
+            }
+            else if(this->position->is3D())
+            {
+                const mace::pose::GeodeticPosition_3D* currentPosition = this->position->positionAs<mace::pose::GeodeticPosition_3D>();
+                obj.param5 = static_cast<float>(currentPosition->getLatitude());
+                obj.param6 = static_cast<float>(currentPosition->getLongitude());
+                obj.param7 = static_cast<float>(currentPosition->getAltitude());
+            }
             break;
+        }
+        case CoordinateSystemTypes::CARTESIAN:
+        {
+            throw std::runtime_error("Cannot populate a command item from a cartesian position.");
+            break;
+        }
         default:
             break;
         }
-        if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT){
-            item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-        }
-        else if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
-        {
-            item.frame = MAV_FRAME_LOCAL_ENU;
-        }
-        else{
-            //KEN FIX THIS
-            item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-        }
-
-        item.x = pos.getX();
-        item.y = pos.getY();
-        item.z = pos.getZ();
     }
 
 public:

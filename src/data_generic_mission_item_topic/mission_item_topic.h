@@ -18,12 +18,12 @@ public:
 public:
     MissionItemTopic();
 
-    void setMissionItem(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem);
+    void setMissionItem(const std::shared_ptr<command_item::AbstractCommandItem> missionItem);
 
-    std::shared_ptr<CommandItem::AbstractCommandItem> getMissionItem();
+    std::shared_ptr<command_item::AbstractCommandItem> getMissionItem();
 
 private:
-    std::shared_ptr<CommandItem::AbstractCommandItem> missionItem;
+    std::shared_ptr<command_item::AbstractCommandItem> missionItem;
 };
 
 } //end of namespace MissionTopic

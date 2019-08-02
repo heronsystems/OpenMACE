@@ -54,7 +54,7 @@ public:
             NewlyAvailableMissionExeState(missionKey);
         });
 
-        AddCommandLogic<CommandItem::SpatialHome>(GroundStationCommands::NEWLY_AVAILABLE_HOME_POSITION, [this](const CommandItem::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender){
+        AddCommandLogic<command_item::SpatialHome>(GroundStationCommands::NEWLY_AVAILABLE_HOME_POSITION, [this](const command_item::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender){
             NewlyAvailableHomePosition(home, sender);
         });
 
@@ -88,7 +88,7 @@ public:
     //! \param home Home position
     //! \param sender Sender module
     //!
-    virtual void NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief NewlyUpdatedGlobalOrigin New global origin subscriber

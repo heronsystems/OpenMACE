@@ -63,10 +63,10 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
 {
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
         currentCommand = command->getClone();
-        const CommandItem::SpatialLand* cmd = currentCommand->as<CommandItem::SpatialLand>();
+        const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
         StateGlobalPosition cmdPos(cmd->getPosition().getX(),cmd->getPosition().getY(),cmd->getPosition().getZ());
         cmdPos.setCoordinateFrame(cmd->getPosition().getCoordinateFrame());
         Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd,cmdPos]

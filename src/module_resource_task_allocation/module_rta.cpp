@@ -168,7 +168,7 @@ void ModuleRTA::NewTopicSpooled(const std::string &topicName, const MaceCore::Mo
                     DataState::StateLocalPosition localPositionData;
                     DataState::StateGlobalPosition tmpGlobalOrigin;
                     mace::pose::GeodeticPosition_3D origin = this->getDataObject()->GetGlobalOrigin();
-                    CommandItem::SpatialHome tmpSpatialHome(origin);
+                    command_item::SpatialHome tmpSpatialHome(origin);
 
                     tmpGlobalOrigin.setLatitude(tmpSpatialHome.getPosition().getX());
                     tmpGlobalOrigin.setLongitude(tmpSpatialHome.getPosition().getY());
@@ -212,7 +212,7 @@ void ModuleRTA::updateEnvironment(const BoundaryItem::BoundaryList &boundary)
 
     environment = std::make_shared<Environment_Map>(poly, m_gridSpacing, m_globalInstance);
 
-    m_globalOrigin = std::make_shared<CommandItem::SpatialHome>(this->getDataObject()->GetGlobalOrigin());
+    m_globalOrigin = std::make_shared<command_item::SpatialHome>(this->getDataObject()->GetGlobalOrigin());
 
     //  2) Re-partition space
     environment->computeBalancedVoronoi(m_vehicles);

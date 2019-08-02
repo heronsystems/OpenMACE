@@ -53,13 +53,13 @@ hsm::Transition State_FlightGuided_Target::GetTransition()
 bool State_FlightGuided_Target::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
-        case COMMANDITEM::CI_ACT_TARGET:
+        case COMMANDTYPE::CI_ACT_TARGET:
         {
 
             //We want to keep this command in scope to perform the action
             this->currentCommand = command->getClone();
 
-            const CommandItem::CommandGoTo* cmd = currentCommand->as<CommandItem::CommandGoTo>();
+            const command_item::CommandGoTo* cmd = currentCommand->as<command_item::CommandGoTo>();
 
             //We want to first assume that this command has not been currently accepted
             this->commandAccepted = false;
@@ -105,9 +105,9 @@ bool State_FlightGuided_Target::handleCommand(const std::shared_ptr<AbstractComm
 
             MavlinkEntityKey target = Owner().getMAVLINKID();
             MavlinkEntityKey sender = 255;
-            CommandItem::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
+            command_item::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
             waypoint.setPosition(cmdPosition);
-            ((MAVLINKVehicleControllers::ControllerGuidedMissionItem<CommandItem::SpatialWaypoint> *)Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
+            ((MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint> *)Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
         }
         default:
             break;
@@ -139,7 +139,7 @@ void State_FlightGuided_Target::OnEnter(const std::shared_ptr<AbstractCommandIte
 
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are goto
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-       auto goToController = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<CommandItem::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+       auto goToController = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
        goToController->AddLambda_Finished(this, [this,goToController](const bool completed, const uint8_t finishCode){
 
            UNUSED(goToController);

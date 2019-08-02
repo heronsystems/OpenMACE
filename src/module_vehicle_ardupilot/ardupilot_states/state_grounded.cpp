@@ -69,10 +69,10 @@ hsm::Transition State_Grounded::GetTransition()
 
 bool State_Grounded::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    COMMANDITEM commandType = command->getCommandType();
+    COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
-    case COMMANDITEM::CI_NAV_HOME:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_NAV_HOME:
     {
         AbstractRootState::handleCommand(command);
         break;

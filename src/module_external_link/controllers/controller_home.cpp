@@ -4,7 +4,7 @@ namespace ExternalLink {
 
 
 
-    void ControllerHome::Construct_Broadcast(const CommandItem::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &msg)
+    void ControllerHome::Construct_Broadcast(const command_item::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &msg)
     {
         UNUSED(sender);
         msg.latitude = data.position->getX() * pow(10,7);
@@ -31,7 +31,7 @@ namespace ExternalLink {
      * @param vehicleObj
      * @return
      */
-    bool ControllerHome::Construct_FinalObject(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, MaceCore::ModuleCharacteristic &key, CommandItem::SpatialHome &data)
+    bool ControllerHome::Construct_FinalObject(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data)
     {
         //If we have requested home position received module then don't do anything.
         // (Because this handles broadcast, let other method handle this case)
@@ -73,10 +73,10 @@ namespace ExternalLink {
         vehicleObj = GetKeyFromSecondaryID(msg.target_system);
 
 
-        std::vector<std::tuple<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>> homes;
+        std::vector<std::tuple<MaceCore::ModuleCharacteristic, command_item::SpatialHome>> homes;
         this->FetchDataFromKey(vehicleObj, homes);
 
-        CommandItem::SpatialHome homeToSend = std::get<1>(homes.at(0));
+        command_item::SpatialHome homeToSend = std::get<1>(homes.at(0));
         rsp.latitude = homeToSend.position->getX() * pow(10,7);
         rsp.longitude = homeToSend.position->getY() * pow(10,7);
         rsp.altitude = homeToSend.position->getZ() * pow(10,3);
@@ -86,7 +86,7 @@ namespace ExternalLink {
         return true;
     }
 
-    bool ControllerHome::Construct_FinalObjectAndResponse(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &response, MaceCore::ModuleCharacteristic &key, CommandItem::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
+    bool ControllerHome::Construct_FinalObjectAndResponse(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &response, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
     {
         //Only continue if we have requested a home posiiton from this module.
         if(m_ModulesRequestedFrom.find(sender) == m_ModulesRequestedFrom.cend())
@@ -128,7 +128,7 @@ namespace ExternalLink {
     }
 
 
-    bool ControllerHome::Construct_Send(const CommandItem::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_set_home_position_t &msg, MaceCore::ModuleCharacteristic &queueObj)
+    bool ControllerHome::Construct_Send(const command_item::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_set_home_position_t &msg, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
 
@@ -146,7 +146,7 @@ namespace ExternalLink {
         return true;
     }
 
-    bool ControllerHome::Construct_FinalObjectAndResponse(const mace_set_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &ack, MaceCore::ModuleCharacteristic &key, CommandItem::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
+    bool ControllerHome::Construct_FinalObjectAndResponse(const mace_set_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
     {
         vehicleObj = GetKeyFromSecondaryID(msg.target_system);
 

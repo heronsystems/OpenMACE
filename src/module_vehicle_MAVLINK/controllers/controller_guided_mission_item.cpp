@@ -3,7 +3,7 @@
 namespace MAVLINKVehicleControllers {
 
     template <>
-    void ControllerGuidedMissionItem<CommandItem::SpatialWaypoint>::FillMissionItem(const CommandItem::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem)
+    void ControllerGuidedMissionItem<command_item::SpatialWaypoint>::FillMissionItem(const command_item::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem)
     {
         mavlinkItem.command = MAV_CMD_NAV_WAYPOINT;
         Base3DPosition pos = commandItem.getPosition();

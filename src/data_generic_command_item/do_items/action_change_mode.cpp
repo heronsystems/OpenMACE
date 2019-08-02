@@ -1,10 +1,10 @@
 #include "action_change_mode.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM ActionChangeMode::getCommandType() const
+COMMANDTYPE ActionChangeMode::getCommandType() const
 {
-    return COMMANDITEM::CI_ACT_CHANGEMODE;
+    return COMMANDTYPE::CI_ACT_CHANGEMODE;
 }
 
 std::string ActionChangeMode::getDescription() const
@@ -46,8 +46,8 @@ ActionChangeMode::ActionChangeMode(const int &systemOrigin, const int &systemTar
 
 std::string ActionChangeMode::printCommandInfo() const
 {
-
+    return "";
 }
 
-}
+} //end of namespace command_item
 

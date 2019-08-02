@@ -3,13 +3,13 @@
 namespace ExternalLink {
 
     CommandLand::CommandLand(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<CommandItem::SpatialLand, (uint8_t)CommandItem::COMMANDITEM::CI_NAV_LAND>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::SpatialLand, (uint8_t)command_item::COMMANDTYPE::CI_NAV_LAND>(cb, queue, linkChan)
     {
 
     }
 
 
-    void CommandLand::FillCommand(const CommandItem::SpatialLand &commandItem, mace_command_long_t &cmd) const
+    void CommandLand::FillCommand(const command_item::SpatialLand &commandItem, mace_command_long_t &cmd) const
     {
         if(commandItem.position->isCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT))
         {
@@ -22,7 +22,7 @@ namespace ExternalLink {
         }
     }
 
-    void CommandLand::BuildCommand(const mace_command_long_t &message, CommandItem::SpatialLand &data) const
+    void CommandLand::BuildCommand(const mace_command_long_t &message, command_item::SpatialLand &data) const
     {
 
         data.setTargetSystem(-1);

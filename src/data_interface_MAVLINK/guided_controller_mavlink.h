@@ -33,7 +33,7 @@ class GuidedController_MAVLINK : public Thread
 public:
     GuidedController_MAVLINK(const int &targetSystem, const int &targetComp);
 
-    void updateWaypointTarget(const CommandItem::SpatialWaypoint &target);
+    void updateWaypointTarget(const command_item::SpatialWaypoint &target);
 
     void receivedMissionACK(const mavlink_mission_ack_t &missionACK);
 

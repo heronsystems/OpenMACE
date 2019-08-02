@@ -162,13 +162,13 @@ public:
     //! \param vehicleID Vehicle ID with the new vehicle home available
     //! \param home New vehicle home
     //!
-    void sendVehicleHome(const int &vehicleID, const CommandItem::SpatialHome &home);
+    void sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home);
 
     //!
     //! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
     //! \param origin New global origin
     //!
-    void sendGlobalOrigin(const CommandItem::SpatialHome &origin);
+    void sendGlobalOrigin(const command_item::SpatialHome &origin);
 
     //!
     //! \brief sendSensorFootprint Send vehicle sensor footprint to the MACE GUI

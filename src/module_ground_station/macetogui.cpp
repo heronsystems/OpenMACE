@@ -120,7 +120,7 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<Mi
 //! \param vehicleID Vehicle ID with the new vehicle home available
 //! \param home New vehicle home
 //!
-void MACEtoGUI::sendVehicleHome(const int &vehicleID, const CommandItem::SpatialHome &home)
+void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home)
 {
     QJsonObject json;
     json["dataType"] = "VehicleHome";
@@ -142,7 +142,7 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const CommandItem::Spatial
 //! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
 //! \param origin New global origin
 //!
-void MACEtoGUI::sendGlobalOrigin(const CommandItem::SpatialHome &origin)
+void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 {
     QJsonObject json;
     json["dataType"] = "GlobalOrigin";
@@ -497,63 +497,63 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
     for(int i = 0; i < list.getQueueSize(); i++)
     {
         //TODO-PAT: Look into unique_ptr or auto_ptr?? Not sure I like this...
-        std::shared_ptr<CommandItem::AbstractCommandItem> missionItem = list.getMissionItem(i);
+        std::shared_ptr<command_item::AbstractCommandItem> missionItem = list.getMissionItem(i);
 
         QJsonObject obj;
         obj["description"] = QString::fromStdString(missionItem->getDescription());
-        obj["type"] = QString::fromStdString(CommandItem::CommandItemToString(missionItem->getCommandType()));
+        obj["type"] = QString::fromStdString(command_item::CommandItemToString(missionItem->getCommandType()));
 
         switch (missionItem->getCommandType()) {
-        case CommandItem::COMMANDITEM::CI_ACT_ARM:
+        case command_item::COMMANDTYPE::CI_ACT_ARM:
         {
-            std::shared_ptr<CommandItem::ActionArm> castItem = std::dynamic_pointer_cast<CommandItem::ActionArm>(missionItem);
+            std::shared_ptr<command_item::ActionArm> castItem = std::dynamic_pointer_cast<command_item::ActionArm>(missionItem);
             obj["positionalFrame"] = "global";
             UNUSED(castItem);
             break;
         }
-        case CommandItem::COMMANDITEM::CI_ACT_CHANGEMODE:
+        case command_item::COMMANDTYPE::CI_ACT_CHANGEMODE:
         {
-            std::shared_ptr<CommandItem::ActionChangeMode> castItem = std::dynamic_pointer_cast<CommandItem::ActionChangeMode>(missionItem);
+            std::shared_ptr<command_item::ActionChangeMode> castItem = std::dynamic_pointer_cast<command_item::ActionChangeMode>(missionItem);
             obj["positionalFrame"] = "global";
             UNUSED(castItem);
             break;
         }
-        case CommandItem::COMMANDITEM::CI_NAV_LAND:
+        case command_item::COMMANDTYPE::CI_NAV_LAND:
         {
-            std::shared_ptr<CommandItem::SpatialLand> castItem = std::dynamic_pointer_cast<CommandItem::SpatialLand>(missionItem);
+            std::shared_ptr<command_item::SpatialLand> castItem = std::dynamic_pointer_cast<command_item::SpatialLand>(missionItem);
             obj["positionalFrame"] = "global";
             UNUSED(castItem);
 
             break;
         }
-        case CommandItem::COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH:
+        case command_item::COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
         {
-            std::shared_ptr<CommandItem::SpatialRTL> castItem = std::dynamic_pointer_cast<CommandItem::SpatialRTL>(missionItem);
+            std::shared_ptr<command_item::SpatialRTL> castItem = std::dynamic_pointer_cast<command_item::SpatialRTL>(missionItem);
             obj["positionalFrame"] = "global";
             UNUSED(castItem);
             break;
         }
-        case CommandItem::COMMANDITEM::CI_NAV_TAKEOFF:
+        case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
         {
-            std::shared_ptr<CommandItem::SpatialTakeoff> castItem = std::dynamic_pointer_cast<CommandItem::SpatialTakeoff>(missionItem);
+            std::shared_ptr<command_item::SpatialTakeoff> castItem = std::dynamic_pointer_cast<command_item::SpatialTakeoff>(missionItem);
             obj["positionalFrame"] = "global";
             obj["lat"] = castItem->position->getX();
             obj["lng"] = castItem->position->getY();
             obj["alt"] = castItem->position->getZ();
             break;
         }
-        case CommandItem::COMMANDITEM::CI_NAV_WAYPOINT:
+        case command_item::COMMANDTYPE::CI_NAV_WAYPOINT:
         {
-            std::shared_ptr<CommandItem::SpatialWaypoint> castItem = std::dynamic_pointer_cast<CommandItem::SpatialWaypoint>(missionItem);
+            std::shared_ptr<command_item::SpatialWaypoint> castItem = std::dynamic_pointer_cast<command_item::SpatialWaypoint>(missionItem);
             obj["positionalFrame"] = "global";
             obj["lat"] = castItem->position->getX();
             obj["lng"] = castItem->position->getY();
             obj["alt"] = castItem->position->getZ();
             break;
         }
-        case CommandItem::COMMANDITEM::CI_NAV_LOITER_TIME:
+        case command_item::COMMANDTYPE::CI_NAV_LOITER_TIME:
         {
-            std::shared_ptr<CommandItem::SpatialLoiter_Time> castItem = std::dynamic_pointer_cast<CommandItem::SpatialLoiter_Time>(missionItem);
+            std::shared_ptr<command_item::SpatialLoiter_Time> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Time>(missionItem);
             obj["positionalFrame"] = "global";
             obj["lat"] = castItem->position->getX();
             obj["lng"] = castItem->position->getY();
@@ -567,9 +567,9 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             }
             break;
         }
-        case CommandItem::COMMANDITEM::CI_NAV_LOITER_TURNS:
+        case command_item::COMMANDTYPE::CI_NAV_LOITER_TURNS:
         {
-            std::shared_ptr<CommandItem::SpatialLoiter_Turns> castItem = std::dynamic_pointer_cast<CommandItem::SpatialLoiter_Turns>(missionItem);
+            std::shared_ptr<command_item::SpatialLoiter_Turns> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Turns>(missionItem);
             obj["positionalFrame"] = "global";
             obj["lat"] = castItem->position->getX();
             obj["lng"] = castItem->position->getY();
@@ -583,9 +583,9 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             }
             break;
         }
-        case CommandItem::COMMANDITEM::CI_NAV_LOITER_UNLIM:
+        case command_item::COMMANDTYPE::CI_NAV_LOITER_UNLIM:
         {
-            std::shared_ptr<CommandItem::SpatialLoiter_Unlimited> castItem = std::dynamic_pointer_cast<CommandItem::SpatialLoiter_Unlimited>(missionItem);
+            std::shared_ptr<command_item::SpatialLoiter_Unlimited> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Unlimited>(missionItem);
             obj["positionalFrame"] = "global";
             obj["lat"] = castItem->position->getX();
             obj["lng"] = castItem->position->getY();

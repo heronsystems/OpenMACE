@@ -36,11 +36,11 @@ public:
 public:
     void initializeQueue(const size_t &size);
     void clearQueue();
-    void replaceMissionQueue(const std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> &newQueue);
-    void insertMissionItem(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem);
-    void replaceMissionItemAtIndex(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem, const int &index);
+    void replaceMissionQueue(const std::vector<std::shared_ptr<command_item::AbstractCommandItem>> &newQueue);
+    void insertMissionItem(const std::shared_ptr<command_item::AbstractCommandItem> missionItem);
+    void replaceMissionItemAtIndex(const std::shared_ptr<command_item::AbstractCommandItem> missionItem, const int &index);
 
-    std::shared_ptr<CommandItem::AbstractCommandItem> getMissionItem(const int &index) const;
+    std::shared_ptr<command_item::AbstractCommandItem> getMissionItem(const int &index) const;
 
     int getQueueSize() const;
     MissionListStatus getMissionListStatus() const;
@@ -106,7 +106,7 @@ public:
 
     int getActiveIndex() const;
 
-    std::shared_ptr<CommandItem::AbstractCommandItem> getActiveMissionItem();
+    std::shared_ptr<command_item::AbstractCommandItem> getActiveMissionItem();
 
     void setActiveIndex(const int &activeIndex);
 
@@ -154,7 +154,7 @@ private:
 public:
     friend std::ostream& operator<<(std::ostream& os, const MissionList& t);
 
-    std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> missionQueue;
+    std::vector<std::shared_ptr<command_item::AbstractCommandItem>> missionQueue;
 };
 
 } //end of namespace MissionItem

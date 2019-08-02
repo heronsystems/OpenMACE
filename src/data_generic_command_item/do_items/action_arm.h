@@ -3,20 +3,20 @@
 
 #include <iostream>
 
-#include "data_generic_command_item/command_item_type.h"
 #include "data_generic_command_item/abstract_command_item.h"
+#include "data_generic_command_item/command_item_type.h"
+#include "data_generic_command_item/interface_command_item.h"
 
+namespace command_item {
 
-namespace CommandItem {
-
-class ActionArm : public AbstractCommandItem
+class ActionArm : public AbstractCommandItem, public Interface_CommandItem<COMMANDTYPE::CI_ACT_ARM, mace_command_short_t>
 {
 public:
     /**
      * @brief getCommandType
      * @return
      */
-    COMMANDITEM getCommandType() const override;
+    COMMANDTYPE getCommandType() const override;
 
     /**
      * @brief getDescription
@@ -41,6 +41,12 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
+
+    /** Interface imposed via Interface_CommandItem<mace_command_short_t> */
+    public:
+        void toMACEComms_CommandItem(mace_command_short_t &obj) const override;
+
+    /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
     ActionArm();
@@ -91,7 +97,6 @@ public:
         out<<"Command Arm( Request arm: "<<obj.actionArm<<")";
         return out;
     }
-
 
 private:
     bool actionArm;

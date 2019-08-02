@@ -455,7 +455,7 @@ void ModulePathPlanningNASAPhase2::replanRRT()
         mace::pose::CartesianPosition_2D goal2D;
         double altitude = 0.0;
 
-        CommandItem::SpatialWaypoint* target;
+        command_item::SpatialWaypoint* target;
 
         while(true) //this is dangerous, dont like it but for now let us just hack it in
         {
@@ -463,8 +463,8 @@ void ModulePathPlanningNASAPhase2::replanRRT()
 
             if(activeIndex >= m_MissionList.getQueueSize()) //we are maxed out the ability and there are no valid points
                 return;
-            CommandItem::AbstractCommandItemPtr item = m_MissionList.getActiveMissionItem();
-            target = item->as<CommandItem::SpatialWaypoint>();
+            command_item::AbstractCommandItemPtr item = m_MissionList.getActiveMissionItem();
+            target = item->as<command_item::SpatialWaypoint>();
 
             if(target->getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
             {

@@ -73,13 +73,13 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 
     switch(command->getCommandType())
     {
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
-    case COMMANDITEM::CI_NAV_HOME:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_NAV_HOME:
     {
         AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
         this->currentCommand = command->getClone();
         //check that the vehicle is truely armed and switch us into the guided mode
@@ -141,8 +141,8 @@ void State_Landing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
     if(command != nullptr)
     {
         switch (command->getCommandType()) {
-        case COMMANDITEM::CI_NAV_LAND:
-            if(command->as<CommandItem::SpatialLand>()->getPosition().has2DPositionSet())
+        case COMMANDTYPE::CI_NAV_LAND:
+            if(command->as<command_item::SpatialLand>()->getPosition().has2DPositionSet())
                 handleCommand(command);
             else
             {

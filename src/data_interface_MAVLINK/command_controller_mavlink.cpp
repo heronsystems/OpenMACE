@@ -132,7 +132,7 @@ void CommandController_MAVLINK::setNewMode(const int &newMode)
     m_CB->cbiCommandController_transmitNewMode(mode);
 }
 
-void CommandController_MAVLINK::setHomePosition(const CommandItem::SpatialHome &commandItem, const int &compID)
+void CommandController_MAVLINK::setHomePosition(const command_item::SpatialHome &commandItem, const int &compID)
 {
 
     std::stringstream buffer;
@@ -165,7 +165,7 @@ void CommandController_MAVLINK::setHomePosition(const CommandItem::SpatialHome &
     }
 }
 
-void CommandController_MAVLINK::setSystemArm(const CommandItem::ActionArm &commandItem, const int &compID)
+void CommandController_MAVLINK::setSystemArm(const command_item::ActionArm &commandItem, const int &compID)
 {
 
     std::stringstream buffer;
@@ -192,7 +192,7 @@ void CommandController_MAVLINK::setSystemArm(const CommandItem::ActionArm &comma
     m_CB->cbiCommandController_transmitCommand(cmd);
 }
 
-void CommandController_MAVLINK::setSystemTakeoff(const CommandItem::SpatialTakeoff &commandItem, const int &compID)
+void CommandController_MAVLINK::setSystemTakeoff(const command_item::SpatialTakeoff &commandItem, const int &compID)
 {
     std::stringstream buffer;
     buffer << commandItem;
@@ -223,7 +223,7 @@ void CommandController_MAVLINK::setSystemTakeoff(const CommandItem::SpatialTakeo
     m_CB->cbiCommandController_transmitCommand(cmd);
 }
 
-void CommandController_MAVLINK::setSystemLand(const CommandItem::SpatialLand &commandItem, const int &compID)
+void CommandController_MAVLINK::setSystemLand(const command_item::SpatialLand &commandItem, const int &compID)
 {
     std::stringstream buffer;
     buffer << commandItem;
@@ -255,7 +255,7 @@ void CommandController_MAVLINK::setSystemLand(const CommandItem::SpatialLand &co
     m_CB->cbiCommandController_transmitCommand(cmd);
 }
 
-void CommandController_MAVLINK::setSystemRTL(const CommandItem::SpatialRTL &commandItem, const int &compID)
+void CommandController_MAVLINK::setSystemRTL(const command_item::SpatialRTL &commandItem, const int &compID)
 {
     mLog->debug("Command Controller is requesting the system to RTL.");
 

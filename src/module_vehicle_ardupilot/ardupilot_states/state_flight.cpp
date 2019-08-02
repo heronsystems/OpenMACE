@@ -93,13 +93,13 @@ hsm::Transition State_Flight::GetTransition()
 
 bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    COMMANDITEM commandType = command->getCommandType();
+    COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDITEM::CI_ACT_MISSIONCOMMAND:
+    case COMMANDTYPE::CI_ACT_MISSIONCOMMAND:
     {
         int vehicleMode = 0;
         bool executeModeChange = false;
-        const CommandItem::ActionMissionCommand* cmd = command->as<CommandItem::ActionMissionCommand>();
+        const command_item::ActionMissionCommand* cmd = command->as<command_item::ActionMissionCommand>();
         if(cmd->getMissionCommandAction() == Data::MissionCommandAction::MISSIONCA_PAUSE)
         {
             executeModeChange = true;
@@ -153,21 +153,21 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         }
         break;
     }
-    case COMMANDITEM::CI_NAV_HOME:
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_NAV_HOME:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
         AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
         currentCommand = command;
         desiredStateEnum = ArdupilotFlightState::STATE_LANDING;
         break;
     }
-    case COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH:
+    case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
     {
-        const CommandItem::SpatialRTL* cmd = command->as<CommandItem::SpatialRTL>();
+        const command_item::SpatialRTL* cmd = command->as<command_item::SpatialRTL>();
 
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
         auto controllerRTL = new MAVLINKVehicleControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());

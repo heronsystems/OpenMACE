@@ -70,12 +70,12 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
     this->clearCommand();
 
     switch(command->getCommandType()) {
-    case COMMANDITEM::CI_NAV_HOME:
+    case COMMANDTYPE::CI_NAV_HOME:
     {
         AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
         AbstractStateArdupilot::handleCommand(command);
         MAVLINKVehicleControllers::ControllerSystemMode* modeController = (MAVLINKVehicleControllers::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
@@ -93,7 +93,7 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
         });
         break;
     }
-    case COMMANDITEM::CI_NAV_TAKEOFF:
+    case COMMANDTYPE::CI_NAV_TAKEOFF:
     {
         currentCommand = command->getClone();
         break;

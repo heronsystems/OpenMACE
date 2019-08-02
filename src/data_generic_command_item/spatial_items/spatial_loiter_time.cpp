@@ -1,10 +1,10 @@
 #include "spatial_loiter_time.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialLoiter_Time::getCommandType() const
+COMMANDTYPE SpatialLoiter_Time::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_LOITER_TIME;
+    return COMMANDTYPE::CI_NAV_LOITER_TIME;
 }
 
 std::string SpatialLoiter_Time::getDescription() const
@@ -44,6 +44,15 @@ SpatialLoiter_Time::SpatialLoiter_Time(const int &systemOrigin, const int &syste
 {
 
 }
+
+void SpatialLoiter_Time::toMACEComms_CommandItem(mace_command_long_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    populateCommandItem_FromPosition(obj);
+    obj.param1 = static_cast<float>(this->duration);
+    obj.param3 = this->direction == Data::LoiterDirection::CW ? static_cast<float>(fabs(this->radius)) : static_cast<float>(-1 * fabs(this->radius));
+}
+
 
 //!
 //! \brief printPositionalInfo

@@ -1,10 +1,10 @@
 #include "spatial_waypoint.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialWaypoint::getCommandType() const
+COMMANDTYPE SpatialWaypoint::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_WAYPOINT;
+    return COMMANDTYPE::CI_NAV_WAYPOINT;
 }
 
 std::string SpatialWaypoint::getDescription() const
@@ -49,6 +49,13 @@ SpatialWaypoint::~SpatialWaypoint()
 {
 
 }
+
+void SpatialWaypoint::toMACEComms_CommandItem(mace_command_long_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    populateCommandItem_FromPosition(obj);
+}
+
 
 mace_command_goto_t SpatialWaypoint::setGoToCommand(mace_command_goto_t &cmd) const
 {

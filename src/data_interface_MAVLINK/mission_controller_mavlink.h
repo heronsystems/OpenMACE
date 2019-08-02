@@ -30,7 +30,7 @@ public:
     virtual void cbiMissionController_TransmitMissionReqList(const mavlink_mission_request_list_t &request) = 0;
     virtual void cbiMissionController_TransmitMissionReq(const mavlink_mission_request_t &requestItem) = 0;
 
-    virtual void cbiMissionController_ReceviedHome(const CommandItem::SpatialHome &home) = 0;
+    virtual void cbiMissionController_ReceviedHome(const command_item::SpatialHome &home) = 0;
     virtual void cbiMissionController_ReceivedMission(const MissionItem::MissionList &missionList) = 0;
 
     virtual void cbiMissionController_MissionACK(const mavlink_mission_ack_t &missionACK, const MissionItem::MissionList &missionList) = 0;
@@ -95,7 +95,7 @@ private:
     Data::ControllerCommsState currentCommsState;
 
     MissionItem::MissionList missionList;
-    CommandItem::SpatialHome missionHome;
+    command_item::SpatialHome missionHome;
 
 protected:
     std::list<std::function<void()>> m_LambdasToRun;

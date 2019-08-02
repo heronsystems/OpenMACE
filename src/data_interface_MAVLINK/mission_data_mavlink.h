@@ -19,7 +19,7 @@ public:
     Data::DataGetSetNotifier<MissionItem::MissionList> currentGuidedMission;
 
 public:
-    Data::DataGetSetNotifier<CommandItem::SpatialHome> home;
+    Data::DataGetSetNotifier<command_item::SpatialHome> home;
     Data::DataGetSetNotifier<MissionItem::MissionItemAchieved> missionItemReached;
     Data::DataGetSetNotifier<MissionItem::MissionItemCurrent> missionItemCurrent;
 

@@ -10,7 +10,7 @@
 
 #include "command_item_type.h"
 
-namespace CommandItem {
+namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractCommandItem);
 
@@ -32,7 +32,7 @@ public:
     //! in the MACE network.
     //!
     AbstractCommandItem():
-        originatingSystem(0), targetSystem(0)
+        originatingSystem(0), targetSystem(0), targetComponent(0)
     {
 
     }
@@ -44,8 +44,8 @@ public:
     //! \param systemTarget The ID value of the system that is the intended recipient of the command item.
     //! A developer should be aware that this value defaults to 0 if no arguments are provided.
     //!
-    AbstractCommandItem(const int &systemOrigin, const int &systemTarget = 0):
-        originatingSystem(systemOrigin), targetSystem(systemTarget)
+    AbstractCommandItem(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0, const unsigned int &componentTarget = 0):
+        originatingSystem(systemOrigin), targetSystem(systemTarget), targetComponent(componentTarget)
     {
 
     }
@@ -61,7 +61,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    virtual COMMANDITEM getCommandType() const = 0;
+    virtual COMMANDTYPE getCommandType() const = 0;
 
     //!
     //! \brief hasSpatialInfluence returns a boolean reflecting whether or not the commandItem has
@@ -87,7 +87,7 @@ public:
     //! \param systemID value of the target system that should be receiving and enacting this command.
     //! A value of 0 here means that all systems will receive the command.
     //!
-    void setTargetSystem(const int &systemID){
+    void setTargetSystem(const unsigned int &systemID){
         targetSystem = systemID;
     }
 
@@ -95,7 +95,7 @@ public:
     //! \brief getTargetSystem retrieves the int value of the targetSystem of the commandItem object;
     //! \return int value of the targetSystem member object.
     //!
-    int getTargetSystem() const{
+    unsigned int getTargetSystem() const{
         return targetSystem;
     }
 
@@ -103,7 +103,7 @@ public:
     //! \brief setOriginatingSystem sets the originatingSystem of the commandItem object.
     //! \param systemID int value of the originatingSystem member object.
     //!
-    void setOriginatingSystem(const int &systemID){
+    void setOriginatingSystem(const unsigned int &systemID){
         originatingSystem = systemID;
     }
 
@@ -111,7 +111,7 @@ public:
     //! \brief getOriginatingSystem retries the int value of the originatingSystem of the commandItem object.
     //! \return int value of the originatingSystem member object.
     //!
-    int getOriginatingSystem() const{
+    unsigned int getOriginatingSystem() const{
         return originatingSystem;
     }
 
@@ -219,13 +219,19 @@ protected:
     //! \brief originatingSystem value relating to the systemID of the system that had initially generated
     //! or transmitted the command item.
     //!
-    int originatingSystem;
+    unsigned int originatingSystem;
 
     //!
     //! \brief targetSystem value relating to the systemID of the system that should be receiving and enacting
     //! the command item.
     //!
-    int targetSystem;
+    unsigned int targetSystem;
+
+    //!
+    //! \brief targetSystem value relating to the systemID of the system that should be receiving and enacting
+    //! the command item.
+    //!
+    unsigned int targetComponent;
 };
 
 }

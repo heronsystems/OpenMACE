@@ -137,7 +137,7 @@ private:
     //!
     //! \brief m_globalOrigin Global origin used for conversions to/from local coordinate frame
     //!
-    std::shared_ptr<CommandItem::SpatialHome> m_globalOrigin;
+    std::shared_ptr<command_item::SpatialHome> m_globalOrigin;
 
     //!
     //! \brief m_gridSpacing Grid spacing/resolution used for generating targets/nodes in the boundary

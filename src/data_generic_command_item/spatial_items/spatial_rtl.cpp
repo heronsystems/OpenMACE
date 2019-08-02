@@ -1,10 +1,10 @@
 #include "spatial_rtl.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialRTL::getCommandType() const
+COMMANDTYPE SpatialRTL::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH;
+    return COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH;
 }
 
 std::string SpatialRTL::getDescription() const
@@ -43,6 +43,12 @@ SpatialRTL::SpatialRTL(const int &systemOrigin, const int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
+}
+
+
+void SpatialRTL::toMACEComms_CommandItem(mace_command_short_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
 }
 
 //!

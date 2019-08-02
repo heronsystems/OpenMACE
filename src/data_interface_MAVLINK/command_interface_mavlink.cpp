@@ -62,7 +62,7 @@ mavlink_message_t CommandInterface_MAVLINK::setNewMode(const int &newMode, const
     return msg;
 }
 
-mavlink_message_t CommandInterface_MAVLINK::setHomePosition(const CommandItem::SpatialHome &commandItem, const int &compID)
+mavlink_message_t CommandInterface_MAVLINK::setHomePosition(const command_item::SpatialHome &commandItem, const int &compID)
 {
     mavlink_message_t msg;
     mavlink_command_long_t cmd = initializeCommandLong();
@@ -80,7 +80,7 @@ mavlink_message_t CommandInterface_MAVLINK::setHomePosition(const CommandItem::S
     return msg;
 }
 
-void CommandInterface_MAVLINK::setSystemArm(const CommandItem::ActionArm &commandItem, const int &compID)
+void CommandInterface_MAVLINK::setSystemArm(const command_item::ActionArm &commandItem, const int &compID)
 {
     mavlink_command_long_t cmd = initializeCommandLong();
     cmd.command = MAV_CMD_COMPONENT_ARM_DISARM;
@@ -90,7 +90,7 @@ void CommandInterface_MAVLINK::setSystemArm(const CommandItem::ActionArm &comman
     m_CBCmdLng(m_p,cmd);
 }
 
-void CommandInterface_MAVLINK::setSystemTakeoff(const CommandItem::SpatialTakeoff &commandItem, const int &compID)
+void CommandInterface_MAVLINK::setSystemTakeoff(const command_item::SpatialTakeoff &commandItem, const int &compID)
 {
     mavlink_command_long_t cmd = initializeCommandLong();
     cmd.command = MAV_CMD_NAV_TAKEOFF;
@@ -105,7 +105,7 @@ void CommandInterface_MAVLINK::setSystemTakeoff(const CommandItem::SpatialTakeof
     m_CBCmdLng(m_p,cmd);
 }
 
-void CommandInterface_MAVLINK::setSystemLand(const CommandItem::SpatialLand &commandItem, const int &compID)
+void CommandInterface_MAVLINK::setSystemLand(const command_item::SpatialLand &commandItem, const int &compID)
 {
     mavlink_command_long_t cmd = initializeCommandLong();
     cmd.command = MAV_CMD_NAV_LAND;
@@ -121,7 +121,7 @@ void CommandInterface_MAVLINK::setSystemLand(const CommandItem::SpatialLand &com
     m_CBCmdLng(m_p,cmd);
 }
 
-void CommandInterface_MAVLINK::setSystemRTL(const CommandItem::SpatialRTL &commandItem, const int &compID)
+void CommandInterface_MAVLINK::setSystemRTL(const command_item::SpatialRTL &commandItem, const int &compID)
 {
     mavlink_command_long_t cmd = initializeCommandLong();
     cmd.command = MAV_CMD_NAV_RETURN_TO_LAUNCH;

@@ -18,7 +18,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 {
 
     switch (command->getCommandType()) {
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
         auto controllerSystemMode = new MAVLINKVehicleControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
@@ -38,15 +38,15 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 
         MAVLINKVehicleControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString(command->as<CommandItem::ActionChangeMode>()->getRequestMode());
+        commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
         controllerSystemMode->Send(commandMode,sender,target);
         collection->Insert("modeController",controllerSystemMode);
         break;
     }
 
-    case COMMANDITEM::CI_NAV_HOME:
+    case COMMANDTYPE::CI_NAV_HOME:
     {
-        const CommandItem::SpatialHome* cmd = command->as<CommandItem::SpatialHome>();
+        const command_item::SpatialHome* cmd = command->as<command_item::SpatialHome>();
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
         auto controllerSystemHome = new MAVLINKVehicleControllers::Command_SetHomeInt(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerSystemHome->AddLambda_Finished(this, [this,controllerSystemHome,cmd](const bool completed, const uint8_t finishCode){

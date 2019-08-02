@@ -1,10 +1,10 @@
 #include "action_motor_test.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM ActionMotorTest::getCommandType() const
+COMMANDTYPE ActionMotorTest::getCommandType() const
 {
-    return COMMANDITEM::CI_ACT_MOTORTEST;
+    return COMMANDTYPE::CI_ACT_MOTORTEST;
 }
 
 std::string ActionMotorTest::getDescription() const
@@ -46,7 +46,12 @@ ActionMotorTest::ActionMotorTest(const int &systemOrigin, const int &systemTarge
 
 std::string ActionMotorTest::printCommandInfo() const
 {
-
+    return "";
 }
 
+void ActionMotorTest::toMACEComms_CommandItem(mace_command_long_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
 }
+
+} //end of namespace command_item

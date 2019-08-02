@@ -7,11 +7,11 @@
 
 namespace MAVLINKVehicleControllers {
 
-class CommandTakeoff : public Controller_GenericLongCommand<CommandItem::SpatialTakeoff, MAV_CMD_NAV_TAKEOFF>
+class CommandTakeoff : public Controller_GenericLongCommand<command_item::SpatialTakeoff, MAV_CMD_NAV_TAKEOFF>
 {
 public:
     CommandTakeoff(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<CommandItem::SpatialTakeoff, MAV_CMD_NAV_TAKEOFF>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::SpatialTakeoff, MAV_CMD_NAV_TAKEOFF>(cb, queue, linkChan)
     {
 
     }
@@ -20,7 +20,7 @@ public:
 
 protected:
 
-    virtual void FillCommand(const CommandItem::SpatialTakeoff &commandItem, mavlink_command_long_t &cmd) const
+    virtual void FillCommand(const command_item::SpatialTakeoff &commandItem, mavlink_command_long_t &cmd) const
     {
         cmd.target_system = commandItem.getTargetSystem();
         if(commandItem.position->has2DPositionSet())
@@ -31,7 +31,7 @@ protected:
         cmd.param7 = commandItem.position->getZ();
     }
 
-    virtual void BuildCommand(const mavlink_command_long_t &message, CommandItem::SpatialTakeoff &data) const
+    virtual void BuildCommand(const mavlink_command_long_t &message, command_item::SpatialTakeoff &data) const
     {
         data.setTargetSystem(message.target_system);
         if(message.param1 > 0.0)

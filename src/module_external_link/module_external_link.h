@@ -161,8 +161,8 @@ public:
 
 
     void ReceivedHome(const MaceCore::ModuleCharacteristic &moduleAppliedTo, const SpatialHome &home);
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchKeyReturn FetchHomeFromKey(const OptionalParameter<MaceCore::ModuleCharacteristic> &key);
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchModuleReturn FetchAllHomeFromModule(const OptionalParameter<MaceCore::ModuleCharacteristic> &module);
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchKeyReturn FetchHomeFromKey(const OptionalParameter<MaceCore::ModuleCharacteristic> &key);
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchModuleReturn FetchAllHomeFromModule(const OptionalParameter<MaceCore::ModuleCharacteristic> &module);
 
     void ReceivedCommand(const MaceCore::ModuleCharacteristic &sender, const AbstractCommandItem &command);
     void ReceivedGoToCommand(const MaceCore::ModuleCharacteristic &moduleFor, const AbstractCommandItem &command);
@@ -254,50 +254,50 @@ public:
     //! \brief Command_ChangeVehicleArm
     //! \param vehicleArm
     //!
-    virtual void Command_SystemArm(const CommandItem::ActionArm &systemArm, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_SystemArm(const command_item::ActionArm &systemArm, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
     //!
     //! \brief Command_ChangeVehicleOperationalMode
     //! \param vehicleMode
     //!
-    virtual void Command_ChangeSystemMode(const CommandItem::ActionChangeMode &vehicleMode, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_ChangeSystemMode(const command_item::ActionChangeMode &vehicleMode, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
     //!
     //! \brief Command_RequestVehicleTakeoff
     //! \param vehicleTakeoff
     //!
-    virtual void Command_VehicleTakeoff(const CommandItem::SpatialTakeoff &vehicleTakeoff, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_VehicleTakeoff(const command_item::SpatialTakeoff &vehicleTakeoff, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
     //!
     //! \brief Command_Land
     //! \param command
     //!
-    virtual void Command_Land(const CommandItem::SpatialLand &vehicleLand, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_Land(const command_item::SpatialLand &vehicleLand, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
     //!
     //! \brief Command_ReturnToLaunch
     //! \param command
     //!
-    virtual void Command_ReturnToLaunch(const CommandItem::SpatialRTL &vehicleRTL, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_ReturnToLaunch(const command_item::SpatialRTL &vehicleRTL, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
 
     //!
     //! \brief Command_MissionState
     //! \param command
     //!
-    virtual void Command_MissionState(const CommandItem::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_MissionState(const command_item::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
     //!
     //! \brief Command_IssueGeneralCommand
     //! \param command
     //!
-    virtual void Command_IssueGeneralCommand(const std::shared_ptr<CommandItem::AbstractCommandItem> &command);
+    virtual void Command_IssueGeneralCommand(const std::shared_ptr<command_item::AbstractCommandItem> &command);
 
     //!
     //! \brief Command_EmitHeartbeat
     //! \param heartbeat
     //!
-    virtual void Command_EmitHeartbeat(const CommandItem::SpatialTakeoff &heartbeat);
+    virtual void Command_EmitHeartbeat(const command_item::SpatialTakeoff &heartbeat);
 
     /////////////////////////////////////////////////////////////////////////
     /// GENERAL MISSION EVENTS: This is implying for auto mode of the vehicle.
@@ -376,14 +376,14 @@ public:
     //! \brief Command_SetHomePosition
     //! \param vehicleHome
     //!
-    virtual void Command_SetHomePosition(const CommandItem::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
+    virtual void Command_SetHomePosition(const command_item::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /// The following are public virtual functions imposed from IModuleCommandExternalLink.
     ///////////////////////////////////////////////////////////////////////////////////////
     void NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
     virtual void NewlyAvailableOnboardMission(const MissionItem::MissionKey &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
-    virtual void NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
     virtual void NewlyAvailableMissionExeState(const MissionItem::MissionKey &missionKey);
     virtual void NewlyAvailableModule(const MaceCore::ModuleCharacteristic &module, const MaceCore::ModuleClasses &type);
     virtual void ReceivedMissionACK(const MissionItem::MissionACK &ack);

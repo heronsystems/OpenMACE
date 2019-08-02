@@ -53,7 +53,9 @@ SOURCES += \
     target_items/dynamic_mission_queue.cpp \
     target_items/dynamic_target.cpp \
     do_items/command_goto.cpp \
-    target_items/dynamic_target_state.cpp
+    target_items/dynamic_target_state.cpp \
+    spatial_items/abstract_spatial_action.cpp \
+    mission_items/abstract_mission_item.cpp
 HEADERS +=\
     do_items/action_arm.h \
     do_items/action_change_mode.h \
@@ -94,7 +96,8 @@ HEADERS +=\
     mission_items/typedef_mission_types.h \
     target_items/dynamic_target_state.h \
     mission_items/mission_item_interface.h \
-    command_item_interface.h
+    interface_command_item.h \
+    mission_items/abstract_mission_item.h
 
 # Unix lib Install
 unix:!symbian {
@@ -130,7 +133,4 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../base/ -lbase
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
 else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata
-
-
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 

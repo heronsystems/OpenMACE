@@ -73,7 +73,7 @@ private:
     void cbiMissionController_TransmitMissionReqList(const mavlink_mission_request_list_t &request);
     void cbiMissionController_TransmitMissionReq(const mavlink_mission_request_t &requestItem);
 
-    void cbiMissionController_ReceviedHome(const CommandItem::SpatialHome &home);
+    void cbiMissionController_ReceviedHome(const command_item::SpatialHome &home);
     void cbiMissionController_ReceivedMission(const MissionItem::MissionList &missionList);
 
     void cbiMissionController_MissionACK(const mavlink_mission_ack_t &missionACK, const MissionItem::MissionList &missionList);

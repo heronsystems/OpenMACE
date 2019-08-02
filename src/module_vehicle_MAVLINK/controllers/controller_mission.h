@@ -26,7 +26,7 @@
 namespace MAVLINKVehicleControllers {
 
 /// Data that is to be downloaded from mission
-using MissionDownloadResult = std::tuple<CommandItem::SpatialHome, MissionList>;
+using MissionDownloadResult = std::tuple<command_item::SpatialHome, MissionList>;
 
 /**
  * Definition of the controller that will be used for the mission
@@ -221,7 +221,7 @@ protected:
         msg.target_component = 0;
         queue = 0;
 
-        m_MissionDownloading = std::make_shared<std::tuple<CommandItem::SpatialHome, MissionList>>();
+        m_MissionDownloading = std::make_shared<std::tuple<command_item::SpatialHome, MissionList>>();
     }
 
 
@@ -401,7 +401,7 @@ protected:
                 cmd.target_component = msg.target_component;
             }
             else{
-                std::shared_ptr<CommandItem::AbstractCommandItem> ptrItem = std::get<1>(*m_MissionUploading).getMissionItem(index - 1);
+                std::shared_ptr<command_item::AbstractCommandItem> ptrItem = std::get<1>(*m_MissionUploading).getMissionItem(index - 1);
                 DataMAVLINK::Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(ptrItem, index, cmd);
             }
 
@@ -451,7 +451,7 @@ public:
         MissionAction_RequestCurrentMission_Initiate::Request(vehicle, vehicle);
     }
 
-    void UploadMission(const MissionItem::MissionList &mission, const CommandItem::SpatialHome &home, const MavlinkEntityKey &vehicle)
+    void UploadMission(const MissionItem::MissionList &mission, const command_item::SpatialHome &home, const MavlinkEntityKey &vehicle)
     {
         MissionDownloadResult homeMissionPair = std::make_tuple(home, mission);
         MissionAction_Upload_Initiate::Send(homeMissionPair, vehicle, vehicle);
@@ -478,7 +478,7 @@ private:
         }
         else {
             int adjustedIndex = msg.seq - 1; //we decrement 1 only here because ardupilot references home as 0 and we 0 index in our mission queue
-            std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = DataMAVLINK::Helper_MissionMAVLINKtoMACE::Convert_MAVLINKTOMACE(sender, msg);
+            std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = DataMAVLINK::Helper_MissionMAVLINKtoMACE::Convert_MAVLINKTOMACE(sender, msg);
             std::get<1>(*m_MissionDownloading).replaceMissionItemAtIndex(newMissionItem, adjustedIndex);
         }
     }

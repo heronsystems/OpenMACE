@@ -55,10 +55,10 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 {
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDITEM::CI_NAV_TAKEOFF:
+    case COMMANDTYPE::CI_NAV_TAKEOFF:
     {
         this->currentCommand = command->getClone();
-        const CommandItem::SpatialTakeoff* cmd = currentCommand->as<CommandItem::SpatialTakeoff>();
+        const command_item::SpatialTakeoff* cmd = currentCommand->as<command_item::SpatialTakeoff>();
         if(cmd->getPosition().has3DPositionSet())
         {
             Owner().state->vehicleGlobalPosition.AddNotifier(this, [this, cmd]
@@ -81,7 +81,7 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
             });
 
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-            auto takeoffTransition = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<CommandItem::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            auto takeoffTransition = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             takeoffTransition->AddLambda_Finished(this, [this,takeoffTransition](const bool completed, const uint8_t finishCode){
                 if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
                     std::cout<<"We are not going to perform the transition portion of the takeoff."<<std::endl;
@@ -98,7 +98,7 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
             MavlinkEntityKey sender = 255;
 
             Base3DPosition cmdPosition = cmd->getPosition();
-            CommandItem::SpatialWaypoint takeoffTarget(255,cmd->getTargetSystem());
+            command_item::SpatialWaypoint takeoffTarget(255,cmd->getTargetSystem());
             takeoffTarget.setPosition(cmdPosition);
             takeoffTransition->Send(takeoffTarget,sender,target);
             collection->Insert("takeoffTransition",takeoffTransition);

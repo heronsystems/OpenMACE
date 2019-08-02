@@ -19,12 +19,12 @@ public:
     virtual void getSystemHome(const int &compID = 0);
     
     virtual mavlink_message_t setNewMode(const int &newMode, const int &originatingSystemID, const int &chan);
-    virtual mavlink_message_t setHomePosition(const CommandItem::SpatialHome &commandItem, const int &compID);
+    virtual mavlink_message_t setHomePosition(const command_item::SpatialHome &commandItem, const int &compID);
     
-    virtual void setSystemArm(const CommandItem::ActionArm &commandItem, const int &compID = 0);
-    virtual void setSystemTakeoff(const CommandItem::SpatialTakeoff &commandItem, const int &compID = 0);
-    virtual void setSystemLand(const CommandItem::SpatialLand &commandItem, const int &compID = 0);
-    virtual void setSystemRTL(const CommandItem::SpatialRTL &commandItem, const int &compID = 0);
+    virtual void setSystemArm(const command_item::ActionArm &commandItem, const int &compID = 0);
+    virtual void setSystemTakeoff(const command_item::SpatialTakeoff &commandItem, const int &compID = 0);
+    virtual void setSystemLand(const command_item::SpatialLand &commandItem, const int &compID = 0);
+    virtual void setSystemRTL(const command_item::SpatialRTL &commandItem, const int &compID = 0);
 
     
     virtual mavlink_command_long_t initializeCommandLong();

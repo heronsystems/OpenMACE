@@ -3,13 +3,14 @@
 
 #include <iostream>
 
-#include "data_generic_command_item/command_item_type.h"
 #include "data_generic_command_item/abstract_command_item.h"
+#include "data_generic_command_item/command_item_type.h"
+#include "data_generic_command_item/interface_command_item.h"
 
 
-namespace CommandItem {
+namespace command_item {
 
-class ActionMotorTest : public AbstractCommandItem
+class ActionMotorTest : public AbstractCommandItem, public Interface_CommandItem<COMMANDTYPE::CI_ACT_MOTORTEST, mace_command_long_t>
 {
     enum ThrottleChannel{
         PERCENTAGE,
@@ -22,7 +23,7 @@ public:
      * @brief getCommandType
      * @return
      */
-    COMMANDITEM getCommandType() const override;
+    COMMANDTYPE getCommandType() const override;
 
     /**
      * @brief getDescription
@@ -47,6 +48,12 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
+
+    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
+    public:
+        void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
+
+    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
 
 public:
     ActionMotorTest();

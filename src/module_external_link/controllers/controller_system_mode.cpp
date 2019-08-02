@@ -6,7 +6,7 @@ namespace ExternalLink {
 
 
 
-    bool ControllerSystemMode::Construct_Send(const CommandItem::ActionChangeMode &commandItem, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_command_system_mode_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
+    bool ControllerSystemMode::Construct_Send(const command_item::ActionChangeMode &commandItem, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_command_system_mode_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         queueObj = target;
@@ -31,7 +31,7 @@ namespace ExternalLink {
     }
 
 
-    bool ControllerSystemMode::Construct_FinalObjectAndResponse(const mace_command_system_mode_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_system_mode_ack_t &ack, MaceCore::ModuleCharacteristic &dataKey, CommandItem::ActionChangeMode &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
+    bool ControllerSystemMode::Construct_FinalObjectAndResponse(const mace_command_system_mode_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_system_mode_ack_t &ack, MaceCore::ModuleCharacteristic &dataKey, command_item::ActionChangeMode &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         vehicleObj = this->GetKeyFromSecondaryID(msg.target_system);

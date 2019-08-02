@@ -47,11 +47,11 @@ public:
 
     void getSystemHome(const int &compID = 0);
     void setNewMode(const int &newMode);
-    void setHomePosition(const CommandItem::SpatialHome &commandItem, const int &compID = 0);
-    void setSystemArm(const CommandItem::ActionArm &commandItem, const int &compID = 0);
-    void setSystemTakeoff(const CommandItem::SpatialTakeoff &commandItem, const int &compID = 0);
-    void setSystemLand(const CommandItem::SpatialLand &commandItem, const int &compID = 0);
-    void setSystemRTL(const CommandItem::SpatialRTL &commandItem, const int &compID = 0);
+    void setHomePosition(const command_item::SpatialHome &commandItem, const int &compID = 0);
+    void setSystemArm(const command_item::ActionArm &commandItem, const int &compID = 0);
+    void setSystemTakeoff(const command_item::SpatialTakeoff &commandItem, const int &compID = 0);
+    void setSystemLand(const command_item::SpatialLand &commandItem, const int &compID = 0);
+    void setSystemRTL(const command_item::SpatialRTL &commandItem, const int &compID = 0);
 
     Data::ControllerCommsState getCommsState() const
     {

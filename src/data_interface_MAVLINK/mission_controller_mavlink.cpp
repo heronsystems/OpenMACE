@@ -94,7 +94,7 @@ void MissionController_MAVLINK::transmitMissionItem(const mavlink_mission_reques
             missionItem = helperMACEtoMAV.convertHome(this->missionHome);
         }
         else{
-            std::shared_ptr<CommandItem::AbstractCommandItem> ptrItem = this->missionList.getMissionItem(index - 1);
+            std::shared_ptr<command_item::AbstractCommandItem> ptrItem = this->missionList.getMissionItem(index - 1);
             helperMACEtoMAV.MACEMissionToMAVLINKMission(ptrItem,index,missionItem);
         }
 
@@ -252,7 +252,7 @@ void MissionController_MAVLINK::recievedMissionItem(const mavlink_mission_item_t
     if(index == 0) //This implies we recieved the home position according to the mission
     {
         //This is the home position item associated with the vehicle
-        CommandItem::SpatialHome newHome;
+        command_item::SpatialHome newHome;
         newHome.position->setX(missionItem.x);
         newHome.position->setY(missionItem.y);
         newHome.position->setZ(missionItem.z);
@@ -261,7 +261,7 @@ void MissionController_MAVLINK::recievedMissionItem(const mavlink_mission_item_t
         m_CB->cbiMissionController_ReceviedHome(newHome);
     }else{
         int adjustedIndex = index - 1; //we decrement 1 only here because ardupilot references home as 0 and we 0 index in our mission queue
-        std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = helperMAVtoMACE.Convert_MAVLINKTOMACE(missionItem);
+        std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = helperMAVtoMACE.Convert_MAVLINKTOMACE(missionItem);
         this->missionList.replaceMissionItemAtIndex(newMissionItem,adjustedIndex);
     }
 

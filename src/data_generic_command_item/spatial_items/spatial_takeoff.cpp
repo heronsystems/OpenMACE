@@ -1,10 +1,10 @@
 #include "spatial_takeoff.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialTakeoff::getCommandType() const
+COMMANDTYPE SpatialTakeoff::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_TAKEOFF;
+    return COMMANDTYPE::CI_NAV_TAKEOFF;
 }
 
 std::string SpatialTakeoff::getDescription() const
@@ -44,6 +44,12 @@ SpatialTakeoff::SpatialTakeoff(const int &systemOrigin, const int &systemTarget)
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
+}
+
+void SpatialTakeoff::toMACEComms_CommandItem(mace_command_long_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
+    populateCommandItem_FromPosition(obj);
 }
 
 //!

@@ -1,10 +1,10 @@
 #include "spatial_home.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialHome::getCommandType() const
+COMMANDTYPE SpatialHome::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_HOME;
+    return COMMANDTYPE::CI_NAV_HOME;
 }
 
 std::string SpatialHome::getDescription() const
@@ -56,85 +56,61 @@ SpatialHome::SpatialHome(const int &systemOrigin, const int &systemTarget):
 
 }
 
-//!
-//! \brief toMACEComms_MissionItem
-//! \param obj
-//! \return
-//!
-bool SpatialHome::toMACEComms_MissionItem(mace_mission_item_t &obj) const
+void SpatialHome::toMACEComms_CommandItem(mace_command_long_t &obj) const
 {
-
+    Interface_CommandItem::initializeCommandItem(obj);
+    populateCommandItem_FromPosition(obj);
 }
 
-//!
-//! \brief toMACEComms_MSG
-//! \param obj
-//! \return
-//!
-mace_message_t SpatialHome::toMACEComms_MSG(mace_mission_item_t &obj) const
-{
 
-}
+//bool SpatialHome::getMACECommsObject(mace_home_position_t &obj) const
+//{
+//    bool validRequest = true;
+//    if(position->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+//    {
+//        if(position->is3D())
+//        {
+//            mace::pose::GeodeticPosition_3D* currentPosition = position->positionAs<mace::pose::GeodeticPosition_3D>();
+//            obj.latitude = static_cast<int32_t>(currentPosition->getLatitude() * pow(10,7));
+//            obj.longitude = static_cast<int32_t>(currentPosition->getLongitude() * pow(10,7));
+//            obj.altitude = static_cast<int32_t>(currentPosition->getAltitude() * pow(10,3));
+//        }
+//        else if(position->is2D()) {
+//            mace::pose::GeodeticPosition_2D* currentPosition = position->positionAs<mace::pose::GeodeticPosition_2D>();
+//            obj.latitude = static_cast<int32_t>(currentPosition->getLatitude() * pow(10,7));
+//            obj.longitude = static_cast<int32_t>(currentPosition->getLongitude() * pow(10,7));
+//        }
+//    }
+//    else if(position->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
+//    {
+//        if(position->is3D())
+//        {
+//            mace::pose::CartesianPosition_3D* currentPosition = position->positionAs<mace::pose::CartesianPosition_3D>();
+//            obj.latitude = static_cast<int32_t>(currentPosition->getXPosition() * pow(10,7));
+//            obj.longitude = static_cast<int32_t>(currentPosition->getYPosition() * pow(10,7));
+//            obj.altitude = static_cast<int32_t>(currentPosition->getAltitude() * pow(10,3));
+//        }
+//        else if(position->is2D()) {
+//            mace::pose::CartesianPosition_2D* currentPosition = position->positionAs<mace::pose::CartesianPosition_2D>();
+//            obj.latitude = static_cast<int32_t>(currentPosition->getXPosition() * pow(10,7));
+//            obj.longitude = static_cast<int32_t>(currentPosition->getYPosition() * pow(10,7));
+//        }
+//    }
+//    else {
+//        validRequest = false;
+//    }
 
-bool SpatialHome::fromMACEComms_CommandObject(const mace_set_home_position_t &obj)
-{
-    //This object will only be of the type Geodetic Position
+//    return validRequest;
+//}
 
-//    missionItem.setTargetSystem(target.ModuleID);
-//    missionItem.setOriginatingSystem(target.ModuleID);
-//    missionItem.position->setX(maceItem.latitude / pow(10,7));
-//    missionItem.position->setY(maceItem.longitude / pow(10,7));
-//    missionItem.position->setZ(maceItem.altitude / pow(10,3));
-}
-
-bool SpatialHome::getMACECommsObject(mace_home_position_t &obj) const
-{
-    bool validRequest = true;
-    if(position->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
-    {
-        if(position->is3D())
-        {
-            mace::pose::GeodeticPosition_3D* currentPosition = position->positionAs<mace::pose::GeodeticPosition_3D>();
-            obj.latitude = static_cast<int32_t>(currentPosition->getLatitude() * pow(10,7));
-            obj.longitude = static_cast<int32_t>(currentPosition->getLongitude() * pow(10,7));
-            obj.altitude = static_cast<int32_t>(currentPosition->getAltitude() * pow(10,3));
-        }
-        else if(position->is2D()) {
-            mace::pose::GeodeticPosition_2D* currentPosition = position->positionAs<mace::pose::GeodeticPosition_2D>();
-            obj.latitude = static_cast<int32_t>(currentPosition->getLatitude() * pow(10,7));
-            obj.longitude = static_cast<int32_t>(currentPosition->getLongitude() * pow(10,7));
-        }
-    }
-    else if(position->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
-    {
-        if(position->is3D())
-        {
-            mace::pose::CartesianPosition_3D* currentPosition = position->positionAs<mace::pose::CartesianPosition_3D>();
-            obj.latitude = static_cast<int32_t>(currentPosition->getXPosition() * pow(10,7));
-            obj.longitude = static_cast<int32_t>(currentPosition->getYPosition() * pow(10,7));
-            obj.altitude = static_cast<int32_t>(currentPosition->getAltitude() * pow(10,3));
-        }
-        else if(position->is2D()) {
-            mace::pose::CartesianPosition_2D* currentPosition = position->positionAs<mace::pose::CartesianPosition_2D>();
-            obj.latitude = static_cast<int32_t>(currentPosition->getXPosition() * pow(10,7));
-            obj.longitude = static_cast<int32_t>(currentPosition->getYPosition() * pow(10,7));
-        }
-    }
-    else {
-        validRequest = false;
-    }
-
-    return validRequest;
-}
-
-bool SpatialHome::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan, mace_message_t &msg) const
-{
-    mace_home_position_t homeMSG;
-    bool validRequest = getMACECommsObject(homeMSG);
-    if(validRequest)
-        mace_msg_home_position_encode_chan(systemID,compID,chan,&msg,&homeMSG);
-    return validRequest;
-}
+//bool SpatialHome::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan, mace_message_t &msg) const
+//{
+//    mace_home_position_t homeMSG;
+//    bool validRequest = getMACECommsObject(homeMSG);
+//    if(validRequest)
+//        mace_msg_home_position_encode_chan(systemID,compID,chan,&msg,&homeMSG);
+//    return validRequest;
+//}
 
 //!
 //! \brief printPositionalInfo

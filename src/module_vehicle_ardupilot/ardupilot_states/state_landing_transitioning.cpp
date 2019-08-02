@@ -50,10 +50,10 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 {
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
         currentCommand = command->getClone();
-        const CommandItem::SpatialLand* cmd = currentCommand->as<CommandItem::SpatialLand>();
+        const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
         if(cmd->getPosition().has3DPositionSet())
         {
             Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd]
@@ -77,7 +77,7 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
             });
 
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-            auto landingTransitioning = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<CommandItem::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            auto landingTransitioning = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             landingTransitioning->AddLambda_Finished(this, [this,landingTransitioning](const bool completed, const uint8_t finishCode){
                 if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
                     std::cout<<"We are not going to perform the transition portion of the landing."<<std::endl;
@@ -94,7 +94,7 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
             MavlinkEntityKey sender = 255;
 
             Base3DPosition cmdPosition = cmd->getPosition();
-            CommandItem::SpatialWaypoint landingTarget(255,cmd->getTargetSystem());
+            command_item::SpatialWaypoint landingTarget(255,cmd->getTargetSystem());
             landingTarget.setPosition(cmdPosition);
             landingTransitioning->Send(landingTarget,sender,target);
             collection->Insert("landingTransition",landingTransitioning);

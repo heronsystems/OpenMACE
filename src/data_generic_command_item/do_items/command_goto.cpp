@@ -1,10 +1,10 @@
 #include "command_goto.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM CommandGoTo::getCommandType() const
+COMMANDTYPE CommandGoTo::getCommandType() const
 {
-    return COMMANDITEM::CI_ACT_GOTO;
+    return COMMANDTYPE::CI_ACT_GOTO;
 }
 
 std::string CommandGoTo::getDescription() const
@@ -45,10 +45,15 @@ CommandGoTo::CommandGoTo(const CommandGoTo &obj):
     this->operator =(obj);
 }
 
-CommandGoTo::CommandGoTo(const int &systemOrigin, const int &systemTarget):
+CommandGoTo::CommandGoTo(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractCommandItem(systemOrigin,systemTarget), m_SpatialAction(nullptr)
 {
 
+}
+
+void CommandGoTo::toMACEComms_CommandItem(mace_command_goto_t &obj) const
+{
+    Interface_CommandItem::initializeCommandItem(obj);
 }
 
 std::string CommandGoTo::printCommandInfo() const
@@ -56,4 +61,5 @@ std::string CommandGoTo::printCommandInfo() const
 
 }
 
-} //end of namespace CommandItem
+
+} //end of namespace command_item

@@ -44,7 +44,7 @@ void MissionList::initializeQueue(const size_t &size)
         throw std::exception();
     }
     missionQueue.clear();
-    std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> tmpVector(size,nullptr);
+    std::vector<std::shared_ptr<command_item::AbstractCommandItem>> tmpVector(size,nullptr);
     missionQueue = tmpVector;
 }
 
@@ -53,7 +53,7 @@ void MissionList::clearQueue()
     missionQueue.clear();
 }
 
-void MissionList::replaceMissionQueue(const std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> &newQueue)
+void MissionList::replaceMissionQueue(const std::vector<std::shared_ptr<command_item::AbstractCommandItem>> &newQueue)
 {
     missionQueue.clear();
     missionQueue = newQueue;
@@ -65,7 +65,7 @@ MissionList::MissionListStatus MissionList::getMissionListStatus() const
     MissionListState missionState = MissionListState::COMPLETE;
 
     int index = 0;
-    for(std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>>::const_iterator it = missionQueue.begin(); it != missionQueue.end(); ++it) {
+    for(std::vector<std::shared_ptr<command_item::AbstractCommandItem>>::const_iterator it = missionQueue.begin(); it != missionQueue.end(); ++it) {
         if(!*it)
         {
             //This should see that the value is null
@@ -82,17 +82,17 @@ MissionList::MissionListStatus MissionList::getMissionListStatus() const
     return missionStatus;
 }
 
-void MissionList::insertMissionItem(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem)
+void MissionList::insertMissionItem(const std::shared_ptr<command_item::AbstractCommandItem> missionItem)
 {
     missionQueue.push_back(missionItem);
 }
 
-void MissionList::replaceMissionItemAtIndex(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem, const int &index)
+void MissionList::replaceMissionItemAtIndex(const std::shared_ptr<command_item::AbstractCommandItem> missionItem, const int &index)
 {
     missionQueue[index] = missionItem;
 }
 
-std::shared_ptr<CommandItem::AbstractCommandItem> MissionList::getMissionItem(const int &index) const
+std::shared_ptr<command_item::AbstractCommandItem> MissionList::getMissionItem(const int &index) const
 {
     return missionQueue[index];
 }
@@ -107,7 +107,7 @@ int MissionList::getActiveIndex() const
     return activeMissionItem;
 }
 
-std::shared_ptr<CommandItem::AbstractCommandItem> MissionList::getActiveMissionItem()
+std::shared_ptr<command_item::AbstractCommandItem> MissionList::getActiveMissionItem()
 {
     return (getMissionItem(getActiveIndex()));
 }

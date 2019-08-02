@@ -46,16 +46,16 @@ hsm::Transition State_GroundedIdle::GetTransition()
 
 bool State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    COMMANDITEM type = command->getCommandType();
+    COMMANDTYPE type = command->getCommandType();
 
     switch (type) {
-    case COMMANDITEM::CI_ACT_ARM: //This should cause a state transition to the grounded_arming state
+    case COMMANDTYPE::CI_ACT_ARM: //This should cause a state transition to the grounded_arming state
     {
-        if(command->as<CommandItem::ActionArm>()->getRequestArm())
+        if(command->as<command_item::ActionArm>()->getRequestArm())
             desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMING;
         break;
     }
-    case COMMANDITEM::CI_NAV_TAKEOFF: //This should cause a state transition to the grounded_arming state
+    case COMMANDTYPE::CI_NAV_TAKEOFF: //This should cause a state transition to the grounded_arming state
     {
         //This is a case where we want to walk all the way through arming to takeoff
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMING;

@@ -21,7 +21,7 @@ class DynamicTarget{
 public:
     DynamicTarget();
 
-    DynamicTarget(const Position* pos, const Velocity* vel, const Rotation_2D *rot, const Rotation_2D* rotRate);
+    DynamicTarget(const Position* pos, const Velocity* vel, const Rotation_2D* rot, const Rotation_2D* rotRate);
 
     DynamicTarget(const DynamicTarget &copy);
 

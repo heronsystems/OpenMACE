@@ -13,10 +13,10 @@ public:
 public:
     virtual bool toMACEComms_MissionItem(mace_mission_item_t &obj) const = 0;
 
-    virtual mace_message_t toMACEComms_MSG(mace_mission_item_t &obj) const = 0;
+    virtual mace_message_t toMACEComms_MACEMsg(mace_mission_item_t &obj, const uint8_t &chan) const = 0;
 
 protected:
-    void initialMissionItem(mace_mission_item_t &obj)
+    void initializeMissionItem(mace_mission_item_t &obj) const
     {
         obj.param1 = 0.0;
         obj.param2 = 0.0;

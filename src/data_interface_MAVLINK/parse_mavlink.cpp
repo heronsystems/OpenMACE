@@ -367,7 +367,7 @@ void VehicleObject_MAVLINK::parseMessage(const mavlink_message_t *msg){
         mavlink_home_position_t decodedMSG;
         mavlink_msg_home_position_decode(msg,&decodedMSG);
 
-        CommandItem::SpatialHome spatialHome;
+        command_item::SpatialHome spatialHome;
         spatialHome.position->setX(decodedMSG.latitude / pow(10,7));
         spatialHome.position->setY(decodedMSG.longitude / pow(10,7));
         spatialHome.position->setZ(decodedMSG.altitude / 1000);

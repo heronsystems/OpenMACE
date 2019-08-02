@@ -333,7 +333,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     {
         mavlink_home_position_t decodedMSG;
         mavlink_msg_home_position_decode(msg,&decodedMSG);
-        CommandItem::SpatialHome home;
+        command_item::SpatialHome home;
 
         DataState::StateGlobalPosition position;
         position.setPosition(decodedMSG.latitude / pow(10,7), decodedMSG.longitude / pow(10,7), decodedMSG.altitude / 1000);
@@ -344,7 +344,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         //check that something has actually changed
         if(mission->vehicleHomePosition.set(home))
         {
-            std::shared_ptr<CommandItem::SpatialHome> ptrHome = std::make_shared<CommandItem::SpatialHome>(home);
+            std::shared_ptr<command_item::SpatialHome> ptrHome = std::make_shared<command_item::SpatialHome>(home);
             if(this->m_CB)
                 this->m_CB->cbi_VehicleHome(systemID,home);
         }

@@ -12,13 +12,16 @@
 
 #include "abstract_spatial_action.h"
 #include "data/loiter_direction.h"
-#include "data_generic_command_item/command_item_type.h"
 
-namespace CommandItem {
+#include "data_generic_command_item/abstract_command_item.h"
+#include "data_generic_command_item/command_item_type.h"
+#include "data_generic_command_item/interface_command_item.h"
+
+namespace command_item {
 
 MACE_CLASS_FORWARD(SpatialLoiter_Unlimited);
 
-class SpatialLoiter_Unlimited : public AbstractSpatialAction
+class SpatialLoiter_Unlimited : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_LOITER_UNLIM, mace_command_long_t>
 {
 
 public:
@@ -32,7 +35,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    COMMANDITEM getCommandType() const override;
+    COMMANDTYPE getCommandType() const override;
 
     //!
     //! \brief getDescription
@@ -62,6 +65,12 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
+
+    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
+public:
+    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
+
+    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
 
 public:
     void operator = (const SpatialLoiter_Unlimited &rhs)

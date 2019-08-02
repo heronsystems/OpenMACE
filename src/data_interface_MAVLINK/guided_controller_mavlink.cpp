@@ -21,7 +21,7 @@ void GuidedController_MAVLINK::clearPreviousTransmit()
     }
 }
 
-void GuidedController_MAVLINK::updateWaypointTarget(const CommandItem::SpatialWaypoint &target)
+void GuidedController_MAVLINK::updateWaypointTarget(const command_item::SpatialWaypoint &target)
 {
     std::stringstream buffer;
     buffer << target;

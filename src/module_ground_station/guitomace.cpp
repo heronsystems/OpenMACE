@@ -96,7 +96,7 @@ void GUItoMACE::getGlobalOrigin()
 //!
 void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::SpatialHome tmpHome;
+    command_item::SpatialHome tmpHome;
     tmpHome.setTargetSystem(vehicleID);
     QJsonObject position = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
     tmpHome.position->setX(position.value("lat").toDouble());
@@ -184,10 +184,10 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
     std::cout << "Go here command issued" << std::endl;
 
     //Ken Fix: Target system should propogate or not exist at the mission item level using action/command logic
-    CommandItem::CommandGoTo cmdGoTo;
+    command_item::CommandGoTo cmdGoTo;
     cmdGoTo.setTargetSystem(vehicleID);
 
-    CommandItem::SpatialWaypointPtr spatialAction = std::make_shared<CommandItem::SpatialWaypoint>(vehicleID);
+    command_item::SpatialWaypointPtr spatialAction = std::make_shared<command_item::SpatialWaypoint>(vehicleID);
 //    spatialAction->getPosition().setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
 
     QJsonObject vehicleCommand = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
@@ -214,7 +214,7 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
 //!
 void GUItoMACE::takeoff(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::SpatialTakeoff newTakeoff;
+    command_item::SpatialTakeoff newTakeoff;
     QJsonObject vehicleCommand = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
     QJsonObject position = vehicleCommand["takeoffPosition"].toObject();
     bool latLonFlag = vehicleCommand["latLonFlag"].toBool();
@@ -280,7 +280,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "RTL") {
 //        mLogs->debug("Module Ground Station issuing command RTL to system " + std::to_string(vehicleID) + ".");
-        CommandItem::SpatialRTL rtlCommand;
+        command_item::SpatialRTL rtlCommand;
         rtlCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
 
@@ -290,7 +290,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "LAND") {
 //        mLogs->debug("Module Ground Station issuing land command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::SpatialLand landCommand;
+        command_item::SpatialLand landCommand;
         landCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
 
@@ -300,7 +300,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "AUTO_START") {
 //        mLogs->debug("Module Ground Station issuing mission start command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::ActionMissionCommand missionCommand;
+        command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionStart();
         missionCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
@@ -311,7 +311,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "AUTO_PAUSE") {
 //        mLogs->debug("Module Ground Station issuing mission pause command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::ActionMissionCommand missionCommand;
+        command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionPause();
         missionCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
@@ -322,7 +322,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "AUTO_RESUME") {
 //        mLogs->debug("Module Ground Station issuing mission resume command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::ActionMissionCommand missionCommand;
+        command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionResume();
         missionCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
@@ -346,12 +346,12 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     missionList.setVehicleID(vehicleID);
     missionList.initializeQueue(2);
 
-    std::shared_ptr<CommandItem::SpatialWaypoint> newWP = std::make_shared<CommandItem::SpatialWaypoint>();
+    std::shared_ptr<command_item::SpatialWaypoint> newWP = std::make_shared<command_item::SpatialWaypoint>();
     newWP->position->setPosition3D(14,7.5,20.0);
     newWP->setTargetSystem(vehicleID);
     newWP->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
 
-    std::shared_ptr<CommandItem::SpatialWaypoint> newWP1 = std::make_shared<CommandItem::SpatialWaypoint>();
+    std::shared_ptr<command_item::SpatialWaypoint> newWP1 = std::make_shared<command_item::SpatialWaypoint>();
     newWP1->position->setPosition3D(0,0,10.0);
     newWP1->setTargetSystem(vehicleID);
     newWP1->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
@@ -458,7 +458,7 @@ void GUItoMACE::getVehicleHome(const int &vehicleID)
 //!
 void GUItoMACE::setVehicleArm(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::ActionArm tmpArm;
+    command_item::ActionArm tmpArm;
     tmpArm.setTargetSystem(vehicleID); // the vehicle ID coordinates to the specific vehicle //vehicle 0 is reserved for all connected vehicles
 
     QJsonObject arm = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
@@ -481,7 +481,7 @@ void GUItoMACE::setVehicleArm(const int &vehicleID, const QJsonObject &jsonObj)
 //!
 void GUItoMACE::setVehicleMode(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::ActionChangeMode tmpMode;
+    command_item::ActionChangeMode tmpMode;
     tmpMode.setTargetSystem(vehicleID); // the vehicle ID coordinates to the specific vehicle //vehicle 0 is reserved for all connected vehicles
     tmpMode.setRequestMode(jsonObj["vehicleCommand"].toString().toStdString()); //where the string here is the desired Flight Mode...available modes can be found in the appropriate topic
     std::cout<<"We are changing the vehicle mode as issued by the GUI: "<<tmpMode.getRequestMode()<<std::endl;
