@@ -111,11 +111,11 @@ while toc(loopStart) <= runTime+10
                 waypointRequest.Altitude = agentAltitude(k);
                 waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
                 fprintf('Forcing 1st waypoint of new bundle now!\n');
-                fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(1,1), bundle{k}(1,2),k);
+                fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(1,1), bundle{k}(1,2),agentIDs(k));
                 if ( waypointResponse.Success )
-                    fprintf('VehicleID %d Wpt Command Sent.\n',k);
+                    fprintf('VehicleID %d Wpt Command Sent.\n',agentIDs(k));
                 else
-                    fprintf('VehicleID %d Wpt Command Failed.\n',k);
+                    fprintf('VehicleID %d Wpt Command Failed.\n',agentIDs(k));
                 end
             end
         end 
@@ -183,7 +183,7 @@ while toc(loopStart) <= runTime+10
         msg = positionSub.LatestMessage;
         
         % update the status in agentUpdated
-        agentIndex =  msg.VehicleID ;
+        agentIndex =  find(agentIDs == msg.VehicleID);
         agentUpdated(agentIndex) = 1;
         
         [xF3, yF3] = ENUtoF3(msg.Easting, msg.Northing);
@@ -193,7 +193,7 @@ while toc(loopStart) <= runTime+10
         % if the time inside the while loop goes beyond
         % positionUpdateTimeout, then quit while loop
         if toc(positionUpdateStart) >= positionUpdateTimeout
-            fprintf('Position update time out!\n Vehicle %d not updated.\n',find(agentUpdated==0));
+            fprintf('Position update time out!\n Vehicle %d not updated.\n',agentIDs(find(agentUpdated==0)));
             break;
         end
     end
@@ -204,7 +204,7 @@ while toc(loopStart) <= runTime+10
     for k = 1:N
         %if agentUpdated(k) == 1
         distToWpt = norm(agentLocation(k,:)-bundle{k}(bundleWptCounter(k),:));
-        fprintf('Distance of agent %d to wpt is %3.3f (capture radius = %3.3f) \n', k, distToWpt, captureRadius);
+        fprintf('Distance of agent %d to wpt is %3.3f (capture radius = %3.3f) \n', agentIDs(k), distToWpt, captureRadius);
         if distToWpt <= captureRadius
             if bundleWptCounter(k) < 5 % TODO: fix this hardcode
                 bundleWptCounter(k) = bundleWptCounter(k) + 1;
@@ -215,7 +215,7 @@ while toc(loopStart) <= runTime+10
         waypointRequest.Timestamp = rostime('now');
         waypointRequest.VehicleID = agentIDs(k);   % Vehicle ID
         waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
-        fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2),k);
+        fprintf('Sending (%3.3f, %3.3f) to Quad %d\n', bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2),agentIDs(k));
         [east, north] = F3toENU(bundle{k}(bundleWptCounter(k),1), bundle{k}(bundleWptCounter(k),2));
         wptCommand(k,1) = bundle{k}(bundleWptCounter(k),1);
         wptCommand(k,2) = bundle{k}(bundleWptCounter(k),2);
@@ -224,9 +224,9 @@ while toc(loopStart) <= runTime+10
         waypointRequest.Altitude = agentAltitude(k);
         waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 10);
         if ( waypointResponse.Success )
-            fprintf('VehicleID %d Wpt Command Sent.\n',k);
+            fprintf('VehicleID %d Wpt Command Sent.\n',agentIDs(k));
         else
-            fprintf('VehicleID %d Wpt Command Failed.\n',k);
+            fprintf('VehicleID %d Wpt Command Failed.\n',agentIDs(k));
         end
         fprintf('Command to quad %d done at %1.1f\n',k,toc(iterationStart));
         %end
