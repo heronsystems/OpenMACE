@@ -22,13 +22,13 @@ namespace command_item {
 
 MACE_CLASS_FORWARD(SpatialLoiter_Turns);
 
-class SpatialLoiter_Turns : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_LOITER_TURNS, mace_command_long_t>
+class SpatialLoiter_Turns : public AbstractSpatialAction
 {
 
 public:
     SpatialLoiter_Turns();
     SpatialLoiter_Turns(const SpatialLoiter_Turns &obj);
-    SpatialLoiter_Turns(const int &originatingSystem, const int &systemTarget = 0);
+    SpatialLoiter_Turns(const unsigned int &originatingSystem, const unsigned int &systemTarget = 0);
 
 public:
 
@@ -58,22 +58,15 @@ public:
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
 
-    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
-public:
-    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
-
-    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
-
     /** Interface imposed via AbstractCommandItem */
 public:
-    bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &cmd) const override;
+    void populateCommandItem(mace_command_long_t &obj) const override;
 
-    bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &cmd) const override;
+    void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
 
-    bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+    void fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj) override;
 
-    bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+    /** End of interface imposed via AbstractCommandItem */
 
 public:
     void operator = (const SpatialLoiter_Turns &rhs)

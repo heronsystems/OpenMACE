@@ -45,13 +45,6 @@ SpatialWaypoint::~SpatialWaypoint()
 
 }
 
-void SpatialWaypoint::toMACEComms_CommandItem(mace_command_long_t &obj) const
-{
-    Interface_CommandItem::initializeCommandItem(obj);
-    populateCommandItem_FromPosition(obj);
-}
-
-
 //!
 //! \brief printPositionalInfo
 //! \return

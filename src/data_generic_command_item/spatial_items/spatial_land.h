@@ -15,13 +15,13 @@
 
 namespace command_item {
 
-class SpatialLand : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_LAND, mace_command_long_t>
+class SpatialLand : public AbstractSpatialAction
 {
 
 public:
     SpatialLand();
     SpatialLand(const SpatialLand &obj);
-    SpatialLand(const int &systemOrigin, const int &systemTarget = 0);
+    SpatialLand(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0);
 
 public:
     //!
@@ -49,23 +49,6 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
-
-    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
-public:
-    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
-
-    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
-
-    /** Interface imposed via AbstractCommandItem */
-public:
-    bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &cmd) const override;
-
-    bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &cmd) const override;
-
-    bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
-
-    bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
     void operator = (const SpatialLand &rhs)

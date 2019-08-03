@@ -35,16 +35,10 @@ SpatialTakeoff::SpatialTakeoff(const SpatialTakeoff &obj):
     this->operator =(obj);
 }
 
-SpatialTakeoff::SpatialTakeoff(const int &systemOrigin, const int &systemTarget):
+SpatialTakeoff::SpatialTakeoff(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
-}
-
-void SpatialTakeoff::toMACEComms_CommandItem(mace_command_long_t &obj) const
-{
-    Interface_CommandItem::initializeCommandItem(obj);
-    populateCommandItem_FromPosition(obj);
 }
 
 //!

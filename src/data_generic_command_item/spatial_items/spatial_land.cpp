@@ -34,16 +34,10 @@ SpatialLand::SpatialLand(const SpatialLand &obj):
     this->operator =(obj);
 }
 
-SpatialLand::SpatialLand(const int &systemOrigin,  const int &systemTarget):
+SpatialLand::SpatialLand(const unsigned int &systemOrigin,  const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
-}
-
-void SpatialLand::toMACEComms_CommandItem(mace_command_long_t &obj) const
-{
-    Interface_CommandItem::initializeCommandItem(obj);
-    populateCommandItem_FromPosition(obj);
 }
 
 //!

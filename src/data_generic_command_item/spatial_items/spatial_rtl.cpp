@@ -34,17 +34,12 @@ SpatialRTL::SpatialRTL(const SpatialRTL &obj):
     this->operator =(obj);
 }
 
-SpatialRTL::SpatialRTL(const int &systemOrigin, const int &systemTarget):
+SpatialRTL::SpatialRTL(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
 }
 
-
-void SpatialRTL::toMACEComms_CommandItem(mace_command_short_t &obj) const
-{
-    Interface_CommandItem::initializeCommandItem(obj);
-}
 
 //!
 //! \brief printPositionalInfo

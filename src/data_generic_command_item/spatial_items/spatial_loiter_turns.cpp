@@ -35,19 +35,42 @@ SpatialLoiter_Turns::SpatialLoiter_Turns(const SpatialLoiter_Turns &obj):
     this->operator =(obj);
 }
 
-SpatialLoiter_Turns::SpatialLoiter_Turns(const int &systemOrigin, const int &systemTarget):
+SpatialLoiter_Turns::SpatialLoiter_Turns(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
 }
 
-void SpatialLoiter_Turns::toMACEComms_CommandItem(mace_command_long_t &obj) const
+/** Interface imposed via AbstractSpatialAction */
+
+void SpatialLoiter_Turns::populateCommandItem(mace_command_long_t &obj) const
 {
-    Interface_CommandItem::initializeCommandItem(obj);
-    populateCommandItem_FromPosition(obj);
+    AbstractSpatialAction::populateCommandItem(obj);
     obj.param1 = static_cast<float>(this->turns);
     obj.param3 = this->direction == Data::LoiterDirection::CW ? static_cast<float>(fabs(this->radius)) : static_cast<float>(-1 * fabs(this->radius));
 }
+
+void SpatialLoiter_Turns::fromMACECOMMS_MissionItem(const mace_mission_item_t &obj)
+{
+    AbstractSpatialAction::fromMACECOMMS_MissionItem(obj);
+    this->radius = fabs(obj.param3);
+    if(obj.param3 < 0)
+        this->direction = Data::LoiterDirection::CCW;
+    else
+        this->direction = Data::LoiterDirection::CW;
+}
+
+void SpatialLoiter_Turns::fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj)
+{
+    AbstractSpatialAction::fromMACECOMMS_GoToCommand(obj);
+    this->radius = fabs(obj.param3);
+    if(obj.param3 < 0)
+        this->direction = Data::LoiterDirection::CCW;
+    else
+        this->direction = Data::LoiterDirection::CW;
+}
+
+/** End of interface imposed via AbstractSpatialAction */
 
 //!
 //! \brief printPositionalInfo

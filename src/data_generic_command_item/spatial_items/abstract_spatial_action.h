@@ -97,9 +97,9 @@ public:
 
     /** Interface imposed via AbstractCommandItem */
 public: //The logic behind this is that every command item can be used to generate a mission item
-    void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
+    virtual void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
 
-    void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
+    virtual void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
 
     void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
 

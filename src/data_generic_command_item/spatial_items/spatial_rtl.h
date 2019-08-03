@@ -15,13 +15,13 @@
 
 namespace command_item {
 
-class SpatialRTL : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH, mace_command_short_t>
+class SpatialRTL : public AbstractSpatialAction
 {
 
 public:
     SpatialRTL();
     SpatialRTL(const SpatialRTL &obj);
-    SpatialRTL(const int &originatingSystem, const int &systemTarget = 0);
+    SpatialRTL(const unsigned int &originatingSystem, const unsigned int &systemTarget = 0);
 
 public:
 

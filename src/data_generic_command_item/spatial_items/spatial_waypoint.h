@@ -58,12 +58,6 @@ public:
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
 
-    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
-public:
-    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
-
-    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
-
 public:
     void operator = (const SpatialWaypoint &rhs)
     {

@@ -20,7 +20,7 @@ namespace command_item {
 //!
 //! \brief The SpatialHome class
 //!
-class SpatialHome : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_HOME, mace_command_long_t>
+class SpatialHome : public AbstractSpatialAction
 {
 public:
     //!
@@ -78,24 +78,6 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
-
-
-/** Interface imposed via Interface_CommandItem<mace_command_long_t> */
-public:
-    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
-
-/** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
-
-    /** Interface imposed via AbstractCommandItem */
-public:
-    bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &msg) const override;
-
-    bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &msg) const override;
-
-    bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
-
-    bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
     //!

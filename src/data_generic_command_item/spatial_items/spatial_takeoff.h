@@ -15,7 +15,7 @@
 
 namespace command_item {
 
-class SpatialTakeoff : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_TAKEOFF, mace_command_long_t>
+class SpatialTakeoff : public AbstractSpatialAction
 {
 
 public:
@@ -50,12 +50,6 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
-
-    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
-public:
-    void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
-
-    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
 
 public:
     void operator = (const SpatialTakeoff &rhs)
