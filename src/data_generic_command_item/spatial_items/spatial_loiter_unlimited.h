@@ -15,7 +15,7 @@
 
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
-#include "data_generic_command_item/interface_command_item.h"
+#include "data_generic_command_item/interface_command_helper.h"
 
 namespace command_item {
 
@@ -46,15 +46,6 @@ public:
     std::string getDescription() const override;
 
     //!
-    //! \brief hasSpatialInfluence returns a boolean reflecting whether or not the commandItem has
-    //! a direct influence over a vehicles position. This is useful for determining flight times,
-    //! position elements, or rendering objects on a GUI.
-    //! \return false if the command does not have an affect over the vehicles position directly.
-    //! For example, change speed has no influence over a vehicles position.
-    //!
-    bool hasSpatialInfluence() const override;
-
-    //!
     //! \brief getClone
     //! \return
     //!
@@ -71,6 +62,17 @@ public:
     void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
 
     /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
+
+    /** Interface imposed via AbstractCommandItem */
+public:
+    bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &cmd) const override;
+
+    bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &cmd) const override;
+
+    bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+
+    bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
+/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
     void operator = (const SpatialLoiter_Unlimited &rhs)

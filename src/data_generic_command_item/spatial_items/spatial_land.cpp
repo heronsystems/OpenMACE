@@ -12,11 +12,6 @@ std::string SpatialLand::getDescription() const
     return "This causes the vehicle to land either at the current location or prescribed location";
 }
 
-bool SpatialLand::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialLand::getClone() const
 {
     return std::make_shared<SpatialLand>(*this);

@@ -12,11 +12,6 @@ std::string SpatialHome::getDescription() const
     return "This stores the home location for a vehicle";
 }
 
-bool SpatialHome::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialHome::getClone() const
 {
     return std::make_shared<SpatialHome>(*this);
@@ -56,11 +51,42 @@ SpatialHome::SpatialHome(const int &systemOrigin, const int &systemTarget):
 
 }
 
+/** Interface imposed via Interface_CommandItem<mace_command_long_t> */
 void SpatialHome::toMACEComms_CommandItem(mace_command_long_t &obj) const
 {
     Interface_CommandItem::initializeCommandItem(obj);
     populateCommandItem_FromPosition(obj);
 }
+
+/** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
+
+/** Interface imposed via AbstractCommandItem */
+bool SpatialHome::generateMACECOMMS_MissionItemMSG(mace_mission_item_t &msg) const
+{
+    //Interface_MissionItem::initializeMissionItem(msg);
+    //temp command object since we know that we can map the two together
+    mace_command_long_t cmdLong;
+    toMACEComms_CommandItem(cmdLong);
+    Interface_CommandItem::populateMissionitem(cmdLong,msg);
+
+}
+
+bool SpatialHome::fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &msg) const
+{
+
+}
+
+bool SpatialHome::generateMACEMSG_MissionItem(mace_message_t &msg) const
+{
+
+}
+
+bool SpatialHome::generateMACEMSG_CommandItem(mace_message_t &msg) const
+{
+
+}
+/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+
 
 
 //bool SpatialHome::getMACECommsObject(mace_home_position_t &obj) const

@@ -12,11 +12,6 @@ std::string SpatialTakeoff::getDescription() const
     return "This causes the vehicle to perform a takeoff action";
 }
 
-bool SpatialTakeoff::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialTakeoff::getClone() const
 {
     return std::make_shared<SpatialTakeoff>(*this);

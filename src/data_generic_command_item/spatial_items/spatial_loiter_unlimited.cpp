@@ -12,11 +12,6 @@ std::string SpatialLoiter_Unlimited::getDescription() const
     return "This causes the vehicle to loiter around this MISSION an unlimited amount of time";
 }
 
-bool SpatialLoiter_Unlimited::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialLoiter_Unlimited::getClone() const
 {
     return std::make_shared<SpatialLoiter_Unlimited>(*this);

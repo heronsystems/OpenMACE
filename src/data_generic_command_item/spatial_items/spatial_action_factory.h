@@ -19,28 +19,28 @@ public:
        case COMMANDTYPE::CI_NAV_LOITER_TIME:
        {
             SpatialLoiter_TimePtr action = std::make_shared<SpatialLoiter_Time>();
-            action->updateFromGoToCommand(msg);
+            action->fromGoToCommand(msg);
             return action;
            break;
        }
        case COMMANDTYPE::CI_NAV_LOITER_TURNS:
        {
             SpatialLoiter_TurnsPtr action = std::make_shared<SpatialLoiter_Turns>();
-            action->updateFromGoToCommand(msg);
+            action->fromGoToCommand(msg);
             return action;
            break;
        }
        case COMMANDTYPE::CI_NAV_LOITER_UNLIM:
        {
             SpatialLoiter_UnlimitedPtr action = std::make_shared<SpatialLoiter_Unlimited>();
-            action->updateFromGoToCommand(msg);
+            action->fromGoToCommand(msg);
             return action;
            break;
        }
        case COMMANDTYPE::CI_NAV_WAYPOINT:
        {
             SpatialWaypointPtr action = std::make_shared<SpatialWaypoint>();
-            action->updateFromGoToCommand(msg);
+            action->fromGoToCommand(msg);
             return action;
            break;
        }

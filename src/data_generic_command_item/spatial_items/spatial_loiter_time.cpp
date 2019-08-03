@@ -12,11 +12,6 @@ std::string SpatialLoiter_Time::getDescription() const
     return "This causes the vehicle to loiter around this MISSION for X seconds";
 }
 
-bool SpatialLoiter_Time::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialLoiter_Time::getClone() const
 {
     return std::make_shared<SpatialLoiter_Time>(*this);

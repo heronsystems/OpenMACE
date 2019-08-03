@@ -12,11 +12,6 @@ std::string SpatialWaypoint::getDescription() const
     return "This is a waypoint mission item for a vehicle";
 }
 
-bool SpatialWaypoint::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialWaypoint::getClone() const
 {
     return std::make_shared<SpatialWaypoint>(*this);
@@ -56,25 +51,6 @@ void SpatialWaypoint::toMACEComms_CommandItem(mace_command_long_t &obj) const
     populateCommandItem_FromPosition(obj);
 }
 
-
-mace_command_goto_t SpatialWaypoint::setGoToCommand(mace_command_goto_t &cmd) const
-{
-//    cmd.action = (uint16_t)COMMANDITEM::CI_NAV_WAYPOINT;
-//    cmd.frame = (uint8_t)this->getPosition().getCoordinateFrame();
-//    cmd.param5 = this->getPosition().getX();
-//    cmd.param6 = this->getPosition().getY();
-//    cmd.param7 = this->getPosition().getZ();
-}
-
-void SpatialWaypoint::updateFromGoToCommand(const mace_command_goto_t &cmd)
-{
-    //Ken Fix: There has to be a better way to produce target systems. The actions should not have knowledge of this, should be taken care of in the command
-//    this->setTargetSystem(cmd.target_system);
-//    this->position->setCoordinateFrame((Data::CoordinateFrameType)cmd.frame);
-//    this->position->setX(cmd.param5);
-//    this->position->setY(cmd.param6);
-//    this->position->setZ(cmd.param7);
-}
 
 //!
 //! \brief printPositionalInfo

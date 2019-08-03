@@ -17,16 +17,20 @@
 
 #include "../mission_items/mission_item_interface.h"
 
+#include "../interface_command_helper.h"
+
 #include "../abstract_command_item.h"
 
 namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractSpatialAction);
 
+//Abstract spatial commands are related to the goto commands
+
 //!
 //! \brief The AbstractSpatialCommand class
 //!
-class AbstractSpatialAction : public AbstractCommandItem
+class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>
 {
 public:
     AbstractSpatialAction():
@@ -62,6 +66,11 @@ public:
         }
     }
 
+    virtual bool hasSpatialInfluence() const override
+    {
+        return true;
+    }
+
     bool isPositionSet() const
     {
         return position != nullptr;
@@ -85,50 +94,34 @@ public:
         return this->position;
     }
 
+
+    /** Interface imposed via AbstractCommandItem */
+public: //The logic behind this is that every command item can be used to generate a mission item
+    void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
+
+    void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
+
+    void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+
+    void generateMACEMSG_CommandItem(mace_message_t &msg) const override; //we know that you must cast to the specific type to get something explicit based on the command
+    /** End of interface imposed via AbstractCommandItem */
+
+    /** Interface imposed via Interface_CommandHelper<mace_command_long_t> */
+    virtual void populateCommandItem(mace_command_long_t &obj) const override;
+
+    virtual void fromCommandItem(const mace_command_long_t &obj) override;
+    /** End of interface imposed via Interface_CommandHelper<mace_command_long_t> */
+
+    virtual void populateMACEComms_GoToCommand(mace_command_goto_t &obj) const;
+
+    virtual void fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj);
+
 protected:
-    void populateCommandItem_FromPosition(mace_command_long_t &obj) const
-    {
-        if(position != nullptr)
-        switch (this->position->getCoordinateSystemType()) {
-        case CoordinateSystemTypes::GEODETIC:
-        {
-            if(this->position->is2D())
-            {
-                const mace::pose::GeodeticPosition_2D* currentPosition = this->position->positionAs<mace::pose::GeodeticPosition_2D>();
-                obj.param5 = static_cast<float>(currentPosition->getLatitude());
-                obj.param6 = static_cast<float>(currentPosition->getLongitude());
-            }
-            else if(this->position->is3D())
-            {
-                const mace::pose::GeodeticPosition_3D* currentPosition = this->position->positionAs<mace::pose::GeodeticPosition_3D>();
-                obj.param5 = static_cast<float>(currentPosition->getLatitude());
-                obj.param6 = static_cast<float>(currentPosition->getLongitude());
-                obj.param7 = static_cast<float>(currentPosition->getAltitude());
-            }
-            break;
-        }
-        case CoordinateSystemTypes::CARTESIAN:
-        {
-            throw std::runtime_error("Cannot populate a command item from a cartesian position.");
-            break;
-        }
-        default:
-            break;
-        }
-    }
+    void transferTo_GoToCommand(const mace_command_long_t &cmd, mace_command_goto_t &obj) const;
 
-public:
-    //Ken Fix: Impose this as a pure virtual for interface with any abstract position formulations
-    virtual mace_command_goto_t setGoToCommand(mace_command_goto_t &cmd) const
-    {
-        UNUSED(cmd);
-    }
-
-    virtual void updateFromGoToCommand(const mace_command_goto_t &cmd)
-    {
-        UNUSED(cmd);
-    }
-
+private:
+    void populatePositionObject(const CoordinateSystemTypes &generalType, const mace::CoordinateFrameTypes &explicitType, const uint8_t &dim,
+                                const double &x=0.0, const double &y=0.0, const double &z=0.0);
 public:
     //!
     //! \brief operator =

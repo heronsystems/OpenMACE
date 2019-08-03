@@ -115,6 +115,21 @@ public:
         return originatingSystem;
     }
 
+public: //The logic behind this is that every command item can be used to generate a mission item
+    virtual void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+    {
+        cmd.target_system = static_cast<uint8_t>(this->targetSystem);
+    }
+
+    virtual void fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+    {
+        this->targetSystem = cmd.target_system;
+    }
+
+    virtual void generateMACEMSG_MissionItem(mace_message_t &msg) const = 0;
+
+    virtual void generateMACEMSG_CommandItem(mace_message_t &msg) const = 0; //we know that you must cast to the specific type to get something explicit based on the command
+
 public:
     /**
      *

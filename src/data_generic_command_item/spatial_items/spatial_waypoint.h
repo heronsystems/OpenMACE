@@ -14,7 +14,7 @@
 
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
-#include "data_generic_command_item/interface_command_item.h"
+#include "data_generic_command_item/interface_command_helper.h"
 
 namespace command_item {
 
@@ -31,11 +31,6 @@ public:
     ~SpatialWaypoint() override;
 
 public:
-    mace_command_goto_t setGoToCommand(mace_command_goto_t &cmd) const override;
-
-    void updateFromGoToCommand(const mace_command_goto_t &cmd) override;
-
-public:
 
     //!
     //! \brief getCommandType returns the type of the object that this command type is.
@@ -50,15 +45,6 @@ public:
     //! would happen when issuing such a command.
     //!
     std::string getDescription() const override;
-
-    //!
-    //! \brief hasSpatialInfluence returns a boolean reflecting whether or not the commandItem has
-    //! a direct influence over a vehicles position. This is useful for determining flight times,
-    //! position elements, or rendering objects on a GUI.
-    //! \return false if the command does not have an affect over the vehicles position directly.
-    //! For example, change speed has no influence over a vehicles position.
-    //!
-    bool hasSpatialInfluence() const override;
 
     //!
     //! \brief getClone

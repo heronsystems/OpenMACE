@@ -12,11 +12,6 @@ std::string SpatialRTL::getDescription() const
     return "This causes the vehicle to return to the launch location";
 }
 
-bool SpatialRTL::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialRTL::getClone() const
 {
     return std::make_shared<SpatialRTL>(*this);

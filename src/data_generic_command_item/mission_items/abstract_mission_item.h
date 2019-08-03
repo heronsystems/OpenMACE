@@ -6,7 +6,6 @@ class Abstract_MissionItem
 public:
     Abstract_MissionItem();
 
-
 };
 
 #endif // ABSTRACT_MISSION_ITEM_H

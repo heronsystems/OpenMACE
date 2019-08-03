@@ -12,11 +12,6 @@ std::string SpatialLoiter_Turns::getDescription() const
     return "This causes the vehicle to loiter around this MISSION for X turns";
 }
 
-bool SpatialLoiter_Turns::hasSpatialInfluence() const
-{
-    return true;
-}
-
 std::shared_ptr<AbstractCommandItem> SpatialLoiter_Turns::getClone() const
 {
     return std::make_shared<SpatialLoiter_Turns>(*this);
