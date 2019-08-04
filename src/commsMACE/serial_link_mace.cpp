@@ -78,6 +78,8 @@ void SerialLink::RequestReset()
 
 void SerialLink::WriteBytes(const char *bytes, int length, const OptionalParameter<Resource> &target)
 {
+    UNUSED(target);
+
     QByteArray data(bytes, length);
     if(m_port && m_port->isOpen()) {
         //_logOutputDataRate(data.size(), QDateTime::currentMSecsSinceEpoch());

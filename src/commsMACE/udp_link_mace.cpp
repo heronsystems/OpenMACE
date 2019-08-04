@@ -10,7 +10,7 @@ namespace CommsMACE
 UdpLink:: UdpLink(const UdpConfiguration &config) :
     _config(config)
 {
-    m_socket    = NULL;
+    m_socket    = nullptr;
     m_bytesRead = 0;
     m_stopp    = false;
     m_reqReset = false;
@@ -22,7 +22,7 @@ UdpLink::~UdpLink()
 {
     Disconnect();
     if(m_socket) delete m_socket;
-    m_socket = NULL;
+    m_socket = nullptr;
 }
 
 void UdpLink::RequestReset()
@@ -65,7 +65,7 @@ void UdpLink::Disconnect(void)
     if (m_socket) {
         m_socket->close();
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
     }
 }
 
@@ -81,7 +81,7 @@ bool UdpLink::_hardwareConnect(QAbstractSocket::SocketError &error, QString& err
         m_socket->close();
         std::this_thread::sleep_for(std::chrono::microseconds(50000));
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
     }
 
     std::cout << "UdpLink: hardwareConnect to " << _config.listenAddress() << ":" << _config.listenPortNumber() << std::endl;
@@ -108,7 +108,7 @@ bool UdpLink::_hardwareConnect(QAbstractSocket::SocketError &error, QString& err
         EmitEvent([&](const ILinkEvents *ptr){ptr->CommunicationUpdate(this, _config.listenAddress(), "Error opening port: " + errorString.toStdString());});
         m_socket->close();
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
         return false; // couldn't open udp port
     }
 
@@ -138,11 +138,12 @@ bool UdpLink::_hardwareConnect(QAbstractSocket::SocketError &error, QString& err
 
 void UdpLink::WriteBytes(const char *bytes, int length, const OptionalParameter<Resource> &target)
 {
+    UNUSED(target);
     QByteArray data(bytes, length);
     if(m_socket && m_socket->isOpen()) {
         // TODO: Listen for UDP messages, identify sender port, set _config.senderPort (or something), use that to send.
         //          --May want to have a senderAddress as well...
-        m_socket->writeDatagram(data, QHostAddress(QString::fromStdString(_config.senderAddress())), _config.senderPortNumber());
+        m_socket->writeDatagram(data, QHostAddress(QString::fromStdString(_config.senderAddress())), static_cast<quint16>(_config.senderPortNumber()));
     } else {
         // Error occured
         _emitLinkError("Could not send data - link " + getSenderAddress() + ":" + std::to_string(getSenderPortNumber()) + " is disconnected!");
@@ -156,6 +157,7 @@ void UdpLink::AddResource(const Resource &resource)
 
 bool UdpLink::HasResource(const Resource &resource) const
 {
+    UNUSED(resource);
     return true;
 }
 
@@ -218,7 +220,7 @@ void UdpLink::processPendingDatagrams(void)
 {
     while (m_socket->hasPendingDatagrams()) {
         QByteArray datagram;
-        datagram.resize(m_socket->pendingDatagramSize());
+        datagram.resize(static_cast<int>(m_socket->pendingDatagramSize()));
         QHostAddress sender;
         quint16 senderPort;
         m_socket->readDatagram(datagram.data(), datagram.size(), &sender, &senderPort);

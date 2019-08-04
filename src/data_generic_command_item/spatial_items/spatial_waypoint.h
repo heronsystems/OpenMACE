@@ -20,7 +20,7 @@ namespace command_item {
 
 MACE_CLASS_FORWARD(SpatialWaypoint);
 
-class SpatialWaypoint : public AbstractSpatialAction, public Interface_CommandItem<COMMANDTYPE::CI_NAV_TAKEOFF, mace_command_long_t>
+class SpatialWaypoint : public AbstractSpatialAction
 {
 
 public:

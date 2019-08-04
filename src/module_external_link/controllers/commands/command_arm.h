@@ -8,7 +8,7 @@
 namespace ExternalLink {
 
 
-class CommandARM : public Controller_GenericShortCommand<command_item::ActionArm, (uint8_t)command_item::COMMANDTYPE::CI_ACT_ARM>
+class CommandARM : public Controller_GenericShortCommand<command_item::ActionArm, static_cast<uint8_t>(command_item::COMMANDTYPE::CI_ACT_ARM)>
 {
 public:
 

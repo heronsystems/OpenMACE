@@ -12,7 +12,7 @@
 
 namespace command_item {
 
-class ActionChangeSpeed : public AbstractCommandItem, public Interface_CommandItem<COMMANDTYPE::CI_ACT_CHANGESPEED, mace_command_short_t>
+class ActionChangeSpeed : public AbstractCommandItem, public Interface_CommandHelper<mace_command_short_t>
 {
 public:
     /**
@@ -46,26 +46,29 @@ public:
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
 
     /** Interface imposed via Interface_CommandItem<mace_command_short_t> */
-    public:
-        void toMACEComms_CommandItem(mace_command_short_t &obj) const override;
+public:
+    void populateCommandItem(mace_command_short_t &obj) const override;
+
+    void fromCommandItem(const mace_command_short_t &obj) override;
 
     /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
-        /** Interface imposed via AbstractCommandItem */
-    public:
-        bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &cmd) const override;
 
-        bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &cmd) const override;
+    /** Interface imposed via AbstractCommandItem */
+public: //The logic behind this is that every command item can be used to generate a mission item
+    void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
 
-        bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+    void fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd) override;
 
-        bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
-    /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+    void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+
+    void generateMACEMSG_CommandItem(mace_message_t &msg) const override;
+/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
     ActionChangeSpeed();
     ActionChangeSpeed(const ActionChangeSpeed &obj);
-    ActionChangeSpeed(const int &systemOrigin, const int &systemTarget);
+    ActionChangeSpeed(const unsigned int &systemOrigin, const unsigned int &systemTarget);
 
 public:
     void setSpeedFrame(const Data::SpeedFrame &frame)

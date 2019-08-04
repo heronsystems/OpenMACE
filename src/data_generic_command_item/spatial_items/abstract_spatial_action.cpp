@@ -29,6 +29,8 @@ void AbstractSpatialAction::fromMACECOMMS_MissionItem(const mace_mission_item_t 
         position = new mace::pose::GeodeticPosition_3D();
         mace::pose::GeodeticPosition_3D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_3D>();
         tmpPos->updatePosition(static_cast<double>(obj.y), static_cast<double>(obj.x),static_cast<double>(obj.z));
+        //get the frame and map it to a Geodetic Type
+        //tmpPos->setCoordinateFrame();
         break;
     }
     case mace::CoordinateFrameTypes::CF_LOCAL_ENU:
@@ -36,6 +38,8 @@ void AbstractSpatialAction::fromMACECOMMS_MissionItem(const mace_mission_item_t 
         position = new mace::pose::CartesianPosition_3D();
         mace::pose::CartesianPosition_3D* tmpPos = position->positionAs<mace::pose::CartesianPosition_3D>();
         tmpPos->updatePosition(static_cast<double>(obj.x), static_cast<double>(obj.y),static_cast<double>(obj.z));
+        //get the frame and map it to a Cartesian Type
+        //tmpPos->setCoordinateFrame();
         break;
     }
     default:
@@ -113,7 +117,8 @@ void AbstractSpatialAction::populateCommandItem(mace_command_long_t &obj) const
 
 void AbstractSpatialAction::fromCommandItem(const mace_command_long_t &obj)
 {
-    throw std::runtime_error("A request to generate a AbstractSpatialAction from a command long is not valid. Spatial items are never just a command.")
+    UNUSED(obj);
+    throw std::runtime_error("A request to generate a AbstractSpatialAction from a command long is not valid. Spatial items are never just a command.");
 }
 
 
@@ -127,7 +132,10 @@ void AbstractSpatialAction::populateMACEComms_GoToCommand(mace_command_goto_t &o
 
 void AbstractSpatialAction::fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj)
 {
-
+    this->targetSystem = obj.target_system;
+    this->targetComponent = obj.target_component;
+    //from here we need to populate the position object
+    //populatePositionObject()
 }
 
 void AbstractSpatialAction::transferTo_GoToCommand(const mace_command_long_t &cmd, mace_command_goto_t &obj) const
@@ -156,12 +164,14 @@ void AbstractSpatialAction::populatePositionObject(const CoordinateSystemTypes &
         {
             position = new mace::pose::GeodeticPosition_2D();
             mace::pose::GeodeticPosition_2D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_2D>();
+            //tmpPos->setCoordinateFrame();
             tmpPos->updateTranslationalComponents(y,x);
         }
         else if(dim == 3)
         {
             position = new mace::pose::GeodeticPosition_3D();
             mace::pose::GeodeticPosition_3D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_3D>();
+            //tmpPos->setCoordinateFrame();
             tmpPos->updatePosition(y,x,z);
         }
     }
@@ -171,12 +181,14 @@ void AbstractSpatialAction::populatePositionObject(const CoordinateSystemTypes &
         {
             position = new mace::pose::CartesianPosition_2D();
             mace::pose::CartesianPosition_2D* tmpPos = position->positionAs<mace::pose::CartesianPosition_2D>();
+            //tmpPos->setCoordinateFrame();
             tmpPos->updatePosition(x,y);
         }
         else if(dim == 3)
         {
             position = new mace::pose::CartesianPosition_3D();
             mace::pose::CartesianPosition_3D* tmpPos = position->positionAs<mace::pose::CartesianPosition_3D>();
+            //tmpPos->setCoordinateFrame();
             tmpPos->updatePosition(x,y,z);
         }
         break;
@@ -185,6 +197,5 @@ void AbstractSpatialAction::populatePositionObject(const CoordinateSystemTypes &
         break;
     }
 }
-
 
 } //end of namespace CommandItem

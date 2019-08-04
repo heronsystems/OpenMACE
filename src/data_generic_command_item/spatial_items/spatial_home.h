@@ -50,7 +50,7 @@ public:
     //! \param systemTarget The ID value of the system that is the intended recipient of the command item.
     //! A developer should be aware that this value defaults to 0 if no arguments are provided.
     //!
-    SpatialHome(const int &systemOrigin, const int &systemTarget = 0);
+    SpatialHome(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0);
 
 public:
     //!

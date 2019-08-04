@@ -3,7 +3,7 @@
 namespace ExternalLink {
 
     CommandTakeoff::CommandTakeoff(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<command_item::SpatialTakeoff, (uint8_t)command_item::COMMANDTYPE::CI_NAV_TAKEOFF>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::SpatialTakeoff, static_cast<uint8_t>(command_item::COMMANDTYPE::CI_NAV_TAKEOFF)>(cb, queue, linkChan)
     {
 
     }

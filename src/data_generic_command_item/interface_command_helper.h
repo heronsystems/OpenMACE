@@ -17,6 +17,9 @@ protected:
     virtual void fromCommandItem(const T &obj) = 0;
 
     void transferToMissionItem(const T &cmdObj, mace_mission_item_t &misObj) const;
+
+    void transferFromMissionItem(const mace_mission_item_t &misObj, T &cmdObj) const;
+
 };
 
 

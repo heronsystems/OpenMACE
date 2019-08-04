@@ -116,10 +116,12 @@ public: //The logic behind this is that every command item can be used to genera
 
     virtual void fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj);
 
+    //static AbstractSpatialActionPtr constructFromGoToCommand(const mace_command_goto_t &msg);
+
 protected:
     void transferTo_GoToCommand(const mace_command_long_t &cmd, mace_command_goto_t &obj) const;
 
-private:
+protected:
     void populatePositionObject(const CoordinateSystemTypes &generalType, const mace::CoordinateFrameTypes &explicitType, const uint8_t &dim,
                                 const double &x=0.0, const double &y=0.0, const double &z=0.0);
 public:

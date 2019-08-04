@@ -186,8 +186,6 @@ public:
     {
         if(!Eigen::Rotation2D<double>::isApprox(rhs,std::numeric_limits<double>::epsilon()))
             return false;
-        if(this->dimensionMask != rhs.dimensionMask)
-            return false;
         return true;
     }
 
@@ -212,7 +210,6 @@ public:
     {
         AbstractRotation::operator=(rhs);
         Eigen::Rotation2D<double>::operator=(rhs);
-        this->dimensionMask = rhs.dimensionMask;
         return *this;
     }
 

@@ -51,23 +51,6 @@ public:
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
 
-    /** Interface imposed via Interface_CommandItem<mace_command_short_t> */
-public:
-    void toMACEComms_CommandItem(mace_command_short_t &obj) const override;
-
-    /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
-
-    /** Interface imposed via AbstractCommandItem */
-public:
-    bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &cmd) const override;
-
-    bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &cmd) const override;
-
-    bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
-
-    bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
-
 public:
     void operator = (const SpatialRTL &rhs)
     {

@@ -3,7 +3,7 @@
 namespace ExternalLink {
 
     CommandMissionItem::CommandMissionItem(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericShortCommand<command_item::ActionMissionCommand, (uint8_t)command_item::COMMANDTYPE::CI_ACT_MISSIONCOMMAND>(cb, queue, linkChan)
+        Controller_GenericShortCommand<command_item::ActionMissionCommand, static_cast<uint8_t>(command_item::COMMANDTYPE::CI_ACT_MISSIONCOMMAND)>(cb, queue, linkChan)
     {
 
     }

@@ -10,7 +10,7 @@
 
 namespace command_item {
 
-class ActionMotorTest : public AbstractCommandItem, public Interface_CommandItem<COMMANDTYPE::CI_ACT_MOTORTEST, mace_command_long_t>
+class ActionMotorTest : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>
 {
     enum ThrottleChannel{
         PERCENTAGE,
@@ -49,22 +49,25 @@ public:
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
 
-    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
-    public:
-        void toMACEComms_CommandItem(mace_command_long_t &obj) const override;
+    /** Interface imposed via Interface_CommandItem<mace_command_short_t> */
+public:
+    void populateCommandItem(mace_command_long_t &obj) const override;
 
-    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
+    void fromCommandItem(const mace_command_long_t &obj) override;
 
-        /** Interface imposed via AbstractCommandItem */
-    public:
-        bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &cmd) const override;
-
-        bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &cmd) const override;
-
-        bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
-
-        bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
     /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+
+
+    /** Interface imposed via AbstractCommandItem */
+public: //The logic behind this is that every command item can be used to generate a mission item
+    void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
+
+    void fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd) override;
+
+    void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+
+    void generateMACEMSG_CommandItem(mace_message_t &msg) const override;
+/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
     ActionMotorTest();

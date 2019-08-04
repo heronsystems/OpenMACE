@@ -11,11 +11,12 @@
 #include "data_generic_command_item/command_item_type.h"
 #include "data_generic_command_item/interface_command_helper.h"
 
+
 namespace command_item {
 
 MACE_CLASS_FORWARD(CommandGoTo);
 
-class CommandGoTo : public AbstractCommandItem, public Interface_CommandItem<COMMANDTYPE::CI_ACT_GOTO,mace_command_goto_t>
+class CommandGoTo : public AbstractCommandItem
 {
 public:
     /**
@@ -47,22 +48,17 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
-\
-    /** Interface imposed via Interface_CommandItem<mace_command_long_t> */
-    public:
-        void toMACEComms_CommandItem(mace_command_goto_t &obj) const override;
+    \
+    /** Interface imposed via AbstractCommandItem */
+public: //The logic behind this is that every command item can be used to generate a mission item
+    void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
 
-    /** End of interface imposed via Interface_CommandItem<mace_command_long_t> */
+    void fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd) override;
 
-        /** Interface imposed via AbstractCommandItem */
-    public:
-        bool generateMACECOMMS_MissionItemMSG(mace_mission_item_t &cmd) const override;
+    void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
 
-        bool fromMACECOMMS_MissionItemMSG(const mace_mission_item_t &cmd) const override;
+    void generateMACEMSG_CommandItem(mace_message_t &msg) const override; //we know that you must cast to the specific type to get something explicit based on the command
 
-        bool generateMACEMSG_MissionItem(mace_message_t &msg) const override;
-
-        bool generateMACEMSG_CommandItem(mace_message_t &msg) const override;
     /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
@@ -89,7 +85,7 @@ public:
         }
         else
         {
-            m_SpatialAction->updateFromGoToCommand(msg);
+            m_SpatialAction->fromMACECOMMS_GoToCommand(msg);
         }
     }
 
@@ -126,7 +122,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, const CommandGoTo &obj)
     {
-//        out<<"Command Change Mode( Mode: "<<obj.vehicleMode<<")";
+        //        out<<"Command Change Mode( Mode: "<<obj.vehicleMode<<")";
         return out;
     }
 

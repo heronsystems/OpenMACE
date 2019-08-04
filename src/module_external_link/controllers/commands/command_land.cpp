@@ -11,15 +11,15 @@ namespace ExternalLink {
 
     void CommandLand::FillCommand(const command_item::SpatialLand &commandItem, mace_command_long_t &cmd) const
     {
-        if(commandItem.position->isCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT))
-        {
-            cmd.param2 = commandItem.position->getPosXFlag();
-            cmd.param3 = commandItem.position->getPosYFlag();
-            cmd.param4 = commandItem.position->getPosZFlag();
-            cmd.param5 = commandItem.position->getX() * pow(10,7);
-            cmd.param6 = commandItem.position->getY() * pow(10,7);
-            cmd.param7 = commandItem.position->getZ() * 1000;
-        }
+//        if(commandItem.position->isCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT))
+//        {
+//            cmd.param2 = commandItem.position->getPosXFlag();
+//            cmd.param3 = commandItem.position->getPosYFlag();
+//            cmd.param4 = commandItem.position->getPosZFlag();
+//            cmd.param5 = commandItem.position->getX() * pow(10,7);
+//            cmd.param6 = commandItem.position->getY() * pow(10,7);
+//            cmd.param7 = commandItem.position->getZ() * 1000;
+//        }
     }
 
     void CommandLand::BuildCommand(const mace_command_long_t &message, command_item::SpatialLand &data) const

@@ -51,9 +51,28 @@ CommandGoTo::CommandGoTo(const unsigned int &systemOrigin, const unsigned int &s
 
 }
 
-void CommandGoTo::toMACEComms_CommandItem(mace_command_goto_t &obj) const
+void CommandGoTo::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
 {
-    Interface_CommandItem::initializeCommandItem(obj);
+    UNUSED(cmd);
+    throw std::runtime_error("");
+}
+
+void CommandGoTo::fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+{
+    UNUSED(cmd);
+    throw std::runtime_error("");
+}
+
+void CommandGoTo::generateMACEMSG_MissionItem(mace_message_t &msg) const
+{
+    UNUSED(msg);
+    throw std::runtime_error("");
+}
+
+void CommandGoTo::generateMACEMSG_CommandItem(mace_message_t &msg) const
+{
+    UNUSED(msg);
+    throw std::runtime_error("");
 }
 
 std::string CommandGoTo::printCommandInfo() const

@@ -21,7 +21,7 @@ class SpatialTakeoff : public AbstractSpatialAction
 public:
     SpatialTakeoff();
     SpatialTakeoff(const SpatialTakeoff &obj);
-    SpatialTakeoff(const int &systemOrigin, const int &systemTarget = 0);
+    SpatialTakeoff(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0);
 
 public:
 

@@ -42,6 +42,21 @@ void Interface_CommandHelper<mace_command_long_t>::transferToMissionItem(const m
 }
 
 template<>
+void Interface_CommandHelper<mace_command_long_t>::transferFromMissionItem(const mace_mission_item_t &misObj, mace_command_long_t &cmdObj) const
+{
+    cmdObj.command = misObj.command;
+    cmdObj.target_system = misObj.target_system;
+
+    cmdObj.param1 = misObj.param1;
+    cmdObj.param2 = misObj.param2;
+    cmdObj.param3 = misObj.param3;
+    cmdObj.param4 = misObj.param4;
+    cmdObj.param5 = misObj.x;
+    cmdObj.param6 = misObj.y;
+    cmdObj.param7 = misObj.z;
+}
+
+template<>
 void Interface_CommandHelper<mace_command_short_t>::transferToMissionItem(const mace_command_short_t &cmdObj, mace_mission_item_t &misObj) const
 {
     misObj.command = cmdObj.command;
@@ -49,3 +64,12 @@ void Interface_CommandHelper<mace_command_short_t>::transferToMissionItem(const 
 
     misObj.param1 = cmdObj.param;
 }
+template<>
+void Interface_CommandHelper<mace_command_short_t>::transferFromMissionItem(const mace_mission_item_t &misObj, mace_command_short_t &cmdObj) const
+{
+    cmdObj.command = misObj.command;
+    cmdObj.target_system = misObj.target_system;
+
+    cmdObj.param = misObj.param1;
+}
+

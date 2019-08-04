@@ -45,7 +45,7 @@ SpatialHome::SpatialHome(const SpatialHome &obj):
 
 }
 
-SpatialHome::SpatialHome(const int &systemOrigin, const int &systemTarget):
+SpatialHome::SpatialHome(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
