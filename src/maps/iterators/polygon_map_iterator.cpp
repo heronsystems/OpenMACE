@@ -94,7 +94,7 @@ bool PolygonMapIterator::isInside() const
 {
     double x,y;
     it->parentMap->getPositionFromIndex(it->getCurrentIndex(),x,y);
-    mace::pose::Position<mace::pose::CartesianPosition_2D> iteratorPosition("Iterator Position",x,y);
+    pose::CartesianPosition_2D iteratorPosition(CartesianFrameTypes::CF_BODY_ENU,x,y,"Iterator Position");
     if(this->polygon.contains(iteratorPosition,true))
         return true;
     return false;

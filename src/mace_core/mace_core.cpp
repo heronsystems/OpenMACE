@@ -1539,7 +1539,7 @@ void MaceCore::EventPP_New2DOccupancyMap(const void* sender, const mace::maps::D
 //! \param sender Sender module
 //! \param queue New mission queue
 //!
-void MaceCore::EventPP_NewDynamicMissionQueue(const ModuleBase *sender, const TargetItem::DynamicMissionQueue &queue)
+void MaceCore::EventPP_NewDynamicMissionQueue(const ModuleBase *sender, const command_target::DynamicMissionQueue &queue)
 {
     UNUSED(sender);
 
@@ -1617,7 +1617,7 @@ void MaceCore::Sensors_UpdatedMapLayer(const string &layerName, mace::maps::Base
 //! \param obj Point cloud object
 //! \param position Position of sensor
 //!
-void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position)
+void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const CartesianPosition_3D &position)
 {
     octomap::Pointcloud copyObj = obj;
     m_DataFusion->insertGlobalObservation(copyObj, position);
@@ -1631,7 +1631,7 @@ void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose
 //! \param position Position of sensor
 //! \param orientation Orientation of sensor
 //!
-void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Rotation_3D &orientation)
+void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation)
 {
     octomap::Pointcloud copyObj = obj;
     m_DataFusion->insertObservation(copyObj, position, orientation);

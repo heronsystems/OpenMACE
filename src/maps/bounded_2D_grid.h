@@ -16,23 +16,23 @@ namespace maps {
 
 using namespace pose;
 
-class Bounded2DGrid : public Dynamic2DGrid<Position<CartesianPosition_2D>>
+class Bounded2DGrid : public Dynamic2DGrid<CartesianPosition_2D>
 {
 public:
     Bounded2DGrid(const double &x_min = -1.0, const double &x_max = 1.0,
                   const double &y_min = -1.0, const double &y_max = 1.0,
                   const double &x_res = 0.5, const double &y_res = 0.5,
-                   const Position<CartesianPosition_2D> *fill_value = nullptr);
+                   const CartesianPosition_2D *fill_value = nullptr);
 
     Bounded2DGrid(const geometry::Polygon_Cartesian &boundingPolygon,
                   const double &x_res = 0.5, const double &y_res = 0.5,
-                  const Position<CartesianPosition_2D> *fill_value = nullptr);
+                  const CartesianPosition_2D *fill_value = nullptr);
 
-    std::vector<Position<CartesianPosition_2D> *> setBoundingPolygon(const geometry::Polygon_Cartesian &polygon);
+    std::vector<CartesianPosition_2D*> setBoundingPolygon(const geometry::Polygon_Cartesian &polygon);
 
-    std::vector<Position<CartesianPosition_2D> *> getBoundedDataVector() const;
+    std::vector<CartesianPosition_2D*> getBoundedDataVector() const;
 
-    std::list<Position<CartesianPosition_2D> *> getBoundedDataList() const;
+    std::list<CartesianPosition_2D*> getBoundedDataList() const;
 
     void print() const;
 private:
@@ -40,7 +40,7 @@ private:
 
 protected:
     geometry::Polygon_Cartesian m_boundary;
-    std::vector<Position<CartesianPosition_2D> *> m_constrainedData;
+    std::vector<CartesianPosition_2D*> m_constrainedData;
 };
 
 } //end of namespace maps

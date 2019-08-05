@@ -50,7 +50,7 @@ public:
     //! \param sender Sender module
     //! \param queue New mission queue
     //!
-    virtual void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const TargetItem::DynamicMissionQueue &queue) = 0;
+    virtual void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const command_target::DynamicMissionQueue &queue) = 0;
 
     //!
     //! \brief EventPP_NewPathFound New path found event

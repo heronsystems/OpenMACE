@@ -1,7 +1,7 @@
 #include "topic_geodetic_position.h"
 
-namespace pose {
-namespace BaseTopic{
+namespace mace {
+namespace pose_topics{
 
 const char TopicName_GeodeticPosition[] = "TOPIC_GEODETICPOSITION";
 

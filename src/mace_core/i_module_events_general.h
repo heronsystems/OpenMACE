@@ -5,7 +5,6 @@
 
 #include "data/system_description.h"
 #include "data_generic_command_item/command_item_components.h"
-#include "data_generic_state_item/state_global_position.h"
 
 #include "abstract_module_base.h"
 
@@ -19,6 +18,9 @@ namespace MaceCore
 //!
 class IModuleEventsGeneral
 {
+public:
+    virtual ~IModuleEventsGeneral() = default;
+
 public:
 
     //!

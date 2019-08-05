@@ -3,8 +3,9 @@
 
 #include "data/data_get_set_notifier.h"
 
+#include "base/pose/pose_components.h"
+#include "base/measurements/base_speed.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
 
 //typedef void(*CallbackFunctionPtr_State)(void*, DataState::StateGlobalPosition&);
 
@@ -25,11 +26,10 @@ public:
     Data::DataGetSetNotifier<DataGenericItem::DataGenericItem_SystemTime> vehicleSystemTime;
 
 public:
-    Data::DataGetSetNotifier<DataState::StateGlobalPosition> vehicleGlobalPosition;
-    Data::DataGetSetNotifier<DataState::StateGlobalPositionEx> vehicleGlobalPositionEx;
-    Data::DataGetSetNotifier<DataState::StateLocalPosition> vehicleLocalPosition;
-    Data::DataGetSetNotifier<DataState::StateAttitude> vehicleAttitude;
-    Data::DataGetSetNotifier<DataState::StateAirspeed> vehicleAirspeed;
+    Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalPosition;
+    Data::DataGetSetNotifier<mace::pose::CartesianPosition_3D> vehicleLocalPosition;
+    Data::DataGetSetNotifier<mace::pose::Rotation_3D> vehicleAttitude;
+    Data::DataGetSetNotifier<mace::measurements::Speed> vehicleAirspeed;
 };
 
 #endif // STATE_DATA_MAVLINK_H

@@ -3,8 +3,10 @@
 
 #include <cmath>
 
-#include "base/pose/cartesian_position_2D.h"
+#include "common/class_forward.h"
+
 #include "base/geometry/rotate_2d.h"
+#include "base/pose/cartesian_position_2D.h"
 
 namespace mace {
 namespace maps {
@@ -59,14 +61,14 @@ public:
     void getPositionFromIndex(const unsigned int &index, double &x, double &y) const
     {
         double tmpX, tmpY;
-        int yIndex = (index/xSize);
+        unsigned int yIndex = (index/xSize);
         tmpY = yMin + yIndex * yResolution;
 
-        int xIndex = (index % xSize);
+        unsigned int xIndex = (index % xSize);
         tmpX = xMin + xIndex * xResolution;
 
         // Rotate point about origin before passing back:
-        if(this->getOriginPosition().hasBeenSet()) {
+        if(this->originPosition.areAllPositionsValid()) {
             double originX = this->getOriginPosition().getXPosition();
             double originY = this->getOriginPosition().getYPosition();
             geometry::rotatePoint_2D(x, y, tmpX, tmpY, this->getRotationAngleDegrees(), originX, originY);
@@ -100,7 +102,7 @@ public:
     //! \param x
     //! \return
     //!
-    int indexFromXPos(const double &x) const
+    unsigned int indexFromXPos(const double &x) const
     {
         // TODO-Pat: @Ken: I think the comment below is a valid assumption. Also, rotating just the y portion of the point doesn't make sense
         //                  - Every usage of this method is preceded by a rotation
@@ -119,7 +121,7 @@ public:
     //! \param y
     //! \return
     //!
-    int indexFromYPos(const double &y) const
+    unsigned int indexFromYPos(const double &y) const
     {
         // TODO-Pat: @Ken: I think the comment below is a valid assumption. Also, rotating just the y portion of the point doesn't make sense
         //                  - Every usage of this method is preceded by a rotation
@@ -139,11 +141,11 @@ public:
     //! \param y
     //! \return
     //!
-    int indexFromPos(const double &x, const double &y) const
+    unsigned int indexFromPos(const double &x, const double &y) const
     {
         // Rotate point about origin before passing back:
         double rotatedX, rotatedY;
-        if(this->getOriginPosition().hasBeenSet()) {
+        if(originPosition.areAllPositionsValid()) {
             double originX = this->getOriginPosition().getXPosition();
             double originY = this->getOriginPosition().getYPosition();
             geometry::rotatePoint_2D(rotatedX, rotatedY, x, y, -this->getRotationAngleDegrees(), originX, originY);
@@ -331,22 +333,22 @@ public:
         if(this->originPosition != rhs.originPosition){
             return false;
         }
-        if(this->xMin != rhs.xMin){
+        if(fabs(this->xMin - rhs.xMin) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->xMax != rhs.xMax){
+        if(fabs(this->xMax - rhs.xMax) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->yMin != rhs.yMin){
+        if(fabs(this->yMin - rhs.yMin) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->yMax != rhs.yMax){
+        if(fabs(this->yMax - rhs.yMax) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->xResolution != rhs.xResolution){
+        if(fabs(this->xResolution - rhs.xResolution) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->yResolution != rhs.yResolution){
+        if(fabs(this->yResolution - rhs.yResolution) > std::numeric_limits<double>::epsilon()){
             return false;
         }
         if(this->xSize != rhs.xSize){
@@ -355,7 +357,7 @@ public:
         if(this->ySize != rhs.ySize){
             return false;
         }
-        if(this->rotationAngleDegrees != rhs.rotationAngleDegrees) {
+        if(fabs(this->rotationAngleDegrees - rhs.rotationAngleDegrees) > std::numeric_limits<double>::epsilon()) {
             return false;
         }
         return true;

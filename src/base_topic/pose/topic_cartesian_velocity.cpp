@@ -1,8 +1,8 @@
 #include "topic_cartesian_velocity.h"
 
-namespace pose{
+namespace mace{
 
-namespace BaseTopic{
+namespace pose_topics{
 
 const char TopicName_CartesianVelocity[] = "TOPIC_CARTESIANVELOCITY";
 

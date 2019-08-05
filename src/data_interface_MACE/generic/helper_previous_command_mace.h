@@ -27,8 +27,6 @@ inline std::string getCommandItemEnumString(const commandItemEnum &type)
     case COMMAND_MODE:
         rtnValue = "command mode";
         break;
-    default:
-        break;
     }
 
     return rtnValue;

@@ -10,23 +10,12 @@ namespace ExternalLink {
 
     void CommandTakeoff::FillCommand(const command_item::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const
     {
-        if(commandItem.position->has2DPositionSet())
-        {
-            cmd.param1 = 1.0;
-            cmd.param5 = commandItem.position->getX();
-            cmd.param6 = commandItem.position->getY();
-        }
-        cmd.param7 = commandItem.position->getZ();
+        commandItem.populateCommandItem(cmd);
     }
 
     void CommandTakeoff::BuildCommand(const mace_command_long_t &message, SpatialTakeoff &data) const
     {
-        if(message.param1 > 0.0)
-        {
-            data.position->setX(message.param5);
-            data.position->setY(message.param6);
-        }
-        data.position->setZ(message.param7);
+        data.fromCommandItem(message);
     }
 
 

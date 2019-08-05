@@ -1,7 +1,7 @@
 #include "topic_agent_orientation.h"
 
-namespace pose {
-namespace BaseTopic{
+namespace mace {
+namespace pose_topics{
 
 const char TopicName_AgentOrientation[] = "TOPIC_AGENTORIENTATION";
 

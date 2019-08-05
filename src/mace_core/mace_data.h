@@ -20,7 +20,6 @@
 #include "topic.h"
 
 #include "data_generic_item/data_generic_item_components.h"
-#include "data_generic_state_item/state_item_components.h"
 #include "data_generic_command_item/command_item_components.h"
 
 #include "data/system_description.h"
@@ -93,7 +92,7 @@ public:
         m_LayeredMap_Local = std::make_shared<mace::maps::LayeredMap>();
     }
 
-    ~MaceData()
+    virtual ~MaceData()
     {
         //delete m_OctomapWrapper;
     }
@@ -278,10 +277,10 @@ public:
     //! \brief GetEnvironmentBoundary Get the environment boundary
     //! \return Vector of positions that make up the boundary
     //!
-    std::vector<DataState::StateGlobalPosition> GetEnvironmentBoundary() const
+    std::vector<mace::pose::GeodeticPosition_2D> GetEnvironmentBoundary() const
     {
         std::lock_guard<std::mutex> guard(m_EnvironmentalBoundaryMutex);
-        std::vector<DataState::StateGlobalPosition> boundaryVerts = m_BoundaryVerts;
+        std::vector<mace::pose::GeodeticPosition_2D> boundaryVerts = m_BoundaryVerts;
         return boundaryVerts;
     }
 
@@ -338,8 +337,8 @@ private:
     void UpdateGlobalOrigin(const mace::pose::GeodeticPosition_3D &globalOrigin)
     {
         std::lock_guard<std::mutex> guard(m_VehicleHomeMutex);
-        double bearingTo = m_GlobalOrigin.polarBearingTo(globalOrigin);
-        double distanceTo = m_GlobalOrigin.distanceBetween2D(globalOrigin); //in this case we need the 2D value since we are going to update only 2D position of boundaries
+        double bearingTo = m_GlobalOrigin.polarBearingTo(&globalOrigin);
+        double distanceTo = m_GlobalOrigin.distanceBetween2D(&globalOrigin); //in this case we need the 2D value since we are going to update only 2D position of boundaries
         m_GlobalOrigin = globalOrigin;
         updateBoundariesNewOrigin(distanceTo, bearingTo);
     }
@@ -360,7 +359,7 @@ private:
     //! \brief UpdateEnvironmentVertices Update environment vertices from the GCS module
     //! \param boundaryVerts New boundary vertices vector
     //!
-    void UpdateEnvironmentVertices(const std::vector<DataState::StateGlobalPosition> &boundaryVerts) {
+    void UpdateEnvironmentVertices(const std::vector<mace::pose::GeodeticPosition_2D> &boundaryVerts) {
         std::lock_guard<std::mutex> guard(m_EnvironmentalBoundaryMutex);
         m_BoundaryVerts = boundaryVerts;
         flagBoundaryVerts = true;
@@ -655,6 +654,7 @@ private:
     //!
     void OccupancyMap_ReplaceMatrix(const Eigen::MatrixXd &newOccupancyMap)
     {
+        UNUSED(newOccupancyMap);
         //m_OccupancyMap = newOccupancyMap;
     }
 
@@ -668,6 +668,7 @@ private:
     //!
     void OccupanyMap_ReplaceCells(const std::vector<MatrixCellData<double>> &cells)
     {
+        UNUSED(cells);
         //ReplaceCellsInMatrix(m_OccupancyMap, cells);
     }
 
@@ -772,7 +773,7 @@ public:
     //! \param obj Point cloud in the global/inertial frame
     //! \param position Position of the sensor taking the measurement
     //!
-    void insertGlobalObservation(octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position)
+    void insertGlobalObservation(octomap::Pointcloud& obj, const pose::CartesianPosition_3D &position)
     {
         std::lock_guard<std::mutex> guard(m_Mutex_OccupancyMaps);
         m_OctomapWrapper->updateFromPointCloud(&obj, position);
@@ -784,7 +785,7 @@ public:
     //! \param position Position of the sensor taking the measurement
     //! \param orientation Orientation of the sensor taking the measurement
     //!
-    void insertObservation(octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Rotation_3D &orientation)
+    void insertObservation(octomap::Pointcloud& obj, const pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation)
     {
         std::lock_guard<std::mutex> guard(m_Mutex_OccupancyMaps);
         m_OctomapWrapper->updateFromPointCloud(&obj, position, orientation);
@@ -805,7 +806,7 @@ public:
     //!
     bool checkForOccupancy()
     {
-
+        return false;
     }
 
     //!
@@ -814,6 +815,7 @@ public:
     //!
     void OccupancyMap_ReadCells(std::vector<MatrixCellData<double>> &cells)
     {
+        UNUSED(cells);
         //ReadCellsInMatrix(m_OccupancyMap, cells);
     }
 
@@ -827,6 +829,7 @@ public:
     //!
     void OccupancyMap_GenericConstOperation(std::function<void(const Eigen::MatrixXd &)> &func) const
     {
+        UNUSED(func);
         //func(m_OccupancyMap);
     }
 
@@ -935,7 +938,7 @@ private:
     double m_GridSpacing = -1;
 
     mutable std::mutex m_VehicleBoundaryMutex;
-    std::vector<DataState::StateGlobalPosition> m_BoundaryVerts;
+    std::vector<mace::pose::GeodeticPosition_2D> m_BoundaryVerts;
     std::map<int, mace::geometry::Cell_2DC> m_vehicleCellMap;
     std::vector<BoundaryItem::BoundaryList> m_vehicleBoundaryList;
     bool flagBoundaryVerts;

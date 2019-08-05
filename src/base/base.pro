@@ -116,7 +116,8 @@ HEADERS +=\
     measurements/base_speed.h \
     pose/abstract_rotation.h \
     pose/abstract_position.h \
-    pose/rotation_2D.h
+    pose/rotation_2D.h \
+    pose/pose_components.h
 
 # Unix lib Install
 unix:!symbian {

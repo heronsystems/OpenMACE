@@ -75,10 +75,9 @@ INSTALLS += lib
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../speedLog/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
-
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase

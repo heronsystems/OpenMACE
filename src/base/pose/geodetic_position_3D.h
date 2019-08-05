@@ -131,6 +131,12 @@ public:
     }
 
 public:
+    bool hasLatitudeBeenSet() const;
+
+    bool hasLongitudeBeenSet() const;
+
+    bool hasAltitudeBeenSet() const;
+public:
 
     double distanceBetween3D(const GeodeticPosition_3D &position) const;
 

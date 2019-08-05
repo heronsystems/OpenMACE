@@ -48,6 +48,16 @@ GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_3D &copy):
     this->updateTranslationalComponents(copy.getLatitude(), copy.getLongitude());
 }
 
+bool GeodeticPosition_2D::hasLatitudeBeenSet() const
+{
+    return this->dimensionMask&IGNORE_Y_DIMENSION;
+}
+
+bool GeodeticPosition_2D::hasLongitudeBeenSet() const
+{
+    return this->dimensionMask&IGNORE_X_DIMENSION;
+}
+
 bool GeodeticPosition_2D::areEquivalentFrames(const GeodeticPosition_2D &obj) const
 {
     return this->areEquivalentGeodeticFrames(obj);

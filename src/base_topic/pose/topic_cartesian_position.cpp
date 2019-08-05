@@ -1,8 +1,8 @@
 #include "topic_cartesian_position.h"
 
-namespace pose{
+namespace mace{
 
-namespace BaseTopic{
+namespace pose_topics{
 
 const char TopicName_CartesianPosition[] = "TOPIC_CARTESIANPOSITION";
 

@@ -5,8 +5,8 @@
 
 #include "base/pose/base_velocity.h"
 
-namespace pose {
-namespace BaseTopic {
+namespace mace {
+namespace pose_topics {
 
 extern const char TopicName_CartesianVelocity[];
 

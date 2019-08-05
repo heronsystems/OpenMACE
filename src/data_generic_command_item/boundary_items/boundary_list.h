@@ -65,6 +65,7 @@ public:
     void clearQueue();
     void appendVertexItem(const Abstract_CartesianPosition* vertexItem);
     void replaceVertexItemAtIndex(const Abstract_CartesianPosition* vertexItem, const unsigned int &index);
+    //Ken fix this above, will memory leak
 
     CartesianPosition_2D getBoundaryItemAtIndex(const unsigned int &index) const;
 

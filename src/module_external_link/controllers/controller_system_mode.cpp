@@ -42,7 +42,7 @@ namespace ExternalLink {
         data.setTargetSystem(msg.target_system);
         data.setRequestMode(std::string(msg.mode));
 
-        ack.result = (uint8_t)Data::CommandACKType::CA_RECEIVED;
+        ack.result = static_cast<uint8_t>(Data::CommandACKType::CA_RECEIVED);
         return true;
     }
 

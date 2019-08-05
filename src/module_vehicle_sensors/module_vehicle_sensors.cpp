@@ -346,7 +346,7 @@ double ModuleVehicleSensors::computeVehicleFootprint_Circular(const DataVehicleS
 //! \brief updateDataInSensorFootprint_Circular Update the local map data from truth data in a circular footprint
 //! \param sensorOriginGlobal Sensor origin for footprint calculations
 //!
-void ModuleVehicleSensors::updateDataInSensorFootprint_Circular(const DataState::StateGlobalPositionEx &sensorOriginGlobal) {
+void ModuleVehicleSensors::updateDataInSensorFootprint_Circular(const mace::pose::GeodeticPosition_3D &sensorOriginGlobal) {
     // 1) Use sensor footprint to get data from truth map (loaded at startup?)
     //          - Use iterator
     // 2) Use truth data to update data in local data map

@@ -26,7 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    vehicle_topics.cpp \
     pose/topic_geodetic_position.cpp \
     pose/topic_cartesian_position.cpp \
     pose/topic_cartesian_velocity.cpp \
@@ -36,7 +35,6 @@ SOURCES += \
 HEADERS += \
     base_topic_global.h \
     base_topic_components.h \
-    vehicle_topics.h \
     pose/topic_geodetic_position.h \
     pose/topic_cartesian_position.h \
     pose/topic_cartesian_velocity.h \

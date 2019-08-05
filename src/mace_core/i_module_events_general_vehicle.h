@@ -4,7 +4,6 @@
 #include "topic.h"
 
 #include "data/mission_execution_state.h"
-#include "data_generic_state_item/state_item_components.h"
 #include "data_generic_command_item/command_item_components.h"
 #include "data_generic_item/data_generic_item_systemtime.h"
 
@@ -18,7 +17,9 @@ namespace MaceCore
 class IModuleEventsGeneralVehicle
 {
 public:
+    virtual ~IModuleEventsGeneralVehicle() = default;
 
+public:
 
     //!
     //! \brief GVEvents_NewHomePosition This function is emitted to alert the core that a module connected to a vehicle

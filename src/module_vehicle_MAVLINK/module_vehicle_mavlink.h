@@ -35,7 +35,6 @@
 #include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
 
 #include "base_topic/vehicle_topics.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 #include "vehicle_object/mavlink_vehicle_object.h"
@@ -226,7 +225,7 @@ public:
         UNUSED(vehicleID);
     }
 
-    virtual void UpdateDynamicMissionQueue(const TargetItem::DynamicMissionQueue &queue)
+    virtual void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue)
     {
         UNUSED(queue);
     }

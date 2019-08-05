@@ -44,7 +44,7 @@ public:
             UpdateMissionKey(key);
         });
 
-        this->template AddCommandLogic<TargetItem::DynamicMissionQueue>(VehicleCommands::UPDATED_DYNAMIC_MISSION_QUEUE, [this](const TargetItem::DynamicMissionQueue &queue, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_target::DynamicMissionQueue>(VehicleCommands::UPDATED_DYNAMIC_MISSION_QUEUE, [this](const command_target::DynamicMissionQueue &queue, const OptionalParameter<ModuleCharacteristic> &sender){
             UNUSED(sender);
             UpdateDynamicMissionQueue(queue);
         });
@@ -75,7 +75,7 @@ public:
     //! \brief UpdateDynamicMissionQueue Update dynamic mission queue command
     //! \param queue Mission queue
     //!
-    virtual void UpdateDynamicMissionQueue(const TargetItem::DynamicMissionQueue &queue) = 0;
+    virtual void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue) = 0;
 
 };
 

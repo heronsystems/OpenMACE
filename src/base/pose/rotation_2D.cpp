@@ -10,7 +10,7 @@ Rotation_2D::Rotation_2D(const std::string &name):
 }
 
 Rotation_2D::Rotation_2D(const Rotation_2D &copy):
-    AbstractRotation(copy), Eigen::Rotation2D<double> (copy.angle())
+    AbstractRotation(copy), Eigen::Rotation2D<double> (copy.angle()), dimensionMask(copy.dimensionMask)
 {
 
 }
@@ -18,6 +18,7 @@ Rotation_2D::Rotation_2D(const Rotation_2D &copy):
 Rotation_2D::Rotation_2D(const Rotation_3D &copy):
     AbstractRotation(copy), Eigen::Rotation2D<double>(copy.getYaw())
 {
+
 }
 
 Rotation_2D::Rotation_2D(const double &angle):
@@ -29,6 +30,7 @@ Rotation_2D::Rotation_2D(const double &angle):
 void Rotation_2D::setPhi(const double &angle)
 {
     this->angle() = angle;
+    this->setDimensionMask(YAW_DIMENSION_VALID);
 }
 
 double Rotation_2D::getPhi() const

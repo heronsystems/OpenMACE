@@ -15,6 +15,7 @@
 
 #include "../misc/coordinate_frame_components.h"
 
+
 namespace mace{
 namespace pose{
 
@@ -22,6 +23,18 @@ MACE_CLASS_FORWARD(Position);
 
 class Position : public Kinematic_BaseInterface
 {
+public:
+    enum TYPEMASK_POSITION : uint16_t
+    {
+        POSITION_VALID = 0,
+        IGNORE_X_DIMENSION = 1,
+        IGNORE_Y_DIMENSION = 2,
+        IGNORE_Z_DIMENSION = 4
+    };
+
+public:
+    static const uint16_t ignoreAllPositions = IGNORE_X_DIMENSION|IGNORE_Y_DIMENSION|IGNORE_Z_DIMENSION;
+
 public:
     //!
     //! \brief Position
@@ -47,6 +60,17 @@ public:
 
 public:
     virtual Eigen::VectorXd getDataVector() const = 0;
+
+    bool isAnyPositionValid() const
+    {
+        return (dimensionMask^ignoreAllPositions) > 0 ? true : false;
+    }
+
+    virtual bool areAllPositionsValid() const
+    {
+        //Ken Fix This
+        return true;
+    }
 
 public:
     //!

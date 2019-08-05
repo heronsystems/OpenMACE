@@ -6,8 +6,8 @@
 #include "base/pose/cartesian_position_2D.h"
 #include "base/pose/cartesian_position_3D.h"
 
-namespace pose {
-namespace BaseTopic {
+namespace mace {
+namespace pose_topics {
 
 extern const char TopicName_CartesianPosition[];
 

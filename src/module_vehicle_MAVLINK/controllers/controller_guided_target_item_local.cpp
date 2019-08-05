@@ -5,7 +5,7 @@ namespace MAVLINKVehicleControllers {
     template <>
     void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetItem(const TargetControllerStructLocal &targetStruct, mavlink_set_position_target_local_ned_t &mavlinkItem)
     {
-        TargetItem::CartesianDynamicTarget targetItem = targetStruct.target;
+        command_target::CartesianDynamicTarget targetItem = targetStruct.target;
 
         mace::pose::CartesianPosition_3D targetPosition = targetItem.getPosition();
         if(targetPosition.getCoordinateFrame() == CoordinateFrameTypes::CF_LOCAL_ENU)

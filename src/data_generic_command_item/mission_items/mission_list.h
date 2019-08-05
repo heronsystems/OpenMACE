@@ -28,9 +28,9 @@ public:
 
 public:
     MissionList();
-    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state);
-    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
-    MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
+    MissionList(const unsigned int &targetID, const unsigned int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state);
+    MissionList(const unsigned int &targetID, const unsigned int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
+    MissionList(const unsigned int &targetID, const unsigned int &generatorID, const unsigned int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
     MissionList(const MissionList &rhs);
 
 public:
@@ -38,11 +38,11 @@ public:
     void clearQueue();
     void replaceMissionQueue(const std::vector<std::shared_ptr<command_item::AbstractCommandItem>> &newQueue);
     void insertMissionItem(const std::shared_ptr<command_item::AbstractCommandItem> missionItem);
-    void replaceMissionItemAtIndex(const std::shared_ptr<command_item::AbstractCommandItem> missionItem, const int &index);
+    void replaceMissionItemAtIndex(const std::shared_ptr<command_item::AbstractCommandItem> missionItem, const unsigned int &index);
 
-    std::shared_ptr<command_item::AbstractCommandItem> getMissionItem(const int &index) const;
+    std::shared_ptr<command_item::AbstractCommandItem> getMissionItem(const unsigned int &index) const;
 
-    int getQueueSize() const;
+    size_t getQueueSize() const;
     MissionListStatus getMissionListStatus() const;
 
 public:
@@ -104,11 +104,11 @@ public:
         return missionExeState;
     }
 
-    int getActiveIndex() const;
+    unsigned int getActiveIndex() const;
 
-    std::shared_ptr<command_item::AbstractCommandItem> getActiveMissionItem();
+    command_item::AbstractCommandItemPtr getActiveMissionItem();
 
-    void setActiveIndex(const int &activeIndex);
+    void setActiveIndex(const unsigned int &activeIndex);
 
 public:
     MissionList& operator = (const MissionList &rhs)
@@ -149,7 +149,7 @@ private:
     //!
     //! \brief activeMissionItem
     //!
-    int activeMissionItem;
+    unsigned int activeMissionItem;
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const MissionList& t);

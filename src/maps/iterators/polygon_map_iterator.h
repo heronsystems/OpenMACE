@@ -1,10 +1,9 @@
 #ifndef POLYGON_MAP_ITERATOR_H
 #define POLYGON_MAP_ITERATOR_H
 
-#include "maps/iterators/generic_map_iterator.h"
-
 #include "base/geometry/polygon_cartesian.h"
-#include "maps/base_grid_map.h"
+
+#include "maps/iterators/generic_map_iterator.h"
 
 namespace mace{
 namespace maps{
@@ -12,11 +11,11 @@ namespace maps{
 class PolygonMapIterator
 {
 public:
-    PolygonMapIterator(const BaseGridMap *map, const geometry::Polygon_Cartesian &polygon);
+    PolygonMapIterator(const maps::BaseGridMap *map, const geometry::Polygon_Cartesian &polygon);
 
     PolygonMapIterator(const PolygonMapIterator* copy);
 
-    ~PolygonMapIterator()
+    virtual ~PolygonMapIterator()
     {
         if(it)
         {
@@ -53,11 +52,11 @@ private:
     void findValidStartIndex();
 
 private:
-    GenericMapIterator* it;
+    maps::GenericMapIterator* it;
     geometry::Polygon_Cartesian polygon;
 };
 
-} //end of namepsace mace
 } //end of namespace maps
+} //end of namespace mace
 
 #endif // POLYGON_MAP_ITERATOR_H

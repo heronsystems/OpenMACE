@@ -68,6 +68,21 @@ GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticPosition_2D &copy):
 }
 
 
+bool GeodeticPosition_3D::hasLatitudeBeenSet() const
+{
+    return this->dimensionMask&IGNORE_Y_DIMENSION;
+}
+
+bool GeodeticPosition_3D::hasLongitudeBeenSet() const
+{
+    return this->dimensionMask&IGNORE_X_DIMENSION;
+}
+
+bool GeodeticPosition_3D::hasAltitudeBeenSet() const
+{
+    return this->dimensionMask&IGNORE_Z_DIMENSION;
+}
+
 bool GeodeticPosition_3D::areEquivalentFrames(const GeodeticPosition_3D &obj) const
 {
     return this->areEquivalentGeodeticFrames(obj) && this->areEquivalentAltitudeFrames(&obj);

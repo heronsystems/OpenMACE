@@ -25,20 +25,20 @@ namespace ExternalLink {
     void CommandLand::BuildCommand(const mace_command_long_t &message, command_item::SpatialLand &data) const
     {
 
-        data.setTargetSystem(-1);
+//        data.setTargetSystem(-1);
 
-        if(message.param2 == 1)
-        {
-            data.position->setX(message.param5);
-        }
-        if(message.param3 == 1)
-        {
-            data.position->setY(message.param6);
-        }
-        if(message.param4 == 1)
-        {
-            data.position->setZ(message.param7);
-        }
+//        if(message.param2 == 1)
+//        {
+//            data.position->setX(message.param5);
+//        }
+//        if(message.param3 == 1)
+//        {
+//            data.position->setY(message.param6);
+//        }
+//        if(message.param4 == 1)
+//        {
+//            data.position->setZ(message.param7);
+//        }
     }
 
 }

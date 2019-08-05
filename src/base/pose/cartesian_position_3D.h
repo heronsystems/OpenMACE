@@ -88,6 +88,13 @@ public:
     }
 
 public:
+    bool hasXBeenSet() const;
+
+    bool hasYBeenSet() const;
+
+    bool hasZBeenSet() const;
+
+public:
     double deltaX(const CartesianPosition_3D &that) const;
     double deltaY(const CartesianPosition_3D &that) const;
     double deltaZ(const CartesianPosition_3D &that) const;

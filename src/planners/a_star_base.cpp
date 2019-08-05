@@ -65,7 +65,7 @@ std::vector<state_space::State *> AStarBase::solve(maps::Data2DGrid<GraphNode> &
 
         //get the appropriate neighbors
         int currentNodeIndex = 0;
-        bool found = stateGridData.findIndex(currentNode,currentNodeIndex);
+        bool found = stateGridData.findIndex(currentNode, currentNodeIndex);
         std::vector<int> neighbors = stateGridData.getCellNeighbors(currentNodeIndex);
 
         for(size_t i = 0; i < neighbors.size(); i++)

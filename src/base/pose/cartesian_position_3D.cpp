@@ -34,6 +34,21 @@ CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_2D &copy):
     this->updatePosition(copy.getXPosition(), copy.getYPosition(), 0.0);
 }
 
+bool CartesianPosition_2D::hasXBeenSet() const
+{
+    return this->dimensionMask&IGNORE_X_DIMENSION;
+}
+
+bool CartesianPosition_2D::hasYBeenSet() const
+{
+    return this->dimensionMask&IGNORE_Y_DIMENSION;
+}
+
+bool CartesianPosition_3D::hasZBeenSet() const
+{
+    return this->dimensionMask&IGNORE_Z_DIMENSION;
+}
+
 bool CartesianPosition_3D::areEquivalentFrames(const CartesianPosition_3D &obj) const
 {
     return this->areEquivalentCartesianFrames(obj) && this->areEquivalentAltitudeFrames(&obj);

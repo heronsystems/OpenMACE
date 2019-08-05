@@ -11,7 +11,7 @@ class MissionItemAchieved
 {
 public:
     MissionItemAchieved();
-    MissionItemAchieved(const MissionKey &missionKey, const int &index);
+    MissionItemAchieved(const MissionKey &missionKey, const unsigned int &index);
     MissionItemAchieved(const mace_mission_item_reached_t &obj);
 
 public:
@@ -23,11 +23,11 @@ public:
         return key;
     }
 
-    void setMissionAchievedIndex(const int &index){
+    void setMissionAchievedIndex(const unsigned int &index){
         this->indexAchieved = index;
     }
 
-    int getMissionAchievedIndex() const{
+    unsigned int getMissionAchievedIndex() const{
         return indexAchieved;
     }
 
@@ -57,7 +57,7 @@ public:
 
 protected:
     MissionKey key;
-    int indexAchieved;
+    unsigned int indexAchieved;
 };
 
 } //end of namepsace Missionitem

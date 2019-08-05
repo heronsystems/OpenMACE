@@ -7,7 +7,6 @@
 #include "mace_core/i_module_command_path_planning.h"
 
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
 
 #include "data/topic_data_object_collection.h"
 #include "base_topic/base_topic_components.h"
@@ -27,7 +26,6 @@
 using namespace octomap;
 
 #include "base/pose/cartesian_position_2D.h"
-#include "data_generic_state_item/positional_aid.h"
 #include "base/geometry/cell_2DC.h"
 
 #include "maps/data_2d_grid.h"
@@ -36,6 +34,8 @@ using namespace octomap;
 #include "base/pose/dynamics_aid.h"
 #include "base/pose/cartesian_position_2D.h"
 #include "base/pose/geodetic_position_2D.h"
+
+#include "base_topic/base_topic_components.h"
 
 using namespace mace ;
 using namespace geometry;
@@ -109,7 +109,7 @@ public:
     void NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
 
-    virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     void NewlyLoadedOccupancyMap() override;
 
@@ -148,7 +148,7 @@ private:
     double localVehicleSize = 0.01;
     std::map<int,mace::pose::CartesianPosition_3D> map_CurrentPosition;
     MissionItem::MissionList m_MissionList;
-    TargetItem::DynamicMissionQueue m_DynamicPlan;
+    command_target::DynamicMissionQueue m_DynamicPlan;
 
 
     mace::state_space::Cartesian2DSpacePtr m_Space;
@@ -178,7 +178,7 @@ private:
     //!
     //! \brief m_VehicleDataTopic Vehicle data topic collection
     //!
-    Data::TopicDataObjectCollection<DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<BASE_POSE_TOPICS> m_VehicleDataTopic;
 
     //!
     //! \brief m_MissionDataTopic Mission data topic collection

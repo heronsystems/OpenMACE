@@ -164,7 +164,7 @@ void ModulePathPlanningNASAPhase2::ConfigureModule(const std::shared_ptr<MaceCor
 
         if(boundaryPolygon.isValidPolygon())
         {
-            if(!m_globalOrigin.hasBeenSet()) //if a global origin had not been assigned from above and we have a boundary let us choose one
+            if(!m_globalOrigin.isAnyPositionValid()) //if a global origin had not been assigned from above and we have a boundary let us choose one
             {
                 m_globalOrigin.setLatitude(boundaryPolygon.at(0).getLatitude());
                 m_globalOrigin.setLongitude(boundaryPolygon.at(0).getLongitude());
@@ -176,7 +176,8 @@ void ModulePathPlanningNASAPhase2::ConfigureModule(const std::shared_ptr<MaceCor
             {
                 mace::pose::GeodeticPosition_3D vertex(boundaryPolygon.at(i).getLatitude(),boundaryPolygon.at(i).getLongitude(),0.0);
                 mace::pose::CartesianPosition_3D localVertex;
-                mace::pose::DynamicsAid::GlobalPositionToLocal(m_globalOrigin,vertex,localVertex);
+
+                mace::pose::DynamicsAid::GlobalPositionToLocal(&m_globalOrigin,&vertex,&localVertex);
                 m_LocalOperationalBoundary.appendVertex(mace::pose::CartesianPosition_2D(localVertex.getXPosition(),localVertex.getYPosition()));
             }
 
@@ -251,39 +252,7 @@ void ModulePathPlanningNASAPhase2::NewTopicSpooled(const std::string &topicName,
         MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_VehicleDataTopic.Name(), sender);
 
         for(size_t i = 0 ; i < componentsUpdated.size() ; i++) {
-            if(componentsUpdated.at(i) == DataStateTopic::StateAttitudeTopic::Name()) {
-
-            }
-            else if(componentsUpdated.at(i) == DataStateTopic::StateGlobalPositionTopic::Name()) {
-
-            }
-            else if(componentsUpdated.at(i) == DataStateTopic::StateLocalPositionTopic::Name())
-            {
-                //Let us see how the vehicle is tracking
-                //This should already be announced in the local frame relative to the global origin
-                std::shared_ptr<DataStateTopic::StateLocalPositionTopic> localPositionData = std::make_shared<DataStateTopic::StateLocalPositionTopic>();
-                m_VehicleDataTopic.GetComponent(localPositionData, read_topicDatagram);
-                CartesianPosition_3D vehiclePosition;
-                if(localPositionData->getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_NED)
-                {
-                    vehiclePosition.setXPosition(localPositionData.get()->getY());
-                    vehiclePosition.setYPosition(localPositionData.get()->getX());
-                    vehiclePosition.setZPosition(-localPositionData.get()->getZ());
-                }
-                else if(localPositionData->getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
-                {
-                    vehiclePosition.setXPosition(localPositionData.get()->getX());
-                    vehiclePosition.setYPosition(localPositionData.get()->getY());
-                    vehiclePosition.setZPosition(localPositionData.get()->getZ());
-                }
-                uint8_t vehicleID;
-                if(this->getDataObject()->getMavlinkIDFromModule(sender, vehicleID)) {
-                    map_CurrentPosition[vehicleID] = vehiclePosition;
-                }
-                else {
-                    MaceLog::Alert("No vehicle ID associated with module. Cannot update position.");
-                }
-            }
+            //Ken Fix what should have been in here
         }
     }
 
@@ -349,10 +318,11 @@ void ModulePathPlanningNASAPhase2::NewlyLoadedOccupancyMap()
         this->getDataObject()->getOctomapDimensions(minX, maxX, minY, maxY, minZ, maxZ);
 
         BoundaryItem::BoundaryList loadedBoundary;
-        loadedBoundary.appendVertexItem(Position<CartesianPosition_2D>("Lower Left",minX,minY));
-        loadedBoundary.appendVertexItem(Position<CartesianPosition_2D>("Upper Left",minX,maxY));
-        loadedBoundary.appendVertexItem(Position<CartesianPosition_2D>("Upper Right",maxX,maxY));
-        loadedBoundary.appendVertexItem(Position<CartesianPosition_2D>("Lower Right",maxX,minY));
+        //Ken Fix This
+//        loadedBoundary.appendVertexItem(mace::pose::CartesianPosition_2D(mace::CartesianFrameTypes::CF_LOCAL_ENU,minX,minY,"Lower Left"));
+//        loadedBoundary.appendVertexItem(mace::pose::CartesianPosition_2D(mace::CartesianFrameTypes::CF_LOCAL_ENU,minX,maxY,"Upper Left"));
+//        loadedBoundary.appendVertexItem(mace::pose::CartesianPosition_2D(mace::CartesianFrameTypes::CF_LOCAL_ENU,maxX,maxY,"Upper Right"));
+//        loadedBoundary.appendVertexItem(mace::pose::CartesianPosition_2D(mace::CartesianFrameTypes::CF_LOCAL_ENU,maxX,minY,"Lower Right"));
 
         NewOperationalBoundary(loadedBoundary);
 
@@ -417,7 +387,7 @@ void ModulePathPlanningNASAPhase2::NewlyAvailableMission(const MissionItem::Miss
 void ModulePathPlanningNASAPhase2::cbiPlanner_SampledState(const mace::state_space::State *sampleState)
 {
     const mace::pose::CartesianPosition_2D* sampledState = sampleState->stateAs<mace::pose::CartesianPosition_2D>();
-    std::shared_ptr<mace::poseTopic::Cartesian_2D_Topic> ptrSampledState= std::make_shared<mace::poseTopic::Cartesian_2D_Topic>(*sampledState);
+    std::shared_ptr<mace::pose_topics::Cartesian_2D_Topic> ptrSampledState= std::make_shared<mace::pose_topics::Cartesian_2D_Topic>(*sampledState);
 
     MaceCore::TopicDatagram topicDatagram;
     m_PlanningStateTopic.SetComponent(ptrSampledState, topicDatagram);

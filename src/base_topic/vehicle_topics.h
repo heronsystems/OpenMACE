@@ -18,8 +18,8 @@ namespace BaseTopic {
 class VehicleTopics
 {
 public:
-    MaceCore::NonSpooledTopic<Data::TopicComponents::Void, pose::BaseTopic::Topic_Altitude, pose::BaseTopic::Topic_GeodeticPosition> m_CommandTakeoff;
-    MaceCore::NonSpooledTopic<Data::TopicComponents::Void, pose::BaseTopic::Topic_Altitude, pose::BaseTopic::Topic_GeodeticPosition> m_CommandLand;
+    MaceCore::NonSpooledTopic<Data::TopicComponents::Void> m_CommandTakeoff;
+    MaceCore::NonSpooledTopic<Data::TopicComponents::Void, pose::BaseTopic::Topic_Altitude> m_CommandLand;
     MaceCore::NonSpooledTopic<Data::TopicComponents::String> m_CommandSystemMode;
 
 public:

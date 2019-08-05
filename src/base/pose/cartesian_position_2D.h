@@ -12,14 +12,16 @@ class CartesianPosition_2D : public Abstract_CartesianPosition, public state_spa
 
 public:
 
-    explicit CartesianPosition_2D(const CartesianFrameTypes &frameType = CartesianFrameTypes::CF_LOCAL_UNKNOWN,
+    CartesianPosition_2D();
+
+    CartesianPosition_2D(const CartesianFrameTypes &frameType,
                         const double &x = 0.0, const double &y = 0.0,
                         const std::string &pointName = "Cartesian Point");
 
-    explicit CartesianPosition_2D(const std::string &pointName,
+    CartesianPosition_2D(const std::string &pointName,
                         const double &x, const double &y);
 
-    explicit CartesianPosition_2D(const double &x, const double &y);
+    CartesianPosition_2D(const double &x, const double &y);
 
     CartesianPosition_2D(const CartesianPosition_2D &copy);
 
@@ -71,6 +73,11 @@ public:
     {
         return this->data(1);
     }
+
+public:
+    bool hasXBeenSet() const;
+
+    bool hasYBeenSet() const;
 
 public:
 

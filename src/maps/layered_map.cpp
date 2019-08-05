@@ -127,6 +127,7 @@ void LayeredMap::setRotationAngleDegrees(const double &angle)
 //!
 bool LayeredMap::updateGridSize(const double &minX, const double &maxX, const double &minY, const double &maxY, const double &x_res, const double &y_res) {
     m_layeredMap.begin()->second->updateGridSize(minX, maxX, minY, maxY, x_res, y_res);
+    return true;
 }
 
 //!
@@ -139,6 +140,7 @@ bool LayeredMap::updateGridSize(const double &minX, const double &maxX, const do
 bool LayeredMap::updateGridSizeByLength(const double &xLength, const double &yLength, const double &xRes, const double &yRes)
 {
     m_layeredMap.begin()->second->updateGridSizeByLength(xLength, yLength, xRes, yRes);
+    return true;
 }
 
 //!

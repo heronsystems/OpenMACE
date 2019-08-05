@@ -14,14 +14,14 @@ Controller_GoTo::Controller_GoTo(const Controllers::IMessageNotifier<mace_messag
 
 void Controller_GoTo::FillCommand(const command_item::CommandGoTo &commandItem, mace_command_goto_t &cmd) const
 {
-    commandItem.getSpatialCommand()->setGoToCommand(cmd);
+    //commandItem.getSpatialCommand()->setGoToCommand(cmd);
 }
 
 void Controller_GoTo::BuildCommand(const mace_command_goto_t &message, command_item::CommandGoTo &data) const
 {
-    data.setTargetSystem(-1);
+//    data.setTargetSystem(-1);
 
-    data.updateFromGoToCommand(message);
+//    data.updateFromGoToCommand(message);
 }
 
 }

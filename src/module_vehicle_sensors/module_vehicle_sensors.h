@@ -26,7 +26,6 @@
 #include "maps/occupancy_definition.h"
 #include "maps/map_cell.h"
 #include "maps/data_2d_grid.h"
-//#include "maps/octomap_wrapper.h"
 
 #include "base/pose/dynamics_aid.h"
 
@@ -105,7 +104,7 @@ public:
     //! \brief updateDataInSensorFootprint_Circular Update the local map data from truth data in a circular footprint
     //! \param sensorOriginGlobal Sensor origin for footprint calculations
     //!
-    void updateDataInSensorFootprint_Circular(const DataState::StateGlobalPositionEx &sensorOriginGlobal);
+    void updateDataInSensorFootprint_Circular(const mace::pose::GeodeticPosition_3D &sensorOriginGlobal);
 
     //! Virtual functions as defined by IModuleCommandSensors
 public:

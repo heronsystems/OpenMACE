@@ -18,7 +18,7 @@ public:
     //! \param obj Point cloud object
     //! \param position Position of sensor
     //!
-    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position) = 0;
+    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::CartesianPosition_3D &position) = 0;
 
     //!
     //! \brief ROS_NewLaserScan New laser scan from ROS/Gazebo
@@ -26,7 +26,7 @@ public:
     //! \param position Position of sensor
     //! \param orientation Orientation of sensor
     //!
-    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position, const mace::pose::Rotation_3D& orientation) = 0;
+    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) = 0;
 
 };
 

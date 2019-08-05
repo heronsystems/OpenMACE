@@ -88,9 +88,9 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
         //The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
         mace_attitude_t decodedMSG;
         mace_msg_attitude_decode(message,&decodedMSG);
-        DataState::StateAttitude newAttitude(decodedMSG);
-        std::shared_ptr<DataStateTopic::StateAttitudeTopic> ptrAttitude = std::make_shared<DataStateTopic::StateAttitudeTopic>(newAttitude);
-        PublishVehicleData(sender, ptrAttitude);
+//        DataState::StateAttitude newAttitude(decodedMSG);
+//        std::shared_ptr<DataStateTopic::StateAttitudeTopic> ptrAttitude = std::make_shared<DataStateTopic::StateAttitudeTopic>(newAttitude);
+//        PublishVehicleData(sender, ptrAttitude);
         break;
     }
     case MACE_MSG_ID_ATTITUDE_STATE_FULL:
@@ -99,9 +99,9 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
         //The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
         mace_attitude_state_full_t decodedMSG;
         mace_msg_attitude_state_full_decode(message,&decodedMSG);
-        DataState::StateAttitude newAttitude(decodedMSG);
-        std::shared_ptr<DataStateTopic::StateAttitudeTopic> ptrAttitude = std::make_shared<DataStateTopic::StateAttitudeTopic>(newAttitude);
-        PublishVehicleData(sender, ptrAttitude);
+//        DataState::StateAttitude newAttitude(decodedMSG);
+//        std::shared_ptr<DataStateTopic::StateAttitudeTopic> ptrAttitude = std::make_shared<DataStateTopic::StateAttitudeTopic>(newAttitude);
+//        PublishVehicleData(sender, ptrAttitude);
         break;
     }
     case MACE_MSG_ID_LOCAL_POSITION_NED:
@@ -110,10 +110,11 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
         //The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
         mace_local_position_ned_t decodedMSG;
         mace_msg_local_position_ned_decode(message,&decodedMSG);
-        DataState::StateLocalPosition newPosition(decodedMSG);
-        std::shared_ptr<DataStateTopic::StateLocalPositionTopic> ptrLocalPosition = std::make_shared<DataStateTopic::StateLocalPositionTopic>(newPosition);
+        //Ken Fix
+//        DataState::StateLocalPosition newPosition(decodedMSG);
+//        std::shared_ptr<DataStateTopic::StateLocalPositionTopic> ptrLocalPosition = std::make_shared<DataStateTopic::StateLocalPositionTopic>(newPosition);
 
-        PublishVehicleData(sender, ptrLocalPosition);
+//        PublishVehicleData(sender, ptrLocalPosition);
 
         break;
     }
@@ -123,10 +124,11 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
         //The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It is designed as scaled integer message since the resolution of float is not sufficient.
         mace_global_position_int_t decodedMSG;
         mace_msg_global_position_int_decode(message,&decodedMSG);
-        DataState::StateGlobalPosition newPosition(decodedMSG);
-        std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> ptrPosition = std::make_shared<DataStateTopic::StateGlobalPositionTopic>(newPosition);
+        //Ken Fix
+//        DataState::StateGlobalPosition newPosition(decodedMSG);
+//        std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> ptrPosition = std::make_shared<DataStateTopic::StateGlobalPositionTopic>(newPosition);
 
-        PublishVehicleData(sender, ptrPosition);
+//        PublishVehicleData(sender, ptrPosition);
 
         break;
     }

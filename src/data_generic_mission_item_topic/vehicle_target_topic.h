@@ -7,10 +7,8 @@
 
 #include "mace.h"
 
-#include "data_generic_state_item/base_3d_position.h"
-
 #include "data/i_topic_component_data_object.h"
-#include "data_generic_command_item/mission_items/mission_list.h"
+#include "base/pose/abstract_position.h"
 #include "data/controller_state.h"
 
 namespace MissionTopic{
@@ -25,7 +23,7 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 public:    
     VehicleTargetTopic();
-    VehicleTargetTopic(const int &vehicleID, const DataState::Base3DPosition &targetPosition, const double &targetDistance, const Data::ControllerState &state = Data::ControllerState::UNKNOWN);
+    VehicleTargetTopic(const int &vehicleID, const mace::pose::PositionPtr targetPosition, const double &targetDistance, const Data::ControllerState &state = Data::ControllerState::UNKNOWN);
     VehicleTargetTopic(const VehicleTargetTopic &copy);
     VehicleTargetTopic(const mace_guided_target_stats_t &obj);
 
@@ -61,7 +59,7 @@ public:
         {
             return false;
         }
-        if(this->targetDistance != rhs.targetDistance)
+        if(fabs(this->targetDistance - rhs.targetDistance) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
@@ -82,7 +80,7 @@ private:
     int systemID;
 
 public:
-    DataState::Base3DPosition targetPosition;
+    mace::pose::PositionPtr targetPosition;
     double targetDistance;
     Data::ControllerState targetState;
 };

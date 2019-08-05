@@ -103,6 +103,11 @@ public:
         return this->data(0);
     }
 
+public:
+    bool hasLatitudeBeenSet() const;
+
+    bool hasLongitudeBeenSet() const;
+
 
     /** Interface imposed via state_space::State */
 public:

@@ -1,18 +1,25 @@
 #ifndef OCTOMAP_WRAPPER_H
 #define OCTOMAP_WRAPPER_H
 
+#include <iostream>
+
+#include "octomap_sensor_definition.h"
+#include "octomap_2d_projection_definition.h"
+
+#include "octomap/OcTree.h"
+
+#include "occupancy_definition.h"
+
+#include "octomap/OcTreeIterator.hxx"
+
+
+#include "data_2d_grid.h"
+
 #include "base/pose/cartesian_position_3D.h"
 #include "base/pose/rotation_3D.h"
 
-#include "octomap/OcTree.h"
-#include "octomap/OcTreeIterator.hxx"
-
-#include "data_2d_grid.h"
-#include "octomap_sensor_definition.h"
-#include "octomap_2d_projection_definition.h"
 #include "occupancy_definition.h"
 
-#include <iostream>
 
 namespace mace{
 namespace maps{
@@ -41,11 +48,11 @@ public:
 
     bool updateProjectionProperties(const Octomap2DProjectionDefinition &projectionProperties);
 
-    void updateFromPointCloud(octomap::Pointcloud *pc, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position);
+    void updateFromPointCloud(octomap::Pointcloud *pc, const pose::CartesianPosition_3D &position);
 
-    void updateFromPointCloud(octomap::Pointcloud *pc, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Rotation_3D &orientation);
+    void updateFromPointCloud(octomap::Pointcloud *pc, const pose::CartesianPosition_3D &position, const pose::Rotation_3D &orientation);
 
-    void updateFromLaserScan(octomap::Pointcloud* pc, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position = mace::pose::Position<mace::pose::CartesianPosition_3D>(), const mace::pose::Rotation_3D &orientation = mace::pose::Rotation_3D());
+    void updateFromLaserScan(octomap::Pointcloud* pc, const pose::CartesianPosition_3D &position = pose::CartesianPosition_3D(), const pose::Rotation_3D &orientation = mace::pose::Rotation_3D());
 
     OctomapSensorDefinition getCurrentOctomapProperies() const;
 

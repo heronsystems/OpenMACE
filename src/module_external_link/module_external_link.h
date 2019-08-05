@@ -8,9 +8,11 @@
 #include <stdint.h>
 #include <chrono>
 #include <functional>
+#include <chrono>
+
+#include "mace.h"
 
 #include "spdlog/spdlog.h"
-#include "mace.h"
 
 #include "common/common.h"
 
@@ -25,9 +27,6 @@
 
 #include "data_generic_item/data_generic_item_components.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
-
-#include "data_generic_state_item/state_item_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
 
 #include "data_generic_command_item/command_item_components.h"
 #include "data_generic_command_item_topic/command_item_topic_components.h"
@@ -57,10 +56,6 @@
 #include "data/topic_components/position_local.h"
 #include "data/topic_components/topic_component_void.h"
 #include "data/topic_components/topic_component_string.h"
-
-#include "base_topic/vehicle_topics.h"
-
-#include <chrono>
 
 
 
@@ -464,10 +459,10 @@ private:
 
     std::shared_ptr<spdlog::logger> mLog;
 
-    MaceCore::SpooledTopic<DATA_GENERIC_VEHICLE_ITEM_TOPICS, DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    MaceCore::SpooledTopic<DATA_GENERIC_VEHICLE_ITEM_TOPICS> m_VehicleDataTopic;
     MaceCore::SpooledTopic<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
 
-    BaseTopic::VehicleTopics m_VehicleTopics;
+//    BaseTopic::VehicleTopics m_VehicleTopics;
 
 
 protected:

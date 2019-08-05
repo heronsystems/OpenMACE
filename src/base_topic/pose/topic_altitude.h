@@ -3,10 +3,10 @@
 
 #include "data/i_topic_component_data_object.h"
 
-#include "base/pose/base_altitude.h""
+#include "base/pose/base_altitude.h"
 
-namespace pose {
-namespace BaseTopic {
+namespace mace {
+namespace pose_topics {
 
 extern const char TopicName_Altitude[];
 
@@ -23,10 +23,7 @@ public:
 
     Topic_Altitude(const mace::pose::Altitude &altObj);
 
-    virtual ~Topic_Altitude()
-    {
-
-    }
+    ~Topic_Altitude() override = default;
 
 public:
     MaceCore::TopicDatagram GenerateDatagram() const override;

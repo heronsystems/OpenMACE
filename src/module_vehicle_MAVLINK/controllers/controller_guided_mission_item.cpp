@@ -2,27 +2,46 @@
 
 namespace MAVLINKVehicleControllers {
 
-    template <>
-    void ControllerGuidedMissionItem<command_item::SpatialWaypoint>::FillMissionItem(const command_item::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem)
-    {
-        mavlinkItem.command = MAV_CMD_NAV_WAYPOINT;
-        Base3DPosition pos = commandItem.getPosition();
+template <>
+void ControllerGuidedMissionItem<command_item::SpatialWaypoint>::FillMissionItem(const command_item::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem)
+{
+    mavlinkItem.command = MAV_CMD_NAV_WAYPOINT;
+    const mace::pose::Position* basePosition = commandItem.getPosition();
 
-        if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT){
-            mavlinkItem.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-        }
-        else if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
+    if(basePosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC){
+        mavlinkItem.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        if(basePosition->is2D())
         {
-            mavlinkItem.frame = MAV_FRAME_LOCAL_ENU;
+            const mace::pose::GeodeticPosition_2D* castPosition = basePosition->positionAs<mace::pose::GeodeticPosition_2D>();
+            mavlinkItem.x = static_cast<float>(castPosition->getLatitude());
+            mavlinkItem.y = static_cast<float>(castPosition->getLongitude());
+            mavlinkItem.z = static_cast<float>(0.0);
         }
-        else{
-            //KEN FIX THIS
-            mavlinkItem.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        else if(basePosition->is3D())
+        {
+            const mace::pose::GeodeticPosition_3D* castPosition = basePosition->positionAs<mace::pose::GeodeticPosition_3D>();
+            mavlinkItem.x = static_cast<float>(castPosition->getLatitude());
+            mavlinkItem.y = static_cast<float>(castPosition->getLongitude());
+            mavlinkItem.z = static_cast<float>(castPosition->getAltitude());
         }
-
-        mavlinkItem.x = static_cast<float>(pos.getY());
-        mavlinkItem.y = static_cast<float>(pos.getX());
-        mavlinkItem.z = static_cast<float>(pos.getZ());
     }
+    else if(basePosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+    {
+        if(basePosition->is2D())
+        {
+            const mace::pose::CartesianPosition_2D* castPosition = basePosition->positionAs<mace::pose::CartesianPosition_2D>();
+            mavlinkItem.x = static_cast<float>(castPosition->getXPosition());
+            mavlinkItem.y = static_cast<float>(castPosition->getYPosition());
+            mavlinkItem.z = static_cast<float>(0.0);
+        }
+        else if(basePosition->is3D())
+        {
+            const mace::pose::CartesianPosition_3D* castPosition = basePosition->positionAs<mace::pose::CartesianPosition_3D>();
+            mavlinkItem.x = static_cast<float>(castPosition->getXPosition());
+            mavlinkItem.y = static_cast<float>(castPosition->getYPosition());
+            mavlinkItem.z = static_cast<float>(castPosition->getAltitude());
+        }
+    }
+}
 
 }// end of namespace MAVLINKVehicleControllers

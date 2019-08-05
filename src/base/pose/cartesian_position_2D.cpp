@@ -4,6 +4,11 @@
 namespace mace{
 namespace pose{
 
+CartesianPosition_2D::CartesianPosition_2D():
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, ""), State(), data(0,0)
+{
+
+}
 CartesianPosition_2D::CartesianPosition_2D(const CartesianFrameTypes &frameType,
                     const double &x, const double &y,
                     const std::string &pointName):
@@ -36,6 +41,16 @@ CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
 {
     this->dimension = 2;
     this->updatePosition(copy.getXPosition(), copy.getYPosition());
+}
+
+bool CartesianPosition_2D::hasXBeenSet() const
+{
+    return this->dimensionMask&IGNORE_Y_DIMENSION;
+}
+
+bool CartesianPosition_2D::hasYBeenSet() const
+{
+    return this->dimensionMask&IGNORE_X_DIMENSION;
 }
 
 bool CartesianPosition_2D::areEquivalentFrames(const CartesianPosition_2D &obj) const

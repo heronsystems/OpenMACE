@@ -26,6 +26,9 @@ namespace MaceCore
 class ModuleBase
 {
 public:
+    virtual ~ModuleBase() = default;
+
+public:
 
     //!
     //! \brief ModuleTypeToString Get the corresponding string from module type

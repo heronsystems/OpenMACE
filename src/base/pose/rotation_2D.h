@@ -18,6 +18,14 @@ namespace pose {
 class Rotation_2D : public AbstractRotation, public Eigen::Rotation2D<double>
 {
 public:
+    enum TYPEMASK_YAW
+    {
+        YAW_DIMENSION_VALID = 0,
+        IGNORE_YAW_DIMENSION = 1024,
+        IGNORE_YAW_RATE_DIMENSION = 2048
+    };
+
+public:
     //!
     //! \brief Orientation_2D
     //!
@@ -74,6 +82,7 @@ public:
     //!
     double getPhi() const;
 
+
 public:
     //!
     //! \brief setDimensionMask
@@ -101,7 +110,6 @@ public:
     {
         return this->dimensionMask;
     }
-
 
     /** Arithmetic Operators */
 public:
@@ -242,6 +250,9 @@ public:
 
 public:
     static const uint8_t rotationalDOF = 2;
+
+private:
+    uint16_t dimensionMask = 0;
 
 };
 

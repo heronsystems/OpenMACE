@@ -7,7 +7,6 @@
 
 #include "data_generic_command_item/command_item_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
-#include "data_generic_state_item/state_item_components.h"
 #include "data_generic_item/data_generic_item_systemtime.h"
 
 #include "data/i_topic_component_data_object.h"

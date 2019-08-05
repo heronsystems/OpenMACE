@@ -37,11 +37,7 @@
 #include "octomap/octomap.h"
 #include "octomap/OcTree.h"
 
-#include "data_generic_state_item/positional_aid.h"
 #include "data_generic_command_item/command_item_components.h"
-//#include "data_generic_command_item/boundary_items/boundary_key.h"
-//#include "data_generic_command_item/boundary_items/boundary_type.h"
-//#include "data_generic_command_item/boundary_items/boundary_list.h"
 
 #include <common/logging/macelog.h>
 
@@ -585,7 +581,7 @@ public:
     //! \param sender Sender module
     //! \param queue New mission queue
     //!
-    void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const TargetItem::DynamicMissionQueue &queue) override;
+    void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const command_target::DynamicMissionQueue &queue) override;
 
     //!
     //! \brief EventPP_NewPathFound New path found event
@@ -661,7 +657,7 @@ public:
     //! \param obj Point cloud object
     //! \param position Position of sensor
     //!
-    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position) override;
+    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::CartesianPosition_3D &position) override;
 
     //!
     //! \brief ROS_NewLaserScan New laser scan from ROS/Gazebo
@@ -669,7 +665,7 @@ public:
     //! \param position Position of sensor
     //! \param orientation Orientation of sensor
     //!
-    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position, const mace::pose::Rotation_3D& orientation) override;
+    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) override;
 public:
 
     /////////////////////////////////////////////////////////////////////////

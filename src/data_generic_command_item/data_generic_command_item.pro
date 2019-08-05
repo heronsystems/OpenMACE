@@ -56,7 +56,8 @@ SOURCES += \
     target_items/dynamic_target_state.cpp \
     spatial_items/abstract_spatial_action.cpp \
     mission_items/abstract_mission_item.cpp \
-    interface_command_helper.cpp
+    interface_command_helper.cpp \
+    mission_items/mission_item_factory.cpp
 HEADERS +=\
     do_items/action_arm.h \
     do_items/action_change_mode.h \
@@ -98,7 +99,8 @@ HEADERS +=\
     target_items/dynamic_target_state.h \
     mission_items/mission_item_interface.h \
     mission_items/abstract_mission_item.h \
-    interface_command_helper.h
+    interface_command_helper.h \
+    mission_items/mission_item_factory.h
 
 # Unix lib Install
 unix:!symbian {

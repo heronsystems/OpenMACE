@@ -5,7 +5,7 @@ namespace MAVLINKVehicleControllers {
     template <>
     void ControllerGuidedTargetItem_Global<TargetControllerStructGlobal>::FillTargetItem(const TargetControllerStructGlobal &targetStruct, mavlink_set_position_target_global_int_t &mavlinkItem)
     {
-        TargetItem::GeodeticDynamicTarget targetItem = targetStruct.target;
+        command_target::GeodeticDynamicTarget targetItem = targetStruct.target;
 
         mace::pose::GeodeticPosition_3D targetPosition = targetItem.getPosition();
         mace::pose::CartesianVelocity_3D targetVelocity = targetItem.getVelocity();
@@ -26,7 +26,6 @@ namespace MAVLINKVehicleControllers {
          * bit 7: ax, bit 8: ay, bit 9: az,
          * bit 10: is force setpoint, bit 11: yaw, bit 12: yaw rate
          */
-
         uint16_t bitArray = 65535;
         uint16_t mask = 1<<0; // set the mask for a x position
         if(targetPosition.hasLatitudeBeenSet())

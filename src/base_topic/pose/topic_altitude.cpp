@@ -1,8 +1,8 @@
 #include "topic_altitude.h"
 
-namespace pose{
+namespace mace{
 
-namespace BaseTopic{
+namespace pose_topics{
 
 const char TopicName_Altitude[] = "TOPIC_ALTITUDE";
 

@@ -60,8 +60,8 @@ double TSP_2OPT<T>::execute2OPT(const T &start, std::vector<T> &tour, const bool
                 //std::cout<<"Sub-evalutaing points: "<<j<<","<<(j+1)<<std::endl;
 
                 //We can do this because of the triangle inequality
-                oldLength = data[i]->distanceTo(*data[i+1]) + data[j]->distanceTo(*data[j+1]);
-                adjustedLength = data[i]->distanceTo(*data[j]) + data[i+1]->distanceTo(*data[j+1]);
+                oldLength = data[i]->distanceTo(data[i+1]) + data[j]->distanceTo(data[j+1]);
+                adjustedLength = data[i]->distanceTo(data[j]) + data[i+1]->distanceTo(data[j+1]);
 
                 if(adjustedLength < oldLength)
                 {
@@ -84,7 +84,7 @@ double TSP_2OPT<T>::executeTSP(const T &start, std::vector<T> &tour)
     return execute2OPT(start,tour);
 }
 
-template class TSP_2OPT<pose::Position<pose::CartesianPosition_2D>>;
+template class TSP_2OPT<pose::CartesianPosition_2D>;
 
 } //end of namespace planners
 } //end of namespace mace

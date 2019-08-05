@@ -7,20 +7,20 @@ namespace ExternalLink {
     void ControllerHome::Construct_Broadcast(const command_item::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &msg)
     {
         UNUSED(sender);
-        msg.latitude = data.position->getX() * pow(10,7);
-        msg.longitude = data.position->getY()* pow(10,7);
-        msg.altitude = data.position->getZ() * 1000.0;
-        msg.x = 0;
-        msg.y = 0;
-        msg.z = 0;
-        msg.q[0] = 0;
-        msg.q[1] = 0;
-        msg.q[2] = 0;
-        msg.q[3] = 0;
-        msg.approach_x = 0;
-        msg.approach_y = 0;
-        msg.approach_z = 0;
-        msg.validity = 0;
+//        msg.latitude = data.position->getX() * pow(10,7);
+//        msg.longitude = data.position->getY()* pow(10,7);
+//        msg.altitude = data.position->getZ() * 1000.0;
+//        msg.x = 0;
+//        msg.y = 0;
+//        msg.z = 0;
+//        msg.q[0] = 0;
+//        msg.q[1] = 0;
+//        msg.q[2] = 0;
+//        msg.q[3] = 0;
+//        msg.approach_x = 0;
+//        msg.approach_y = 0;
+//        msg.approach_z = 0;
+//        msg.validity = 0;
 
         std::cout << "Home Controller: Broadcasting Home" << std::endl;
     }
@@ -41,10 +41,10 @@ namespace ExternalLink {
         }
 
         key = sender;
-        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-        data.position->setX(msg.latitude / pow(10,7));
-        data.position->setY(msg.longitude / pow(10,7));
-        data.position->setZ(msg.altitude / pow(10,3));
+//        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
+//        data.position->setX(msg.latitude / pow(10,7));
+//        data.position->setY(msg.longitude / pow(10,7));
+//        data.position->setZ(msg.altitude / pow(10,3));
 
         std::cout << "Home Controller: Received broadcasted home" << std::endl;
 
@@ -55,7 +55,7 @@ namespace ExternalLink {
     void ControllerHome::Request_Construct(const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_mission_request_home_t &msg, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
-        msg.target_system = target.ModuleID;
+        msg.target_system = static_cast<uint8_t>(target.ModuleID);
 
         queueObj = target;
 
@@ -77,9 +77,9 @@ namespace ExternalLink {
         this->FetchDataFromKey(vehicleObj, homes);
 
         command_item::SpatialHome homeToSend = std::get<1>(homes.at(0));
-        rsp.latitude = homeToSend.position->getX() * pow(10,7);
-        rsp.longitude = homeToSend.position->getY() * pow(10,7);
-        rsp.altitude = homeToSend.position->getZ() * pow(10,3);
+//        rsp.latitude = homeToSend.position->getX() * pow(10,7);
+//        rsp.longitude = homeToSend.position->getY() * pow(10,7);
+//        rsp.altitude = homeToSend.position->getZ() * pow(10,3);
 
         std::cout << "Home Controller: Receive home request, sending home position" << std::endl;
 
@@ -99,10 +99,10 @@ namespace ExternalLink {
         queueObj = sender;
 
         key = sender;
-        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-        data.position->setX(msg.latitude / pow(10,7));
-        data.position->setY(msg.longitude / pow(10,7));
-        data.position->setZ(msg.altitude / pow(10,3));
+//        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
+//        data.position->setX(msg.latitude / pow(10,7));
+//        data.position->setY(msg.longitude / pow(10,7));
+//        data.position->setZ(msg.altitude / pow(10,3));
 
 
         data.setTargetSystem(sender.ModuleID);
@@ -132,12 +132,12 @@ namespace ExternalLink {
     {
         UNUSED(sender);
 
-        std::cout << "DEBUG: Sending SetHomePosition. Raw XYZ Values: " << data.position->getX() << " " << data.position->getY() << " " << data.position->getZ() << std::endl;
+        //std::cout << "DEBUG: Sending SetHomePosition. Raw XYZ Values: " << data.position->getX() << " " << data.position->getY() << " " << data.position->getZ() << std::endl;
 
-        msg.target_system = data.getTargetSystem();
-        msg.latitude = data.position->getX() * pow(10,7);
-        msg.longitude = data.position->getY()* pow(10,7);
-        msg.altitude = data.position->getZ() * 1000.0;
+//        msg.target_system = data.getTargetSystem();
+//        msg.latitude = data.position->getX() * pow(10,7);
+//        msg.longitude = data.position->getY()* pow(10,7);
+//        msg.altitude = data.position->getZ() * 1000.0;
 
         queueObj = GetKeyFromSecondaryID(data.getTargetSystem());
 
@@ -153,15 +153,14 @@ namespace ExternalLink {
         queueObj = sender;
 
         key = sender;
-        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-        data.position->setX(msg.latitude / pow(10,7));
-        data.position->setY(msg.longitude / pow(10,7));
-        data.position->setZ(msg.altitude / pow(10,3));
+//        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
+//        data.position->setX(msg.latitude / pow(10,7));
+//        data.position->setY(msg.longitude / pow(10,7));
+//        data.position->setZ(msg.altitude / pow(10,3));
         data.setTargetSystem(msg.target_system);
         data.setOriginatingSystem(msg.target_system);
 
-        std::cout << "DEBUG: Received SetHomePosition. Final XYZ Values: " << data.position->getX() << " " << data.position->getY() << " " << data.position->getZ() << std::endl;
-
+        //std::cout << "DEBUG: Received SetHomePosition. Final XYZ Values: " << data.position->getX() << " " << data.position->getY() << " " << data.position->getZ() << std::endl;
 
         ack.target_system = msg.target_system;
 
