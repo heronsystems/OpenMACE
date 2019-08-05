@@ -8,19 +8,21 @@ package="launchMACE_AtF3"
 cwd=$(pwd)
 
 # default values
-NUM_REAL_AGENTS=0
+NUM_REAL_AGENTS=4
 # give USB ports here:
 REAL_AGENT_USB[1]=0
 REAL_AGENT_USB[2]=1
 REAL_AGENT_USB[3]=2
+REAL_AGENT_USB[4]=3
 # give vehicle ID here:
-REAL_AGENT_ID[1]=1
-REAL_AGENT_ID[2]=2
-REAL_AGENT_ID[3]=3
+REAL_AGENT_ID[1]=3
+REAL_AGENT_ID[2]=4
+REAL_AGENT_ID[3]=5
+REAL_AGENT_ID[4]=6
 
 
 # default values
-NUM_SIM_AGENTS=6
+NUM_SIM_AGENTS=0
 # give sim agent is
 SIM_AGENT_ID[1]=1
 SIM_AGENT_ID[2]=2
