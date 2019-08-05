@@ -12,7 +12,7 @@ MonteCarloSwitch = 1;
 %rng('default');
 %rng(1);
 
-simulationOrPlot = 'analysisPlot'; %options are 'sim' or 'plot' or 'analysis', or 'analysisPlot'
+simulationOrPlot = 'sim'; %options are 'sim' or 'plot' or 'analysis', or 'analysisPlot'
 % if strcmp(simulationOrPlot,'analysis')
 %     numAlgs = 3;
 %     numTrials = 4;
@@ -48,8 +48,8 @@ kk = 1;
     %algRange = 
     %trialRange = ;
     
-for ii = [13,38,63]; %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg %  [1,3,5,11,13,15,21,23,25]
-    for jj = [1:100]% total target motions
+for ii = [13,38,63] %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg %  [1,3,5,11,13,15,21,23,25]
+    for jj = [1 50 100]%[1:100]% total target motions
         %             ((kk-1)*1+jj)/(1*30)/3  % print percentage of completion
         if strcmp(simulationOrPlot,'sim')
             fprintf('Running algorithm %d (trial %d) \n', ii, jj);
@@ -155,7 +155,7 @@ end
 if (strcmp(simulationOrPlot,'analysisPlot'))
     
     
-    load('./monteCarloRuns/MonteCarlo_Algorithm1_InitialFormation1_TargetMotion1.mat','trueWorld')
+    load('./monteCarloRuns/MonteCarlo_Algorithm13_InitialFormation50_TargetMotion50.mat','trueWorld')
         % first test, lawnmower
         % algRange1;
         %xx [6,8,10];

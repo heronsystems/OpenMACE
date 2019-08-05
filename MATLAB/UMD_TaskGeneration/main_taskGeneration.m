@@ -34,9 +34,9 @@ if ~exist('MonteCarloSwitch','var')
 
 else
     % for Monte Carlo, specify the IDs of the scenes
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
+%     [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
     disp('Running Monte-Carlo simulation')
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
 end
 
 
@@ -87,7 +87,7 @@ end
 %     movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )    
 %     % movie_nodesInView( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     %movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-     movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+%      movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %     % movie_likelihoodWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 % %     %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 % %     % plots
