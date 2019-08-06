@@ -31,8 +31,6 @@ INSTALLS += target
 
 INCLUDEPATH += $$(MACE_ROOT)/include
 
-DEFINES += EIGEN_DONT_VECTORIZE
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
 else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata

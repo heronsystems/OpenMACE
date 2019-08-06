@@ -21,13 +21,16 @@ SOURCES += main.cpp
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+# Copy Files
+target.path = $$(MACE_ROOT)/bin
+INSTALLS += target
+
 
 #Necessary header includes
-#Necessary includes
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../maps/release/ -lmaps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lmaps
@@ -50,3 +53,10 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap
 else:unix:!macx: LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
 
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
+else:unix:!macx: LIBS += -L$$OUT_PWD/../base/ -lbase
+
+INCLUDEPATH += $$PWD/../base
+DEPENDPATH += $$PWD/../base
