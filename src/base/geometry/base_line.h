@@ -26,7 +26,7 @@ public:
     //! \param descriptor
     //!
     LineBase(const std::string &descriptor = "Line"):
-        name(descriptor)
+        name(descriptor), begin(nullptr), end(nullptr)
     {
 
     }
