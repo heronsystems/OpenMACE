@@ -10,7 +10,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     /// determine if the data has changed and should be published throughout MACE.
     //////////////////////////////////////////////////////////////////////////////
 
-    switch ((int)msg->msgid) {
+    switch (msg->msgid) {
     case MAVLINK_MSG_ID_SYS_STATUS:
     {
         mavlink_sys_status_t decodedMSG;
@@ -60,34 +60,35 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         gpsItem.setVDOP(decodedMSG.epv);
         gpsItem.setSatVisible(decodedMSG.satellites_visible);
 
+        using namespace DataGenericItem;
         switch(decodedMSG.fix_type)
         {
         case GPS_FIX_TYPE_2D_FIX:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_2D_FIX);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_2D_FIX);
             break;
         case GPS_FIX_TYPE_3D_FIX:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_3D_FIX);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_3D_FIX);
             break;
         case GPS_FIX_TYPE_DGPS:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_DGPS);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_DGPS);
             break;
         case GPS_FIX_TYPE_NO_FIX:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_NO_FIX);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_NO_FIX);
             break;
         case GPS_FIX_TYPE_NO_GPS:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_NONE);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_NONE);
             break;
         case GPS_FIX_TYPE_RTK_FIXED:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_RTK_FIXED);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_RTK_FIXED);
             break;
         case GPS_FIX_TYPE_RTK_FLOAT:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_RTK_FLOAT);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_RTK_FLOAT);
             break;
         case GPS_FIX_TYPE_STATIC:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_STATIC);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_STATIC);
             break;
         default:
-            gpsItem.setGPSFix(gpsItem.GPSFixType::GPS_FIX_NO_FIX);
+            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_NO_FIX);
             break;
         }
 
@@ -106,15 +107,17 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         //The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
         mavlink_attitude_t decodedMSG;
         mavlink_msg_attitude_decode(msg,&decodedMSG);
-        DataState::StateAttitude attitude;
-        attitude.setAttitude(decodedMSG.roll,decodedMSG.pitch,decodedMSG.yaw);
-        attitude.setAttitudeRates(decodedMSG.rollspeed,decodedMSG.pitchspeed,decodedMSG.yawspeed);
+        mace::pose::Rotation_3D agentAttitude(static_cast<double>(decodedMSG.roll),
+                                              static_cast<double>(decodedMSG.pitch),
+                                               static_cast<double>(decodedMSG.yaw));
 
-        if(state->vehicleAttitude.set(attitude))
+        //attitude.setAttitudeRates(decodedMSG.rollspeed,decodedMSG.pitchspeed,decodedMSG.yawspeed);
+
+        if(state->vehicleAttitude.set(agentAttitude))
         {
-            std::shared_ptr<DataStateTopic::StateAttitudeTopic> ptrAttitude = std::make_shared<DataStateTopic::StateAttitudeTopic>(attitude);
-            if(this->m_CB)
-                this->m_CB->cbi_VehicleStateData(systemID,ptrAttitude);
+//            std::shared_ptr<mace::pose_topics::StateAttitudeTopic> ptrAttitude = std::make_shared<DataStateTopic::StateAttitudeTopic>(attitude);
+//            if(this->m_CB)
+//                this->m_CB->cbi_VehicleStateData(systemID,ptrAttitude);
         }
         break;
     }
@@ -125,17 +128,16 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_local_position_ned_t decodedMSG;
         mavlink_msg_local_position_ned_decode(msg,&decodedMSG);
 
-        DataState::StateLocalPosition localPosition;
-        localPosition.setPositionX(decodedMSG.x);
-        localPosition.setPositionY(decodedMSG.y);
-        localPosition.setPositionZ(decodedMSG.z);
-        localPosition.setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_NED);
+        //Ken Fix This and update coordinate frame
+        mace::pose::CartesianPosition_3D localPosition(static_cast<double>(decodedMSG.x),
+                                                       static_cast<double>(decodedMSG.y),
+                                                       static_cast<double>(decodedMSG.z));
 
         if(state->vehicleLocalPosition.set(localPosition))
         {
-            std::shared_ptr<DataStateTopic::StateLocalPositionTopic> ptrLocalPosition = std::make_shared<DataStateTopic::StateLocalPositionTopic>(localPosition);
-            if(this->m_CB)                
-                this->m_CB->cbi_VehicleStateData(systemID,ptrLocalPosition);
+//            std::shared_ptr<DataStateTopic::StateLocalPositionTopic> ptrLocalPosition = std::make_shared<DataStateTopic::StateLocalPositionTopic>(localPosition);
+//            if(this->m_CB)
+//                this->m_CB->cbi_VehicleStateData(systemID,ptrLocalPosition);
         }
         break;
     }
@@ -147,11 +149,14 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_msg_global_position_int_decode(msg,&decodedMSG);
         double power = pow(10,7);
 
-        DataState::StateGlobalPosition position;
-        position.setPosition(decodedMSG.lat/power,decodedMSG.lon/power,decodedMSG.relative_alt/1000.0);
+        mace::pose::GeodeticPosition_3D globalPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
+                                                       static_cast<double>(decodedMSG.lat/power),
+                                                       static_cast<double>(decodedMSG.lon/power),
+                                                       AltitudeReferenceTypes::REF_ALT_RELATIVE,
+                                                       static_cast<double>(decodedMSG.relative_alt/1000.0));
 
         //check that something has actually changed
-        if(state->vehicleGlobalPosition.set(position))
+        if(state->vehicleGlobalPosition.set(globalPosition))
         {
             //KEN FIX: This is a change for UMDCP that will not throttle position output.
             /*
@@ -161,21 +166,21 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
             */
         }
 
-        std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> ptrPosition = std::make_shared<DataStateTopic::StateGlobalPositionTopic>(position);
-        if(this->m_CB)
-            this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
+//        std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> ptrPosition = std::make_shared<DataStateTopic::StateGlobalPositionTopic>(position);
+//        if(this->m_CB)
+//            this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
 
-        DataState::StateGlobalPositionEx positionEx;
-        positionEx.setPosition(decodedMSG.lat/power,decodedMSG.lon/power,decodedMSG.alt/1000.0);
-        positionEx.heading = (decodedMSG.hdg/100.0)*(3.14/180.0);
+//        DataState::StateGlobalPositionEx positionEx;
+//        positionEx.setPosition(decodedMSG.lat/power,decodedMSG.lon/power,decodedMSG.alt/1000.0);
+//        positionEx.heading = (decodedMSG.hdg/100.0)*(3.14/180.0);
 
-        //check that something has actually changed
-        if(state->vehicleGlobalPositionEx.set(positionEx))
-        {
-            std::shared_ptr<DataStateTopic::StateGlobalPositionExTopic> ptrPositionEx = std::make_shared<DataStateTopic::StateGlobalPositionExTopic>(positionEx);
-            if(this->m_CB)
-                this->m_CB->cbi_VehicleStateData(systemID,ptrPositionEx);
-        }
+//        //check that something has actually changed
+//        if(state->vehicleGlobalPositionEx.set(positionEx))
+//        {
+//            std::shared_ptr<DataStateTopic::StateGlobalPositionExTopic> ptrPositionEx = std::make_shared<DataStateTopic::StateGlobalPositionExTopic>(positionEx);
+//            if(this->m_CB)
+//                this->m_CB->cbi_VehicleStateData(systemID,ptrPositionEx);
+//        }
         break;
     }
     case MAVLINK_MSG_ID_VFR_HUD:
@@ -224,32 +229,33 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_statustext_t decodedMSG;
         mavlink_msg_statustext_decode(msg,&decodedMSG);
 
+        using namespace DataGenericItem;
         DataGenericItem::DataGenericItem_Text statusText;
         statusText.setText(decodedMSG.text);
         switch (decodedMSG.severity) {
         case MAV_SEVERITY_EMERGENCY:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_EMERGENCY);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_EMERGENCY);
             break;
         case MAV_SEVERITY_ALERT:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_ALERT);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_ALERT);
             break;
         case MAV_SEVERITY_CRITICAL:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_CRITICAL);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_CRITICAL);
             break;
         case MAV_SEVERITY_ERROR:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_ERROR);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_ERROR);
             break;
         case MAV_SEVERITY_WARNING:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_WARNING);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_WARNING);
             break;
         case MAV_SEVERITY_NOTICE:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_NOTICE);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_NOTICE);
             break;
         case MAV_SEVERITY_INFO:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_INFO);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO);
             break;
         case MAV_SEVERITY_DEBUG:
-            statusText.setSeverity(statusText.STATUS_SEVERITY::STATUS_DEBUG);
+            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_DEBUG);
             break;
         default:
             break;
@@ -333,20 +339,24 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     {
         mavlink_home_position_t decodedMSG;
         mavlink_msg_home_position_decode(msg,&decodedMSG);
-        command_item::SpatialHome home;
 
-        DataState::StateGlobalPosition position;
-        position.setPosition(decodedMSG.latitude / pow(10,7), decodedMSG.longitude / pow(10,7), decodedMSG.altitude / 1000);
-        home.setPosition(position);
+        double power = pow(10,7);
 
-        home.setOriginatingSystem(msg->sysid);
+        command_item::SpatialHome homeObj;
+
+        mace::pose::GeodeticPosition_3D homePosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
+                                                     decodedMSG.latitude/power, decodedMSG.longitude/power,
+                                                     AltitudeReferenceTypes::REF_ALT_MSL, decodedMSG.altitude/1000.0);
+        homeObj.setPosition(&homePosition);
+
+        homeObj.setOriginatingSystem(msg->sysid);
 
         //check that something has actually changed
-        if(mission->vehicleHomePosition.set(home))
+        if(mission->vehicleHomePosition.set(homeObj))
         {
-            std::shared_ptr<command_item::SpatialHome> ptrHome = std::make_shared<command_item::SpatialHome>(home);
-            if(this->m_CB)
-                this->m_CB->cbi_VehicleHome(systemID,home);
+//            std::shared_ptr<command_item::SpatialHome> ptrHome = std::make_shared<command_item::SpatialHome>(home);
+//            if(this->m_CB)
+//                this->m_CB->cbi_VehicleHome(systemID,home);
         }
         break;
     }

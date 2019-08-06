@@ -83,6 +83,11 @@ bool GeodeticPosition_3D::hasAltitudeBeenSet() const
     return this->dimensionMask&IGNORE_Z_DIMENSION;
 }
 
+bool GeodeticPosition_3D::hasTranslationalComponentBeenSet() const
+{
+    return this->hasLatitudeBeenSet() || this->hasLongitudeBeenSet();
+}
+
 bool GeodeticPosition_3D::areEquivalentFrames(const GeodeticPosition_3D &obj) const
 {
     return this->areEquivalentGeodeticFrames(obj) && this->areEquivalentAltitudeFrames(&obj);

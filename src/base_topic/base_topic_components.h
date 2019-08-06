@@ -1,6 +1,7 @@
 #ifndef BASE_TOPIC_COMPONENTS_H
 #define BASE_TOPIC_COMPONENTS_H
 
+#include "pose/topic_agent_orientation.h"
 #include "pose/topic_cartesian_position.h"
 #include "pose/topic_geodetic_position.h"
 

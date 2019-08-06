@@ -23,7 +23,7 @@ protected:
 
     virtual void FillCommand(const command_item::ActionArm &commandItem, mavlink_command_long_t &cmd) const
     {
-        cmd.target_system = commandItem.getTargetSystem();
+        cmd.target_system = static_cast<uint8_t>(commandItem.getTargetSystem());
         cmd.param1 = commandItem.getRequestArm();
     }
 

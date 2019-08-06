@@ -49,6 +49,11 @@ bool CartesianPosition_3D::hasZBeenSet() const
     return this->dimensionMask&IGNORE_Z_DIMENSION;
 }
 
+bool CartesianPosition_3D::hasTranslationalComponentBeenSet() const
+{
+    return hasXBeenSet() || hasYBeenSet();
+}
+
 bool CartesianPosition_3D::areEquivalentFrames(const CartesianPosition_3D &obj) const
 {
     return this->areEquivalentCartesianFrames(obj) && this->areEquivalentAltitudeFrames(&obj);

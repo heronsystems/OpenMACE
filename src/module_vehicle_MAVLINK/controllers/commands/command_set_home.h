@@ -24,10 +24,10 @@ protected:
 
     virtual void FillCommand(const command_item::SpatialHome &commandItem, mavlink_command_long_t &cmd) const
     {
-        cmd.target_system = commandItem.getTargetSystem();
-        cmd.param5 = commandItem.position->getX();
-        cmd.param6 = commandItem.position->getY();
-        cmd.param7 = commandItem.position->getZ();
+//        cmd.target_system = commandItem.getTargetSystem();
+//        cmd.param5 = commandItem.position->getX();
+//        cmd.param6 = commandItem.position->getY();
+//        cmd.param7 = commandItem.position->getZ();
     }
 
     virtual void BuildCommand(const mavlink_command_long_t &message, command_item::SpatialHome &data) const
@@ -50,15 +50,15 @@ public:
 
     virtual void FillCommand(const command_item::SpatialHome &commandItem, mavlink_command_int_t &cmd) const
     {
-        std::cout<<"Ken: Be careful of the coordinate frame handlings here. Fix in future."<<std::endl;
-        cmd.target_system = commandItem.getTargetSystem();
-        if(commandItem.getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
-            cmd.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT; //KEN: For now, but should majorly fix
-        else
-            cmd.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-        cmd.x = commandItem.position->getX() * pow(10,7);
-        cmd.y = commandItem.position->getY() * pow(10,7);
-        cmd.z = commandItem.position->getZ();
+//        std::cout<<"Ken: Be careful of the coordinate frame handlings here. Fix in future."<<std::endl;
+//        cmd.target_system = commandItem.getTargetSystem();
+//        if(commandItem.getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
+//            cmd.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT; //KEN: For now, but should majorly fix
+//        else
+//            cmd.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+//        cmd.x = commandItem.position->getX() * pow(10,7);
+//        cmd.y = commandItem.position->getY() * pow(10,7);
+//        cmd.z = commandItem.position->getZ();
     }
 
     virtual void BuildCommand(const mavlink_command_int_t &message, command_item::SpatialHome &data) const

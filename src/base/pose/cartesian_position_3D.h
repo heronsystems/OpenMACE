@@ -87,12 +87,15 @@ public:
         return this->data(2);
     }
 
+
 public:
     bool hasXBeenSet() const;
 
     bool hasYBeenSet() const;
 
     bool hasZBeenSet() const;
+
+    bool hasTranslationalComponentBeenSet() const;
 
 public:
     double deltaX(const CartesianPosition_3D &that) const;

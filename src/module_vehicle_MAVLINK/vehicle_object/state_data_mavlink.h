@@ -5,9 +5,10 @@
 
 #include "base/pose/pose_components.h"
 #include "base/measurements/base_speed.h"
-#include "data_generic_item_topic/data_generic_item_topic_components.h"
 
-//typedef void(*CallbackFunctionPtr_State)(void*, DataState::StateGlobalPosition&);
+#include "base_topic/base_topic_components.h"
+
+#include "data_generic_item_topic/data_generic_item_topic_components.h"
 
 class StateData_MAVLINK
 {

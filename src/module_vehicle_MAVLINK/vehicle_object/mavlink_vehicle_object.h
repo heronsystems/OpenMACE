@@ -29,6 +29,9 @@ T* Helper_CreateAndSetUp(TT* obj, TransmitQueue *queue, uint8_t chan)
 class CallbackInterface_MAVLINKVehicleObject
 {
 public:
+    virtual ~CallbackInterface_MAVLINKVehicleObject() = default;
+
+public:
 //    virtuul void cbi_GPSData(const int &systemID, std::shared_ptr<> data) = 0;
     virtual void cbi_VehicleStateData(const int &systemID, std::shared_ptr<Data::ITopicComponentDataObject> data) = 0;
     virtual void cbi_VehicleMissionData(const int &systemID, std::shared_ptr<Data::ITopicComponentDataObject> data) const = 0;
@@ -44,7 +47,7 @@ class MavlinkVehicleObject : public Controllers::IMessageNotifier<mavlink_messag
 public:
     MavlinkVehicleObject(CommsMAVLINK *commsObj, const MaceCore::ModuleCharacteristic &module, const int &mavlinkID);
 
-    ~MavlinkVehicleObject();
+    virtual ~MavlinkVehicleObject();
 
     int getMAVLINKID() const;
 
