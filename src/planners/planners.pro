@@ -13,6 +13,7 @@ TEMPLATE = lib
 DEFINES += PLANNERS_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unknown-pragmas
 
 # The following define makes your compiler emit warnings if you use

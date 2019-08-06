@@ -16,6 +16,7 @@ DEFINES += COMMSMACEHELPER_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -32,8 +33,10 @@ SOURCES += comms_mace_helper.cpp
 HEADERS += comms_mace_helper.h\
         commsmacehelper_global.h
 
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
 INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
 LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
@@ -57,10 +60,6 @@ INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/release/ -lcommsMACE
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/debug/ -lcommsMACE
-else:unix:!macx: LIBS += -L$$OUT_PWD/../commsMACE/ -lcommsMACE
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
 else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
@@ -73,21 +72,7 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../mace_core/release/ 
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../mace_core/debug/ -lmace_core
 else:unix: LIBS += -L$$OUT_PWD/../mace_core/ -lmace_core
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/release/ -lcommsMACE
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/debug/ -lcommsMACE
+else:unix:!macx: LIBS += -L$$OUT_PWD/../commsMACE/ -lcommsMACE
 
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-
-unix {
-    exists(/opt/ros/kinetic/lib/) {
-        DEFINES += ROS_EXISTS
-        INCLUDEPATH += /opt/ros/kinetic/include
-        INCLUDEPATH += /opt/ros/kinetic/lib
-        LIBS += -L/opt/ros/kinetic/lib -loctomath
-        LIBS += -L/opt/ros/kinetic/lib -loctomap
-    } else {
-        INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-        LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
-    }
-}
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-win32:INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include

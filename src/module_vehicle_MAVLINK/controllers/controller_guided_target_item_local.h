@@ -21,7 +21,7 @@ namespace MAVLINKVehicleControllers {
 struct TargetControllerStructLocal
 {
     uint8_t targetID;
-    TargetItem::CartesianDynamicTarget target;
+    command_target::DynamicTarget target;
 };
 
 template <typename T>

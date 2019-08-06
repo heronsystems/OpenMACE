@@ -1,9 +1,6 @@
 #ifndef MAVLINK_CONTROLLER_MISSION_H
 #define MAVLINK_CONTROLLER_MISSION_H
 
-#include "data_interface_MACE/COMMS_to_MACE/helper_mission_comms_to_mace.h"
-#include "data_interface_MACE/MACE_to_COMMS/helper_mission_mace_to_comms.h"
-
 #include "controllers/generic_controller.h"
 
 #include "controllers/actions/action_send.h"
@@ -26,7 +23,7 @@
 namespace MAVLINKVehicleControllers {
 
 /// Data that is to be downloaded from mission
-using MissionDownloadResult = std::tuple<command_item::SpatialHome, MissionList>;
+using MissionDownloadResult = std::tuple<command_item::SpatialHome, MissionItem::MissionList>;
 
 /**
  * Definition of the controller that will be used for the mission
@@ -470,9 +467,9 @@ private:
     {
         if(msg.seq == 0)
         {
-            std::get<0>(*m_MissionDownloading).position->setX(msg.x);
-            std::get<0>(*m_MissionDownloading).position->setY(msg.y);
-            std::get<0>(*m_MissionDownloading).position->setZ(msg.z);
+            std::get<0>(*m_MissionDownloading).position->positionAs<mace::pose::GeodeticPosition_3D>()->setLatitude(msg.x);
+            std::get<0>(*m_MissionDownloading).position->positionAs<mace::pose::GeodeticPosition_3D>()->setLongitude(msg.y);
+            std::get<0>(*m_MissionDownloading).position->positionAs<mace::pose::GeodeticPosition_3D>()->setAltitude(msg.z);
             std::get<0>(*m_MissionDownloading).setOriginatingSystem(sender);
             std::get<0>(*m_MissionDownloading).setTargetSystem(sender);
         }

@@ -72,6 +72,11 @@ public:
         return true;
     }
 
+    virtual bool areTranslationalComponentsValid() const
+    {
+        return true;
+    }
+
 public:
     //!
     //! \brief setName

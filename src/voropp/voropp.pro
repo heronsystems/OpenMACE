@@ -11,6 +11,7 @@ TEMPLATE = lib
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 DEFINES += VOROPP_LIBRARY
 
 # The following define makes your compiler emit warnings if you use

@@ -272,7 +272,7 @@ public:
 
     /** Public Members */
 public:
-
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     /** The vector defining the sequence of rotation shall be [yaw, pitch, roll]
      * which yields a [phi, theta, psi] notation.
      * */

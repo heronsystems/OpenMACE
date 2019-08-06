@@ -89,13 +89,13 @@ ModuleGroundStation::ModuleGroundStation() :
     m_timer->setInterval(GUITimer::Interval(300));
     m_timer->start(true);
 
-    m_toMACEHandler = std::make_shared<GUItoMACE>(this, &this->m_VehicleTopics);
+    m_toMACEHandler = std::make_shared<GUItoMACE>(this);
     m_toGUIHandler = std::make_shared<MACEtoGUI>();
 }
 
 ModuleGroundStation::~ModuleGroundStation()
 {
-    if(m_ListenThread != NULL)
+    if(m_ListenThread != nullptr)
     {
         ((ServerThread*)m_ListenThread)->shutdown();
         delete m_ListenThread;
@@ -115,9 +115,9 @@ std::vector<MaceCore::TopicCharacteristic> ModuleGroundStation::GetEmittedTopics
 {
     std::vector<MaceCore::TopicCharacteristic> topics;
 
-    topics.push_back(this->m_VehicleTopics.m_CommandLand.Characterisic());
-    topics.push_back(this->m_VehicleTopics.m_CommandSystemMode.Characterisic());
-    topics.push_back(this->m_VehicleTopics.m_CommandTakeoff.Characterisic());
+//    topics.push_back(this->m_VehicleTopics.m_CommandLand.Characterisic());
+//    topics.push_back(this->m_VehicleTopics.m_CommandSystemMode.Characterisic());
+//    topics.push_back(this->m_VehicleTopics.m_CommandTakeoff.Characterisic());
 
     return topics;
 }
@@ -355,8 +355,8 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
 
             //example of how to get data and parse through the components that were updated
             for(size_t i = 0 ; i < componentsUpdated.size() ; i++) {
-                if(componentsUpdated.at(i) == DataStateTopic::StateAttitudeTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateAttitudeTopic> component = std::make_shared<DataStateTopic::StateAttitudeTopic>();
+                if(componentsUpdated.at(i) == mace::pose_topics::Topic_AgentOrientation::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> component = std::make_shared<mace::pose_topics::Topic_AgentOrientation>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write Attitude data to the GUI:
@@ -369,20 +369,20 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     // Write mode change to the GUI"
                     m_toGUIHandler->sendVehicleMode(vehicleID, component);
                 }
-                else if(componentsUpdated.at(i) == DataStateTopic::StateGlobalPositionTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> component = std::make_shared<DataStateTopic::StateGlobalPositionTopic>();
+                else if(componentsUpdated.at(i) == mace::pose_topics::Topic_GeodeticPosition::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> component = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write Position data to the GUI:
                     m_toGUIHandler->sendPositionData(vehicleID, component);
                 }
-                else if(componentsUpdated.at(i) == DataStateTopic::StateAirspeedTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateAirspeedTopic> component = std::make_shared<DataStateTopic::StateAirspeedTopic>();
-                    m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
+//                else if(componentsUpdated.at(i) == DataStateTopic::StateAirspeedTopic::Name()) {
+//                    std::shared_ptr<DataStateTopic::StateAirspeedTopic> component = std::make_shared<DataStateTopic::StateAirspeedTopic>();
+//                    m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
-                    // Write Airspeed data to the GUI:
-                    m_toGUIHandler->sendVehicleAirspeed(vehicleID, component);
-                }
+//                    // Write Airspeed data to the GUI:
+//                    m_toGUIHandler->sendVehicleAirspeed(vehicleID, component);
+//                }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_Battery::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Battery>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
@@ -537,7 +537,7 @@ void ModuleGroundStation::NewlyAvailableHomePosition(const command_item::Spatial
 void ModuleGroundStation::NewlyUpdatedGlobalOrigin(const mace::pose::GeodeticPosition_3D &position)
 {
     std::cout << "Ground Control: New available global origin" << std::endl;
-    command_item::SpatialHome origin(position);
+    command_item::SpatialHome origin; origin.setPosition(&position);
     m_toGUIHandler->sendGlobalOrigin(origin);
 }
 

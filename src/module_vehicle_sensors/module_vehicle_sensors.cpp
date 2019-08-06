@@ -172,12 +172,12 @@ void ModuleVehicleSensors::NewTopicSpooled(const std::string &topicName, const M
 //                std::shared_ptr<DataStateTopic::StateAttitudeTopic> component = std::make_shared<DataStateTopic::StateAttitudeTopic>();
 //                m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 //            }
-            if(componentsUpdated.at(i) == DataStateTopic::StateGlobalPositionExTopic::Name()) {
-                std::shared_ptr<DataStateTopic::StateGlobalPositionExTopic> component = std::make_shared<DataStateTopic::StateGlobalPositionExTopic>();
-                m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
-                DataState::StateGlobalPositionEx newPosition = *component.get();
-                updateDataInSensorFootprint_Circular(newPosition);
-            }
+//            if(componentsUpdated.at(i) == DataStateTopic::StateGlobalPositionExTopic::Name()) {
+//                std::shared_ptr<DataStateTopic::StateGlobalPositionExTopic> component = std::make_shared<DataStateTopic::StateGlobalPositionExTopic>();
+//                m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
+//                DataState::StateGlobalPositionEx newPosition = *component.get();
+//                updateDataInSensorFootprint_Circular(newPosition);
+//            }
         }
     }
 }
@@ -189,7 +189,7 @@ void ModuleVehicleSensors::NewTopicSpooled(const std::string &topicName, const M
 //! \param globalPosition Position of the vehicle/sensor
 //! \param attitude Attitude of the vehicle/sensor
 //!
-void ModuleVehicleSensors::computeVehicleFootprint(const int &systemID, const DataVehicleSensors::SensorCamera &camera, const DataState::StateGlobalPositionEx &globalPosition, const DataState::StateAttitude &attitude)
+void ModuleVehicleSensors::computeVehicleFootprint(const int &systemID, const DataVehicleSensors::SensorCamera &camera, const GeodeticPosition_3D &globalPosition, const Rotation_3D &attitude)
 {
 //
 //    DataState::StateGlobalPositionEx vehicleOrigin = globalPosition;
@@ -369,7 +369,7 @@ void ModuleVehicleSensors::updateDataInSensorFootprint_Circular(const mace::pose
         mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
         mace::pose::GeodeticPosition_3D originGlobal(sensorOriginGlobal.getLatitude(), sensorOriginGlobal.getLongitude(), sensorOriginGlobal.getAltitude());
         mace::pose::CartesianPosition_3D sensorOriginLocal;
-        mace::pose::DynamicsAid::GlobalPositionToLocal(globalOrigin, originGlobal, sensorOriginLocal);
+        mace::pose::DynamicsAid::GlobalPositionToLocal(&globalOrigin, &originGlobal, &sensorOriginLocal);
 
         // Compute radius of sensor footprint based on sensor origin (altitude):
         double radius = computeVehicleFootprint_Circular(*m_circularCameraSensor, sensorOriginLocal);
@@ -385,7 +385,8 @@ void ModuleVehicleSensors::updateDataInSensorFootprint_Circular(const mace::pose
             truthLayer->getPositionFromIndex(*circleIt_truth, xPos, yPos);
 
             // 2) Calculate distance from sensor origin for attenuated disk:
-            double distanceToSensorOrigin = sensorOriginLocal.distanceBetween2D(CartesianPosition_3D(xPos, yPos, 0));
+            CartesianPosition_2D currentPosition(xPos, yPos);
+            double distanceToSensorOrigin = sensorOriginLocal.distanceBetween2D(&currentPosition);
             double sigma = m_circularCameraSensor->attenuatedDiskConfidence(distanceToSensorOrigin, radius);
 
             // 3) Get occupied value to update log odds and update our log odds probability:

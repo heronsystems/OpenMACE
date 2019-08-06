@@ -13,6 +13,7 @@ DEFINES += DATA_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 CONFIG += object_parallel_to_source
 
 SOURCES += \
@@ -69,6 +70,7 @@ include(../headerinstall.pri)
 
 
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

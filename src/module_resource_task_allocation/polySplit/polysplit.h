@@ -29,7 +29,7 @@ public:
      * @brief getCentroids Return the centroids of the areas split from the environment boundary
      * @return Vector of points corresponding to area centroids
      */
-    std::vector<mace::geometry::Position<mace::geometry::CartesianPosition_2D> > getCentroids() const;
+    std::vector<mace::pose::CartesianPosition_2D> getCentroids() const;
 
     /**
      * @brief getPolygons Return the equal area polygons

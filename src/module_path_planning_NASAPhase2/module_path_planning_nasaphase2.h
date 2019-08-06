@@ -31,10 +31,8 @@ using namespace octomap;
 #include "maps/data_2d_grid.h"
 #include "maps/occupancy_definition.h"
 
-#include "base/pose/dynamics_aid.h"
-#include "base/pose/cartesian_position_2D.h"
-#include "base/pose/geodetic_position_2D.h"
-
+#include "base/geometry/base_line.h"
+#include "base/pose/pose_components.h"
 #include "base_topic/base_topic_components.h"
 
 using namespace mace ;

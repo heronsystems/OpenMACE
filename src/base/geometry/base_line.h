@@ -55,7 +55,7 @@ public:
     //! \brief beginLine
     //! \param obj
     //!
-    virtual void beginLine(const T obj)
+    virtual void beginLine(const T* obj)
     {
         begin = obj->getPositionalClone();
     }
@@ -73,7 +73,7 @@ public:
     //! \brief getBeginLine
     //! \return
     //!
-    virtual T* getBeginLine() const
+    virtual mace::pose::Position* getBeginLine() const
     {
         return begin;
     }
@@ -82,15 +82,15 @@ public:
     //! \brief getEndLine
     //! \return
     //!
-    virtual T* getEndLine() const
+    virtual mace::pose::Position* getEndLine() const
     {
         return end;
     }
 
 protected:
     std::string name;
-    T* begin;
-    T* end;
+    mace::pose::Position* begin;
+    mace::pose::Position* end;
 };
 
 typedef LineBase<CoordinateSystemTypes::CARTESIAN, mace::pose::Abstract_CartesianPosition> Line_Cartesian;

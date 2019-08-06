@@ -16,11 +16,9 @@ SUBDIRS += \
     commsMACEHelper \
     base_topic \
     data_generic_item_topic \
-    data_generic_state_item_topic \
     data_generic_command_item_topic \
     data_generic_mission_item_topic \
     data_interface_MAVLINK \
-    data_interface_MACE \
     data_vehicle_sensors \
     controllers \
     module_vehicle_generic \
@@ -35,13 +33,12 @@ SUBDIRS += \
     module_ROS \
     module_ROS_UMD \
     mace \
-    module_generic_MAVLINK \
-    TestMaps \
+    TestMaps
     #example \
     #Testing_CommsLink \
     #TestGraph \
-    commsExample \
-    example_vehicle_module
+    #commsExample \
+    #example_vehicle_module
 
 
 base.depends = common
@@ -52,23 +49,19 @@ baseTopic.depends = base
 comms.depends = common
 commsMACE.depends = data
 data_generic_item.depends = data
-#data_generic_state_item.depends = data_generic_item
 data_generic_command_item.depends = data_generic_item
 mace_core.depends = data_generic_command_item
 data_generic_item_topic.depends = data_generic_item
-#data_generic_state_item_topic.depends = data_generic_state_item
 data_generic_command_item_topic.depends = data_generic_item_topic
 data_generic_mission_item_topic.depends = data_generic_command_item_topic
 data_interface_MAVLINK.depends = data_generic_mission_item_topic
-data_interface_MACE.depends = data_generic_mission_item_topic
-data_vehicle_sensors.depends = data_generic_state_item_topic
-controllers.depends = data_interface_MACE
+data_vehicle_sensors.depends = data_generic_mission_item_topic
+controllers.depends = data_vehicle_sensors
 commsMAVLINK.depends = mace_core
 commsMACEHelper.depends = mace_core
 commsExample.depends = mace_core
-module_generic_MAVLINK.depends = controllers
 module_vehicle_generic.depends = controllers
-module_vehicle_MAVLINK.depends = module_generic_MAVLINK
+module_vehicle_MAVLINK.depends = module_vehicle_generic
 module_vehicle_ardupilot.depends = module_vehicle_MAVLINK
 module_external_link.depends = module_vehicle_ardupilot
 module_ground_station.depends = module_external_link

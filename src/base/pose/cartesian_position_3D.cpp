@@ -34,12 +34,12 @@ CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_2D &copy):
     this->updatePosition(copy.getXPosition(), copy.getYPosition(), 0.0);
 }
 
-bool CartesianPosition_2D::hasXBeenSet() const
+bool CartesianPosition_3D::hasXBeenSet() const
 {
     return this->dimensionMask&IGNORE_X_DIMENSION;
 }
 
-bool CartesianPosition_2D::hasYBeenSet() const
+bool CartesianPosition_3D::hasYBeenSet() const
 {
     return this->dimensionMask&IGNORE_Y_DIMENSION;
 }

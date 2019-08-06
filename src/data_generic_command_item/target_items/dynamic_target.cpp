@@ -96,6 +96,12 @@ Rotation_2D* DynamicTarget::getYawRate()
     return this->m_YawRate;
 }
 
+bool DynamicTarget::isCurrentTargetValid() const
+{
+    if(getCurrentTargetMask() != std::numeric_limits<uint16_t>::max())
+        return true;
+    return false;
+}
 
 uint16_t DynamicTarget::getCurrentTargetMask() const
 {

@@ -2,9 +2,7 @@
 
 namespace mavlink {
 
-
-GuidedTimeoutController::GuidedTimeoutController(ArdupilotTimeout_Interface* callback, const unsigned int &timeout):
-    currentTarget(nullptr)
+GuidedTimeoutController::GuidedTimeoutController(ArdupilotTimeout_Interface* callback, const unsigned int &timeout)
 {
     this->m_CB = callback;
     this->timeout = timeout;
@@ -42,8 +40,8 @@ void GuidedTimeoutController::run()
         if(timeElapsed >= timeout)
         {
             //For the moment we are removing the callback timeout
-            if((currentTarget != nullptr) && (m_CB != nullptr))
-                m_CB->cbiArdupilotTimeout_TargetLocal(*currentTarget);
+//            if((currentTarget.isCurrentTargetValid()) && (m_CB != nullptr))
+//                m_CB->cbiArdupilotTimeout_DynamicTarget(currentTarget);
             m_Timeout.reset();
         }
 
@@ -51,18 +49,16 @@ void GuidedTimeoutController::run()
     }
 }
 
-void GuidedTimeoutController::updateTarget(const TargetItem::CartesianDynamicTarget &target)
+void GuidedTimeoutController::updateTarget(const command_target::DynamicTarget &target)
 {
     m_LambdasToRun.push_back([this, target]{
-        currentTarget = new TargetItem::CartesianDynamicTarget(target);
+        currentTarget = target;
         //reset the timeout and send this new command
     });
 }
 
 void GuidedTimeoutController::clearTarget()
 {
-    delete currentTarget;
-    currentTarget = nullptr;
 }
 
 void GuidedTimeoutController::setCallbackFunction(ArdupilotTimeout_Interface* callback)

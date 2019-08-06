@@ -14,6 +14,7 @@ DEFINES += MODULE_ROS_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 SOURCES += module_ROS.cpp \
     rosTimer.cpp
 

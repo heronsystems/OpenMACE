@@ -387,7 +387,7 @@ void ModulePathPlanningNASAPhase2::NewlyAvailableMission(const MissionItem::Miss
 void ModulePathPlanningNASAPhase2::cbiPlanner_SampledState(const mace::state_space::State *sampleState)
 {
     const mace::pose::CartesianPosition_2D* sampledState = sampleState->stateAs<mace::pose::CartesianPosition_2D>();
-    std::shared_ptr<mace::pose_topics::Cartesian_2D_Topic> ptrSampledState= std::make_shared<mace::pose_topics::Cartesian_2D_Topic>(*sampledState);
+    std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> ptrSampledState= std::make_shared<mace::pose_topics::Topic_CartesianPosition>();
 
     MaceCore::TopicDatagram topicDatagram;
     m_PlanningStateTopic.SetComponent(ptrSampledState, topicDatagram);
@@ -399,21 +399,21 @@ void ModulePathPlanningNASAPhase2::cbiPlanner_SampledState(const mace::state_spa
 
 void ModulePathPlanningNASAPhase2::cbiPlanner_NewConnection(const mace::state_space::State *beginState, const mace::state_space::State *secondState)
 {
-    mace::geometry::Line_2DC newLine;
+    mace::geometry::Line_Cartesian newLine;
 
     const mace::pose::CartesianPosition_2D* begState = beginState->stateAs<mace::pose::CartesianPosition_2D>();
-    newLine.beginLine(*begState);
+    newLine.beginLine(begState);
 
     const mace::pose::CartesianPosition_2D* endState = secondState->stateAs<mace::pose::CartesianPosition_2D>();
-    newLine.endLine(*endState);
+    newLine.endLine(endState);
 
-    std::shared_ptr<mace::geometryTopic::Line_2DC_Topic> ptrLine= std::make_shared<mace::geometryTopic::Line_2DC_Topic>(newLine);
+//    std::shared_ptr<mace::geometryTopic::Line_2DC_Topic> ptrLine= std::make_shared<mace::geometryTopic::Line_2DC_Topic>(newLine);
 
-    MaceCore::TopicDatagram topicDatagram;
-    m_PlanningStateTopic.SetComponent(ptrLine, topicDatagram);
-    ModulePathPlanningNASAPhase2::NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
-        ptr->NewTopicDataValues(this, m_PlanningStateTopic.Name(), 0, MaceCore::TIME(), topicDatagram);
-    });
+//    MaceCore::TopicDatagram topicDatagram;
+//    m_PlanningStateTopic.SetComponent(ptrLine, topicDatagram);
+//    ModulePathPlanningNASAPhase2::NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
+//        ptr->NewTopicDataValues(this, m_PlanningStateTopic.Name(), 0, MaceCore::TIME(), topicDatagram);
+//    });
 
 }
 
@@ -436,12 +436,13 @@ void ModulePathPlanningNASAPhase2::replanRRT()
             command_item::AbstractCommandItemPtr item = m_MissionList.getActiveMissionItem();
             target = item->as<command_item::SpatialWaypoint>();
 
-            if(target->getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
-            {
-                goal2D.setXPosition(target->getPosition().getX());
-                goal2D.setYPosition(target->getPosition().getY());
-                altitude = target->getPosition().getZ();
-            }
+            //Ken Fix This
+//            if(target->getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
+//            {
+//                goal2D.setXPosition(target->getPosition().getX());
+//                goal2D.setYPosition(target->getPosition().getY());
+//                altitude = target->getPosition().getZ();
+//            }
 
             if(stateCheck->isValid(&goal2D)) //we have found a valid goal, let us plan on this
                 break;
@@ -463,7 +464,7 @@ void ModulePathPlanningNASAPhase2::replanRRT()
             std::vector<mace::state_space::StatePtr> smartSolution;
             smartSolution.resize(solution.size());
 
-            TargetItem::DynamicTargetList dynamicList;
+            command_target::DynamicTargetList dynamicList;
             std::cout<<"The solution looks like this: "<<std::endl;
 
             for (int i = 0; i < solution.size(); i++)
@@ -471,16 +472,16 @@ void ModulePathPlanningNASAPhase2::replanRRT()
                 mace::state_space::StatePtr state(solution[i]->getStateClone());
 
                 CartesianPosition_3D pos;
-                pos.setXPosition(state->as<mace::pose::CartesianPosition_2D>()->getXPosition());
-                pos.setYPosition(state->as<mace::pose::CartesianPosition_2D>()->getYPosition());
+                pos.setXPosition(state->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition());
+                pos.setYPosition(state->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition());
                 pos.setZPosition(altitude);
-                TargetItem::CartesianDynamicTarget target;
-                target.setPosition(pos);
+                command_target::DynamicTarget target;
+                target.setPosition(&pos);
 
                 dynamicList.appendDynamicTarget(target);
 
                 smartSolution.at(i) = state;
-                std::cout<<"X: "<<state->as<mace::pose::CartesianPosition_2D>()->getXPosition()<<"Y: "<<state->as<mace::pose::CartesianPosition_2D>()->getYPosition()<<std::endl;
+                std::cout<<"X: "<<state->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition()<<"Y: "<<state->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition()<<std::endl;
             }
 
             m_DynamicPlan.setMissionKey(m_MissionList.getMissionKey());
@@ -541,14 +542,14 @@ void ModulePathPlanningNASAPhase2::NewOperationalBoundary(const BoundaryItem::Bo
     m_LocalOperationalBoundary.clearPolygon();
     m_LocalOperationalBoundary = boundary.boundingPolygon;
 
-    if(m_globalOrigin.hasBeenSet()) //if a global origin had not been assigned from above and we have a boundary let us choose one
+    if(m_globalOrigin.isAnyPositionValid()) //if a global origin had not been assigned from above and we have a boundary let us choose one
     {
         m_GlobalOperationalBoundary.clearPolygon();
         for(size_t i = 0; i < m_LocalOperationalBoundary.polygonSize(); i++)
         {
             CartesianPosition_3D vertex(m_LocalOperationalBoundary.at(i).getXPosition(),m_LocalOperationalBoundary.at(i).getYPosition(),0.0);
             GeodeticPosition_3D globalVertex;
-            mace::pose::DynamicsAid::LocalPositionToGlobal(m_globalOrigin,vertex,globalVertex);
+            mace::pose::DynamicsAid::LocalPositionToGlobal(&m_globalOrigin,&vertex,&globalVertex);
             GeodeticPosition_2D globalVertex2D(globalVertex.getLatitude(),globalVertex.getLongitude());
             m_GlobalOperationalBoundary.appendVertex(globalVertex2D);
         }

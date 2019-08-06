@@ -26,13 +26,12 @@ public:
     virtual ~ArdupilotTimeout_Interface() = default;
 
 public:
-    virtual void cbiArdupilotTimeout_TargetLocal(const TargetItem::CartesianDynamicTarget &target) = 0;
-    virtual void cbiArdupilotTimeout_TargetGlobal(const TargetItem::GeodeticDynamicTarget &target) = 0;
+    virtual void cbiArdupilotTimeout_DynamicTarget(const command_target::DynamicTarget &target) = 0;
 };
 
-MACE_CLASS_FORWARD(GuidedTimeoutController);
-
 namespace mavlink{
+
+MACE_CLASS_FORWARD(GuidedTimeoutController);
 
 class GuidedTimeoutController : public Thread
 {
@@ -45,7 +44,7 @@ public:
 
     void run() override;
 
-    void updateTarget(const TargetItem::CartesianDynamicTarget &target);
+    void updateTarget(const command_target::DynamicTarget &target);
 
     void clearTarget();
 
@@ -59,7 +58,7 @@ private:
     unsigned int timeout;
 
 protected:
-    TargetItem::CartesianDynamicTarget* currentTarget;
+    command_target::DynamicTarget currentTarget;
 
 protected:
     std::list<std::function<void()>> m_LambdasToRun;

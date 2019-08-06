@@ -14,10 +14,6 @@
 #include "data_vehicle_sensors/components.h"
 #include "mace_core/i_module_command_sensors.h"
 
-#include "data_generic_state_item/state_item_components.h"
-
-#include "data_generic_state_item_topic/state_topic_components.h"
-
 #include "data_generic_command_item/command_item_components.h"
 
 #include "maps/iterators/grid_map_iterator.h"
@@ -28,6 +24,7 @@
 #include "maps/data_2d_grid.h"
 
 #include "base/pose/dynamics_aid.h"
+#include "base_topic/base_topic_components.h"
 
 class MODULE_VEHICLE_SENSORSSHARED_EXPORT ModuleVehicleSensors : public MaceCore::IModuleCommandSensors
 {
@@ -86,7 +83,7 @@ public:
     //! \param globalPosition Position of the vehicle/sensor
     //! \param attitude Attitude of the vehicle/sensor
     //!
-    void computeVehicleFootprint(const int &systemID, const DataVehicleSensors::SensorCamera &camera, const DataState::StateGlobalPositionEx &globalPosition, const DataState::StateAttitude &attitude);
+    void computeVehicleFootprint(const int &systemID, const DataVehicleSensors::SensorCamera &camera, const mace::pose::GeodeticPosition_3D &globalPosition, const mace::pose::Rotation_3D &attitude);
 
     //!
     //! \brief loadTruthMap Load the truth map from a .bt (i.e. occupancy graph) file
@@ -169,7 +166,7 @@ private:
     std::string m_truthBTFile;
 
 private:
-    Data::TopicDataObjectCollection<DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<BASE_POSE_TOPICS> m_VehicleDataTopic;
     Data::TopicDataObjectCollection<DATA_VEHICLE_SENSORS> m_SensorDataTopic;
     Data::TopicDataObjectCollection<DATA_VEHICLE_SENSOR_FOOTPRINT> m_SensorFootprintDataTopic;
 

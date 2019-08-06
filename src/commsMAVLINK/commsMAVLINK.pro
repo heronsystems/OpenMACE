@@ -10,6 +10,7 @@ QT      -= gui
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 TARGET = commsMAVLINK
 TEMPLATE = lib
 
@@ -31,9 +32,12 @@ SOURCES += comms_mavlink.cpp
 HEADERS += comms_mavlink.h\
         commsmavlink_global.h
 
+
+INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$PWD/../../speedLog/
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
-INCLUDEPATH += $$PWD/../
 
 # Unix lib Install
 unix:!symbian {
@@ -69,9 +73,6 @@ else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../mace_core/release/ -lmace_core
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../mace_core/debug/ -lmace_core
 else:unix: LIBS += -L$$OUT_PWD/../mace_core/ -lmace_core
-
-
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
 unix {
     exists(/opt/ros/kinetic/lib/) {

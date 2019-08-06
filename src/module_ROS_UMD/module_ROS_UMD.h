@@ -16,9 +16,6 @@
 #include "data/topic_data_object_collection.h"
 #include "base_topic/base_topic_components.h"
 
-#include "data_generic_state_item/state_item_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
-
 #include "data_generic_item/data_generic_item_components.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
 
@@ -52,7 +49,7 @@ public:
     //!
     ModuleROSUMD();
 
-    ~ModuleROSUMD();
+    ~ModuleROSUMD() override;
 
     //!
     //! \brief start Start ROS loop
@@ -166,24 +163,24 @@ public:
     //! \param vehicleID ID of the vehicle to update
     //! \param component Position (in the local frame)
     //!
-    void updatePositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateLocalPositionTopic> &component);
+    void updatePositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> &component);
 
     //!
     //! \brief updateGlobalPositionData Update the position of the corresponding vehicle and convert to a local position (from Geodetic 3D)
     //! \param vehicleID ID of the vehicle to update
     //! \param component Position (in a global, Geodetic frame)
     //!
-    void updateGlobalPositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> &component);
+    void updateGlobalPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component);
 
     //!
     //! \brief updateAttitudeData Update the attitude of the corresponding Gazebo model based on attitude of MACE vehicle
     //! \param vehicleID ID of the vehicle to update
     //! \param component Attitude
     //!
-    void updateAttitudeData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateAttitudeTopic> &component);
+    void updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component);
 
     // TODO: Better workaround for transformations
-    void convertToENU(DataState::StateLocalPosition& localPos);
+    void convertToENU(mace::pose::Abstract_CartesianPosition* localPos);
 
     // ============================================================================= //
     // ========================  ROS Specific functions:  ========================== //
@@ -264,7 +261,7 @@ private:
     //!
     //! \brief m_vehicleMap Container for map of vehicle IDs and corresponding most recent Position and Attitude data
     //!
-    std::map<int, std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> > m_vehicleMap;
+    std::map<int, std::tuple<mace::pose::Abstract_CartesianPosition*, mace::pose::Rotation_3D>> m_vehicleMap;
 
     //!
     //! \brief m_timer Timer that triggers a ROS spin event to cycle through any queued ROS messages
@@ -362,7 +359,7 @@ private:
 private:
 
     //Subscribing to generic vehicle state data that is published throughout the MACE network
-    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, BASE_POSE_TOPICS> m_VehicleDataTopic;
 
     //Subscribing to generic mission topics published throughout the MACE network
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_VehicleMissionTopic;

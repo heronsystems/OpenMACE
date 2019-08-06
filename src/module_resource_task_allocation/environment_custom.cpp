@@ -2,7 +2,6 @@
 
 #include <algorithm>
 
-#include <data_generic_state_item/positional_aid.h>
 #include <polySplit/polysplit.h>
 
 #include <Eigen/Dense>
@@ -34,7 +33,7 @@ Environment_Map::Environment_Map(const Polygon_Cartesian &boundingPolygon, const
  * @param vehicles Map of vehicles and their positions
  * @return Success or Failure
  */
-bool Environment_Map::computeBalancedVoronoi(const std::map<int, Position<CartesianPosition_2D> > &vehicles) {
+bool Environment_Map::computeBalancedVoronoi(const std::map<int, CartesianPosition_2D> &vehicles) {
     bool success = false;
 //    if(m_boundary.getVector().size() > 2) {
 //        // Step 1): Use the number of vehicles to create evenly spaced points in environment
@@ -129,7 +128,7 @@ bool Environment_Map::computeBalancedVoronoi(const std::map<int, Position<Cartes
  * @param sitePositions Positions of sites (in x,y coordinates)
  * @return Success or Failure
  */
-bool Environment_Map::computeVoronoi(std::vector<Cell_2DC> &cellVec, const std::vector<Position<CartesianPosition_2D> > &sitePositions) {
+bool Environment_Map::computeVoronoi(std::vector<Cell_2DC> &cellVec, const std::vector<CartesianPosition_2D> &sitePositions) {
 //    bool success = false;
 
 //    // Set up constants for the container geometry
@@ -255,7 +254,7 @@ void Environment_Map::sortCellVerticesCCW(Cell_2DC &cell) {
 
     //  1) Calculate angle between site and all vertices
     std::vector<double> angles;
-    std::vector<Position<CartesianPosition_2D> > sortedVerts;
+    std::vector<CartesianPosition_2D> sortedVerts;
     for(auto cellVert : cell.getVector()) {
         double angle = atan2(cellVert.getYPosition() - cell.getCenter().getYPosition(), cellVert.getXPosition() - cell.getCenter().getXPosition()) * (180/M_PI);
         angles.push_back(angle);
@@ -284,7 +283,7 @@ void Environment_Map::printCellInfo(const Cell_2DC &cell) {
 
     // Print boundary vertices:
     std::cout << "      **** Boundary vertices: " << std::endl;
-    std::vector<Position<CartesianPosition_2D> > boundaryVerts = cell.getVector();
+    std::vector<CartesianPosition_2D> boundaryVerts = cell.getVector();
     int tmpVertCounter = 0;
     for(auto vertex : boundaryVerts) {
         tmpVertCounter++;
@@ -294,7 +293,7 @@ void Environment_Map::printCellInfo(const Cell_2DC &cell) {
 
     // Print bounding rectangle:
     std::cout << "      **** Boundary rectangle vertices: " << std::endl;
-    std::vector<Position<CartesianPosition_2D> > boundingRect = cell.getBoundingRect().getVector();
+    std::vector<CartesianPosition_2D> boundingRect = cell.getBoundingRect().getVector();
     int tmpBoundingVertCounter = 0;
     for(auto vertex : boundingRect) {
         tmpBoundingVertCounter++;
@@ -304,12 +303,12 @@ void Environment_Map::printCellInfo(const Cell_2DC &cell) {
 
     // Print center:
     std::cout << "      **** Center: " << std::endl;
-    Position<CartesianPosition_2D> center = cell.getCenter();
+    CartesianPosition_2D center = cell.getCenter();
     std::cout << "Center: (" << center.getXPosition() << ", " << center.getYPosition() << ")" << std::endl;
 
     // Print node stats:
     std::cout << "      **** Node stats: " << std::endl;
-    std::vector<Position<CartesianPosition_2D>*> nodes = cell.getNodes();
+    std::vector<CartesianPosition_2D*> nodes = cell.getNodes();
     std::cout << "Num nodes: " << nodes.size() << std::endl;
 
     std::cout << " __________________ End Printing Cell __________________ " << std::endl;

@@ -190,16 +190,16 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_vfr_hud_t decodedMSG;
         mavlink_msg_vfr_hud_decode(msg,&decodedMSG);
 
-        DataState::StateAirspeed airspeed;
-        airspeed.setAirspeed(decodedMSG.airspeed);
-        //check that something has actually changed
+//        DataState::StateAirspeed airspeed;
+//        airspeed.setAirspeed(decodedMSG.airspeed);
+//        //check that something has actually changed
 
-        if(state->vehicleAirspeed.set(airspeed))
-        {
-            std::shared_ptr<DataStateTopic::StateAirspeedTopic> ptrAirspeedTopic = std::make_shared<DataStateTopic::StateAirspeedTopic>(airspeed);
-            if(this->m_CB)
-                this->m_CB->cbi_VehicleStateData(systemID,ptrAirspeedTopic);
-        }
+//        if(state->vehicleAirspeed.set(airspeed))
+//        {
+//            std::shared_ptr<DataStateTopic::StateAirspeedTopic> ptrAirspeedTopic = std::make_shared<DataStateTopic::StateAirspeedTopic>(airspeed);
+//            if(this->m_CB)
+//                this->m_CB->cbi_VehicleStateData(systemID,ptrAirspeedTopic);
+//        }
         break;
     }
     case MAVLINK_MSG_ID_RADIO_STATUS:

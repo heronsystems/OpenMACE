@@ -77,7 +77,9 @@ private:
     uint64_t m_MSTOKEEP;
 
 public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
+public:
     MaceData() :
         m_MSTOKEEP(DEFAULT_MS_RECORD_TO_KEEP), flagBoundaryVerts(false)
     {

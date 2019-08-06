@@ -1,71 +1,43 @@
 #include "controller_guided_target_item_local.h"
+#include "base/pose/pose_components.h"
 
 namespace MAVLINKVehicleControllers {
 
-    template <>
-    void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetItem(const TargetControllerStructLocal &targetStruct, mavlink_set_position_target_local_ned_t &mavlinkItem)
+template <>
+void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetItem(const TargetControllerStructLocal &targetStruct, mavlink_set_position_target_local_ned_t &mavlinkItem)
+{
+    double power = pow(10,7);
+    uint16_t bitArray = 65535;
+
+    //This handles the packing of the position components
+
+    if(targetStruct.target.getPosition()->is2D())
     {
-        command_target::CartesianDynamicTarget targetItem = targetStruct.target;
+        const mace::pose::CartesianPosition_2D* castPosition = targetStruct.target.getPosition()->positionAs<mace::pose::CartesianPosition_2D>();
+        mavlinkItem.x = static_cast<int32_t>(castPosition->getXPosition());
+        if(castPosition->hasXBeenSet())
+            bitArray = (bitArray & (~1)) | (static_cast<int>(0)<<0);
+        mavlinkItem.y = static_cast<int32_t>(castPosition->getYPosition());
+        if(castPosition->hasYBeenSet())
+            bitArray = (bitArray & (~2)) | (static_cast<int>(0)<<1);
+        mavlinkItem.z = 0;
 
-        mace::pose::CartesianPosition_3D targetPosition = targetItem.getPosition();
-        if(targetPosition.getCoordinateFrame() == CoordinateFrameTypes::CF_LOCAL_ENU)
-        {
-            mavlinkItem.x = targetPosition.getYPosition();
-            mavlinkItem.y = targetPosition.getXPosition();
-            mavlinkItem.z = -targetPosition.getZPosition();
-        }
-        else if(targetPosition.getCoordinateFrame() == CoordinateFrameTypes::CF_LOCAL_NED)
-        {
-            mavlinkItem.x = targetPosition.getXPosition();
-            mavlinkItem.y = targetPosition.getYPosition();
-            mavlinkItem.z = targetPosition.getZPosition();
-        }
-        mace::pose::CartesianVelocity_3D targetVelocity = targetItem.getVelocity();
-
-
-        mavlinkItem.vx = targetVelocity.getXVelocity();
-        mavlinkItem.vy = targetVelocity.getYVelocity();
-        mavlinkItem.vz = targetVelocity.getZVelocity();
-        mavlinkItem.yaw = targetItem.getYaw();
-        mavlinkItem.yaw_rate = targetItem.getYawRate();
-        //now we need to update the bitmask to the appropriate values
-        //If bit 10 is set the floats afx afy afz should be interpreted as force instead of acceleration.
-        /*
-         * Mapping: bit 1: x, bit 2: y, bit 3: z
-         * bit 4: vx, bit 5: vy, bit 6: vz,
-         * bit 7: ax, bit 8: ay, bit 9: az,
-         * bit 10: is force setpoint, bit 11: yaw, bit 12: yaw rate
-         */
-
-        uint16_t bitArray = 65535;
-        uint16_t mask = 1<<0; // set the mask for a x position
-        if(targetPosition.hasXBeenSet())
-            bitArray = (bitArray & (~mask)) | ((int)0<<0);
-        mask = 1<<1;
-        if(targetPosition.hasYBeenSet())
-            bitArray = (bitArray & (~mask)) | ((int)0<<1);
-        mask = 1<<2;
-        if(targetPosition.hasZBeenSet())
-            bitArray = (bitArray & (~mask)) | ((int)0<<2);
-
-        mask = 1<<3;
-        if(targetVelocity.hasXVelocityBeenSet())
-            bitArray = (bitArray & (~mask)) | ((int)0<<3);
-        mask = 1<<4;
-        if(targetVelocity.hasYVelocityBeenSet())
-            bitArray = (bitArray & (~mask)) | ((int)0<<4);
-        mask = 1<<5;
-        if(targetVelocity.hasZVelocityBeenSet())
-            bitArray = (bitArray & (~mask)) | ((int)0<<5);
-
-        mask = 1<<10;
-        if(std::abs(targetItem.getYaw()) > 0.001) //KEN FIX THIS
-            bitArray = (bitArray & (~mask)) | ((int)0<<10);
-        mask = 1<<11;
-        if(std::abs(targetItem.getYawRate()) > 0.001) //KEN FIX THIS
-            bitArray = (bitArray & (~mask)) | ((int)0<<11);
-
-        mavlinkItem.type_mask = bitArray;
     }
+    else if(targetStruct.target.getPosition()->is3D())
+    {
+        const mace::pose::CartesianPosition_3D* castPosition = targetStruct.target.getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
+        mavlinkItem.x = static_cast<int32_t>(castPosition->getXPosition() * power);
+        if(castPosition->hasXBeenSet())
+            bitArray = (bitArray & (~1)) | (static_cast<int>(0)<<0);
+        mavlinkItem.y = static_cast<int32_t>(castPosition->getYPosition() * power);
+        if(castPosition->hasYBeenSet())
+            bitArray = (bitArray & (~2)) | (static_cast<int>(0)<<1);
+        mavlinkItem.z = static_cast<int32_t>(castPosition->getZPosition() * power);
+        if(castPosition->hasZBeenSet())
+            bitArray = (bitArray & (~4)) | (static_cast<int>(0)<<2);
+    }
+
+    mavlinkItem.type_mask = bitArray;
+}
 
 }// end of namespace MAVLINKVehicleControllers

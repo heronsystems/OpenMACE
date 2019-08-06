@@ -61,58 +61,58 @@ hsm::Transition State_LandingDescent::GetTransition()
 
 bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    clearCommand();
-    switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_NAV_LAND:
-    {
-        currentCommand = command->getClone();
-        const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
-        StateGlobalPosition cmdPos(cmd->getPosition().getX(),cmd->getPosition().getY(),cmd->getPosition().getZ());
-        cmdPos.setCoordinateFrame(cmd->getPosition().getCoordinateFrame());
-        Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd,cmdPos]
-        {
-            if(cmdPos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
-            {
-                StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
-                double distance = fabs(currentPosition.deltaAltitude(cmdPos));
+//    clearCommand();
+//    switch (command->getCommandType()) {
+//    case COMMANDTYPE::CI_NAV_LAND:
+//    {
+//        currentCommand = command->getClone();
+//        const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
+//        StateGlobalPosition cmdPos(cmd->getPosition().getX(),cmd->getPosition().getY(),cmd->getPosition().getZ());
+//        cmdPos.setCoordinateFrame(cmd->getPosition().getCoordinateFrame());
+//        Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd,cmdPos]
+//        {
+//            if(cmdPos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
+//            {
+//                StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
+//                double distance = fabs(currentPosition.deltaAltitude(cmdPos));
 
-                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmdPos, distance, guidedState);
-                Owner().callTargetCallback(vehicleTarget);
+//                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+//                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmdPos, distance, guidedState);
+//                Owner().callTargetCallback(vehicleTarget);
 
-                if(guidedState == Data::ControllerState::ACHIEVED)
-                {
-                    this->clearCommand();
-                    desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
-                }
-            }
-        });
+//                if(guidedState == Data::ControllerState::ACHIEVED)
+//                {
+//                    this->clearCommand();
+//                    desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
+//                }
+//            }
+//        });
 
 
-        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerDescent = new MAVLINKVehicleControllers::CommandLand(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-        controllerDescent->AddLambda_Finished(this, [this,controllerDescent](const bool completed, const uint8_t finishCode){
-            if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
-                GetImmediateOuterState()->setDesiredStateEnum(ArdupilotFlightState::STATE_FLIGHT);
-            controllerDescent->Shutdown();
-        });
+//        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+//        auto controllerDescent = new MAVLINKVehicleControllers::CommandLand(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+//        controllerDescent->AddLambda_Finished(this, [this,controllerDescent](const bool completed, const uint8_t finishCode){
+//            if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
+//                GetImmediateOuterState()->setDesiredStateEnum(ArdupilotFlightState::STATE_FLIGHT);
+//            controllerDescent->Shutdown();
+//        });
 
-        controllerDescent->setLambda_Shutdown([this, collection]()
-        {
-            auto ptr = collection->Remove("landingDescent");
-            delete ptr;
-        });
+//        controllerDescent->setLambda_Shutdown([this, collection]()
+//        {
+//            auto ptr = collection->Remove("landingDescent");
+//            delete ptr;
+//        });
 
-        MavlinkEntityKey target = Owner().getMAVLINKID();
-        MavlinkEntityKey sender = 255;
+//        MavlinkEntityKey target = Owner().getMAVLINKID();
+//        MavlinkEntityKey sender = 255;
 
-        controllerDescent->Send(*cmd,sender,target);
-        collection->Insert("landingDescent", controllerDescent);
-        break;
-    }
-    default:
-        break;
-    }
+//        controllerDescent->Send(*cmd,sender,target);
+//        collection->Insert("landingDescent", controllerDescent);
+//        break;
+//    }
+//    default:
+//        break;
+//    }
 }
 
 void State_LandingDescent::Update()

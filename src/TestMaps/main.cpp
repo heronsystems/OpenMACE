@@ -1,6 +1,6 @@
 #include <Eigen/Geometry>
-#include "base/pose/rotation_3D.h"
-#include "base/unit_tests/unittests_orientation.h"
+
+#include "maps/data_2d_grid.h"
 
 #include <QCoreApplication>
 #include <iostream>
@@ -19,7 +19,9 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    runOrientationTests();
+    double value = 0;
+    mace::maps::Data2DGrid<double> newGridMap(&value);
+    std::cout<<"Let us pause here"<<std::endl;
 
     return 0;
 }

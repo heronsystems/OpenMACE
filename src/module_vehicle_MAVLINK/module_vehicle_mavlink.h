@@ -34,7 +34,6 @@
 #include "module_vehicle_MAVLINK/controllers/commands/command_rtl.h"
 #include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
 
-#include "base_topic/vehicle_topics.h"
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 #include "vehicle_object/mavlink_vehicle_object.h"
@@ -370,7 +369,7 @@ private:
 protected:
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_VehicleMissionTopic;
 
-    BaseTopic::VehicleTopics m_VehicleTopics;
+    //BaseTopic::VehicleTopics m_VehicleTopics;
 
 protected:
     //!

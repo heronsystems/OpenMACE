@@ -1,8 +1,6 @@
 #include "module_vehicle_ardupilot.h"
 #include <functional>
 
-#include "module_generic_MAVLINK/controllers/controller_mavlink_generic_set.h"
-
 #include "mace_core/i_module_events_general.h"
 
 template <typename T>
@@ -82,7 +80,7 @@ void ModuleVehicleArdupilot::AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
 {
     ptr->Subscribe(this, m_VehicleMissionTopic.Name());
 
-    ptr->Subscribe(this, this->m_VehicleTopics.m_CommandSystemMode.Name());
+    //ptr->Subscribe(this, this->m_VehicleTopics.m_CommandSystemMode.Name());
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -331,12 +329,12 @@ void ModuleVehicleArdupilot::Command_UploadMission(const MissionItem::MissionLis
                 missionController->Shutdown();
             });
 
-            MavlinkEntityKey target = missionList.getVehicleID();
-            command_item::SpatialHome home;
-            home.setTargetSystem(2);
-            home.setOriginatingSystem(255);
-            home.setPosition(Base3DPosition(-35.3625523,149.165201,15));
-            missionController->UploadMission(missionList,home,target);
+//            MavlinkEntityKey target = missionList.getVehicleID();
+//            command_item::SpatialHome home;
+//            home.setTargetSystem(2);
+//            home.setOriginatingSystem(255);
+//            home.setPosition(Base3DPosition(-35.3625523,149.165201,15));
+//            missionController->UploadMission(missionList,home,target);
         //        if(vehicleData)
         //            vehicleData->m_MissionController->transmitMission(missionList);
         break;
@@ -686,51 +684,51 @@ void ModuleVehicleArdupilot::ProgressStateMachineStates()
     m_Mutex_StateMachine.unlock();
 }
 
-void ModuleVehicleArdupilot::UpdateDynamicMissionQueue(const TargetItem::DynamicMissionQueue &queue)
+void ModuleVehicleArdupilot::UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue)
 {
-    if(this->vehicleData != nullptr)
-    {
-        this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.set(queue);
-        //Transform the data into the frame we need
-        this->TransformDynamicMissionQueue();
-    }
+//    if(this->vehicleData != nullptr)
+//    {
+//        this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.set(queue);
+//        //Transform the data into the frame we need
+//        this->TransformDynamicMissionQueue();
+//    }
 }
 
 void ModuleVehicleArdupilot::TransformDynamicMissionQueue()
 {
-    command_item::SpatialHome home = this->vehicleData->mission->vehicleHomePosition.get();
-    if(home.getPosition().has2DPositionSet() && (this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.hasBeenSet())) //if the position has been set we can transform the data
-    {
-        TargetItem::DynamicMissionQueue queue = this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.get();
+//    command_item::SpatialHome home = this->vehicleData->mission->vehicleHomePosition.get();
+//    if(home.getPosition().has2DPositionSet() && (this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.hasBeenSet())) //if the position has been set we can transform the data
+//    {
+//        TargetItem::DynamicMissionQueue queue = this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.get();
 
-        //the sent queue will be in the local frame relative to the global origin
-        //we therefore have to transform this data into the local frame relative
-        //to the vehicles origin/home position
+//        //the sent queue will be in the local frame relative to the global origin
+//        //we therefore have to transform this data into the local frame relative
+//        //to the vehicles origin/home position
 
-        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+//        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
 
-        mace::pose::GeodeticPosition_3D vehicleOrigin(home.getPosition().getX(),home.getPosition().getY(),home.getPosition().getZ());
+//        mace::pose::GeodeticPosition_3D vehicleOrigin(home.getPosition().getX(),home.getPosition().getY(),home.getPosition().getZ());
 
-        double compassBearing = globalOrigin.compassBearingTo(vehicleOrigin); //this is degrees not radians
-        double distanceBetween = globalOrigin.distanceBetween2D(vehicleOrigin);
-        double elevationDifference = globalOrigin.deltaAltitude(vehicleOrigin);
+//        double compassBearing = globalOrigin.compassBearingTo(vehicleOrigin); //this is degrees not radians
+//        double distanceBetween = globalOrigin.distanceBetween2D(vehicleOrigin);
+//        double elevationDifference = globalOrigin.deltaAltitude(vehicleOrigin);
 
-        TargetItem::DynamicTargetList targetList;
+//        TargetItem::DynamicTargetList targetList;
 
-        for(size_t i = 0; i < queue.getDynamicTargetList()->listSize(); i++)
-        {
-            TargetItem::CartesianDynamicTarget target = queue.getDynamicTargetList()->getTargetAtIndex(i);
-            mace::pose::CartesianPosition_3D position = target.getPosition();
-            position.applyPositionalShiftFromCompass(distanceBetween,mace::math::reverseBearing(mace::math::convertDegreesToRadians(compassBearing)));
-            position.setZPosition(position.getZPosition() - elevationDifference);
-            target.setPosition(position);
-            targetList.appendDynamicTarget(target);
-        }
+//        for(size_t i = 0; i < queue.getDynamicTargetList()->listSize(); i++)
+//        {
+//            TargetItem::CartesianDynamicTarget target = queue.getDynamicTargetList()->getTargetAtIndex(i);
+//            mace::pose::CartesianPosition_3D position = target.getPosition();
+//            position.applyPositionalShiftFromCompass(distanceBetween,mace::math::reverseBearing(mace::math::convertDegreesToRadians(compassBearing)));
+//            position.setZPosition(position.getZPosition() - elevationDifference);
+//            target.setPosition(position);
+//            targetList.appendDynamicTarget(target);
+//        }
 
-        TargetItem::DynamicMissionQueue transformedQueue(queue.getAssociatedMissionKey(),queue.getAssociatedMissionItem());
-        transformedQueue.setDynamicTargetList(targetList);
-        this->vehicleData->mission->currentDynamicQueue_LocalCartesian.set(transformedQueue);
-    }
+//        TargetItem::DynamicMissionQueue transformedQueue(queue.getAssociatedMissionKey(),queue.getAssociatedMissionItem());
+//        transformedQueue.setDynamicTargetList(targetList);
+//        this->vehicleData->mission->currentDynamicQueue_LocalCartesian.set(transformedQueue);
+//    }
 }
 
 void ModuleVehicleArdupilot::prepareMissionController()

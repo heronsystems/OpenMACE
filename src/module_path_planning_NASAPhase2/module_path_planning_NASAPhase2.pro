@@ -14,6 +14,7 @@ DEFINES += MODULE_PATH_PLANNING_NASAPHASE2_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 SOURCES += module_path_planning_nasaphase2.cpp
 
 HEADERS += module_path_planning_nasaphase2.h \

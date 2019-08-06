@@ -140,19 +140,19 @@ void State_Landing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
     if(command != nullptr)
     {
-        switch (command->getCommandType()) {
-        case COMMANDTYPE::CI_NAV_LAND:
-            if(command->as<command_item::SpatialLand>()->getPosition().has2DPositionSet())
-                handleCommand(command);
-            else
-            {
-                currentCommand = command->getClone();
-                this->OnEnter();
-            }
-            break;
-        default:
-            break;
-        }
+//        switch (command->getCommandType()) {
+//        case COMMANDTYPE::CI_NAV_LAND:
+//            if(command->as<command_item::SpatialLand>()->getPosition().has2DPositionSet())
+//                handleCommand(command);
+//            else
+//            {
+//                currentCommand = command->getClone();
+//                this->OnEnter();
+//            }
+//            break;
+//        default:
+//            break;
+//        }
     }
     else
     {

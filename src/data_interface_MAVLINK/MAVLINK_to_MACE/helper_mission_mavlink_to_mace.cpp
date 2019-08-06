@@ -20,7 +20,7 @@ std::shared_ptr<command_item::AbstractCommandItem> Helper_MissionMAVLINKtoMACE::
 
 std::shared_ptr<command_item::AbstractCommandItem> Helper_MissionMAVLINKtoMACE::Convert_MAVLINKTOMACE(const int sysID, const mavlink_mission_item_t &mavlinkItem)
 {
-    std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = NULL;
+    std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = nullptr;
 
     switch(mavlinkItem.command)
     {
@@ -98,9 +98,9 @@ void Helper_MissionMAVLINKtoMACE::convertHome(const int sysID, const mavlink_set
 {
     missionItem.setTargetSystem(sysID);
     missionItem.setOriginatingSystem(sysID);
-    missionItem.position->setX(mavlinkItem.latitude / pow(10,7));
-    missionItem.position->setY(mavlinkItem.longitude / pow(10,7));
-    missionItem.position->setZ(mavlinkItem.altitude / pow(10,3));
+//    missionItem.position->setX(mavlinkItem.latitude / pow(10,7));
+//    missionItem.position->setY(mavlinkItem.longitude / pow(10,7));
+//    missionItem.position->setZ(mavlinkItem.altitude / pow(10,3));
 }
 
 void Helper_MissionMAVLINKtoMACE::convertChangespeed(const int sysID, const mavlink_mission_item_t &mavlinkItem, command_item::ActionChangeSpeed &missionItem)
@@ -178,13 +178,15 @@ void Helper_MissionMAVLINKtoMACE::convertWaypoint(const int sysID, const mavlink
     missionItem.setPosition(getBasePosition(mavlinkItem));
 }
 
-DataState::Base3DPosition Helper_MissionMAVLINKtoMACE::getBasePosition(const mavlink_mission_item_t &mavlinkItem)
+mace::pose::Position* Helper_MissionMAVLINKtoMACE::getBasePosition(const mavlink_mission_item_t &mavlinkItem)
 {
-    DataState::Base3DPosition pos;
-    Data::CoordinateFrameType frame = static_cast<Data::CoordinateFrameType>(mavlinkItem.frame);
-    pos.setCoordinateFrame(frame);
-    pos.setPosition3D(mavlinkItem.x,mavlinkItem.y,mavlinkItem.z);
-    return pos;
+    mace::pose::Position* newPos;
+    //Ken Fix This
+//    DataState::Base3DPosition pos;
+//    Data::CoordinateFrameType frame = static_cast<Data::CoordinateFrameType>(mavlinkItem.frame);
+//    pos.setCoordinateFrame(frame);
+//    pos.setPosition3D(mavlinkItem.x,mavlinkItem.y,mavlinkItem.z);
+    return newPos;
 }
 
 } //end of namespace DataMAVLINK

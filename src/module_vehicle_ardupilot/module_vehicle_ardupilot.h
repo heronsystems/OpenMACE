@@ -9,14 +9,10 @@
 #include <mavlink.h>
 #include "data/mission_command.h"
 
-#include "ardupilot_guided_controller.h"
-#include "ardupilot_takeoff_controller.h"
-
 #include "module_vehicle_ardupilot_global.h"
 #include "module_vehicle_MAVLINK/module_vehicle_mavlink.h"
 
 #include "data_generic_item/data_generic_item_components.h"
-#include "data_generic_state_item/state_item_components.h"
 #include "data_generic_command_item/command_item_components.h"
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
@@ -29,12 +25,6 @@
 #include "mace_core/abstract_module_base.h"
 
 //__________________
-#include "data_interface_MAVLINK/callback_interface_data_mavlink.h"
-
-#include "data_interface_MAVLINK/vehicle_object_mavlink.h"
-
-#include "base_topic/vehicle_topics.h"
-
 #include "controllers/I_controller.h"
 #include "controllers/I_message_notifier.h"
 
@@ -42,7 +32,6 @@
 
 using namespace std::placeholders;
 
-//class MODULE_VEHICLE_ARDUPILOTSHARED_EXPORT ModuleVehicleArdupilot : public ModuleVehicleMAVLINK<DATA_VEHICLE_ARDUPILOT_TYPES>, public DataInterface_MAVLINK::CallbackInterface_DataMAVLINK
 class MODULE_VEHICLE_ARDUPILOTSHARED_EXPORT ModuleVehicleArdupilot : public ModuleVehicleMAVLINK<>
 {
 public:
@@ -72,7 +61,7 @@ public:
     void MissionAcknowledgement(const MAV_MISSION_RESULT &missionResult, const bool &publishResult);
 
 public:
-    void UpdateDynamicMissionQueue(const TargetItem::DynamicMissionQueue &queue) override;
+    void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue) override;
 
 public:
     //!

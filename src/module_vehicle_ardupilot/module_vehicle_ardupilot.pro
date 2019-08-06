@@ -16,11 +16,9 @@ DEFINES += MODULE_VEHICLE_ARDUPILOT_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 SOURCES += module_vehicle_ardupilot.cpp \
     module_vehicle_ardupilot_mission_parser.cpp \
-    ardupilot_guided_controller.cpp \
-    ardupilot_takeoff_controller.cpp \
-    ardupilot_general_controller.cpp \
     ardupilot_states/abstract_state_ardupilot.cpp \
     ardupilot_states/state_takeoff_climbing.cpp \
     ardupilot_states/state_takeoff_transitioning.cpp \
@@ -57,9 +55,6 @@ SOURCES += module_vehicle_ardupilot.cpp \
 
 HEADERS += module_vehicle_ardupilot.h\
         module_vehicle_ardupilot_global.h \
-    ardupilot_guided_controller.h \
-    ardupilot_takeoff_controller.h \
-    ardupilot_general_controller.h \
     ardupilot_states/abstract_state_ardupilot.h \
     ardupilot_states/ardupilot_hsm.h \
     ardupilot_states/ardupilot_state_types.h \

@@ -8,10 +8,9 @@
 #include "data/topic_data_object_collection.h"
 #include "mace_core/i_module_command_RTA.h"
 
-#include "data_generic_state_item_topic/state_topic_components.h"
 #include "data_generic_command_item/command_item_components.h"
 #include "data_vehicle_sensors/components.h"
-#include "data_generic_state_item/positional_aid.h"
+#include "base_topic/base_topic_components.h"
 
 #include <memory>
 //#include "environment.h"
@@ -147,7 +146,7 @@ private:
     //!
     //! \brief m_vehicles Map of vehicle IDs and corresponding 2D cartesian position
     //!
-    std::map<int, Position<CartesianPosition_2D> > m_vehicles;
+    std::map<int, CartesianPosition_2D> m_vehicles;
 
     //!
     //! \brief m_vehicleCells Map of vehicle IDs and corresponding vehicle cells (boundary, and environment nodes)
@@ -172,7 +171,7 @@ private:
 
 
 private:
-    Data::TopicDataObjectCollection<DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<BASE_POSE_TOPICS> m_VehicleDataTopic;
     Data::TopicDataObjectCollection<DATA_VEHICLE_SENSORS> m_SensorDataTopic;
     Data::TopicDataObjectCollection<DATA_VEHICLE_SENSOR_FOOTPRINT> m_SensorFootprintDataTopic;
 };

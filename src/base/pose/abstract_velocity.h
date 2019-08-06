@@ -20,6 +20,15 @@ MACE_CLASS_FORWARD(Velocity);
 class Velocity : public Kinematic_BaseInterface
 {
 public:
+    enum TYPEMASK_VELOCITY : uint16_t
+    {
+        VELOCITY_VALID = 0,
+        IGNORE_X_DIMENSION = 8,
+        IGNORE_Y_DIMENSION = 16,
+        IGNORE_Z_DIMENSION = 32
+    };
+
+public:
     Velocity(const std::string &velName = "Velocity Object");
 
     Velocity(const Velocity &copy);

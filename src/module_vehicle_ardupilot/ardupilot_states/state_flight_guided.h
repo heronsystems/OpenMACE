@@ -8,6 +8,7 @@
 #include "abstract_state_ardupilot.h"
 
 #include "../ardupilot_target_progess.h"
+#include "../guided_timeout_controller.h"
 
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
@@ -26,7 +27,7 @@ class State_FlightGuided_GoTo;
 class State_FlightGuided_Idle;
 class State_FlightGuided_Queue;
 
-class State_FlightGuided : public AbstractStateArdupilot
+class State_FlightGuided : public AbstractStateArdupilot, public ArdupilotTimeout_Interface
 {
 public:
     State_FlightGuided();
@@ -55,16 +56,18 @@ private:
 
     void handleGuidedState(const CartesianPosition_3D currentPosition, const unsigned int currentTargetIndex, const Data::ControllerState &state, const double targetDistance);
 
-    void announceTargetState(const TargetItem::CartesianDynamicTarget &target, const double &targetDistance);
+    void announceTargetState(const command_target::DynamicTarget &target, const double &targetDistance);
 
 private:
 
-    TargetItem::DynamicMissionQueue* currentQueue;
+    mavlink::GuidedTimeoutController* guidedTimeout;
+
+    command_target::DynamicMissionQueue* currentQueue;
 
     ArdupilotTargetProgess guidedProgress;
 
 public:
-    void cbiArdupilotTimeout_TargetLocal(const TargetItem::CartesianDynamicTarget &target) override
+    void cbiArdupilotTimeout_DynamicTarget(const command_target::DynamicTarget &target) override
     {
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
         auto ptr = static_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local<MAVLINKVehicleControllers::TargetControllerStructLocal>*>(collection->At("localGuidedController"));
@@ -81,9 +84,8 @@ public:
         }
     }
 
-    void cbiArdupilotTimeout_TargetGlobal(const TargetItem::GeodeticDynamicTarget &target) override
-    {
-
+//    void cbiArdupilotTimeout_TargetGlobal(const TargetItem::GeodeticDynamicTarget &target) override
+//    {
         //        Controllers::ControllerCollection<mavlink_message_t> *collection = Owner().ControllersCollection();
         //        auto ptr = static_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global<MAVLINKVehicleControllers::TargetControllerStructGlobal>*>(collection->At("globalGuidedController"));
         //        if(ptr != nullptr)
@@ -103,7 +105,7 @@ public:
         //        }
         //    }
 
-    }
+    //}
 };
 
 } //end of namespace state

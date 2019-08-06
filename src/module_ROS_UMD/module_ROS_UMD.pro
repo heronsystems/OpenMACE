@@ -15,6 +15,7 @@ DEFINES += MODULE_ROS_UMD_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
 
+
 SOURCES += module_ROS_UMD.cpp \
     rosTimer.cpp \
     matlab_listener.cpp

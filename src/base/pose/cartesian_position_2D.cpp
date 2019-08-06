@@ -9,6 +9,7 @@ CartesianPosition_2D::CartesianPosition_2D():
 {
 
 }
+
 CartesianPosition_2D::CartesianPosition_2D(const CartesianFrameTypes &frameType,
                     const double &x, const double &y,
                     const std::string &pointName):

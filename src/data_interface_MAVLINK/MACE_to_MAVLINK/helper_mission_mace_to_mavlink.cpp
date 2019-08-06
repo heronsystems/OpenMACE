@@ -126,13 +126,13 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertHome(const command_it
     mavlink_mission_item_t item;
     initializeMAVLINKMissionItem(item);
     item.command = MAV_CMD_DO_SET_HOME;
-    if(missionItem.position->has2DPositionSet())
-    {
-        item.param1 = 0; //denotes to use specified location
-        updateMissionPosition(*missionItem.position,item);
-    }
-    else
-        item.param1 = 1; //denotes to use current location
+//    if(missionItem.position->has2DPositionSet())
+//    {
+//        item.param1 = 0; //denotes to use specified location
+//        updateMissionPosition(missionItem.position,item);
+//    }
+//    else
+//        item.param1 = 1; //denotes to use current location
 
     return item;
 }
@@ -159,7 +159,7 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertLand(const command_it
     item.command = MAV_CMD_NAV_LAND;
     item.seq = itemIndex;
     item.target_system = missionItem.getTargetSystem();
-    updateMissionPosition(*missionItem.position,item);
+    updateMissionPosition(missionItem.position,item);
     return item;
 }
 
@@ -171,7 +171,7 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertLoiterTime(const comm
     item.seq = itemIndex;
     item.target_system = missionItem.getTargetSystem();
     item.param1 = missionItem.duration;
-    updateMissionPosition(*missionItem.position,item);
+    updateMissionPosition(missionItem.position,item);
 
     if(missionItem.direction == Data::LoiterDirection::CW)
     {
@@ -190,7 +190,7 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertLoiterTurns(const com
     item.seq = itemIndex;
     item.target_system = missionItem.getTargetSystem();
     item.param1 = missionItem.turns;
-    updateMissionPosition(*missionItem.position,item);
+    updateMissionPosition(missionItem.position,item);
 
     if(missionItem.direction == Data::LoiterDirection::CW)
     {
@@ -208,7 +208,7 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertLoiterUnlimited(const
     item.command = MAV_CMD_NAV_LOITER_UNLIM;
     item.seq = itemIndex;
     item.target_system = missionItem.getTargetSystem();
-    updateMissionPosition(*missionItem.position,item);
+    updateMissionPosition(missionItem.position,item);
 
     if(missionItem.direction == Data::LoiterDirection::CW)
     {
@@ -236,7 +236,7 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertTakeoff(const command
     item.command = MAV_CMD_NAV_TAKEOFF;
     item.seq = itemIndex;
     item.target_system = missionItem.getTargetSystem();
-    updateMissionPosition(*missionItem.position,item);
+    updateMissionPosition(missionItem.position,item);
     return item;
 }
 
@@ -247,27 +247,30 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertWaypoint(const comman
     item.command = MAV_CMD_NAV_WAYPOINT;
     item.seq = itemIndex;
     item.target_system = missionItem.getTargetSystem();
-    updateMissionPosition(*missionItem.position,item);
+    updateMissionPosition(missionItem.position,item);
     return item;
 }
 
-void Helper_MissionMACEtoMAVLINK::updateMissionPosition(const DataState::Base3DPosition &pos, mavlink_mission_item_t &item)
+void Helper_MissionMACEtoMAVLINK::updateMissionPosition(const mace::pose::Position* pos, mavlink_mission_item_t &item)
 {
-    if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT){
-        item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-    }
-    else if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
-    {
-        item.frame = MAV_FRAME_LOCAL_ENU;
-    }
-    else{
-        //KEN FIX THIS
-        item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-    }
+    if(pos == nullptr)
+        return;
 
-    item.x = pos.getX();
-    item.y = pos.getY();
-    item.z = pos.getZ();
+//    if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT){
+//        item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+//    }
+//    else if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
+//    {
+//        item.frame = MAV_FRAME_LOCAL_ENU;
+//    }
+//    else{
+//        //KEN FIX THIS
+//        item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+//    }
+
+//    item.x = pos.getX();
+//    item.y = pos.getY();
+//    item.z = pos.getZ();
 }
 
 

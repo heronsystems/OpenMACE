@@ -24,7 +24,7 @@ using namespace mace::pose;
 struct TargetControllerStructGlobal
 {
     uint8_t targetID;
-    command_target::GeodeticDynamicTarget target;
+    command_target::DynamicTarget target;
 };
 
 template <typename T>

@@ -52,66 +52,66 @@ hsm::Transition State_FlightGuided_Target::GetTransition()
 
 bool State_FlightGuided_Target::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    switch (command->getCommandType()) {
-        case COMMANDTYPE::CI_ACT_TARGET:
-        {
+//    switch (command->getCommandType()) {
+//        case COMMANDTYPE::CI_ACT_TARGET:
+//        {
 
-            //We want to keep this command in scope to perform the action
-            this->currentCommand = command->getClone();
+//            //We want to keep this command in scope to perform the action
+//            this->currentCommand = command->getClone();
 
-            const command_item::CommandGoTo* cmd = currentCommand->as<command_item::CommandGoTo>();
+//            const command_item::CommandGoTo* cmd = currentCommand->as<command_item::CommandGoTo>();
 
-            //We want to first assume that this command has not been currently accepted
-            this->commandAccepted = false;
+//            //We want to first assume that this command has not been currently accepted
+//            this->commandAccepted = false;
 
-            //Ken Fix: This position object is going to be assumed to be global geodetic with relative alt
-            //We should consolidate this to the correct position type and then perform the transform here to make the command consistent
-            //Also this should only use waypoints for now
-            Base3DPosition cmdPosition = cmd->getSpatialCommand()->getPosition();
-            int targetSystem = cmd->getTargetSystem();
+//            //Ken Fix: This position object is going to be assumed to be global geodetic with relative alt
+//            //We should consolidate this to the correct position type and then perform the transform here to make the command consistent
+//            //Also this should only use waypoints for now
+//            Base3DPosition cmdPosition = cmd->getSpatialCommand()->getPosition();
+//            int targetSystem = cmd->getTargetSystem();
 
-            /*
-             * Ken Fix: Eventually align the data types to one desired type of position element.
-             * Also, it may not be necessary to call up another notifier if another guided command arrives.
-             * Although, this is handled in the get/set notifier if the pointer is already the same it
-             * just updates the underlying lambda function call
-             */
+//            /*
+//             * Ken Fix: Eventually align the data types to one desired type of position element.
+//             * Also, it may not be necessary to call up another notifier if another guided command arrives.
+//             * Although, this is handled in the get/set notifier if the pointer is already the same it
+//             * just updates the underlying lambda function call
+//             */
 
-            Owner().state->vehicleGlobalPosition.AddNotifier(this, [this, cmdPosition, targetSystem]
-            {
-                if(this->commandAccepted){
-                    if(cmdPosition.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
-                    {
-                        StateGlobalPosition cmdPos(cmdPosition.getY(),cmdPosition.getX(),cmdPosition.getZ());
-                        StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
-                        double distance = fabs(currentPosition.distanceBetween3D(cmdPos));
+//            Owner().state->vehicleGlobalPosition.AddNotifier(this, [this, cmdPosition, targetSystem]
+//            {
+//                if(this->commandAccepted){
+//                    if(cmdPosition.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
+//                    {
+//                        StateGlobalPosition cmdPos(cmdPosition.getY(),cmdPosition.getX(),cmdPosition.getZ());
+//                        StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
+//                        double distance = fabs(currentPosition.distanceBetween3D(cmdPos));
 
-                        Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                        MissionTopic::VehicleTargetTopic vehicleTarget(targetSystem, cmdPos, distance, guidedState);
-                        Owner().callTargetCallback(vehicleTarget);
+//                        Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+//                        MissionTopic::VehicleTargetTopic vehicleTarget(targetSystem, cmdPos, distance, guidedState);
+//                        Owner().callTargetCallback(vehicleTarget);
 
-                        if(guidedState == Data::ControllerState::ACHIEVED)
-                        {
-                            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
-                        }
+//                        if(guidedState == Data::ControllerState::ACHIEVED)
+//                        {
+//                            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
+//                        }
 
-                    }
-                    else{
-                        std::cout<<"At the moment we cannot support goTo types of different coordinate frames."<<std::endl;
-                    }
-                }
+//                    }
+//                    else{
+//                        std::cout<<"At the moment we cannot support goTo types of different coordinate frames."<<std::endl;
+//                    }
+//                }
 
-            });
+//            });
 
-            MavlinkEntityKey target = Owner().getMAVLINKID();
-            MavlinkEntityKey sender = 255;
-            command_item::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
-            waypoint.setPosition(cmdPosition);
-            ((MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint> *)Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
-        }
-        default:
-            break;
-        }
+//            MavlinkEntityKey target = Owner().getMAVLINKID();
+//            MavlinkEntityKey sender = 255;
+//            command_item::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
+//            waypoint.setPosition(cmdPosition);
+//            ((MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint> *)Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
+//        }
+//        default:
+//            break;
+//        }
 }
 
 void State_FlightGuided_Target::Update()

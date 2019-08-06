@@ -56,6 +56,8 @@ public:
 public:
     uint16_t getCurrentTargetMask() const;
 
+    bool isCurrentTargetValid() const;
+
 public:
     DynamicTarget& operator = (const DynamicTarget &rhs)
     {

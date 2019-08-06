@@ -10,9 +10,8 @@
 #include "data/speed_frame.h"
 #include "data/loiter_direction.h"
 
+#include "base/pose/pose_components.h"
 #include "data_generic_command_item/command_item_components.h"
-#include "data_generic_command_item_topic/command_item_topic_components.h"
-#include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
 namespace DataMAVLINK {
 
@@ -45,15 +44,15 @@ public:
 
     static mavlink_mission_item_t convertWaypoint(const command_item::SpatialWaypoint &missionItem, const uint16_t &itemIndex);
 
-    static void updateMissionPosition(const DataState::Base3DPosition &pos, mavlink_mission_item_t &item);
+    static void updateMissionPosition(const mace::pose::Position* pos, mavlink_mission_item_t &item);
 
 protected:
     static void initializeMAVLINKMissionItem(mavlink_mission_item_t &mavMission);
     mavlink_message_t packMissionItem(const mavlink_mission_item_t &mavMission, const uint8_t &chan);
 
 private:
-    int systemID;
-    int compID;
+    unsigned int systemID;
+    unsigned int compID;
 };
 
 } //end of namespace DataMAVLINK

@@ -26,7 +26,7 @@ public:
 
     virtual ~Topic_GeodeticPosition()
     {
-        delete m_PositionObject;
+        delete m_PositionObject; m_PositionObject = nullptr;
     }
 
 public:

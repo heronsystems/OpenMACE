@@ -1,15 +1,13 @@
 #include "guitomace.h"
 
-GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const BaseTopic::VehicleTopics *ptr) :
-    m_VehicleTopics(ptr),
+GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234)
 {
     m_parent = ptrRef;
 }
 
-GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const BaseTopic::VehicleTopics *ptr, const QHostAddress &sendAddress, const int &sendPort) :
-    m_VehicleTopics(ptr),
+GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
     m_sendPort(sendPort)
 {
@@ -40,7 +38,7 @@ void GUItoMACE::setSendPort(const int &sendPort) {
 //!
 void GUItoMACE::getEnvironmentBoundary() {
     std::shared_ptr<const MaceCore::MaceData> data = m_parent->getDataObject();
-    std::vector<DataState::StateGlobalPosition> environmentVertices = data->GetEnvironmentBoundary();
+    std::vector<mace::pose::GeodeticPosition_2D> environmentVertices = data->GetEnvironmentBoundary();
 
     QJsonObject json;
     json["dataType"] = "EnvironmentBoundary";
@@ -51,7 +49,7 @@ void GUItoMACE::getEnvironmentBoundary() {
         QJsonObject obj;
         obj["lat"] = vertex.getLatitude();
         obj["lng"] = vertex.getLongitude();
-        obj["alt"] = vertex.getAltitude();
+        obj["alt"] = 0.0;
 
         verticies.push_back(obj);
     }
@@ -99,9 +97,11 @@ void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonObject &jsonObj)
     command_item::SpatialHome tmpHome;
     tmpHome.setTargetSystem(vehicleID);
     QJsonObject position = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-    tmpHome.position->setX(position.value("lat").toDouble());
-    tmpHome.position->setY(position.value("lng").toDouble());
-    tmpHome.position->setZ(position.value("alt").toDouble());
+
+    mace::pose::GeodeticPosition_3D homePosition(position.value("lat").toDouble(),
+                                                 position.value("lng").toDouble(),
+                                                 position.value("alt").toDouble());
+    tmpHome.setPosition(&homePosition);
 
     std::stringstream buffer;
     buffer << tmpHome;
@@ -153,11 +153,11 @@ void GUItoMACE::setEnvironmentVertices(const QJsonObject &jsonObj)
         mace::pose::GeodeticPosition_3D vertexGlobal(tmpLat,tmpLon,tmpAlt);
         mace::pose::CartesianPosition_3D vertexLocal3D;
 
-        if(origin.hasBeenSet()) {
-            mace::pose::DynamicsAid::GlobalPositionToLocal(origin,vertexGlobal,vertexLocal3D);
+        if(origin.isAnyPositionValid()) {
+            mace::pose::DynamicsAid::GlobalPositionToLocal(&origin,&vertexGlobal,&vertexLocal3D);
             mace::pose::CartesianPosition_2D vertexLocal2D(vertexLocal3D.getXPosition(),vertexLocal3D.getYPosition());
 
-            operationalBoundary.appendVertexItem(vertexLocal2D);
+            operationalBoundary.appendVertexItem(&vertexLocal2D);
         }
     }
 
@@ -192,14 +192,10 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
 
     QJsonObject vehicleCommand = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
 
-    Base3DPosition pos;
-    pos.setPosition3D(vehicleCommand.value("lon").toDouble(), vehicleCommand.value("lat").toDouble(), 10);
-    pos.setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-    spatialAction->setPosition(pos);
-//    spatialAction->getPosition().setX(vehicleCommand.value("lat").toDouble());
-//    spatialAction->getPosition().setY(vehicleCommand.value("lon").toDouble());
-//    spatialAction->getPosition().setZ(10);
-
+    mace::pose::GeodeticPosition_3D goPosition(vehicleCommand.value("lat").toDouble(),
+                                               vehicleCommand.value("lon").toDouble(),
+                                               10.0);
+    spatialAction->setPosition(&goPosition);
     cmdGoTo.setSpatialCommand(spatialAction);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
@@ -219,12 +215,14 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonObject &jsonObj)
     QJsonObject position = vehicleCommand["takeoffPosition"].toObject();
     bool latLonFlag = vehicleCommand["latLonFlag"].toBool();
 
+    mace::pose::GeodeticPosition_3D takeoffPosition;
 
     if(latLonFlag) {
-        newTakeoff.position->setX(position.value("lon").toDouble());
-        newTakeoff.position->setY(position.value("lat").toDouble());
+        takeoffPosition.setLatitude(position.value("lat").toDouble());
+        takeoffPosition.setLongitude(position.value("lon").toDouble());
     }
-    newTakeoff.position->setZ(position.value("alt").toDouble());
+    takeoffPosition.setAltitude(position.value("alt").toDouble());
+    newTakeoff.setPosition(&takeoffPosition);
     newTakeoff.setTargetSystem(vehicleID);
 
     std::stringstream buffer;
@@ -339,22 +337,22 @@ void GUItoMACE::testFunction1(const int &vehicleID)
 {
 //    mLogs->debug("Module Ground Station saw a request on test function 1.");
 
-    MissionItem::MissionList missionList;
-    missionList.setMissionTXState(MissionItem::MISSIONSTATE::PROPOSED);
-    missionList.setMissionType(MissionItem::MISSIONTYPE::GUIDED);
-    missionList.setCreatorID(254);
-    missionList.setVehicleID(vehicleID);
-    missionList.initializeQueue(2);
+//    MissionItem::MissionList missionList;
+//    missionList.setMissionTXState(MissionItem::MISSIONSTATE::PROPOSED);
+//    missionList.setMissionType(MissionItem::MISSIONTYPE::GUIDED);
+//    missionList.setCreatorID(254);
+//    missionList.setVehicleID(vehicleID);
+//    missionList.initializeQueue(2);
 
-    std::shared_ptr<command_item::SpatialWaypoint> newWP = std::make_shared<command_item::SpatialWaypoint>();
-    newWP->position->setPosition3D(14,7.5,20.0);
-    newWP->setTargetSystem(vehicleID);
-    newWP->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
+//    std::shared_ptr<command_item::SpatialWaypoint> newWP = std::make_shared<command_item::SpatialWaypoint>();
+//    newWP->position->setPosition3D(14,7.5,20.0);
+//    newWP->setTargetSystem(vehicleID);
+//    newWP->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
 
-    std::shared_ptr<command_item::SpatialWaypoint> newWP1 = std::make_shared<command_item::SpatialWaypoint>();
-    newWP1->position->setPosition3D(0,0,10.0);
-    newWP1->setTargetSystem(vehicleID);
-    newWP1->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
+//    std::shared_ptr<command_item::SpatialWaypoint> newWP1 = std::make_shared<command_item::SpatialWaypoint>();
+//    newWP1->position->setPosition3D(0,0,10.0);
+//    newWP1->setTargetSystem(vehicleID);
+//    newWP1->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
 
 //    std::shared_ptr<CommandItem::SpatialWaypoint> newWP1 = std::make_shared<CommandItem::SpatialWaypoint>();
 //    newWP1->position->setPosition3D(37.8907477,-76.8152985,65.0);
@@ -368,14 +366,14 @@ void GUItoMACE::testFunction1(const int &vehicleID)
 //    newWP3->position->setPosition3D(37.8905170,-76.8144804,85.0);
 //    newWP3->setTargetSystem(vehicleID);
 
-    missionList.replaceMissionItemAtIndex(newWP,0);
-    missionList.replaceMissionItemAtIndex(newWP1,1);
+//    missionList.replaceMissionItemAtIndex(newWP,0);
+//    missionList.replaceMissionItemAtIndex(newWP1,1);
 //    missionList.replaceMissionItemAtIndex(newWP2,2);
 //    missionList.replaceMissionItemAtIndex(newWP3,3);
 
-    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->GSEvent_UploadMission(this, missionList);
-    });
+//    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
+//        ptr->GSEvent_UploadMission(this, missionList);
+//    });
 
 }
 

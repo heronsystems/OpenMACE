@@ -203,32 +203,32 @@ void ModuleROS::NewTopicSpooled(const std::string &topicName, const MaceCore::Mo
     int senderID = sender.ModuleID;
     if(topicName == m_PlanningStateTopic.Name())
     {
-        MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_PlanningStateTopic.Name(), sender);
-        for(size_t i = 0 ; i < componentsUpdated.size() ; i++){
-            if(componentsUpdated.at(i) == mace::poseTopic::Cartesian_2D_Topic::Name()){
-                std::shared_ptr<mace::poseTopic::Cartesian_2D_Topic> component = std::make_shared<mace::poseTopic::Cartesian_2D_Topic>();
-                m_PlanningStateTopic.GetComponent(component, read_topicDatagram);
+//        MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_PlanningStateTopic.Name(), sender);
+//        for(size_t i = 0 ; i < componentsUpdated.size() ; i++){
+//            if(componentsUpdated.at(i) == mace::poseTopic::Cartesian_2D_Topic::Name()){
+//                std::shared_ptr<mace::poseTopic::Cartesian_2D_Topic> component = std::make_shared<mace::poseTopic::Cartesian_2D_Topic>();
+//                m_PlanningStateTopic.GetComponent(component, read_topicDatagram);
 
-#ifdef ROS_EXISTS
-                this->renderState(component->getPose());
-#endif
-            }
-            else if(componentsUpdated.at(i) == mace::geometryTopic::Line_2DC_Topic::Name()) {
-                std::shared_ptr<mace::geometryTopic::Line_2DC_Topic> component = std::make_shared<mace::geometryTopic::Line_2DC_Topic>();
-                m_PlanningStateTopic.GetComponent(component, read_topicDatagram);
+//#ifdef ROS_EXISTS
+//                this->renderState(component->getPose());
+//#endif
+//            }
+//            else if(componentsUpdated.at(i) == mace::geometryTopic::Line_2DC_Topic::Name()) {
+//                std::shared_ptr<mace::geometryTopic::Line_2DC_Topic> component = std::make_shared<mace::geometryTopic::Line_2DC_Topic>();
+//                m_PlanningStateTopic.GetComponent(component, read_topicDatagram);
 
-#ifdef ROS_EXISTS
-                this->renderEdge(component->getLine());
-#endif
-            }
-        }
+//#ifdef ROS_EXISTS
+//                this->renderEdge(component->getLine());
+//#endif
+//            }
+//        }
     }
     else if(topicName == m_VehicleDataTopic.Name())
     {
         MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_VehicleDataTopic.Name(), sender);
         for(size_t i = 0 ; i < componentsUpdated.size() ; i++){
-            if(componentsUpdated.at(i) == DataStateTopic::StateAttitudeTopic::Name()) {
-                std::shared_ptr<DataStateTopic::StateAttitudeTopic> component = std::make_shared<DataStateTopic::StateAttitudeTopic>();
+            if(componentsUpdated.at(i) == mace::pose_topics::Topic_AgentOrientation::Name()) {
+                std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> component = std::make_shared<mace::pose_topics::Topic_AgentOrientation>();
                 m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                 // If vehicle does not exist in our map, insert into the map
@@ -237,8 +237,8 @@ void ModuleROS::NewTopicSpooled(const std::string &topicName, const MaceCore::Mo
                 // Write Attitude data to the GUI:
                 updateAttitudeData(senderID, component);
             }
-            else if(componentsUpdated.at(i) == DataStateTopic::StateLocalPositionTopic::Name()) {
-                std::shared_ptr<DataStateTopic::StateLocalPositionTopic> component = std::make_shared<DataStateTopic::StateLocalPositionTopic>();
+            else if(componentsUpdated.at(i) == mace::pose_topics::Topic_CartesianPosition::Name()) {
+                std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> component = std::make_shared<mace::pose_topics::Topic_CartesianPosition>();
                 m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                 // If vehicle does not exist in our map, insert into the map
@@ -472,20 +472,20 @@ void ModuleROS::insertVehicleIfNotExist(const int &vehicleID) {
 //! \param vehicleID ID of the vehicle to update
 //! \param component Attitude
 //!
-void ModuleROS::updateAttitudeData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateAttitudeTopic> &component)
+void ModuleROS::updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component)
 {
-    double roll = component->roll;
-    double pitch = component->pitch;
-    double yaw = component->yaw;
+//    double roll = component->roll;
+//    double pitch = component->pitch;
+//    double yaw = component->yaw;
 
-    if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
-        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple;
-        DataState::StateLocalPosition tmpPos = std::get<0>(m_vehicleMap[vehicleID]);
-        DataState::StateAttitude tmpAtt = DataState::StateAttitude();
-        tmpAtt.setAttitude(roll, pitch, yaw);
-        tmpTuple = std::make_tuple(tmpPos, tmpAtt);
-        m_vehicleMap[vehicleID] = tmpTuple;
-    }
+//    if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
+//        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple;
+//        DataState::StateLocalPosition tmpPos = std::get<0>(m_vehicleMap[vehicleID]);
+//        DataState::StateAttitude tmpAtt = DataState::StateAttitude();
+//        tmpAtt.setAttitude(roll, pitch, yaw);
+//        tmpTuple = std::make_tuple(tmpPos, tmpAtt);
+//        m_vehicleMap[vehicleID] = tmpTuple;
+//    }
 
     // Send gazebo model state:
 #ifdef ROS_EXISTS
@@ -502,19 +502,19 @@ void ModuleROS::updateAttitudeData(const int &vehicleID, const std::shared_ptr<D
 //! \param vehicleID ID of the vehicle to update
 //! \param component Position (in the local frame)
 //!
-void ModuleROS::updatePositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateLocalPositionTopic> &component)
+void ModuleROS::updatePositionData(const int &vehicleID, const std::shared_ptr<pose_topics::Topic_CartesianPosition> &component)
 {
-    double x = component->getX();
-    double y = component->getY();
-    double z = component->getZ();
+//    double x = component->getX();
+//    double y = component->getY();
+//    double z = component->getZ();
 
-    if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
-        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple;
-        DataState::StateLocalPosition tmpPos = DataState::StateLocalPosition(component->getCoordinateFrame(), x, y, z);
-        DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
-        tmpTuple = std::make_tuple(tmpPos, tmpAtt);
-        m_vehicleMap[vehicleID] = tmpTuple;
-    }
+//    if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
+//        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple;
+//        DataState::StateLocalPosition tmpPos = DataState::StateLocalPosition(component->getCoordinateFrame(), x, y, z);
+//        DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
+//        tmpTuple = std::make_tuple(tmpPos, tmpAtt);
+//        m_vehicleMap[vehicleID] = tmpTuple;
+//    }
 
     // Send gazebo model state:
 #ifdef ROS_EXISTS

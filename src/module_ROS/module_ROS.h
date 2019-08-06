@@ -16,9 +16,6 @@
 #include "data/topic_data_object_collection.h"
 #include "base_topic/base_topic_components.h"
 
-#include "data_generic_state_item/state_item_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
-
 #include "data_generic_item/data_generic_item_components.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
 
@@ -84,7 +81,7 @@ public:
     //! \brief This module as been attached as a module
     //! \param ptr pointer to object that attached this instance to itself
     //!
-    virtual void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
+    virtual void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr) override
     {
         ptr->Subscribe(this, m_PlanningStateTopic.Name());
         ptr->Subscribe(this, m_VehicleDataTopic.Name());
@@ -152,7 +149,7 @@ public:
     //! \brief NewlyAvailableVehicle Subscriber to a newly available vehicle topic
     //! \param vehicleID Vehilce ID of the newly available vehicle
     //!
-    virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyUpdated3DOccupancyMap Subscriber to a newly available 3D occupancy map
@@ -191,14 +188,14 @@ public:
     //! \param vehicleID ID of the vehicle to update
     //! \param component Position (in the local frame)
     //!
-    void updatePositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateLocalPositionTopic> &component);
+    void updatePositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> &component);
 
     //!
     //! \brief updateAttitudeData Update the attitude of the corresponding Gazebo model based on attitude of MACE vehicle
     //! \param vehicleID ID of the vehicle to update
     //! \param component Attitude
     //!
-    void updateAttitudeData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateAttitudeTopic> &component);
+    void updateAttitudeData(const int &vehicleID, const std::shared_ptr<pose_topics::Topic_AgentOrientation> &component);
 
     // ============================================================================= //
     // ========================  ROS Specific functions:  ========================== //
@@ -293,7 +290,7 @@ private:
     //!
     //! \brief m_vehicleMap Container for map of vehicle IDs and corresponding most recent Position and Attitude data
     //!
-    std::map<int, std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> > m_vehicleMap;
+    std::map<int, std::tuple<mace::pose::CartesianPosition_3D, mace::pose::Rotation_3D>> m_vehicleMap;
 
     //!
     //! \brief m_timer Timer that triggers a ROS spin event to cycle through any queued ROS messages
@@ -413,7 +410,7 @@ private:
 
 private:
     Data::TopicDataObjectCollection<BASE_GEOMETRY_TOPICS, BASE_POSE_TOPICS> m_PlanningStateTopic;
-    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, BASE_POSE_TOPICS> m_VehicleDataTopic;
     Data::TopicDataObjectCollection<MAP_DATA_TOPICS> m_MapTopic;
 
     BackgroundTasks<std::shared_ptr<mace::maps::Data2DGrid<OccupiedResult> >> m_CompressedMapCalculation;

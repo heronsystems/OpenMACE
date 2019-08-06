@@ -13,6 +13,7 @@ TEMPLATE = lib
 DEFINES += BASE_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+
 #CONFIG += c++14 #This will build in C++14
 
 # The following define makes your compiler emit warnings if you use
