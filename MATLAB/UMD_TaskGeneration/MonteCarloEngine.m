@@ -12,6 +12,11 @@ MonteCarloSwitch = 1;
 %rng('default');
 %rng(1);
 
+iiIndex = [1 3 10];
+jjIndex = [1 30 100];
+
+trial = cell(1,length(jjIndex));
+
 simulationOrPlot = 'sim'; %options are 'sim' or 'plot' or 'analysis', or 'analysisPlot'
 % if strcmp(simulationOrPlot,'analysis')
 %     numAlgs = 3;
@@ -47,9 +52,12 @@ kk = 1;
         
     %algRange = 
     %trialRange = ;
-    
-for ii = [13,38,63] %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg %  [1,3,5,11,13,15,21,23,25]
-    for jj = [1 50 100]%[1:100]% total target motions
+
+parfor jj = 1:1:3 %[1 50 100]%[1:100]% total target motions
+%     jj = jjIndex(jj);
+    for for_i = 1:1:length(iiIndex)%[13,38,63] %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg %  [1,3,5,11,13,15,21,23,25]
+        ii = iiIndex(for_i);
+%     for j = 1:1:length(jjIndex)%[1 50 100]%[1:100]% total target motions
         %             ((kk-1)*1+jj)/(1*30)/3  % print percentage of completion
         if strcmp(simulationOrPlot,'sim')
             fprintf('Running algorithm %d (trial %d) \n', ii, jj);
@@ -58,43 +66,52 @@ for ii = [13,38,63] %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg 
             initialFormationID = jj; % default for corners (automatic)
             targetMotionID = jj;  %
             % run main program
-            main_taskGeneration;
-            clearvars -except simulationOrPlot ii kk jj MonteCarloSwitch;
-            simulationOrPlot = 'sim';
-        elseif strcmp(simulationOrPlot,'plot')
-            fprintf('Plotting algorithm %d (trial %d) \n', ii, jj);
-            clearvars -except ii kk jj simulationOrPlot algRange trialRange;
-            close all;
+            main_taskGeneration_parforWrapper(MonteCarloSwitch,algorithmID,initialFormationID,targetMotionID);
             
-            str = ['./monteCarloRuns/MonteCarlo_Algorithm' num2str(ii) '_InitialFormation' num2str(jj) '_TargetMotion' num2str(jj) '.mat'];
-            load(str);
-            plotPerformanceSnapshot(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel );
+            % comment the following two lines out for 'parfor'
+%             clearvars -except simulationOrPlot ii kk jj MonteCarloSwitch;
+%             simulationOrPlot = 'sim';
             
-            %             figure(3);
-            %             set(gcf,'units','normalized','outerposition',[0 0 1 1]);
-            %             saveas(gcf,['Algo' num2str(ii) '_Formation' num2str(kk) '_Target' num2str(jj) '_Entropy' '.png']);
-            %
-%             figure(4);
-%             set(gcf,'units','normalized','outerposition',[0 0 1 1]);
-%             saveas(gcf,['Algo' num2str(ii) '_Formation' num2str(jj) '_Target' num2str(jj) '_Trajectory' '.png']);
+        % temporarily commented out the 'plot option' for parallel
+        % implementation
+%         elseif strcmp(simulationOrPlot,'plot')
+%             fprintf('Plotting algorithm %d (trial %d) \n', ii, jj);
+%             clearvars -except ii kk jj simulationOrPlot algRange trialRange;
+%             close all;
 %             
-            %             figure(8)
-            %             set(gcf,'units','normalized','outerposition',[0 0 1 1]);
-            %             saveas(gcf,['Algo' num2str(ii) '_Formation' num2str(kk) '_Target' num2str(jj) '_PercentageDiscoverNodes' '.png']);
-            %
-            simulationOrPlot = 'plot';
-            
+%             str = ['./monteCarloRuns/MonteCarlo_Algorithm' num2str(ii) '_InitialFormation' num2str(jj) '_TargetMotion' num2str(jj) '.mat'];
+%             load(str);
+%             plotPerformanceSnapshot(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel );
+%             
+%             %             figure(3);
+%             %             set(gcf,'units','normalized','outerposition',[0 0 1 1]);
+%             %             saveas(gcf,['Algo' num2str(ii) '_Formation' num2str(kk) '_Target' num2str(jj) '_Entropy' '.png']);
+%             %
+% %             figure(4);
+% %             set(gcf,'units','normalized','outerposition',[0 0 1 1]);
+% %             saveas(gcf,['Algo' num2str(ii) '_Formation' num2str(jj) '_Target' num2str(jj) '_Trajectory' '.png']);
+% %             
+%             %             figure(8)
+%             %             set(gcf,'units','normalized','outerposition',[0 0 1 1]);
+%             %             saveas(gcf,['Algo' num2str(ii) '_Formation' num2str(kk) '_Target' num2str(jj) '_PercentageDiscoverNodes' '.png']);
+%             %
+%             simulationOrPlot = 'plot';
+%             
         elseif strcmp(simulationOrPlot,'analysis')
             fprintf('Analyzing algorithm %d (trial %d) \n', ii, jj);
             str = ['./monteCarloRuns/MonteCarlo_Algorithm' num2str(ii) '_InitialFormation' num2str(jj) '_TargetMotion' num2str(jj) '.mat'];
-            load(str,'swarmWorldHist','trueWorld');
+            
+            % variables have to be loaded to a variable for implementation
+            % of 'parfor'
+            temp = load(str,'swarmWorldHist','trueWorld');
+            
             %disp('finished loading')
             % store relevant detection data
-            detectionFlag = swarmWorldHist{end}.targetDetectedFlag;
+            detectionFlag = temp.swarmWorldHist{end}.targetDetectedFlag;
             if ( detectionFlag )
-                detectionValid = swarmWorldHist{end}.targetDetectionValid;
+                detectionValid = temp.swarmWorldHist{end}.targetDetectionValid;
                 if ( detectionValid )
-                    detectionTime = swarmWorldHist{end}.timeAtDetection;
+                    detectionTime = temp.swarmWorldHist{end}.timeAtDetection;
                 else
                     detectionTime = NaN; %n/a
                 end
@@ -103,49 +120,34 @@ for ii = [13,38,63] %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg 
                 detectionTime = NaN; % n/a
             end
             
-            % vectorize cell array data
-            numRows = size(swarmWorldHist{1}.V,1);
-            numCols = size(swarmWorldHist{1}.V,2);
-            for i = 1:1:length(swarmWorldHist)
-                t(i) = swarmWorldHist{i}.time;
-                %nodeDensityEstimate(i) = swarmWorldHist{i}.nodeDensityEstimate;
-                % compute entropy of entire search grid
-                entropyHist{i} = swarmWorldHist{i}.entropyMat;
-                totalEntropy(i) = swarmWorldHist{i}.totalEntropy;
-                
-                %
-                cellMsmtHist{i} = swarmWorldHist{i}.cellMsmtMat;
-                cellStateHist{i} = swarmWorldHist{i}.cellStateMat;
-                cellDetHist{i} = swarmWorldHist{i}.cellDetMat;
-                numViews(i) = swarmWorldHist{i}.numViews;
-                % compute the percentage of discovered nodes
-                discoveredNodePercentage(i) = 100*numnodes(swarmWorldHist{i}.exploredGraph)/numnodes(trueWorld.G_env);
-            end
-            mapPercentage = swarmWorldHist{end}.mapPercentage;
+            [t,entropyHist,totalEntropy,cellMsmtHist,cellStateHist,cellDetHist,numViews,discoveredNodePercentage,mapPercentage] = wrapUpVariables(temp);
             
             % pack into alg/trial structure so it is all in one place
-            alg{ii}.trial{jj}.detectionFlag = detectionFlag;
-            alg{ii}.trial{jj}.detectionValid = detectionValid;
-            alg{ii}.trial{jj}.detectionTime = detectionTime;
+            trial{jj}.alg{i}.detectionFlag = detectionFlag;
+            trial{jj}.alg{i}.detectionFlag = detectionFlag;
+            trial{jj}.alg{i}.detectionValid = detectionValid;
+            trial{jj}.alg{i}.detectionTime = detectionTime;
             
-            alg{ii}.trial{jj}.cellDetHist = cellDetHist;
-            alg{ii}.trial{jj}.cellMsmtHist = cellMsmtHist;
-            alg{ii}.trial{jj}.cellStateHist = cellStateHist;
-            alg{ii}.trial{jj}.numViews = numViews;
-            alg{ii}.trial{jj}.entropyHist = entropyHist;
+            trial{jj}.alg{i}.cellDetHist = cellDetHist;
+            trial{jj}.alg{i}.cellMsmtHist = cellMsmtHist;
+            trial{jj}.alg{i}.cellStateHist = cellStateHist;
+            trial{jj}.alg{i}.numViews = numViews;
+            trial{jj}.alg{i}.entropyHist = entropyHist;
             
-            alg{ii}.trial{jj}.t = t;
-            alg{ii}.trial{jj}.totalEntropy = totalEntropy;
-            alg{ii}.trial{jj}.discoveredNodePercentage = discoveredNodePercentage;
+            trial{jj}.alg{i}.t = t;
+            trial{jj}.alg{i}.totalEntropy = totalEntropy;
+            trial{jj}.alg{i}.discoveredNodePercentage = discoveredNodePercentage;
             
             %
-            alg{ii}.trial{jj}
-            if isempty( alg{ii}.trial{1} )
-                disp('stop');
-            end
-            alg{ii}.trial{1}
-            simulationOrPlot = 'analysis';
-            clearvars -except simulationOrPlot ii kk jj MonteCarloSwitch detection detectionValid detectionTime alg;
+            trial{jj}.alg{i}
+%             if isempty( trial{1}.alg{i} )
+%                 disp('stop');
+%             end
+%             algTrial{ii,1}
+
+            % comment the following two lines out for 'parfor'
+%             simulationOrPlot = 'analysis';
+%             clearvars -except simulationOrPlot ii kk jj MonteCarloSwitch detection detectionValid detectionTime alg;
         end
     end
     %end
@@ -183,13 +185,13 @@ if (strcmp(simulationOrPlot,'analysisPlot'))
         for j = trialRange % total target motions
             fprintf('Processing alg %d trial %d \n', i, j);
             % entropy
-            entropyMat(i,j) = alg{i}.trial{j}.totalEntropy(end);
-            entropyMidwayMat(i,j) = alg{i}.trial{j}.totalEntropy(floor(end/2));
+            entropyMat(i,j) = trial{j}.alg{i}.totalEntropy(end);
+            entropyMidwayMat(i,j) = trial{j}.alg{i}.totalEntropy(floor(end/2));
             % det
-            detectionFlagMat(i,j) = alg{i}.trial{j}.detectionFlag;
-            detectionValidMat(i,j) = alg{i}.trial{j}.detectionValid;
+            detectionFlagMat(i,j) = trial{j}.alg{i}.detectionFlag;
+            detectionValidMat(i,j) = trial{j}.alg{i}.detectionValid;
             if ( detectionFlagMat(i,j)==1 && detectionValidMat(i,j) == 1 )
-                detectionTimeMat(i,j) = alg{i}.trial{j}.detectionTime;
+                detectionTimeMat(i,j) = trial{j}.alg{i}.detectionTime;
                 numValidAlg = numValidAlg + 1;
             else
                 detectionTimeMat(i,j) = NaN;
@@ -199,20 +201,20 @@ if (strcmp(simulationOrPlot,'analysisPlot'))
             end
             % time
             mapThreshTime = -1;
-            for k = 1:1:length(alg{i}.trial{j}.cellDetHist)
+            for k = 1:1:length(trial{j}.alg{i}.cellDetHist)
                 numNodesTotal = 0;
                 numNodesValid = 0;
                 for l = 1:1:trueWorld.numBinsX
                     for m = 1:1:trueWorld.numBinsY
                         % calculate number of valid nodes and total nodes
                         % detected
-                        if( alg{i}.trial{j}.cellDetHist{k}(l,m) == 1 )
+                        if( trial{j}.alg{i}.cellDetHist{k}(l,m) == 1 )
                             numNodesTotal = numNodesTotal + 1;
                             if ( trueWorld.numNodesMat(l,m) == 1)
                                 numNodesValid = numNodesValid + 1;
                             end
                             if ( (mapThreshTime == -1) && (numNodesValid >= mapPercentThresh*trueWorld.numNodes) )
-                                mapThreshTime = alg{i}.trial{j}.t(k) ;
+                                mapThreshTime = trial{j}.alg{i}.t(k) ;
                             end
                         end
                         % calculate the true entropy
