@@ -11,12 +11,7 @@ function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat ] = si
 
 % get targets xy
 for i = 1:1:targetModel.M
-    if ( strcmp(targetModel.type, 'varyingSpeedRandomWalk') )
-        curNode = targetState.x(4*i-3,1);
-    elseif( strcmp(targetModel.type, 'constantSpeedRandomWalk') || strcmp(targetModel.type,'constantSpeedRandomWalkGenerative') )
-        curNode = targetState.x(2*i-1,1);
-    end
-    %targNodes(i) = curNode; % on true graph
+    curNode = targetState.x(2*i-1,1);
     targXY(i,1) = trueWorldGraph.Nodes.x( curNode );
     targXY(i,2) = trueWorldGraph.Nodes.y( curNode );    
 end
@@ -29,17 +24,10 @@ windowWidth = 3*ceil(Rsense/dx)+1;
 halfWidth = floor((windowWidth-1)/2);
 
 cellsInView = [];
-switch communicationTopology
-    case 'allToAll'
-        % state of i-th agent
-        agents = [x(1) x(2)];
-    case 'centralized'
-        for i = 1:1:N
-            % state of i-th agent
-            agents(i,:) = [x(4*i-3) x(4*i-2)];
-        end
+for i = 1:1:N
+    % state of i-th agent
+    agents(i,:) = [x(4*i-3) x(4*i-2)];
 end
-
 k = 1;
 for i = 1:1:size(agents,1)
     agent = agents(i,:);

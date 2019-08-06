@@ -6,7 +6,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 10; %4*60;% total simulation/mission time
+runParams.T = 15; %4*60;% total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running, Sheng needs this for cost computation)
 
 
@@ -23,7 +23,7 @@ runParams.movie.useBackgroundImg = 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 swarmModel = struct;
 swarmModel.N = 4; % number of agents
-swarmModel.Rsense = 10; % sensing radius % 2 for F3 map % 20 for full map
+swarmModel.Rsense = 50; % sensing radius % 2 for F3 map % 20 for full map
 swarmModel.vmax = 3; % maximum speed % 1 for F3 map % 20 for full map
 swarmModel.umax = 2.0; % max acceleration
 swarmModel.kp_wpt = 10.0; % agent waypoint control, proportional gain
@@ -67,7 +67,7 @@ swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runP
 % Mapping
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 swarmModel.mappingSensorType = 'noisy'; % 'noisy' or 'perfect'
-swarmModel.nG = 100; % number of discrete sensor levels
+swarmModel.nG = 25; % number of discrete sensor levels
 if ( nargin ~=3 )
     swarmModel.mG = 3; % sensitivity
 end
@@ -101,7 +101,7 @@ swarmModel.confLevel = 0.95;
 if ( nargin ~=3 )
     swarmModel.mZ = 3;
 end
-swarmModel.nZ = 100;
+swarmModel.nZ = 25;
 
 % derived
 swarmModel.cumlLRthresh = swarmModel.confLevel / (1 - swarmModel.confLevel); % initial value

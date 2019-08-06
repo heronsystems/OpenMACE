@@ -26,12 +26,6 @@ for i = 1:1:targetModel.M
     set(plotHandles.figh_targetLoc(i),'XData',targXY(1),'YData',targXY(2),'ZData',1);
 end
 
-
-% % update explored environment
-% cellStateMat = swarmWorld.cellStateMat;
-% set(plotHandles.figh_coverageMap,'AlphaData',abs(cellStateMat));
-%
-
 % update target state graph
 if ( ~isempty(swarmWorld.exploredGraph.Nodes) )
     switch swarmModel.mappingSensorType
@@ -43,16 +37,12 @@ if ( ~isempty(swarmWorld.exploredGraph.Nodes) )
             yData = trueWorld.ycp( swarmWorld.exploredGraph.Nodes.by );
     end
     hold on;
-    %     if ( isfield(plotHandles,'p1') )
-    %         delete('plotHandles.p1')
-    %     end
-    plotHandles.p1 = plot(swarmWorld.exploredGraph,'XData',xData,'YData',yData,'NodeLabel',[],'NodeColor','b');
+    plotHandles.p1 = plot(swarmWorld.exploredGraph,'XData',swarmWorld.exploredGraph.Nodes.nodeX,'YData',swarmWorld.exploredGraph.Nodes.nodeY,'NodeLabel',[]);
+    %
+    %plot(swarmWorld.exploredGraph,'XData',xData,'YData',yData,'NodeLabel',[],'NodeColor','b');
     plotHandles.p1.NodeCData = swarmWorld.log_likelihood_env;
-    %plotHandles.p1.NodeCData = swarmWorld.env_probPresent;
     plotHandles.p1.MarkerSize = 6;
 end
-
-
 hold off;
 
 % colorbar;

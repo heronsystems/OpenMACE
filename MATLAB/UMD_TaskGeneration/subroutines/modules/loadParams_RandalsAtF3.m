@@ -212,16 +212,6 @@ end
 
 % Environment/Map
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % load environment cityblocks
-% trueWorld = struct;
-% trueWorld.type = 'cityblocks'; % 'goxel', 'cityblocks', %'openStreetMap', 'osmAtF3', 'cityBlocksAtF3'
-% trueWorld.borderOffset = 10; % used for adding padding to the map
-% trueWorld.binWidth = 5; % distance used to declare two nodes as connected (use 7 for open street map)
-% trueWorld.folder = './data/'; % folder with map file
-% trueWorld.fileName = 'cityBlocks';
-% trueWorld.blockLength = 50;
-% trueWorld.numBlocks = 4;
-
 % load environment smaller map at F3
 trueWorld = struct;
 trueWorld.type = 'osmAtF3'; % 'goxel', 'cityblocks', %'openStreetMap', 'osmAtF3'
@@ -235,21 +225,6 @@ trueWorld.refY = 80;
 trueWorld.angle = -37*pi/180;
 trueWorld.boxlength = 500;
 trueWorld.buffer = 1;
-
-% load environment the full map
-% trueWorld = struct;
-% trueWorld.type = 'openStreetMap'; % 'cityblocks', %'openStreetMap', 'osmAtF3'
-% trueWorld.borderOffset = 0; % used for adding padding to the map
-% %trueWorld.binWidth = 1; % distance used to declare two nodes as connected (use 7 for open street map)
-% trueWorld.folder = './data/'; % folder with map file
-% trueWorld.fileName = 'RandallsIsland_Big.osm';
-% trueWorld.binWidth = 5;
-% trueWorld.refX = -300;
-% trueWorld.refY = -200;
-% trueWorld.angle = 0*pi/180;
-% trueWorld.boxlength = 400;
-% trueWorld.boxwidth = 400;
-% trueWorld.buffer = 0;
 
 % derived world model parameters
 trueWorld = loadEnvironment(trueWorld, targetModel);

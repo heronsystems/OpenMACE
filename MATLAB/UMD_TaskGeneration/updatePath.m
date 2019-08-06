@@ -22,8 +22,6 @@ addpath('./subroutines/dynamics')
 addpath('./subroutines/display')
 addpath('./subroutines/display/init')
 addpath('./subroutines/display/update')
-addpath('./subroutines/communication')
-addpath('./scenes')
 %
 addpath('./external/munkres')
 addpath('./external/xml2struct')

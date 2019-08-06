@@ -13,30 +13,60 @@ t(1) = 0;
 targetState = targetMotionUpdate(targetState, targetModel, trueWorld, runParams, 1);
 
 for k = 2:1:runParams.Nsim
-    
+    disp('---- Begin Loop ----');
+    tLoopStart = tic;
     % run only at sample times
     sampleTimeFlag = mod( swarmState.k , floor(swarmModel.Tsamp/runParams.dt) ) == 0;
     if ( sampleTimeFlag )
+        disp('**** Processing Measurements and Tasking ****');
         % current time
         swarmWorld.time = k*runParams.dt;
-        swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueWorld, targetModel, targetState);
-        swarmWorld = updateLikelihood(swarmWorld, swarmState, swarmModel, trueWorld, targetState, targetModel);
         
-        % mutualInformationMappingTarget
+        % update swarm world
+        tTemp = tic;
+        swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueWorld, targetModel, targetState);
+        disp('updateSwarmWorld');
+        toc(tTemp);
+        
+        % update likelihood
+        tTemp = tic;        
+        swarmWorld = updateLikelihood(swarmWorld, swarmState, swarmModel, trueWorld, targetState, targetModel);
+        disp('updateLikelihood');
+        toc(tTemp);
+        
+        % mutual info
+        tTemp = tic;
         [swarmWorld.entropyMat, swarmWorld.mutualInfoSurface, swarmWorld.totalEntropy] = mutualInformationMappingTarget(swarmWorld.V, swarmWorld.U, swarmWorld.O, swarmModel.z_VU, swarmModel.z_O, swarmModel.g_V, swarmModel.g_UO);
+        disp('mutualInfo');
+        toc(tTemp);
         
         % simulate targets
-        integerTime = 1+swarmState.k/floor(swarmModel.Tsamp/runParams.dt);
-        
+        tTemp = tic;
+        integerTime = 1+swarmState.k/floor(swarmModel.Tsamp/runParams.dt);        
         targetState = targetMotionUpdate(targetState, targetModel, trueWorld, runParams, integerTime);
+        disp('targetMotionUpdate');
+        toc(tTemp);
         
+        % task generation 
+        tTemp = tic;
         [tasks, swarmWorld] = taskGeneration(swarmWorld, swarmModel, trueWorld);
+        disp('taskGeneration');
+        toc(tTemp);        
+        
+        % task allocation
+        tTemp = tic;
         [swarmState, swarmWorld] = taskAllocation(tasks, swarmState, swarmModel, swarmWorld, trueWorld, runParams);
+        disp('taskAllocation');
+        toc(tTemp);        
+        
     end
     
     % runs at every time-step
+    tTemp = tic;
     [swarmState] = taskManagement(swarmState, swarmModel, swarmWorld);
-    
+    disp('taskManagement');
+    toc(tTemp); 
+        
     % save data at each sampling time
     if ( sampleTimeFlag )
         swarmWorldHist{s} = swarmWorld;
@@ -59,5 +89,8 @@ for k = 2:1:runParams.Nsim
     swarmState.k = k;
     targetState.k = k;
     
+    
+    disp('Loop Took:');
+    toc(tLoopStart);
 end
 end

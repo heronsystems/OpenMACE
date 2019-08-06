@@ -126,7 +126,7 @@ nodeProps = table(nodesXY(:,1),nodesXY(:,2),'VariableNames',{'x','y'});
 G = graph(A,nodeProps);
 
 
-plotFlag = 0;
+plotFlag = 1;
 if (plotFlag)
 % figure;
 figure;
@@ -151,6 +151,8 @@ hold on;
 axis equal;
 
 figure;
-plot(G,'XData',nodesXY(:,1),'YData',nodesXY(:,2),'NodeLabel',[]);
-
+plot(G,'XData',nodesXY(:,1),'YData',nodesXY(:,2),'NodeLabel',[]);hold on;
+drawgrid(xmin,numXpx,ymin,numYpx,dx)
+xlim([xmin xmin+numXpx*dx]);
+ylim([ymin ymin+numYpx*dx]);
 end

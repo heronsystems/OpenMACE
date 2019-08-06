@@ -1,9 +1,8 @@
-function [H_C, I_C_GZ, totalEntropy] = mutualInformationMappingTarget(V, U, O, z_VU, z_O, g_V, g_UO)
+function [H_C, I_C_GZ, totalEntropy] = mutualInformationMappingTarget_original(V, U, O, z_VU, z_O, g_V, g_UO)
 
 numRows = size(V,1);
 numCols = size(V,2);
 tolZero = 0.01;
-tHC = tic;
 H_C = cellStateEntropyVectorized(V, U, O); 
 for i = 1:1:numRows
     for j = 1:1:numCols
