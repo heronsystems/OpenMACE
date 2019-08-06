@@ -1,4 +1,4 @@
-function [xControlPts,yControlPts,numNodesMat,bin2NodeID] = createSearchGrid(xpoly,ypoly,nodeX,nodeY,numBinsX, numBinsY)
+function [xControlPts,yControlPts,numNodesMat,bin2NodeID] = createSearchGrid(minX, maxX, minY, maxY, nodeX, nodeY, numBinsX, numBinsY)
 % Input:
 % (xpoly, ypoly) : boundaries of search area used to define grid
 % (nodeX, nodeY) : locations of nodes
@@ -13,18 +13,18 @@ function [xControlPts,yControlPts,numNodesMat,bin2NodeID] = createSearchGrid(xpo
 %         (nodeX, nodeY)
 
 % boundaries and min/max values
-maxX = max(xpoly);
-maxY = max(ypoly);
-minX = min(xpoly);
-minY = min(ypoly);
+% maxX = max(xpoly);
+% maxY = max(ypoly);
+% minX = min(xpoly);
+% minY = min(ypoly);
 
 % spacing
-dx = (maxX - minX)/(numBinsX-1);
-dy = (maxY - minY)/(numBinsY-1);
+dx = (maxX - minX)/(numBinsX);
+dy = (maxY - minY)/(numBinsY);
 
 % control points
-xControlPts = [0:dx:(dx)*(numBinsX-1)] + minX;
-yControlPts = [0:dy:(dy)*(numBinsY-1)] + minY;
+xControlPts = [dx/2:dx:(dx)*(numBinsX)] + minX;
+yControlPts = [dx/2:dy:(dy)*(numBinsY)] + minY;
 
 % initialize
 N = length(nodeX); 

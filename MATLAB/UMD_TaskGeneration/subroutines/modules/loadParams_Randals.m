@@ -6,7 +6,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 15; %4*60;% total simulation/mission time
+runParams.T = 5; %4*60;% total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running, Sheng needs this for cost computation)
 
 

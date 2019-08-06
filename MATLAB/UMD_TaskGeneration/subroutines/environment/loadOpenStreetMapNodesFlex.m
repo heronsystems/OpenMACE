@@ -1,4 +1,4 @@
-function [nodesXY, LatRef, LongRef, G, A] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList)
+function [nodesXY, LatRef, LongRef, G, A ] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList)
 
 % parse baseline map
 [ways, LatRef, LongRef] = parseOpenStreetMap(fileName);
