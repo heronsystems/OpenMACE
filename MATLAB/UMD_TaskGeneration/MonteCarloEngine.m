@@ -5,6 +5,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % clear; close all; clc;
 % format compact;
+function [MonteCarloSwitch] = MonteCarloEngine()
+
 updatePath;
 
 % turn on switch
@@ -12,10 +14,10 @@ MonteCarloSwitch = 1;
 %rng('default');
 %rng(1);
 
-iiIndex = [1 3 10];
-jjIndex = [1 30 100];
+iiIndex = [26 27 28];
+jjIndex = [1 2 3];
 
-trial = cell(1,length(jjIndex));
+trial = cell(1,3); % come back later at the number of columns
 
 simulationOrPlot = 'sim'; %options are 'sim' or 'plot' or 'analysis', or 'analysisPlot'
 % if strcmp(simulationOrPlot,'analysis')
@@ -53,8 +55,8 @@ kk = 1;
     %algRange = 
     %trialRange = ;
 
-parfor jj = 1:1:3 %[1 50 100]%[1:100]% total target motions
-%     jj = jjIndex(jj);
+parfor jj = 1:1:length(jjIndex) %[1 50 100]%[1:100]% total target motions
+%     jj = jjIndex(j);
     for for_i = 1:1:length(iiIndex)%[13,38,63] %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg %  [1,3,5,11,13,15,21,23,25]
         ii = iiIndex(for_i);
 %     for j = 1:1:length(jjIndex)%[1 50 100]%[1:100]% total target motions
@@ -123,23 +125,23 @@ parfor jj = 1:1:3 %[1 50 100]%[1:100]% total target motions
             [t,entropyHist,totalEntropy,cellMsmtHist,cellStateHist,cellDetHist,numViews,discoveredNodePercentage,mapPercentage] = wrapUpVariables(temp);
             
             % pack into alg/trial structure so it is all in one place
-            trial{jj}.alg{i}.detectionFlag = detectionFlag;
-            trial{jj}.alg{i}.detectionFlag = detectionFlag;
-            trial{jj}.alg{i}.detectionValid = detectionValid;
-            trial{jj}.alg{i}.detectionTime = detectionTime;
+            trial{jj}.alg{ii}.detectionFlag = detectionFlag;
+            trial{jj}.alg{ii}.detectionFlag = detectionFlag;
+            trial{jj}.alg{ii}.detectionValid = detectionValid;
+            trial{jj}.alg{ii}.detectionTime = detectionTime;
             
-            trial{jj}.alg{i}.cellDetHist = cellDetHist;
-            trial{jj}.alg{i}.cellMsmtHist = cellMsmtHist;
-            trial{jj}.alg{i}.cellStateHist = cellStateHist;
-            trial{jj}.alg{i}.numViews = numViews;
-            trial{jj}.alg{i}.entropyHist = entropyHist;
+            trial{jj}.alg{ii}.cellDetHist = cellDetHist;
+            trial{jj}.alg{ii}.cellMsmtHist = cellMsmtHist;
+            trial{jj}.alg{ii}.cellStateHist = cellStateHist;
+            trial{jj}.alg{ii}.numViews = numViews;
+            trial{jj}.alg{ii}.entropyHist = entropyHist;
             
-            trial{jj}.alg{i}.t = t;
-            trial{jj}.alg{i}.totalEntropy = totalEntropy;
-            trial{jj}.alg{i}.discoveredNodePercentage = discoveredNodePercentage;
+            trial{jj}.alg{ii}.t = t;
+            trial{jj}.alg{ii}.totalEntropy = totalEntropy;
+            trial{jj}.alg{ii}.discoveredNodePercentage = discoveredNodePercentage;
             
             %
-            trial{jj}.alg{i}
+            trial{jj}.alg{ii}
 %             if isempty( trial{1}.alg{i} )
 %                 disp('stop');
 %             end
@@ -149,6 +151,7 @@ parfor jj = 1:1:3 %[1 50 100]%[1:100]% total target motions
 %             simulationOrPlot = 'analysis';
 %             clearvars -except simulationOrPlot ii kk jj MonteCarloSwitch detection detectionValid detectionTime alg;
         end
+        5;
     end
     %end
 end
@@ -654,3 +657,4 @@ end
 %
 % % then save the data to \results\data, with a brief NOTE string.            %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end
