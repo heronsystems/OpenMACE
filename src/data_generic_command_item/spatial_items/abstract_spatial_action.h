@@ -139,7 +139,8 @@ public:
 
         if(rhs.position)
         {
-            *this->position = *rhs.position;
+            this->position = rhs.position->getPositionalClone();
+            //*this->position = *rhs.position;
         }else{ //test if the rhs position is null didnt pass
             delete position; position = nullptr;
         }

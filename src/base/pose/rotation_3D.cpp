@@ -43,55 +43,91 @@ Rotation_3D::Rotation_3D(const double &roll, const double &pitch, const double &
 
 void Rotation_3D::updateFromEuler(const double &roll, const double &pitch, const double &yaw)
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
-    currentRotation.alpha() = yaw;
-    currentRotation.beta() = pitch;
-    currentRotation.gamma() = roll;
-
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
+    this->m_QRotation = Eigen::AngleAxisd(yaw, Vector3d::UnitZ()) *
+            Eigen::AngleAxisd(pitch, Vector3d::UnitY()) *
+            Eigen::AngleAxisd(roll, Vector3d::UnitX());
 }
 
-void Rotation_3D::setRotation(const Eigen::Quaterniond &rotation)
+void Rotation_3D::setQuaternion(const Eigen::Quaterniond &rotation)
 {
     this->m_QRotation = rotation;
 }
 
-void Rotation_3D::setRotation(const Eigen::Matrix3d &rotation)
+Eigen::Quaterniond Rotation_3D::getQuaternion() const
+{
+    return this->m_QRotation;
+}
+
+void Rotation_3D::setQuaternion(const Eigen::Matrix3d &rotation)
 {
     this->m_QRotation = Eigen::Quaterniond(rotation);
 }
 
 void Rotation_3D::updateRoll(const double &angle)
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation.toRotationMatrix());
     currentRotation.gamma() = angle;
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) *
+            Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) *
+            Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
 }
 
 void Rotation_3D::updatePitch(const double &angle)
 {
     EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
     currentRotation.beta() = angle;
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
-}
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) *
+            Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) *
+            Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());}
 
 
 void Rotation_3D::updateYaw(const double &angle)
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation.toRotationMatrix());
     currentRotation.alpha() = angle;
-    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) * Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) * Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());
-}
+    this->m_QRotation = Eigen::AngleAxisd(currentRotation.alpha(), Vector3d::UnitZ()) *
+            Eigen::AngleAxisd(currentRotation.beta(), Vector3d::UnitY()) *
+            Eigen::AngleAxisd(currentRotation.gamma(), Vector3d::UnitX());}
 
 
 /** Get functions for all rotation angle information **/
 
 void Rotation_3D::getDiscreteEuler(double &roll, double &pitch, double &yaw) const
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<false, false, false>(this->m_QRotation.matrix());
-    roll = currentRotation.gamma();
-    pitch = currentRotation.beta();
-    yaw = currentRotation.alpha();
+    double sqx = m_QRotation.x()*m_QRotation.x();
+    double sqy = m_QRotation.y()*m_QRotation.y();
+    double sqz = m_QRotation.z()*m_QRotation.z();
+    double sqw = m_QRotation.w()*m_QRotation.w();
+
+    // This is to calculate whether or not the quaternion is normalized. If it
+    // is this answer is one, but if not it becomes a correction factor.
+    double unit = sqx + sqy + sqz + sqw;
+
+    // This value is to test for the singularity that occurs when the pitch is
+    // at +/-90 degrees.  So check when this value is +/-0.5.
+    double test = m_QRotation.y()*m_QRotation.w() - m_QRotation.x()*m_QRotation.z();
+
+    if( test > 0.499*unit )
+    {
+        yaw 	= -2.0 * atan2( m_QRotation.x(), m_QRotation.w() );
+        pitch 	= M_PI / 2.0;
+        roll     = 0.0;
+    }
+    else if (test < -0.499*unit )
+    {
+        yaw     = 2.0 * atan2( m_QRotation.x(), m_QRotation.w() );
+        pitch	= -M_PI/2.0;
+        roll     = 0.0;
+    }
+    else {
+//        roll   = atan2(2.0*(m_QRotation.y()*m_QRotation.z() + m_QRotation.w()*m_QRotation.x()), sqw - sqx - sqy - sqz);
+        roll   = atan2(2.0*(m_QRotation.y()*m_QRotation.z() + m_QRotation.w()*m_QRotation.x()), sqw - sqx - sqy + sqz);
+
+        pitch = -asin(2.0 * (m_QRotation.x()*m_QRotation.z() - m_QRotation.w()*m_QRotation.y()));
+        yaw = atan2(2.0*(m_QRotation.x()*m_QRotation.y() + m_QRotation.w()*m_QRotation.z()), sqw + sqx - sqy - sqz);
+    }
+
+
 }
 
 EulerAngleRotation Rotation_3D::getEulerRotation() const
@@ -106,20 +142,23 @@ Eigen::Matrix3d Rotation_3D::getRotationMatrix() const
 
 double Rotation_3D::getRoll() const
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
-    return currentRotation.gamma();
+    double roll, pitch, yaw;
+    getDiscreteEuler(roll,pitch,yaw);
+    return roll;
 }
 
 double Rotation_3D::getPitch() const
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
-    return currentRotation.beta();
+    double roll, pitch, yaw;
+    getDiscreteEuler(roll,pitch,yaw);
+    return pitch;
 }
 
 double Rotation_3D::getYaw() const
 {
-    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(this->m_QRotation);
-    return currentRotation.alpha();
+    double roll, pitch, yaw;
+    getDiscreteEuler(roll,pitch,yaw);
+    return yaw;
 }
 
 mace_attitude_quaternion_t Rotation_3D::getMACEQuaternion() const
@@ -131,12 +170,13 @@ mace_attitude_quaternion_t Rotation_3D::getMACEQuaternion() const
 
 mace_attitude_t Rotation_3D::getMACEEuler() const
 {
-    EulerAngleRotation currentRotation = this->getEulerRotation();
+    double roll = 0.0, pitch = 0.0, yaw = 0.0;
 
+    this->getDiscreteEuler(roll,pitch,yaw);
     mace_attitude_t euler;
-    euler.roll = static_cast<float>(currentRotation.gamma());
-    euler.pitch = static_cast<float>(currentRotation.beta());
-    euler.yaw = static_cast<float>(currentRotation.alpha());
+    euler.roll = static_cast<float>(roll);
+    euler.pitch = static_cast<float>(pitch);
+    euler.yaw = static_cast<float>(yaw);
 
     return euler;
 }

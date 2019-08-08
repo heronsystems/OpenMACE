@@ -13,6 +13,8 @@ extern const char TopicName_AgentOrientation[];
 
 extern const MaceCore::TopicComponentStructure Structure_AgentOrientation;
 
+MACE_CLASS_FORWARD(Topic_AgentOrientation);
+
 class Topic_AgentOrientation : public Data::NamedTopicComponentDataObject<TopicName_AgentOrientation, &Structure_AgentOrientation>
 {
 

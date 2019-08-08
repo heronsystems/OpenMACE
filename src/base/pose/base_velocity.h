@@ -13,6 +13,9 @@ template<const CoordinateSystemTypes coordType, typename CFDATA, class DATA>
 class Base_Velocity: public Velocity
 {
 public:
+
+
+public:
     Base_Velocity(const CFDATA &frame):
         Velocity(), explicitFrame(frame)
     {

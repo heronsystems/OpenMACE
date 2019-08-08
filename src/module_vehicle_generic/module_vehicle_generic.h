@@ -13,6 +13,7 @@
 #include "data/topic_data_object_collection.h"
 
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
+#include "base_topic/base_topic_components.h"
 
 template <typename ...VehicleTopicAdditionalComponents>
 class MODULE_VEHICLE_GENERICSHARED_EXPORT ModuleVehicleGeneric : public MaceCore::IModuleCommandVehicle
@@ -21,7 +22,7 @@ public:
 
     typedef Data::TopicDataObjectCollection<
     VehicleTopicAdditionalComponents...,
-    DATA_GENERIC_VEHICLE_ITEM_TOPICS> VehicleDataTopicType;
+    DATA_GENERIC_VEHICLE_ITEM_TOPICS,BASE_POSE_TOPICS> VehicleDataTopicType;
 
     ModuleVehicleGeneric() :
         MaceCore::IModuleCommandVehicle(),

@@ -17,7 +17,7 @@ GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticFrameTypes &frameType,
                     const double &latitude, const double &longitude,
                     const AltitudeReferenceTypes &altitudeType, const double &altitude,
                     const std::string &pointName):
-    Abstract_GeodeticPosition(frameType, pointName), Abstract_Altitude(altitudeType), state_space::State(), data(latitude, longitude, altitude)
+    Abstract_GeodeticPosition(frameType, pointName), Abstract_Altitude(altitudeType), state_space::State(), data(longitude, latitude, altitude)
 {
     this->dimension = 3;
 }
@@ -32,7 +32,7 @@ GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticFrameTypes &frameType,
 GeodeticPosition_3D::GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude,
                                          const std::string &pointName):
     Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE), state_space::State(),
-    data(latitude, longitude, altitude)
+    data(longitude, latitude, altitude)
 {
     this->dimension = 3;
 }

@@ -1,6 +1,8 @@
 #ifndef ABSTRACT_ROTATION_H
 #define ABSTRACT_ROTATION_H
 
+#include <Eigen/Geometry>
+
 #include <string>
 #include "mace.h"
 
@@ -38,6 +40,12 @@ public:
     virtual mace_attitude_t getMACEEuler() const = 0;
 
     virtual mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const = 0;
+
+public:
+    virtual void setQuaternion(const Eigen::Quaterniond &rot) = 0;
+
+    virtual Eigen::Quaterniond getQuaternion() const = 0;
+
 
 public:
     /**

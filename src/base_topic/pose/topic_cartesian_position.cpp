@@ -18,7 +18,13 @@ const MaceCore::TopicComponentStructure Structure_CartesianPosition = []{
 
 MaceCore::TopicDatagram Topic_CartesianPosition::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
+    datagram.AddTerminal<std::string>("Position Name",positionObj->getName());
     datagram.AddTerminal<mace::CartesianFrameTypes>("Explicit Coordinate Frame", positionObj->getCartesianFrameType());
+    if(positionObj->is3D())
+        datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", positionObj->positionAs<mace::pose::CartesianPosition_3D>()->getAltitudeReferenceFrame());
+    else
+        datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", AltitudeReferenceTypes::REF_ALT_UNKNOWN);
+
     datagram.AddTerminal<uint8_t>("Dimension", positionObj->getDimension());
     datagram.AddTerminal<Eigen::VectorXd>("Data", positionObj->getDataVector());
     if(positionObj->is3D())
@@ -68,7 +74,6 @@ Topic_CartesianPosition::Topic_CartesianPosition():
 
 Topic_CartesianPosition::Topic_CartesianPosition(const mace::pose::Abstract_CartesianPosition *posObj)
 {
-    delete positionObj; positionObj = nullptr;
     //copy the contents of that point to the current pointer object
     positionObj = posObj->getCartesianClone();
 }

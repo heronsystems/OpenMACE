@@ -11,6 +11,8 @@
 #include <list>
 #include <vector>
 
+#include <Eigen/StdVector>
+
 #include "vehicle_data.h"
 
 #include "observation_history.h"
@@ -77,7 +79,7 @@ private:
     uint64_t m_MSTOKEEP;
 
 public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 
 public:
     MaceData() :
@@ -415,20 +417,6 @@ private:
     }
 
     //!
-    //! \brief set the Target list of a specific vehicle
-    //!
-    //! The target is a macro-level list, a vehicle should not be flown based on targets.
-    //! \param vehicleID Id of Vehicle
-    //! \param targetPos List of targeted positions.
-    //!
-    void setVehicleTarget(const std::string vehicleID, std::vector<Eigen::Vector3d> targetPos)
-    {
-        std::lock_guard<std::mutex> guard(m_VehicleDataMutex);
-
-        m_VehicleTargetPositionList[vehicleID] = targetPos;
-    }
-
-    //!
     //! \brief set the dynamics for a specific vehicle.
     //!
     //! Commands are micro-level list of dynamics the vehicle is to physically achieve to reach a target.
@@ -556,26 +544,6 @@ public:
         if(success == false)
             return false;
         return true;
-    }
-
-
-    //!
-    //! \brief get the list of targets that a specific vehicle is to move to
-    //!
-    //! The target is a macro-level list, of general positions a vehicle is to acheive.
-    //! Targets may not express the actual path a vehicle is to take, therefore a vehicle should not be flown based on targets.
-    //! Will return empty array if no targets are desired for vehicle
-    //! \param vehicleID Id of Vehicle
-    //! \return List of targeted positions.
-    //!
-    std::vector<Eigen::Vector3d> getVehicleTarget(const std::string vehicleID) const
-    {
-        std::lock_guard<std::mutex> guard(m_VehicleDataMutex);
-
-        if(m_VehicleTargetPositionList.find(vehicleID) == m_VehicleTargetPositionList.cend())
-            return {};
-
-        return m_VehicleTargetPositionList.at(vehicleID);
     }
 
 
@@ -948,7 +916,6 @@ private:
     std::map<std::string, ObservationHistory<TIME, VectorDynamics> > m_PositionDynamicsHistory;
     std::map<std::string, ObservationHistory<TIME, VectorDynamics> > m_AttitudeDynamicsHistory;
     std::map<std::string, ObservationHistory<TIME, VehicleLife> > m_VehicleLifeHistory;
-    std::map<std::string, std::vector<Eigen::Vector3d> > m_VehicleTargetPositionList;
     std::map<std::string, std::vector<FullVehicleDynamics> > m_VehicleCommandDynamicsList;
 
 

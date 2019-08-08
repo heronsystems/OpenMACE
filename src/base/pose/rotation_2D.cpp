@@ -38,6 +38,17 @@ double Rotation_2D::getPhi() const
     return this->angle();
 }
 
+void Rotation_2D::setQuaternion(const Eigen::Quaterniond &rot)
+{
+    EulerAngleRotation currentRotation = EulerAngleRotation::FromRotation<true, false, false>(rot);
+    this->setPhi(currentRotation.alpha());
+}
+
+Eigen::Quaterniond Rotation_2D::getQuaternion() const
+{
+    Eigen::AngleAxisd rotation_vector (this->getPhi(), Eigen::Vector3d(0, 0, 1));
+    return Eigen::Quaterniond(rotation_vector);
+}
 
 mace_attitude_quaternion_t Rotation_2D::getMACEQuaternion() const
 {

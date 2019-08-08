@@ -566,10 +566,18 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
         case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
         {
             std::shared_ptr<command_item::SpatialTakeoff> castItem = std::dynamic_pointer_cast<command_item::SpatialTakeoff>(missionItem);
-            obj["positionalFrame"] = "global";
-//            obj["lat"] = castItem->position->getX();
-//            obj["lng"] = castItem->position->getY();
-//            obj["alt"] = castItem->position->getZ();
+            if(castItem->position->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+            {
+                obj["positionalFrame"] = "global";
+                if(castItem->position->is3D())
+                {
+                    const mace::pose::GeodeticPosition_3D* castPosition = castItem->position->positionAs<mace::pose::GeodeticPosition_3D>();
+                    obj["lat"] = castPosition->getLatitude();
+                    obj["lng"] = castPosition->getLongitude();
+                    obj["alt"] = castPosition->getAltitude();
+                }
+            }
+
             break;
         }
         case command_item::COMMANDTYPE::CI_NAV_WAYPOINT:

@@ -14,6 +14,8 @@ TEMPLATE = lib
 DEFINES += COMMSMACE_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 # The following define makes your compiler emit warnings if you use

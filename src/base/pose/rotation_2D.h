@@ -18,6 +18,9 @@ namespace pose {
 class Rotation_2D : public AbstractRotation, public Eigen::Rotation2D<double>
 {
 public:
+
+
+public:
     enum TYPEMASK_YAW
     {
         YAW_DIMENSION_VALID = 0,
@@ -82,6 +85,10 @@ public:
     //!
     double getPhi() const;
 
+public:
+    void setQuaternion(const Eigen::Quaterniond &rot) override;
+
+    Eigen::Quaterniond getQuaternion() const override;
 
 public:
     //!

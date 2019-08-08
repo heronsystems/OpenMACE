@@ -74,13 +74,20 @@ public:
     //! \brief setRotation
     //! \param rotation
     //!
-    void setRotation (const Eigen::Quaterniond &rotation);
+    void setQuaternion(const Eigen::Quaterniond &rotation) override;
+
+    //!
+    //! \brief getQuaternion
+    //! \return
+    //!
+    Eigen::Quaterniond getQuaternion() const override;
+
 
     //!
     //! \brief setRotation
     //! \param rotation
     //!
-    void setRotation(const Eigen::Matrix3d &rotation);
+    void setQuaternion(const Eigen::Matrix3d &rotation);
 
     //!
     //! \brief getEuler
@@ -272,7 +279,7 @@ public:
 
     /** Public Members */
 public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     /** The vector defining the sequence of rotation shall be [yaw, pitch, roll]
      * which yields a [phi, theta, psi] notation.
      * */

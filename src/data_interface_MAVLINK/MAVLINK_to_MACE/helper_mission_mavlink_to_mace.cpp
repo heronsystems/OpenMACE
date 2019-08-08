@@ -175,12 +175,15 @@ void Helper_MissionMAVLINKtoMACE::convertWaypoint(const int sysID, const mavlink
 {
     missionItem.setTargetSystem(sysID);
     missionItem.setOriginatingSystem(sysID);
-    missionItem.setPosition(getBasePosition(mavlinkItem));
+    mace::pose::Position* itemPos = getBasePosition(mavlinkItem);
+    missionItem.setPosition(itemPos);
+    delete itemPos; itemPos = nullptr;
 }
 
 mace::pose::Position* Helper_MissionMAVLINKtoMACE::getBasePosition(const mavlink_mission_item_t &mavlinkItem)
 {
-    mace::pose::Position* newPos;
+    mace::pose::GeodeticPosition_3D* newPos = new mace::pose::GeodeticPosition_3D();
+    newPos->updatePosition(mavlinkItem.x,mavlinkItem.y,mavlinkItem.z);
     //Ken Fix This
 //    DataState::Base3DPosition pos;
 //    Data::CoordinateFrameType frame = static_cast<Data::CoordinateFrameType>(mavlinkItem.frame);

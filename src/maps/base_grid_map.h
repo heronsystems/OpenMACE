@@ -27,6 +27,9 @@ MACE_CLASS_FORWARD(BaseGridMap);
 class BaseGridMap
 {
 public:
+  
+
+public:
 
     //!
     //! \brief BaseGridMap

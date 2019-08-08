@@ -218,7 +218,7 @@ protected:
         msg.target_component = 0;
         queue = 0;
 
-        m_MissionDownloading = std::make_shared<std::tuple<command_item::SpatialHome, MissionList>>();
+        m_MissionDownloading = std::make_shared<std::tuple<command_item::SpatialHome, MissionItem::MissionList>>();
     }
 
 
@@ -467,9 +467,13 @@ private:
     {
         if(msg.seq == 0)
         {
-            std::get<0>(*m_MissionDownloading).position->positionAs<mace::pose::GeodeticPosition_3D>()->setLatitude(msg.x);
-            std::get<0>(*m_MissionDownloading).position->positionAs<mace::pose::GeodeticPosition_3D>()->setLongitude(msg.y);
-            std::get<0>(*m_MissionDownloading).position->positionAs<mace::pose::GeodeticPosition_3D>()->setAltitude(msg.z);
+            //Mission exchanges are always going to exist on a geodetic frame and eventually we should check this Ken
+            mace::pose::GeodeticPosition_3D homePosition;
+            homePosition.setLatitude(msg.x);
+            homePosition.setLongitude(msg.y);
+            homePosition.setAltitude(msg.z);
+
+            std::get<0>(*m_MissionDownloading).setPosition(&homePosition);
             std::get<0>(*m_MissionDownloading).setOriginatingSystem(sender);
             std::get<0>(*m_MissionDownloading).setTargetSystem(sender);
         }
