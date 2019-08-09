@@ -15,6 +15,7 @@ void State_FlightGuided_GoTo::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
+    dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Shutdown();
 }
 
 AbstractStateArdupilot* State_FlightGuided_GoTo::getClone() const
@@ -103,7 +104,7 @@ bool State_FlightGuided_GoTo::handleCommand(const std::shared_ptr<AbstractComman
                 MavlinkEntityKey sender = 255;
                 command_item::SpatialWaypoint waypoint(sender, targetSystem);
                 waypoint.setPosition(cmdPosition);
-                ((MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint> *)Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
+                dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
                 break;
             }
             case CoordinateSystemTypes::CARTESIAN:
@@ -146,10 +147,7 @@ void State_FlightGuided_GoTo::OnEnter(const std::shared_ptr<AbstractCommandItem>
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are goto
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
        auto goToController = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-       goToController->AddLambda_Finished(this, [this,goToController](const bool completed, const uint8_t finishCode){
-
-           UNUSED(goToController);
-
+       goToController->AddLambda_Finished(this, [this](const bool completed, const uint8_t finishCode){
            if(!completed)
            {
                //for some reason a timeout has occured, should we handle this differently
