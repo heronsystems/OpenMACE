@@ -54,60 +54,75 @@ hsm::Transition State_TakeoffTransitioning::GetTransition()
 bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     clearCommand();
-//    switch (command->getCommandType()) {
-//    case COMMANDTYPE::CI_NAV_TAKEOFF:
-//    {
-//        this->currentCommand = command->getClone();
-//        const command_item::SpatialTakeoff* cmd = currentCommand->as<command_item::SpatialTakeoff>();
-//        if(cmd->getPosition().has3DPositionSet())
-//        {
-//            Owner().state->vehicleGlobalPosition.AddNotifier(this, [this, cmd]
-//            {
-//                if(cmd->getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
-//                {
-//                    StateGlobalPosition cmdPos(cmd->getPosition().getY(),cmd->getPosition().getX(),cmd->getPosition().getZ());
-//                    StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
-//                    double distance = fabs(currentPosition.distanceBetween2D(cmdPos));
+    switch (command->getCommandType()) {
+    case COMMANDTYPE::CI_NAV_TAKEOFF:
+    {
+        this->currentCommand = command->getClone();
+        const command_item::SpatialTakeoff* cmd = currentCommand->as<command_item::SpatialTakeoff>();
+        if(cmd->getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+        {
+            Owner().state->vehicleGlobalPosition.AddNotifier(this, [this, cmd]
+            {
+                //Since we really care about the translational component we already know we are in the geodetic frame and therefore can straight cast
+                mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
+                double distance = fabs(currentPosition.distanceBetween2D(cmd->getPosition()->positionAs<mace::pose::Abstract_GeodeticPosition>()));
 
-//                    Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-//                    MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmdPos, distance, guidedState);
-//                    Owner().callTargetCallback(vehicleTarget);
+                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition(), distance, guidedState);
+                Owner().callTargetCallback(vehicleTarget);
 
-//                    if(guidedState == Data::ControllerState::ACHIEVED)
-//                    {
-//                        desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
-//                    }
-//                }
-//            });
+                if(guidedState == Data::ControllerState::ACHIEVED)
+                    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
+            });
+        }
+        else if(cmd->getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
+        {
+            Owner().state->vehicleLocalPosition.AddNotifier(this, [this, cmd]
+            {
+                //Since we really care about the translational component we already know we are in the geodetic frame and therefore can straight cast
+                mace::pose::CartesianPosition_3D currentPosition = Owner().state->vehicleLocalPosition.get();
+                double distance = fabs(currentPosition.distanceBetween2D(cmd->getPosition()->positionAs<mace::pose::Abstract_CartesianPosition>()));
 
-//            Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-//            auto takeoffTransition = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-//            takeoffTransition->AddLambda_Finished(this, [this,takeoffTransition](const bool completed, const uint8_t finishCode){
-//                if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
-//                    std::cout<<"We are not going to perform the transition portion of the takeoff."<<std::endl;
-//                takeoffTransition->Shutdown();
-//            });
+                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition(), distance, guidedState);
+                Owner().callTargetCallback(vehicleTarget);
 
-//            takeoffTransition->setLambda_Shutdown([this, collection]()
-//            {
-//                auto ptr = collection->Remove("takeoffTransition");
-//                delete ptr;
-//            });
+                if(guidedState == Data::ControllerState::ACHIEVED)
+                    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
+            });
+        }
 
-//            MavlinkEntityKey target = Owner().getMAVLINKID();
-//            MavlinkEntityKey sender = 255;
 
-//            Base3DPosition cmdPosition = cmd->getPosition();
-//            command_item::SpatialWaypoint takeoffTarget(255,cmd->getTargetSystem());
-//            takeoffTarget.setPosition(cmdPosition);
-//            takeoffTransition->Send(takeoffTarget,sender,target);
-//            collection->Insert("takeoffTransition",takeoffTransition);
-//        }
-//        break;
-//    }
-//    default:
-//        break;
-//    }
+        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+        auto takeoffTransition = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        takeoffTransition->AddLambda_Finished(this, [this,takeoffTransition](const bool completed, const uint8_t finishCode)
+        {
+            UNUSED(this);
+            if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
+                std::cout<<"We are not going to perform the transition portion of the takeoff."<<std::endl;
+            takeoffTransition->Shutdown();
+        });
+
+        takeoffTransition->setLambda_Shutdown([this, collection]()
+        {
+            UNUSED(this);
+            auto ptr = collection->Remove("takeoffTransition");
+            delete ptr;
+        });
+
+        MavlinkEntityKey target = Owner().getMAVLINKID();
+        MavlinkEntityKey sender = 255;
+
+        command_item::SpatialWaypoint takeoffTarget(255,cmd->getTargetSystem());
+        takeoffTarget.setPosition(cmd->getPosition());
+        takeoffTransition->Send(takeoffTarget,sender,target);
+        collection->Insert("takeoffTransition",takeoffTransition);
+
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 void State_TakeoffTransitioning::Update()

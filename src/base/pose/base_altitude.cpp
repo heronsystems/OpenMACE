@@ -48,6 +48,11 @@ std::string Altitude::printPositionalInfo() const
     return "";
 }
 
+void Altitude::updateQJSONObject(QJsonObject &obj) const
+{
+    obj["alt"] = this->getAltitude();
+}
+
 
 
 } //end of namespace pose

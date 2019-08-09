@@ -57,11 +57,13 @@ public:
     void setXPosition(const double &x)
     {
         this->data(0) = x;
+        this->validateDimension(IGNORE_X_DIMENSION);
     }
 
     void setYPosition(const double &y)
     {
         this->data(1) = y;
+        this->validateDimension(IGNORE_Y_DIMENSION);
     }
 
     double getXPosition() const
@@ -112,6 +114,9 @@ public:
     {
         *state = new CartesianPosition_2D(*this);
     }
+
+public:
+    void updateQJSONObject(QJsonObject &obj) const override;
 
 public:
     //!

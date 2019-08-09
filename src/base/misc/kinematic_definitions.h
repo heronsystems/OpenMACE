@@ -61,6 +61,15 @@ public:
         this->dimensionMask = dimensionMask|orValue;
     }
 
+    void xorDimensionMask(const uint16_t &xorValue)
+    {
+        this->dimensionMask = this->dimensionMask^xorValue;
+    }
+
+    void validateDimension(const uint16_t &validValue)
+    {
+        this->dimensionMask = this->dimensionMask & (~validValue);
+    }
     //!
     //! \brief getDimensionMask
     //! \return

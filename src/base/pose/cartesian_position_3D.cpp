@@ -36,17 +36,23 @@ CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_2D &copy):
 
 bool CartesianPosition_3D::hasXBeenSet() const
 {
-    return this->dimensionMask&IGNORE_X_DIMENSION;
+    if((this->dimensionMask&IGNORE_X_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool CartesianPosition_3D::hasYBeenSet() const
 {
-    return this->dimensionMask&IGNORE_Y_DIMENSION;
+    if((this->dimensionMask&IGNORE_Y_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool CartesianPosition_3D::hasZBeenSet() const
 {
-    return this->dimensionMask&IGNORE_Z_DIMENSION;
+    if((this->dimensionMask&IGNORE_Z_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool CartesianPosition_3D::hasTranslationalComponentBeenSet() const
@@ -57,6 +63,11 @@ bool CartesianPosition_3D::hasTranslationalComponentBeenSet() const
 bool CartesianPosition_3D::areEquivalentFrames(const CartesianPosition_3D &obj) const
 {
     return this->areEquivalentCartesianFrames(obj) && this->areEquivalentAltitudeFrames(&obj);
+}
+
+void CartesianPosition_3D::updateQJSONObject(QJsonObject &obj) const
+{
+
 }
 
 double CartesianPosition_3D::deltaX(const CartesianPosition_3D &that) const

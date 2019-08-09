@@ -131,6 +131,7 @@ void State_Takeoff::OnEnter()
 
     controllerSystemMode->setLambda_Shutdown([this, collection]()
     {
+        UNUSED(this);
         auto ptr = collection->Remove("modeController");
         delete ptr;
     });

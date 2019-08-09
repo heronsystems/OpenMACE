@@ -78,8 +78,8 @@ public:
 
     void setPosition(const mace::pose::Position* pos)
     {
-        //first delete and clear the current position
-        delete position; position = nullptr;
+        if(position != nullptr) //first delete and clear the current position
+            delete position; position = nullptr;
 
         position = pos->getPositionalClone();
     }

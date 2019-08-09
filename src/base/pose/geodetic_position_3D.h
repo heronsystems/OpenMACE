@@ -47,7 +47,7 @@ public:
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
 public:
-    Eigen::VectorXd getDataVector() const
+    Eigen::VectorXd getDataVector() const override
     {
         return this->data;
     }
@@ -83,6 +83,7 @@ public:
     void setLatitude(const double &latitude) override
     {
         this->data(1) = latitude;
+        this->validateDimension(IGNORE_Y_DIMENSION);
     }
 
     //!
@@ -92,6 +93,7 @@ public:
     void setLongitude(const double &longitude) override
     {
         this->data(0) = longitude;
+        this->validateDimension(IGNORE_X_DIMENSION);
     }
 
     //!
@@ -101,6 +103,7 @@ public:
     void setAltitude(const double &altitude) override
     {
         this->data(2) = altitude;
+        this->validateDimension(IGNORE_Z_DIMENSION);
     }
 
     //!
@@ -186,6 +189,9 @@ public:
     {
         *state = new GeodeticPosition_3D(*this);
     }
+
+public:
+    void updateQJSONObject(QJsonObject &obj) const override;
 
 public:
     //!

@@ -96,6 +96,7 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 
         controllerSystemMode->setLambda_Shutdown([this, collection]()
         {
+            UNUSED(this);
             auto ptr = collection->Remove("modeController");
             delete ptr;
         });
@@ -104,8 +105,8 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
         MavlinkEntityKey sender = 255;
 
         MAVLINKVehicleControllers::MAVLINKModeStruct commandMode;
-        commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString("GUIDED");
+        commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
+        commandMode.vehicleMode = static_cast<uint8_t>(Owner().ardupilotMode.getFlightModeFromString("GUIDED"));
         controllerSystemMode->Send(commandMode,sender,target);
         collection->Insert("modeController",controllerSystemMode);
 
@@ -140,19 +141,20 @@ void State_Landing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
     if(command != nullptr)
     {
-//        switch (command->getCommandType()) {
-//        case COMMANDTYPE::CI_NAV_LAND:
-//            if(command->as<command_item::SpatialLand>()->getPosition().has2DPositionSet())
-//                handleCommand(command);
-//            else
-//            {
-//                currentCommand = command->getClone();
-//                this->OnEnter();
-//            }
-//            break;
-//        default:
-//            break;
-//        }
+        switch (command->getCommandType()) {
+        case COMMANDTYPE::CI_NAV_LAND:
+
+            if(command->as<command_item::SpatialLand>()->getPosition()->areTranslationalComponentsValid())
+                handleCommand(command);
+            else
+            {
+                currentCommand = command->getClone();
+                this->OnEnter();
+            }
+            break;
+        default:
+            break;
+        }
     }
     else
     {

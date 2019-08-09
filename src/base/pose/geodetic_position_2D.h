@@ -49,10 +49,13 @@ public:
 
     bool areEquivalentFrames(const GeodeticPosition_2D &obj) const;
 
-    Eigen::VectorXd getDataVector() const
+    Eigen::VectorXd getDataVector() const override
     {
         return this->data;
     }
+
+public:
+    void updateQJSONObject(QJsonObject &obj) const override;
 
 public:
 
@@ -74,6 +77,7 @@ public:
     void setLatitude(const double &latitude) override
     {
         this->data(1) = latitude;
+        this->validateDimension(IGNORE_Y_DIMENSION);
     }
 
     //!
@@ -83,6 +87,7 @@ public:
     void setLongitude(const double &longitude) override
     {
         this->data(0) = longitude;
+        this->validateDimension(IGNORE_X_DIMENSION);
     }
 
     //!

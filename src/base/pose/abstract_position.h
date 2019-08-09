@@ -1,6 +1,6 @@
 #ifndef ABSTRACT_POSITION_H
 #define ABSTRACT_POSITION_H
-
+#include <QJsonObject>
 #include <Eigen/Core>
 
 #include <sstream>
@@ -68,14 +68,20 @@ public:
 
     virtual bool areAllPositionsValid() const
     {
-        //Ken Fix This
-        return true;
+        if(dimensionMask ==0)
+            return true;
+        return false;
     }
 
     virtual bool areTranslationalComponentsValid() const
     {
+        uint16_t translationInvalid = IGNORE_X_DIMENSION | IGNORE_Y_DIMENSION ;
+
         return true;
     }
+
+public:
+    virtual void updateQJSONObject(QJsonObject &obj) const = 0;
 
 public:
     //!

@@ -46,17 +46,26 @@ CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
 
 bool CartesianPosition_2D::hasXBeenSet() const
 {
-    return this->dimensionMask&IGNORE_Y_DIMENSION;
+    if((this->dimensionMask&IGNORE_X_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool CartesianPosition_2D::hasYBeenSet() const
 {
-    return this->dimensionMask&IGNORE_X_DIMENSION;
+    if((this->dimensionMask&IGNORE_Y_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool CartesianPosition_2D::areEquivalentFrames(const CartesianPosition_2D &obj) const
 {
     return this->getCartesianFrameType() == obj.getCartesianFrameType();
+}
+
+void CartesianPosition_2D::updateQJSONObject(QJsonObject &obj) const
+{
+
 }
 
 double CartesianPosition_2D::deltaX(const CartesianPosition_2D &that) const

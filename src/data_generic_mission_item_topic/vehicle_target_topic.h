@@ -8,7 +8,7 @@
 #include "mace.h"
 
 #include "data/i_topic_component_data_object.h"
-#include "base/pose/abstract_position.h"
+#include "base/pose/pose_components.h"
 #include "data/controller_state.h"
 
 namespace MissionTopic{
@@ -23,16 +23,22 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 public:    
     VehicleTargetTopic();
-    VehicleTargetTopic(const int &vehicleID, const mace::pose::PositionPtr targetPosition, const double &targetDistance, const Data::ControllerState &state = Data::ControllerState::UNKNOWN);
+    VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* m_targetPosition, const double &targetDistance, const Data::ControllerState &state = Data::ControllerState::UNKNOWN);
     VehicleTargetTopic(const VehicleTargetTopic &copy);
     VehicleTargetTopic(const mace_guided_target_stats_t &obj);
 
+    ~VehicleTargetTopic()
+    {
+        if(m_targetPosition)
+            delete m_targetPosition; m_targetPosition = nullptr;
+    }
+
 public:
-    int getVehicleID() const{
+    unsigned int getVehicleID() const{
         return systemID;
     }
 
-    void setVehicleID(const int &ID){
+    void setVehicleID(const unsigned int &ID){
         this->systemID = ID;
     }
 
@@ -43,7 +49,7 @@ public:
     void operator = (const VehicleTargetTopic &rhs)
     {
         this->systemID = rhs.systemID;
-        this->targetPosition = rhs.targetPosition;
+        this->m_targetPosition = rhs.m_targetPosition;
         this->targetDistance = rhs.targetDistance;
         this->targetState = rhs.targetState;
     }
@@ -55,7 +61,7 @@ public:
             return false;
         }
 
-        if(this->targetPosition != rhs.targetPosition)
+        if(this->m_targetPosition != rhs.m_targetPosition)
         {
             return false;
         }
@@ -77,10 +83,10 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const VehicleTargetTopic& t);
 
 private:
-    int systemID;
+    unsigned int systemID;
 
 public:
-    mace::pose::PositionPtr targetPosition;
+    mace::pose::Position* m_targetPosition;
     double targetDistance;
     Data::ControllerState targetState;
 };

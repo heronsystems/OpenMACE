@@ -50,12 +50,16 @@ GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_3D &copy):
 
 bool GeodeticPosition_2D::hasLatitudeBeenSet() const
 {
-    return this->dimensionMask&IGNORE_Y_DIMENSION;
+    if((this->dimensionMask&IGNORE_Y_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool GeodeticPosition_2D::hasLongitudeBeenSet() const
 {
-    return this->dimensionMask&IGNORE_X_DIMENSION;
+    if((this->dimensionMask&IGNORE_X_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool GeodeticPosition_2D::areEquivalentFrames(const GeodeticPosition_2D &obj) const
@@ -63,6 +67,11 @@ bool GeodeticPosition_2D::areEquivalentFrames(const GeodeticPosition_2D &obj) co
     return this->areEquivalentGeodeticFrames(obj);
 }
 
+void GeodeticPosition_2D::updateQJSONObject(QJsonObject &obj) const
+{
+    obj["lat"] = this->getLatitude();
+    obj["lng"] = this->getLongitude();
+}
 
 double GeodeticPosition_2D::distanceFromOrigin() const
 {

@@ -70,17 +70,23 @@ GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticPosition_2D &copy):
 
 bool GeodeticPosition_3D::hasLatitudeBeenSet() const
 {
-    return this->dimensionMask&IGNORE_Y_DIMENSION;
+    if((this->dimensionMask&IGNORE_Y_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool GeodeticPosition_3D::hasLongitudeBeenSet() const
 {
-    return this->dimensionMask&IGNORE_X_DIMENSION;
+    if((this->dimensionMask&IGNORE_X_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool GeodeticPosition_3D::hasAltitudeBeenSet() const
 {
-    return this->dimensionMask&IGNORE_Z_DIMENSION;
+    if((this->dimensionMask&IGNORE_Z_DIMENSION) == 0)
+        return true;
+    return false;
 }
 
 bool GeodeticPosition_3D::hasTranslationalComponentBeenSet() const
@@ -91,6 +97,13 @@ bool GeodeticPosition_3D::hasTranslationalComponentBeenSet() const
 bool GeodeticPosition_3D::areEquivalentFrames(const GeodeticPosition_3D &obj) const
 {
     return this->areEquivalentGeodeticFrames(obj) && this->areEquivalentAltitudeFrames(&obj);
+}
+
+void GeodeticPosition_3D::updateQJSONObject(QJsonObject &obj) const
+{
+    obj["lat"] = this->getLatitude();
+    obj["lng"] = this->getLongitude();
+    obj["alt"] = this->getAltitude();
 }
 
 //!

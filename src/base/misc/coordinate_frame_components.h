@@ -20,6 +20,24 @@ enum class CoordinateFrameTypes : uint8_t{
 
 };
 
+inline CartesianFrameTypes getCartesianCoordinateFrame(const CoordinateFrameTypes &frame)
+{
+    switch (frame) {
+    case CoordinateFrameTypes::CF_LOCAL_NED:
+        return CartesianFrameTypes::CF_LOCAL_NED;
+    case CoordinateFrameTypes::CF_LOCAL_ENU:
+        return CartesianFrameTypes::CF_LOCAL_ENU;
+    case CoordinateFrameTypes::CF_LOCAL_OFFSET_NED:
+        return CartesianFrameTypes::CF_LOCAL_OFFSET_NED;
+    case CoordinateFrameTypes::CF_BODY_NED:
+        return CartesianFrameTypes::CF_BODY_NED;
+    case CoordinateFrameTypes::CF_BODY_ENU:
+        return CartesianFrameTypes::CF_BODY_ENU;
+    default:
+        return CartesianFrameTypes::CF_LOCAL_UNKNOWN;
+    }
+}
+
 inline CoordinateFrameTypes getCoordinateFrame(const CartesianFrameTypes &frame)
 {
     switch (frame) {
@@ -35,6 +53,26 @@ inline CoordinateFrameTypes getCoordinateFrame(const CartesianFrameTypes &frame)
         return CoordinateFrameTypes::CF_BODY_ENU;
     default:
         return CoordinateFrameTypes::CF_LOCAL_UNKNOWN;
+    }
+}
+
+inline GeodeticFrameTypes getGeodeticCoordinateFrame(const CoordinateFrameTypes &frame)
+{
+    switch (frame) {
+    case CoordinateFrameTypes::CF_GLOBAL_UNKNOWN:
+        return GeodeticFrameTypes::CF_GLOBAL_UNKNOWN;
+    case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT:
+        return GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT;
+    case CoordinateFrameTypes::CF_GLOBAL_INT:
+        return GeodeticFrameTypes::CF_GLOBAL_INT;
+    case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
+        return GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT;
+    case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT:
+        return GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT;
+    case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT:
+        return GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT;
+    default:
+        return GeodeticFrameTypes::CF_GLOBAL_UNKNOWN;
     }
 }
 

@@ -25,7 +25,7 @@ void ControllerGuidedMissionItem<command_item::SpatialWaypoint>::FillMissionItem
             mavlinkItem.z = static_cast<float>(castPosition->getAltitude());
         }
     }
-    else if(basePosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+    else if(basePosition->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
     {
         if(basePosition->is2D())
         {

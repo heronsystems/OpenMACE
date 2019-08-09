@@ -76,6 +76,9 @@ public:
     //!
     std::string printPositionalInfo() const override;
 
+public:
+    void updateQJSONObject(QJsonObject &obj) const override;
+
 private:
     double z;
 

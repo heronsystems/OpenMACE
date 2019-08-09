@@ -101,14 +101,13 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
                 double distance = fabs(currentPosition.deltaAltitude(&targetPosition));
 
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-//                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), targetPosition, distance, guidedState);
-//                Owner().callTargetCallback(vehicleTarget);
+                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), &targetPosition, distance, guidedState);
+                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
                 {
                     if(cmd->getPosition()->areTranslationalComponentsValid())
                     {
-                        this->currentCommand = cmd->getClone();
                         desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;
                     }
                     else
@@ -129,6 +128,7 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
 
             controllerClimb->setLambda_Shutdown([this, collection]()
             {
+                UNUSED(this);
                 auto ptr = collection->Remove("takeoffClimb");
                 delete ptr;
             });
