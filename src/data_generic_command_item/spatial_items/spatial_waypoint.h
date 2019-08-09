@@ -26,7 +26,7 @@ class SpatialWaypoint : public AbstractSpatialAction
 public:
     SpatialWaypoint();
     SpatialWaypoint(const SpatialWaypoint &obj);
-    SpatialWaypoint(const int &systemOrigin, const int &systemTarget = 0);
+    SpatialWaypoint(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0);
 
     ~SpatialWaypoint() override;
 

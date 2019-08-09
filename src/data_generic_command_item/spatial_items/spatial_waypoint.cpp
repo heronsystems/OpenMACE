@@ -34,7 +34,7 @@ SpatialWaypoint::SpatialWaypoint(const SpatialWaypoint &obj):
     this->operator =(obj);
 }
 
-SpatialWaypoint::SpatialWaypoint(const int &systemOrigin, const int &systemTarget):
+SpatialWaypoint::SpatialWaypoint(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 

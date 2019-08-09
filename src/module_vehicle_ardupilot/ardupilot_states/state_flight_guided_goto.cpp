@@ -66,7 +66,7 @@ bool State_FlightGuided_GoTo::handleCommand(const std::shared_ptr<AbstractComman
             //Ken Fix: This position object is going to be assumed to be global geodetic with relative alt
             //We should consolidate this to the correct position type and then perform the transform here to make the command consistent
             //Also this should only use waypoints for now
-            int targetSystem = cmd->getTargetSystem();
+            unsigned int targetSystem = cmd->getTargetSystem();
 
             /*
              * Ken Fix: Eventually align the data types to one desired type of position element.
@@ -101,7 +101,7 @@ bool State_FlightGuided_GoTo::handleCommand(const std::shared_ptr<AbstractComman
 
                 MavlinkEntityKey target = Owner().getMAVLINKID();
                 MavlinkEntityKey sender = 255;
-                command_item::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
+                command_item::SpatialWaypoint waypoint(sender, targetSystem);
                 waypoint.setPosition(cmdPosition);
                 ((MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint> *)Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
                 break;
