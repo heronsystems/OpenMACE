@@ -138,6 +138,7 @@ mace_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
     mace_guided_target_stats_t rtn;
     rtn.coordinate_frame = static_cast<uint8_t>(this->m_targetPosition->getExplicitCoordinateFrame());
     rtn.state = static_cast<uint8_t>(this->targetState);
+    rtn.distance = static_cast<float>(this->targetDistance);
 
     switch (this->m_targetPosition->getCoordinateSystemType()) {
     case CoordinateSystemTypes::CARTESIAN:
