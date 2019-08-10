@@ -7,6 +7,7 @@ namespace pose {
 Rotation_2D::Rotation_2D(const std::string &name):
     AbstractRotation(1,name), Eigen::Rotation2D<double>()
 {
+    this->dimensionMask = ignoreAllPositions;
 }
 
 Rotation_2D::Rotation_2D(const Rotation_2D &copy):
@@ -25,6 +26,13 @@ Rotation_2D::Rotation_2D(const double &angle):
     AbstractRotation(1), Eigen::Rotation2D<double>(angle)
 {
 
+}
+
+bool Rotation_2D::isYawDimensionSet() const
+{
+    if((this->dimensionMask&YAW_DIMENSION_VALID) == 0)
+        return true;
+    return false;
 }
 
 void Rotation_2D::setPhi(const double &angle)

@@ -9,7 +9,7 @@ using namespace mace::pose;
 Position::Position(const std::string &posName):
     Kinematic_BaseInterface(), name(posName)
 {
-
+    this->dimensionMask = ignoreAllPositions;
 }
 
 //!

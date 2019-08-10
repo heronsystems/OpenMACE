@@ -29,6 +29,9 @@ public:
     };
 
 public:
+    static const uint16_t ignoreAllPositions = IGNORE_YAW_DIMENSION|IGNORE_YAW_RATE_DIMENSION;
+
+public:
     //!
     //! \brief Orientation_2D
     //!
@@ -84,6 +87,13 @@ public:
     //! \return
     //!
     double getPhi() const;
+
+
+    //!
+    //! \brief isYawDimensionSet
+    //! \return
+    //!
+    bool isYawDimensionSet() const;
 
 public:
     void setQuaternion(const Eigen::Quaterniond &rot) override;

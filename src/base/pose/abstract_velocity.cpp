@@ -5,7 +5,7 @@ using namespace mace::pose;
 Velocity::Velocity(const std::string &posName):
     Kinematic_BaseInterface(), name(posName)
 {
-
+    this->dimensionMask = ignoreAllPositions;
 }
 
 Velocity::Velocity(const Velocity &copy):

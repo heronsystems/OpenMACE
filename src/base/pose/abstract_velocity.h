@@ -29,6 +29,9 @@ public:
     };
 
 public:
+    static const uint16_t ignoreAllPositions = IGNORE_X_DIMENSION|IGNORE_Y_DIMENSION|IGNORE_Z_DIMENSION;
+
+public:
     Velocity(const std::string &velName = "Velocity Object");
 
     Velocity(const Velocity &copy);
@@ -48,6 +51,10 @@ public:
 
     virtual void updateDataVector(const Eigen::VectorXd &vecObj) const = 0;
 
+    bool isAnyVelocityValid() const
+    {
+        return (dimensionMask^ignoreAllPositions) > 0 ? true : false;
+    }
 public:
 
     void updateVelocityName(const std::string &nameString);
