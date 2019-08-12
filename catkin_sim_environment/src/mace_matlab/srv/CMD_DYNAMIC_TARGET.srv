@@ -1,0 +1,22 @@
+# CMD_DYNAMIC_TARGET
+# The vehicle will fly based on this dynamic target information. 
+
+time    timestamp
+uint8   vehicleID
+uint8   commandID
+uint8   coordinateFrame
+uint16  bitmask
+
+float64 xP
+float64 yP
+float64 zP
+
+float64 xV
+float64 yV
+float64 zV
+
+float64 yaw
+float64 yawRate
+
+---
+bool    success
