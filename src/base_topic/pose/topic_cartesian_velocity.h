@@ -3,7 +3,7 @@
 
 #include "data/i_topic_component_data_object.h"
 
-#include "base/pose/base_velocity.h"
+#include "base/pose/velocity_helper.h"
 
 namespace mace {
 namespace pose_topics {

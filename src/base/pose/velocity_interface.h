@@ -1,5 +1,5 @@
-#ifndef BASE_VELOCITY_H
-#define BASE_VELOCITY_H
+#ifndef VELOCITY_INTERFACE_H
+#define VELOCITY_INTERFACE_H
 
 #include <Eigen/Core>
 #include <type_traits>
@@ -10,19 +10,16 @@ namespace mace{
 namespace pose{
 
 template<const CoordinateSystemTypes coordType, typename CFDATA, class DATA>
-class Base_Velocity: public Velocity
+class VelocityInterface: public Velocity
 {
 public:
-
-
-public:
-    Base_Velocity(const CFDATA &frame):
+    VelocityInterface(const CFDATA &frame):
         Velocity(), explicitFrame(frame)
     {
         explicitType = coordType;
     }
 
-    Base_Velocity(const Base_Velocity &copy):
+    VelocityInterface(const VelocityInterface &copy):
         Velocity(copy)
     {
         explicitType = copy.explicitType;
@@ -36,19 +33,19 @@ public:
     }
     void updateDataVector(const Eigen::VectorXd &vecObj) const override
     {
-
+        this->data = vecObj;
     }
 
 
 public:
     Velocity* getVelocityClone() const override
     {
-        return (new Base_Velocity<coordType, CFDATA, DATA>(*this));
+        return (new VelocityInterface<coordType, CFDATA, DATA>(*this));
     }
 
     void getVelocityClone(Velocity** state) const override
     {
-        *state = new Base_Velocity<coordType, CFDATA, DATA>(*this);
+        *state = new VelocityInterface<coordType, CFDATA, DATA>(*this);
     }
 
     CoordinateSystemTypes getCoordinateSystemType() const override
@@ -76,23 +73,8 @@ public:
     DATA data;
 };
 
-template<class DATA>
-struct VelocityHelper;
-
-template<>
-struct VelocityHelper<Eigen::Vector2d>
-{
-
-};
-
-typedef Base_Velocity<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector2d> Cartesian_Velocity2D;
-typedef Base_Velocity<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector3d> Cartesian_Velocity3D;
-
-
-typedef Base_Velocity<CoordinateSystemTypes::GEODETIC, GeodeticFrameTypes, Eigen::Vector2d> Geodetic_Velocity2D;
-typedef Base_Velocity<CoordinateSystemTypes::GEODETIC, GeodeticFrameTypes, Eigen::Vector3d> Geodetic_Velocity3D;
 
 } // end of namespace pose
 } // end of namespace mace
 
-#endif // BASE_VELOCITY_H
+#endif // VELOCITY_INTERFACE_H

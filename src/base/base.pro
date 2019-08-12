@@ -60,7 +60,8 @@ SOURCES += \
     measurements/base_speed.cpp \
     pose/abstract_rotation.cpp \
     pose/abstract_position.cpp \
-    pose/rotation_2D.cpp
+    pose/rotation_2D.cpp \
+    pose/velocity_interface.cpp
 
 HEADERS +=\
     base_global.h \
@@ -111,7 +112,6 @@ HEADERS +=\
     misc/altitude_coordinate_frames.h \
     misc/coordinate_frame_components.h \
     misc/kinematic_definitions.h \
-    pose/base_velocity.h \
     pose/base_altitude.h \
     geometry/abstract_polygon.h \
     unit_tests/unittests_orientation.h \
@@ -120,7 +120,9 @@ HEADERS +=\
     pose/abstract_rotation.h \
     pose/abstract_position.h \
     pose/rotation_2D.h \
-    pose/pose_components.h
+    pose/pose_components.h \
+    pose/velocity_interface.h \
+    pose/velocity_helper.h
 
 # Unix lib Install
 unix:!symbian {

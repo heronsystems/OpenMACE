@@ -9,7 +9,7 @@
 #include "abstract_velocity.h"
 #include "altitude_interface.h"
 #include "base_altitude.h"
-#include "base_velocity.h"
+#include "velocity_interface.h"
 #include "cartesian_position_2D.h"
 #include "cartesian_position_3D.h"
 #include "dynamics_aid.h"
@@ -18,5 +18,7 @@
 #include "position_interface.h"
 #include "rotation_2D.h"
 #include "rotation_3D.h"
+#include "velocity_helper.h"
+#include "velocity_interface.h"
 
 #endif // POSE_COMPONENTS_H
