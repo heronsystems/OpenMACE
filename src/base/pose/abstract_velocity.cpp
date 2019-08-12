@@ -1,11 +1,15 @@
 #include "abstract_velocity.h"
 
-using namespace mace::pose;
+namespace mace {
+namespace pose {
+
+const uint16_t Velocity::ignoreAllVelocities;
+
 
 Velocity::Velocity(const std::string &posName):
     Kinematic_BaseInterface(), name(posName)
 {
-    this->dimensionMask = ignoreAllPositions;
+    this->dimensionMask = ignoreAllVelocities;
 }
 
 Velocity::Velocity(const Velocity &copy):
@@ -23,3 +27,6 @@ std::string Velocity::getName() const
 {
     return this->name;
 }
+
+} //end of namespace pose
+} //end of namespace mace

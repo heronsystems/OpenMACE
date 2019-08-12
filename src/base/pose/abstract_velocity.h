@@ -29,7 +29,7 @@ public:
     };
 
 public:
-    static const uint16_t ignoreAllPositions = IGNORE_X_DIMENSION|IGNORE_Y_DIMENSION|IGNORE_Z_DIMENSION;
+    static const uint16_t ignoreAllVelocities = IGNORE_X_DIMENSION|IGNORE_Y_DIMENSION|IGNORE_Z_DIMENSION;
 
 public:
     Velocity(const std::string &velName = "Velocity Object");
@@ -53,7 +53,7 @@ public:
 
     bool isAnyVelocityValid() const
     {
-        return (dimensionMask^ignoreAllPositions) > 0 ? true : false;
+        return (dimensionMask^ignoreAllVelocities) > 0 ? true : false;
     }
 public:
 
