@@ -2,6 +2,7 @@
 #define I_MODULE_EVENTS_ROS_H
 
 #include "i_module_events_general.h"
+#include "i_module_events_path_planning.h"
 
 #include "base/pose/rotation_3D.h"
 #include "base/pose/cartesian_position_3D.h"
@@ -9,7 +10,7 @@
 namespace MaceCore
 {
 
-class IModuleEventsROS  : public IModuleEventsGeneral
+class IModuleEventsROS  : virtual public IModuleEventsPathPlanning
 {
 
 public:

@@ -2,6 +2,9 @@
 
 using namespace mace::pose;
 
+const uint16_t Position::ignoreAllPositions;
+
+
 //!
 //! \brief Position::Position
 //! \param posName

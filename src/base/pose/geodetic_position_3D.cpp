@@ -6,6 +6,16 @@ namespace pose{
 
 //!
 //! \brief GeodeticPosition_3D::GeodeticPosition_3D
+//!
+GeodeticPosition_3D::GeodeticPosition_3D():
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, "Geodetic Point"), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_UNKNOWN), state_space::State()
+{
+    this->dimension = 3;
+    this->setDimensionMask(ignoreAllPositions);
+}
+
+//!
+//! \brief GeodeticPosition_3D::GeodeticPosition_3D
 //! \param frameType
 //! \param latitude
 //! \param longitude
@@ -17,9 +27,10 @@ GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticFrameTypes &frameType,
                     const double &latitude, const double &longitude,
                     const AltitudeReferenceTypes &altitudeType, const double &altitude,
                     const std::string &pointName):
-    Abstract_GeodeticPosition(frameType, pointName), Abstract_Altitude(altitudeType), state_space::State(), data(longitude, latitude, altitude)
+    Abstract_GeodeticPosition(frameType, pointName), Abstract_Altitude(altitudeType), state_space::State(), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
+    this->setLatitude(latitude); this->setLongitude(longitude); this->setAltitude(altitude);
 }
 
 //!
@@ -32,9 +43,10 @@ GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticFrameTypes &frameType,
 GeodeticPosition_3D::GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude,
                                          const std::string &pointName):
     Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE), state_space::State(),
-    data(longitude, latitude, altitude)
+    data(0.0,0.0,0.0)
 {
     this->dimension = 3;
+    this->setLatitude(latitude); this->setLongitude(longitude); this->setAltitude(altitude);
 }
 
 GeodeticPosition_3D::GeodeticPosition_3D(const mace_global_position_int_t &pos):

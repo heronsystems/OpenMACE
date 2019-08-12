@@ -7,28 +7,32 @@ namespace pose{
 CartesianPosition_2D::CartesianPosition_2D():
     Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, ""), State(), data(0,0)
 {
-
+    this->dimension = 2;
+    this->setDimensionMask(ignoreAllPositions);
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianFrameTypes &frameType,
                     const double &x, const double &y,
                     const std::string &pointName):
-    Abstract_CartesianPosition(frameType, pointName), State(), data(x,y)
+    Abstract_CartesianPosition(frameType, pointName), State(), data(0.0,0.0)
 {
     this->dimension = 2;
+    this->setXPosition(x); this->setYPosition(y);
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const std::string &pointName,
                     const double &x, const double &y):
-    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State(), data(x,y)
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State(), data(0.0,0.0)
 {
     this->dimension = 2;
+    this->setXPosition(x); this->setYPosition(y);
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const double &x, const double &y):
-    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, "Cartesian Point"), State(), data(x,y)
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, "Cartesian Point"), State(), data(0.0,0.0)
 {
     this->dimension = 2;
+    this->setXPosition(x); this->setYPosition(y);
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_2D &copy):

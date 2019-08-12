@@ -189,6 +189,21 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         controllerRTL->Send(*cmd,sender,target);
         collection->Insert("RTLController",controllerRTL);
     }
+    case COMMANDTYPE::CI_ACT_TARGET:
+    {
+        std::cout<<"We are currently in the flight mode and have seen a command for an action target."<<std::endl;
+        if(!this->IsInState<State_FlightGuided>())
+        {
+            std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
+        }
+        else
+        {
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            currentInnerState->handleCommand(command);
+        }
+
+        break;
+    }
     default:
     {
         ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());

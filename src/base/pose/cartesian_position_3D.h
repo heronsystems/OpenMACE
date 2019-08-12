@@ -14,10 +14,12 @@ class CartesianPosition_3D : public Abstract_CartesianPosition, public Abstract_
 {
 public:
 
-    CartesianPosition_3D(const CartesianFrameTypes &frameType = CartesianFrameTypes::CF_LOCAL_UNKNOWN,
-                        const double &x = 0.0, const double &y = 0.0,
-                        const AltitudeReferenceTypes &altitudeType = AltitudeReferenceTypes::REF_ALT_UNKNOWN, const double &z = 0.0,
-                        const std::string &pointName = "Cartesian Point");
+    CartesianPosition_3D();
+
+    CartesianPosition_3D(const CartesianFrameTypes &frameType,
+                        const double &x, const double &y,
+                        const AltitudeReferenceTypes &altitudeType, const double &z,
+                        const std::string &pointName);
 
     CartesianPosition_3D(const double &x, const double &y, const double &z, const std::string &pointName = "Cartesian Point");
 

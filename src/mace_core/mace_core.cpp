@@ -9,9 +9,9 @@ namespace MaceCore
 {
 
 MaceCore::MaceCore() :
-    m_GroundStation(NULL),
-    m_PathPlanning(NULL),
-    m_GlobalRTA(NULL),
+    m_GroundStation(nullptr),
+    m_PathPlanning(nullptr),
+    m_GlobalRTA(nullptr),
     m_MaceInstanceIDSet(false)
 {
 }
@@ -145,13 +145,13 @@ void MaceCore::AddLocalModule_ExternalLink(const std::shared_ptr<IModuleCommandE
     m_ExternalLink.push_back(externalLink);
 
     //if there is a ground station, notify this new external link about the existance of GS
-    if(m_GroundStation != NULL)
+    if(m_GroundStation != nullptr)
     {
         externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_GroundStation->GetCharacteristic(), ModuleClasses::GROUND_STATION);
     }
 
     //if there is an RTA module, notify this new external link about the existance of the rta module
-    if(m_GlobalRTA != NULL)
+    if(m_GlobalRTA != nullptr)
     {
         externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_GlobalRTA->GetCharacteristic(), ModuleClasses::RTA);
     }
@@ -459,17 +459,12 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 {
     UNUSED(sender);
-    //    UNUSED(vehicleID);
+    try{
+        m_VehicleIDToPort.at(vehicleID)->MarshalCommand(VehicleCommands::REQUEST_DUMMY_FUNCTION,vehicleID);
+    }catch(const std::out_of_range &oor){
+        UNUSED(oor);
+    }
 
-    //    try{
-    //        std::cout<<"Saw a request dummy function"<<std::endl;
-    //        m_VehicleIDToPort.at(vehicleID)->MarshalCommand(VehicleCommands::REQUEST_VEHICLE_HOME,vehicleID);
-    //    }catch(const std::out_of_range &oor){
-
-    //    }
-//    if(m_GlobalRTA) {
-//        m_GlobalRTA->MarshalCommand(RTACommands::TEST_FUNCTION, vehicleID);
-//    }
 }
 
 
@@ -542,7 +537,7 @@ void MaceCore::Events_NewVehicle(const ModuleBase *sender, const uint8_t publicI
     if(m_ROS)
         m_ROS->MarshalCommand(ROSCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
 
-    if(m_GroundStation.get() != NULL)
+    if(m_GroundStation.get() != nullptr)
         m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
 
     //No mace_mavlink message exists to notify remote instances about the new vehicle. Relly on heartbeat instead.
@@ -1079,7 +1074,7 @@ void MaceCore::ExternalEvent_NewOnboardMission(const ModuleBase *sender, const M
     bool interest = false;
 
     //If we have an GS module, assume it is interested in downloading mission and request external link to download mission from aircraft
-    if(m_GroundStation != NULL)
+    if(m_GroundStation != nullptr)
     {
         interest = true;
     }
@@ -1349,6 +1344,11 @@ void MaceCore::GSEvent_UploadMission(const void *sender, const MissionItem::Miss
 /////////////////////////////////////////////////////////////////////////
 /// PATH PLANNING EVENTS
 /////////////////////////////////////////////////////////////////////////
+
+void MaceCore::EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj)
+{
+    std::cout<<"Mace core has been notified by a module of the path planning variety that there is a new dynamic target."<<std::endl;
+}
 
 //!
 //! \brief EventPP_LoadOccupancyEnvironment Load a new occupancy map

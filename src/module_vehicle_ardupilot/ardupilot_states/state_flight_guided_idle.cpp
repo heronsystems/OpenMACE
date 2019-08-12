@@ -41,6 +41,11 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
             rtn = hsm::SiblingTransition<State_FlightGuided_GoTo>(currentCommand);
             break;
         }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET:
+        {
+            rtn = hsm::SiblingTransition<State_FlightGuided_Target>(currentCommand);
+            break;
+        }
         default:
             std::cout<<"I dont know how we eneded up in this transition state from State_FlightGuided_Idle."<<std::endl;
             break;
@@ -56,6 +61,12 @@ bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractComman
     {
         this->currentCommand = command->getClone();
         desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO;
+        break;
+    }
+    case COMMANDTYPE::CI_ACT_TARGET:
+    {
+        this->currentCommand = command->getClone();
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET;
         break;
     }
     default:
@@ -83,3 +94,4 @@ void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem>
 
 #include "ardupilot_states/state_flight_guided_goto.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
+#include "ardupilot_states/state_flight_guided_target.h"

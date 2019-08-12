@@ -66,6 +66,11 @@ hsm::Transition State_FlightGuided::GetTransition()
             rtn = hsm::InnerEntryTransition<State_FlightGuided_Queue>(currentCommand);
             break;
         }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET:
+        {
+            rtn = hsm::InnerEntryTransition<State_FlightGuided_Target>(currentCommand);
+            break;
+        }
         default:
             std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
             break;
@@ -76,7 +81,7 @@ hsm::Transition State_FlightGuided::GetTransition()
 
 bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    std::cout<<"We are trying to handle a command in here."<<std::endl;
+    std::cout<<"We are trying to handle the command in the parent state state_flight_guided."<<std::endl;
     ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
     currentInnerState->handleCommand(command);
 }
@@ -174,4 +179,5 @@ void State_FlightGuided::announceTargetState(const command_target::DynamicTarget
 #include "ardupilot_states/state_flight_guided_goto.h"
 #include "ardupilot_states/state_flight_guided_idle.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
+#include "ardupilot_states/state_flight_guided_target.h"
 

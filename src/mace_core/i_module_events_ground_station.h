@@ -8,7 +8,7 @@
 namespace MaceCore
 {
 
-class IModuleEventsGroundStation : public IModuleEventsGeneral, public IModuleEventsBoundaryGenerator
+class IModuleEventsGroundStation : virtual public IModuleEventsGeneral, virtual public IModuleEventsBoundaryGenerator
 {
 public:
     //!

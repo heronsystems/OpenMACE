@@ -8,7 +8,8 @@ DynamicTarget::DynamicTarget():
 
 }
 
-DynamicTarget::DynamicTarget(const Position* pos, const Velocity* vel, const Rotation_2D *rot, const Rotation_2D* rotRate)
+DynamicTarget::DynamicTarget(const Position* pos, const Velocity* vel, const Rotation_2D *rot, const Rotation_2D* rotRate):
+    m_Position(nullptr), m_Velocity(nullptr), m_Yaw(nullptr), m_YawRate(nullptr)
 {
     this->setPosition(pos);
     this->setVelocity(vel);
@@ -16,7 +17,8 @@ DynamicTarget::DynamicTarget(const Position* pos, const Velocity* vel, const Rot
     this->setYawRate(rotRate);
 }
 
-DynamicTarget::DynamicTarget(const DynamicTarget &copy)
+DynamicTarget::DynamicTarget(const DynamicTarget &copy):
+    m_Position(nullptr), m_Velocity(nullptr), m_Yaw(nullptr), m_YawRate(nullptr)
 {
     this->setPosition(copy.getPosition());
     this->setVelocity(copy.getVelocity());
@@ -34,26 +36,46 @@ DynamicTarget::~DynamicTarget()
 
 void DynamicTarget::setPosition(const Position* pos)
 {
-    delete m_Position; m_Position = nullptr;
-    this->m_Position = pos->getPositionalClone();
+    if(m_Position != nullptr)
+    {
+        delete m_Position;
+        m_Position = nullptr;
+    }
+    if(pos != nullptr)
+        this->m_Position = pos->getPositionalClone();
 }
 
 void DynamicTarget::setVelocity(const Velocity* vel)
 {
-    delete m_Velocity; m_Velocity = nullptr;
-    this->m_Velocity = vel->getVelocityClone();
+    if(m_Velocity)
+    {
+        delete m_Velocity;
+        m_Velocity = nullptr;
+    }
+    if(vel != nullptr)
+        this->m_Velocity = vel->getVelocityClone();
 }
 
 void DynamicTarget::setYaw(const Rotation_2D* rot)
 {
-    delete m_Yaw; m_Yaw = nullptr;
-    this->m_Yaw = rot->getRotationalClone()->rotationAs<Rotation_2D>();
+    if(m_Yaw)
+    {
+        delete m_Yaw;
+        m_Yaw = nullptr;
+    }
+    if(rot != nullptr)
+        this->m_Yaw = rot->getRotationalClone()->rotationAs<Rotation_2D>();
 }
 
 void DynamicTarget::setYawRate(const Rotation_2D* rotRate)
 {
-    delete m_YawRate; m_YawRate = nullptr;
-    this->m_YawRate = rotRate->getRotationalClone()->rotationAs<Rotation_2D>();
+    if(m_YawRate)
+    {
+        delete m_YawRate;
+        m_YawRate = nullptr;
+    }
+    if(rotRate != nullptr)
+        this->m_YawRate = rotRate->getRotationalClone()->rotationAs<Rotation_2D>();
 }
 
 const Position* DynamicTarget::getPosition() const

@@ -46,14 +46,14 @@ namespace MaceCore
 {
 
 class MACE_CORESHARED_EXPORT MaceCore :
-        public IModuleTopicEvents,
-        public IModuleEventsVehicle,
-        public IModuleEventsSensors,
-        public IModuleEventsRTA,
-        public IModuleEventsPathPlanning,
-        public IModuleEventsROS,
-        public IModuleEventsGroundStation,
-        public IModuleEventsExternalLink
+        virtual public IModuleTopicEvents,
+        virtual public IModuleEventsVehicle,
+        virtual public IModuleEventsSensors,
+        virtual public IModuleEventsRTA,
+        virtual public IModuleEventsPathPlanning,
+        virtual public IModuleEventsROS,
+        virtual public IModuleEventsGroundStation,
+        virtual public IModuleEventsExternalLink
 {
 
 
@@ -547,6 +547,8 @@ public:
     /////////////////////////////////////////////////////////////////////////
     /// PATH PLANNING EVENTS
     /////////////////////////////////////////////////////////////////////////
+
+    void EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj) override;
 
     //!
     //! \brief EventPP_LoadOccupancyEnvironment Load a new occupancy map

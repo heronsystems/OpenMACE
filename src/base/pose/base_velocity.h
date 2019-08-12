@@ -76,6 +76,15 @@ public:
     DATA data;
 };
 
+template<class DATA>
+struct VelocityHelper;
+
+template<>
+struct VelocityHelper<Eigen::Vector2d>
+{
+
+};
+
 typedef Base_Velocity<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector2d> Cartesian_Velocity2D;
 typedef Base_Velocity<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector3d> Cartesian_Velocity3D;
 

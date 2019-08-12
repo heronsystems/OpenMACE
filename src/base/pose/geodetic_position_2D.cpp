@@ -5,6 +5,16 @@ namespace mace{
 namespace pose{
 
 //!
+//! \brief GeodeticPosition_2D::GeodeticPosition_2D
+//!
+GeodeticPosition_2D::GeodeticPosition_2D():
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, "Geodetic Point"), State()
+{
+    this->dimension = 2;
+    this->setDimensionMask(ignoreAllPositions);
+}
+
+//!
 //! \brief GeodeticPosition_2D
 //! \param pointName
 //! \param latitude
@@ -13,22 +23,25 @@ namespace pose{
 GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticFrameTypes &frameType,
                     const double &latitude, const double &longitude,
                     const std::string &pointName):
-    Abstract_GeodeticPosition(frameType, pointName), State(), data(longitude, latitude)
+    Abstract_GeodeticPosition(frameType, pointName), State(), data(0.0,0.0)
 {
     this->dimension = 2;
+    this->setLatitude(latitude); this->setLongitude(longitude);
 }
 
 GeodeticPosition_2D::GeodeticPosition_2D(const std::string &pointName,
                     const double &latitude, const double &longitude):
-    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, pointName), State(), data(longitude, latitude)
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, pointName), State(), data(0.0,0.0)
 {
     this->dimension = 2;
+    this->setLatitude(latitude); this->setLongitude(longitude);
 }
 
 GeodeticPosition_2D::GeodeticPosition_2D(const double &latitude, const double &longitude):
-    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, "Geodetic Point"), State(), data(longitude, latitude)
+    Abstract_GeodeticPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT, "Geodetic Point"), State(), data(0.0,0.0)
 {
     this->dimension = 2;
+    this->setLatitude(latitude); this->setLongitude(longitude);
 }
 
 

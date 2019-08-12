@@ -12,10 +12,12 @@ class GeodeticPosition_3D : public Abstract_GeodeticPosition, public Abstract_Al
 {
 public:
 
-    GeodeticPosition_3D(const GeodeticFrameTypes &frameType = GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
-                        const double &latitude = 0.0, const double &longitude = 0.0,
-                        const AltitudeReferenceTypes &altitudeType = AltitudeReferenceTypes::REF_ALT_UNKNOWN, const double &altitude = 0.0,
-                        const std::string &pointName = "Geodetic Point");
+    GeodeticPosition_3D();
+
+    GeodeticPosition_3D(const GeodeticFrameTypes &frameType,
+                        const double &latitude, const double &longitude,
+                        const AltitudeReferenceTypes &altitudeType, const double &altitude,
+                        const std::string &pointName);
 
     GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude, const std::string &pointName = "Geodetic Point");
 

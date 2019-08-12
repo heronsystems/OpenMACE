@@ -8,36 +8,30 @@ void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetIt
 {
     double power = pow(10,7);
     uint16_t bitArray = 65535;
-
-    //This handles the packing of the position components
-
-    double power = pow(10,7);
-    uint16_t bitArray = 65535; // first let us assume that they are all
-
     command_target::DynamicTarget currentTarget = targetStruct.target;
 
     //This handles the packing of the position components
-    if(currentTarget.getPosition()->isAnyPositionValid())
-    {
-        if(currentTarget.getPosition()->is2D())
-        {
-            mace::pose::GeodeticPosition_2D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::GeodeticPosition_2D>();
-            if(castPosition->hasLatitudeBeenSet())
-                mavlinkItem.lat_int = castPosition->getLatitude() * power; bitArray = (bitArray & (~1));
-            if(castPosition->hasLongitudeBeenSet())
-                mavlinkItem.lon_int = castPosition->getLongitude() * power; bitArray = (bitArray & (~2));
-        }
-        else if(currentTarget.getPosition()->is3D())
-        {
-            mace::pose::GeodeticPosition_3D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
-            if(castPosition->hasLatitudeBeenSet())
-                mavlinkItem.lat_int = castPosition->getLatitude() * power; bitArray = (bitArray & (~1));
-            if(castPosition->hasLongitudeBeenSet())
-                mavlinkItem.lon_int = castPosition->getLongitude() * power; bitArray = (bitArray & (~2));
-            if(castPosition->hasAltitudeBeenSet())
-                mavlinkItem.alt = castPosition->getAltitude();  bitArray = (bitArray & (~4));
-        }
-    }
+//    if(currentTarget.getPosition()->isAnyPositionValid())
+//    {
+//        if(currentTarget.getPosition()->is2D())
+//        {
+//            mace::pose::GeodeticPosition_2D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::GeodeticPosition_2D>();
+//            if(castPosition->hasLatitudeBeenSet())
+//                mavlinkItem.lat_int = castPosition->getLatitude() * power; bitArray = (bitArray & (~1));
+//            if(castPosition->hasLongitudeBeenSet())
+//                mavlinkItem.lon_int = castPosition->getLongitude() * power; bitArray = (bitArray & (~2));
+//        }
+//        else if(currentTarget.getPosition()->is3D())
+//        {
+//            mace::pose::GeodeticPosition_3D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
+//            if(castPosition->hasLatitudeBeenSet())
+//                mavlinkItem.lat_int = castPosition->getLatitude() * power; bitArray = (bitArray & (~1));
+//            if(castPosition->hasLongitudeBeenSet())
+//                mavlinkItem.lon_int = castPosition->getLongitude() * power; bitArray = (bitArray & (~2));
+//            if(castPosition->hasAltitudeBeenSet())
+//                mavlinkItem.alt = castPosition->getAltitude();  bitArray = (bitArray & (~4));
+//        }
+//    }
 
     mavlinkItem.type_mask = bitArray;
 }

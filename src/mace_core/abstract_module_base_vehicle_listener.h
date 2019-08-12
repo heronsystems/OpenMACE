@@ -14,7 +14,8 @@
     REQUEST_ONBOARD_AUTO_MISSION, CLEAR_ONBOARD_AUTO_MISSION, \
     REQUEST_ONBOARD_GUIDED_MISSION, CLEAR_ONBOARD_GUIDED_MISSION, \
     REQUEST_VEHICLE_HOME, SET_VEHICLE_HOME, \
-    FOLLOW_NEW_COMMANDS,FINISH_AND_FOLLOW_COMMANDS,COMMANDS_APPENDED
+    FOLLOW_NEW_COMMANDS,FINISH_AND_FOLLOW_COMMANDS,COMMANDS_APPENDED, \
+    EXECUTE_DYNAMIC_TARGET
 
 namespace MaceCore
 {
@@ -81,6 +82,9 @@ public:
         });
 
 
+        this->template AddCommandLogic<command_target::DynamicTarget>(CT::EXECUTE_DYNAMIC_TARGET, [this](const command_item::Action_DynamicTarget &command, const OptionalParameter<ModuleCharacteristic> &sender){
+            Command_ExecuteDynamicTarget(command, sender);
+        });
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,6 +227,13 @@ public:
     //! \param sender Sender module
     //!
     virtual void Command_ChangeSystemMode(const command_item::ActionChangeMode &vehicleMode, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+
+    //!
+    //! \brief Command_SetDynamicTarget
+    //! \param command
+    //! \param sender
+    //!
+    virtual void Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_UploadMission Issue an upload mission command

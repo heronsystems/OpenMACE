@@ -232,6 +232,16 @@ void ModuleVehicleArdupilot::Command_ChangeSystemMode(const command_item::Action
     ProgressStateMachineStates();
 }
 
+void ModuleVehicleArdupilot::Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(sender);
+
+    ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    AbstractCommandItemPtr currentCommand = std::make_shared<command_item::Action_DynamicTarget>(command);
+    outerState->handleCommand(currentCommand);
+    ProgressStateMachineStates();
+}
+
 //!
 //! \brief Command_IssueGeneralCommand Command a general command
 //! \param command General command

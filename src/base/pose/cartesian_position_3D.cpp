@@ -5,20 +5,29 @@ namespace mace{
 namespace pose{
 
 
+CartesianPosition_3D::CartesianPosition_3D():
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, "Cartesian Point"), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_UNKNOWN), State(), data(0.0,0.0,0.0)
+{
+    this->dimension = 3;
+    this->setDimensionMask(ignoreAllPositions);
+}
+
 CartesianPosition_3D::CartesianPosition_3D(const CartesianFrameTypes &frameType,
                     const double &x, const double &y,
                     const AltitudeReferenceTypes &altitudeType, const double &z,
                     const std::string &pointName):
-    Abstract_CartesianPosition(frameType, pointName), Abstract_Altitude(altitudeType), State(), data(x,y,z)
+    Abstract_CartesianPosition(frameType, pointName), Abstract_Altitude(altitudeType), State(), data(0.0,0.0,0.0)
 
 {
     this->dimension = 3;
+    this->setXPosition(x); this->setYPosition(y); this->setZPosition(z);
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const double &x, const double &y, const double &z, const std::string &pointName):
-    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_UNKNOWN), State(), data(x,y,z)
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_UNKNOWN), State(), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
+    this->setXPosition(x); this->setYPosition(y); this->setZPosition(z);
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_3D &copy):

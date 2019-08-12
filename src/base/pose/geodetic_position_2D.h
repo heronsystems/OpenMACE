@@ -11,15 +11,21 @@ class GeodeticPosition_2D : public Abstract_GeodeticPosition, public state_space
 {
 
 public:
+
+    //!
+    //! \brief GeodeticPosition_2D
+    //!
+    GeodeticPosition_2D();
+
     //!
     //! \brief GeodeticPosition_2D
     //! \param pointName
     //! \param latitude
     //! \param longitude
     //!
-    GeodeticPosition_2D(const GeodeticFrameTypes &frameType = GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
-                        const double &latitude = 0.0, const double &longitude = 0.0,
-                        const std::string &pointName = "Position Point");
+    GeodeticPosition_2D(const GeodeticFrameTypes &frameType,
+                        const double &latitude, const double &longitude,
+                        const std::string &pointName);
 
     GeodeticPosition_2D(const std::string &pointName,
                         const double &latitude, const double &longitude);

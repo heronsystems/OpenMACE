@@ -289,6 +289,14 @@ public:
     virtual void Command_IssueGeneralCommand(const std::shared_ptr<command_item::AbstractCommandItem> &command);
 
     //!
+    //! \brief Command_ExecuteDynamicTarget
+    //! \param command
+    //! \param sender
+    //!
+    virtual void Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+
+
+    //!
     //! \brief Command_EmitHeartbeat
     //! \param heartbeat
     //!

@@ -15,8 +15,8 @@ public:
     CartesianPosition_2D();
 
     CartesianPosition_2D(const CartesianFrameTypes &frameType,
-                        const double &x = 0.0, const double &y = 0.0,
-                        const std::string &pointName = "Cartesian Point");
+                        const double &x, const double &y,
+                        const std::string &pointName);
 
     CartesianPosition_2D(const std::string &pointName,
                         const double &x, const double &y);

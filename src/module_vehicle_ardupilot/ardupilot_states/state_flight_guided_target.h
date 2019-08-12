@@ -11,7 +11,6 @@
 
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_mission_item.h"
 
 #include "data_generic_command_item/command_item_components.h"
 

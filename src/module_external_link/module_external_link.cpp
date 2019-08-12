@@ -761,6 +761,13 @@ void ModuleExternalLink::Command_IssueGeneralCommand(const std::shared_ptr<comma
     UNUSED(command);
 }
 
+void ModuleExternalLink::Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(command);
+    UNUSED(sender);
+}
+
+
 void ModuleExternalLink::Command_EmitHeartbeat(const command_item::SpatialTakeoff &heartbeat)
 {
 

@@ -61,10 +61,14 @@ public:
 public:
     DynamicTarget& operator = (const DynamicTarget &rhs)
     {
-        this->m_Position = rhs.m_Position->getPositionalClone();
-        this->m_Velocity = rhs.m_Velocity->getVelocityClone();
-        this->m_Yaw = rhs.m_Yaw->getRotationalClone()->rotationAs<Rotation_2D>();
-        this->m_YawRate = rhs.m_YawRate->getRotationalClone()->rotationAs<Rotation_2D>();
+        if(rhs.m_Position != nullptr)
+            this->m_Position = rhs.m_Position->getPositionalClone();
+        if(rhs.m_Velocity != nullptr)
+            this->m_Velocity = rhs.m_Velocity->getVelocityClone();
+        if(rhs.m_Yaw != nullptr)
+            this->m_Yaw = rhs.m_Yaw->getRotationalClone()->rotationAs<Rotation_2D>();
+        if(rhs.m_YawRate != nullptr)
+            this->m_YawRate = rhs.m_YawRate->getRotationalClone()->rotationAs<Rotation_2D>();
         return *this;
     }
 

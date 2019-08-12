@@ -52,66 +52,25 @@ hsm::Transition State_FlightGuided_Target::GetTransition()
 
 bool State_FlightGuided_Target::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-//    switch (command->getCommandType()) {
-//        case COMMANDTYPE::CI_ACT_TARGET:
-//        {
+    switch (command->getCommandType()) {
+        case COMMANDTYPE::CI_ACT_TARGET:
+        {
 
-//            //We want to keep this command in scope to perform the action
-//            this->currentCommand = command->getClone();
+            //We want to keep this command in scope to perform the action
+            this->currentCommand = command->getClone();
 
-//            const command_item::CommandGoTo* cmd = currentCommand->as<command_item::CommandGoTo>();
+            const command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
 
-//            //We want to first assume that this command has not been currently accepted
-//            this->commandAccepted = false;
-
-//            //Ken Fix: This position object is going to be assumed to be global geodetic with relative alt
-//            //We should consolidate this to the correct position type and then perform the transform here to make the command consistent
-//            //Also this should only use waypoints for now
-//            Base3DPosition cmdPosition = cmd->getSpatialCommand()->getPosition();
-//            int targetSystem = cmd->getTargetSystem();
-
-//            /*
-//             * Ken Fix: Eventually align the data types to one desired type of position element.
-//             * Also, it may not be necessary to call up another notifier if another guided command arrives.
-//             * Although, this is handled in the get/set notifier if the pointer is already the same it
-//             * just updates the underlying lambda function call
-//             */
-
-//            Owner().state->vehicleGlobalPosition.AddNotifier(this, [this, cmdPosition, targetSystem]
-//            {
-//                if(this->commandAccepted){
-//                    if(cmdPosition.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
-//                    {
-//                        StateGlobalPosition cmdPos(cmdPosition.getY(),cmdPosition.getX(),cmdPosition.getZ());
-//                        StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
-//                        double distance = fabs(currentPosition.distanceBetween3D(cmdPos));
-
-//                        Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-//                        MissionTopic::VehicleTargetTopic vehicleTarget(targetSystem, cmdPos, distance, guidedState);
-//                        Owner().callTargetCallback(vehicleTarget);
-
-//                        if(guidedState == Data::ControllerState::ACHIEVED)
-//                        {
-//                            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
-//                        }
-
-//                    }
-//                    else{
-//                        std::cout<<"At the moment we cannot support goTo types of different coordinate frames."<<std::endl;
-//                    }
-//                }
-
-//            });
-
-//            MavlinkEntityKey target = Owner().getMAVLINKID();
-//            MavlinkEntityKey sender = 255;
-//            command_item::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
-//            waypoint.setPosition(cmdPosition);
-//            ((MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint> *)Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
-//        }
-//        default:
-//            break;
-//        }
+            MavlinkEntityKey target = Owner().getMAVLINKID();
+            MavlinkEntityKey sender = 255;
+            MAVLINKVehicleControllers::TargetControllerStruct_Global tgt;
+            tgt.targetID = static_cast<uint8_t>(target);
+            tgt.target = cmd->getDynamicTarget();
+            ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global*)Owner().ControllersCollection()->At("GuidedGeodeticController"))->Send(tgt, sender, target);
+        }
+        default:
+            break;
+        }
 }
 
 void State_FlightGuided_Target::Update()
@@ -137,37 +96,32 @@ void State_FlightGuided_Target::OnEnter(const std::shared_ptr<AbstractCommandIte
         return;
     }
 
-    //Insert a new controller only one time in the guided state to manage the entirity of the commands that are goto
+    if(command->getCommandType() != COMMANDTYPE::CI_ACT_TARGET)
+    {
+        //we dont handle commands of this type in here
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
+        return;
+    }
+
+
+    //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-       auto goToController = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-       goToController->AddLambda_Finished(this, [this,goToController](const bool completed, const uint8_t finishCode){
 
-           UNUSED(goToController);
+    auto geodeticTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+       geodeticTargetController->AddLambda_Finished(this, [this,geodeticTargetController](const bool completed, const uint8_t finishCode){
 
-           if(!completed)
-           {
-               //for some reason a timeout has occured, should we handle this differently
-               std::cout<<"A timeout has occured when trying to send a goto command."<<std::endl;
-               desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
-           }else if(finishCode != MAV_MISSION_ACCEPTED)
-           {
-               std::cout<<"The autopilot says there is an error with the goTo command."<<std::endl;
-               desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
-           }
-           else if(completed && (finishCode == MAV_MISSION_ACCEPTED))
-           {
-               this->commandAccepted = true;
-           }
+           UNUSED(geodeticTargetController);
+           std::cout<<"We have finished transmitting the guided state command."<<std::endl;
        });
 
-       goToController->setLambda_Shutdown([this, collection]()
+       geodeticTargetController->setLambda_Shutdown([this, collection]()
        {
            UNUSED(this);
-           auto ptr = collection->Remove("goToController");
+           auto ptr = collection->Remove("GuidedGeodeticController");
            delete ptr;
        });
 
-       collection->Insert("goToController",goToController);
+       collection->Insert("GuidedGeodeticController",geodeticTargetController);
 
     this->handleCommand(command);
 }

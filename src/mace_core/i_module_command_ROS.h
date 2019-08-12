@@ -93,11 +93,6 @@ public:
     //!
     virtual void NewlyFoundPath(const std::vector<mace::state_space::StatePtr> &path) = 0;
 
-    //    //!
-//    //! \brief New targets have been assigned to the given vehicle
-//    //! \param vehicleID ID of vehicle
-//    //!
-//    virtual void NewVehicleTarget(const std::string &vehicleID) = 0;
 
 
 };

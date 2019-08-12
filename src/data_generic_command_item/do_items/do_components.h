@@ -4,6 +4,7 @@
 #include "action_arm.h"
 #include "action_change_mode.h"
 #include "action_change_speed.h"
+#include "action_dynamic_target.h"
 #include "command_goto.h"
 #include "action_mission_command.h"
 #include "action_motor_test.h"

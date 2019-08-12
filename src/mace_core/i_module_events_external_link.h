@@ -33,7 +33,7 @@ public:
     BoundaryItem::BoundaryCharacterisic Characteistic;
 };
 
-class IModuleEventsExternalLink : public IModuleEventsGeneral, public IModuleEventsGeneralVehicle, public IModuleEventsBoundaryGenerator
+class IModuleEventsExternalLink : virtual public IModuleEventsGeneral, virtual public IModuleEventsGeneralVehicle, virtual public IModuleEventsBoundaryGenerator
 {
 
 public:
