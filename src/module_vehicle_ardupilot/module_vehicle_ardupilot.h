@@ -316,11 +316,16 @@ public:
         newCommand.setTargetSystem(3);
         newCommand.setOriginatingSystem(255);
         command_target::DynamicTarget newTarget;
-        mace::pose::GeodeticPosition_3D currentPositionTarget;
-        currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
-        currentPositionTarget.updateTranslationalComponents(-35.3621531, 149.1650811);
-        currentPositionTarget.setAltitude(10.0);
-        newTarget.setPosition(&currentPositionTarget);
+//        mace::pose::GeodeticPosition_3D currentPositionTarget;
+//        currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+//        currentPositionTarget.updateTranslationalComponents(-35.3621531, 149.1650811);
+//        currentPositionTarget.setAltitude(10.0);
+//        newTarget.setPosition(&currentPositionTarget);
+        mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+        currentVelocityTarget.setXVelocity(5.0);
+        currentVelocityTarget.setYVelocity(0.0);
+        currentVelocityTarget.setZVelocity(0.0);
+        newTarget.setVelocity(&currentVelocityTarget);
         newCommand.setDynamicTarget(newTarget);
 
         ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());

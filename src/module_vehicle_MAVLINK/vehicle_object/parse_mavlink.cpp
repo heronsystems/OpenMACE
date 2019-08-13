@@ -365,12 +365,32 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         //KEN: This is now getting called and we could use this as a function.
         //Only was in latest arducopter branch so may not work with everyones
         //sim or vehicle environments, be sure to keep updated.
-        std::cout<<"I have received a target global int message."<<std::endl;
+        mavlink_position_target_global_int_t decodedMSG;
+        mavlink_msg_position_target_global_int_decode(msg,&decodedMSG);
+
+        double power = pow(10,7);
+
+        mace::pose::GeodeticPosition_3D targetPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
+                                                       static_cast<double>(decodedMSG.lat_int/power),
+                                                       static_cast<double>(decodedMSG.lon_int/power),
+                                                       AltitudeReferenceTypes::REF_ALT_RELATIVE,
+                                                       static_cast<double>(decodedMSG.alt), "Target Position");
+
+        MissionTopic::VehicleTargetTopic vehicleTarget(systemID, &targetPosition);
+        std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrMissionTopic = std::make_shared<MissionTopic::VehicleTargetTopic>(vehicleTarget);
+
+        if(this->m_CB != nullptr)
+            m_CB->cbi_VehicleMissionData(systemID, ptrMissionTopic);
+
         break;
     }
     case MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED:
     {
         std::cout<<"I have received a target local int message."<<std::endl;
+
+        mavlink_position_target_local_ned_t decodedMSG;
+        mavlink_msg_position_target_local_ned_decode(msg,&decodedMSG);
+
         break;
     }
     default:

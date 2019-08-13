@@ -76,8 +76,8 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                 mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
                 double distance = fabs(currentPosition.deltaAltitude(cmd->getPosition()->positionAs<mace::pose::GeodeticPosition_3D>()));
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition(), distance, guidedState);
-                Owner().callTargetCallback(vehicleTarget);
+//                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition());
+//                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
                 {

@@ -46,7 +46,8 @@ HEADERS += module_vehicle_mavlink.h\
     mavlink_entity_key.h \
     controllers/controller_guided_target_item_local.h \
     controllers/controller_guided_target_item_global.h \
-    controllers/common.h
+    controllers/common.h \
+    controllers/commands/command_msg_interval.h
 
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega

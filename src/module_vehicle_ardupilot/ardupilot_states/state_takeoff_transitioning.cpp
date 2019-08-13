@@ -68,8 +68,8 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
                 double distance = fabs(currentPosition.distanceBetween2D(cmd->getPosition()->positionAs<mace::pose::Abstract_GeodeticPosition>()));
 
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition(), distance, guidedState);
-                Owner().callTargetCallback(vehicleTarget);
+//                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition());
+//                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
                     desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
@@ -84,8 +84,8 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
                 double distance = fabs(currentPosition.distanceBetween2D(cmd->getPosition()->positionAs<mace::pose::Abstract_CartesianPosition>()));
 
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition(), distance, guidedState);
-                Owner().callTargetCallback(vehicleTarget);
+//                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition());
+//                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
                     desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;

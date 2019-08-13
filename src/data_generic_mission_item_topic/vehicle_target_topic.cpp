@@ -13,9 +13,6 @@ const MaceCore::TopicComponentStructure VehicleTargetTopic_structure = []{
     structure.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame");
     structure.AddTerminal<uint8_t>("Dimension");
     structure.AddTerminal<Eigen::VectorXd>("Data");
-
-    structure.AddTerminal<double>("targetDistance");
-    structure.AddTerminal<Data::ControllerState>("targetState");
     return structure;
 }();
 
@@ -53,9 +50,6 @@ MaceCore::TopicDatagram VehicleTargetTopic::GenerateDatagram() const {
         datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", mace::AltitudeReferenceTypes::REF_ALT_UNKNOWN);
     }
 
-
-    datagram.AddTerminal<double>("targetDistance", targetDistance);
-    datagram.AddTerminal<Data::ControllerState>("targetState", targetState);
     return datagram;
 }
 
@@ -96,20 +90,16 @@ void VehicleTargetTopic::CreateFromDatagram(const MaceCore::TopicDatagram &datag
     case CoordinateSystemTypes::NOT_IMPLIED:
         break;
     }
-
-    targetDistance = datagram.GetTerminal<double>("targetDistance");
-    targetState = datagram.GetTerminal<Data::ControllerState>("targetState");
 }
 
 VehicleTargetTopic::VehicleTargetTopic() :
-    systemID(0), m_targetPosition(nullptr), targetDistance(0.0), targetState(Data::ControllerState::UNKNOWN)
+    systemID(0), m_targetPosition(nullptr)
 {
 
 }
 
-VehicleTargetTopic::VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* position,
-                                       const double &distance, const Data::ControllerState &state):
-    systemID(vehicleID), targetDistance(distance), targetState(state)
+VehicleTargetTopic::VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* position):
+    systemID(vehicleID)
 {
     if(position)
         m_targetPosition = position->getPositionalClone();
@@ -121,15 +111,11 @@ VehicleTargetTopic::VehicleTargetTopic(const VehicleTargetTopic &copy)
     this->systemID = copy.systemID;
     if(copy.m_targetPosition)
         this->m_targetPosition = copy.m_targetPosition->getPositionalClone();
-    this->targetDistance = copy.targetDistance;
-    this->targetState = copy.targetState;
 }
 
 VehicleTargetTopic::VehicleTargetTopic(const mace_guided_target_stats_t &obj)
 {
     //Ken we need to reconstruct inside here
-    this->targetDistance = static_cast<double>(obj.distance);
-    this->targetState = static_cast<Data::ControllerState>(obj.state);
 }
 
 mace_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
@@ -137,8 +123,6 @@ mace_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
     //Ken we need to reconstruct inside here
     mace_guided_target_stats_t rtn;
     rtn.coordinate_frame = static_cast<uint8_t>(this->m_targetPosition->getExplicitCoordinateFrame());
-    rtn.state = static_cast<uint8_t>(this->targetState);
-    rtn.distance = static_cast<float>(this->targetDistance);
 
     switch (this->m_targetPosition->getCoordinateSystemType()) {
     case CoordinateSystemTypes::CARTESIAN:

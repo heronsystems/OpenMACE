@@ -35,11 +35,6 @@ ModuleVehicleArdupilot::~ModuleVehicleArdupilot()
         controller->RemoveHost(this);
     });
 
-//    if(m_MissionController)
-//    {
-//        delete m_MissionController;
-//    }
-
     delete m_TransmissionQueue;
 }
 
@@ -79,8 +74,6 @@ void ModuleVehicleArdupilot::createLog(const int &systemID)
 void ModuleVehicleArdupilot::AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
 {
     ptr->Subscribe(this, m_VehicleMissionTopic.Name());
-
-    //ptr->Subscribe(this, this->m_VehicleTopics.m_CommandSystemMode.Name());
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -558,7 +551,6 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
         stateMachine = new hsm::StateMachine();
         stateMachine->Initialize<ardupilot::state::State_Unknown>(vehicleData.get());
     }
-
 
     std::string currentFlightMode = vehicleData->ardupilotMode.parseMAVLINK(heartbeatMSG);
     DataGenericItem::DataGenericItem_FlightMode flightMode;

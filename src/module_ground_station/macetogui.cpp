@@ -101,7 +101,7 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<Mi
     QJsonObject json;
     json["dataType"] = "CurrentVehicleTarget";
     json["vehicleID"] = vehicleID;
-    json["distanceToTarget"] = component->targetDistance;
+    json["distanceToTarget"] = 0.0;
 
     if(component->m_targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {

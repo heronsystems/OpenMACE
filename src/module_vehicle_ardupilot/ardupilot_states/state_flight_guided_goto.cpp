@@ -89,8 +89,8 @@ bool State_FlightGuided_GoTo::handleCommand(const std::shared_ptr<AbstractComman
                         double distance = fabs(currentPosition.distanceTo(cmdPosition));
 
                         Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                        MissionTopic::VehicleTargetTopic vehicleTarget(targetSystem, cmdPosition, distance, guidedState);
-                        Owner().callTargetCallback(vehicleTarget);
+//                        MissionTopic::VehicleTargetTopic vehicleTarget(targetSystem, cmdPosition);
+//                        Owner().callTargetCallback(vehicleTarget);
 
                         if(guidedState == Data::ControllerState::ACHIEVED)
                         {

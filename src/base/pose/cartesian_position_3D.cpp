@@ -76,7 +76,8 @@ bool CartesianPosition_3D::areEquivalentFrames(const CartesianPosition_3D &obj) 
 
 void CartesianPosition_3D::updateQJSONObject(QJsonObject &obj) const
 {
-
+    UNUSED(obj);
+    //PAT: Would this situation have ever occured
 }
 
 double CartesianPosition_3D::deltaX(const CartesianPosition_3D &that) const

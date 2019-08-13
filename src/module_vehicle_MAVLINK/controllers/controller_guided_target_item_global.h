@@ -5,6 +5,7 @@
 
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_finish.h"
+#include "controllers/actions/action_broadcast.h"
 
 #include "mavlink.h"
 
@@ -23,6 +24,14 @@ struct TargetControllerStruct_Global
     uint8_t targetID;
     command_target::DynamicTarget target;
 };
+
+using GuidedTGTGlobalBroadcast = Controllers::ActionBroadcast<
+    mavlink_message_t,
+    MavlinkEntityKey,
+    BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>,
+    TargetControllerStruct_Global,
+    mavlink_set_position_target_global_int_t
+>;
 
 using GuidedTGTGlobalSend = Controllers::ActionSend<
     mavlink_message_t,
@@ -45,6 +54,7 @@ using GuidedTGTGlobalFinish = Controllers::ActionFinish<
 >;
 
 class ControllerGuidedTargetItem_Global : public BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>,
+        public GuidedTGTGlobalBroadcast,
         public GuidedTGTGlobalSend,
         public GuidedTGTGlobalFinish
 {
@@ -52,7 +62,25 @@ private:
 
     std::unordered_map<MaceCore::ModuleCharacteristic, MaceCore::ModuleCharacteristic> m_CommandRequestedFrom;
 
+    mavlink_set_position_target_global_int_t m_targetMSG;
+
+private:
+    bool doesMatchTransmitted(const mavlink_position_target_global_int_t &msg) const;
+
 protected:
+
+    virtual void Construct_Broadcast(const TargetControllerStruct_Global &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_global_int_t &targetItem)
+    {
+        UNUSED(sender);
+
+        targetItem = initializeMAVLINKTargetItem();
+        targetItem.target_system = commandItem.targetID;
+        targetItem.target_component = static_cast<uint8_t>(MaceCore::ModuleClasses::VEHICLE_COMMS);
+
+        FillTargetItem(commandItem,targetItem);
+
+        m_targetMSG = targetItem;
+    }
 
     virtual bool Construct_Send(const TargetControllerStruct_Global &commandItem, const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_set_position_target_global_int_t &targetItem, MavlinkEntityKey &queueObj)
     {
@@ -66,13 +94,15 @@ protected:
 
         FillTargetItem(commandItem,targetItem);
 
+        m_targetMSG = targetItem;
+
         return true;
     }
 
 
     virtual bool Finish_Receive(const mavlink_position_target_global_int_t &msg, const MavlinkEntityKey &sender, uint8_t& ack, MavlinkEntityKey &queueObj)
     {
-        std::cout<<"We have seen a position target global structure come in."<<std::endl;
+        std::cout<<"I finished receiving the object."<<msg.vx<<std::endl;
         UNUSED(msg);
         queueObj = sender;
         ack = 0;
@@ -107,11 +137,15 @@ protected:
 public:
     ControllerGuidedTargetItem_Global(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
         BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>(cb, queue, linkChan),
+        GuidedTGTGlobalBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_global_int_t>(mavlink_msg_set_position_target_global_int_encode_chan)),
         GuidedTGTGlobalSend(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_global_int_t>(mavlink_msg_set_position_target_global_int_encode_chan)),
         GuidedTGTGlobalFinish(this, mavlink_msg_position_target_global_int_decode)
     {
 
     }
+
+private:
+
 
 };
 

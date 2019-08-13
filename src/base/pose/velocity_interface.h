@@ -33,7 +33,7 @@ public:
     }
     void updateDataVector(const Eigen::VectorXd &vecObj) const override
     {
-        this->data = vecObj;
+
     }
 
 

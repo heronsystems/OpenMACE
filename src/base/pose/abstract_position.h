@@ -75,9 +75,12 @@ public:
 
     virtual bool areTranslationalComponentsValid() const
     {
-        uint16_t translationInvalid = IGNORE_X_DIMENSION | IGNORE_Y_DIMENSION ;
-
-        return true;
+        bool validTranslation = false;
+        if((this->dimensionMask&IGNORE_X_DIMENSION) == 0)
+            validTranslation = true;
+        else if((this->dimensionMask&IGNORE_Y_DIMENSION) == 0)
+            validTranslation = true;
+        return validTranslation;
     }
 
 public:

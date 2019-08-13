@@ -66,8 +66,8 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 
                     Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
 
-                    MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition(), distance, guidedState);
-                    Owner().callTargetCallback(vehicleTarget);
+//                    MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition());
+//                    Owner().callTargetCallback(vehicleTarget);
 
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {

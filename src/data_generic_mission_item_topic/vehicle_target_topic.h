@@ -23,7 +23,7 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 public:    
     VehicleTargetTopic();
-    VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* m_targetPosition, const double &targetDistance, const Data::ControllerState &state = Data::ControllerState::UNKNOWN);
+    VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* m_targetPosition);
     VehicleTargetTopic(const VehicleTargetTopic &copy);
     VehicleTargetTopic(const mace_guided_target_stats_t &obj);
 
@@ -50,8 +50,6 @@ public:
     {
         this->systemID = rhs.systemID;
         this->m_targetPosition = rhs.m_targetPosition;
-        this->targetDistance = rhs.targetDistance;
-        this->targetState = rhs.targetState;
     }
 
     bool operator == (const VehicleTargetTopic &rhs) {
@@ -62,14 +60,6 @@ public:
         }
 
         if(this->m_targetPosition != rhs.m_targetPosition)
-        {
-            return false;
-        }
-        if(fabs(this->targetDistance - rhs.targetDistance) > std::numeric_limits<double>::epsilon())
-        {
-            return false;
-        }
-        if(this->targetState != rhs.targetState)
         {
             return false;
         }
@@ -87,8 +77,6 @@ private:
 
 public:
     mace::pose::Position* m_targetPosition;
-    double targetDistance;
-    Data::ControllerState targetState;
 };
 } //end of namespace MissionTopic
 #endif // VEHICLE_TARGET_TOPIC_H
