@@ -92,7 +92,7 @@ protected:
         missionItem.x = 0.0;
         missionItem.y = 0.0;
         missionItem.z = 0.0;
-        //missionItem.mission_type = MAV_MISSION_TYPE_AUTO;
+        missionItem.mission_type = 0;
 
         return missionItem;
     }

@@ -24,20 +24,20 @@ int main(int argc, char *argv[])
 {
     double value = 0;
 
-    Eigen::Vector2d currentPosition(1,1);
-    Vector3d translation(1,1,2);
-    Matrix3d rotation = Matrix3d::Identity();
+//    Eigen::Vector2d currentPosition(1,1);
+//    Vector3d translation(1,1,2);
+//    Matrix3d rotation = Matrix3d::Identity();
 
-    Transform<double, 3, Affine> t =
-            Transform<double, 3, Affine>::Identity();
-    t.translate(translation);
+//    Transform<double, 3, Affine> t =
+//            Transform<double, 3, Affine>::Identity();
+//    t.translate(translation);
 
-    Transform<double, 3, Affine> tInvert;
-    tInvert.linear() = rotation.transpose();
-    tInvert.translation() = translation * -1;
+//    Transform<double, 3, Affine> tInvert;
+//    tInvert.linear() = rotation.transpose();
+//    tInvert.translation() = translation * -1;
 
-    currentPosition = t.rotation()*currentPosition + t.translation();
-    currentPosition = tInvert.rotation()*currentPosition + tInvert.translation();
+//    currentPosition = t.rotation()*currentPosition + t.translation();
+//    currentPosition = tInvert.rotation()*currentPosition + tInvert.translation();
 
 
 //    mace::pose::Rotation_3D orientationTest(0,M_PI_2,0.2);

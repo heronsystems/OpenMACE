@@ -41,9 +41,14 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
             rtn = hsm::SiblingTransition<State_FlightGuided_GoTo>(currentCommand);
             break;
         }
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
         {
-            rtn = hsm::SiblingTransition<State_FlightGuided_Target>(currentCommand);
+            rtn = hsm::SiblingTransition<class State_FlightGuided_CarTarget>(currentCommand);
+            break;
+        }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET:
+        {
+            rtn = hsm::SiblingTransition<class State_FlightGuided_GeoTarget>(currentCommand);
             break;
         }
         default:
@@ -66,7 +71,19 @@ bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractComman
     case COMMANDTYPE::CI_ACT_TARGET:
     {
         this->currentCommand = command->getClone();
-        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET;
+        //The command is a target, we therefore have to figure out what type of target it is
+        const mace::pose::Position* targetPosition = command->as<command_item::Action_DynamicTarget>()->getDynamicTarget().getPosition();
+        if(targetPosition != nullptr)
+        {
+            if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+            else if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+        }
+        else //everything else can technically be handled by the CARTESIAN based guided commands
+        {
+            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+        }
         break;
     }
     default:
@@ -124,4 +141,5 @@ void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem>
 
 #include "ardupilot_states/state_flight_guided_goto.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
+#include "ardupilot_states/state_flight_guided_target_car.h"
 #include "ardupilot_states/state_flight_guided_target_geo.h"

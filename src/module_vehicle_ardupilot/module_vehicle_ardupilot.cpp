@@ -512,9 +512,9 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
         vehicleData->connectCallback(this);
         vehicleData->connectTargetCallback(ModuleVehicleArdupilot::staticCallbackFunction_VehicleTarget, this);
 
-        this->vehicleData->mission->vehicleHomePosition.AddNotifier(this,[this]{
-            TransformDynamicMissionQueue();
-        });
+//        this->vehicleData->mission->vehicleHomePosition.AddNotifier(this,[this]{
+//            TransformDynamicMissionQueue();
+//        });
 
         //request the current mission on the vehicle
         this->prepareMissionController();
@@ -764,7 +764,8 @@ void ModuleVehicleArdupilot::prepareMissionController()
         ///Update about Home position
         //////////////////////////////
         command_item::SpatialHome home = std::get<0>(data);
-        vehicleData->mission->vehicleHomePosition.set(home);
+        mace::pose::GeodeticPosition_3D* homePosition = home.getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
+        vehicleData->state->vehicleGlobalHome.set(*homePosition);
         this->cbi_VehicleHome(home.getOriginatingSystem(),home);
 
         //////////////////////////////

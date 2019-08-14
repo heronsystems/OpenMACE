@@ -13,12 +13,13 @@ MAV_FRAME_GLOBAL_RELATIVE_TERRAIN_ALT_INT: alt is meters above terrain
 
 namespace MAVLINKVehicleControllers {
 
-void ControllerGuidedTargetItem_Global::FillTargetItem(const TargetControllerStruct_Global &targetStruct, mavlink_set_position_target_global_int_t &mavlinkItem)
+template<>
+void ControllerGuidedTargetItem_Global<command_item::Action_DynamicTarget>::FillTargetItem(const command_item::Action_DynamicTarget &command, mavlink_set_position_target_global_int_t &mavlinkItem)
 {
     double power = pow(10,7);
     uint16_t bitArray = 3583; // first let us assume that they are all
 
-    command_target::DynamicTarget currentTarget = targetStruct.target;
+    command_target::DynamicTarget currentTarget = command.getDynamicTarget();
 
     mavlinkItem.coordinate_frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
 
@@ -82,7 +83,8 @@ void ControllerGuidedTargetItem_Global::FillTargetItem(const TargetControllerStr
     mavlinkItem.type_mask = bitArray;
 }
 
-bool ControllerGuidedTargetItem_Global::doesMatchTransmitted(const mavlink_position_target_global_int_t &msg) const
+template <typename T>
+bool ControllerGuidedTargetItem_Global<T>::doesMatchTransmitted(const mavlink_position_target_global_int_t &msg) const
 {
     if(fabsf(m_targetMSG.vx - msg.vx) > std::numeric_limits<float>::epsilon())
         return false;

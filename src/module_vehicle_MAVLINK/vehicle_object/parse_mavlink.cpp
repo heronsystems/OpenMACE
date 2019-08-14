@@ -389,11 +389,11 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         if(!(decodedMSG.type_mask & IGNORE_POS_TYPE_MASK)) //means the position was to not be ignored
         {
-            mace::pose::CartesianPosition_3D targetPosition(CartesianFrameTypes::CF_GLOBAL_RELATIVE_ALT,
-                                                           static_cast<double>(decodedMSG.x),
-                                                           static_cast<double>(decodedMSG.y),
-                                                           AltitudeReferenceTypes::REF_ALT_RELATIVE,
-                                                           static_cast<double>(decodedMSG.z), "Target Cartesian Position");
+//            mace::pose::CartesianPosition_3D targetPosition(CartesianFrameTypes::CF_GLOBAL_RELATIVE_ALT,
+//                                                           static_cast<double>(decodedMSG.x),
+//                                                           static_cast<double>(decodedMSG.y),
+//                                                           AltitudeReferenceTypes::REF_ALT_RELATIVE,
+//                                                           static_cast<double>(decodedMSG.z), "Target Cartesian Position");
         }
 
 

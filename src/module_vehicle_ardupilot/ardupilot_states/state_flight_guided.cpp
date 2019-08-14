@@ -66,13 +66,8 @@ hsm::Transition State_FlightGuided::GetTransition()
             rtn = hsm::InnerEntryTransition<State_FlightGuided_Queue>(currentCommand);
             break;
         }
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET:
-        {
-            rtn = hsm::InnerEntryTransition<State_FlightGuided_Target>(currentCommand);
-            break;
-        }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED."<<std::endl;
             break;
         }
     }

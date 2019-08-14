@@ -15,8 +15,10 @@ void State_FlightGuided_CarTarget::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
-    if(Owner().ControllersCollection()->Exist("CartesianTargetController"))
-        ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("CartesianTargetController"))->Shutdown();
+    if(Owner().ControllersCollection()->Exist("CartesianTargetController")){
+        MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local* ptr = dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*>(Owner().ControllersCollection()->Remove("CartesianTargetController"));
+        delete ptr;
+    }
 
 }
 
@@ -111,14 +113,6 @@ void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommand
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
     auto cartesianTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-
-    cartesianTargetController->setLambda_Shutdown([this, collection]()
-    {
-        std::cout<<"The cartesian shutdown was called here."<<std::endl;
-        UNUSED(this);
-        auto ptr = collection->Remove("CartesianTargetController");
-        delete ptr;
-    });
 
     collection->Insert("CartesianTargetController",cartesianTargetController);
 

@@ -23,7 +23,8 @@ namespace state{
 
 class State_FlightGuided_GoTo;
 class State_FlightGuided_Queue;
-class State_FlightGuided_Target;
+class State_FlightGuided_CarTarget;
+class State_FlightGuided_GeoTarget;
 
 class State_FlightGuided_Idle : public AbstractStateArdupilot
 {

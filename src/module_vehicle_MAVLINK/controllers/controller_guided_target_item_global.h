@@ -13,48 +13,24 @@
 
 #include "module_vehicle_MAVLINK/controllers/common.h"
 
-#include "data_generic_command_item/target_items/dynamic_target.h"
+#include "data_generic_command_item/do_items/action_dynamic_target.h"
 
 namespace MAVLINKVehicleControllers {
 
 using namespace mace::pose;
 
-struct TargetControllerStruct_Global
-{
-    uint8_t targetID;
-    command_target::DynamicTarget target;
-};
-
+template <typename T>
 using GuidedTGTGlobalBroadcast = Controllers::ActionBroadcast<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>,
-    TargetControllerStruct_Global,
+    BasicMavlinkController_ModuleKeyed<T>,
+    T,
     mavlink_set_position_target_global_int_t
 >;
 
-using GuidedTGTGlobalSend = Controllers::ActionSend<
-    mavlink_message_t,
-    MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>,
-    MavlinkEntityKey,
-    TargetControllerStruct_Global,
-    mavlink_set_position_target_global_int_t,
-    MAVLINK_MSG_ID_SET_POSITION_TARGET_GLOBAL_INT
->;
-
-using GuidedTGTGlobalFinish = Controllers::ActionFinish<
-    mavlink_message_t,
-    MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>,
-    MavlinkEntityKey,
-    uint8_t,
-    mavlink_position_target_global_int_t,
-    MAVLINK_MSG_ID_POSITION_TARGET_GLOBAL_INT
->;
-
-class ControllerGuidedTargetItem_Global : public BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>,
-        public GuidedTGTGlobalBroadcast
+template <typename COMMANDDATASTRUCTURE>
+class ControllerGuidedTargetItem_Global : public BasicMavlinkController_ModuleKeyed<COMMANDDATASTRUCTURE>,
+        public GuidedTGTGlobalBroadcast<COMMANDDATASTRUCTURE>
 {
 private:
 
@@ -67,7 +43,7 @@ private:
 
 protected:
 
-    virtual void Construct_Broadcast(const TargetControllerStruct_Global &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_global_int_t &targetItem)
+    virtual void Construct_Broadcast(const COMMANDDATASTRUCTURE &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_global_int_t &targetItem)
     {
         UNUSED(sender);
 
@@ -78,36 +54,10 @@ protected:
         FillTargetItem(commandItem,targetItem);
 
         m_targetMSG = targetItem;
-    }
-
-    virtual bool Construct_Send(const TargetControllerStruct_Global &commandItem, const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_set_position_target_global_int_t &targetItem, MavlinkEntityKey &queueObj)
-    {
-        UNUSED(sender);
-        UNUSED(target);
-        queueObj = this->GetKeyFromSecondaryID(commandItem.targetID);
-
-        targetItem = initializeMAVLINKTargetItem();
-        targetItem.target_system = commandItem.targetID;
-        targetItem.target_component = static_cast<uint8_t>(MaceCore::ModuleClasses::VEHICLE_COMMS);
-
-        FillTargetItem(commandItem,targetItem);
-
-        m_targetMSG = targetItem;
-
-        return true;
-    }
-
-
-    virtual bool Finish_Receive(const mavlink_position_target_global_int_t &msg, const MavlinkEntityKey &sender, uint8_t& ack, MavlinkEntityKey &queueObj)
-    {
-        UNUSED(msg);
-        queueObj = sender;
-        ack = 0;
-        return doesMatchTransmitted(msg);
     }
 
 protected:
-    void FillTargetItem(const TargetControllerStruct_Global &targetItem, mavlink_set_position_target_global_int_t &mavlinkItem);
+    void FillTargetItem(const COMMANDDATASTRUCTURE &command, mavlink_set_position_target_global_int_t &mavlinkItem);
 
     mavlink_set_position_target_global_int_t initializeMAVLINKTargetItem()
     {
@@ -133,8 +83,8 @@ protected:
 
 public:
     ControllerGuidedTargetItem_Global(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>(cb, queue, linkChan),
-        GuidedTGTGlobalBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_global_int_t>(mavlink_msg_set_position_target_global_int_encode_chan))
+        BasicMavlinkController_ModuleKeyed<COMMANDDATASTRUCTURE>(cb, queue, linkChan),
+        GuidedTGTGlobalBroadcast<COMMANDDATASTRUCTURE>(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_global_int_t>(mavlink_msg_set_position_target_global_int_encode_chan))
     {
 
     }
