@@ -143,6 +143,7 @@ public:
     bool hasAltitudeBeenSet() const;
 
     bool hasTranslationalComponentBeenSet() const;
+
 public:
 
     double distanceBetween3D(const GeodeticPosition_3D &position) const;

@@ -24,51 +24,50 @@ struct TargetControllerStructLocal
     command_target::DynamicTarget target;
 };
 
-template <typename T>
 using GuidedTGTLocalBroadcast = Controllers::ActionBroadcast<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<T>,
-    T,
+    BasicMavlinkController_ModuleKeyed<TargetControllerStructLocal>,
+    TargetControllerStructLocal,
     mavlink_set_position_target_local_ned_t
 >;
 
-template <typename T>
 using GuidedTGTLocalSend = Controllers::ActionSend<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<T>,
+    BasicMavlinkController_ModuleKeyed<TargetControllerStructLocal>,
     MavlinkEntityKey,
-    T,
+    TargetControllerStructLocal,
     mavlink_set_position_target_local_ned_t,
     MAVLINK_MSG_ID_SET_POSITION_TARGET_LOCAL_NED
 >;
 
-template <typename T>
 using GuidedTGTLocalFinish = Controllers::ActionFinish<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<T>,
+    BasicMavlinkController_ModuleKeyed<TargetControllerStructLocal>,
     MavlinkEntityKey,
     uint8_t,
     mavlink_position_target_local_ned_t,
     MAVLINK_MSG_ID_POSITION_TARGET_LOCAL_NED
 >;
 
-template <typename TARGETITEM>
-class ControllerGuidedTargetItem_Local : public BasicMavlinkController_ModuleKeyed<TARGETITEM>,
-        public GuidedTGTLocalBroadcast<TARGETITEM>,
-        public GuidedTGTLocalSend<TARGETITEM>,
-        public GuidedTGTLocalFinish<TARGETITEM>
+class ControllerGuidedTargetItem_Local : public BasicMavlinkController_ModuleKeyed<TargetControllerStructLocal>,
+        public GuidedTGTLocalBroadcast
 {
 private:
 
     std::unordered_map<MavlinkEntityKey, MavlinkEntityKey> m_CommandRequestedFrom;
 
+    mavlink_set_position_target_local_ned_t m_targetMSG;
+
+private:
+    bool doesMatchTransmitted(const mavlink_position_target_local_ned_t &msg) const;
+
 protected:
 
 
-    virtual void Construct_Broadcast(const TARGETITEM &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_local_ned_t &targetItem)
+    virtual void Construct_Broadcast(const TargetControllerStructLocal &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_local_ned_t &targetItem)
     {
         UNUSED(sender);
 
@@ -79,7 +78,7 @@ protected:
         FillTargetItem(commandItem,targetItem);
     }
 
-    virtual bool Construct_Send(const TARGETITEM &commandItem, const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_set_position_target_local_ned_t &targetItem, MavlinkEntityKey &queueObj)
+    virtual bool Construct_Send(const TargetControllerStructLocal &commandItem, const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_set_position_target_local_ned_t &targetItem, MavlinkEntityKey &queueObj)
     {
         UNUSED(sender);
         UNUSED(target);
@@ -87,9 +86,11 @@ protected:
 
         targetItem = initializeMAVLINKTargetItem();
         targetItem.target_system = commandItem.targetID;
-        targetItem.target_component = 0;
+        targetItem.target_component = static_cast<uint8_t>(MaceCore::ModuleClasses::VEHICLE_COMMS);
 
         FillTargetItem(commandItem,targetItem);
+
+        m_targetMSG = targetItem;
 
         return true;
     }
@@ -100,7 +101,7 @@ protected:
         UNUSED(msg);
         queueObj = sender;
         ack = 0;
-        return true;
+        return doesMatchTransmitted(msg);
     }
 
 protected:
@@ -130,10 +131,8 @@ protected:
 
 public:
     ControllerGuidedTargetItem_Local(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<TARGETITEM>(cb, queue, linkChan),
-        GuidedTGTLocalBroadcast<TARGETITEM>(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_local_ned_t>(mavlink_msg_set_position_target_local_ned_encode_chan)),
-        GuidedTGTLocalSend<TARGETITEM>(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_local_ned_t>(mavlink_msg_set_position_target_local_ned_encode_chan)),
-        GuidedTGTLocalFinish<TARGETITEM>(this, mavlink_msg_position_target_local_ned_decode)
+        BasicMavlinkController_ModuleKeyed<TargetControllerStructLocal>(cb, queue, linkChan),
+        GuidedTGTLocalBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_local_ned_t>(mavlink_msg_set_position_target_local_ned_encode_chan))
     {
 
     }

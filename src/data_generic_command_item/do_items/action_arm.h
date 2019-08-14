@@ -118,6 +118,6 @@ private:
 
 };
 
-} //end of namespace MissionItem
+} //end of namespace command_item
 
 #endif // ACTION_ARM_H

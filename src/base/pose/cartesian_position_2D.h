@@ -87,7 +87,10 @@ public:
 
     double deltaY(const CartesianPosition_2D &that) const;
 
+public:
+    void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) override;
 
+    void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) override;
 
     /** Interface imposed via state_space::State */
 public:

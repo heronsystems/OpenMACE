@@ -82,6 +82,36 @@ void State_FlightGuided_Idle::Update()
 void State_FlightGuided_Idle::OnEnter()
 {
 
+    //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
+    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+
+    auto positionRequestController = new MAVLINKVehicleControllers::CommandMSGInterval(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    positionRequestController->AddLambda_Finished(this, [this,positionRequestController](const bool completed, const uint8_t finishCode){
+        std::cout<<"We have received an acknowledgement of our request."<<std::endl;
+        UNUSED(this); UNUSED(completed); UNUSED(finishCode);
+        //we can check if they match and try again
+        positionRequestController->Shutdown();
+    });
+
+    positionRequestController->setLambda_Shutdown([this, collection]()
+    {
+        UNUSED(this);
+        auto ptr = collection->Remove("PositionIntervalRequest");
+        delete ptr;
+    });
+
+    collection->Insert("PositionIntervalRequest",positionRequestController);
+
+
+    MavlinkEntityKey target  = Owner().getMAVLINKID();
+    MavlinkEntityKey sender = 255;
+
+    command_item::ActionMessageInterval msgInterval;
+    msgInterval.setMessageID(85);
+    msgInterval.setTargetSystem(Owner().getMAVLINKID());
+    msgInterval.setMessageInterval(500000);
+    positionRequestController->Send(msgInterval,sender,target);
+
 }
 
 void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
@@ -94,4 +124,4 @@ void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem>
 
 #include "ardupilot_states/state_flight_guided_goto.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
-#include "ardupilot_states/state_flight_guided_target.h"
+#include "ardupilot_states/state_flight_guided_target_geo.h"

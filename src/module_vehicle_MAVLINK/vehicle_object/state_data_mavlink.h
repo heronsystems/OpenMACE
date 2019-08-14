@@ -27,6 +27,10 @@ public:
     Data::DataGetSetNotifier<DataGenericItem::DataGenericItem_SystemTime> vehicleSystemTime;
 
 public:
+    Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalOrigin;
+    Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalHome;
+
+public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalPosition;
     Data::DataGetSetNotifier<mace::pose::CartesianPosition_3D> vehicleLocalPosition;
     Data::DataGetSetNotifier<mace::pose::Rotation_3D> vehicleAttitude;

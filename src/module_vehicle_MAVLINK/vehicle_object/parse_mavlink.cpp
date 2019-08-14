@@ -109,7 +109,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_msg_attitude_decode(msg,&decodedMSG);
         mace::pose::Rotation_3D agentAttitude(static_cast<double>(decodedMSG.roll),
                                               static_cast<double>(decodedMSG.pitch),
-                                               static_cast<double>(decodedMSG.yaw));
+                                              static_cast<double>(decodedMSG.yaw));
 
         //attitude.setAttitudeRates(decodedMSG.rollspeed,decodedMSG.pitchspeed,decodedMSG.yawspeed);
 
@@ -129,16 +129,16 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_msg_local_position_ned_decode(msg,&decodedMSG);
 
         //Ken Fix This and update coordinate frame
-//        mace::pose::CartesianPosition_3D localPosition(static_cast<double>(decodedMSG.x),
-//                                                       static_cast<double>(decodedMSG.y),
-//                                                       static_cast<double>(decodedMSG.z));
+        //        mace::pose::CartesianPosition_3D localPosition(static_cast<double>(decodedMSG.x),
+        //                                                       static_cast<double>(decodedMSG.y),
+        //                                                       static_cast<double>(decodedMSG.z));
 
-//        if(state->vehicleLocalPosition.set(localPosition))
-//        {
-//            std::shared_ptr<DataStateTopic::StateLocalPositionTopic> ptrLocalPosition = std::make_shared<DataStateTopic::StateLocalPositionTopic>(localPosition);
-//            if(this->m_CB)
-//                this->m_CB->cbi_VehicleStateData(systemID,ptrLocalPosition);
-//        }
+        //        if(state->vehicleLocalPosition.set(localPosition))
+        //        {
+        //            std::shared_ptr<DataStateTopic::StateLocalPositionTopic> ptrLocalPosition = std::make_shared<DataStateTopic::StateLocalPositionTopic>(localPosition);
+        //            if(this->m_CB)
+        //                this->m_CB->cbi_VehicleStateData(systemID,ptrLocalPosition);
+        //        }
         break;
     }
     case MAVLINK_MSG_ID_GLOBAL_POSITION_INT:
@@ -170,17 +170,17 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         if(this->m_CB)
             this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
 
-//        DataState::StateGlobalPositionEx positionEx;
-//        positionEx.setPosition(decodedMSG.lat/power,decodedMSG.lon/power,decodedMSG.alt/1000.0);
-//        positionEx.heading = (decodedMSG.hdg/100.0)*(3.14/180.0);
+        //        DataState::StateGlobalPositionEx positionEx;
+        //        positionEx.setPosition(decodedMSG.lat/power,decodedMSG.lon/power,decodedMSG.alt/1000.0);
+        //        positionEx.heading = (decodedMSG.hdg/100.0)*(3.14/180.0);
 
-//        //check that something has actually changed
-//        if(state->vehicleGlobalPositionEx.set(positionEx))
-//        {
-//            std::shared_ptr<DataStateTopic::StateGlobalPositionExTopic> ptrPositionEx = std::make_shared<DataStateTopic::StateGlobalPositionExTopic>(positionEx);
-//            if(this->m_CB)
-//                this->m_CB->cbi_VehicleStateData(systemID,ptrPositionEx);
-//        }
+        //        //check that something has actually changed
+        //        if(state->vehicleGlobalPositionEx.set(positionEx))
+        //        {
+        //            std::shared_ptr<DataStateTopic::StateGlobalPositionExTopic> ptrPositionEx = std::make_shared<DataStateTopic::StateGlobalPositionExTopic>(positionEx);
+        //            if(this->m_CB)
+        //                this->m_CB->cbi_VehicleStateData(systemID,ptrPositionEx);
+        //        }
         break;
     }
     case MAVLINK_MSG_ID_VFR_HUD:
@@ -190,16 +190,16 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_vfr_hud_t decodedMSG;
         mavlink_msg_vfr_hud_decode(msg,&decodedMSG);
 
-//        DataState::StateAirspeed airspeed;
-//        airspeed.setAirspeed(decodedMSG.airspeed);
-//        //check that something has actually changed
+        //        DataState::StateAirspeed airspeed;
+        //        airspeed.setAirspeed(decodedMSG.airspeed);
+        //        //check that something has actually changed
 
-//        if(state->vehicleAirspeed.set(airspeed))
-//        {
-//            std::shared_ptr<DataStateTopic::StateAirspeedTopic> ptrAirspeedTopic = std::make_shared<DataStateTopic::StateAirspeedTopic>(airspeed);
-//            if(this->m_CB)
-//                this->m_CB->cbi_VehicleStateData(systemID,ptrAirspeedTopic);
-//        }
+        //        if(state->vehicleAirspeed.set(airspeed))
+        //        {
+        //            std::shared_ptr<DataStateTopic::StateAirspeedTopic> ptrAirspeedTopic = std::make_shared<DataStateTopic::StateAirspeedTopic>(airspeed);
+        //            if(this->m_CB)
+        //                this->m_CB->cbi_VehicleStateData(systemID,ptrAirspeedTopic);
+        //        }
         break;
     }
     case MAVLINK_MSG_ID_RADIO_STATUS:
@@ -281,29 +281,29 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_msg_mission_current_decode(msg, &decodedMSG);
 
         // Check for a mission first:
-//        if(mission->currentAutoMission.hasBeenSet()) {
-//            MissionItem::MissionItemCurrent current;
-//            current.setMissionKey(mission->currentAutoMission.get().getMissionKey());
-//            current.setMissionCurrentIndex(decodedMSG.seq);
+        //        if(mission->currentAutoMission.hasBeenSet()) {
+        //            MissionItem::MissionItemCurrent current;
+        //            current.setMissionKey(mission->currentAutoMission.get().getMissionKey());
+        //            current.setMissionCurrentIndex(decodedMSG.seq);
 
-//            if(mission->missionItemCurrent.set(current))
-//            {
-//                if(decodedMSG.seq == 0)
-//                {
-//                    //the current target is home and we should handle this differently
-//                }
-//                else{
-//                    int currentIndex = decodedMSG.seq - 1;
+        //            if(mission->missionItemCurrent.set(current))
+        //            {
+        //                if(decodedMSG.seq == 0)
+        //                {
+        //                    //the current target is home and we should handle this differently
+        //                }
+        //                else{
+        //                    int currentIndex = decodedMSG.seq - 1;
 
-//                    MissionItem::MissionItemCurrent current;
-//                    current.setMissionKey(mission->currentAutoMission.get().getMissionKey());
-//                    current.setMissionCurrentIndex(currentIndex);
+        //                    MissionItem::MissionItemCurrent current;
+        //                    current.setMissionKey(mission->currentAutoMission.get().getMissionKey());
+        //                    current.setMissionCurrentIndex(currentIndex);
 
-//                    if(this->m_CB)
-//                        m_CB->cbi_VehicleMissionItemCurrent(current);
-//                }
-//            }
-//        }
+        //                    if(this->m_CB)
+        //                        m_CB->cbi_VehicleMissionItemCurrent(current);
+        //                }
+        //            }
+        //        }
 
         break;
     }
@@ -314,57 +314,53 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         //(if the autocontinue on the WP was set) continue to the next MISSION.
         mavlink_mission_item_reached_t decodedMSG;
         mavlink_msg_mission_item_reached_decode(msg,&decodedMSG);
-//        int missionIndex = decodedMSG.seq - 1; //transforms the reference away from mavlink to MACE
+        //        int missionIndex = decodedMSG.seq - 1; //transforms the reference away from mavlink to MACE
 
-//        if(missionIndex >= 0)
-//        {
-//            MissionItem::MissionItemAchieved itemAchieved;
-//            itemAchieved.setMissionKey(mission->currentAutoMission.get().getMissionKey());
-//            itemAchieved.setMissionAchievedIndex(missionIndex);
+        //        if(missionIndex >= 0)
+        //        {
+        //            MissionItem::MissionItemAchieved itemAchieved;
+        //            itemAchieved.setMissionKey(mission->currentAutoMission.get().getMissionKey());
+        //            itemAchieved.setMissionAchievedIndex(missionIndex);
 
-//            if(mission->missionItemReached.set(itemAchieved))
-//            {
-//                std::shared_ptr<MissionTopic::MissionItemReachedTopic> ptrMissionTopic = std::make_shared<MissionTopic::MissionItemReachedTopic>(itemAchieved);
-//                if(this->m_CB != NULL)
-//                    m_CB->cbi_VehicleMissionData(systemID, ptrMissionTopic);
-//            }
-//        }
-//        else{
-//            //we have reached the home position, should we do anything here?
-//        }
+        //            if(mission->missionItemReached.set(itemAchieved))
+        //            {
+        //                std::shared_ptr<MissionTopic::MissionItemReachedTopic> ptrMissionTopic = std::make_shared<MissionTopic::MissionItemReachedTopic>(itemAchieved);
+        //                if(this->m_CB != NULL)
+        //                    m_CB->cbi_VehicleMissionData(systemID, ptrMissionTopic);
+        //            }
+        //        }
+        //        else{
+        //            //we have reached the home position, should we do anything here?
+        //        }
 
         break;
     }
     case MAVLINK_MSG_ID_HOME_POSITION:
     {
+        std::cout<<"We have received a home position."<<std::endl;
         mavlink_home_position_t decodedMSG;
         mavlink_msg_home_position_decode(msg,&decodedMSG);
 
-//        double power = pow(10,7);
+        double power = pow(10,7);
 
-//        command_item::SpatialHome homeObj;
+        mace::pose::GeodeticPosition_3D currentHome(decodedMSG.latitude / power,
+                                                    decodedMSG.longitude / power,
+                                                    decodedMSG.altitude / 1000.0);
 
-//        mace::pose::GeodeticPosition_3D homePosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
-//                                                     decodedMSG.latitude/power, decodedMSG.longitude/power,
-//                                                     AltitudeReferenceTypes::REF_ALT_MSL, decodedMSG.altitude/1000.0);
-//        homeObj.setPosition(&homePosition);
-
-//        homeObj.setOriginatingSystem(msg->sysid);
+        currentHome.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_INT);
+        currentHome.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
 
         //check that something has actually changed
-//        if(mission->vehicleHomePosition.set(homeObj))
-//        {
+        if(state->vehicleGlobalHome.set(currentHome))
+        {
 //            std::shared_ptr<command_item::SpatialHome> ptrHome = std::make_shared<command_item::SpatialHome>(home);
 //            if(this->m_CB)
 //                this->m_CB->cbi_VehicleHome(systemID,home);
-//        }
+        }
         break;
     }
     case MAVLINK_MSG_ID_POSITION_TARGET_GLOBAL_INT:
     {
-        //KEN: This is now getting called and we could use this as a function.
-        //Only was in latest arducopter branch so may not work with everyones
-        //sim or vehicle environments, be sure to keep updated.
         mavlink_position_target_global_int_t decodedMSG;
         mavlink_msg_position_target_global_int_decode(msg,&decodedMSG);
 
@@ -391,6 +387,34 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_position_target_local_ned_t decodedMSG;
         mavlink_msg_position_target_local_ned_decode(msg,&decodedMSG);
 
+        if(!(decodedMSG.type_mask & IGNORE_POS_TYPE_MASK)) //means the position was to not be ignored
+        {
+            mace::pose::CartesianPosition_3D targetPosition(CartesianFrameTypes::CF_GLOBAL_RELATIVE_ALT,
+                                                           static_cast<double>(decodedMSG.x),
+                                                           static_cast<double>(decodedMSG.y),
+                                                           AltitudeReferenceTypes::REF_ALT_RELATIVE,
+                                                           static_cast<double>(decodedMSG.z), "Target Cartesian Position");
+        }
+
+
+
+        break;
+    }
+    case MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN:
+    {
+        //This position is what the ardupilot uses to reference all of the local commands and position elements
+        mavlink_gps_global_origin_t decodedMSG;
+        mavlink_msg_gps_global_origin_decode(msg,&decodedMSG);
+        double power = pow(10,7);
+
+        mace::pose::GeodeticPosition_3D currentOrigin(decodedMSG.latitude / power,
+                                                      decodedMSG.longitude / power,
+                                                      decodedMSG.altitude / 1000.0);
+
+        currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_INT);
+        currentOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+
+        state->vehicleGlobalOrigin.set(currentOrigin);
         break;
     }
     default:

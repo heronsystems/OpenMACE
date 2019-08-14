@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{10001, 209, 20, 0, 0, 0}, {10002, 186, 41, 0, 0, 0}, {10003, 4, 1, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{10001, 209, 20, 20, 0, 0, 0}, {10002, 186, 41, 41, 0, 0, 0}, {10003, 4, 1, 1, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
@@ -175,13 +175,14 @@ typedef enum UAVIONIX_ADSB_EMERGENCY_STATUS
 #include "./mavlink_msg_uavionix_adsb_transceiver_health_report.h"
 
 // base include
-
+#include "../common/common.h"
 
 #undef MAVLINK_THIS_XML_IDX
 #define MAVLINK_THIS_XML_IDX 2
 
 #if MAVLINK_THIS_XML_IDX == MAVLINK_PRIMARY_XML_IDX
 # define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_UAVIONIX_ADSB_OUT_CFG, MAVLINK_MESSAGE_INFO_UAVIONIX_ADSB_OUT_DYNAMIC, MAVLINK_MESSAGE_INFO_UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT}
+# define MAVLINK_MESSAGE_NAMES {{ "UAVIONIX_ADSB_OUT_CFG", 10001 }, { "UAVIONIX_ADSB_OUT_DYNAMIC", 10002 }, { "UAVIONIX_ADSB_TRANSCEIVER_HEALTH_REPORT", 10003 }}
 # if MAVLINK_COMMAND_24BIT
 #  include "../mavlink_get_info.h"
 # endif

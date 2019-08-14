@@ -313,7 +313,7 @@ public:
     {
         UNUSED(vehicleID);
         command_item::Action_DynamicTarget newCommand;
-        newCommand.setTargetSystem(3);
+        newCommand.setTargetSystem(1);
         newCommand.setOriginatingSystem(255);
         command_target::DynamicTarget newTarget;
 //        mace::pose::GeodeticPosition_3D currentPositionTarget;

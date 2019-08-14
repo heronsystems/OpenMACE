@@ -83,6 +83,20 @@ double CartesianPosition_2D::deltaY(const CartesianPosition_2D &that) const
     return this->getYPosition() - that.getYPosition();
 }
 
+void CartesianPosition_2D::applyTransformation(const Eigen::Transform<double, 2, Eigen::Affine> &t)
+{
+    this->data = t.linear() * data + t.translation();
+}
+
+void CartesianPosition_2D::applyTransformation(const Eigen::Transform<double, 3, Eigen::Affine> &t)
+{
+    //since this is only a 2D object we have to reconstruct
+    Eigen::Transform<double, 2, Eigen::Affine> currentTransform;
+    currentTransform.translation() = Eigen::Vector2d(t.translation().x(), t.translation().y());
+    currentTransform.linear() = Eigen::Matrix2d(t.rotation().block(0,0,2,2));
+    this->data = currentTransform.linear() * data + currentTransform.translation();
+}
+
 double CartesianPosition_2D::distanceFromOrigin() const
 {
     return data.norm();

@@ -70,19 +70,19 @@ private:
 public:
     void cbiArdupilotTimeout_DynamicTarget(const command_target::DynamicTarget &target) override
     {
-        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto ptr = static_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local<MAVLINKVehicleControllers::TargetControllerStructLocal>*>(collection->At("localGuidedController"));
-        if(ptr != nullptr)
-        {
-            MavlinkEntityKey targetID = Owner().getMAVLINKID();
-            MavlinkEntityKey sender = 255;
+//        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+//        auto ptr = static_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local<MAVLINKVehicleControllers::TargetControllerStructLocal>*>(collection->At("localGuidedController"));
+//        if(ptr != nullptr)
+//        {
+//            MavlinkEntityKey targetID = Owner().getMAVLINKID();
+//            MavlinkEntityKey sender = 255;
 
-            MAVLINKVehicleControllers::TargetControllerStructLocal action;
-            action.targetID = targetID;
-            action.target = target;
+//            MAVLINKVehicleControllers::TargetControllerStructLocal action;
+//            action.targetID = targetID;
+//            action.target = target;
 
-            ptr->Broadcast(action, sender);
-        }
+//            ptr->Broadcast(action, sender);
+//        }
     }
 
 //    void cbiArdupilotTimeout_TargetGlobal(const TargetItem::GeodeticDynamicTarget &target) override

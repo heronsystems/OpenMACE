@@ -1,7 +1,9 @@
 #ifndef ABSTRACT_POSITION_H
 #define ABSTRACT_POSITION_H
 #include <QJsonObject>
-#include <Eigen/Core>
+
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 #include <sstream>
 #include <iostream>
@@ -57,6 +59,10 @@ public:
     }
 
     /** End of interface imposed via Kinemnatic_BaseInterace */
+
+    virtual void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) = 0;
+
+    virtual void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) = 0;
 
 public:
     virtual Eigen::VectorXd getDataVector() const = 0;

@@ -61,7 +61,8 @@ SOURCES += \
     mission_items/abstract_mission_item.cpp \
     interface_command_helper.cpp \
     mission_items/mission_item_factory.cpp \
-    do_items/action_dynamic_target.cpp
+    do_items/action_dynamic_target.cpp \
+    do_items/action_message_interval.cpp
 HEADERS +=\
     do_items/action_arm.h \
     do_items/action_change_mode.h \
@@ -105,7 +106,8 @@ HEADERS +=\
     mission_items/abstract_mission_item.h \
     interface_command_helper.h \
     mission_items/mission_item_factory.h \
-    do_items/action_dynamic_target.h
+    do_items/action_dynamic_target.h \
+    do_items/action_message_interval.h
 
 # Unix lib Install
 unix:!symbian {

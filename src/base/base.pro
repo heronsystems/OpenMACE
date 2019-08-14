@@ -122,7 +122,8 @@ HEADERS +=\
     pose/rotation_2D.h \
     pose/pose_components.h \
     pose/velocity_interface.h \
-    pose/velocity_helper.h
+    pose/velocity_helper.h \
+    misc/dimension.h
 
 # Unix lib Install
 unix:!symbian {

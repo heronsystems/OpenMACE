@@ -35,8 +35,7 @@ Velocities are relative to the current vehicle heading. Use this to specify the 
 
 namespace MAVLINKVehicleControllers {
 
-template <>
-void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetItem(const TargetControllerStructLocal &targetStruct, mavlink_set_position_target_local_ned_t &mavlinkItem)
+void ControllerGuidedTargetItem_Local::FillTargetItem(const TargetControllerStructLocal &targetStruct, mavlink_set_position_target_local_ned_t &mavlinkItem)
 {
     double power = pow(10,7);
     uint16_t bitArray = 65535;
@@ -44,7 +43,7 @@ void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetIt
     mavlinkItem.coordinate_frame = MAV_FRAME_LOCAL_NED;
 
     //This handles the packing of the position components
-    if(currentTarget.getPosition()->isAnyPositionValid())
+    if((currentTarget.getPosition() != nullptr) && (currentTarget.getPosition()->isAnyPositionValid()))
     {
         if(currentTarget.getPosition()->is2D())
         {
@@ -67,7 +66,7 @@ void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetIt
     }
 
     //This handles the packing of the velocity components
-    if(currentTarget.getVelocity()->isAnyVelocityValid())
+    if((currentTarget.getVelocity() != nullptr) && (currentTarget.getVelocity()->isAnyVelocityValid()))
     {
         if(currentTarget.getVelocity()->is2D())
         {
@@ -89,13 +88,13 @@ void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetIt
         }
     }
 
-    if(currentTarget.getYaw()->isYawDimensionSet())
+    if((currentTarget.getYaw() != nullptr) && (currentTarget.getYaw()->isYawDimensionSet()))
     {
         mace::pose::Rotation_2D* castRotation = currentTarget.getYaw();
         mavlinkItem.yaw = castRotation->getPhi(); (bitArray & (~1024));
     }
 
-    if(currentTarget.getYawRate()->isYawDimensionSet())
+    if((currentTarget.getYawRate() != nullptr) && (currentTarget.getYawRate()->isYawDimensionSet()))
     {
         mace::pose::Rotation_2D* castRotation = currentTarget.getYaw();
         mavlinkItem.yaw_rate = castRotation->getPhi(); (bitArray & (~2048));
@@ -104,4 +103,33 @@ void ControllerGuidedTargetItem_Local<TargetControllerStructLocal>::FillTargetIt
     mavlinkItem.type_mask = bitArray;
 }
 
+bool ControllerGuidedTargetItem_Local::doesMatchTransmitted(const mavlink_position_target_local_ned_t &msg) const
+{
+    if(fabsf(m_targetMSG.vx - msg.vx) > std::numeric_limits<float>::epsilon())
+        return false;
+    if(fabsf(m_targetMSG.vy - msg.vy) > std::numeric_limits<float>::epsilon())
+        return false;
+    if(fabsf(m_targetMSG.vz - msg.vz) > std::numeric_limits<float>::epsilon())
+        return false;
+
+//    if(fabsf(m_targetMSG.alt - msg.alt) > std::numeric_limits<float>::epsilon())
+//        return false;
+
+    if(fabsf(m_targetMSG.yaw - msg.yaw) > std::numeric_limits<float>::epsilon())
+        return false;
+    if(fabsf(m_targetMSG.yaw_rate - msg.yaw_rate) > std::numeric_limits<float>::epsilon())
+        return false;
+
+    if(fabs(m_targetMSG.x - msg.x) > 0.1)
+        return false;
+    if(fabs(m_targetMSG.y - msg.y) > 0.1)
+        return false;
+
+//    if(m_targetMSG.coordinate_frame != msg.coordinate_frame)
+//        return false;
+    if(m_targetMSG.type_mask != msg.type_mask)
+        return false;
+
+    return true;
+}
 }// end of namespace MAVLINKVehicleControllers

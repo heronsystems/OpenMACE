@@ -179,5 +179,5 @@ void State_FlightGuided::announceTargetState(const command_target::DynamicTarget
 #include "ardupilot_states/state_flight_guided_goto.h"
 #include "ardupilot_states/state_flight_guided_idle.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
-#include "ardupilot_states/state_flight_guided_target.h"
+#include "ardupilot_states/state_flight_guided_target_geo.h"
 

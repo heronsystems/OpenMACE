@@ -107,6 +107,12 @@ public:
     double deltaY(const CartesianPosition_3D &that) const;
     double deltaZ(const CartesianPosition_3D &that) const;
 
+public:
+    void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) override;
+
+    void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) override;
+
+public:
     /** Interface imposed via AltitudeInterface */
 
     //!

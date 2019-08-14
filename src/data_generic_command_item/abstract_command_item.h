@@ -37,6 +37,13 @@ public:
 
     }
 
+    AbstractCommandItem(const AbstractCommandItem &copy)
+    {
+        this->originatingSystem = copy.originatingSystem;
+        this->targetSystem = copy.targetSystem;
+        this->targetComponent = copy.targetComponent;
+    }
+
     //!
     //! \brief AbstractCommandItem Overloaded default constructor that requires the systemOrigin value argument
     //! to be passed while leaving the systemTarget parameter optional.

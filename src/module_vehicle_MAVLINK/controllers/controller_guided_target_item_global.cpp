@@ -91,8 +91,8 @@ bool ControllerGuidedTargetItem_Global::doesMatchTransmitted(const mavlink_posit
     if(fabsf(m_targetMSG.vz - msg.vz) > std::numeric_limits<float>::epsilon())
         return false;
 
-    if(fabsf(m_targetMSG.alt - msg.alt) > std::numeric_limits<float>::epsilon())
-        return false;
+//    if(fabsf(m_targetMSG.alt - msg.alt) > std::numeric_limits<float>::epsilon())
+//        return false;
 
     if(fabsf(m_targetMSG.yaw - msg.yaw) > std::numeric_limits<float>::epsilon())
         return false;
@@ -104,8 +104,8 @@ bool ControllerGuidedTargetItem_Global::doesMatchTransmitted(const mavlink_posit
     if(m_targetMSG.lon_int != msg.lon_int)
         return false;
 
-    if(m_targetMSG.coordinate_frame != msg.coordinate_frame)
-        return false;
+//    if(m_targetMSG.coordinate_frame != msg.coordinate_frame)
+//        return false;
     if(m_targetMSG.type_mask != msg.type_mask)
         return false;
 

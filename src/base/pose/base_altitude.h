@@ -67,6 +67,11 @@ public:
 
 
 public:
+    void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) override;
+
+    void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) override;
+
+public:
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
 public:

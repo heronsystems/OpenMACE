@@ -119,7 +119,6 @@ public:
 
     bool hasLongitudeBeenSet() const;
 
-
     /** Interface imposed via state_space::State */
 public:
     //!

@@ -54,9 +54,7 @@ using GuidedTGTGlobalFinish = Controllers::ActionFinish<
 >;
 
 class ControllerGuidedTargetItem_Global : public BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>,
-        public GuidedTGTGlobalBroadcast,
-        public GuidedTGTGlobalSend,
-        public GuidedTGTGlobalFinish
+        public GuidedTGTGlobalBroadcast
 {
 private:
 
@@ -102,11 +100,10 @@ protected:
 
     virtual bool Finish_Receive(const mavlink_position_target_global_int_t &msg, const MavlinkEntityKey &sender, uint8_t& ack, MavlinkEntityKey &queueObj)
     {
-        std::cout<<"I finished receiving the object."<<msg.vx<<std::endl;
         UNUSED(msg);
         queueObj = sender;
         ack = 0;
-        return true;
+        return doesMatchTransmitted(msg);
     }
 
 protected:
@@ -137,9 +134,7 @@ protected:
 public:
     ControllerGuidedTargetItem_Global(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
         BasicMavlinkController_ModuleKeyed<TargetControllerStruct_Global>(cb, queue, linkChan),
-        GuidedTGTGlobalBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_global_int_t>(mavlink_msg_set_position_target_global_int_encode_chan)),
-        GuidedTGTGlobalSend(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_global_int_t>(mavlink_msg_set_position_target_global_int_encode_chan)),
-        GuidedTGTGlobalFinish(this, mavlink_msg_position_target_global_int_decode)
+        GuidedTGTGlobalBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_global_int_t>(mavlink_msg_set_position_target_global_int_encode_chan))
     {
 
     }

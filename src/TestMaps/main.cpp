@@ -1,3 +1,4 @@
+#include <Eigen/Dense>
 #include <Eigen/Geometry>
 
 #include <QCoreApplication>
@@ -17,14 +18,28 @@ const char kPathSeperator =
         '/';
 #endif
 using namespace std;
+using namespace Eigen;
 
 int main(int argc, char *argv[])
 {
     double value = 0;
 
-    mace::pose::GeodeticPosition_3D newPosition3D;
-    newPosition3D.setLatitude(1);
-    newPosition3D.setLongitude(1);
+    Eigen::Vector2d currentPosition(1,1);
+    Vector3d translation(1,1,2);
+    Matrix3d rotation = Matrix3d::Identity();
+
+    Transform<double, 3, Affine> t =
+            Transform<double, 3, Affine>::Identity();
+    t.translate(translation);
+
+    Transform<double, 3, Affine> tInvert;
+    tInvert.linear() = rotation.transpose();
+    tInvert.translation() = translation * -1;
+
+    currentPosition = t.rotation()*currentPosition + t.translation();
+    currentPosition = tInvert.rotation()*currentPosition + tInvert.translation();
+
+
 //    mace::pose::Rotation_3D orientationTest(0,M_PI_2,0.2);
 //    Eigen::Matrix3d rotationMatrix = orientationTest.m_QRotation.toRotationMatrix();
 //    double rxRoll, rxPitch, rxYaw;

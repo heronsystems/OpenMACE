@@ -5,9 +5,10 @@
 
 #include "controllers/generic_controller.h"
 
-#include "../controllers/commands/command_land.h"
-#include "../controllers/commands/command_takeoff.h"
 #include "../controllers/commands/command_arm.h"
+#include "../controllers/commands/command_land.h"
+#include "../controllers/commands/command_msg_interval.h"
+#include "../controllers/commands/command_takeoff.h"
 #include "../controllers/commands/command_rtl.h"
 #include "../controllers/controller_system_mode.h"
 #include "../controllers/controller_collection.h"
@@ -108,6 +109,10 @@ public:
     }
 
     bool handleMAVLINKMessage(const mavlink_message_t &msg);
+
+private:
+    static const uint16_t IGNORE_POS_TYPE_MASK = POSITION_TARGET_TYPEMASK_X_IGNORE|POSITION_TARGET_TYPEMASK_Y_IGNORE|POSITION_TARGET_TYPEMASK_Z_IGNORE;
+    static const uint16_t IGNORE_VEL_TYPE_MASK = POSITION_TARGET_TYPEMASK_VX_IGNORE|POSITION_TARGET_TYPEMASK_VY_IGNORE|POSITION_TARGET_TYPEMASK_VZ_IGNORE;
 
 public:
     StateData_MAVLINK *state;

@@ -6,7 +6,7 @@
 
 namespace mace {
 
-#define LOCAL_FRAMES CF_LOCAL_UNKNOWN, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
+#define LOCAL_FRAMES CF_LOCAL_UNKNOWN, /* Local coordinate frame is unknown | */ \
 CF_LOCAL_NED, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
 CF_LOCAL_ENU, /* Local coordinate frame, Z-down (x: east, y: north, z: up) | */ \
 CF_LOCAL_OFFSET_NED, /* Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position. | */ \
@@ -16,6 +16,10 @@ CF_BODY_ENU /* Offset in body NED frame. This makes sense if adding setpoints to
 
 enum class CartesianFrameTypes: uint8_t{
     LOCAL_FRAMES
+};
+
+class CartesianDimension{
+
 };
 
 inline std::string CartesianFrameToString(const CartesianFrameTypes &frame) {

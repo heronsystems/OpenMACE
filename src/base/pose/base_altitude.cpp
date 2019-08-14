@@ -33,6 +33,20 @@ double Altitude::getAltitude() const
     return this->z;
 }
 
+void Altitude::applyTransformation(const Eigen::Transform<double, 2, Eigen::Affine> &t)
+{
+    //it does not make sense to apply a transformation here, and therefore will ignore.
+}
+
+void Altitude::applyTransformation(const Eigen::Transform<double, 3, Eigen::Affine> &t)
+{
+    Eigen::Vector3d currentData(0.0,0.0,this->z);
+
+    //since this is only a 3D object we have to reconstruct
+    Eigen::Vector3d result = t.linear() * currentData + t.translation();
+    this->z = result.z();
+}
+
 mace_message_t Altitude::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
     mace_message_t msg;

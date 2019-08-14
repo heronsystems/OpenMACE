@@ -1,5 +1,5 @@
-#ifndef STATE_FLIGHT_GUIDED_TARGET_H
-#define STATE_FLIGHT_GUIDED_TARGET_H
+#ifndef STATE_FLIGHT_GUIDED_TARGET_GEO_H
+#define STATE_FLIGHT_GUIDED_TARGET_GEO_H
 
 #include <iostream>
 
@@ -23,10 +23,10 @@ namespace state{
 class State_FlightGuided_Idle;
 class State_FlightGuided_Queue;
 
-class State_FlightGuided_Target : public AbstractStateArdupilot
+class State_FlightGuided_GeoTarget : public AbstractStateArdupilot
 {
 public:
-    State_FlightGuided_Target();
+    State_FlightGuided_GeoTarget();
 
     void OnExit() override;
 
@@ -47,12 +47,9 @@ public:
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 
-private:
-    bool commandAccepted = false;
-    ArdupilotTargetProgess guidedProgress;
 };
 
 } //end of namespace state
 } //end of namespace arudpilot
 
-#endif // STATE_FLIGHT_GUIDED_TARGET_H
+#endif // STATE_FLIGHT_GUIDED_TARGET_GEO_H

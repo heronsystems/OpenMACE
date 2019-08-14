@@ -1,34 +1,36 @@
-#include "state_flight_guided_target.h"
+#include "state_flight_guided_target_geo.h"
 
 namespace ardupilot{
 namespace state{
 
-State_FlightGuided_Target::State_FlightGuided_Target():
+State_FlightGuided_GeoTarget::State_FlightGuided_GeoTarget():
     AbstractStateArdupilot()
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_TARGET"<<std::endl;
-    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET;
-    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_TARGET;
+    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_GEOTARGET"<<std::endl;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
 }
 
-void State_FlightGuided_Target::OnExit()
+void State_FlightGuided_GeoTarget::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
+    if(Owner().ControllersCollection()->Exist("GeodeticTargetController"))
+    ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("TargetController"))
 
 }
 
-AbstractStateArdupilot* State_FlightGuided_Target::getClone() const
+AbstractStateArdupilot* State_FlightGuided_GeoTarget::getClone() const
 {
-    return (new State_FlightGuided_Target(*this));
+    return (new State_FlightGuided_GeoTarget(*this));
 }
 
-void State_FlightGuided_Target::getClone(AbstractStateArdupilot** state) const
+void State_FlightGuided_GeoTarget::getClone(AbstractStateArdupilot** state) const
 {
-    *state = new State_FlightGuided_Target(*this);
+    *state = new State_FlightGuided_GeoTarget(*this);
 }
 
-hsm::Transition State_FlightGuided_Target::GetTransition()
+hsm::Transition State_FlightGuided_GeoTarget::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
@@ -51,7 +53,7 @@ hsm::Transition State_FlightGuided_Target::GetTransition()
     return rtn;
 }
 
-bool State_FlightGuided_Target::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_ACT_TARGET:
@@ -64,22 +66,22 @@ bool State_FlightGuided_Target::handleCommand(const std::shared_ptr<AbstractComm
 
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
-        MAVLINKVehicleControllers::TargetControllerStruct_Global tgt;
+        MAVLINKVehicleControllers::TargetControllerStructLocal tgt;
         tgt.targetID = static_cast<uint8_t>(target);
         tgt.target = cmd->getDynamicTarget();
-        ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global*)Owner().ControllersCollection()->At("GuidedGeodeticController"))->Broadcast(tgt, sender);
+        ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("TargetController"))->Broadcast(tgt, sender);
     }
     default:
         break;
     }
 }
 
-void State_FlightGuided_Target::Update()
+void State_FlightGuided_GeoTarget::Update()
 {
 
 }
 
-void State_FlightGuided_Target::OnEnter()
+void State_FlightGuided_GeoTarget::OnEnter()
 {
     /*
      * For some reason we have gotten into this state without a command,
@@ -89,7 +91,7 @@ void State_FlightGuided_Target::OnEnter()
     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
-void State_FlightGuided_Target::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
     if(command == nullptr)
     {
@@ -108,21 +110,17 @@ void State_FlightGuided_Target::OnEnter(const std::shared_ptr<AbstractCommandIte
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-    auto geodeticTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-    geodeticTargetController->AddLambda_Finished(this, [this,geodeticTargetController](const bool completed, const uint8_t finishCode){
-        UNUSED(this); UNUSED(completed); UNUSED(finishCode);
-        //we can check if they match and try again
-        geodeticTargetController->Shutdown();
-    });
+    auto geodeticTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
 
     geodeticTargetController->setLambda_Shutdown([this, collection]()
     {
+        std::cout<<"The geodetic shutdown was called here."<<std::endl;
         UNUSED(this);
-        auto ptr = collection->Remove("GuidedGeodeticController");
+        auto ptr = collection->Remove("GeodeticTargetController");
         delete ptr;
     });
 
-    collection->Insert("GuidedGeodeticController",geodeticTargetController);
+    collection->Insert("GeodeticTargetController",geodeticTargetController);
 
     this->handleCommand(command);
 }

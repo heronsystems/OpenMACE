@@ -81,6 +81,19 @@ public:
     }
 
 public:
+    void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) override
+    {
+        UNUSED(t);
+        //a rotation and translation in the geodetic frame does not make a whole lot of sense, therefore ignoring
+    }
+
+    void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) override
+    {
+        UNUSED(t);
+        //a rotation and translation in the geodetic frame does not make a whole lot of sense, therefore ignoring
+    }
+
+public:
     CoordinateSystemTypes getCoordinateSystemType() const override;
 
     void setCoordinateFrame(const GeodeticFrameTypes &explicitFrame);
