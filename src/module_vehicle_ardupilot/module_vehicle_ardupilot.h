@@ -359,7 +359,6 @@ private:
 
     void TransformDynamicMissionQueue();
 
-
 private:
     std::shared_ptr<spdlog::logger> mLogs;
 

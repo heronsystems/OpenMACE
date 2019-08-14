@@ -32,7 +32,7 @@ bool Abstract_Altitude::areEquivalentAltitudeFrames(const Abstract_Altitude* obj
 double Abstract_Altitude::deltaAltitude(const Abstract_Altitude *pos) const
 {
     if(this->areEquivalentAltitudeFrames(pos))
-        return this->getAltitude() - pos->getAltitude();
+        return pos->getAltitude() - this->getAltitude();
     else
         throw std::logic_error("The deltaAltitude operation method has been called with incompatible coordinate frames.");
 }

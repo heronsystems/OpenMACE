@@ -71,7 +71,7 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
         MAVLINKVehicleControllers::TargetControllerStructLocal tgt;
         tgt.targetID = static_cast<uint8_t>(target);
         tgt.target = cmd->getDynamicTarget();
-        ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("TargetController"))->Broadcast(tgt, sender);
+        ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(tgt, sender);
     }
     default:
         break;

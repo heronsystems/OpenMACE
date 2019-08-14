@@ -116,16 +116,16 @@ double CartesianPosition_3D::getAltitude() const
 void CartesianPosition_3D::applyTransformation(const Eigen::Transform<double, 2, Eigen::Affine> &t)
 {
     //since this is only a 2D object we have to reconstruct a new transform
-//    Eigen::Transform<double, 3, Eigen::Affine> currentTransform;
-//    currentTransform.translation() = Eigen::Vector3d(t.translation().x(), t.translation().y(), 0);
-//    currentTransform.linear() = Eigen::Matrix3d::Identity();
-//    currentTransform.linear().block(0,0,2,2) = t.rotation();
-//    this->data = currentTransform.linear() * data + currentTransform.translation();
+    Eigen::Transform<double, 3, Eigen::Affine> currentTransform;
+    currentTransform.translation() = Eigen::Vector3d(t.translation().x(), t.translation().y(), 0);
+    currentTransform.linear() = Eigen::Matrix3d::Identity();
+    currentTransform.linear().block(0,0,2,2) = t.rotation();
+    this->data = currentTransform.linear() * data + currentTransform.translation();
 }
 
 void CartesianPosition_3D::applyTransformation(const Eigen::Transform<double, 3, Eigen::Affine> &t)
 {
-//    this->data = t.linear() * data + t.translation();
+    this->data = t.linear() * data + t.translation();
 }
 
 double CartesianPosition_3D::distanceFromOrigin() const

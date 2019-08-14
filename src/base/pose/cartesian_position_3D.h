@@ -19,7 +19,7 @@ public:
     CartesianPosition_3D(const CartesianFrameTypes &frameType,
                         const double &x, const double &y,
                         const AltitudeReferenceTypes &altitudeType, const double &z,
-                        const std::string &pointName);
+                        const std::string &pointName = "Cartesian Point");
 
     CartesianPosition_3D(const double &x, const double &y, const double &z, const std::string &pointName = "Cartesian Point");
 

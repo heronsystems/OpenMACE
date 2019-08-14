@@ -168,7 +168,12 @@ double GeodeticPosition_3D::distanceBetween2D(const Abstract_GeodeticPosition* p
 
 double GeodeticPosition_3D::distanceTo(const Abstract_GeodeticPosition* pos) const
 {
-    return this->distanceBetween2D(pos);
+    if(pos->is3D())
+        return distanceBetween3D(*pos->positionAs<mace::pose::GeodeticPosition_3D>());
+    else if(pos->is2D())
+        return distanceBetween2D(pos);
+    else
+        return 0.0;
 }
 
 //!

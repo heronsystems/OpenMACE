@@ -24,7 +24,7 @@ public:
 
     Topic_CartesianPosition(const mace::pose::Abstract_CartesianPosition *posObj);
 
-    virtual ~Topic_CartesianPosition()
+    virtual ~Topic_CartesianPosition() override
     {
         delete positionObj;
     }

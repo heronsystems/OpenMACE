@@ -60,6 +60,43 @@ inline T angDistance(T from, T to)
         return d;
 }
 
+template<class T>
+inline T correctForAcuteAngle(const T &value)
+{
+    double acuteAngle = 0.0;
+    if(value <= M_PI_2)
+        acuteAngle = value;
+    else if((value > M_PI_2) && (value <= M_PI))
+        acuteAngle = M_PI - value;
+    else if((value > M_PI) && (value <= (M_PI / 3)))
+        acuteAngle = value - M_PI;
+    else
+        acuteAngle = M_2_PI - value;
+
+    return acuteAngle;
+}
+
+template<class T>
+inline T correctSignFromPolar(T &xValue, T &yValue, const T &polarValue )
+{
+    if(polarValue <= M_PI_2)
+    {
+        xValue = 1.0 * xValue; yValue = 1.0 * yValue; //we dont have to change the signs as its in the 1st quadrant
+    }
+    else if((polarValue > M_PI_2) && (polarValue <= M_PI))
+    {
+        xValue = -1.0 * xValue; yValue = 1.0 * yValue; //we have to change the signs of the x component in the 2nd quadrant
+    }
+    else if((polarValue > M_PI) && (polarValue <= (M_PI / 3)))
+    {
+        xValue = -1.0 * xValue; yValue = -1.0 * yValue; //we have to change the signs of the x and y components as its in the 3rd quadrant
+    }
+    else
+    {
+        xValue = 1.0 * xValue; yValue = -1.0 * yValue; //we have to change the signs of the y component as its in the 4th quadrant
+    }
+}
+
 template <class T>
 inline T compassToPolarBearing(const T &value)
 {

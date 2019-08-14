@@ -1,6 +1,9 @@
 #ifndef STATE_DATA_MAVLINK_H
 #define STATE_DATA_MAVLINK_H
 
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+
 #include "data/data_get_set_notifier.h"
 
 #include "base/pose/pose_components.h"
@@ -13,7 +16,11 @@
 class StateData_MAVLINK
 {
 public:
-    StateData_MAVLINK() = default;
+    StateData_MAVLINK();
+
+    StateData_MAVLINK(const StateData_MAVLINK &copy) = delete;
+
+    ~StateData_MAVLINK() = default;
 
     std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> GetTopicData();
 
@@ -27,14 +34,32 @@ public:
     Data::DataGetSetNotifier<DataGenericItem::DataGenericItem_SystemTime> vehicleSystemTime;
 
 public:
+    Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> swarmGlobalOrigin;
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalOrigin;
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalHome;
+
+private:
+    void updatePositionalTransformations();
 
 public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalPosition;
     Data::DataGetSetNotifier<mace::pose::CartesianPosition_3D> vehicleLocalPosition;
     Data::DataGetSetNotifier<mace::pose::Rotation_3D> vehicleAttitude;
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleAirspeed;
+
+public:
+    Eigen::Transform<double,3,Eigen::Affine> getTransform_VehicleTOSwarm() const
+    {
+        return m_vehicleTOswarm;
+    }
+
+    Eigen::Transform<double,3,Eigen::Affine> getTransform_SwarmTOVehicle() const
+    {
+        return m_swarmTOvehicle;
+    }
+private:
+    Eigen::Transform<double,3,Eigen::Affine> m_vehicleTOswarm;
+    Eigen::Transform<double,3,Eigen::Affine> m_swarmTOvehicle;
 };
 
 #endif // STATE_DATA_MAVLINK_H

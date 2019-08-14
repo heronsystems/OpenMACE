@@ -1,5 +1,21 @@
 #include "state_data_mavlink.h"
 
+StateData_MAVLINK::StateData_MAVLINK()
+{
+    m_swarmTOvehicle = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
+    m_swarmTOvehicle.translation() = Eigen::Vector3d::Zero();
+
+    m_vehicleTOswarm = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
+    m_swarmTOvehicle.translation() = Eigen::Vector3d::Zero();
+
+    vehicleGlobalOrigin.AddNotifier(this,[this]{
+        updatePositionalTransformations();
+    });
+
+    swarmGlobalOrigin.AddNotifier(this,[this]{
+        updatePositionalTransformations();
+    });
+}
 
 std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> StateData_MAVLINK::GetTopicData()
 {
@@ -27,4 +43,27 @@ std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> StateData_MAVLINK:
 //    rtnVector.push_back(ptrAirspeed);
 
     return rtnVector;
+}
+
+
+void StateData_MAVLINK::updatePositionalTransformations()
+{
+    //check to see if both the origins have been set, if not, we have no knowledge
+    //on how to achieve the correct transformation
+    if(swarmGlobalOrigin.hasBeenSet() && vehicleGlobalOrigin.hasBeenSet())
+    {
+        mace::pose::GeodeticPosition_3D swarmOrigin = swarmGlobalOrigin.get();
+        mace::pose::GeodeticPosition_3D vehicleOrigin = vehicleGlobalOrigin.get();
+
+        double bearingTo = swarmOrigin.polarBearingTo(&vehicleOrigin);
+        double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleOrigin);
+        double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleOrigin);
+
+        double distanceTranslateX = translationalDistance * cos(correctForAcuteAngle(bearingTo));
+        double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
+        correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
+
+        m_vehicleTOswarm.translation() = Eigen::Vector3d(distanceTranslateX, distanceTranslateY, altitudeDifference);
+        m_swarmTOvehicle.translation() = m_vehicleTOswarm.translation() * -1;
+    }
 }
