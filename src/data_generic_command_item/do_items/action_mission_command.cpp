@@ -1,4 +1,6 @@
 #include "action_mission_command.h"
+#include "interface_command_helper.cpp"
+
 namespace command_item {
 
 COMMANDTYPE ActionMissionCommand::getCommandType() const
@@ -82,13 +84,14 @@ void ActionMissionCommand::fromMACECOMMS_MissionItem(const mace_mission_item_t &
 
 void ActionMissionCommand::generateMACEMSG_MissionItem(mace_message_t &msg) const
 {
-    mace_mission_item_t missionItem;
-    AbstractCommandItem::populateMACECOMMS_MissionItem(missionItem);
-    //mace_msg_mission_item_encode_chan();
+    UNUSED(msg);
+    throw std::logic_error("Requested a mace message based on a mission item " + CommandItemToString(this->getCommandType()) +" which should logically never occur.");
 }
 
 void ActionMissionCommand::generateMACEMSG_CommandItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
+
     mace_command_short_t shortCommand;
     this->populateCommandItem(shortCommand);
     //mace_msg_command_short_encode_chan();

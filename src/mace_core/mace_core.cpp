@@ -495,10 +495,10 @@ void MaceCore::Event_NewModule(const ModuleBase* sender, const ModuleCharacteris
 //! \param sender
 //! \param gotTo
 //!
-void MaceCore::Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::CommandGoTo &gotTo)
+void MaceCore::Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo)
 {
     int vehicleID = gotTo.getTargetSystem();
-    MarshalCommandToVehicle<command_item::CommandGoTo>(vehicleID, VehicleCommands::COMMAND_GOTO, ExternalLinkCommands::COMMAND_GOTO, gotTo, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::Action_ExecuteSpatialItem>(vehicleID, VehicleCommands::COMMAND_GOTO, ExternalLinkCommands::COMMAND_GOTO, gotTo, sender->GetCharacteristic());
 }
 
 //!

@@ -82,9 +82,9 @@ void ModuleVehicleArdupilot::AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
 /// acknowledgement or an event to take place when calling these items.
 ////////////////////////////////////////////////////////////////////////////
 
-void ModuleVehicleArdupilot::Command_GoTo(const CommandGoTo &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleVehicleArdupilot::Command_GoTo(const Action_ExecuteSpatialItem &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
-    CommandGoTo commandWithTarget = CopyCommandAndInsertTarget<CommandGoTo>(command, this->GetAttachedMavlinkEntity());
+    Action_ExecuteSpatialItem commandWithTarget = CopyCommandAndInsertTarget<Action_ExecuteSpatialItem>(command, this->GetAttachedMavlinkEntity());
 
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());

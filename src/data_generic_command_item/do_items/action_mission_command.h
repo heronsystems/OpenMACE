@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "common/common.h"
+
 #include "data/mission_command.h"
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"

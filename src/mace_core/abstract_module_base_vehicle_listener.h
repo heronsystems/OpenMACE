@@ -43,7 +43,7 @@ public:
         /// or an event to take place when calling these items.
         /////////////////////////////////////////////////////////////////////////
 
-        this->template AddCommandLogic<command_item::CommandGoTo>(CT::COMMAND_GOTO, [this](const command_item::CommandGoTo &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::Action_ExecuteSpatialItem>(CT::COMMAND_GOTO, [this](const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_GoTo(command, sender);
         });
 
@@ -171,7 +171,7 @@ public:
     //! \param command
     //! \param sender
     //!
-    virtual void Command_GoTo(const command_item::CommandGoTo &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_GoTo(const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
 
     //!

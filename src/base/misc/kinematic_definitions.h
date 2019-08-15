@@ -28,15 +28,11 @@ class Kinematic_BaseInterface
 {
 public:
 
-    Kinematic_BaseInterface() = default;
+    Kinematic_BaseInterface();
 
-    Kinematic_BaseInterface(const Kinematic_BaseInterface &copy)
-    {
-        this->dimension = copy.dimension;
-        this->dimensionMask = copy.dimensionMask;
-    }
+    Kinematic_BaseInterface(const Kinematic_BaseInterface &copy);
 
-    virtual ~Kinematic_BaseInterface() = default;
+    virtual ~Kinematic_BaseInterface();
 
     virtual KinematicTypes getKinematicType() const = 0;
 

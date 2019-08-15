@@ -184,7 +184,7 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
     std::cout << "Go here command issued" << std::endl;
 
     //Ken Fix: Target system should propogate or not exist at the mission item level using action/command logic
-    command_item::CommandGoTo cmdGoTo;
+    command_item::Action_ExecuteSpatialItem cmdGoTo;
     cmdGoTo.setTargetSystem(vehicleID);
 
     command_item::SpatialWaypointPtr spatialAction = std::make_shared<command_item::SpatialWaypoint>(vehicleID);

@@ -24,10 +24,10 @@ namespace state{
 class State_FlightGuided_Idle;
 class State_FlightGuided_Queue;
 
-class State_FlightGuided_GoTo : public AbstractStateArdupilot
+class State_FlightGuided_MissionItem : public AbstractStateArdupilot
 {
 public:
-    State_FlightGuided_GoTo();
+    State_FlightGuided_MissionItem();
 
     void OnExit() override;
 

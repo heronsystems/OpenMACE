@@ -36,9 +36,9 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM:
         {
-            rtn = hsm::SiblingTransition<State_FlightGuided_GoTo>(currentCommand);
+            rtn = hsm::SiblingTransition<State_FlightGuided_MissionItem>(currentCommand);
             break;
         }
         case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
@@ -62,10 +62,10 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
 bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_ACT_GOTO:
+    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
     {
         this->currentCommand = command->getClone();
-        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM;
         break;
     }
     case COMMANDTYPE::CI_ACT_TARGET:
@@ -139,7 +139,7 @@ void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem>
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "ardupilot_states/state_flight_guided_goto.h"
+#include "ardupilot_states/state_flight_guided_mission_item.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
 #include "ardupilot_states/state_flight_guided_target_car.h"
 #include "ardupilot_states/state_flight_guided_target_geo.h"

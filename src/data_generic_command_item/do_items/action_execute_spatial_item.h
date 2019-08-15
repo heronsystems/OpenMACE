@@ -1,5 +1,5 @@
-#ifndef COMMAND_GOTO_H
-#define COMMAND_GOTO_H
+#ifndef ACTION_EXECUTE_SPATIAL_ITEM_H
+#define ACTION_EXECUTE_SPATIAL_ITEM_H
 
 #include "common/common.h"
 #include "common/class_forward.h"
@@ -14,9 +14,9 @@
 
 namespace command_item {
 
-MACE_CLASS_FORWARD(CommandGoTo);
+MACE_CLASS_FORWARD(Action_ExecuteSpatialItem);
 
-class CommandGoTo : public AbstractCommandItem
+class Action_ExecuteSpatialItem : public AbstractCommandItem
 {
 public:
     /**
@@ -62,10 +62,10 @@ public: //The logic behind this is that every command item can be used to genera
     /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
-    CommandGoTo();
-    CommandGoTo(const AbstractSpatialActionPtr cmd);
-    CommandGoTo(const CommandGoTo &obj);
-    CommandGoTo(const unsigned int &systemOrigin, const unsigned int &systemTarget);
+    Action_ExecuteSpatialItem();
+    Action_ExecuteSpatialItem(const AbstractSpatialActionPtr cmd);
+    Action_ExecuteSpatialItem(const Action_ExecuteSpatialItem &obj);
+    Action_ExecuteSpatialItem(const unsigned int &systemOrigin, const unsigned int &systemTarget);
 
 public:
     void setSpatialCommand(const AbstractSpatialActionPtr cmd)
@@ -90,13 +90,13 @@ public:
     }
 
 public:
-    void operator = (const CommandGoTo &rhs)
+    void operator = (const Action_ExecuteSpatialItem &rhs)
     {
         AbstractCommandItem::operator =(rhs);
         this->m_SpatialAction = rhs.m_SpatialAction;
     }
 
-    bool operator == (const CommandGoTo &rhs) {
+    bool operator == (const Action_ExecuteSpatialItem &rhs) {
         if(!AbstractCommandItem::operator ==(rhs))
         {
             return false;
@@ -109,7 +109,7 @@ public:
         return true;
     }
 
-    bool operator != (const CommandGoTo &rhs) {
+    bool operator != (const Action_ExecuteSpatialItem &rhs) {
         return !(*this == rhs);
     }
 public:
@@ -120,7 +120,7 @@ public:
     std::string printCommandInfo() const override;
 
 
-    friend std::ostream &operator<<(std::ostream &out, const CommandGoTo &obj)
+    friend std::ostream &operator<<(std::ostream &out, const Action_ExecuteSpatialItem &obj)
     {
         //        out<<"Command Change Mode( Mode: "<<obj.vehicleMode<<")";
         return out;
@@ -131,6 +131,6 @@ private:
 
 };
 
-} //end of namespace MissionItem
+} //end of namespace command_item
 
-#endif // COMMAND_GOTO_H
+#endif // ACTION_EXECUTE_SPATIAL_ITEM_H

@@ -1,34 +1,34 @@
-#include "state_flight_guided_goto.h"
+#include "state_flight_guided_mission_item.h"
 
 namespace ardupilot{
 namespace state{
 
-State_FlightGuided_GoTo::State_FlightGuided_GoTo():
+State_FlightGuided_MissionItem::State_FlightGuided_MissionItem():
     AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_GOTO"<<std::endl;
-    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO;
-    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GOTO;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM;
 }
 
-void State_FlightGuided_GoTo::OnExit()
+void State_FlightGuided_MissionItem::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
     dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Shutdown();
 }
 
-AbstractStateArdupilot* State_FlightGuided_GoTo::getClone() const
+AbstractStateArdupilot* State_FlightGuided_MissionItem::getClone() const
 {
-    return (new State_FlightGuided_GoTo(*this));
+    return (new State_FlightGuided_MissionItem(*this));
 }
 
-void State_FlightGuided_GoTo::getClone(AbstractStateArdupilot** state) const
+void State_FlightGuided_MissionItem::getClone(AbstractStateArdupilot** state) const
 {
-    *state = new State_FlightGuided_GoTo(*this);
+    *state = new State_FlightGuided_MissionItem(*this);
 }
 
-hsm::Transition State_FlightGuided_GoTo::GetTransition()
+hsm::Transition State_FlightGuided_MissionItem::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
@@ -51,15 +51,15 @@ hsm::Transition State_FlightGuided_GoTo::GetTransition()
     return rtn;
 }
 
-bool State_FlightGuided_GoTo::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightGuided_MissionItem::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
-        case COMMANDTYPE::CI_ACT_GOTO:
+        case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
         {
             //We want to keep this command in scope to perform the action
             this->currentCommand = command->getClone();
 
-            const command_item::CommandGoTo* cmd = currentCommand->as<command_item::CommandGoTo>();
+            const command_item::Action_ExecuteSpatialItem* cmd = currentCommand->as<command_item::Action_ExecuteSpatialItem>();
 
             //We want to first assume that this command has not been currently accepted
             this->commandAccepted = false;
@@ -121,24 +121,24 @@ bool State_FlightGuided_GoTo::handleCommand(const std::shared_ptr<AbstractComman
         }
 }
 
-void State_FlightGuided_GoTo::Update()
+void State_FlightGuided_MissionItem::Update()
 {
 
 }
 
-void State_FlightGuided_GoTo::OnEnter()
+void State_FlightGuided_MissionItem::OnEnter()
 {
     /*
      * For some reason we have gotten into this state without a command,
-     * or the command is null. We therefore will return to the idle state
-     * of the guided flight mode.
+     * or the command is null, or of not the correct type. We therefore will
+     * return to the idle state of the guided flight mode.
      */
     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
-void State_FlightGuided_GoTo::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightGuided_MissionItem::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
-    if(command == nullptr)
+    if((command == nullptr) || (command->getCommandType() != COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM)) //if we are not executing a guided mission item this state doesnt care
     {
         this->OnEnter();
         return;

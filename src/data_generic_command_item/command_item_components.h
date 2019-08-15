@@ -20,7 +20,7 @@
 #include "data_generic_command_item/do_items/action_change_speed.h"
 #include "data_generic_command_item/do_items/action_dynamic_target.h"
 #include "data_generic_command_item/do_items/action_message_interval.h"
-#include "data_generic_command_item/do_items/command_goto.h"
+#include "data_generic_command_item/do_items/action_execute_spatial_item.h"
 #include "data_generic_command_item/do_items/action_mission_command.h"
 #include "data_generic_command_item/do_items/action_motor_test.h"
 

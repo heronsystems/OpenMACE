@@ -24,7 +24,7 @@ enum class ArdupilotFlightState{
     STATE_FLIGHT_MANUAL = 11, /**< */
     STATE_FLIGHT_GUIDED = 12, /**< */
     STATE_FLIGHT_GUIDED_IDLE = 13, /**< */
-    STATE_FLIGHT_GUIDED_GOTO = 14, /**< */
+    STATE_FLIGHT_GUIDED_MISSIONITEM = 14, /**< */
     STATE_FLIGHT_GUIDED_QUEUE = 15, /**< */
     STATE_FLIGHT_GUIDED_GEOTARGET = 16, /**< */
     STATE_FLIGHT_GUIDED_CARTARGET = 17, /**< */

@@ -237,7 +237,7 @@ public:
     //! \param command
     //! \param sender
     //!
-    virtual void Command_GoTo(const CommandGoTo &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_GoTo(const Action_ExecuteSpatialItem &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
     //!
     //! \brief Request_FullDataSync

@@ -216,7 +216,7 @@ public:
     //! \param sender
     //! \param gotTo
     //!
-    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::CommandGoTo &gotTo);
+    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo);
 
     //!
     //! \brief Event to signify that a new vehicle is available

@@ -24,6 +24,20 @@ int main(int argc, char *argv[])
 {
     double value = 0;
 
+
+        mace::pose::GeodeticPosition_3D swarmOrigin(-35.3633889, 149.1653278, 15.0);
+        mace::pose::GeodeticPosition_3D vehicleOrigin(-35.3632938, 149.1651280, 10.0);
+
+        double bearingTo = swarmOrigin.polarBearingTo(&vehicleOrigin);
+        double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleOrigin);
+        double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleOrigin);
+
+        double distanceTranslateX = translationalDistance * cos(correctForAcuteAngle(bearingTo));
+        double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
+        correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
+
+        Eigen::Vector3d transformvehicleToSwarm(distanceTranslateX, distanceTranslateY, altitudeDifference);
+
 //    Eigen::Vector2d currentPosition(1,1);
 //    Vector3d translation(1,1,2);
 //    Matrix3d rotation = Matrix3d::Identity();

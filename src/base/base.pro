@@ -61,7 +61,8 @@ SOURCES += \
     pose/abstract_rotation.cpp \
     pose/abstract_position.cpp \
     pose/rotation_2D.cpp \
-    pose/velocity_interface.cpp
+    pose/velocity_interface.cpp \
+    misc/kinematic_definitions.cpp
 
 HEADERS +=\
     base_global.h \

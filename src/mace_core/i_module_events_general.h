@@ -178,7 +178,7 @@ public:
     //! \param sender
     //! \param gotTo
     //!
-    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::CommandGoTo &gotTo) = 0;
+    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo) = 0;
 };
 
 } //End MaceCore Namespace

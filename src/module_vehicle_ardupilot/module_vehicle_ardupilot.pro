@@ -49,12 +49,12 @@ SOURCES += module_vehicle_ardupilot.cpp \
     ardupilot_states/state_flight_loiter.cpp \
     ardupilot_states/state_unknown.cpp \
     ardupilot_states/abstract_root_state.cpp \
-    ardupilot_states/state_flight_guided_goto.cpp \
     ardupilot_states/state_flight_guided_queue.cpp \
     ardupilot_states/state_flight_guided_idle.cpp \
     guided_timeout_controller.cpp \
     ardupilot_states/state_flight_guided_target_geo.cpp \
-    ardupilot_states/state_flight_guided_target_car.cpp
+    ardupilot_states/state_flight_guided_target_car.cpp \
+    ardupilot_states/state_flight_guided_mission_item.cpp
 
 HEADERS += module_vehicle_ardupilot.h\
         module_vehicle_ardupilot_global.h \
@@ -89,12 +89,12 @@ HEADERS += module_vehicle_ardupilot.h\
     ardupilot_states/state_flight_loiter.h \
     ardupilot_states/state_unknown.h \
     ardupilot_states/abstract_root_state.h \
-    ardupilot_states/state_flight_guided_goto.h \
     ardupilot_states/state_flight_guided_queue.h \
     ardupilot_states/state_flight_guided_idle.h \
     guided_timeout_controller.h \
     ardupilot_states/state_flight_guided_target_geo.h \
-    ardupilot_states/state_flight_guided_target_car.h
+    ardupilot_states/state_flight_guided_target_car.h \
+    ardupilot_states/state_flight_guided_mission_item.h
 
 
 INCLUDEPATH += $$PWD/../

@@ -113,7 +113,7 @@ void ModuleExternalLink::ReceivedGoToCommand(const MaceCore::ModuleCharacteristi
     }
 
     AbstractCommandItemPtr copy = command.getClone();
-    command_item::CommandGoTo* castObj = copy->as<command_item::CommandGoTo>();
+    command_item::Action_ExecuteSpatialItem* castObj = copy->as<command_item::Action_ExecuteSpatialItem>();
     castObj->setTargetSystem(mavlinkID);
 
     ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsGeneral* ptr){
@@ -639,7 +639,7 @@ void ModuleExternalLink::PublishMissionData(const MaceCore::ModuleCharacteristic
 /// acknowledgement or an event to take place when calling these items.
 ////////////////////////////////////////////////////////////////////////////
 
-void ModuleExternalLink::Command_GoTo(const CommandGoTo &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+void ModuleExternalLink::Command_GoTo(const Action_ExecuteSpatialItem &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     int targetMavlinkSystemID = goTo.getTargetSystem();
 
