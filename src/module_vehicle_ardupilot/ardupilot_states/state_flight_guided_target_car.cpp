@@ -47,6 +47,11 @@ hsm::Transition State_FlightGuided_CarTarget::GetTransition()
             rtn = hsm::SiblingTransition<State_FlightGuided_Idle>(currentCommand);
             break;
         }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM:
+        {
+            rtn = hsm::SiblingTransition<State_FlightGuided_Idle>(currentCommand);
+            break;
+        }
         default:
             std::cout<<"I dont know how we eneded up in this transition state from State_FlightGuided_Target."<<std::endl;
             break;
@@ -72,6 +77,11 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
         tgt.targetID = static_cast<uint8_t>(target);
         tgt.target = cmd->getDynamicTarget();
         ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(tgt, sender);
+    }
+    case COMMANDTYPE::CI_ACT_MISSIONITEM:
+    {
+        this->currentCommand = command->getClone();
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM;
     }
     default:
         break;
@@ -123,4 +133,6 @@ void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommand
 } //end of namespace state
 
 #include "ardupilot_states/state_flight_guided_idle.h"
+#include "ardupilot_states/state_flight_guided_mission_item.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
+#include "ardupilot_states/state_flight_guided_target_geo.h"

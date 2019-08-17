@@ -69,6 +69,5 @@ void State_FlightGuided_Queue::OnEnter(const std::shared_ptr<AbstractCommandItem
 
 #include "ardupilot_states/state_flight_guided_idle.h"
 #include "ardupilot_states/state_flight_guided_mission_item.h"
-#include "ardupilot_states/state_flight_guided_queue.h"
 #include "ardupilot_states/state_flight_guided_target_car.h"
 #include "ardupilot_states/state_flight_guided_target_geo.h"

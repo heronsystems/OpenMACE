@@ -21,7 +21,9 @@ namespace ardupilot{
 namespace state{
 
 class State_FlightGuided_Idle;
+class State_FlightGuided_MissionItem;
 class State_FlightGuided_Queue;
+class State_FlightGuided_CarTarget;
 
 class State_FlightGuided_GeoTarget : public AbstractStateArdupilot
 {

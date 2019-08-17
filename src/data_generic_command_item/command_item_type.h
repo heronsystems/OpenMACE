@@ -26,7 +26,7 @@ enum class COMMANDTYPE : uint8_t{
     CI_ACT_CHANGEMODE = 9,
     CI_ACT_CHANGESPEED = 10,
     CI_ACT_EXECUTE_SPATIAL_ITEM = 11,
-    CI_ACT_MISSIONCOMMAND = 12,
+    CI_ACT_MISSIONITEM = 12,
     CI_ACT_MOTORTEST = 13,
     CI_ACT_TARGET = 14,
     CI_ACT_MSG_INTERVAL = 15,
@@ -58,7 +58,7 @@ inline std::string CommandItemToString(const COMMANDTYPE &commandItemType) {
         return "CI_ACT_CHANGEMODE";
     case COMMANDTYPE::CI_ACT_MOTORTEST:
         return "CI_ACT_MOTORTEST";
-    case COMMANDTYPE::CI_ACT_MISSIONCOMMAND:
+    case COMMANDTYPE::CI_ACT_MISSIONITEM:
         return "CI_ACT_MISSIONCOMMAND";
     case COMMANDTYPE::CI_UNKNOWN:
         return "CI_UNKNOWN";
@@ -91,7 +91,7 @@ inline COMMANDTYPE CommandItemFromString(const std::string &str) {
     if(str == "CI_ACT_MOTORTEST")
         return COMMANDTYPE::CI_ACT_MOTORTEST;
     if(str == "CI_ACT_MISSIONCOMMAND")
-        return COMMANDTYPE::CI_ACT_MISSIONCOMMAND;
+        return COMMANDTYPE::CI_ACT_MISSIONITEM;
     if(str == "CI_UNKNOWN")
         return COMMANDTYPE::CI_UNKNOWN;
     throw std::runtime_error("Unknown mission item string seen");
