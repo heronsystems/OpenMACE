@@ -23,7 +23,6 @@ namespace ardupilot{
 
 namespace state{
 
-class State_FlightGuided_MissionItem;
 class State_FlightGuided_Idle;
 class State_FlightGuided_Queue;
 class State_FlightGuided_Target;
@@ -51,6 +50,17 @@ public:
     void OnEnter() override;
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+
+    void connectTargetCallback(CallbackFunctionPtr_VehicleTarget cb, void *p)
+    {
+        m_CBTarget = cb;
+        m_FunctionTarget = p;
+    }
+
+    void callTargetCallback(MissionTopic::VehicleTargetTopic &topic)
+    {
+        m_CBTarget(m_FunctionTarget,topic);
+    }
 
 private:
 
