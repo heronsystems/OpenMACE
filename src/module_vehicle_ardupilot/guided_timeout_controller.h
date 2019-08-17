@@ -19,7 +19,7 @@
 
 #include "data_generic_mission_item_topic/mission_item_reached_topic.h"
 
-namespace mavlink{
+namespace ardupilot_vehicle{
 
 MACE_CLASS_FORWARD(GuidedTimeoutController);
 
@@ -82,7 +82,7 @@ private:
 
 };
 
-} //end of namespace mavlink
+} //end of namespace ardupilot_vehicle
 
 
 #endif // STATE_FLIGHT_GUIDED_TIMEOUT_CONTROLLER_H

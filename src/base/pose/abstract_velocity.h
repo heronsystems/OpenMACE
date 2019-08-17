@@ -51,6 +51,11 @@ public:
 
     virtual void updateDataVector(const Eigen::VectorXd &vecObj) const = 0;
 
+    bool areAllVelocitiesValid() const
+    {
+        return (dimension&ignoreAllVelocities) > 0 ? false : true;
+    }
+
     bool isAnyVelocityValid() const
     {
         return (dimensionMask^ignoreAllVelocities) > 0 ? true : false;

@@ -1,6 +1,6 @@
 #include "guided_timeout_controller.h"
 
-namespace mavlink {
+namespace ardupilot_vehicle {
 
 GuidedTimeoutController::GuidedTimeoutController(const unsigned int &timeout)
 {
@@ -74,4 +74,4 @@ void GuidedTimeoutController::run()
 
 
 
-} //end of namespace mavlink
+} //end of namespace ardupilot_vehicle

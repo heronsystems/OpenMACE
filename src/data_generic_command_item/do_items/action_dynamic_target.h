@@ -120,4 +120,4 @@ private:
 
 } //end of namespace MissionItem
 
-#endif // COMMAND_GOTO_H
+#endif // ACTION_DYNAMIC_TARGET_H

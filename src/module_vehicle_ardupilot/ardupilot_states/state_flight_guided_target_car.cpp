@@ -4,11 +4,13 @@ namespace ardupilot{
 namespace state{
 
 State_FlightGuided_CarTarget::State_FlightGuided_CarTarget():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(), m_TimeoutController(500)
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_CARTARGET"<<std::endl;
     currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+
+    m_TimeoutController.connectTargetCallback(State_FlightGuided_CarTarget::retransmitGuidedCommand, this);
 }
 
 void State_FlightGuided_CarTarget::OnExit()
@@ -65,18 +67,20 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_ACT_TARGET:
     {
+        m_TimeoutController.clearTarget();
 
         //We want to keep this command in scope to perform the action
         this->currentCommand = command->getClone();
 
         const command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
+        constructAndSendTarget(cmd->getDynamicTarget());
 
-        MavlinkEntityKey target = Owner().getMAVLINKID();
-        MavlinkEntityKey sender = 255;
-        MAVLINKVehicleControllers::TargetControllerStructLocal tgt;
-        tgt.targetID = static_cast<uint8_t>(target);
-        tgt.target = cmd->getDynamicTarget();
-        ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(tgt, sender);
+        //determine if the velocity component is valid and therefore we have to transmit at a recursive rate
+        if(cmd->getDynamicTarget().getVelocity()->areAllVelocitiesValid()) //ardupilot requires that all the velocities be valid
+        {
+            m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
+        }
+
     }
     case COMMANDTYPE::CI_ACT_MISSIONITEM:
     {

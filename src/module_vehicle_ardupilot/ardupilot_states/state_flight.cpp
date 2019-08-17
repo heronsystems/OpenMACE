@@ -95,7 +95,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
 {
     COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDTYPE::CI_ACT_MISSIONCOMMAND:
+    case COMMANDTYPE::CI_ACT_MISSIONITEM:
     {
         int vehicleMode = 0;
         bool executeModeChange = false;
