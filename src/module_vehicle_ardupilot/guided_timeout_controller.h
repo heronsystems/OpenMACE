@@ -19,24 +19,16 @@
 
 #include "data_generic_mission_item_topic/mission_item_reached_topic.h"
 
-
-class ArdupilotTimeout_Interface
-{
-public:
-    virtual ~ArdupilotTimeout_Interface() = default;
-
-public:
-    virtual void cbiArdupilotTimeout_DynamicTarget(const command_target::DynamicTarget &target) = 0;
-};
-
 namespace mavlink{
 
 MACE_CLASS_FORWARD(GuidedTimeoutController);
 
+typedef void(*CallbackFunctionPtr_DynamicTarget)(void*, command_target::DynamicTarget&);
+
 class GuidedTimeoutController : public Thread
 {
 public:
-    GuidedTimeoutController(ArdupilotTimeout_Interface* callback, const unsigned int &timeout);
+    GuidedTimeoutController(const unsigned int &timeout);
 
     ~GuidedTimeoutController() override;
 
@@ -44,23 +36,35 @@ public:
 
     void run() override;
 
-    void updateTarget(const command_target::DynamicTarget &target);
+    void registerCurrentTarget(const command_target::DynamicTarget &target);
 
     void clearTarget();
 
-    void setCallbackFunction(ArdupilotTimeout_Interface* callback);
+public:
+    void connectTargetCallback(CallbackFunctionPtr_DynamicTarget cb, void *p)
+    {
+        m_CBTarget = cb;
+        m_FunctionTarget = p;
+    }
 
-protected:
-    ArdupilotTimeout_Interface* m_CB;
+    void callTargetCallback(command_target::DynamicTarget &target)
+    {
+        if(m_CBTarget != nullptr)
+            m_CBTarget(m_FunctionTarget,target);
+    }
 
 private:
+    CallbackFunctionPtr_DynamicTarget m_CBTarget;
+    void *m_FunctionTarget;
+
+private:
+    command_target::DynamicTarget m_CurrentTarget;
+
     Timer m_Timeout;
+
     unsigned int timeout;
 
-protected:
-    command_target::DynamicTarget currentTarget;
-
-protected:
+private:
     std::list<std::function<void()>> m_LambdasToRun;
 
     void clearPendingTasks()

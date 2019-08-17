@@ -2,15 +2,40 @@
 
 namespace mavlink {
 
-GuidedTimeoutController::GuidedTimeoutController(ArdupilotTimeout_Interface* callback, const unsigned int &timeout)
+GuidedTimeoutController::GuidedTimeoutController(const unsigned int &timeout)
 {
-    this->m_CB = callback;
+    m_CBTarget = nullptr;
+    m_FunctionTarget = nullptr;
+
     this->timeout = timeout;
 }
 
 GuidedTimeoutController::~GuidedTimeoutController() {
     std::cout << "Destructor on guided timeout controller" << std::endl;
-    mToExit = true;
+    this->stop();
+}
+
+void GuidedTimeoutController::registerCurrentTarget(const command_target::DynamicTarget &target)
+{
+    if(isThreadActive())
+    {
+        m_LambdasToRun.push_back([this,target]{
+            this->m_Timeout.stop();
+            this->m_CurrentTarget = target;
+            this->m_Timeout.start();
+        });
+    }
+    else
+    {
+        this->m_CurrentTarget = target;
+        this->m_Timeout.start();
+        Thread::start();
+    }
+}
+
+void GuidedTimeoutController::clearTarget()
+{
+    this->stop();
 }
 
 void GuidedTimeoutController::start()
@@ -39,9 +64,7 @@ void GuidedTimeoutController::run()
 
         if(timeElapsed >= timeout)
         {
-            //For the moment we are removing the callback timeout
-//            if((currentTarget.isCurrentTargetValid()) && (m_CB != nullptr))
-//                m_CB->cbiArdupilotTimeout_DynamicTarget(currentTarget);
+            this->callTargetCallback(m_CurrentTarget);
             m_Timeout.reset();
         }
 
@@ -49,21 +72,6 @@ void GuidedTimeoutController::run()
     }
 }
 
-void GuidedTimeoutController::updateTarget(const command_target::DynamicTarget &target)
-{
-    m_LambdasToRun.push_back([this, target]{
-        currentTarget = target;
-        //reset the timeout and send this new command
-    });
-}
 
-void GuidedTimeoutController::clearTarget()
-{
-}
-
-void GuidedTimeoutController::setCallbackFunction(ArdupilotTimeout_Interface* callback)
-{
-    m_CB = callback;
-}
 
 } //end of namespace mavlink
