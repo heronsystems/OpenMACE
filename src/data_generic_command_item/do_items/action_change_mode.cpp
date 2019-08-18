@@ -54,7 +54,6 @@ void ActionChangeMode::populateCommandItem(mace_command_short_t &obj) const
 {
     obj.target_system = static_cast<uint8_t>(this->targetSystem);
     obj.target_component = static_cast<uint8_t>(this->targetComponent);
-    //obj.param = this->getRequestArm();
     obj.command = static_cast<uint8_t>(this->getCommandType());
 }
 

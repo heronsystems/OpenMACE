@@ -4,11 +4,14 @@ namespace ardupilot{
 namespace state{
 
 State_FlightGuided_GeoTarget::State_FlightGuided_GeoTarget():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(), m_TimeoutController(500)
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_GEOTARGET"<<std::endl;
     currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+
+    m_TimeoutController.connectTargetCallback(State_FlightGuided_GeoTarget::retransmitGuidedCommand, this);
+
 }
 
 void State_FlightGuided_GeoTarget::OnExit()
@@ -16,8 +19,8 @@ void State_FlightGuided_GeoTarget::OnExit()
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
     if(Owner().ControllersCollection()->Exist("GeodeticTargetController")){
-//        MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global* ptr = dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global*>(Owner().ControllersCollection()->Remove("GeodeticTargetController"));
-//        delete ptr;
+        MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global* ptr = dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global*>(Owner().ControllersCollection()->Remove("GeodeticTargetController"));
+        delete ptr;
     }
 
 }
@@ -112,9 +115,9 @@ void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractCommand
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-//    auto geodeticTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto geodeticTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
 
-//    collection->Insert("GeodeticTargetController",geodeticTargetController);
+    collection->Insert("GeodeticTargetController",geodeticTargetController);
 
     this->handleCommand(command);
 }

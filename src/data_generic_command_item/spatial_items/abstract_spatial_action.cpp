@@ -14,7 +14,11 @@ void AbstractSpatialAction::populateMACECOMMS_MissionItem(mace_mission_item_t &c
     //populate via calling the virtual function imposed via the interface
     populateCommandItem(currentCommand);
 
+    //tranfer the contents from the command to the mission item
+    transferToMissionItem(currentCommand, cmd);
+
     //populate the remaining mission components
+
 }
 
 void AbstractSpatialAction::fromMACECOMMS_MissionItem(const mace_mission_item_t &obj)
