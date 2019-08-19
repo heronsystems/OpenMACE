@@ -1,0 +1,9 @@
+#ifndef SHUTDOWN_FIRST_RESPONSE_TYPE_H
+#define SHUTDOWN_FIRST_RESPONSE_TYPE_H
+
+class ShutdownFirstResponse
+{
+
+};
+
+#endif // SHUTDOWN_FIRST_RESPONSE_TYPE_H

@@ -39,8 +39,6 @@ INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
-win32:INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-
 INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
 LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
 
@@ -163,6 +161,7 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../planners/ -lplanners
 win32: LIBS += -limagehlp
 
 unix: LIBS += -lboost_system
+unix: LIBS += -llz4
 
 unix {
     exists(/opt/ros/kinetic/lib/) {
@@ -203,7 +202,6 @@ unix {
         LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
     }
 }
-
 
 unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 

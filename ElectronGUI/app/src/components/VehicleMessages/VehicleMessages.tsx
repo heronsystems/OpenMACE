@@ -14,6 +14,7 @@ import { styles } from "./styles";
 type Props = {
     vehicleID: string;
     aircraft: Vehicle;
+    handleChangeSelectedVehicle: (vehicleID: string) => void;
 };
 
 type State = {};
@@ -70,7 +71,7 @@ export class VehicleMessages extends React.Component<Props, State> {
 
         return (
             <MuiThemeProvider muiTheme={lightMuiTheme}>
-                <Card expanded={true} style={hudStyle}>
+                <Card expanded={true} onExpandChange={() => this.props.handleChangeSelectedVehicle(this.props.vehicleID)} style={hudStyle}>
                     <CardHeader
                         titleStyle={styles.cardTitle}
                         title={"ID: " + this.props.vehicleID}

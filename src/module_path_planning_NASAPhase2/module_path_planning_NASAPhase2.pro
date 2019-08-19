@@ -94,9 +94,10 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../planners/debug/ 
 else:unix:!macx: LIBS += -L$$OUT_PWD/../planners/ -lplanners
 
 
+unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann
 unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 
-unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
+unix: LIBS += -llz4

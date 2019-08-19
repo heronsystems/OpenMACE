@@ -58,7 +58,6 @@ INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
 
 # Windows lib install
 lib.path    = $$(MACE_ROOT)/lib
