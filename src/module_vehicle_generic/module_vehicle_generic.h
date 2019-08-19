@@ -22,7 +22,7 @@ public:
 
     typedef Data::TopicDataObjectCollection<
     VehicleTopicAdditionalComponents...,
-    DATA_GENERIC_VEHICLE_ITEM_TOPICS,BASE_POSE_TOPICS> VehicleDataTopicType;
+    DATA_GENERIC_VEHICLE_ITEM_TOPICS,BASE_POSE_TOPICS, VEHICLE_MEASUREMENT_TOPICS> VehicleDataTopicType;
 
     ModuleVehicleGeneric() :
         MaceCore::IModuleCommandVehicle(),

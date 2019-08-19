@@ -64,7 +64,7 @@ public:
 
     void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
 
-    void fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj) override;
+    void fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj) override;
 
     /** End of interface imposed via AbstractCommandItem */
 public:

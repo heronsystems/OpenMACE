@@ -45,6 +45,7 @@ public:
 public:
     mace_global_position_int_t getMACE_GlobalPositionInt() const;
 
+    void fromMACEMsg(const mace_global_position_int_t &msg);
 
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 

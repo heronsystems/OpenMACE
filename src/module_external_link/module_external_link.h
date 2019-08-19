@@ -42,7 +42,7 @@
 #include "controllers/commands/command_mission_item.h"
 #include "controllers/commands/command_rtl.h"
 #include "controllers/commands/command_takeoff.h"
-#include "controllers/commands/controller_goto.h"
+#include "controllers/commands/command_execute_spatial_action.h"
 #include "controllers/controller_system_mode.h"
 #include "controllers/controller_home.h"
 #include "controllers/controller_mission.h"
@@ -57,7 +57,7 @@
 #include "data/topic_components/topic_component_void.h"
 #include "data/topic_components/topic_component_string.h"
 
-
+#include "base_topic/base_topic_components.h"
 
 class MODULE_EXTERNAL_LINKSHARED_EXPORT ModuleExternalLink :
         public MaceCore::IModuleCommandExternalLink,
@@ -78,7 +78,7 @@ private:
     {
         if(vehicleID == 0)
         {
-            std::vector<int> vehicleIDs;
+            std::vector<unsigned int> vehicleIDs;
             this->getDataObject()->GetLocalVehicles(vehicleIDs);
             for(auto it = vehicleIDs.begin() ; it != vehicleIDs.end() ; ++it)
             {
@@ -135,7 +135,7 @@ public:
 
     void ExternalModuleRemoved(const CommsMACE::Resource &resource);
 
-    std::string createLog(const int &systemID);
+    std::string createLog(const unsigned int &systemID);
 
     virtual void TransmitMessage(const mace_message_t &msg, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) const;
 
@@ -237,7 +237,7 @@ public:
     //! \param command
     //! \param sender
     //!
-    virtual void Command_GoTo(const Action_ExecuteSpatialItem &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void Command_ExecuteSpatialItem(const Action_ExecuteSpatialItem &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
     //!
     //! \brief Request_FullDataSync
@@ -428,7 +428,7 @@ private:
     //! \param sender
     //! \param systemID
     //!
-    void CheckAndAddVehicle(const MaceCore::ModuleCharacteristic &sender, int systemID);
+    void CheckAndAddVehicle(const MaceCore::ModuleCharacteristic &sender, unsigned int systemID);
 
     void RequestRemoteResources()
     {
@@ -462,15 +462,13 @@ private:
     //! over the internal mace network. Thus, outbound transmissions will be relevant to the request of the
     //! system to which to it attached. It will be defaulted to match the GCS ID.
     //!
-    int associatedSystemID;
-    std::map<int,int> systemIDMap;
+    unsigned int associatedSystemID;
+    std::map<unsigned int,unsigned int> systemIDMap;
 
     std::shared_ptr<spdlog::logger> mLog;
 
-    MaceCore::SpooledTopic<DATA_GENERIC_VEHICLE_ITEM_TOPICS> m_VehicleDataTopic;
+    MaceCore::SpooledTopic<BASE_POSE_TOPICS, DATA_GENERIC_VEHICLE_ITEM_TOPICS> m_VehicleDataTopic;
     MaceCore::SpooledTopic<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
-
-//    BaseTopic::VehicleTopics m_VehicleTopics;
 
 
 protected:

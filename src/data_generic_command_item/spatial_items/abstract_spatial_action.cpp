@@ -126,23 +126,25 @@ void AbstractSpatialAction::fromCommandItem(const mace_command_long_t &obj)
 }
 
 
-void AbstractSpatialAction::populateMACEComms_GoToCommand(mace_command_goto_t &obj) const
+void AbstractSpatialAction::populateMACEComms_ExecuteSpatialAction(mace_execute_spatial_action_t &obj) const
 {
     mace_command_long_t currentCommand;
     populateCommandItem(currentCommand);
 
-    transferTo_GoToCommand(currentCommand,obj);
+    transferTo_ExecuteSpatialAction(currentCommand,obj);
 }
 
-void AbstractSpatialAction::fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj)
+void AbstractSpatialAction::fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj)
 {
     this->targetSystem = obj.target_system;
     this->targetComponent = obj.target_component;
     //from here we need to populate the position object
-    //populatePositionObject()
+
+    this->populatePositionObject(static_cast<mace::CoordinateFrameTypes>(obj.frame), obj.dimension, obj.mask,
+                                 static_cast<double>(obj.param5), static_cast<double>(obj.param6), static_cast<double>(obj.param7));
 }
 
-void AbstractSpatialAction::transferTo_GoToCommand(const mace_command_long_t &cmd, mace_command_goto_t &obj) const
+void AbstractSpatialAction::transferTo_ExecuteSpatialAction(const mace_command_long_t &cmd, mace_execute_spatial_action_t &obj) const
 {
     obj.target_system = cmd.target_system;
     obj.target_component = cmd.target_component;
@@ -156,44 +158,54 @@ void AbstractSpatialAction::transferTo_GoToCommand(const mace_command_long_t &cm
     obj.param7 = cmd.param7;
 }
 
-void AbstractSpatialAction::populatePositionObject(const CoordinateSystemTypes &generalType, const mace::CoordinateFrameTypes &explicitType, const uint8_t &dim,
+void AbstractSpatialAction::populatePositionObject(const mace::CoordinateFrameTypes &explicitFrame, const uint8_t &dim, const uint16_t &mask,
                                 const double &x, const double &y, const double &z)
 {
-    delete position; position = nullptr;
+    if(position != nullptr)
+        delete position; position = nullptr;
 
-    switch (generalType) {
+    CoordinateSystemTypes currentSystemType = mace::getCoordinateSystemType(explicitFrame);
+
+    switch (currentSystemType) {
     case CoordinateSystemTypes::GEODETIC:
     {
+
+        mace::GeodeticFrameTypes geodeticFrame = mace::getGeodeticCoordinateFrame(explicitFrame);
         if(dim == 2)
         {
             position = new mace::pose::GeodeticPosition_2D();
             mace::pose::GeodeticPosition_2D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_2D>();
-            //tmpPos->setCoordinateFrame();
+            tmpPos->setCoordinateFrame(geodeticFrame);
             tmpPos->updateTranslationalComponents(y,x);
+            tmpPos->setDimensionMask(mask);
         }
         else if(dim == 3)
         {
             position = new mace::pose::GeodeticPosition_3D();
             mace::pose::GeodeticPosition_3D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_3D>();
-            //tmpPos->setCoordinateFrame();
+            tmpPos->setCoordinateFrame(geodeticFrame);
             tmpPos->updatePosition(y,x,z);
+            tmpPos->setDimensionMask(mask);
         }
     }
     case CoordinateSystemTypes::CARTESIAN:
     {
+        mace::CartesianFrameTypes cartesianFrame = mace::getCartesianCoordinateFrame(explicitFrame);
         if(dim == 2)
         {
             position = new mace::pose::CartesianPosition_2D();
             mace::pose::CartesianPosition_2D* tmpPos = position->positionAs<mace::pose::CartesianPosition_2D>();
-            //tmpPos->setCoordinateFrame();
+            tmpPos->setCoordinateFrame(cartesianFrame);
             tmpPos->updatePosition(x,y);
+            tmpPos->setDimensionMask(mask);
         }
         else if(dim == 3)
         {
             position = new mace::pose::CartesianPosition_3D();
             mace::pose::CartesianPosition_3D* tmpPos = position->positionAs<mace::pose::CartesianPosition_3D>();
-            //tmpPos->setCoordinateFrame();
+            tmpPos->setCoordinateFrame(cartesianFrame);
             tmpPos->updatePosition(x,y,z);
+            tmpPos->setDimensionMask(mask);
         }
         break;
     }

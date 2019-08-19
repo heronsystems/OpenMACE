@@ -229,7 +229,7 @@ void ModulePathPlanningNASAPhase2::AttachedAsModule(MaceCore::IModuleTopicEvents
 //!
 void ModulePathPlanningNASAPhase2::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName); UNUSED(sender); UNUSED(data); UNUSED(target);
 }
 
 

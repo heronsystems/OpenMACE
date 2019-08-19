@@ -20,6 +20,41 @@ enum class CoordinateFrameTypes : uint8_t{
 
 };
 
+inline CoordinateSystemTypes getCoordinateSystemType(const CoordinateFrameTypes &frame)
+{
+    CoordinateSystemTypes currentSystemType;
+
+    switch (frame) {
+    case CoordinateFrameTypes::CF_LOCAL_UNKNOWN:
+    case CoordinateFrameTypes::CF_LOCAL_NED:
+    case CoordinateFrameTypes::CF_LOCAL_ENU:
+    case CoordinateFrameTypes::CF_LOCAL_OFFSET_NED:
+    case CoordinateFrameTypes::CF_BODY_NED:
+    case CoordinateFrameTypes::CF_BODY_ENU:
+    {
+        currentSystemType = CoordinateSystemTypes::CARTESIAN;
+        break;
+    }
+    case CoordinateFrameTypes::CF_GLOBAL_UNKNOWN:
+    case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT:
+    case CoordinateFrameTypes::CF_GLOBAL_INT:
+    case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
+    case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT:
+    case CoordinateFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT:
+    {
+        currentSystemType = CoordinateSystemTypes::GEODETIC;
+        break;
+    }
+    case CoordinateFrameTypes::CF_UNKNOWN:
+    case CoordinateFrameTypes::CF_NOT_RELEVANT:
+    {
+        currentSystemType = CoordinateSystemTypes::NOT_IMPLIED;
+    }
+    }
+
+    return currentSystemType;
+}
+
 inline CartesianFrameTypes getCartesianCoordinateFrame(const CoordinateFrameTypes &frame)
 {
     switch (frame) {

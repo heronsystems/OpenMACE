@@ -36,7 +36,7 @@ protected:
         obj.mission_id = 0;
         obj.mission_type = 0;
         obj.mission_state = 0;
-        obj.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        obj.frame = 3;
         obj.current = 0;
         obj.autocontinue = 1;
 

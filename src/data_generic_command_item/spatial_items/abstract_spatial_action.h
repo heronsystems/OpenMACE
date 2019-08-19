@@ -50,11 +50,11 @@ public:
     }
 
     AbstractSpatialAction(const AbstractSpatialAction &copy):
-        AbstractCommandItem(copy)
+        AbstractCommandItem(copy), position(nullptr)
     {
         //position is a pointer, so we need to deep copy it if it is non-null
         //allocate the memory
-        if(copy.position)
+        if(copy.position != nullptr)
         {
             //copy the contents
             position = copy.position->getPositionalClone();
@@ -107,17 +107,17 @@ public: //The logic behind this is that every command item can be used to genera
     virtual void fromCommandItem(const mace_command_long_t &obj) override;
     /** End of interface imposed via Interface_CommandHelper<mace_command_long_t> */
 
-    virtual void populateMACEComms_GoToCommand(mace_command_goto_t &obj) const;
+    virtual void populateMACEComms_ExecuteSpatialAction(mace_execute_spatial_action_t &obj) const;
 
-    virtual void fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj);
+    virtual void fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj);
 
     //static AbstractSpatialActionPtr constructFromGoToCommand(const mace_command_goto_t &msg);
 
 protected:
-    void transferTo_GoToCommand(const mace_command_long_t &cmd, mace_command_goto_t &obj) const;
+    void transferTo_ExecuteSpatialAction(const mace_command_long_t &cmd, mace_execute_spatial_action_t &obj) const;
 
 protected:
-    void populatePositionObject(const CoordinateSystemTypes &generalType, const mace::CoordinateFrameTypes &explicitType, const uint8_t &dim,
+    void populatePositionObject(const mace::CoordinateFrameTypes &explicitFrame, const uint8_t &dim, const uint16_t &mask,
                                 const double &x=0.0, const double &y=0.0, const double &z=0.0);
 public:
     //!
@@ -132,12 +132,14 @@ public:
 
         AbstractCommandItem::operator =(rhs);
 
-        if(rhs.position)
+        if(this->position != nullptr)
+            delete position; position = nullptr;
+
+        if(rhs.position != nullptr)
         {
             this->position = rhs.position->getPositionalClone();
-            //*this->position = *rhs.position;
         }else{ //test if the rhs position is null didnt pass
-            delete position; position = nullptr;
+
         }
 
         return *this;

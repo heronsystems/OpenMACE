@@ -175,16 +175,26 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mavlink_vfr_hud_t decodedMSG;
         mavlink_msg_vfr_hud_decode(msg,&decodedMSG);
 
-        //        DataState::StateAirspeed airspeed;
-        //        airspeed.setAirspeed(decodedMSG.airspeed);
-        //        //check that something has actually changed
+        mace::measurements::Speed currentAirspeed;
+        currentAirspeed.setSpeed(static_cast<double>(decodedMSG.airspeed));
+        currentAirspeed.updateSpeedType(mace::measurements::Speed::SpeedTypes::AIRSPEED);
+        if(state->vehicleAirspeed.set(currentAirspeed))
+        {
+            mace::measurement_topics::Topic_AirSpeedPtr ptrAirspeedTopic = std::make_shared<mace::measurement_topics::Topic_AirSpeed>(currentAirspeed);
+            if(this->m_CB)
+                this->m_CB->cbi_VehicleStateData(systemID,ptrAirspeedTopic);
+        }
 
-        //        if(state->vehicleAirspeed.set(airspeed))
-        //        {
-        //            std::shared_ptr<DataStateTopic::StateAirspeedTopic> ptrAirspeedTopic = std::make_shared<DataStateTopic::StateAirspeedTopic>(airspeed);
-        //            if(this->m_CB)
-        //                this->m_CB->cbi_VehicleStateData(systemID,ptrAirspeedTopic);
-        //        }
+        mace::measurements::Speed currentGroundSpeed;
+        currentGroundSpeed.setSpeed(static_cast<double>(decodedMSG.groundspeed));
+        currentGroundSpeed.updateSpeedType(mace::measurements::Speed::SpeedTypes::GROUNDSPEED);
+        if(state->vehicleGroundSpeed.set(currentGroundSpeed))
+        {
+            mace::measurement_topics::Topic_GroundSpeedPtr ptrGroundspeedTopic = std::make_shared<mace::measurement_topics::Topic_GroundSpeed>(currentGroundSpeed);
+            if(this->m_CB)
+                this->m_CB->cbi_VehicleStateData(systemID,ptrGroundspeedTopic);
+        }
+
         break;
     }
     case MAVLINK_MSG_ID_RADIO_STATUS:
@@ -310,7 +320,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         //            if(mission->missionItemReached.set(itemAchieved))
         //            {
         //                std::shared_ptr<MissionTopic::MissionItemReachedTopic> ptrMissionTopic = std::make_shared<MissionTopic::MissionItemReachedTopic>(itemAchieved);
-        //                if(this->m_CB != NULL)
+        //                if(this->m_CB != nullptr)
         //                    m_CB->cbi_VehicleMissionData(systemID, ptrMissionTopic);
         //            }
         //        }

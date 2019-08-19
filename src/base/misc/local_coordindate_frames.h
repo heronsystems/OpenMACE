@@ -4,6 +4,8 @@
 #include <string>
 #include <stdexcept>
 
+#include "mace.h"
+
 namespace mace {
 
 #define LOCAL_FRAMES CF_LOCAL_UNKNOWN, /* Local coordinate frame is unknown | */ \
@@ -18,11 +20,8 @@ enum class CartesianFrameTypes: uint8_t{
     LOCAL_FRAMES
 };
 
-class CartesianDimension{
-
-};
-
 inline std::string CartesianFrameToString(const CartesianFrameTypes &frame) {
+
     switch (frame) {
     case CartesianFrameTypes::CF_LOCAL_NED:
         return "REF_CART_LOCAL_NED";

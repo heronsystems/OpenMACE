@@ -308,6 +308,13 @@ mace_global_position_int_t GeodeticPosition_3D::getMACE_GlobalPositionInt() cons
     return posObj;
 }
 
+void GeodeticPosition_3D::fromMACEMsg(const mace_global_position_int_t &msg)
+{
+    this->setLatitude(msg.lat / pow(10,7));
+    this->setLongitude(msg.lon / pow(10,7));
+    this->setLatitude(msg.alt / pow(10,3));
+}
+
 mace_message_t GeodeticPosition_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
     mace_message_t msg;

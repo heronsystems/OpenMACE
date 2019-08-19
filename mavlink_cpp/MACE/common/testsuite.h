@@ -2047,21 +2047,21 @@ static void mace_test_system_mode_ack(uint8_t system_id, uint8_t component_id, m
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
-static void mace_test_command_goto(uint8_t system_id, uint8_t component_id, mace_message_t *last_msg)
+static void mace_test_execute_spatial_action(uint8_t system_id, uint8_t component_id, mace_message_t *last_msg)
 {
 #ifdef MACE_STATUS_FLAG_OUT_MACE1
     mace_status_t *status = mace_get_channel_status(MACE_COMM_0);
-        if ((status->flags & MACE_STATUS_FLAG_OUT_MACE1) && MACE_MSG_ID_COMMAND_GOTO >= 256) {
+        if ((status->flags & MACE_STATUS_FLAG_OUT_MACE1) && MACE_MSG_ID_EXECUTE_SPATIAL_ACTION >= 256) {
             return;
         }
 #endif
     mace_message_t msg;
         uint8_t buffer[MACE_MAX_PACKET_LEN];
         uint16_t i;
-    mace_command_goto_t packet_in = {
-        17.0,45.0,73.0,101.0,129.0,157.0,185.0,18691,223,34,101
+    mace_execute_spatial_action_t packet_in = {
+        17.0,45.0,73.0,101.0,129.0,157.0,185.0,18691,18795,101,168,235,46
     };
-    mace_command_goto_t packet1, packet2;
+    mace_execute_spatial_action_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
         packet1.param1 = packet_in.param1;
         packet1.param2 = packet_in.param2;
@@ -2071,30 +2071,32 @@ static void mace_test_command_goto(uint8_t system_id, uint8_t component_id, mace
         packet1.param6 = packet_in.param6;
         packet1.param7 = packet_in.param7;
         packet1.action = packet_in.action;
+        packet1.mask = packet_in.mask;
         packet1.target_system = packet_in.target_system;
         packet1.target_component = packet_in.target_component;
         packet1.frame = packet_in.frame;
+        packet1.dimension = packet_in.dimension;
         
         
 #ifdef MACE_STATUS_FLAG_OUT_MACE1
         if (status->flags & MACE_STATUS_FLAG_OUT_MACE1) {
            // cope with extensions
-           memset(MACE_MSG_ID_COMMAND_GOTO_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MACE_MSG_ID_COMMAND_GOTO_MIN_LEN);
+           memset(MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_MIN_LEN);
         }
 #endif
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_encode(system_id, component_id, &msg, &packet1);
-    mace_msg_command_goto_decode(&msg, &packet2);
+    mace_msg_execute_spatial_action_encode(system_id, component_id, &msg, &packet1);
+    mace_msg_execute_spatial_action_decode(&msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.action , packet1.frame , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 , packet1.param7 );
-    mace_msg_command_goto_decode(&msg, &packet2);
+    mace_msg_execute_spatial_action_pack(system_id, component_id, &msg , packet1.target_system , packet1.target_component , packet1.action , packet1.frame , packet1.dimension , packet1.mask , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 , packet1.param7 );
+    mace_msg_execute_spatial_action_decode(&msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_pack_chan(system_id, component_id, MACE_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.action , packet1.frame , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 , packet1.param7 );
-    mace_msg_command_goto_decode(&msg, &packet2);
+    mace_msg_execute_spatial_action_pack_chan(system_id, component_id, MACE_COMM_0, &msg , packet1.target_system , packet1.target_component , packet1.action , packet1.frame , packet1.dimension , packet1.mask , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 , packet1.param7 );
+    mace_msg_execute_spatial_action_decode(&msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
@@ -2102,30 +2104,30 @@ static void mace_test_command_goto(uint8_t system_id, uint8_t component_id, mace
         for (i=0; i<mace_msg_get_send_buffer_length(&msg); i++) {
             comm_send_ch(MACE_COMM_0, buffer[i]);
         }
-    mace_msg_command_goto_decode(last_msg, &packet2);
+    mace_msg_execute_spatial_action_decode(last_msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_send(MACE_COMM_1 , packet1.target_system , packet1.target_component , packet1.action , packet1.frame , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 , packet1.param7 );
-    mace_msg_command_goto_decode(last_msg, &packet2);
+    mace_msg_execute_spatial_action_send(MACE_COMM_1 , packet1.target_system , packet1.target_component , packet1.action , packet1.frame , packet1.dimension , packet1.mask , packet1.param1 , packet1.param2 , packet1.param3 , packet1.param4 , packet1.param5 , packet1.param6 , packet1.param7 );
+    mace_msg_execute_spatial_action_decode(last_msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
-static void mace_test_command_goto_ack(uint8_t system_id, uint8_t component_id, mace_message_t *last_msg)
+static void mace_test_execute_spatial_action_ack(uint8_t system_id, uint8_t component_id, mace_message_t *last_msg)
 {
 #ifdef MACE_STATUS_FLAG_OUT_MACE1
     mace_status_t *status = mace_get_channel_status(MACE_COMM_0);
-        if ((status->flags & MACE_STATUS_FLAG_OUT_MACE1) && MACE_MSG_ID_COMMAND_GOTO_ACK >= 256) {
+        if ((status->flags & MACE_STATUS_FLAG_OUT_MACE1) && MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK >= 256) {
             return;
         }
 #endif
     mace_message_t msg;
         uint8_t buffer[MACE_MAX_PACKET_LEN];
         uint16_t i;
-    mace_command_goto_ack_t packet_in = {
+    mace_execute_spatial_action_ack_t packet_in = {
         5
     };
-    mace_command_goto_ack_t packet1, packet2;
+    mace_execute_spatial_action_ack_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
         packet1.result = packet_in.result;
         
@@ -2133,22 +2135,22 @@ static void mace_test_command_goto_ack(uint8_t system_id, uint8_t component_id, 
 #ifdef MACE_STATUS_FLAG_OUT_MACE1
         if (status->flags & MACE_STATUS_FLAG_OUT_MACE1) {
            // cope with extensions
-           memset(MACE_MSG_ID_COMMAND_GOTO_ACK_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MACE_MSG_ID_COMMAND_GOTO_ACK_MIN_LEN);
+           memset(MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK_MIN_LEN);
         }
 #endif
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_ack_encode(system_id, component_id, &msg, &packet1);
-    mace_msg_command_goto_ack_decode(&msg, &packet2);
+    mace_msg_execute_spatial_action_ack_encode(system_id, component_id, &msg, &packet1);
+    mace_msg_execute_spatial_action_ack_decode(&msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_ack_pack(system_id, component_id, &msg , packet1.result );
-    mace_msg_command_goto_ack_decode(&msg, &packet2);
+    mace_msg_execute_spatial_action_ack_pack(system_id, component_id, &msg , packet1.result );
+    mace_msg_execute_spatial_action_ack_decode(&msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_ack_pack_chan(system_id, component_id, MACE_COMM_0, &msg , packet1.result );
-    mace_msg_command_goto_ack_decode(&msg, &packet2);
+    mace_msg_execute_spatial_action_ack_pack_chan(system_id, component_id, MACE_COMM_0, &msg , packet1.result );
+    mace_msg_execute_spatial_action_ack_decode(&msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
@@ -2156,12 +2158,12 @@ static void mace_test_command_goto_ack(uint8_t system_id, uint8_t component_id, 
         for (i=0; i<mace_msg_get_send_buffer_length(&msg); i++) {
             comm_send_ch(MACE_COMM_0, buffer[i]);
         }
-    mace_msg_command_goto_ack_decode(last_msg, &packet2);
+    mace_msg_execute_spatial_action_ack_decode(last_msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mace_msg_command_goto_ack_send(MACE_COMM_1 , packet1.result );
-    mace_msg_command_goto_ack_decode(last_msg, &packet2);
+    mace_msg_execute_spatial_action_ack_send(MACE_COMM_1 , packet1.result );
+    mace_msg_execute_spatial_action_ack_decode(last_msg, &packet2);
         MACE_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
@@ -3100,8 +3102,8 @@ static void mace_test_common(uint8_t system_id, uint8_t component_id, mace_messa
     mace_test_command_ack(system_id, component_id, last_msg);
     mace_test_command_system_mode(system_id, component_id, last_msg);
     mace_test_system_mode_ack(system_id, component_id, last_msg);
-    mace_test_command_goto(system_id, component_id, last_msg);
-    mace_test_command_goto_ack(system_id, component_id, last_msg);
+    mace_test_execute_spatial_action(system_id, component_id, last_msg);
+    mace_test_execute_spatial_action_ack(system_id, component_id, last_msg);
     mace_test_radio_status(system_id, component_id, last_msg);
     mace_test_timesync(system_id, component_id, last_msg);
     mace_test_power_status(system_id, component_id, last_msg);

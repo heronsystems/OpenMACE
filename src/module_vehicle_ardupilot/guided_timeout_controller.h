@@ -23,7 +23,7 @@ namespace ardupilot_vehicle{
 
 MACE_CLASS_FORWARD(GuidedTimeoutController);
 
-typedef void(*CallbackFunctionPtr_DynamicTarget)(void*, command_target::DynamicTarget&);
+typedef void(*CallbackFunctionPtr_DynamicTarget)(void*, command_item::Action_DynamicTarget&);
 
 class GuidedTimeoutController : public Thread
 {
@@ -36,7 +36,7 @@ public:
 
     void run() override;
 
-    void registerCurrentTarget(const command_target::DynamicTarget &target);
+    void registerCurrentTarget(const command_item::Action_DynamicTarget &commandTarget);
 
     void clearTarget();
 
@@ -47,7 +47,7 @@ public:
         m_FunctionTarget = p;
     }
 
-    void callTargetCallback(command_target::DynamicTarget &target)
+    void callTargetCallback(command_item::Action_DynamicTarget &target)
     {
         if(m_CBTarget != nullptr)
             m_CBTarget(m_FunctionTarget,target);
@@ -58,7 +58,7 @@ private:
     void *m_FunctionTarget;
 
 private:
-    command_target::DynamicTarget m_CurrentTarget;
+    command_item::Action_DynamicTarget m_CurrentTarget;
 
     Timer m_Timeout;
 

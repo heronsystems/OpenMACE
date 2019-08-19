@@ -34,5 +34,16 @@ Speed::SpeedTypes Speed::getSpeedType() const
     return this->speedType;
 }
 
+void Speed::setSpeed(const double &speed)
+{
+    this->measurement = speed;
+}
+
+double Speed::getSpeed() const
+{
+    return this->measurement;
+}
+
+
 } //end of namespace measurement
 } //end of namespace mace

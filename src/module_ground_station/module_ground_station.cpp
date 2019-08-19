@@ -17,7 +17,7 @@ public:
         m_func(func),
         m_Shutdown(false)
     {
-        if(QCoreApplication::instance() == NULL)
+        if(QCoreApplication::instance() == nullptr)
         {
             int argc = 0;
             char * argv[] = {(char *)"sharedlib.app"};
@@ -56,7 +56,7 @@ ModuleGroundStation::ModuleGroundStation() :
     m_SensorFootprintDataTopic("sensorFootprint"),
     m_VehicleDataTopic("vehicleData"),
     m_MissionDataTopic("vehicleMission"),
-    m_ListenThread(NULL),
+    m_ListenThread(nullptr),
     m_guiHostAddress(QHostAddress::LocalHost),
     m_listenPort(5678)
 {
@@ -376,13 +376,13 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     // Write Position data to the GUI:
                     m_toGUIHandler->sendPositionData(vehicleID, component);
                 }
-//                else if(componentsUpdated.at(i) == DataStateTopic::StateAirspeedTopic::Name()) {
-//                    std::shared_ptr<DataStateTopic::StateAirspeedTopic> component = std::make_shared<DataStateTopic::StateAirspeedTopic>();
-//                    m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
+                else if(componentsUpdated.at(i) == mace::measurement_topics::Topic_AirSpeed::Name()) {
+                    mace::measurement_topics::Topic_AirSpeedPtr component = std::make_shared<mace::measurement_topics::Topic_AirSpeed>();
+                    m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
-//                    // Write Airspeed data to the GUI:
-//                    m_toGUIHandler->sendVehicleAirspeed(vehicleID, component);
-//                }
+                    // Write Airspeed data to the GUI:
+                    m_toGUIHandler->sendVehicleAirspeed(vehicleID, component);
+                }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_Battery::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Battery>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
@@ -466,8 +466,31 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     std::shared_ptr<MissionTopic::VehicleTargetTopic> component = std::make_shared<MissionTopic::VehicleTargetTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
 
-                    // Write vehicle target to the GUI:
-                    m_toGUIHandler->sendVehicleTarget(vehicleID, component);
+                    switch (component->m_targetPosition->getCoordinateSystemType()) {
+                    case CoordinateSystemTypes::GEODETIC:
+                    {
+                        // Write vehicle target to the GUI:
+
+                        m_toGUIHandler->sendVehicleTarget(vehicleID, dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition));
+                        break;
+                    }
+                    case CoordinateSystemTypes::CARTESIAN:
+                    {
+                        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+
+                        if(!globalOrigin.isAnyPositionValid())
+                            return;
+
+                        mace::pose::GeodeticPosition_2D targetPosition;
+                        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
+
+                        break;
+                    }
+                    case CoordinateSystemTypes::UNKNOWN:
+                    case CoordinateSystemTypes::NOT_IMPLIED:
+                        break;
+                    }
+
                 }
             }
         }
@@ -547,10 +570,10 @@ void ModuleGroundStation::NewlyUpdatedGlobalOrigin(const mace::pose::GeodeticPos
 //!
 void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
-    UNUSED(vehicleID);
+    UNUSED(vehicleID); UNUSED(sender);
 
     std::shared_ptr<const MaceCore::MaceData> data = this->getDataObject();
-    std::vector<int> vehicleIDs;
+    std::vector<unsigned int> vehicleIDs;
     data->GetAvailableVehicles(vehicleIDs);
 
     QJsonArray ids;

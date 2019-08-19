@@ -7,7 +7,7 @@
 #include "data_generic_command_item/command_item_components.h"
 
 #define BASE_MODULE_VEHICLE_LISTENER_ENUMS EMIT_HEARTBEAT, ISSUE_GENERAL_COMMAND, \
-    COMMAND_GOTO, \
+    EXECUTE_ACTION_SPATIALITEM, \
     CHANGE_VEHICLE_ARM, REQUEST_VEHICLE_TAKEOFF, REQUEST_VEHICLE_LAND, REQUEST_VEHICLE_RTL, CHANGE_VEHICLE_MODE, \
     SET_MISSION_STATE, REQUEST_DATA_SYNC, \
     UPLOAD_MISSION, SET_CURRENT_MISSION, REQUEST_CURRENT_MISSION, REQUEST_MISSION, CLEAR_CURRENT_MISSION, \
@@ -43,8 +43,8 @@ public:
         /// or an event to take place when calling these items.
         /////////////////////////////////////////////////////////////////////////
 
-        this->template AddCommandLogic<command_item::Action_ExecuteSpatialItem>(CT::COMMAND_GOTO, [this](const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<ModuleCharacteristic> &sender){
-            Command_GoTo(command, sender);
+        this->template AddCommandLogic<command_item::Action_ExecuteSpatialItem>(CT::EXECUTE_ACTION_SPATIALITEM, [this](const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<ModuleCharacteristic> &sender){
+            Command_ExecuteSpatialItem(command, sender);
         });
 
         this->template AddCommandLogic<int>(CT::REQUEST_DATA_SYNC, [this](const int &targetSystem, const OptionalParameter<ModuleCharacteristic> &sender){
@@ -171,7 +171,7 @@ public:
     //! \param command
     //! \param sender
     //!
-    virtual void Command_GoTo(const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void Command_ExecuteSpatialItem(const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
 
     //!

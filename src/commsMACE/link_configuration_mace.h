@@ -13,7 +13,7 @@ public:
 
     virtual void copyFrom(LinkConfiguration* source)
     {
-        Q_ASSERT(source != NULL);
+        Q_ASSERT(source != nullptr);
         _name       = source->name();
         _dynamic    = source->isDynamic();
         _autoConnect= source->isAutoConnect();

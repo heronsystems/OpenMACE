@@ -15,19 +15,19 @@ GuidedTimeoutController::~GuidedTimeoutController() {
     this->stop();
 }
 
-void GuidedTimeoutController::registerCurrentTarget(const command_target::DynamicTarget &target)
+void GuidedTimeoutController::registerCurrentTarget(const command_item::Action_DynamicTarget &commandTarget)
 {
     if(isThreadActive())
     {
-        m_LambdasToRun.push_back([this,target]{
+        m_LambdasToRun.push_back([this,commandTarget]{
             this->m_Timeout.stop();
-            this->m_CurrentTarget = target;
+            this->m_CurrentTarget = commandTarget;
             this->m_Timeout.start();
         });
     }
     else
     {
-        this->m_CurrentTarget = target;
+        this->m_CurrentTarget = commandTarget;
         this->m_Timeout.start();
         Thread::start();
     }

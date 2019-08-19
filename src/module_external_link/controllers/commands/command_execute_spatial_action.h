@@ -22,7 +22,7 @@ using ActionSend_CommandGoTo_Broadcast = Controllers::ActionBroadcast<
     mace_message_t, MaceCore::ModuleCharacteristic,
     BasicExternalLinkController_ModuleKeyed<command_item::Action_ExecuteSpatialItem>,
     command_item::Action_ExecuteSpatialItem,
-    mace_command_goto_t
+    mace_execute_spatial_action_t
 >;
 
 using ActionSend_CommandGoTo_TargedWithResponse = Controllers::ActionSend<
@@ -30,8 +30,8 @@ using ActionSend_CommandGoTo_TargedWithResponse = Controllers::ActionSend<
     BasicExternalLinkController_ModuleKeyed<command_item::Action_ExecuteSpatialItem>,
     MaceCore::ModuleCharacteristic,
     command_item::Action_ExecuteSpatialItem,
-    mace_command_goto_t,
-    MACE_MSG_ID_COMMAND_GOTO_ACK
+    mace_execute_spatial_action_t,
+    MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK
 >;
 
 using ActionSend_CommandGoTo_ReceiveRespond = Controllers::ActionFinalReceiveRespond<
@@ -40,9 +40,9 @@ using ActionSend_CommandGoTo_ReceiveRespond = Controllers::ActionFinalReceiveRes
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
     command_item::Action_ExecuteSpatialItem,
-    mace_command_goto_t,
-    mace_command_goto_ack_t,
-    MACE_MSG_ID_COMMAND_GOTO
+    mace_execute_spatial_action_t,
+    mace_execute_spatial_action_ack_t,
+    MACE_MSG_ID_EXECUTE_SPATIAL_ACTION
 >;
 
 using ActionFinish_CommandGoTo = Controllers::ActionFinish<
@@ -50,8 +50,8 @@ using ActionFinish_CommandGoTo = Controllers::ActionFinish<
     BasicExternalLinkController_ModuleKeyed<command_item::Action_ExecuteSpatialItem>,
     MaceCore::ModuleCharacteristic,
     uint8_t,
-    mace_command_goto_ack_t,
-    MACE_MSG_ID_COMMAND_GOTO_ACK
+    mace_execute_spatial_action_ack_t,
+    MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK
 >;
 
 
@@ -71,18 +71,20 @@ private:
 
 protected:
 
-    void FillCommand(const command_item::Action_ExecuteSpatialItem &commandItem, mace_command_goto_t &cmd) const;
+    void FillCommand(const command_item::Action_ExecuteSpatialItem &commandItem, mace_execute_spatial_action_t &cmd) const;
 
-    void BuildCommand(const mace_command_goto_t &message, command_item::Action_ExecuteSpatialItem &data) const;
+    void BuildCommand(const mace_execute_spatial_action_t &message, command_item::Action_ExecuteSpatialItem &data) const;
 
 
 protected:
 
-    virtual void Construct_Broadcast(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, mace_command_goto_t &cmd)
+    virtual void Construct_Broadcast(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, mace_execute_spatial_action_t &cmd)
     {
+        UNUSED(sender);
+
         std::cout << "!!!WARNING!!!: Broadcasting a command. Commands should be targeted" << std::endl;
 
-        cmd = initializeCommandGoTo();
+        cmd = initializeSpatialAction();
         cmd.action = (uint16_t)data.getSpatialCommand()->getCommandType();
         cmd.target_system = 0;
         cmd.target_component = 0;
@@ -90,15 +92,15 @@ protected:
         FillCommand(data, cmd);
     }
 
-    virtual bool Construct_Send(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_command_goto_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Construct_Send(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_execute_spatial_action_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         queueObj = target;
 
-        cmd = initializeCommandGoTo();
-        cmd.action = (uint16_t)data.getSpatialCommand()->getCommandType();
-        cmd.target_system = target.MaceInstance;
-        cmd.target_component = target.ModuleID;
+        cmd = initializeSpatialAction();
+        cmd.action = static_cast<uint16_t>(data.getSpatialCommand()->getCommandType());
+        cmd.target_system = static_cast<uint8_t>(target.MaceInstance);
+        cmd.target_component = static_cast<uint8_t>(target.ModuleID);
 
         if(m_CommandRequestedFrom.find(target) != m_CommandRequestedFrom.cend())
         {
@@ -113,7 +115,7 @@ protected:
     }
 
 
-    virtual bool Construct_FinalObjectAndResponse(const mace_command_goto_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_command_goto_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::Action_ExecuteSpatialItem &data, MaceCore::ModuleCharacteristic &moduleFor, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Construct_FinalObjectAndResponse(const mace_execute_spatial_action_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_execute_spatial_action_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::Action_ExecuteSpatialItem &data, MaceCore::ModuleCharacteristic &moduleFor, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         moduleFor.MaceInstance = msg.target_system;
@@ -126,14 +128,14 @@ protected:
         this->BuildCommand(msg,data);
 
         //ack.command = data.getSpatialCommand()->getCommandType();
-        ack.result = (uint8_t)Data::CommandACKType::CA_RECEIVED;
+        ack.result = static_cast<uint8_t>(Data::CommandACKType::CA_RECEIVED);
 
         //sending acknowledgement of the goTo command
         return true;
     }
 
 
-    virtual bool Finish_Receive(const mace_command_goto_ack_t &msg, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Finish_Receive(const mace_execute_spatial_action_ack_t &msg, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::ModuleCharacteristic &queueObj)
     {
         if(m_CommandRequestedFrom.find(sender) != m_CommandRequestedFrom.cend())
         {
@@ -151,21 +153,21 @@ protected:
 
 public:
 
-    mace_command_goto_t initializeCommandGoTo()
+    mace_execute_spatial_action_t initializeSpatialAction()
     {
-        mace_command_goto_t cmdGoTo;
-        cmdGoTo.action = 0;
-        cmdGoTo.frame = 0;
-        cmdGoTo.param1 = 0.0;
-        cmdGoTo.param2 = 0.0;
-        cmdGoTo.param3 = 0.0;
-        cmdGoTo.param4 = 0.0;
-        cmdGoTo.param5 = 0.0;
-        cmdGoTo.param6 = 0.0;
-        cmdGoTo.param7 = 0.0;
-        cmdGoTo.target_system = 0;
-        cmdGoTo.target_component = 0;
-        return cmdGoTo;
+        mace_execute_spatial_action_t cmdSpatialAction;
+        cmdSpatialAction.action = 0;
+        cmdSpatialAction.frame = 0;
+        cmdSpatialAction.param1 = 0.0;
+        cmdSpatialAction.param2 = 0.0;
+        cmdSpatialAction.param3 = 0.0;
+        cmdSpatialAction.param4 = 0.0;
+        cmdSpatialAction.param5 = 0.0;
+        cmdSpatialAction.param6 = 0.0;
+        cmdSpatialAction.param7 = 0.0;
+        cmdSpatialAction.target_system = 0;
+        cmdSpatialAction.target_component = 0;
+        return cmdSpatialAction;
     }
 
 };

@@ -79,6 +79,8 @@ void MACEtoGUI::setModeTimeout(const bool &flag) {
 //! \param component Vehicle mission component
 //!
 void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemCurrentTopic> &component) {
+    UNUSED(vehicleID);
+
     QJsonObject json;
     json["dataType"] = "CurrentMissionItem";
     json["vehicleID"] = static_cast<int>(component->getMissionKey().m_systemID);
@@ -97,24 +99,12 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
 //! \param vehicleID Vehicle ID with the new vehicle target
 //! \param component Vehicle target component
 //!
-void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component) {
+void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition) {
     QJsonObject json;
     json["dataType"] = "CurrentVehicleTarget";
     json["vehicleID"] = vehicleID;
     json["distanceToTarget"] = 0.0;
-
-    if(component->m_targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
-    {
-        component->m_targetPosition->updateQJSONObject(json);
-        json["active"] = true;
-
-        QJsonDocument doc(json);
-        bool bytesWritten = writeTCPData(doc.toJson());
-
-        if(!bytesWritten){
-            std::cout << "Write current vehicle target failed..." << std::endl;
-        }
-    }
+    targetPosition->updateQJSONObject(json);
 }
 
 //!
@@ -238,19 +228,19 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
 //! \param vehicleID Vehicle ID with the new airspeed
 //! \param component Vehicle airspeed component
 //!
-void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID)
+void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component)
 {
-    //    QJsonObject json;
-    //    json["dataType"] = "VehicleAirspeed";
-    //    json["vehicleID"] = vehicleID;
-    //    json["airspeed"] = component->airspeed;
+        QJsonObject json;
+        json["dataType"] = "VehicleAirspeed";
+        json["vehicleID"] = vehicleID;
+        json["airspeed"] = component->getSpeedObj().getSpeed();
 
-    //    QJsonDocument doc(json);
-    //    bool bytesWritten = writeTCPData(doc.toJson());
+        QJsonDocument doc(json);
+        bool bytesWritten = writeTCPData(doc.toJson());
 
-    //    if(!bytesWritten){
-    //        std::cout << "Write vehicle airspeed Data failed..." << std::endl;
-    //    }
+        if(!bytesWritten){
+            std::cout << "Write vehicle airspeed Data failed..." << std::endl;
+        }
 }
 
 //!
@@ -343,8 +333,6 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
     json["vdop"] = component->getVDOP();
     QJsonDocument doc(json);
     bool bytesWritten = writeTCPData(doc.toJson());
-
-    mace_gps_raw_int_t tmp = component->getMACECommsObject();
 
     if(!bytesWritten){
         std::cout << "Write Vehicle GPS Data failed..." << std::endl;
@@ -511,7 +499,7 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
 //!
 void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems)
 {
-    for(int i = 0; i < list.getQueueSize(); i++)
+    for(size_t i = 0; i < list.getQueueSize(); i++)
     {
         //TODO-PAT: Look into unique_ptr or auto_ptr?? Not sure I like this...
         std::shared_ptr<command_item::AbstractCommandItem> missionItem = list.getMissionItem(i);
@@ -597,7 +585,7 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             //            obj["lat"] = castItem->position->getX();
             //            obj["lng"] = castItem->position->getY();
             //            obj["alt"] = castItem->position->getZ();
-            obj["turns"] = castItem->turns;
+            obj["turns"] = static_cast<int>(castItem->turns);
             if(castItem->direction == Data::LoiterDirection::CW)
             {
                 obj["radius"] = castItem->radius;
@@ -637,7 +625,7 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
 bool MACEtoGUI::writeTCPData(QByteArray data)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
-    tcpSocket->connectToHost(m_sendAddress, m_sendPort);
+    tcpSocket->connectToHost(m_sendAddress, static_cast<quint16>(m_sendPort));
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
     {

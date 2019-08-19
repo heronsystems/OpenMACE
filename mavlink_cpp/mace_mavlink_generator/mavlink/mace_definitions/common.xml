@@ -2652,12 +2652,14 @@
       <field type="uint8_t" name="result" enum="MAV_RESULT">See MAV_RESULT enum</field>
     </message>
 
-   <message id="35" name="COMMAND_GOTO">
+   <message id="35" name="EXECUTE_SPATIAL_ACTION">
       <description>Send a spatial command telling the vehicle to manuever based on the command type.</description>
       <field type="uint8_t" name="target_system">System which should execute the command</field>
       <field type="uint8_t" name="target_component">Component which should execute the command, 0 for all components</field>
       <field type="uint16_t" name="action" enum="MAV_CMD">Command ID, as defined by MAV_CMD enum.</field>
       <field type="uint8_t" name="frame" enum="MAV_FRAME">The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h</field>
+      <field type="uint8_t" name="dimension">How many dimensions the position object truly is captured in.</field>
+      <field type="uint16_t" name="mask">Mask indicating the invalid dimensions of the position object. 1's indicate a dimesion is invalid.</field>
       <field type="float" name="param1">Parameter 1, as defined by MAV_CMD enum.</field>
       <field type="float" name="param2">Parameter 2, as defined by MAV_CMD enum.</field>
       <field type="float" name="param3">Parameter 3, as defined by MAV_CMD enum.</field>
@@ -2667,7 +2669,7 @@
       <field type="float" name="param7">Parameter 7, as defined by MAV_CMD enum.</field>
     </message>
 
-    <message id="36" name="COMMAND_GOTO_ACK">
+    <message id="36" name="EXECUTE_SPATIAL_ACTION_ACK">
       <description>Acknowledgement of a goto command.</description>
       <field type="uint8_t" name="result" enum="MAV_RESULT">See MAV_RESULT enum</field>
     </message>

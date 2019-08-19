@@ -1,8 +1,8 @@
 #include "module_vehicle_sensors.h"
 
 ModuleVehicleSensors::ModuleVehicleSensors():
-    m_VehicleDataTopic("vehicleData"), m_SensorDataTopic("sensorData"),
-    m_SensorFootprintDataTopic("sensorFootprint"), m_truthBTFile("")
+    m_truthBTFile(""),
+    m_VehicleDataTopic("vehicleData"), m_SensorDataTopic("sensorData"), m_SensorFootprintDataTopic("sensorFootprint")
 {
 //    cameraSensor = new DataVehicleSensors::SensorCamera();
     m_circularCameraSensor = std::make_shared<DataVehicleSensors::SensorCircularCamera>();
@@ -145,7 +145,7 @@ void ModuleVehicleSensors::ConfigureModule(const std::shared_ptr<MaceCore::Modul
 //!
 void ModuleVehicleSensors::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName); UNUSED(sender); UNUSED(data); UNUSED(target);
 }
 
 
@@ -161,6 +161,8 @@ void ModuleVehicleSensors::NewTopicData(const std::string &topicName, const Mace
 //!
 void ModuleVehicleSensors::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(sender); UNUSED(target);
+
 //    int senderID = sender.ModuleID;
     if(topicName == m_VehicleDataTopic.Name())
     {
@@ -191,6 +193,7 @@ void ModuleVehicleSensors::NewTopicSpooled(const std::string &topicName, const M
 //!
 void ModuleVehicleSensors::computeVehicleFootprint(const int &systemID, const DataVehicleSensors::SensorCamera &camera, const GeodeticPosition_3D &globalPosition, const Rotation_3D &attitude)
 {
+    UNUSED(camera); UNUSED(globalPosition); UNUSED(attitude);
 //
 //    DataState::StateGlobalPositionEx vehicleOrigin = globalPosition;
 
@@ -316,6 +319,7 @@ void ModuleVehicleSensors::loadBTFile(const std::string &btFilePath, const std::
 
 #elif _WIN32
     MaceLog::Alert("Loading occupancy map from .bt file not supported in Windows...");
+    UNUSED(btFilePath); UNUSED(layerName);
 #endif
 }
 
@@ -324,6 +328,7 @@ void ModuleVehicleSensors::loadRoadNetwork(const string &filePath, const string 
     //          - Store a truth copy in sensors module, and a local copy that vehicles update from sensor inputs in the core
 
     MaceLog::Alert("TODO: Implement road network graph load from file");
+    UNUSED(filePath); UNUSED(layerName);
 }
 
 //!
@@ -437,7 +442,7 @@ void ModuleVehicleSensors::updateDataInSensorFootprint_Circular(const mace::pose
 //!
 void ModuleVehicleSensors::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
-    UNUSED(vehicleID);
+    UNUSED(vehicleID); UNUSED(sender);
 }
 
 //!
@@ -445,6 +450,8 @@ void ModuleVehicleSensors::NewlyAvailableVehicle(const int &vehicleID, const Opt
 //!
 void ModuleVehicleSensors::NewlyUpdatedGlobalOrigin(const mace::pose::GeodeticPosition_3D &globalOrigin)
 {
+    UNUSED(globalOrigin);
+
     std::cout << "Sensors: New available global origin" << std::endl;
 }
 

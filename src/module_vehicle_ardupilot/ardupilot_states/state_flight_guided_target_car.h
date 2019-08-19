@@ -50,19 +50,15 @@ public:
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 
 private:
-    static void retransmitGuidedCommand(void *p, command_target::DynamicTarget &target)
+    static void retransmitGuidedCommand(void *p, command_item::Action_DynamicTarget &target)
     {
         static_cast<State_FlightGuided_CarTarget*>(p)->constructAndSendTarget(target);
     }
 
-    void constructAndSendTarget(const command_target::DynamicTarget &command)
+    void constructAndSendTarget(const command_item::Action_DynamicTarget &command)
     {
-        MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
-        MAVLINKVehicleControllers::TargetControllerStructLocal tgt;
-        tgt.targetID = static_cast<uint8_t>(target);
-        tgt.target = command;
-        static_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*>(Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(tgt, sender);
+        static_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(command, sender);
     }
 
 private:

@@ -26,6 +26,7 @@
 
 #include "base_topic/pose/topic_geodetic_position.h"
 #include "base_topic/pose/topic_agent_orientation.h"
+#include "base_topic/measurements/topic_speed.h"
 
 class MACEtoGUI
 {
@@ -221,7 +222,7 @@ public:
     //! \param vehicleID Vehicle ID with the new airspeed
     //! \param component Vehicle airspeed component
     //!
-    void sendVehicleAirspeed(const int &vehicleID);
+    void sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component);
 
     //!
     //! \brief sendMissionState Send vehicle mission state to the MACE GUI
@@ -235,7 +236,7 @@ public:
     //! \param vehicleID Vehicle ID with the new vehicle target
     //! \param component Vehicle target component
     //!
-    void sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component);
+    void sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition);
 
     // ============================================================================= //
     // ================================== Helpers ================================== //

@@ -35,11 +35,12 @@ Velocities are relative to the current vehicle heading. Use this to specify the 
 
 namespace MAVLINKVehicleControllers {
 
-void ControllerGuidedTargetItem_Local::FillTargetItem(const TargetControllerStructLocal &targetStruct, mavlink_set_position_target_local_ned_t &mavlinkItem)
+template<>
+void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillTargetItem(const command_item::Action_DynamicTarget &command, mavlink_set_position_target_local_ned_t &mavlinkItem)
 {
     double power = pow(10,7);
     uint16_t bitArray = 65535;
-    command_target::DynamicTarget currentTarget = targetStruct.target;
+    command_target::DynamicTarget currentTarget = command.getDynamicTarget();
     mavlinkItem.coordinate_frame = MAV_FRAME_LOCAL_NED;
 
     //This handles the packing of the position components
@@ -91,19 +92,20 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const TargetControllerStru
     if((currentTarget.getYaw() != nullptr) && (currentTarget.getYaw()->isYawDimensionSet()))
     {
         mace::pose::Rotation_2D* castRotation = currentTarget.getYaw();
-        mavlinkItem.yaw = castRotation->getPhi(); (bitArray & (~1024));
+        mavlinkItem.yaw = static_cast<float>(castRotation->getPhi()); bitArray = (bitArray & (~1024));
     }
 
     if((currentTarget.getYawRate() != nullptr) && (currentTarget.getYawRate()->isYawDimensionSet()))
     {
-        mace::pose::Rotation_2D* castRotation = currentTarget.getYaw();
-        mavlinkItem.yaw_rate = castRotation->getPhi(); (bitArray & (~2048));
+        mace::pose::Rotation_2D* castRotation = currentTarget.getYawRate();
+        mavlinkItem.yaw_rate = static_cast<float>(castRotation->getPhi()); bitArray = (bitArray & (~2048));
     }
     mavlinkItem.type_mask = bitArray;
     mavlinkItem.type_mask = bitArray;
 }
 
-bool ControllerGuidedTargetItem_Local::doesMatchTransmitted(const mavlink_position_target_local_ned_t &msg) const
+template <typename T>
+bool ControllerGuidedTargetItem_Local<T>::doesMatchTransmitted(const mavlink_position_target_local_ned_t &msg) const
 {
     if(fabsf(m_targetMSG.vx - msg.vx) > std::numeric_limits<float>::epsilon())
         return false;

@@ -179,7 +179,7 @@ private:
     //!
     //! \brief m_VehicleDataTopic Vehicle data topic collection
     //!
-    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, BASE_POSE_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, BASE_POSE_TOPICS, VEHICLE_MEASUREMENT_TOPICS> m_VehicleDataTopic;
 
     //!
     //! \brief m_MissionDataTopic Mission data topic collection

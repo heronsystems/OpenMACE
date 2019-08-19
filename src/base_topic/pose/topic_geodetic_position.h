@@ -13,6 +13,8 @@ extern const char TopicName_GeodeticPosition[];
 
 extern const MaceCore::TopicComponentStructure Structure_GeodeticPosition;
 
+MACE_CLASS_FORWARD(Topic_GeodeticPosition);
+
 class Topic_GeodeticPosition : public Data::NamedTopicComponentDataObject<TopicName_GeodeticPosition, &Structure_GeodeticPosition>
 {
 

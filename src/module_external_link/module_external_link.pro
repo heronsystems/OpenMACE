@@ -34,7 +34,7 @@ SOURCES += module_external_link.cpp \
     controllers/commands/command_rtl.cpp \
     controllers/commands/command_takeoff.cpp \
     pair_module_boundary_identifier.cpp \
-    controllers/commands/controller_goto.cpp
+    controllers/commands/command_execute_spatial_action.cpp
 
 HEADERS += module_external_link.h\
         module_external_link_global.h \
@@ -52,7 +52,7 @@ HEADERS += module_external_link.h\
     controllers/commands/generic_short_command.h \
     pair_module_boundary_identifier.h \
     controllers/common.h \
-    controllers/commands/controller_goto.h
+    controllers/commands/command_execute_spatial_action.h
 
 
 # Unix lib Install

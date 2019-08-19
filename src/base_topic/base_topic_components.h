@@ -9,4 +9,8 @@
 #include "pose/topic_cartesian_position.h"
 #include "pose/topic_geodetic_position.h"
 
+#define VEHICLE_MEASUREMENT_TOPICS mace::measurement_topics::Topic_AirSpeed, mace::measurement_topics::Topic_GroundSpeed
+
+#include "measurements/topic_speed.h"
+
 #endif // BASE_TOPIC_COMPONENTS_H

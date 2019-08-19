@@ -18,7 +18,7 @@ void State_FlightGuided_CarTarget::OnExit()
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
     if(Owner().ControllersCollection()->Exist("CartesianTargetController")){
-        MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local* ptr = dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*>(Owner().ControllersCollection()->Remove("CartesianTargetController"));
+        MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>* ptr = dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->Remove("CartesianTargetController"));
         delete ptr;
     }
 
@@ -155,7 +155,7 @@ void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommand
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-    auto cartesianTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto cartesianTargetController = new MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
 
     collection->Insert("CartesianTargetController",cartesianTargetController);
 

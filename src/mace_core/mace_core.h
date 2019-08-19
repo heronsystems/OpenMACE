@@ -444,7 +444,7 @@ public:
     //! \param sender Sender module
     //! \param remoteID New remote ID
     //!
-    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const int &remoteID);
+    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const unsigned int &remoteID);
 
 
     //!

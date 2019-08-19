@@ -31,7 +31,8 @@ SpatialLoiter_Unlimited::SpatialLoiter_Unlimited():
 SpatialLoiter_Unlimited::SpatialLoiter_Unlimited(const SpatialLoiter_Unlimited &obj):
     AbstractSpatialAction(obj)
 {
-    this->operator =(obj);
+    this->radius = obj.radius;
+    this->direction = obj.direction;
 }
 
 SpatialLoiter_Unlimited::SpatialLoiter_Unlimited(const unsigned int &systemOrigin, const unsigned int &systemTarget):
@@ -58,10 +59,10 @@ void SpatialLoiter_Unlimited::fromMACECOMMS_MissionItem(const mace_mission_item_
         this->direction = Data::LoiterDirection::CW;
 }
 
-void SpatialLoiter_Unlimited::fromMACECOMMS_GoToCommand(const mace_command_goto_t &obj)
+void SpatialLoiter_Unlimited::fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj)
 {
-    AbstractSpatialAction::fromMACECOMMS_GoToCommand(obj);
-    this->radius = fabs(obj.param3);
+    AbstractSpatialAction::fromMACECOMMS_ExecuteSpatialAction(obj);
+    this->radius = fabs(static_cast<double>(obj.param3));
     if(obj.param3 < 0)
         this->direction = Data::LoiterDirection::CCW;
     else

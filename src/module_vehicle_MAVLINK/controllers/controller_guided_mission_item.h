@@ -1,6 +1,8 @@
 #ifndef CONTROLLER_GUIDED_MISSION_ITEM_H
 #define CONTROLLER_GUIDED_MISSION_ITEM_H
 
+#include <mavlink.h>
+
 #include "common/common.h"
 
 #include "data_generic_command_item/spatial_items/spatial_waypoint.h"
@@ -81,7 +83,7 @@ protected:
         missionItem.autocontinue = 1;
         missionItem.command = 0;
         missionItem.current = 2;
-        missionItem.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        missionItem.frame = MAV_CMD_NAV_WAYPOINT;
         missionItem.param1 = 0.0;
         missionItem.param2 = 0.0;
         missionItem.param3 = 0.0;

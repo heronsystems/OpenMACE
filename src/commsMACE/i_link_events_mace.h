@@ -342,7 +342,7 @@ public:
     }
 
 
-    template<const char* ...N, typename ...I>
+    template<char* ...N, typename ...I>
     void Set(I... ids)
     {
         static_assert(sizeof...(N) == sizeof...(ids), "Name and Resource values length must be the same");

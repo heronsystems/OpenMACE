@@ -13,7 +13,7 @@ public:
    SpatialActionFactory() = default;
 
 public:
-   static AbstractSpatialActionPtr constructFromGoToCommand(const mace_command_goto_t &msg)
+   static AbstractSpatialActionPtr constructFrom_ExecuteSpatialAction(const mace_execute_spatial_action_t &msg)
    {
        AbstractSpatialActionPtr action;
 

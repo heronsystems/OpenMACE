@@ -361,7 +361,7 @@ protected:
             data = *m_MissionDownloading;
 
             m_MissionDownloadCount = -1;
-            m_MissionDownloading = NULL;
+            m_MissionDownloading = nullptr;
 
             return true;
         }
@@ -387,7 +387,7 @@ protected:
 
     virtual bool BuildData_Send(const mavlink_mission_request_t &msg, const MavlinkEntityKey &sender, mavlink_mission_item_t &cmd, MavlinkEntityKey &vehicleObj, void* &receiveQueueObj, void* &respondQueueObj)
     {
-        if(m_MissionUploading != NULL)
+        if(m_MissionUploading != nullptr)
         {
             int index = msg.seq;
 
@@ -416,7 +416,7 @@ protected:
 
     virtual bool Finish_Receive(const mavlink_mission_ack_t &msg, const MavlinkEntityKey &sender, uint8_t& ack, void* &queueObj)
     {
-        m_MissionUploading = NULL;
+        m_MissionUploading = nullptr;
 
         queueObj = 0;
 

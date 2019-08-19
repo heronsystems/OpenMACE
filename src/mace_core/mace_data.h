@@ -144,7 +144,7 @@ public:
     //! \brief GetAvailableVehicles Get a list of vehicle IDs this instance has knowledge of
     //! \param vehicleIDs Vector of vehicle IDs
     //!
-    void GetAvailableVehicles(std::vector<int> &vehicleIDs) const
+    void GetAvailableVehicles(std::vector<unsigned int> &vehicleIDs) const
     {
         std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
         vehicleIDs = m_AvailableVehicles;        
@@ -177,20 +177,20 @@ public:
     //! \brief GetLocalVehicles Get a list of local vehicle IDs this instance has knowledge of
     //! \param vehicleIDs Vector of vehicle IDs
     //!
-    void GetLocalVehicles(std::vector<int> &vehicleIDs) const
+    void GetLocalVehicles(std::vector<unsigned int> &vehicleIDs) const
     {
         std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
         vehicleIDs = m_LocalVehicles;
     }
 
 
-    std::vector<int> GetLocalVehicles() const
+    std::vector<unsigned int> GetLocalVehicles() const
     {
         std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
         return m_LocalVehicles;
     }
 
-    bool HasMavlinkID(const int MAVLINKID) const
+    bool HasMavlinkID(const unsigned int MAVLINKID) const
     {
         if(m_MAVLINKIDtoModule.find(MAVLINKID) == m_MAVLINKIDtoModule.cend())
         {
@@ -204,7 +204,7 @@ public:
     //! \param MAVLINKID
     //! \return
     //!
-    ModuleCharacteristic GetVehicleFromMAVLINKID(const int MAVLINKID) const
+    ModuleCharacteristic GetVehicleFromMAVLINKID(const unsigned int MAVLINKID) const
     {
         return m_MAVLINKIDtoModule.at(MAVLINKID);
     }
@@ -248,7 +248,7 @@ public:
     //! \param vehicleID Vehicle ID
     //! \return Vehicle home position
     //!
-    command_item::SpatialHome GetVehicleHomePostion(const int &vehicleID) const
+    command_item::SpatialHome GetVehicleHomePostion(const unsigned int &vehicleID) const
     {
         std::lock_guard<std::mutex> guard(m_VehicleHomeMutex);
         command_item::SpatialHome vehicleHome = m_VehicleHomeMap.at(vehicleID);
@@ -895,15 +895,15 @@ private:
     std::unordered_map<std::string, std::unordered_map<ModuleCharacteristic, std::unordered_map<std::string, TIME>>> m_LatestTopicComponentUpdateTime;
 
     mutable std::mutex m_AvailableVehicleMutex;
-    std::vector<int> m_AvailableVehicles;
-    std::vector<int> m_LocalVehicles;
-    std::unordered_map<int, ModuleCharacteristic> m_MAVLINKIDtoModule;
+    std::vector<unsigned int> m_AvailableVehicles;
+    std::vector<unsigned int> m_LocalVehicles;
+    std::unordered_map<unsigned int, ModuleCharacteristic> m_MAVLINKIDtoModule;
 
     mutable std::mutex m_VehicleFlightModeMutex;
-    std::unordered_map<int, std::string> m_VehicleFlightModeMap;
+    std::unordered_map<unsigned int, std::string> m_VehicleFlightModeMap;
 
     mutable std::mutex m_VehicleHomeMutex;
-    std::map<int, command_item::SpatialHome> m_VehicleHomeMap;
+    std::map<unsigned int, command_item::SpatialHome> m_VehicleHomeMap;
     mace::pose::GeodeticPosition_3D m_GlobalOrigin;
     double m_GridSpacing = -1;
 

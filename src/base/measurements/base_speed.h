@@ -52,13 +52,13 @@ public:
 
 public:
     //!
-    //! \brief setAltitude
-    //! \param altitude
+    //! \brief setSpeed
+    //! \param speed
     //!
     void setSpeed(const double &speed);
 
     //!
-    //! \brief getAltitude
+    //! \brief getSpeed
     //! \return
     //!
     double getSpeed() const;
@@ -67,13 +67,14 @@ public:
     void operator = (const Speed &rhs)
     {
         this->speedType = rhs.speedType;
+        this->measurement = rhs.measurement;
     }
 
     bool operator == (const Speed &rhs) {
         if(this->speedType != rhs.speedType){
             return false;
         }
-        if(fabs(this->measurement - rhs.measurement) <= std::numeric_limits<double>::epsilon()){
+        if(fabs(this->measurement - rhs.measurement) > std::numeric_limits<double>::epsilon()){
             return false;
         }
         return true;

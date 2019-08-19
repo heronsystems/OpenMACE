@@ -136,7 +136,7 @@ public:
     //! \param command Arm/Disarm command
     //! \param sender Sender module
     //!
-    virtual void Command_GoTo(const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+    virtual void Command_ExecuteSpatialItem(const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Request_FullDataSync Request all data from all systems

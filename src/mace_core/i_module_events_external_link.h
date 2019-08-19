@@ -44,7 +44,7 @@ public:
     //! \param sender
     //! \param remoteID
     //!
-    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const int &remoteID) = 0;
+    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const unsigned int &remoteID) = 0;
 
 
     //!

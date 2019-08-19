@@ -7,8 +7,7 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
     sender.MaceInstance = message->sysid;
     sender.ModuleID = message->compid;
 
-
-    switch ((int)message->msgid) {
+    switch (message->msgid) {
     case MACE_MSG_ID_HEARTBEAT:
     {
         mace_heartbeat_t decodedMSG;
@@ -88,9 +87,19 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
         //The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
         mace_attitude_t decodedMSG;
         mace_msg_attitude_decode(message,&decodedMSG);
-//        DataState::StateAttitude newAttitude(decodedMSG);
-//        std::shared_ptr<DataStateTopic::StateAttitudeTopic> ptrAttitude = std::make_shared<DataStateTopic::StateAttitudeTopic>(newAttitude);
-//        PublishVehicleData(sender, ptrAttitude);
+        mace::pose::Rotation_3D newRotation(static_cast<double>(decodedMSG.roll), static_cast<double>(decodedMSG.pitch), static_cast<double>(decodedMSG.yaw));
+        mace::pose_topics::Topic_AgentOrientationPtr ptrAttitude = std::make_shared<mace::pose_topics::Topic_AgentOrientation>(&newRotation);
+        PublishVehicleData(sender, ptrAttitude);
+        break;
+    }
+    case MACE_MSG_ID_ATTITUDE_QUATERNION:
+    {
+        //This is message definition 30
+        //The attitude in the aeronautical frame (right-handed, Z-down, X-front, Y-right).
+        mace_attitude_quaternion_t decodedMSG;
+        mace_msg_attitude_quaternion_decode(message, &decodedMSG);
+        mace::pose::Rotation_3D newRotation;
+        //Ken Fix This
         break;
     }
     case MACE_MSG_ID_ATTITUDE_STATE_FULL:
@@ -124,11 +133,10 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
         //The filtered global position (e.g. fused GPS and accelerometers). The position is in GPS-frame (right-handed, Z-up). It is designed as scaled integer message since the resolution of float is not sufficient.
         mace_global_position_int_t decodedMSG;
         mace_msg_global_position_int_decode(message,&decodedMSG);
-        //Ken Fix
-//        DataState::StateGlobalPosition newPosition(decodedMSG);
-//        std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> ptrPosition = std::make_shared<DataStateTopic::StateGlobalPositionTopic>(newPosition);
-
-//        PublishVehicleData(sender, ptrPosition);
+        mace::pose::GeodeticPosition_3D currentPosition;
+        currentPosition.fromMACEMsg(decodedMSG);
+        mace::pose_topics::Topic_GeodeticPositionPtr ptrPosition = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>(&currentPosition);
+        PublishVehicleData(sender, ptrPosition);
 
         break;
     }

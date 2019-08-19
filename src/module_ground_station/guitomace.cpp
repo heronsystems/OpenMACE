@@ -393,7 +393,7 @@ void GUItoMACE::getConnectedVehicles()
 //    mLogs->debug("Module Ground Station saw a request for getting connected vehicles.");
 
     std::shared_ptr<const MaceCore::MaceData> data = m_parent->getDataObject();
-    std::vector<int> vehicleIDs;
+    std::vector<unsigned int> vehicleIDs;
     data->GetAvailableVehicles(vehicleIDs);           
 
     QJsonArray ids;

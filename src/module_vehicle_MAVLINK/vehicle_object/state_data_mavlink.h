@@ -46,6 +46,8 @@ public:
     Data::DataGetSetNotifier<mace::pose::CartesianPosition_3D> vehicleLocalPosition;
     Data::DataGetSetNotifier<mace::pose::Rotation_3D> vehicleAttitude;
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleAirspeed;
+    Data::DataGetSetNotifier<mace::measurements::Speed> vehicleGroundSpeed;
+
 
 public:
     Eigen::Transform<double,3,Eigen::Affine> getTransform_VehicleTOSwarm() const

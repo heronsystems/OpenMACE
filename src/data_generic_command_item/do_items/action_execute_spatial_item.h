@@ -77,15 +77,15 @@ public:
         return m_SpatialAction;
     }
 
-    void updateFromGoToCommand(const mace_command_goto_t &msg)
+    void updateFrom_ExecuteSpatialAction(const mace_execute_spatial_action_t &msg)
     {
         if(m_SpatialAction == nullptr)
         {
-            m_SpatialAction = command_item::SpatialActionFactory::constructFromGoToCommand(msg);
+            m_SpatialAction = command_item::SpatialActionFactory::constructFrom_ExecuteSpatialAction(msg);
         }
         else
         {
-            m_SpatialAction->fromMACECOMMS_GoToCommand(msg);
+            m_SpatialAction->fromMACECOMMS_ExecuteSpatialAction(msg);
         }
     }
 

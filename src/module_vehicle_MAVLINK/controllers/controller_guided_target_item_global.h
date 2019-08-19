@@ -1,13 +1,14 @@
 #ifndef CONTROLLER_GUIDED_TARGET_ITEM_GLOBAL_H
 #define CONTROLLER_GUIDED_TARGET_ITEM_GLOBAL_H
 
+#include <mavlink.h>
+
 #include "common/common.h"
 
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_finish.h"
 #include "controllers/actions/action_broadcast.h"
 
-#include "mavlink.h"
 
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
 
@@ -43,12 +44,12 @@ private:
 
 protected:
 
-    virtual void Construct_Broadcast(const COMMANDDATASTRUCTURE &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_global_int_t &targetItem)
+    void Construct_Broadcast(const COMMANDDATASTRUCTURE &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_global_int_t &targetItem) override
     {
         UNUSED(sender);
 
         targetItem = initializeMAVLINKTargetItem();
-        targetItem.target_system = commandItem.targetID;
+        targetItem.target_system = commandItem.getTargetSystem();
         targetItem.target_component = static_cast<uint8_t>(MaceCore::ModuleClasses::VEHICLE_COMMS);
 
         FillTargetItem(commandItem,targetItem);

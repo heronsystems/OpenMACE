@@ -31,7 +31,7 @@ SpatialRTL::SpatialRTL():
 SpatialRTL::SpatialRTL(const SpatialRTL &obj):
     AbstractSpatialAction(obj)
 {
-    this->operator =(obj);
+
 }
 
 SpatialRTL::SpatialRTL(const unsigned int &systemOrigin, const unsigned int &systemTarget):

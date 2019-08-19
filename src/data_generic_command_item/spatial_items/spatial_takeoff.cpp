@@ -32,7 +32,6 @@ SpatialTakeoff::SpatialTakeoff():
 SpatialTakeoff::SpatialTakeoff(const SpatialTakeoff &obj):
     AbstractSpatialAction(obj)
 {
-    this->operator =(obj);
 }
 
 SpatialTakeoff::SpatialTakeoff(const unsigned int &systemOrigin, const unsigned int &systemTarget):

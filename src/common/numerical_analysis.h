@@ -177,7 +177,7 @@ private:
 public:
 
     BaseAnalyzer() :
-        m_ConvergenceNotifier(NULL)
+        m_ConvergenceNotifier(nullptr)
     {
 
     }
@@ -203,7 +203,7 @@ public:
     {
         NumericalAnalysis::AnalysisStates state = ProcessIntermediateSolution(metrics);
 
-        if(m_ConvergenceNotifier != NULL)
+        if(m_ConvergenceNotifier != nullptr)
         {
             (*m_ConvergenceNotifier)(metrics, state);
         }
@@ -219,7 +219,7 @@ public:
     //!
     void FinalSolution(const SOLUTION_METRICS &metrics)
     {
-        if(m_ConvergenceNotifier != NULL)
+        if(m_ConvergenceNotifier != nullptr)
         {
             (*m_ConvergenceNotifier)(metrics, AnalysisStates::FINISHED);
         }

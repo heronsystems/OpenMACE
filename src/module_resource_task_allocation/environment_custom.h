@@ -111,7 +111,7 @@ private:
     {
         if(!m_globalInstance) {
             delete m_dataGrid;
-            m_dataGrid = NULL;
+            m_dataGrid = nullptr;
         }
     }
 

@@ -498,7 +498,7 @@ void MaceCore::Event_NewModule(const ModuleBase* sender, const ModuleCharacteris
 void MaceCore::Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo)
 {
     int vehicleID = gotTo.getTargetSystem();
-    MarshalCommandToVehicle<command_item::Action_ExecuteSpatialItem>(vehicleID, VehicleCommands::COMMAND_GOTO, ExternalLinkCommands::COMMAND_GOTO, gotTo, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::Action_ExecuteSpatialItem>(vehicleID, VehicleCommands::EXECUTE_ACTION_SPATIALITEM, ExternalLinkCommands::EXECUTE_ACTION_SPATIALITEM, gotTo, sender->GetCharacteristic());
 }
 
 //!
@@ -893,7 +893,7 @@ void MaceCore::EventVehicle_REJECTProposedMission(const void *sender, const Miss
 //! \param sender Sender module
 //! \param remoteID New remote ID
 //!
-void MaceCore::ExternalEvent_UpdateRemoteID(const void *sender, const int &remoteID)
+void MaceCore::ExternalEvent_UpdateRemoteID(const void *sender, const unsigned int &remoteID)
 {
     //KEN FIX THIS
     IModuleCommandExternalLink* externalLink = (IModuleCommandExternalLink*)sender;
@@ -1165,7 +1165,7 @@ void MaceCore::ExternalEvent_NewBoundary(const ModuleBase *sender, const NewBoun
     }
 
     /*
-    if(m_RTA != NULL)
+    if(m_RTA != nullptr)
     {
         //TEMPORARY
         //pull from key, this should probably be the key to the RTA module. i.e. m_RTA->GetCharacterisic()
