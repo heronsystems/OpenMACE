@@ -74,4 +74,4 @@ std::ostream& operator<<(std::ostream& os, const SpatialHome& t)
     return os;
 }
 
-} //end of namespace CommandItem
+} //end of namespace command_item

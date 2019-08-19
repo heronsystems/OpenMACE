@@ -95,8 +95,14 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
 
         constructAndSendTarget(cmd->getDynamicTarget());
 
-        //determine if the velocity component is valid and therefore we have to transmit at a recursive rate
-        if(cmd->getDynamicTarget().getVelocity()->areAllVelocitiesValid()) //ardupilot requires that all the velocities be valid
+        /*
+         * Determine if the velocity component is valid, and if so, update the timeout controller
+         * with the appropriate target to ensure that upon the designated timeout, the controller
+         * retransmits the command to the ardupilot.
+         *
+         * NOTE: Ardupilot requires that all the velocities be valid
+         */
+        if(cmd->getDynamicTarget().getVelocity()->areAllVelocitiesValid())
         {
             m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
         }

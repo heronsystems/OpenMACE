@@ -50,6 +50,16 @@ hsm::Transition State_FlightGuided_GeoTarget::GetTransition()
             rtn = hsm::SiblingTransition<State_FlightGuided_Idle>(currentCommand);
             break;
         }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
+        {
+            rtn = hsm::SiblingTransition<State_FlightGuided_CarTarget>(currentCommand);
+            break;
+        }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM:
+        {
+            rtn = hsm::SiblingTransition<State_FlightGuided_MissionItem>(currentCommand);
+            break;
+        }
         default:
             std::cout<<"I dont know how we eneded up in this transition state from State_FlightGuided_Target."<<std::endl;
             break;
@@ -60,21 +70,56 @@ hsm::Transition State_FlightGuided_GeoTarget::GetTransition()
 
 bool State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool commandHandled = false;
+
     switch (command->getCommandType()) {
+
     case COMMANDTYPE::CI_ACT_TARGET:
     {
+        //stop the current controllers target transmission if it is running
+        m_TimeoutController.clearTarget();
 
         //We want to keep this command in scope to perform the action
         this->currentCommand = command->getClone();
 
+        //The command is a target, we therefore have to figure out what type of target it is
         const command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
 
-        MavlinkEntityKey target = Owner().getMAVLINKID();
-        MavlinkEntityKey sender = 255;
-        MAVLINKVehicleControllers::TargetControllerStructLocal tgt;
-        tgt.targetID = static_cast<uint8_t>(target);
-        tgt.target = cmd->getDynamicTarget();
-        ((MAVLINKVehicleControllers::ControllerGuidedTargetItem_Local*)Owner().ControllersCollection()->At("GeodeticTargetController"))->Broadcast(tgt, sender);
+        const mace::pose::Position* targetPosition = cmd->getDynamicTarget().getPosition();
+        if(targetPosition != nullptr)
+        {
+            /* Since the positional element within the command is not null, we have to make sure it
+             * is of the coordinate frame type that can be supported within this guided mode.
+             * If it is not, we will update the desired state for th state machine and switch.
+             */
+            if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
+            {
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+                commandHandled = false;
+                break;
+            }
+        }
+
+        constructAndSendTarget(cmd->getDynamicTarget());
+
+        /*
+         * Determine if the velocity component is valid, and if so, update the timeout controller
+         * with the appropriate target to ensure that upon the designated timeout, the controller
+         * retransmits the command to the ardupilot.
+         *
+         * NOTE: Ardupilot requires that all the velocities be valid
+         */
+        if(cmd->getDynamicTarget().getVelocity()->areAllVelocitiesValid())
+        {
+            m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
+        }
+        commandHandled = true;
+        break;
+    }
+    case COMMANDTYPE::CI_ACT_MISSIONITEM:
+    {
+        this->currentCommand = command->getClone();
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM;
     }
     default:
         break;

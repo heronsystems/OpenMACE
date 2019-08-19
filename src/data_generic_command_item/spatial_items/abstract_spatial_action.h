@@ -25,11 +25,6 @@ namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractSpatialAction);
 
-//Abstract spatial commands are related to the goto commands
-
-//!
-//! \brief The AbstractSpatialCommand class
-//!
 class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>
 {
 public:
