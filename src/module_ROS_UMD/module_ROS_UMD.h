@@ -54,7 +54,7 @@ public:
     //!
     //! \brief start Start ROS loop
     //!
-    void start();
+    void start() override;
 
     // ============================================================================= //
     // ================= Default methods for module configuration ================== //
@@ -65,7 +65,7 @@ public:
     //! \brief This module as been attached as a module
     //! \param ptr pointer to object that attached this instance to itself
     //!
-    virtual void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
+    void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr) override
     {
         ptr->Subscribe(this, m_VehicleDataTopic.Name());
         ptr->Subscribe(this, m_VehicleMissionTopic.Name());
@@ -75,14 +75,14 @@ public:
     //! \brief Describes the strucure of the parameters for this module
     //! \return Strucure
     //!
-    virtual std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const;
+    std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const override;
 
 
     //!
     //! \brief Provides object contains parameters values to configure module with
     //! \param params Parameters to configure
     //!
-    virtual void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params);
+    void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params) override;
 
     //!
     //! \brief New non-spooled topic given
@@ -132,7 +132,7 @@ public:
     //! \brief NewlyAvailableVehicle Subscriber to a newly available vehicle topic
     //! \param vehicleID Vehilce ID of the newly available vehicle
     //!
-    virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyUpdated3DOccupancyMap Subscriber to a newly available 3D occupancy map
