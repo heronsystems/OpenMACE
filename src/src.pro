@@ -12,7 +12,6 @@ SUBDIRS += \
     comms \
     commsMACE \
     data_generic_item \
-    #data_generic_state_item \
     data_generic_command_item \
     mace_core \
     commsMAVLINK \
@@ -35,8 +34,8 @@ SUBDIRS += \
     module_resource_task_allocation \
     module_ROS \
     module_ROS_UMD \
-    commsExample \
-    example_vehicle_module \
+    #commsExample \
+    #example_vehicle_module \
     mace 
     #TestMaps \
     #example \
@@ -66,7 +65,7 @@ data_vehicle_sensors.depends = data_generic_mission_item_topic
 controllers.depends = data_vehicle_sensors
 commsMAVLINK.depends = mace_core
 commsMACEHelper.depends = mace_core
-commsExample.depends = mace_core
+#commsExample.depends = mace_core
 module_vehicle_generic.depends = controllers
 module_vehicle_MAVLINK.depends = module_vehicle_generic
 module_vehicle_ardupilot.depends = module_vehicle_MAVLINK
