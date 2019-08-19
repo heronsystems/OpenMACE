@@ -1,4 +1,4 @@
-function [nodesXY, LatRef, LongRef] = loadOpenStreetMapFlexNodes(fileName, refX, refY, boxlength, boxwidth, angle, dx, buffer)
+function [nodesXY, LatRef, LongRef] = loadOpenStreetMapFlexNodes(fileName, refX, refY, boxlength, boxwidth, angle, dx, buffer, scale)
 
 % parse baseline map
 [ways, LatRef, LongRef] = parseOpenStreetMap(fileName);
@@ -9,7 +9,7 @@ boxXY = boxCorners(refX,refY,boxlength,boxwidth,angle);
 % clip, shift to origin, and scale
 shiftX = -refX;
 shiftY = -refY;
-waysmod = manipOpenStreetMap( ways, boxXY, -angle, 1, shiftX, shiftY );
+waysmod = manipOpenStreetMap( ways, boxXY, -angle, scale, shiftX, shiftY );
 
 % resample and snap to grid of width dx
 nodesXY = [];
