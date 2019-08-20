@@ -1,12 +1,21 @@
-for kk = 1:100
+clear; close all; clc;
+
+maps = [1,2,3];
+for m = 1:1:length(maps)
+for kk = 1:10
 
 % clear; close all; clc;
 % format compact;
 updatePath;
 
-[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
+[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm(maps(m));
 
-[swarmWorld, swarmState, targetState, ROS_MACE] = initializeRun(trueWorld, swarmModel, targetModel, runParams, ROS_MACE);
+% initialize the swarm world, target and swarm states
+swarmWorld = initializeSwarmWorld(trueWorld , swarmModel, runParams);
+targetState = initializeTargetState(trueWorld, targetModel);
+[swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, runParams, ROS_MACE);
+disp('Run initialized.')
+
 % histories are used for performance analysis and plotting
 s = 1; % number of samples
 targetStateHist{1} = targetState;
@@ -61,7 +70,7 @@ for k = 1:length(targetStateHist)
 end
 % clearvars -except targetModel
 % save('constantSpeedRandomWalkGenerative.mat');
-save(['./scenes/targetMotion' num2str(kk) '.mat'],'targetModel');
+save(['./scenes/targetMotion' num2str(kk) '_map_' num2str(m) '.mat'],'targetModel');
 
 % close all
 % plot(trueWorld.G_env,'XData',trueWorld.G_env.Nodes.x,'YData',trueWorld.G_env.Nodes.y);
@@ -75,4 +84,5 @@ save(['./scenes/targetMotion' num2str(kk) '.mat'],'targetModel');
 % set(handle,'Visible','Off');
 % end
 
+end
 end

@@ -5,7 +5,7 @@
 % MATLAB Initialization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % check if this is a monte-carlo run, if not clear the workspace
-%   prese rve single run simulation parameters
+%   preserve single run simulation parameters
 %   check MonteCarloEngine.m for details
 if ~exist('MonteCarloSwitch','var')
     clear; close all; clc;
@@ -15,35 +15,30 @@ if ~exist('MonteCarloSwitch','var')
     rng(1);
 end
 
-rng(5);
-
-% comment out if running the auctioneer (also refer to /archive/loadParams_mapping() for parameters)
-clear taskAllocation_decentralized
-
 % simulate
 % temporary fix to allow plotting with time on ROS message callback
 % will be replaced with MACE timestamp when available
 global tStart;
 tStart = tic;
 
-if ~exist('MonteCarloSwitch','var')
-    % user should modify loadParams.m as desired for single run
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3();
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();    
-    disp('Running standard (non Monte-Carlo) simulation')
-%     [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityBlocksAtF3();
+% user should modify loadParams.m as desired for single run
+if ~exist('MonteCarloSwitch','var')  
+    disp('Running standard (non Monte-Carlo) simulation or MACE run')    
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();         
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osmAtF3();
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityBlocksAtF3();    
 else
-    % for Monte Carlo, specify the IDs of the scenes
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
+    % for Monte Carlo, specify the IDs of the scenes    
     disp('Running Monte-Carlo simulation')
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks(algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m       
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm(mapID, algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m       
 end
 
 % initialize the swarm world, target and swarm states
 swarmWorld = initializeSwarmWorld(trueWorld , swarmModel, runParams);
 targetState = initializeTargetState(trueWorld, targetModel);
-[swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, runParams, ROS_MACE);disp('Run initialized.')
+[swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, runParams, ROS_MACE);
+disp('Run initialized.')
 
 switch runParams.type
     case 'matlab'
@@ -72,29 +67,21 @@ if ~exist('MonteCarloSwitch','var')
 else
     % this is for saving Monte Carlo results
     disp('Saving Monte-Carlo simulation');
-    matFileName = ['./monteCarloRuns/MonteCarlo_Algorithm' num2str(algorithmID) '_InitialFormation' num2str(initialFormationID) '_TargetMotion' num2str(targetMotionID) '.mat']
+    matFileName = ['./monteCarloRuns/MonteCarlo_Algorithm' num2str(algorithmID) '_InitialFormation' num2str(initialFormationID) '_mapID' num2str(mapID) '_TargetMotion' num2str(targetMotionID) '.mat']
     save(matFileName,'-v7.3');
 end
 
 
 % Display Results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if ~exist('MonteCarloSwitch','var')
+% various movie profiles can be specified here
+movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )    
+%movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+%movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+%movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 
-% % movie
-% if ( runParams.flags.movie && ~exist('MonteCarloSwitch','var'))
-%      movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-%    
-%     % various movie profiles can be specified here
-%     movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )    
-%     % movie_nodesInView( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-     movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-     movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-    movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-% %     % plots
-%      plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-%      plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-%         
-%     % debug
-%     % plotTaskTable(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-% end
-
+% plots
+%plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+%plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+end

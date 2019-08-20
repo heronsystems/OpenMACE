@@ -1,6 +1,6 @@
 function plotHandles = initMutualInfoWptsMovie(swarmWorld, swarmState, targetState, trueWorld, runParams, swarmModel, targetModel, plotHandles)
 subplot(plotHandles.subplotHandle)
-plotHandles.figh_subplot2 = imagesc(trueWorld.xcp,trueWorld.ycp, swarmWorld.samplingPriority );
+plotHandles.figh_subplot2 = imagesc(trueWorld.xcp,trueWorld.ycp, swarmWorld.mutualInformation );
 set(gca,'YDir','normal')
 title('Mutual Information Surface')
 colorbar;

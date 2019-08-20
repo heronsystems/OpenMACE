@@ -41,13 +41,6 @@ xlabel('X')
 ylabel('Y')
 title('Number of Cell Views')
 
-% number of cells explored with time
-figure;
-imagesc(trueWorld.xcp,trueWorld.ycp, log(samplingPriority( swarmWorldHist{end})) );
-set(gca,'YDir','Normal')
-set(gca,'FontSize',16)
-title('Log Likelihood')
-colorbar;
 
 
 % % node density
