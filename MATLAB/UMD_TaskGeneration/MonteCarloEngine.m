@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % clear; close all; clc;
 % format compact;
-function [MonteCarloSwitch] = MonteCarloEngine()
+% function [MonteCarloSwitch] = MonteCarloEngine()
 
 updatePath;
 
@@ -14,10 +14,10 @@ MonteCarloSwitch = 1;
 %rng('default');
 %rng(1);
 
-iiIndex = [26 27 28];
-jjIndex = [1 2 3];
+iiIndex = [26]; % index for algorithm
+jjIndex = 1:20; % index for generated scenes (agent initial location and target behavior)
 
-trial = cell(1,3); % come back later at the number of columns
+trial = cell(1,length(jjIndex)); % come back later at the number of columns
 
 simulationOrPlot = 'sim'; %options are 'sim' or 'plot' or 'analysis', or 'analysisPlot'
 % if strcmp(simulationOrPlot,'analysis')
@@ -56,11 +56,10 @@ kk = 1;
     %trialRange = ;
 
 parfor jj = 1:1:length(jjIndex) %[1 50 100]%[1:100]% total target motions
-%     jj = jjIndex(j);
+
     for for_i = 1:1:length(iiIndex)%[13,38,63] %%[26,28,30,36,38,40,46,48,50] ; %[26,28,30,36,38,40] % alg %  [1,3,5,11,13,15,21,23,25]
         ii = iiIndex(for_i);
-%     for j = 1:1:length(jjIndex)%[1 50 100]%[1:100]% total target motions
-        %             ((kk-1)*1+jj)/(1*30)/3  % print percentage of completion
+
         if strcmp(simulationOrPlot,'sim')
             fprintf('Running algorithm %d (trial %d) \n', ii, jj);
             % set the ID of algorithm, initial formation, and target motion here (remember to load the IDs to the loadParams(ID1,ID2,ID3) function)
@@ -151,7 +150,7 @@ parfor jj = 1:1:length(jjIndex) %[1 50 100]%[1:100]% total target motions
 %             simulationOrPlot = 'analysis';
 %             clearvars -except simulationOrPlot ii kk jj MonteCarloSwitch detection detectionValid detectionTime alg;
         end
-        5;
+
     end
     %end
 end
@@ -657,4 +656,4 @@ end
 %
 % % then save the data to \results\data, with a brief NOTE string.            %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-end
+% end
