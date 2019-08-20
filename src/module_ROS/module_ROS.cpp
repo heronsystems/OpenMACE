@@ -386,13 +386,13 @@ void ModuleROS::NewlyFoundPath(const std::vector<mace::state_space::StatePtr> &p
 
     for(int i = 1; i < path.size();i ++)
     {
-        std::cout<<"X: "<<path[i]->as<mace::pose::CartesianPosition_2D>()->getXPosition()<<"Y: "<<path[i]->as<mace::pose::CartesianPosition_2D>()->getYPosition()<<std::endl;
+        std::cout<<"X: "<<path[i]->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition()<<"Y: "<<path[i]->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition()<<std::endl;
 
-        mace::pose::CartesianPosition_2D begin(*path.at(i-1)->as<mace::pose::CartesianPosition_2D>());
+        mace::pose::CartesianPosition_2D begin(*path.at(i-1)->stateAs<mace::pose::CartesianPosition_2D>());
         startPoint.x = begin.getXPosition();
         startPoint.y = begin.getYPosition();
 
-        mace::pose::CartesianPosition_2D end(*path.at(i)->as<mace::pose::CartesianPosition_2D>());
+        mace::pose::CartesianPosition_2D end(*path.at(i)->stateAs<mace::pose::CartesianPosition_2D>());
         endPoint.x = end.getXPosition();
         endPoint.y = end.getYPosition();
 
@@ -414,9 +414,9 @@ void ModuleROS::insertVehicleIfNotExist(const int &vehicleID) {
         std::cout << " =================== IN IF STATEMENT =================== " << std::endl;
 
         // Insert vehicle into map:
-        DataState::StateLocalPosition localPos;
-        DataState::StateAttitude att;
-        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple = std::make_tuple(localPos, att);
+        mace::pose::CartesianPosition_3D localPos;
+        mace::pose::Rotation_3D att;
+        std::tuple<mace::pose::CartesianPosition_3D, mace::pose::Rotation_3D> tmpTuple = std::make_tuple(localPos, att);
         m_vehicleMap.insert(std::make_pair(vehicleID, tmpTuple));
 
         // Add subscriber(s) for vehicle sensor messages
@@ -693,16 +693,16 @@ void ModuleROS::newPointCloud(const sensor_msgs::PointCloud2::ConstPtr& msg) {
     catch (tf::TransformException ex){
         ROS_ERROR("%s",ex.what());
     }
-    mace::pose::Position<mace::pose::CartesianPosition_3D> transform_position;
+    mace::pose::CartesianPosition_3D transform_position;
     transform_position.setXPosition(sensorToWorld (0, 3));
     transform_position.setYPosition(sensorToWorld (1, 3));
     transform_position.setZPosition(sensorToWorld (2, 3));
-    mace::pose::Orientation_3D transform_orientation;
+    mace::pose::Rotation_3D transform_orientation;
     // Get RPY from quaternion
     double roll, pitch, yaw;
     tf::Quaternion quat(transform.transform.rotation.x, transform.transform.rotation.y, transform.transform.rotation.z, transform.transform.rotation.w);
     tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);
-    transform_orientation.setEuler(roll, pitch, yaw);
+    transform_orientation.updateFromEuler(roll, pitch, yaw);
     // TODO: Make this NotifyListeners method name better -- this is directly to Mace core
     ModuleROS::NotifyListeners([&](MaceCore::IModuleEventsROS* ptr){
         ptr->ROS_NewLaserScan(octoPointCloud, transform_position, transform_orientation); // TODO: Include transform as arguments (convert to MACE data structures first - Orientation 3D)
@@ -754,7 +754,7 @@ void ModuleROS::newGlobalPointCloud(const sensor_msgs::PointCloud2::ConstPtr& ms
       return;
     }
 
-    mace::pose::Position<mace::pose::CartesianPosition_3D> transform_position;
+    mace::pose::CartesianPosition_3D transform_position;
     transform_position.setXPosition(worldToSensor (0, 3));
     transform_position.setYPosition(worldToSensor (1, 3));
     transform_position.setZPosition(worldToSensor (2, 3));
@@ -828,17 +828,17 @@ void ModuleROS::renderState(const mace::pose::CartesianPosition_2D &state) {
 //! \brief renderEdge Publish the 2D line to ROS for rendering in RViz
 //! \param edge Edge/line to render
 //!
-void ModuleROS::renderEdge(const mace::geometry::Line_2DC &edge) {
+void ModuleROS::renderEdge(const mace::geometry::Line_Cartesian &edge) {
     geometry_msgs::Point startPoint;
-    mace::pose::CartesianPosition_2D begin(edge.getBeginLine());
 
-    startPoint.x = begin.getXPosition();
-    startPoint.y = begin.getYPosition();
+    mace::pose::CartesianPosition_2D* begin = edge.getBeginLine()->positionAs<mace::pose::CartesianPosition_2D>();
+    startPoint.x = begin->getXPosition();
+    startPoint.y = begin->getYPosition();
 
     geometry_msgs::Point endPoint;
-    mace::pose::CartesianPosition_2D end(edge.getEndLine());
-    endPoint.x = end.getXPosition();
-    endPoint.y = end.getYPosition();
+    mace::pose::CartesianPosition_2D* end = edge.getEndLine()->positionAs<mace::pose::CartesianPosition_2D>();
+    endPoint.x = end->getXPosition();
+    endPoint.y = end->getYPosition();
 
     line_list.points.push_back(startPoint);
     line_list.points.push_back(endPoint);
@@ -903,45 +903,45 @@ std_msgs::ColorRGBA ModuleROS::generateColorHeight(double height)
 //! \brief convertToGazeboCartesian Convert position in local frame to Gazebo's world frame
 //! \param localPos MACE local position
 //!
-void ModuleROS::convertToGazeboCartesian(DataState::StateLocalPosition& localPos) {
+void ModuleROS::convertToGazeboCartesian(mace::pose::CartesianPosition_3D& localPos) {
 
-    switch (localPos.getCoordinateFrame()) {
-    case Data::CoordinateFrameType::CF_GLOBAL:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_NED:
-        localPos.setZ(-localPos.getZ());
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_ENU:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_INT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT_INT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_OFFSET_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_BODY_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_BODY_OFFSET_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT_INT:
-        // TODO:
-        break;
-    default:
-        std::cout << "Unknown coordinate system seen when sending to ROS/Gazebo." << std::endl;
-    }
+//    switch (localPos.getCoordinateFrame()) {
+//    case Data::CoordinateFrameType::CF_GLOBAL:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_LOCAL_NED:
+//        localPos.setZ(-localPos.getZ());
+//        break;
+//    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_LOCAL_ENU:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_GLOBAL_INT:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT_INT:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_LOCAL_OFFSET_NED:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_BODY_NED:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_BODY_OFFSET_NED:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT:
+//        // TODO:
+//        break;
+//    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT_INT:
+//        // TODO:
+//        break;
+//    default:
+//        std::cout << "Unknown coordinate system seen when sending to ROS/Gazebo." << std::endl;
+//    }
 }
 
 //!
@@ -954,8 +954,8 @@ bool ModuleROS::publishVehiclePose(const int &vehicleID) {
     ros::Rate loop_rate(10);
 
     // robot state
-    DataState::StateLocalPosition tmpLocalPos = std::get<0>(m_vehicleMap[vehicleID]);
-    DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
+    mace::pose::CartesianPosition_3D tmpLocalPos = std::get<0>(m_vehicleMap[vehicleID]);
+    mace::pose::Rotation_3D tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
 
 //    geometry_msgs::Point robotPosition;
 //    robotPosition.x  = tmpLocalPos.getPositionX();
@@ -994,22 +994,22 @@ bool ModuleROS::sendGazeboModelState(const int &vehicleID) {
     ros::Rate loop_rate(10);
 
     // robot state
-    DataState::StateLocalPosition tmpLocalPos = std::get<0>(m_vehicleMap[vehicleID]);
-    DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
+    mace::pose::CartesianPosition_3D tmpLocalPos = std::get<0>(m_vehicleMap[vehicleID]);
+    mace::pose::Rotation_3D tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
 
     convertToGazeboCartesian(tmpLocalPos);
 
     geometry_msgs::Point robotPosition;
-    robotPosition.x  = tmpLocalPos.getPositionX();
-    robotPosition.y = tmpLocalPos.getPositionY();
-    robotPosition.z = tmpLocalPos.getPositionZ();
+    robotPosition.x  = tmpLocalPos.getXPosition();
+    robotPosition.y = tmpLocalPos.getYPosition();
+    robotPosition.z = tmpLocalPos.getZPosition();
 
     geometry_msgs::Quaternion attitude;
     attitude.x = 0.0;
     attitude.y = 0.0;
     attitude.z = 0.0;
     attitude.w = 1.0;
-    attitude = tf::createQuaternionMsgFromRollPitchYaw(tmpAtt.roll, tmpAtt.pitch, tmpAtt.yaw);
+    attitude = tf::createQuaternionMsgFromRollPitchYaw(tmpAtt.getRoll(), tmpAtt.getPitch(), tmpAtt.getYaw());
 
     geometry_msgs::Pose pose;
     pose.position = robotPosition;

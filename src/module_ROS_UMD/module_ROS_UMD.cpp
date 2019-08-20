@@ -397,41 +397,11 @@ void ModuleROSUMD::setupROS() {
 }
 
 // TODO: Better workaround for transformations
-void ModuleROSUMD::convertToENU(DataState::StateLocalPosition& localPos) {
+void ModuleROSUMD::convertToENU(mace::pose::CartesianPosition_3D &localPos) {
 
-    switch (localPos.getCoordinateFrame()) {
-    case Data::CoordinateFrameType::CF_GLOBAL:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_NED:
-        localPos.setZ(-localPos.getZ());
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_ENU:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_INT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT_INT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_OFFSET_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_BODY_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_BODY_OFFSET_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT_INT:
-        // TODO:
+    switch (localPos.getCartesianFrameType()) {
+    case mace::CartesianFrameTypes::CF_LOCAL_NED:
+        localPos.setZPosition(-localPos.getZPosition());
         break;
     default:
         std::cout << "Unknown coordinate system seen when sending to ROS/Gazebo." << std::endl;
@@ -446,19 +416,19 @@ void ModuleROSUMD::convertToENU(DataState::StateLocalPosition& localPos) {
 bool ModuleROSUMD::publishVehiclePosition(const int &vehicleID)
 {
     // robot state
-    DataState::StateLocalPosition tmpLocalPos = std::get<0>(m_vehicleMap[vehicleID]);
+    mace::pose::CartesianPosition_3D tmpLocalPos = std::get<0>(m_vehicleMap[vehicleID]);
 
     // TODO: Better workaround for transformations
     // Transform local position to ENU:
-    if(tmpLocalPos.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
-        tmpLocalPos.setZ(-tmpLocalPos.getZ());
+    if(tmpLocalPos.getCartesianFrameType() != mace::CartesianFrameTypes::CF_LOCAL_ENU) {
+        tmpLocalPos.setZPosition(-tmpLocalPos.getZPosition());
     }
 
     mace_matlab::UPDATE_POSITION position;
     position.vehicleID = vehicleID;
-    position.northing = tmpLocalPos.getPositionY();
-    position.easting = tmpLocalPos.getPositionX();
-    position.altitude = tmpLocalPos.getPositionZ();
+    position.northing = tmpLocalPos.getYPosition();
+    position.easting = tmpLocalPos.getXPosition();
+    position.altitude = tmpLocalPos.getZPosition();
     position.northSpeed = 0.0; // TODO
     position.eastSpeed = 0.0; // TODO
     // TODO: Timestamp
@@ -476,16 +446,16 @@ bool ModuleROSUMD::publishVehicleAttitude(const int &vehicleID)
 {
 
     // robot state
-    DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
+    mace::pose::Rotation_3D tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
 
     mace_matlab::UPDATE_ATTITUDE attitude;
     attitude.vehicleID = vehicleID;
-    attitude.roll = tmpAtt.getMACEEuler().roll;
-    attitude.pitch = tmpAtt.getMACEEuler().pitch;
-    attitude.yaw = tmpAtt.getMACEEuler().yaw;
-    attitude.rollRate = tmpAtt.getMACEEulerRates().rollspeed;
-    attitude.pitchRate = tmpAtt.getMACEEulerRates().pitchspeed;
-    attitude.yawRate = tmpAtt.getMACEEulerRates().yawspeed;
+    attitude.roll = tmpAtt.getRoll();
+    attitude.pitch = tmpAtt.getPitch();
+    attitude.yaw = tmpAtt.getYaw();
+    attitude.rollRate = 0.0;
+    attitude.pitchRate = 0.0;
+    attitude.yawRate = 0.0;
     // TODO: Timestamp
 
     m_vehicleAttPub.publish(attitude);
@@ -548,32 +518,30 @@ bool ModuleROSUMD::publishVehicleHeartbeat(const int &vehicleID, const std::shar
 bool ModuleROSUMD::publishVehicleTargetInfo(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
 {
 
-    mace_matlab::UPDATE_VEHICLE_TARGET target;
-    target.vehicleID = vehicleID;
-    target.state = static_cast<uint8_t>(component->targetState);
-    target.distance = component->targetDistance;
+//    mace_matlab::UPDATE_VEHICLE_TARGET target;
+//    target.vehicleID = vehicleID;
+//    target.state = static_cast<uint8_t>(component->targetState);
+//    target.distance = component->targetDistance;
 
     //the command here is based in a global cartesian space, we therefore need to transform it
-    CartesianPosition_3D cartesianPosition;
-    GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-    GeodeticPosition_3D currentPosition(component->targetPosition.getX(),
-                                        component->targetPosition.getY(),
-                                        component->targetPosition.getZ());
+//    CartesianPosition_3D cartesianPosition;
+//    GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+//    GeodeticPosition_3D currentPosition;
 
-    DynamicsAid::GlobalPositionToLocal(globalOrigin, currentPosition, cartesianPosition);
+//    DynamicsAid::GlobalPositionToLocal(globalOrigin, currentPosition, cartesianPosition);
 
-    target.northing = cartesianPosition.getYPosition();
-    target.easting = cartesianPosition.getXPosition();
-    target.altitude = cartesianPosition.getZPosition();
+//    target.northing = cartesianPosition.getYPosition();
+//    target.easting = cartesianPosition.getXPosition();
+//    target.altitude = cartesianPosition.getZPosition();
 
     // TODO: Better conversion to ENU:
-    if(component->targetPosition.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
-        target.altitude = -target.altitude;
-    }
+//    if(component->targetPosition.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
+//        target.altitude = -target.altitude;
+//    }
 
     // TODO: Timestamp
 
-    m_vehicleTargetPub.publish(target);
+//    m_vehicleTargetPub.publish(target);
 }
 
 

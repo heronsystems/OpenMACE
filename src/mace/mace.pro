@@ -11,7 +11,6 @@ DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
-
 SOURCES += main.cpp \
     data_interpolation.cpp \
     configuration_reader_xml.cpp \
@@ -38,9 +37,6 @@ INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-
-INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
-LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
@@ -157,6 +153,14 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_sensors/ -lmodule_vehicle
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../planners/release/ -lplanners
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../planners/debug/ -lplanners
 else:unix:!macx: LIBS += -L$$OUT_PWD/../planners/ -lplanners
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/release/ -lDigiMesh
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/debug/ -lDigiMesh
+else:unix:!macx: LIBS += -L$$OUT_PWD/../DigiMesh/ -lDigiMesh
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/release/ -lMACEDigiMeshWrapper
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
+else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/ -lMACEDigiMeshWrapper
 
 win32: LIBS += -limagehlp
 

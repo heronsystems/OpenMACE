@@ -40,9 +40,6 @@ INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
-#INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
-#LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
-
 # Unix lib Install
 unix:!symbian {
     target.path = $$(MACE_ROOT)/lib

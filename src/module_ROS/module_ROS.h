@@ -21,7 +21,8 @@
 
 #include "maps/map_topic_components.h"
 
-#include "base/pose/rotation_3D.h"
+#include "base/geometry/base_line.h"
+#include "base/pose/pose_components.h"
 
 #include <memory>
 
@@ -230,7 +231,7 @@ public:
     //! \brief convertToGazeboCartesian Convert position in local frame to Gazebo's world frame
     //! \param localPos MACE local position
     //!
-    void convertToGazeboCartesian(DataState::StateLocalPosition& localPos);
+    void convertToGazeboCartesian(mace::pose::CartesianPosition_3D& localPos);
 
     //!
     //! \brief sendGazeboModelState Send the current position and attitude of the corresponding vehicle model to Gazebo
@@ -279,7 +280,7 @@ public:
     //! \brief renderEdge Publish the 2D line to ROS for rendering in RViz
     //! \param edge Edge/line to render
     //!
-    void renderEdge(const mace::geometry::Line_2DC &edge);
+    void renderEdge(const mace::geometry::Line_Cartesian &edge);
 
 #endif
 

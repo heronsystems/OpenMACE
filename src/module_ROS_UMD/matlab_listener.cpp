@@ -18,13 +18,17 @@ bool MATLABListener::commandTakeoff(mace_matlab::CMD_TAKEOFF::Request  &req,
 
     printf("Command TAKEOFF vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
 
-    CommandItem::SpatialTakeoff newTakeoff;
+    command_item::SpatialTakeoff newTakeoff;
     newTakeoff.setTargetSystem(req.vehicleID);
+    mace::pose::GeodeticPosition_3D takeoffPosition;
+
     if(req.latitudeDeg != 0.0 && req.longitudeDeg != 0) {
-        newTakeoff.position->setX(req.latitudeDeg);
-        newTakeoff.position->setY(req.longitudeDeg);
+        takeoffPosition.setLatitude(req.latitudeDeg);
+        takeoffPosition.setLongitude(req.longitudeDeg);
     }
-    newTakeoff.position->setZ(req.takeoffAlt);
+    takeoffPosition.setAltitude(req.takeoffAlt);
+
+    newTakeoff.setPosition(&takeoffPosition);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr){
         ptr->Event_IssueCommandTakeoff(m_parent, newTakeoff);
@@ -40,7 +44,7 @@ bool MATLABListener::commandArm(mace_matlab::CMD_ARM::Request  &req,
 
     printf("Command ARM vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
 
-    CommandItem::ActionArm tmpArm;
+    command_item::ActionArm tmpArm;
     tmpArm.setTargetSystem(req.vehicleID); // the vehicle ID corresponds to the specific vehicle //vehicle 0 is reserved for all connected vehicles
     tmpArm.setVehicleArm(req.armCmd);
 
@@ -59,7 +63,7 @@ bool MATLABListener::commandLand(mace_matlab::CMD_LAND::Request  &req,
 
     printf("Command LAND vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
 
-    CommandItem::SpatialLand landCommand;
+    command_item::SpatialLand landCommand;
     landCommand.setTargetSystem(req.vehicleID);
     // TODO: Set generating system and coordinate frame
 
@@ -81,18 +85,21 @@ bool MATLABListener::commandWaypoint(mace_matlab::CMD_WPT::Request  &req,
     CartesianPosition_3D localPosition(req.easting, req.northing, req.altitude);
     GeodeticPosition_3D globalOrigin = m_parent->getDataObject()->GetGlobalOrigin();
     GeodeticPosition_3D tgtImmediate;
-    DynamicsAid::LocalPositionToGlobal(globalOrigin,localPosition,tgtImmediate);
+    DynamicsAid::LocalPositionToGlobal(&globalOrigin,&localPosition,&tgtImmediate);
 
-    Base3DPosition targetPosition(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT,
-                                  tgtImmediate.getLongitude(), tgtImmediate.getLatitude(), tgtImmediate.getAltitude());
+    mace::pose::GeodeticPosition_3D targetPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
+                                  tgtImmediate.getLongitude(), tgtImmediate.getLatitude(),
+                                  AltitudeReferenceTypes::REF_ALT_RELATIVE, tgtImmediate.getAltitude(), "");
 
-    CommandItem::CommandGoTo goToCommand;
+    command_item::Action_ExecuteSpatialItem goToCommand;
     goToCommand.setTargetSystem(req.vehicleID);
 
-    CommandItem::SpatialWaypointPtr targetWaypoint = std::make_shared<CommandItem::SpatialWaypoint>();
-    targetWaypoint->setPosition(targetPosition);
+    command_item::SpatialWaypoint targetWaypoint;
+    targetWaypoint.setPosition(&targetPosition);
 
-    goToCommand.setSpatialCommand(targetWaypoint);
+    AbstractSpatialActionPtr newPtr = std::make_shared<command_item::SpatialWaypoint>(targetWaypoint);
+    goToCommand.setSpatialCommand(newPtr);
+
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
         ptr->Event_IssueCommandGoTo(m_parent, goToCommand);
     });

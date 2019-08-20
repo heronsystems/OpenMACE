@@ -74,9 +74,6 @@ INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
 
-#INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
-#LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
-
 # Unix lib Install
 unix:!symbian {
     target.path = $$(MACE_ROOT)/lib

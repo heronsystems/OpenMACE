@@ -180,7 +180,7 @@ public:
     void updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component);
 
     // TODO: Better workaround for transformations
-    void convertToENU(mace::pose::Abstract_CartesianPosition* localPos);
+    void convertToENU(mace::pose::CartesianPosition_3D &localPos);
 
     // ============================================================================= //
     // ========================  ROS Specific functions:  ========================== //
@@ -261,7 +261,7 @@ private:
     //!
     //! \brief m_vehicleMap Container for map of vehicle IDs and corresponding most recent Position and Attitude data
     //!
-    std::map<int, std::tuple<mace::pose::Abstract_CartesianPosition*, mace::pose::Rotation_3D>> m_vehicleMap;
+    std::map<int, std::tuple<mace::pose::CartesianPosition_3D, mace::pose::Rotation_3D>> m_vehicleMap;
 
     //!
     //! \brief m_timer Timer that triggers a ROS spin event to cycle through any queued ROS messages
