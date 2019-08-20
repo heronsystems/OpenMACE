@@ -346,6 +346,9 @@ void ModuleROSUMD::updateGlobalPositionData(const int &vehicleID, const std::sha
     CartesianPosition_3D cartesianPosition;
     GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
     Abstract_GeodeticPosition* currentPosition = component->getPositionObj();
+    if(!globalOrigin.isAnyPositionValid())
+        return;
+
     mace::pose::DynamicsAid::GlobalPositionToLocal(&globalOrigin, currentPosition, &cartesianPosition);
 
     double northing = cartesianPosition.getYPosition();
