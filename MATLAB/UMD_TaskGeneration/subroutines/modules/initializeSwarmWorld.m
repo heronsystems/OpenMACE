@@ -43,7 +43,7 @@ uNom = 1 - vNom - oNom;
 swarmWorld.V = vNom*ones(size(trueWorld.numNodesMat));
 swarmWorld.U = uNom*ones(size(trueWorld.numNodesMat));
 swarmWorld.O = oNom*ones(size(trueWorld.numNodesMat));
-swarmWorld.samplingPriority = samplingPriority( swarmWorld );
+%swarmWorld.samplingPriority = samplingPriority( swarmWorld );
 
 swarmWorld.mutualInformation = ones(size(trueWorld.numNodesMat));
 swarmWorld.log_likelihood = [];
