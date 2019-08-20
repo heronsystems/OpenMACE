@@ -5,10 +5,12 @@
 
 #include "i_module_events_boundary_generator.h"
 
+#include "i_module_events_path_planning.h"
+
 namespace MaceCore
 {
 
-class IModuleEventsGroundStation : virtual public IModuleEventsGeneral, virtual public IModuleEventsBoundaryGenerator
+class IModuleEventsGroundStation : virtual public IModuleEventsPathPlanning, virtual public IModuleEventsGeneral, virtual public IModuleEventsBoundaryGenerator
 {
 public:
     //!

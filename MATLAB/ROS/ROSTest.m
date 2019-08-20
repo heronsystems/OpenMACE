@@ -3,8 +3,8 @@ clear
 rosshutdown
 
 % Initialize ROS:
-setenv('ROS_MASTER_URI','http://192.168.1.30:11311') % ROS Core location
-setenv('ROS_IP','192.168.1.27') % MATLAB location
+setenv('ROS_MASTER_URI','http://192.168.1.20:11311') % ROS Core location
+setenv('ROS_IP','192.168.1.216') % MATLAB location
 rosinit
 
 % List ROS topics:
@@ -24,6 +24,7 @@ armClient = rossvcclient('command_arm');
 takeoffClient = rossvcclient('command_takeoff');
 landClient = rossvcclient('command_land');
 datumClient = rossvcclient('command_datum');
+dynamicTargetClient = rossvcclient('command_dynamic_target');
 waypointClient = rossvcclient('command_waypoint');
 
 % Example workflow:
@@ -44,24 +45,33 @@ datumRequest.LongitudeDeg = -76.814084;
 % Setup Arm vehicle command:
 armRequest = rosmessage(armClient);
 armRequest.Timestamp = rostime('now');
-armRequest.VehicleID = 2; % Vehicle ID
+armRequest.VehicleID = 1; % Vehicle ID
 armRequest.CommandID = 1; % TODO: Set command ID enum in MACE
 armRequest.ArmCmd = true; % True to ARM throttle, False to DISARM
 
 % Setup Vehicle takeoff command:
 takeoffRequest = rosmessage(takeoffClient);
 takeoffRequest.Timestamp = rostime('now');
-takeoffRequest.VehicleID = 2; % Vehicle ID
+takeoffRequest.VehicleID = 1; % Vehicle ID
 takeoffRequest.CommandID = 2; % TODO: Set command ID enum in MACE
 takeoffRequest.TakeoffAlt = 10; % Takeoff altitude
 % If you don't set lat/lon (or set them to 0.0), it will takeoff in current position
 % takeoffRequest.LatitudeDeg = 0.0; % If 0.0, takeoff where you currently are
 % takeoffRequest.LongitudeDeg = 0.0; % If 0.0, takeoff where you currently are
 
+dynamicTargetRequest = rosmessage(dynamicTargetClient);
+dynamicTargetRequest.Timestamp = rostime('now');
+dynamicTargetRequest.VehicleID = 1; % Vehicle ID
+dynamicTargetRequest.CoordinateFrame = 2;
+dynamicTargetRequest.XV = 5;
+dynamicTargetRequest.YV = 0;
+dynamicTargetRequest.ZV = 0;
+dynamicTargetRequest.Bitmask = 65479;
+
 % Setup Waypoint command :
 waypointRequest = rosmessage(waypointClient);
 waypointRequest.Timestamp = rostime('now');
-waypointRequest.VehicleID = 2; % Vehicle ID
+waypointRequest.VehicleID = 1; % Vehicle ID
 waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
 waypointRequest.Northing = 10; % Relative northing position to Datum
 waypointRequest.Easting = 10; % Relative easting position to Datum
@@ -70,7 +80,7 @@ waypointRequest.Altitude = 10;
 % Setup Land command:
 landRequest = rosmessage(landClient);
 landRequest.Timestamp = rostime('now');
-landRequest.VehicleID = 2; % Vehicle ID
+landRequest.VehicleID = 1; % Vehicle ID
 landRequest.CommandID = 4; % TODO: Set command ID enum in MACE
 
 datumResponse = false;
@@ -90,17 +100,17 @@ disp('Call arm command');
 armResponse = call(armClient, armRequest, 'Timeout', 5);
 
 % For this test, just wait 3 seconds before issuing takeoff command:
-pause(3);
+pause(2);
 
 disp('Call takeoff command');
-takeoffResponse = call(takeoffClient, takeoffRequest, 'Timeout', 5);
+takeoffResponse = call(takeoffClient, takeoffRequest, 'Timeout', 10);
 
 % For this test, just wait 10 seconds before issuing waypoint command (giving vehicle time to reach altitude):
-% pause(10);
+pause(10);
 
-disp('Call waypoint command');
-waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
-
+disp('Call dynamic target command');
+%waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
+waypointResponse = call(dynamicTargetClient, dynamicTargetRequest, 'Timeout', 5);
 % For this test, just wait 20 seconds before issuing land command (giving vehicle time to reach waypoint):
 pause(20);
 

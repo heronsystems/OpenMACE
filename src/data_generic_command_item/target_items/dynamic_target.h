@@ -63,12 +63,24 @@ public:
     {
         if(rhs.m_Position != nullptr)
             this->m_Position = rhs.m_Position->getPositionalClone();
+        else
+            this->m_Position = nullptr;
+
         if(rhs.m_Velocity != nullptr)
             this->m_Velocity = rhs.m_Velocity->getVelocityClone();
+        else
+            this->m_Velocity = nullptr;
+
         if(rhs.m_Yaw != nullptr)
             this->m_Yaw = rhs.m_Yaw->getRotationalClone()->rotationAs<Rotation_2D>();
+        else
+            this->m_Yaw = nullptr;
+
         if(rhs.m_YawRate != nullptr)
             this->m_YawRate = rhs.m_YawRate->getRotationalClone()->rotationAs<Rotation_2D>();
+        else
+            this->m_YawRate = nullptr;
+
         return *this;
     }
 

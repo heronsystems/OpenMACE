@@ -82,7 +82,7 @@ public:
         });
 
 
-        this->template AddCommandLogic<command_target::DynamicTarget>(CT::EXECUTE_DYNAMIC_TARGET, [this](const command_item::Action_DynamicTarget &command, const OptionalParameter<ModuleCharacteristic> &sender){
+        this->template AddCommandLogic<command_item::Action_DynamicTarget>(CT::EXECUTE_DYNAMIC_TARGET, [this](const command_item::Action_DynamicTarget &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_ExecuteDynamicTarget(command, sender);
         });
 

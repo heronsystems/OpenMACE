@@ -105,6 +105,13 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticP
     json["vehicleID"] = vehicleID;
     json["distanceToTarget"] = 0.0;
     targetPosition->updateQJSONObject(json);
+
+    QJsonDocument doc(json);
+    bool bytesWritten = writeTCPData(doc.toJson());
+
+    if(!bytesWritten){
+        std::cout << "Write global origin failed..." << std::endl;
+    }
 }
 
 //!

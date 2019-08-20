@@ -335,6 +335,21 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
 
 void GUItoMACE::testFunction1(const int &vehicleID)
 {
+
+    command_item::Action_DynamicTarget newCommand;
+    newCommand.setTargetSystem(1);
+    newCommand.setOriginatingSystem(255);
+    command_target::DynamicTarget newTarget;
+    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+    currentVelocityTarget.setXVelocity(5.0);
+    currentVelocityTarget.setYVelocity(0.0);
+    currentVelocityTarget.setZVelocity(0.0);
+    newTarget.setVelocity(&currentVelocityTarget);
+    newCommand.setDynamicTarget(newTarget);
+    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
+    });
+
 //    mLogs->debug("Module Ground Station saw a request on test function 1.");
 
 //    MissionItem::MissionList missionList;
