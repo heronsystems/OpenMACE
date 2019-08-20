@@ -137,7 +137,7 @@ if nargin == 3
             swarmModel.taskGeneration = 'lawnmower';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 2.0; % grid sensor            
+            swarmModel.mG = 2.0; % grid sensor
             %%%%%%%
         case 11
             swarmModel.taskGeneration = 'lawnmower';
@@ -163,7 +163,7 @@ if nargin == 3
             swarmModel.taskGeneration = 'lawnmower';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 2.5; % grid sensor 
+            swarmModel.mG = 2.5; % grid sensor
             %%%%%%%
         case 16
             swarmModel.taskGeneration = 'lawnmower';
@@ -189,7 +189,7 @@ if nargin == 3
             swarmModel.taskGeneration = 'lawnmower';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 3.0; % grid sensor             
+            swarmModel.mG = 3.0; % grid sensor
             %%%%%%%
         case 21
             swarmModel.taskGeneration = 'lawnmower';
@@ -215,23 +215,23 @@ if nargin == 3
             swarmModel.taskGeneration = 'lawnmower';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 3.5; % grid sensor 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-        
-        % first test, lawnmower
-        % [1,3,5];
-        %xx [6,8,10];
-        % [11,13,15];
-        %xx [16,18,20];
-        % [21,23,25]
-        
-        % first test mutual info
-        % [26,28,30];
-        %xx [31,33,35];
-        % [36,38,40];
-        %xx [41,43,45];
-        % [46,48,50]
-        
+            swarmModel.mG = 3.5; % grid sensor
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
+            % first test, lawnmower
+            % [1,3,5];
+            %xx [6,8,10];
+            % [11,13,15];
+            %xx [16,18,20];
+            % [21,23,25]
+            
+            % first test mutual info
+            % [26,28,30];
+            %xx [31,33,35];
+            % [36,38,40];
+            %xx [41,43,45];
+            % [46,48,50]
+            
         case 26
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -239,8 +239,8 @@ if nargin == 3
             swarmModel.mG = 1.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;   
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 27
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -248,8 +248,8 @@ if nargin == 3
             swarmModel.mG = 1.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 28
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -257,8 +257,8 @@ if nargin == 3
             swarmModel.mG = 1.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 29
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -266,8 +266,8 @@ if nargin == 3
             swarmModel.mG = 1.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 30
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -275,10 +275,10 @@ if nargin == 3
             swarmModel.mG = 1.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;     
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         case 31
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -286,8 +286,8 @@ if nargin == 3
             swarmModel.mG = 2.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;   
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 32
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -295,8 +295,8 @@ if nargin == 3
             swarmModel.mG = 2.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 33
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -304,8 +304,8 @@ if nargin == 3
             swarmModel.mG = 2.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 34
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -313,8 +313,8 @@ if nargin == 3
             swarmModel.mG = 2.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 35
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -322,9 +322,9 @@ if nargin == 3
             swarmModel.mG = 2.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;         
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         case 36
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -332,8 +332,8 @@ if nargin == 3
             swarmModel.mG = 2.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;   
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 37
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -341,8 +341,8 @@ if nargin == 3
             swarmModel.mG = 2.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 38
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -350,8 +350,8 @@ if nargin == 3
             swarmModel.mG = 2.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 39
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -359,8 +359,8 @@ if nargin == 3
             swarmModel.mG = 2.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 40
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -368,9 +368,9 @@ if nargin == 3
             swarmModel.mG = 2.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;              
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         case 41
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -378,8 +378,8 @@ if nargin == 3
             swarmModel.mG = 3.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;   
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 42
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -387,8 +387,8 @@ if nargin == 3
             swarmModel.mG = 3.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 43
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -396,8 +396,8 @@ if nargin == 3
             swarmModel.mG = 3.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 44
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -405,8 +405,8 @@ if nargin == 3
             swarmModel.mG = 3.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 45
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -414,9 +414,9 @@ if nargin == 3
             swarmModel.mG = 3.0; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;    
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         case 46
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -424,8 +424,8 @@ if nargin == 3
             swarmModel.mG = 3.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;   
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 47
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -433,8 +433,8 @@ if nargin == 3
             swarmModel.mG = 3.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 48
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -442,8 +442,8 @@ if nargin == 3
             swarmModel.mG = 3.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 49
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -451,8 +451,8 @@ if nargin == 3
             swarmModel.mG = 3.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;  
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
         case 50
             swarmModel.taskGeneration = 'mutualInfoWpts';
             swarmModel.taskAllocation = 'stepwiseHungarian_unique';
@@ -460,8 +460,8 @@ if nargin == 3
             swarmModel.mG = 3.5; % grid sensor
             swarmModel.samplesPerTask = 10;
             swarmModel.bundleSize = 5;
-            swarmModel.neighborMethod = 'knn';  
-            swarmModel.knnNumber = 10;   
+            swarmModel.neighborMethod = 'knn';
+            swarmModel.knnNumber = 10;
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -515,7 +515,7 @@ if nargin == 3
             swarmModel.taskGeneration = 'randomWpts';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 2.0; % grid sensor            
+            swarmModel.mG = 2.0; % grid sensor
             %%%%%%%
         case 61
             swarmModel.taskGeneration = 'randomWpts';
@@ -541,7 +541,7 @@ if nargin == 3
             swarmModel.taskGeneration = 'randomWpts';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 2.5; % grid sensor 
+            swarmModel.mG = 2.5; % grid sensor
             %%%%%%%
         case 66
             swarmModel.taskGeneration = 'randomWpts';
@@ -567,7 +567,7 @@ if nargin == 3
             swarmModel.taskGeneration = 'randomWpts';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 3.0; % grid sensor             
+            swarmModel.mG = 3.0; % grid sensor
             %%%%%%%
         case 71
             swarmModel.taskGeneration = 'randomWpts';
@@ -593,8 +593,8 @@ if nargin == 3
             swarmModel.taskGeneration = 'randomWpts';
             swarmModel.taskAllocation = 'none';
             swarmModel.mZ = 3.5; % target sensor
-            swarmModel.mG = 3.5; % grid sensor 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%              
+            swarmModel.mG = 3.5; % grid sensor
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
     fprintf('Monte carlo settings: %s \n',swarmModel.taskGeneration)
 else
@@ -603,7 +603,6 @@ end
 
 % Communication / task allocation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-swarmModel.communicationTopology = 'centralized';   % options are: 'centralized' or 'allToAll'
 if ( nargin ~=3 ) % if running a single-run, use this value:
     swarmModel.taskAllocation = 'stepwiseHungarian_unique'; %'stepwiseHungarian'; % options are: 'none', 'stepwiseHungarian', 'Hungarian' or 'Auctioneer';
 end
@@ -617,7 +616,7 @@ switch swarmModel.taskAllocation
     case 'stepwiseHungarian_unique' % original
         swarmModel.samplesPerTask = 10;
         swarmModel.bundleSize = 5;
-        swarmModel.neighborMethod = 'knn';  
+        swarmModel.neighborMethod = 'knn';
         swarmModel.knnNumber = 10;
     case 'stepwiseHungarian_max' % original
         swarmModel.samplesPerTask = 10;
@@ -625,7 +624,7 @@ switch swarmModel.taskAllocation
     case 'stepwiseHungarian_2ndOrder' % original
         swarmModel.samplesPerTask = 10;
         swarmModel.bundleSize = 4;
-    
+        
     case 'none'
         swarmModel.samplesPerTask = 5;
 end
@@ -633,30 +632,14 @@ end
 
 % Task Generation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( nargin ~=3 ) % if running a single-run, use this value:
-    swarmModel.taskGeneration = 'mutualInfoWpts'; % 'randomWpts', or 'frontierWpts', 'lawnmower' 'mutualInfoWpts'
-end
-switch swarmModel.taskGeneration
-    case 'frontierWpts'
-        swarmModel.wptChangePeriod = 10; % sec, how often we generate a new random wpt
-        swarmModel.mapping.method = 'frontierAndBlob'; % options are: 'frontierOnly' or 'frontierAndBlob'
-        swarmModel.mapping.minBlobArea = pi*swarmModel.Rsense^2*2;  % threshold for the minimum area of a blob
-        swarmModel.mapping.maxMajorMinorAxisRatio = 10; % threshold for the ratio between majoraxislength and minor axis length of a subblob, give inf if you do not want to apply this filter
-        swarmModel.mapping.blobCostScale = 1.4; % scale the cost for reaching a subblob centroid by this amount
-    case 'mutualInfoWpts'
-        swarmModel.numTasks = 100;
-        swarmModel.stepSizeGain = 0.2;
-        swarmModel.percentTol = 0.03;
-        swarmModel.maxIters = 500;
-    case 'likelihoodWpts'
-        swarmModel.numTasks = 200;
-        swarmModel.stepSizeGain = 0.2;
-        swarmModel.percentTol = 0.03;
-        swarmModel.maxIters = 500;
-end
+
+swarmModel.numTasks = 100;
+swarmModel.stepSizeGain = 0.2;
+swarmModel.percentTol = 0.03;
+swarmModel.maxIters = 500;
+
 
 swarmModel.mapping.krigingSigma = 10; % controls how much kriging interp diffuses
-swarmModel.utilityComputation = 'computeInformationGain'; % options are: 'computeEnergyAndPenalty' or 'computeInformationGain'
 swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
 
 
@@ -689,7 +672,7 @@ swarmModel.LRDTOnTheFlyFlag = 1;
 %swarmModel.maxUnexploredPrior = 0.85;
 swarmModel.nodeDensityInitGuess = 1/3; % used on first step before kriging takes place
 swarmModel.probAbsentPrior = 0.50; % for initialization
-swarmModel.numNodesEstPercent = 1/5; 
+swarmModel.numNodesEstPercent = 1/5;
 
 swarmModel.decayRate = 0.05; % value from 0 to 1
 swarmModel.q_s_n =  swarmModel.decayRate*(1-swarmModel.probAbsentPrior);
@@ -721,21 +704,17 @@ swarmModel.z_O = swarmModel.z_O ./ sum(swarmModel.z_O);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 targetModel = struct;
 targetModel.M = 1; % number of targets
-targetModel.type = 'constantSpeedRandomWalk'; % 'varyingSpeedRandomWalk' or 'constantSpeedRandomWalk'
+targetModel.type = 'constantSpeedRandomWalk';
 targetModel.probStopping = 0.75;
 targetModel.m = 1.0;
 targetModel.d = 0.1;
-switch targetModel.type
-    case 'varyingSpeedRandomWalk'
-        targetModel.maxSpeed = 10;
-    case 'constantSpeedRandomWalk'
-        targetModel.restPeriod = swarmModel.Tsamp;
-        targetModel.inertia = 100; % a value greater than zero
-        if (monteCarloFlag)
-            if swarmModel.useGeneratedTargetMotion
-                load(['./scenes/targetMotion' num2str(swarmModel.targetMotionID) '.mat']);  % load the generated data to replace the above parameters.
-            end
-        end
+
+targetModel.restPeriod = swarmModel.Tsamp;
+targetModel.inertia = 100; % a value greater than zero
+if (monteCarloFlag)
+    if swarmModel.useGeneratedTargetMotion
+        load(['./scenes/targetMotion' num2str(swarmModel.targetMotionID) '.mat']);  % load the generated data to replace the above parameters.
+    end
 end
 
 % Environment/Map

@@ -29,12 +29,7 @@ numPts = 20;
 [xcnom, ycnom] = generateCircle(0, 0, swarmModel.Rsense, numPts);
 % plot sensing radius
 for i = 1:1:swarmModel.N
-    switch swarmModel.communicationTopology
-        case 'centralized'
-            xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
-        case 'allToAll'
-            xk = [ swarmState{i}.x(1); swarmState{i}.x(2); swarmState{i}.x(3); swarmState{i}.x(4) ];
-    end
+    xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
     xc = xcnom + xk(1);
     yc = ycnom + xk(2);
     plotHandles.figh_sensingRadius(i) = plot(xc,yc,'k-');

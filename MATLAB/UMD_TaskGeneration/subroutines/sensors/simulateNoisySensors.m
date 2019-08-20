@@ -1,4 +1,4 @@
-function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat, numViews ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, cellMsmtMat, numNodesMat, communicationTopology, mG, nG, mZ, nZ, trueWorldGraph, numViews )
+function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat, numViews ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, cellMsmtMat, numNodesMat, mG, nG, mZ, nZ, trueWorldGraph, numViews )
 % Input:
 
 % Output:

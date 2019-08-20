@@ -67,8 +67,7 @@ runParams.Tsamp = swarmModel.Tsamp; % make a copy
 
 % Communication / task allocation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-swarmModel.communicationTopology = 'centralized';   % options are: 'centralized' or 'allToAll'
-swarmModel.taskAllocation = 'stepwiseHungarian'; %'stepwiseHungarian'; % options are: 'none', 'stepwiseHungarian', 'Hungarian' or 'Auctioneer';
+swarmModel.taskAllocation = 'stepwiseHungarian_unique'; %'stepwiseHungarian'; % options are: 'none', 'stepwiseHungarian', 'Hungarian' or 'Auctioneer';
 switch swarmModel.taskAllocation
     case 'Hungarian'
         swarmModel.samplesPerTask = 5;
@@ -122,8 +121,8 @@ if nargin == 3
             swarmModel.taskAllocation = 'none';
             swarmModel.m = 1;
         case 2
-%             swarmModel.taskGeneration = 'randomWpts';
-%             swarmModel.taskAllocation = 'none';
+            %             swarmModel.taskGeneration = 'randomWpts';
+            %             swarmModel.taskAllocation = 'none';
             swarmModel.taskGeneration = 'lawnmower';
             swarmModel.taskAllocation = 'none';
             swarmModel.m = 2;
@@ -141,7 +140,7 @@ if nargin == 3
             swarmModel.m = 2;
         case 6
             swarmModel.taskGeneration = 'mutualInfoWpts'; % Hungarian
-            swarmModel.taskAllocation = 'stepwiseHungarian';            
+            swarmModel.taskAllocation = 'stepwiseHungarian';
             swarmModel.m = 3;
         case 7
             swarmModel.taskGeneration = 'likelihoodWpts'; % Hungarian
@@ -153,8 +152,8 @@ if nargin == 3
             swarmModel.m = 2;
         case 9
             swarmModel.taskGeneration = 'likelihoodWpts'; % Hungarian
-            swarmModel.taskAllocation = 'stepwiseHungarian';            
-            swarmModel.m = 3;            
+            swarmModel.taskAllocation = 'stepwiseHungarian';
+            swarmModel.m = 3;
     end
     fprintf('Monte carlo settings: %s \n',swarmModel.taskGeneration)
 else
@@ -163,51 +162,30 @@ end
 
 % Task Generation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( ~monteCarloFlag ) % if running a single-run, use this value:
-    swarmModel.taskGeneration = 'likelihoodWpts'; % 'randomWpts', or 'frontierWpts', 'lawnmower' 'mutualInfoWpts'
-end
-switch swarmModel.taskGeneration
-    case 'frontierWpts'
-        swarmModel.wptChangePeriod = 10; % sec, how often we generate a new random wpt
-        swarmModel.mapping.method = 'frontierAndBlob'; % options are: 'frontierOnly' or 'frontierAndBlob'
-        swarmModel.mapping.minBlobArea = pi*swarmModel.Rsense^2*2;  % threshold for the minimum area of a blob
-        swarmModel.mapping.maxMajorMinorAxisRatio = 10; % threshold for the ratio between majoraxislength and minor axis length of a subblob, give inf if you do not want to apply this filter
-        swarmModel.mapping.blobCostScale = 1.4; % scale the cost for reaching a subblob centroid by this amount
-    case 'mutualInfoWpts'
-        swarmModel.numTasks = 150;
-        swarmModel.stepSizeGain = 0.2;
-        swarmModel.percentTol = 0.03;
-        swarmModel.maxIters = 500;
-    case 'likelihoodWpts'
-        swarmModel.numTasks = 150;
-        swarmModel.stepSizeGain = 0.2;
-        swarmModel.percentTol = 0.03;
-        swarmModel.maxIters = 500;        
-end
+swarmModel.numTasks = 150;
+swarmModel.stepSizeGain = 0.2;
+swarmModel.percentTol = 0.03;
+swarmModel.maxIters = 500;
+
 
 swarmModel.mapping.krigingSigma = 3; % controls how much kriging interp diffuses
-swarmModel.utilityComputation = 'computeInformationGain'; % options are: 'computeEnergyAndPenalty' or 'computeInformationGain'
 swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
 
 % Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 targetModel = struct;
 targetModel.M = 1; % number of targets
-targetModel.type = 'constantSpeedRandomWalk'; % 'varyingSpeedRandomWalk' or 'constantSpeedRandomWalk'
+targetModel.type = 'constantSpeedRandomWalk'; 
 targetModel.probStopping = 0.5;
 targetModel.m = 1.0;
 targetModel.d = 0.1;
-switch targetModel.type
-    case 'varyingSpeedRandomWalk'
-        targetModel.maxSpeed = 10;
-    case 'constantSpeedRandomWalk'
-        targetModel.restPeriod = swarmModel.Tsamp;
-        targetModel.inertia = 100; % a value greater than zero
-        if (monteCarloFlag)
-            if swarmModel.useGeneratedTargetMotion
-                load(['./scenes/targetMotion' num2str(swarmModel.targetMotionID) '.mat']);  % load the generated data to replace the above parameters.
-            end
-        end
+
+targetModel.restPeriod = swarmModel.Tsamp;
+targetModel.inertia = 100; % a value greater than zero
+if (monteCarloFlag)
+    if swarmModel.useGeneratedTargetMotion
+        load(['./scenes/targetMotion' num2str(swarmModel.targetMotionID) '.mat']);  % load the generated data to replace the above parameters.
+    end
 end
 
 % Environment/Map

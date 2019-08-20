@@ -29,8 +29,7 @@ tStart = tic;
 if ~exist('MonteCarloSwitch','var')
     % user should modify loadParams.m as desired for single run
     %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3();
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
-    
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();    
     disp('Running standard (non Monte-Carlo) simulation')
 %     [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
     %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityBlocksAtF3();

@@ -43,28 +43,26 @@ monteCarloFlag = 0;
 
 % Communication / task allocation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-swarmModel.communicationTopology = 'centralized';   % options are: 'centralized' or 'allToAll'
-swarmModel.taskAllocation = 'stepwiseHungarian_unique'; %'stepwiseHungarian'; % options are: 'none', 'stepwiseHungarian', 'Hungarian' or 'Auctioneer';
+% Options: 'stepwiseHungarian_unique' or 'none'
+swarmModel.taskAllocation = 'stepwiseHungarian_unique'; 
 swarmModel.samplesPerTask = 10;
 swarmModel.bundleSize = 4;
-swarmModel.neighborMethod = 'knn';
 swarmModel.knnNumber = 10;
 
 % Task Generation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-swarmModel.taskGeneration = 'mutualInfoWpts'; % 'randomWpts', or 'frontierWpts', 'lawnmower' 'mutualInfoWpts'
+% Options 'mutualInfoWpts' , 'randomWpts' , 'lawnmower' 
+swarmModel.taskGeneration = 'randomWpts'; 
 swarmModel.numTasks = 100;
 swarmModel.stepSizeGain = 0.2;
 swarmModel.percentTol = 0.03;
 swarmModel.maxIters = 500;
 swarmModel.mapping.krigingSigma = 10; % controls how much kriging interp diffuses
-swarmModel.utilityComputation = 'computeInformationGain'; % options are: 'computeEnergyAndPenalty' or 'computeInformationGain'
 swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
 
 
 % Mapping
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-swarmModel.mappingSensorType = 'noisy'; % 'noisy' or 'perfect'
 swarmModel.nG = 25; % number of discrete sensor levels
 if ( nargin ~=3 )
     swarmModel.mG = 3; % sensitivity
@@ -82,7 +80,6 @@ swarmModel.g_UO = swarmModel.g_UO ./ sum(swarmModel.g_UO);
 
 % Detection / Tracking (LRDT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-swarmModel.sensorType = 'discrete_per_cell'; % options are : 'continuous_per_fov' or 'discrete_per_cell'
 swarmModel.LRDTOnTheFlyFlag = 1;
 swarmModel.nodeDensityInitGuess = 1/6; % used on first step before kriging takes place
 swarmModel.probAbsentPrior = 0.50; % for initialization
@@ -114,8 +111,9 @@ swarmModel.z_O = swarmModel.z_O ./ sum(swarmModel.z_O);
 % Target
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 targetModel = struct;
+% options: 'constantSpeedRandomWalk' or 'generative'
+targetModel.type = 'constantSpeedRandomWalk'; 
 targetModel.M = 1; % number of targets
-targetModel.type = 'constantSpeedRandomWalk'; % 'varyingSpeedRandomWalk' or 'constantSpeedRandomWalk'
 targetModel.probStopping = 0.75;
 targetModel.m = 1.0;
 targetModel.d = 0.1;

@@ -1,7 +1,7 @@
 function swarmWorld = updateLikelihood(swarmWorld, swarmState, swarmModel, trueWorld, targetState, targetModel)
 
 if ( ~isempty(swarmWorld.log_likelihood) )
-        
+    
     % 1. Motion Update
     % -------------------------------------------------------------------------
     if ( swarmModel.LRDTOnTheFlyFlag  )
@@ -40,8 +40,8 @@ if ( ~isempty(swarmWorld.log_likelihood) )
     for i = 1:1:length(swarmWorld.cellsInView)
         nodeID = swarmWorld.bin2NodeIDexplored( swarmWorld.cellsInView(i,1) , swarmWorld.cellsInView(i,2) );
         if ( nodeID ~= 0 )
-        signals = [signals swarmModel.zval(swarmWorld.targSignals(i))]; % index values
-        V = [V nodeID];
+            signals = [signals swarmModel.zval(swarmWorld.targSignals(i))]; % index values
+            V = [V nodeID];
         end
     end
     
@@ -123,11 +123,7 @@ if ( ~isempty(swarmWorld.log_likelihood) )
         
         % get targets xy
         for i = 1:1:targetModel.M
-            if ( strcmp(targetModel.type, 'varyingSpeedRandomWalk') )
-                curNode = targetState.x(4*i-3,1);
-            elseif( strcmp(targetModel.type, 'constantSpeedRandomWalk') || strcmp(targetModel.type, 'constantSpeedRandomWalkGenerative') )
-                curNode = targetState.x(2*i-1,1);
-            end
+            curNode = targetState.x(2*i-1,1);
             targNodes(i) = curNode;
         end
         targetsXY = [ trueWorld.nodeX(targNodes) , trueWorld.nodeY(targNodes) ];
@@ -167,7 +163,7 @@ if ( ~isempty(swarmWorld.log_likelihood) )
         swarmWorld.O(by,bx) = swarmWorld.env_probPresent(i);
         swarmWorld.U(by,bx) = (1 - swarmWorld.O(by,bx));
     end
-
+    
 end
 
 
