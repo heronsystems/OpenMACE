@@ -26,6 +26,7 @@ bool MATLABListener::commandTakeoff(mace_matlab::CMD_TAKEOFF::Request  &req,
         takeoffPosition.setLatitude(req.latitudeDeg);
         takeoffPosition.setLongitude(req.longitudeDeg);
     }
+    takeoffPosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
     takeoffPosition.setAltitude(req.takeoffAlt);
 
     newTakeoff.setPosition(&takeoffPosition);
@@ -118,6 +119,8 @@ bool MATLABListener::commandDatum(mace_matlab::CMD_DATUM::Request  &req,
     origin.setLatitude(req.latitudeDeg);
     origin.setLongitude(req.longitudeDeg);
     origin.setAltitude(0.0);
+
+    origin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
         ptr->Event_SetGlobalOrigin(this, origin);
