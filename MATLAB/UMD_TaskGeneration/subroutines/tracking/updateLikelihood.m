@@ -32,7 +32,19 @@ if ( ~isempty(swarmWorld.log_likelihood) )
     % -------------------------------------------------------------------------
     
     % a signal is generated for each node in each agent's field of view
-    [signals, V, swarmWorld.numViews] = simulateTargetSensorCellWise( swarmState, swarmModel, swarmWorld, trueWorld, targetState, targetModel );
+    %[signals, V, swarmWorld.numViews] = simulateTargetSensorCellWise( swarmState, swarmModel, swarmWorld, trueWorld, targetState, targetModel );
+    
+    % Note : swarmWorld.cellsInView is of format [bx by] in each row
+    V = []; % nodes in view corresponding to target signals
+    signals = [];
+    for i = 1:1:length(swarmWorld.cellsInView)
+        nodeID = swarmWorld.bin2NodeIDexplored( swarmWorld.cellsInView(i,1) , swarmWorld.cellsInView(i,2) );
+        if ( nodeID ~= 0 )
+        signals = [signals swarmModel.zval(swarmWorld.targSignals(i))]; % index values
+        V = [V nodeID];
+        end
+    end
+    
     
     % if all agents are in void space then no update is required
     if ( ~isempty(signals) )
@@ -100,7 +112,7 @@ if ( ~isempty(swarmWorld.log_likelihood) )
     if ( swarmWorld.cumlLR >= swarmModel.cumlLRthresh && swarmWorld.targetDetectedFlag==0 )
         swarmWorld.targetDetectedFlag = 1;
         disp('Target Detected!')
-        fprintf('Target Detected! cumlLR = %3.1f >= %3.1f \n', swarmWorld.cumlLR , swarmModel.cumlLRthresh);
+        fprintf('\n\n\n\nTarget Detected! cumlLR = %3.1f >= %3.1f \n\n\n\n', swarmWorld.cumlLR , swarmModel.cumlLRthresh);
         
         swarmWorld.timeAtDetection = swarmState.t;
         % check if target detected is accurate or not

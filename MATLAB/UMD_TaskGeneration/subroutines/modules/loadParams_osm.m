@@ -22,7 +22,7 @@ runParams.movie.plotF3Obstacles = 0;
 swarmModel = struct;
 swarmModel.N = 4; % number of agents
 swarmModel.Rsense = 20; % sensing radius % 2 for F3 map % 20 for full map
-swarmModel.vmax = 4; % maximum speed % 1 for F3 map % 20 for full map
+swarmModel.vmax = 3; % maximum speed % 1 for F3 map % 20 for full map
 swarmModel.umax = 2.0; % max acceleration
 swarmModel.kp_wpt = 10.0; % agent waypoint control, proportional gain
 swarmModel.kd_wpt = 5.0; % derivative gain
@@ -46,7 +46,7 @@ monteCarloFlag = 0;
 swarmModel.communicationTopology = 'centralized';   % options are: 'centralized' or 'allToAll'
 swarmModel.taskAllocation = 'stepwiseHungarian_unique'; %'stepwiseHungarian'; % options are: 'none', 'stepwiseHungarian', 'Hungarian' or 'Auctioneer';
 swarmModel.samplesPerTask = 10;
-swarmModel.bundleSize = 5;
+swarmModel.bundleSize = 4;
 swarmModel.neighborMethod = 'knn';
 swarmModel.knnNumber = 10;
 
@@ -84,9 +84,9 @@ swarmModel.g_UO = swarmModel.g_UO ./ sum(swarmModel.g_UO);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 swarmModel.sensorType = 'discrete_per_cell'; % options are : 'continuous_per_fov' or 'discrete_per_cell'
 swarmModel.LRDTOnTheFlyFlag = 1;
-swarmModel.nodeDensityInitGuess = 1/3; % used on first step before kriging takes place
+swarmModel.nodeDensityInitGuess = 1/6; % used on first step before kriging takes place
 swarmModel.probAbsentPrior = 0.50; % for initialization
-swarmModel.numNodesEstPercent = 1/5;
+swarmModel.numNodesEstPercent = swarmModel.nodeDensityInitGuess;
 
 swarmModel.decayRate = 0.05; % value from 0 to 1
 swarmModel.q_s_n =  swarmModel.decayRate*(1-swarmModel.probAbsentPrior);

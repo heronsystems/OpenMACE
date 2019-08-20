@@ -1,4 +1,4 @@
-function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, cellMsmtMat, numNodesMat, communicationTopology, mG, nG, mZ, nZ, trueWorldGraph )
+function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat, numViews ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, cellMsmtMat, numNodesMat, communicationTopology, mG, nG, mZ, nZ, trueWorldGraph, numViews )
 % Input:
 
 % Output:
@@ -9,13 +9,7 @@ function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat ] = si
 %       contains nodes
 %   cellStateMat: updated cellState matrix (1,2,0)
 
-% get targets xy
-for i = 1:1:targetModel.M
-    curNode = targetState.x(2*i-1,1);
-    targXY(i,1) = trueWorldGraph.Nodes.x( curNode );
-    targXY(i,2) = trueWorldGraph.Nodes.y( curNode );    
-end
-
+% 
 numBinsX = length(xcp);
 numBinsY = length(ycp);
 dx = xcp(2) - xcp(1);
@@ -23,6 +17,18 @@ dy = ycp(2) - ycp(1);
 windowWidth = 3*ceil(Rsense/dx)+1;
 halfWidth = floor((windowWidth-1)/2);
 
+% get targets xy
+for i = 1:1:targetModel.M
+    curNode = targetState.x(2*i-1,1);
+    targXY(i,1) = trueWorldGraph.Nodes.x( curNode );
+    targXY(i,2) = trueWorldGraph.Nodes.y( curNode );
+    targetBinX(i) = max(floor( (targXY(i,1) - xcp(1)) /  dx ),1);
+    targetBinY(i) = max(floor( (targXY(i,2) - ycp(1)) /  dy ),1);
+    targetBinX(i) = min(targetBinX(i), numBinsX);
+    targetBinY(i) = min(targetBinY(i), numBinsY);
+end
+
+%
 cellsInView = [];
 for i = 1:1:N
     % state of i-th agent
@@ -71,14 +77,15 @@ for i = 1:1:size(agents,1)
                 else
                     mapSignals(k) = quantizedSensor(mG, nG, 0);
                 end
-                
-                % target sensor
-                for j = 1:1:targetModel.M    
-                   if ( norm(controlPt - targXY(j,:)) == 0 )
+                % target sensor                
+                for j = 1:1:targetModel.M                       
+                   if ( (bx == targetBinX(j)) && (by == targetBinY(j)) )
                        targSignals(k) = quantizedSensor(mZ, nZ, 1);
-                       disp('Target found');
+                       disp('Target In View!');
+                       targSignals(k)
+                       numViews = numViews + 1;
                    else
-                       fprintf('Target is in (%3.3f, %3.3f)\n',targXY(j,1),targXY(j,2));
+                       %fprintf('Target is in (%3.3f, %3.3f)\n',targXY(j,1),targXY(j,2));
                        targSignals(k) = quantizedSensor(mZ, nZ, 0);
                    end
                 end
