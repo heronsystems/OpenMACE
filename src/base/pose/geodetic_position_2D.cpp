@@ -92,6 +92,11 @@ double GeodeticPosition_2D::distanceFromOrigin() const
     return distanceBetween2D(&origin);
 }
 
+double GeodeticPosition_2D::translationalDistanceFromOrigin() const
+{
+    return distanceFromOrigin();
+}
+
 double GeodeticPosition_2D::polarBearingFromOrigin() const
 {
     GeodeticPosition_2D origin;

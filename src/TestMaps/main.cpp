@@ -10,6 +10,7 @@
 #include "maps/data_2d_grid.h"
 #include "base/pose/pose_components.h"
 #include "base/unit_tests/unittests_orientation.h"
+#include "base/pose/dynamics_aid.h"
 
 const char kPathSeperator =
         #ifdef _WIN32
@@ -25,18 +26,12 @@ int main(int argc, char *argv[])
     double value = 0;
 
 
-        mace::pose::GeodeticPosition_3D swarmOrigin(-35.3633889, 149.1653278, 15.0);
-        mace::pose::GeodeticPosition_3D vehicleOrigin(-35.3632938, 149.1651280, 10.0);
+        mace::pose::GeodeticPosition_3D swarmOrigin3(35.6208548, -78.8033786, 15.0);
+        mace::pose::GeodeticPosition_2D swarmOrigin2(35.6208548, -78.8033786);
 
-        double bearingTo = swarmOrigin.polarBearingTo(&vehicleOrigin);
-        double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleOrigin);
-        double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleOrigin);
-
-        double distanceTranslateX = translationalDistance * cos(correctForAcuteAngle(bearingTo));
-        double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
-        correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
-
-        Eigen::Vector3d transformvehicleToSwarm(distanceTranslateX, distanceTranslateY, altitudeDifference);
+        mace::pose::CartesianPosition_3D vehicleOrigin(10, 10, 10.0);
+        mace::pose::GeodeticPosition_3D target;
+        mace::pose::DynamicsAid::LocalPositionToGlobal(&swarmOrigin2, &vehicleOrigin, &target);
 
 //    Eigen::Vector2d currentPosition(1,1);
 //    Vector3d translation(1,1,2);

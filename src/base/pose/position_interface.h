@@ -18,6 +18,12 @@ public:
     virtual double distanceFromOrigin() const = 0;
 
     //!
+    //! \brief translationalDistanceFromOrigin
+    //! \return
+    //!
+    virtual double translationalDistanceFromOrigin() const = 0;
+
+    //!
     //! \brief polarBearingFromOrigin
     //! \return
     //!

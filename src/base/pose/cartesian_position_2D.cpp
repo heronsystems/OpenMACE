@@ -102,6 +102,11 @@ double CartesianPosition_2D::distanceFromOrigin() const
     return data.norm();
 }
 
+double CartesianPosition_2D::translationalDistanceFromOrigin() const
+{
+    return distanceFromOrigin();
+}
+
 double CartesianPosition_2D::polarBearingFromOrigin() const
 {
     return atan2(this->getYPosition(),this->getXPosition());

@@ -207,6 +207,12 @@ public:
     double distanceFromOrigin() const override;
 
     //!
+    //! \brief translationalDistanceFromOrigin
+    //! \return
+    //!
+    double translationalDistanceFromOrigin() const override;
+
+    //!
     //! \brief polarBearingFromOrigin
     //! \return
     //!

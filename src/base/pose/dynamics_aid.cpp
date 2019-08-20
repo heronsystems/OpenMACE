@@ -41,25 +41,29 @@ void DynamicsAid::GlobalPositionToLocal(const Abstract_GeodeticPosition* origin,
 //!
 void DynamicsAid::LocalPositionToGlobal(const Abstract_GeodeticPosition* origin, const Abstract_CartesianPosition* refPosition, Abstract_GeodeticPosition* targetPosition)
 {
-    double distance = refPosition->distanceFromOrigin();
-    double bearing = refPosition->polarBearingFromOrigin();
-
     if(targetPosition->is3D())
     {
         if(refPosition->is3D() && origin->is3D())
         {
+            double distance = refPosition->distanceFromOrigin();
+            double bearing = refPosition->polarBearingFromOrigin();
             double elevation = refPosition->positionAs<CartesianPosition_3D>()->elevationAngleFromOrigin();
             mace::pose::GeodeticPosition_3D newPosition = origin->positionAs<GeodeticPosition_3D>()->newPositionFromPolar(distance, bearing, elevation);
             targetPosition->positionAs<mace::pose::GeodeticPosition_3D>()->updateFromPosition(newPosition);
         }
         else if(refPosition->is3D() && origin->is2D())
         {
+            double distance = refPosition->translationalDistanceFromOrigin();
+            double bearing = refPosition->polarBearingFromOrigin();
+
             origin->newPositionFromPolar(targetPosition, distance, bearing);
             targetPosition->positionAs<GeodeticPosition_3D>()->setAltitude(refPosition->positionAs<CartesianPosition_3D>()->getAltitude());
         }
     }
     else if(targetPosition->is2D())
     {
+        double distance = refPosition->translationalDistanceFromOrigin();
+        double bearing = refPosition->polarBearingFromOrigin();
         origin->newPositionFromPolar(targetPosition, distance, bearing);
     }
 

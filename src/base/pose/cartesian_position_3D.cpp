@@ -133,11 +133,17 @@ double CartesianPosition_3D::distanceFromOrigin() const
     return this->data.norm();
 }
 
+double CartesianPosition_3D::translationalDistanceFromOrigin() const
+{
+    CartesianPosition_3D origin;
+    double distanceXY = this->distanceBetween2D(&origin);
+    return distanceXY;
+}
+
 double CartesianPosition_3D::polarBearingFromOrigin() const
 {
     return atan2(this->getYPosition(),this->getXPosition());
 }
-
 
 double CartesianPosition_3D::elevationAngleFromOrigin() const
 {
