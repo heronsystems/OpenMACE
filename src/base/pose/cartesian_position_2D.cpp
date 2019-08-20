@@ -64,7 +64,7 @@ bool CartesianPosition_2D::hasYBeenSet() const
 
 bool CartesianPosition_2D::areEquivalentFrames(const CartesianPosition_2D &obj) const
 {
-    return this->getCartesianFrameType() == obj.getCartesianFrameType();
+    return this->getCartesianCoordinateFrame() == obj.getCartesianCoordinateFrame();
 }
 
 void CartesianPosition_2D::updateQJSONObject(QJsonObject &obj) const

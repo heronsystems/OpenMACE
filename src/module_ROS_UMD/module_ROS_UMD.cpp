@@ -378,10 +378,11 @@ void ModuleROSUMD::setupROS() {
     // *************************** //
     // ***** Setup services: ***** //
     // *************************** //
-    m_takeoffService = nh.advertiseService("command_takeoff", &MATLABListener::commandTakeoff, m_matlabListener.get());
-    m_landService = nh.advertiseService("command_land", &MATLABListener::commandLand, m_matlabListener.get());
     m_armService = nh.advertiseService("command_arm", &MATLABListener::commandArm, m_matlabListener.get());
     m_datumService = nh.advertiseService("command_datum", &MATLABListener::commandDatum, m_matlabListener.get());
+    m_dynamicTargetService = nh.advertiseService("command_dynamic_target", &MATLABListener::commandDynamicTarget, m_matlabListener.get());
+    m_landService = nh.advertiseService("command_land", &MATLABListener::commandLand, m_matlabListener.get());
+    m_takeoffService = nh.advertiseService("command_takeoff", &MATLABListener::commandTakeoff, m_matlabListener.get());
     m_wptService = nh.advertiseService("command_waypoint", &MATLABListener::commandWaypoint, m_matlabListener.get());
 
     // *************************** //
@@ -402,7 +403,7 @@ void ModuleROSUMD::setupROS() {
 // TODO: Better workaround for transformations
 void ModuleROSUMD::convertToENU(mace::pose::CartesianPosition_3D &localPos) {
 
-    switch (localPos.getCartesianFrameType()) {
+    switch (localPos.getCartesianCoordinateFrame()) {
     case mace::CartesianFrameTypes::CF_LOCAL_NED:
         localPos.setZPosition(-localPos.getZPosition());
         break;
@@ -423,7 +424,7 @@ bool ModuleROSUMD::publishVehiclePosition(const int &vehicleID)
 
     // TODO: Better workaround for transformations
     // Transform local position to ENU:
-    if(tmpLocalPos.getCartesianFrameType() != mace::CartesianFrameTypes::CF_LOCAL_ENU) {
+    if(tmpLocalPos.getCartesianCoordinateFrame() != mace::CartesianFrameTypes::CF_LOCAL_ENU) {
         tmpLocalPos.setZPosition(-tmpLocalPos.getZPosition());
     }
 

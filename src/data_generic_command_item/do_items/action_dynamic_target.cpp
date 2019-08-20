@@ -41,9 +41,9 @@ Action_DynamicTarget::Action_DynamicTarget(const command_target::DynamicTarget c
 }
 
 Action_DynamicTarget::Action_DynamicTarget(const Action_DynamicTarget &obj):
-    AbstractCommandItem(0,0)
+    AbstractCommandItem(obj)
 {
-    this->operator =(obj);
+    this->m_Target = obj.getDynamicTarget();
 }
 
 Action_DynamicTarget::Action_DynamicTarget(const unsigned int &systemOrigin, const unsigned int &systemTarget):

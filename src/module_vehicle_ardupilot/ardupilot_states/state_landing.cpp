@@ -143,9 +143,11 @@ void State_Landing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
     {
         switch (command->getCommandType()) {
         case COMMANDTYPE::CI_NAV_LAND:
-
-            if(command->as<command_item::SpatialLand>()->getPosition()->areTranslationalComponentsValid())
+            if((command->as<command_item::SpatialLand>()->getPosition() != nullptr)
+                    && (command->as<command_item::SpatialLand>()->getPosition()->areTranslationalComponentsValid()))
+            {
                 handleCommand(command);
+            }
             else
             {
                 currentCommand = command->getClone();

@@ -33,7 +33,7 @@ public:
 
     void setCoordinateFrame(const CartesianFrameTypes &explicitFrame);
 
-    CartesianFrameTypes getCartesianFrameType() const;
+    CartesianFrameTypes getCartesianCoordinateFrame() const;
 
     CoordinateFrameTypes getExplicitCoordinateFrame() const override;
 

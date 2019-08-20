@@ -28,6 +28,7 @@ inline CoordinateSystemTypes getCoordinateSystemType(const CoordinateFrameTypes 
     case CoordinateFrameTypes::CF_LOCAL_UNKNOWN:
     case CoordinateFrameTypes::CF_LOCAL_NED:
     case CoordinateFrameTypes::CF_LOCAL_ENU:
+    case CoordinateFrameTypes::CF_BODY_OFFSET_NED:
     case CoordinateFrameTypes::CF_LOCAL_OFFSET_NED:
     case CoordinateFrameTypes::CF_BODY_NED:
     case CoordinateFrameTypes::CF_BODY_ENU:
@@ -36,6 +37,7 @@ inline CoordinateSystemTypes getCoordinateSystemType(const CoordinateFrameTypes 
         break;
     }
     case CoordinateFrameTypes::CF_GLOBAL_UNKNOWN:
+    case CoordinateFrameTypes::CF_GLOBAL_AMSL:
     case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT:
     case CoordinateFrameTypes::CF_GLOBAL_INT:
     case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
@@ -62,6 +64,8 @@ inline CartesianFrameTypes getCartesianCoordinateFrame(const CoordinateFrameType
         return CartesianFrameTypes::CF_LOCAL_NED;
     case CoordinateFrameTypes::CF_LOCAL_ENU:
         return CartesianFrameTypes::CF_LOCAL_ENU;
+    case CoordinateFrameTypes::CF_BODY_OFFSET_NED:
+        return CartesianFrameTypes::CF_BODY_OFFSET_NED;
     case CoordinateFrameTypes::CF_LOCAL_OFFSET_NED:
         return CartesianFrameTypes::CF_LOCAL_OFFSET_NED;
     case CoordinateFrameTypes::CF_BODY_NED:
@@ -80,6 +84,8 @@ inline CoordinateFrameTypes getCoordinateFrame(const CartesianFrameTypes &frame)
         return CoordinateFrameTypes::CF_LOCAL_NED;
     case CartesianFrameTypes::CF_LOCAL_ENU:
         return CoordinateFrameTypes::CF_LOCAL_ENU;
+    case CartesianFrameTypes::CF_BODY_OFFSET_NED:
+        return CoordinateFrameTypes::CF_BODY_OFFSET_NED;
     case CartesianFrameTypes::CF_LOCAL_OFFSET_NED:
         return CoordinateFrameTypes::CF_LOCAL_OFFSET_NED;
     case CartesianFrameTypes::CF_BODY_NED:
@@ -96,6 +102,8 @@ inline GeodeticFrameTypes getGeodeticCoordinateFrame(const CoordinateFrameTypes 
     switch (frame) {
     case CoordinateFrameTypes::CF_GLOBAL_UNKNOWN:
         return GeodeticFrameTypes::CF_GLOBAL_UNKNOWN;
+    case CoordinateFrameTypes::CF_GLOBAL_AMSL:
+        return GeodeticFrameTypes::CF_GLOBAL_AMSL;
     case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT:
         return GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT;
     case CoordinateFrameTypes::CF_GLOBAL_INT:
@@ -116,6 +124,8 @@ inline CoordinateFrameTypes getCoordinateFrame(const GeodeticFrameTypes &frame)
     switch (frame) {
     case GeodeticFrameTypes::CF_GLOBAL_UNKNOWN:
         return CoordinateFrameTypes::CF_GLOBAL_UNKNOWN;
+    case GeodeticFrameTypes::CF_GLOBAL_AMSL:
+        return CoordinateFrameTypes::CF_GLOBAL_AMSL;
     case GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT:
         return CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT;
     case GeodeticFrameTypes::CF_GLOBAL_INT:
@@ -133,6 +143,8 @@ inline CoordinateFrameTypes getCoordinateFrame(const GeodeticFrameTypes &frame)
 
 inline std::string CoordinateFrameToString(const CoordinateFrameTypes &frame) {
     switch (frame) {
+    case CoordinateFrameTypes::CF_GLOBAL_AMSL:
+        return "CF_GLOBAL_AMSL";
     case CoordinateFrameTypes::CF_GLOBAL_UNKNOWN:
         return "CF_GLOBAL";
     case CoordinateFrameTypes::CF_LOCAL_NED:
@@ -145,6 +157,8 @@ inline std::string CoordinateFrameToString(const CoordinateFrameTypes &frame) {
         return "CF_GLOBAL_INT";
     case CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
         return "CF_GLOBAL_RELATIVE_ALT_INT";
+    case CoordinateFrameTypes::CF_BODY_OFFSET_NED:
+        return "CF_BODY_OFFSET_NED";
     case CoordinateFrameTypes::CF_LOCAL_OFFSET_NED:
         return "CF_LOCAL_OFFSET_NED";
     case CoordinateFrameTypes::CF_BODY_NED:
@@ -163,6 +177,8 @@ inline std::string CoordinateFrameToString(const CoordinateFrameTypes &frame) {
 inline CoordinateFrameTypes CoordinateFrameFromString(const std::string &str) {
     if(str == "CF_GLOBAL")
         return CoordinateFrameTypes::CF_GLOBAL_UNKNOWN;
+    if(str == "CF_GLOBAL_AMSL")
+        return CoordinateFrameTypes::CF_GLOBAL_AMSL;
     if(str == "CF_LOCAL_NED")
         return CoordinateFrameTypes::CF_LOCAL_NED;
     if(str == "CF_GLOBAL_RELATIVE_ALT")
@@ -173,6 +189,8 @@ inline CoordinateFrameTypes CoordinateFrameFromString(const std::string &str) {
         return CoordinateFrameTypes::CF_GLOBAL_INT;
     if(str == "CF_GLOBAL_RELATIVE_ALT_INT")
         return CoordinateFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT;
+    if(str == "CF_BODY_OFFSET_NED")
+        return CoordinateFrameTypes::CF_BODY_OFFSET_NED;
     if(str == "CF_LOCAL_OFFSET_NED")
         return CoordinateFrameTypes::CF_LOCAL_OFFSET_NED;
     if(str == "CF_BODY_NED")

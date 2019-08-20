@@ -115,7 +115,7 @@ public:
     }
 
 protected:
-    uint16_t targetMask;
+    uint16_t targetMask = std::numeric_limits<uint16_t>::max();
 
     Position* m_Position;
     Velocity* m_Velocity;

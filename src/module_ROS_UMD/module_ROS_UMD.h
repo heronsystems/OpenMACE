@@ -294,16 +294,6 @@ private:
     std::shared_ptr<MATLABListener> m_matlabListener;
 
     //!
-    //! \brief m_client Service client for takeoff commands issued from MATLAB
-    //!
-    ros::ServiceServer m_takeoffService;
-
-    //!
-    //! \brief m_client Service client for land commands issued from MATLAB
-    //!
-    ros::ServiceServer m_landService;
-
-    //!
     //! \brief m_client Service client for arm commands issued from MATLAB
     //!
     ros::ServiceServer m_armService;
@@ -312,6 +302,21 @@ private:
     //! \brief m_client Service client for datum commands issued from MATLAB
     //!
     ros::ServiceServer m_datumService;
+
+    //!
+    //! \brief m_client Service client for datum commands issued from MATLAB
+    //!
+    ros::ServiceServer m_dynamicTargetService;
+
+    //!
+    //! \brief m_client Service client for land commands issued from MATLAB
+    //!
+    ros::ServiceServer m_landService;
+
+    //!
+    //! \brief m_client Service client for takeoff commands issued from MATLAB
+    //!
+    ros::ServiceServer m_takeoffService;
 
     //!
     //! \brief m_client Service client for waypoint commands issued from MATLAB

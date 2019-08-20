@@ -19,7 +19,7 @@ const MaceCore::TopicComponentStructure Structure_CartesianPosition = []{
 MaceCore::TopicDatagram Topic_CartesianPosition::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
     datagram.AddTerminal<std::string>("Position Name",positionObj->getName());
-    datagram.AddTerminal<mace::CartesianFrameTypes>("Explicit Coordinate Frame", positionObj->getCartesianFrameType());
+    datagram.AddTerminal<mace::CartesianFrameTypes>("Explicit Coordinate Frame", positionObj->getCartesianCoordinateFrame());
     if(positionObj->is3D())
         datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", positionObj->positionAs<mace::pose::CartesianPosition_3D>()->getAltitudeReferenceFrame());
     else

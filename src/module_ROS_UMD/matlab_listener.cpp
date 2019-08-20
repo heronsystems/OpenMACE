@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "matlab_listener.h"
+#include "base/pose/pose_components.h"
 
 /**
  * @brief MATLABListener constructor
@@ -124,6 +125,79 @@ bool MATLABListener::commandDatum(mace_matlab::CMD_DATUM::Request  &req,
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
         ptr->Event_SetGlobalOrigin(this, origin);
+    });
+
+    return true;
+}
+
+bool MATLABListener::commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Request &req,
+                                          mace_matlab::CMD_DYNAMIC_TARGET::Response &res)
+{
+    res.success = true;
+
+    command_item::Action_DynamicTarget dynamicTarget;
+    command_target::DynamicTarget currentTarget;
+
+    CoordinateSystemTypes currentType = mace::getCoordinateSystemType(static_cast<CoordinateFrameTypes>(req.coordinateFrame));
+
+    if((req.bitmask&mace::pose::Position::ignoreAllPositions) == 0) //the positions are valid and should therefore use them
+    {
+        switch (currentType) {
+        case CoordinateSystemTypes::CARTESIAN:
+        {
+            mace::pose::CartesianPosition_3D newPosition;
+            newPosition.updatePosition(req.xP, req.yP, req.zP);
+            newPosition.setCoordinateFrame(mace::getCartesianCoordinateFrame(static_cast<CoordinateFrameTypes>(req.coordinateFrame)));
+            newPosition.setAltitudeReferenceFrame(mace::getAltitudeReference(newPosition.getCartesianCoordinateFrame()));
+            currentTarget.setPosition(&newPosition);
+            break;
+        }
+        case CoordinateSystemTypes::GEODETIC:
+        {
+            mace::pose::GeodeticPosition_3D newPosition;
+            newPosition.updatePosition(req.yP, req.xP, req.zP);
+            newPosition.setCoordinateFrame(mace::getGeodeticCoordinateFrame(static_cast<CoordinateFrameTypes>(req.coordinateFrame)));
+            newPosition.setAltitudeReferenceFrame(mace::getAltitudeReference(newPosition.getGeodeticCoordinateFrame()));
+            currentTarget.setPosition(&newPosition);
+            break;
+        }
+        case CoordinateSystemTypes::NOT_IMPLIED:
+        case CoordinateSystemTypes::UNKNOWN:
+            break;
+        }
+    }
+
+    if((req.bitmask&mace::pose::Velocity::ignoreAllVelocities) == 0) //the positions are valid and should therefore use them
+    {
+        if((currentType == CoordinateSystemTypes::CARTESIAN) || (currentType == CoordinateSystemTypes::GEODETIC))
+        {
+            mace::pose::Cartesian_Velocity3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
+            if(currentType == CoordinateSystemTypes::CARTESIAN)
+                newVelocity.setExplicitCoordinateFrame(mace::getCartesianCoordinateFrame(static_cast<CoordinateFrameTypes>(req.coordinateFrame)));
+            newVelocity.setXVelocity(req.xV);
+            newVelocity.setYVelocity(req.yV);
+            newVelocity.setZVelocity(req.zV);
+            currentTarget.setVelocity(&newVelocity);
+        }
+    }
+
+    if((req.bitmask&mace::pose::Rotation_2D::IGNORE_YAW_DIMENSION) == 0) //the positions are valid and should therefore use them
+    {
+        mace::pose::Rotation_2D yaw(req.yaw);
+        currentTarget.setYaw(&yaw);
+    }
+
+    if((req.bitmask&mace::pose::Rotation_2D::IGNORE_YAW_RATE_DIMENSION) == 0) //the positions are valid and should therefore use them
+    {
+        mace::pose::Rotation_2D yawRate(req.yawRate);
+        currentTarget.setYawRate(&yawRate);
+    }
+
+    dynamicTarget.setDynamicTarget(currentTarget);
+    dynamicTarget.setTargetSystem(req.vehicleID);
+
+    m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, dynamicTarget);
     });
 
     return true;

@@ -7,8 +7,10 @@
 #include <mace_matlab/CMD_ARM.h>
 #include <mace_matlab/CMD_DATUM.h>
 #include <mace_matlab/CMD_LAND.h>
-#include <mace_matlab/CMD_WPT.h>
 #include <mace_matlab/CMD_TAKEOFF.h>
+#include <mace_matlab/CMD_DYNAMIC_TARGET.h>
+#include <mace_matlab/CMD_WPT.h>
+
 #endif
 
 #include "base/pose/dynamics_aid.h"
@@ -66,6 +68,9 @@ public:
 
     bool commandDatum(mace_matlab::CMD_DATUM::Request  &req,
                       mace_matlab::CMD_DATUM::Response &res);
+
+    bool commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Request &req,
+                              mace_matlab::CMD_DYNAMIC_TARGET::Response &res);
 #endif
 
 private:

@@ -25,7 +25,7 @@ void Abstract_CartesianPosition::setCoordinateFrame(const CartesianFrameTypes &e
     this->cartesianFrameType = explicitFrame;
 }
 
-mace::CartesianFrameTypes Abstract_CartesianPosition::getCartesianFrameType() const
+mace::CartesianFrameTypes Abstract_CartesianPosition::getCartesianCoordinateFrame() const
 {
     return this->cartesianFrameType;
 }
@@ -37,7 +37,7 @@ mace::CoordinateFrameTypes Abstract_CartesianPosition::getExplicitCoordinateFram
 
 bool Abstract_CartesianPosition::areEquivalentCartesianFrames(const Abstract_CartesianPosition &obj) const
 {
-    return this->cartesianFrameType == obj.getCartesianFrameType();
+    return this->cartesianFrameType == obj.getCartesianCoordinateFrame();
 }
 
 

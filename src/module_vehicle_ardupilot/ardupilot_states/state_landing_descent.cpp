@@ -15,6 +15,7 @@ State_LandingDescent::State_LandingDescent():
 void State_LandingDescent::OnExit()
 {
     AbstractStateArdupilot::OnExit();
+    Owner().state->vehicleLocalPosition.RemoveNotifier(this);
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 }
 
@@ -68,16 +69,57 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
         currentCommand = command->getClone();
         const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
 
-        switch (cmd->getPosition()->getCoordinateSystemType()) {
-        case CoordinateSystemTypes::GEODETIC:
+        double targetAltitude = 0.0;
+        if((cmd->getPosition() != nullptr) && (cmd->getPosition()->is3D()))
         {
-            Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd]
+            switch (cmd->getPosition()->getCoordinateSystemType()) {
+            case CoordinateSystemTypes::GEODETIC:
             {
-                mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
-                double distance = fabs(currentPosition.deltaAltitude(cmd->getPosition()->positionAs<mace::pose::GeodeticPosition_3D>()));
+                const mace::pose::GeodeticPosition_3D* castPosition = cmd->getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
+                if(castPosition->hasAltitudeBeenSet())
+                    targetAltitude=castPosition->getAltitude();
+                Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,targetAltitude]
+                {
+                    mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
+                    double distance = fabs(currentPosition.getAltitude() - targetAltitude);
+                    Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+
+                    if(guidedState == Data::ControllerState::ACHIEVED)
+                    {
+                        this->clearCommand();
+                        desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
+                    }
+                });
+                break;
+            }
+            case CoordinateSystemTypes::CARTESIAN:
+            {
+                const mace::pose::CartesianPosition_3D* castPosition = cmd->getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
+                if(castPosition->hasZBeenSet())
+                    targetAltitude=castPosition->getAltitude();
+                Owner().state->vehicleLocalPosition.AddNotifier(this,[this,targetAltitude]
+                {
+                    mace::pose::CartesianPosition_3D currentPosition = Owner().state->vehicleLocalPosition.get();
+                    double distance = fabs(currentPosition.getAltitude() - targetAltitude);
+                    Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+
+                    if(guidedState == Data::ControllerState::ACHIEVED)
+                    {
+                        this->clearCommand();
+                        desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
+                    }
+                });
+                break;
+            }
+            }
+        }
+        else
+        {
+            Owner().state->vehicleLocalPosition.AddNotifier(this,[this,targetAltitude]
+            {
+                mace::pose::CartesianPosition_3D currentPosition = Owner().state->vehicleLocalPosition.get();
+                double distance = fabs(currentPosition.getAltitude() - targetAltitude);
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-//                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition());
-//                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
                 {
@@ -85,18 +127,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                     desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
                 }
             });
-            break;
         }
-        case CoordinateSystemTypes::CARTESIAN:
-        {
-            break;
-        }
-        case CoordinateSystemTypes::UNKNOWN:
-        case CoordinateSystemTypes::NOT_IMPLIED:
-        {
-
-        }
-        } //end of switch statement
 
 
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
@@ -128,7 +159,8 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
 
 void State_LandingDescent::Update()
 {
-
+    if(!Owner().state->vehicleArm.get().getSystemArm())
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
 }
 
 void State_LandingDescent::OnEnter()

@@ -28,10 +28,12 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  CMD_TAKEOFF.srv
-  CMD_LAND.srv
+
   CMD_ARM.srv
   CMD_DATUM.srv
+  CMD_DYNAMIC_TARGET.srv
+  CMD_LAND.srv
+  CMD_TAKEOFF.srv
   CMD_WPT.srv
 )
 
