@@ -57,6 +57,13 @@ GeodeticPosition_3D::GeodeticPosition_3D(const mace_global_position_int_t &pos):
     setAltitude(pos.alt / pow(10,3));
 }
 
+void GeodeticPosition_3D::updateFromPosition(const GeodeticPosition_3D &copy)
+{
+    Abstract_GeodeticPosition::operator =(copy);
+    Abstract_Altitude::operator =(copy);
+    this->data = copy.data;
+}
+
 //!
 //! \brief GeodeticPosition_3D::GeodeticPosition_3D
 //! \param copy

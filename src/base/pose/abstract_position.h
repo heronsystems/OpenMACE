@@ -152,6 +152,7 @@ public:
     {
         this->name = rhs.name;
         this->dimension = rhs.dimension;
+        this->dimensionMask = rhs.dimensionMask;
         return *this;
     }
 

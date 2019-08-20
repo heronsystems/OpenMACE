@@ -49,7 +49,8 @@ void DynamicsAid::LocalPositionToGlobal(const Abstract_GeodeticPosition* origin,
         if(refPosition->is3D() && origin->is3D())
         {
             double elevation = refPosition->positionAs<CartesianPosition_3D>()->elevationAngleFromOrigin();
-            targetPosition = origin->positionAs<GeodeticPosition_3D>()->newPositionFromPolar(distance, bearing, elevation);
+            mace::pose::GeodeticPosition_3D newPosition = origin->positionAs<GeodeticPosition_3D>()->newPositionFromPolar(distance, bearing, elevation);
+            targetPosition->positionAs<mace::pose::GeodeticPosition_3D>()->updateFromPosition(newPosition);
         }
         else if(refPosition->is3D() && origin->is2D())
         {

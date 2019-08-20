@@ -23,6 +23,8 @@ public:
 
     GeodeticPosition_3D(const mace_global_position_int_t &pos);
 
+    void updateFromPosition(const GeodeticPosition_3D &copy);
+
     //!
     //! \brief GeodeticPosition_2D
     //! \param copy
