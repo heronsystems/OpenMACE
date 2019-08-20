@@ -75,6 +75,13 @@ if (~isempty(nodeCells))
                         elseif ( trueWorld.A_env(idNewTrue,idNeighborTrue)==1 )
                             swarmWorld.exploredGraph = addedge(swarmWorld.exploredGraph,idNew,idNeighbor);
                             disp('edge added');
+                            edgeDir = atan2( swarmWorld.exploredGraph.Nodes.nodeY(idNeighbor) - swarmWorld.exploredGraph.Nodes.nodeY(idNew), swarmWorld.exploredGraph.Nodes.nodeX(idNeighbor) - swarmWorld.exploredGraph.Nodes.nodeX(idNew));                            
+                            if (edgeDir < 0)
+                                edgeDir = pi+edgeDir;
+                            end
+                            swarmWorld.edgeDir = [swarmWorld.edgeDir; edgeDir];
+                            
+                            
                         else
                             disp('edge not added');
                         end

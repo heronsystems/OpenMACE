@@ -7,11 +7,10 @@ cd(rootPath)
 updatePath;
 cd(curPath);
 
-fileName = './../data/RandallsIsland_Big.osm';
-
 rng(10);
 
 %% load data
+fileName = './../data/RandallsIsland_Big.osm';
 nodeFactor = 1;
 dim = 1;
 refX = -300;
@@ -22,18 +21,18 @@ boxwidth = 200;
 dx = 5;
 buffer = 0;
 scale = 1;
-[nodesXY] = loadOpenStreetMapFlexNodes(fileName, refX, refY, boxlength, boxwidth, angle, dx, buffer,scale);
-
-trueWorld.minX = 0;
-trueWorld.maxX = boxlength;
-trueWorld.minY = 0;
-trueWorld.maxY = boxwidth;
-
-%% sample data
 numSamples = 10;
 R = 3*dx;
 ax = R;
 ay =0.1*R;
+
+
+%%
+[nodesXY] = loadOpenStreetMapFlexNodes(fileName, refX, refY, boxlength, boxwidth, angle, dx, buffer,scale);
+trueWorld.minX = 0;
+trueWorld.maxX = boxlength;
+trueWorld.minY = 0;
+trueWorld.maxY = boxwidth;
 
 %% plot nodes/edges
 figure;

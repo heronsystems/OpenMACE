@@ -1,14 +1,11 @@
 function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_Randals(algorithmID,initialFormationID,targetMotionID)
 
-
-
 % Simulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 5; %4*60;% total simulation/mission time
+runParams.T = 4*60; %4*60;% total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running, Sheng needs this for cost computation)
-
 
 % F3 Flight Test
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,13 +15,14 @@ ROS_MACE = [];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams.flags.movie = 1;
 runParams.movie.useBackgroundImg = 0;
+runParams.movie.plotF3Obstacles = 0;
 
 % Swarm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 swarmModel = struct;
 swarmModel.N = 4; % number of agents
-swarmModel.Rsense = 50; % sensing radius % 2 for F3 map % 20 for full map
-swarmModel.vmax = 3; % maximum speed % 1 for F3 map % 20 for full map
+swarmModel.Rsense = 20; % sensing radius % 2 for F3 map % 20 for full map
+swarmModel.vmax = 4; % maximum speed % 1 for F3 map % 20 for full map
 swarmModel.umax = 2.0; % max acceleration
 swarmModel.kp_wpt = 10.0; % agent waypoint control, proportional gain
 swarmModel.kd_wpt = 5.0; % derivative gain
@@ -136,16 +134,15 @@ end
 trueWorld = struct;
 trueWorld.type = 'openStreetMap'; % 'cityblocks', %'openStreetMap', 'osmAtF3'
 trueWorld.borderOffset = 0; % used for adding padding to the map
-%trueWorld.binWidth = 1; % distance used to declare two nodes as connected (use 7 for open street map)
 trueWorld.folder = './data/'; % folder with map file
-trueWorld.fileName = 'RandallsIsland_Big.osm';
+trueWorld.fileName = 'NYC.mat';
 trueWorld.binWidth = 5;
 trueWorld.refX = -300;
 trueWorld.refY = -200;
 trueWorld.angle = 0*pi/180;
-trueWorld.boxlength = 400;
-trueWorld.boxwidth = 400;
-trueWorld.buffer = 1;
+trueWorld.boxlength = 300;
+trueWorld.boxwidth = 300;
+trueWorld.buffer = 0;
 
 % derived world model parameters
 trueWorld.removeList = [4,3,34,35,36,37,7,61,25];

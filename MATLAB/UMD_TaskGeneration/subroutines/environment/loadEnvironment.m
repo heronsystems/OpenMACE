@@ -7,21 +7,17 @@ if ( exist([trueWorld.folder trueWorld.fileName '_' trueWorld.type '_full.mat'],
         case 'cityblocks'
             nodeXY = loadCityBlocksNodes(trueWorld.blockLength, trueWorld.numBlocks, trueWorld.binWidth);
             [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );
-        case 'openStreetMap'
-            [ nodeXY, LatRef, LongRef, G_env, A_env] = loadOpenStreetMapNodesFlex(trueWorld.fileName, trueWorld.refX, trueWorld.refY, trueWorld.boxlength, trueWorld.boxwidth, trueWorld.angle, trueWorld.binWidth, trueWorld.removeList);
-            nodeX = nodeXY(:,1);
-            nodeY = nodeXY(:,2);
         case 'cityblocksAtF3'
             [ nodeXY ] = loadCityBlocksNodes_atF3(trueWorld.blockLength, trueWorld.numBlocks, trueWorld.binWidth, trueWorld.f3Workspace);
             [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );
+        case 'openStreetMap'
+            [ nodeXY, LatRef, LongRef, G_env, A_env] = loadOpenStreetMapNodesFlex(trueWorld.fileName, trueWorld.refX, trueWorld.refY, trueWorld.boxlength, trueWorld.boxwidth, trueWorld.angle, trueWorld.binWidth, trueWorld.removeList);
+            nodeX = nodeXY(:,1);
+            nodeY = nodeXY(:,2);        
         case 'osmAtF3'
             [ nodeXY ] = loadOpenStreetMapNodes_atF3(trueWorld.fileName, trueWorld.refX, trueWorld.refY, trueWorld.boxlength, ...
                 trueWorld.angle, trueWorld.buffer, trueWorld.binWidth, trueWorld.f3Workspace);
-            [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );
-        case 'randomRoadsAtF3'
-            [nodeXY] = loadRandomRoads_atF3(trueWorld.nodeFile, trueWorld.edgeFile, trueWorld.binWidth, trueWorld.f3Workspace);
-            [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );
-            
+            [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );       
     end
     disp('Computing Additional Properties for trueWorld...');
     trueWorld.nodeXY = nodeXY;

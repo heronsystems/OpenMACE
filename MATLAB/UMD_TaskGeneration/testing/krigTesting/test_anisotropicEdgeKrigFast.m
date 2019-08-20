@@ -49,7 +49,7 @@ xlim([0 180]);
 tic
 %forecast = anisotropicAdaptiveKrig(xx,yy,measurements,ax,ay, peaks, weights);
 %forecast = anisotropicAdaptiveKrigFast(xx,yy,measurements, E, peaks, weights);
-forecast = anisotropicAdaptiveKrigFast2(xx,yy,measurements, ax,ay, peaks, weights, xcp, ycp);
+forecast = anisotropicAdaptiveKrigFast2(measurements, ax,ay, peaks, weights, xcp, ycp);
 
 toc
 

@@ -5,7 +5,7 @@
 % MATLAB Initialization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % check if this is a monte-carlo run, if not clear the workspace
-%   preserve single run simulation parameters
+%   prese rve single run simulation parameters
 %   check MonteCarloEngine.m for details
 if ~exist('MonteCarloSwitch','var')
     clear; close all; clc;
@@ -14,6 +14,8 @@ if ~exist('MonteCarloSwitch','var')
     %rng('default');
     rng(1);
 end
+
+rng(5);
 
 % comment out if running the auctioneer (also refer to /archive/loadParams_mapping() for parameters)
 clear taskAllocation_decentralized
@@ -27,7 +29,7 @@ tStart = tic;
 if ~exist('MonteCarloSwitch','var')
     % user should modify loadParams.m as desired for single run
     %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_RandalsAtF3();
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_Randals();
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
     
     disp('Running standard (non Monte-Carlo) simulation')
 %     [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();

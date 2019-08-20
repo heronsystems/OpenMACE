@@ -76,7 +76,9 @@ for i = 1:1:size(agents,1)
                 for j = 1:1:targetModel.M    
                    if ( norm(controlPt - targXY(j,:)) == 0 )
                        targSignals(k) = quantizedSensor(mZ, nZ, 1);
+                       disp('Target found');
                    else
+                       fprintf('Target is in (%3.3f, %3.3f)\n',targXY(j,1),targXY(j,2));
                        targSignals(k) = quantizedSensor(mZ, nZ, 0);
                    end
                 end

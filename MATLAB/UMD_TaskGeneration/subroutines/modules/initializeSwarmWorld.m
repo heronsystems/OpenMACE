@@ -31,6 +31,7 @@ swarmWorld.Mc = [];
 swarmWorld.Mp = [];
 swarmWorld.Q = [];
 swarmWorld.mapPercentage = [];
+swarmWorld.edgeDir = [];
 swarmWorld.numViews = 0;
 
 % informed prior

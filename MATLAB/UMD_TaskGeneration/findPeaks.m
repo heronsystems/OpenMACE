@@ -18,4 +18,8 @@ for i = 1:1:numPeaks
         data(maxInd-1:maxInd+1) = 0;
     end
 end
+
+% remove peaks with zero weight
+peaks( weights == 0 ) = [];
+weights( weights == 0 ) = [];
 end
