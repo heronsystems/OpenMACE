@@ -3,7 +3,7 @@ format compact;
 updatePath;
 
 
-for k = 1:10
+for k = 1:2
 
 [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
 

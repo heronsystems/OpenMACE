@@ -114,7 +114,7 @@ elseif strcmp(swarmModel.taskAllocation,'Auctioneer')
     		ADCA_MeshCommunication(swarmWorld.roboticAgents,swarmWorld.communicationMatrix);
 			    
     		for n = 1:numAvailableAgents
-        		fprintf("The perceived leaders of agent %i. \n",swarmWorld.roboticAgents(n,1).m_RoboticParameters.AGENT_ID);
+        		fprintf('The perceived leaders of agent %i. \n',swarmWorld.roboticAgents(n,1).m_RoboticParameters.AGENT_ID);
         		swarmWorld.roboticAgents(n,1).m_MasterTaskList.printTaskLeaders();
         		instantaneousAgentUtility = swarmWorld.roboticAgents(n,1).m_MasterTaskList.computeAgentUtility(n);
         		if(isKey(swarmWorld.agentUtilityMap,num2str(n)))
@@ -134,7 +134,7 @@ elseif strcmp(swarmModel.taskAllocation,'Auctioneer')
     		end
 			    
     		for n = 1:numAvailableAgents
-        		fprintf("The perceived task order of agent %i. \n",swarmWorld.roboticAgents(n,1).m_RoboticParameters.AGENT_ID);
+        		fprintf('The perceived task order of agent %i. \n',swarmWorld.roboticAgents(n,1).m_RoboticParameters.AGENT_ID);
         		swarmWorld.roboticAgents(n,1).m_MasterTaskList.printCurrentAssignments();
     		end
 			    
