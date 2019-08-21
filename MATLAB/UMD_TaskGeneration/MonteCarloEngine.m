@@ -5,6 +5,7 @@
 clear; close all; clc;
 format compact;
 
+totalTime = tic;
 % function [MonteCarloSwitch] = MonteCarloEngine()
 updatePath;
 
@@ -36,3 +37,4 @@ parfor jj = 1:1:length(jjIndex) % for target motions
         end
     end
 end
+fprintf('Total time is %f\n',toc(totalTime));
