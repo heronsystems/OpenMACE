@@ -10,10 +10,10 @@
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_finish.h"
 
-#include "mavlink.h"
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
 
 #include "module_vehicle_MAVLINK/controllers/common.h"
+#include "module_vehicle_MAVLINK/mavlink_coordinate_frames.h"
 
 namespace MAVLINKVehicleControllers {
 
@@ -81,9 +81,9 @@ protected:
     {
         mavlink_mission_item_t missionItem;
         missionItem.autocontinue = 1;
-        missionItem.command = 0;
+        missionItem.command = MAV_CMD_NAV_WAYPOINT;
         missionItem.current = 2;
-        missionItem.frame = MAV_CMD_NAV_WAYPOINT;
+        missionItem.frame = MAV_FRAME_GLOBAL;
         missionItem.param1 = 0.0;
         missionItem.param2 = 0.0;
         missionItem.param3 = 0.0;

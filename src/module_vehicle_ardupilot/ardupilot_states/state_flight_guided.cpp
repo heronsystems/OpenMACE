@@ -38,17 +38,27 @@ hsm::Transition State_FlightGuided::GetTransition()
         switch (desiredStateEnum) {
         case ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE:
         {
-            rtn = hsm::InnerEntryTransition<State_FlightGuided_Idle>(currentCommand);
+            rtn = hsm::InnerTransition<State_FlightGuided_Idle>(currentCommand);
             break;
         }
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
         {
-            rtn = hsm::InnerEntryTransition<State_FlightGuided_MissionItem>(currentCommand);
+            rtn = hsm::InnerTransition<State_FlightGuided_CarTarget>(currentCommand);
+            break;
+        }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET:
+        {
+            rtn = hsm::InnerTransition<State_FlightGuided_GeoTarget>(currentCommand);
             break;
         }
         case ArdupilotFlightState::STATE_FLIGHT_GUIDED_QUEUE:
         {
-            rtn = hsm::InnerEntryTransition<State_FlightGuided_Queue>(currentCommand);
+            rtn = hsm::InnerTransition<State_FlightGuided_Queue>(currentCommand);
+            break;
+        }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM:
+        {
+            rtn = hsm::InnerTransition<State_FlightGuided_SpatialItem>(currentCommand);
             break;
         }
         default:
@@ -61,9 +71,62 @@ hsm::Transition State_FlightGuided::GetTransition()
 
 bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    std::cout<<"We are trying to handle the command in the parent state state_flight_guided."<<std::endl;
-    ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
-    currentInnerState->handleCommand(command);
+    switch (command->getCommandType()) {
+    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    {
+        if(this->IsInState<State_FlightGuided_SpatialItem>())
+        {
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            currentInnerState->handleCommand(command);
+        }
+        else
+        {
+            currentCommand = command->getClone();
+            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
+        }
+        break;
+    }
+    case COMMANDTYPE::CI_ACT_TARGET:
+    {
+        currentCommand = command->getClone();
+        command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
+        command_target::DynamicTarget currentTarget = cmd->getDynamicTarget();
+        mace::pose::Position* targetPosition = currentTarget.getPosition();
+        if(targetPosition != nullptr)
+        {
+            /* Since the positional element within the command is not null, we have to make sure it
+             * is of the coordinate frame type that can be supported within the appropriate guided mode.
+             * The only explicit case is if the coordinate system is geodetic, if not, the remaining can
+             * all be handled by the cartesian guided state.
+             */
+            if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+            {
+                if(this->IsInState<State_FlightGuided_GeoTarget>())
+                {
+                    ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                    currentInnerState->handleCommand(command);
+                }
+                else
+                    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+
+            }
+        }
+        else {
+            if(this->IsInState<State_FlightGuided_CarTarget>())
+            {
+                ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                currentInnerState->handleCommand(command);
+            }
+            else
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+        }
+        break;
+    }
+
+    default:
+        break;
+
+    } //end of switch statement
 }
 
 void State_FlightGuided::Update()
@@ -87,7 +150,7 @@ void State_FlightGuided::OnEnter(const std::shared_ptr<AbstractCommandItem> comm
 } //end of namespace state
 
 #include "ardupilot_states/state_flight_guided_idle.h"
-#include "ardupilot_states/state_flight_guided_mission_item.h"
+#include "ardupilot_states/state_flight_guided_spatial_item.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
 #include "ardupilot_states/state_flight_guided_target_car.h"
 #include "ardupilot_states/state_flight_guided_target_geo.h"

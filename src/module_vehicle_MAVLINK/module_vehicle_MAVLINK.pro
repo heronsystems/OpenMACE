@@ -47,7 +47,8 @@ HEADERS += module_vehicle_mavlink.h\
     controllers/controller_guided_target_item_local.h \
     controllers/controller_guided_target_item_global.h \
     controllers/common.h \
-    controllers/commands/command_msg_interval.h
+    controllers/commands/command_msg_interval.h \
+    mavlink_coordinate_frames.h
 
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega
@@ -96,9 +97,10 @@ headers_vehicle_object.files   += \
 INSTALLS       += headers_vehicle_object
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase

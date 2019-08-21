@@ -68,6 +68,6 @@ void State_FlightGuided_Queue::OnEnter(const std::shared_ptr<AbstractCommandItem
 } //end of namespace state
 
 #include "ardupilot_states/state_flight_guided_idle.h"
-#include "ardupilot_states/state_flight_guided_mission_item.h"
+#include "ardupilot_states/state_flight_guided_spatial_item.h"
 #include "ardupilot_states/state_flight_guided_target_car.h"
 #include "ardupilot_states/state_flight_guided_target_geo.h"

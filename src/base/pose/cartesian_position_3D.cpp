@@ -177,6 +177,12 @@ double CartesianPosition_3D::distanceBetween2D(const Abstract_CartesianPosition*
         Eigen::Vector3d delta = this->data - tmpPos->data;
         distance = delta.head(2).norm();
     }
+    else if(pos->isGreaterThan1D())
+    {
+        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
+        Eigen::Vector2d delta = this->data.head(2) - tmpPos->data;
+        distance = delta.norm();
+    }
     return distance;
 }
 

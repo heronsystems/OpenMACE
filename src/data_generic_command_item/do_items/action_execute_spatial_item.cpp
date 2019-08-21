@@ -36,7 +36,7 @@ Action_ExecuteSpatialItem::Action_ExecuteSpatialItem():
 Action_ExecuteSpatialItem::Action_ExecuteSpatialItem(const AbstractSpatialActionPtr cmd):
     AbstractCommandItem(0,0)
 {
-    this->setSpatialCommand(cmd);
+    this->setSpatialAction(cmd);
 }
 
 Action_ExecuteSpatialItem::Action_ExecuteSpatialItem(const Action_ExecuteSpatialItem &obj):

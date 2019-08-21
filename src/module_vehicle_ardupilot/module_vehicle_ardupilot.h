@@ -1,12 +1,13 @@
 #ifndef MODULE_VEHICLE_ARDUPILOT_H
 #define MODULE_VEHICLE_ARDUPILOT_H
 
+#include <mavlink.h>
+
 #include <map>
 #include <condition_variable>
 
 #include "spdlog/spdlog.h"
 
-#include <mavlink.h>
 #include "data/mission_command.h"
 
 #include "module_vehicle_ardupilot_global.h"

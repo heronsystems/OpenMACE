@@ -655,7 +655,7 @@ void MaceCore::Event_IssueGeneralCommand(const ModuleBase* sender, const command
     {
         return Event_IssueCommandRTL(sender, (command_item::SpatialRTL const&)command);
     }
-    case command_item::COMMANDTYPE::CI_ACT_MISSIONITEM:
+    case command_item::COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
     {
         return Event_IssueMissionCommand(sender, (command_item::ActionMissionCommand const&)command);
     }

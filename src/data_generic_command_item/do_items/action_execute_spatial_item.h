@@ -68,12 +68,12 @@ public:
     Action_ExecuteSpatialItem(const unsigned int &systemOrigin, const unsigned int &systemTarget);
 
 public:
-    void setSpatialCommand(const AbstractSpatialActionPtr cmd)
+    void setSpatialAction(const AbstractSpatialActionPtr cmd)
     {
         m_SpatialAction = cmd;
     }
 
-    AbstractSpatialActionPtr getSpatialCommand() const{
+    AbstractSpatialActionPtr getSpatialAction() const{
         return m_SpatialAction;
     }
 

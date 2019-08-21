@@ -95,7 +95,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
 {
     COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDTYPE::CI_ACT_MISSIONITEM:
+    case COMMANDTYPE::CI_ACT_MISSIONCMD:
     {
         int vehicleMode = 0;
         bool executeModeChange = false;
@@ -124,12 +124,12 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         {
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
             auto controllerSystemMode = new MAVLINKVehicleControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-            controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
+            controllerSystemMode->AddLambda_Finished(this, [controllerSystemMode](const bool completed, const uint8_t finishCode){
 
                 controllerSystemMode->Shutdown();
             });
 
-            controllerSystemMode->setLambda_Shutdown([this, collection]()
+            controllerSystemMode->setLambda_Shutdown([collection]()
             {
                 auto ptr = collection->Remove("modeController");
                 delete ptr;
@@ -177,7 +177,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             controllerRTL->Shutdown();
         });
 
-        controllerRTL->setLambda_Shutdown([this, collection]()
+        controllerRTL->setLambda_Shutdown([collection]()
         {
             auto ptr = collection->Remove("RTLController");
             delete ptr;
@@ -189,13 +189,22 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         controllerRTL->Send(*cmd,sender,target);
         collection->Insert("RTLController",controllerRTL);
     }
+    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    {
+        if(!this->IsInState<State_FlightGuided>())
+            std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
+        else
+        {
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            currentInnerState->handleCommand(command);
+        }
+
+        break;
+    }
     case COMMANDTYPE::CI_ACT_TARGET:
     {
-        std::cout<<"We are currently in the flight mode and have seen a command for an action target."<<std::endl;
         if(!this->IsInState<State_FlightGuided>())
-        {
             std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
-        }
         else
         {
             ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());

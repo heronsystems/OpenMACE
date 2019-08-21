@@ -9,7 +9,7 @@ void ControllerGuidedMissionItem<command_item::SpatialWaypoint>::FillMissionItem
     const mace::pose::Position* basePosition = commandItem.getPosition();
 
     if(basePosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC){
-        mavlinkItem.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        mavlinkItem.frame = getMAVLINKCoordinateFrame(basePosition->getExplicitCoordinateFrame());
         if(basePosition->is2D())
         {
             const mace::pose::GeodeticPosition_2D* castPosition = basePosition->positionAs<mace::pose::GeodeticPosition_2D>();

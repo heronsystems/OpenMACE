@@ -1,6 +1,7 @@
 #ifndef GUIDED_TIMEOUT_CONTROLLER_H
 #define GUIDED_TIMEOUT_CONTROLLER_H
 
+#include <mavlink.h>
 
 #include <iostream>
 
@@ -9,15 +10,7 @@
 #include "common/thread_manager.h"
 #include "common/class_forward.h"
 
-#include "ardupilot_target_progess.h"
-
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_mission_item.h"
-
 #include "data_generic_command_item/command_item_components.h"
-
-#include "data_generic_mission_item_topic/mission_item_reached_topic.h"
 
 namespace ardupilot_vehicle{
 

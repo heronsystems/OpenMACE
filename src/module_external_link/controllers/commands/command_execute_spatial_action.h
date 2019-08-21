@@ -85,7 +85,7 @@ protected:
         std::cout << "!!!WARNING!!!: Broadcasting a command. Commands should be targeted" << std::endl;
 
         cmd = initializeSpatialAction();
-        cmd.action = (uint16_t)data.getSpatialCommand()->getCommandType();
+        cmd.action = (uint16_t)data.getSpatialAction()->getCommandType();
         cmd.target_system = 0;
         cmd.target_component = 0;
 
@@ -98,7 +98,7 @@ protected:
         queueObj = target;
 
         cmd = initializeSpatialAction();
-        cmd.action = static_cast<uint16_t>(data.getSpatialCommand()->getCommandType());
+        cmd.action = static_cast<uint16_t>(data.getSpatialAction()->getCommandType());
         cmd.target_system = static_cast<uint8_t>(target.MaceInstance);
         cmd.target_component = static_cast<uint8_t>(target.ModuleID);
 

@@ -1,30 +1,16 @@
 #ifndef STATE_FLIGHT_GUIDED_IDLE_H
 #define STATE_FLIGHT_GUIDED_IDLE_H
 
-#include <iostream>
+#include <mavlink.h>
 
-#include "data/timer.h"
+#include <iostream>
 
 #include "abstract_state_ardupilot.h"
 
-#include "../ardupilot_target_progess.h"
-
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_mission_item.h"
-
 #include "data_generic_command_item/command_item_components.h"
-
-#include "data_generic_mission_item_topic/mission_item_reached_topic.h"
-
 
 namespace ardupilot{
 namespace state{
-
-class State_FlightGuided_MissionItem;
-class State_FlightGuided_Queue;
-class State_FlightGuided_CarTarget;
-class State_FlightGuided_GeoTarget;
 
 class State_FlightGuided_Idle : public AbstractStateArdupilot
 {

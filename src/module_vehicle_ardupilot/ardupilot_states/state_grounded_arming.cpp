@@ -87,7 +87,7 @@ void State_GroundedArming::OnEnter()
             desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     });
 
-    controllerArm->setLambda_Shutdown([this, collection]()
+    controllerArm->setLambda_Shutdown([collection]()
     {
         auto ptr = collection->Remove("armController");
         delete ptr;

@@ -54,7 +54,7 @@ SOURCES += module_vehicle_ardupilot.cpp \
     guided_timeout_controller.cpp \
     ardupilot_states/state_flight_guided_target_geo.cpp \
     ardupilot_states/state_flight_guided_target_car.cpp \
-    ardupilot_states/state_flight_guided_mission_item.cpp
+    ardupilot_states/state_flight_guided_spatial_item.cpp
 
 HEADERS += module_vehicle_ardupilot.h\
         module_vehicle_ardupilot_global.h \
@@ -94,7 +94,7 @@ HEADERS += module_vehicle_ardupilot.h\
     guided_timeout_controller.h \
     ardupilot_states/state_flight_guided_target_geo.h \
     ardupilot_states/state_flight_guided_target_car.h \
-    ardupilot_states/state_flight_guided_mission_item.h
+    ardupilot_states/state_flight_guided_spatial_item.h
 
 
 INCLUDEPATH += $$PWD/../
@@ -102,8 +102,6 @@ INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../speedLog/
 
 # Unix lib Install
 unix:!symbian {

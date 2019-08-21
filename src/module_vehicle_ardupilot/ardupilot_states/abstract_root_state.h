@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <thread>
+#include <mavlink.h>
 
 #include "abstract_state_ardupilot.h"
 

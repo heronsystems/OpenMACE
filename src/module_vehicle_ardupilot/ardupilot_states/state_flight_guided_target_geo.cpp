@@ -50,16 +50,6 @@ hsm::Transition State_FlightGuided_GeoTarget::GetTransition()
             rtn = hsm::SiblingTransition<State_FlightGuided_Idle>(currentCommand);
             break;
         }
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
-        {
-            rtn = hsm::SiblingTransition<State_FlightGuided_CarTarget>(currentCommand);
-            break;
-        }
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM:
-        {
-            rtn = hsm::SiblingTransition<State_FlightGuided_MissionItem>(currentCommand);
-            break;
-        }
         default:
             std::cout<<"I dont know how we eneded up in this transition state from State_FlightGuided_Target."<<std::endl;
             break;
@@ -85,21 +75,6 @@ bool State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<AbstractC
         //The command is a target, we therefore have to figure out what type of target it is
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
 
-        mace::pose::Position* targetPosition = cmd->getDynamicTarget().getPosition();
-        if(targetPosition != nullptr)
-        {
-            /* Since the positional element within the command is not null, we have to make sure it
-             * is of the coordinate frame type that can be supported within this guided mode.
-             * If it is not, we will update the desired state for th state machine and switch.
-             */
-            if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
-            {
-                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
-                commandHandled = false;
-                break;
-            }
-        }
-
         constructAndSendTarget(cmd->getDynamicTarget());
 
         /*
@@ -115,11 +90,6 @@ bool State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<AbstractC
         }
         commandHandled = true;
         break;
-    }
-    case COMMANDTYPE::CI_ACT_MISSIONITEM:
-    {
-        this->currentCommand = command->getClone();
-        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM;
     }
     default:
         break;
@@ -171,6 +141,6 @@ void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractCommand
 } //end of namespace state
 
 #include "ardupilot_states/state_flight_guided_idle.h"
-#include "ardupilot_states/state_flight_guided_mission_item.h"
+#include "ardupilot_states/state_flight_guided_spatial_item.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
 #include "ardupilot_states/state_flight_guided_target_car.h"

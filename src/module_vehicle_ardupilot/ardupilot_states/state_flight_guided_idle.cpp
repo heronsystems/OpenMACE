@@ -36,21 +36,7 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM:
-        {
-            rtn = hsm::SiblingTransition<State_FlightGuided_MissionItem>(currentCommand);
-            break;
-        }
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
-        {
-            rtn = hsm::SiblingTransition<class State_FlightGuided_CarTarget>(currentCommand);
-            break;
-        }
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET:
-        {
-            rtn = hsm::SiblingTransition<class State_FlightGuided_GeoTarget>(currentCommand);
-            break;
-        }
+
         default:
             std::cout<<"I dont know how we eneded up in this transition state from State_FlightGuided_Idle."<<std::endl;
             break;
@@ -62,31 +48,7 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
 bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
-    {
-        this->currentCommand = command->getClone();
-        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_MISSIONITEM;
-        break;
-    }
-    case COMMANDTYPE::CI_ACT_TARGET:
-    {
-        this->currentCommand = command->getClone();
-        //The command is a target, we therefore have to figure out what type of target it is
-        command_target::DynamicTarget currentTarget = currentCommand->as<command_item::Action_DynamicTarget>()->getDynamicTarget();
-        mace::pose::Position* targetPosition = currentTarget.getPosition();
-        if(targetPosition != nullptr)
-        {
-            if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
-                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
-            else if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
-                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
-        }
-        else //everything else can technically be handled by the CARTESIAN based guided commands
-        {
-            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
-        }
-        break;
-    }
+
     default:
         break;
     }
@@ -99,6 +61,7 @@ void State_FlightGuided_Idle::Update()
 
 void State_FlightGuided_Idle::OnEnter()
 {
+    /*
 
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
@@ -130,6 +93,7 @@ void State_FlightGuided_Idle::OnEnter()
     msgInterval.setMessageInterval(500000);
     positionRequestController->Send(msgInterval,sender,target);
 
+    */
 }
 
 void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
@@ -140,7 +104,7 @@ void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem>
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "ardupilot_states/state_flight_guided_mission_item.h"
+#include "ardupilot_states/state_flight_guided_spatial_item.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
 #include "ardupilot_states/state_flight_guided_target_car.h"
 #include "ardupilot_states/state_flight_guided_target_geo.h"

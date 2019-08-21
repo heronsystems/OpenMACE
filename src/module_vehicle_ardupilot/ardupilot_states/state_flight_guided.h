@@ -1,6 +1,8 @@
 #ifndef STATE_FLIGHT_GUIDED_H
 #define STATE_FLIGHT_GUIDED_H
 
+#include <mavlink.h>
+
 #include <iostream>
 
 #include "data/timer.h"
@@ -9,10 +11,6 @@
 
 #include "../ardupilot_target_progess.h"
 #include "../guided_timeout_controller.h"
-
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_mission_item.h"
 
 #include "data_generic_command_item/command_item_components.h"
 
@@ -25,8 +23,9 @@ namespace state{
 
 class State_FlightGuided_Idle;
 class State_FlightGuided_Queue;
-class State_FlightGuided_Target;
-class State_FlightGuided_MissionItem;
+class State_FlightGuided_SpatialItem;
+class State_FlightGuided_CarTarget;
+class State_FlightGuided_GeoTarget;
 
 class State_FlightGuided : public AbstractStateArdupilot
 {

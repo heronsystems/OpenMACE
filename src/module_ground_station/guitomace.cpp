@@ -196,7 +196,7 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
                                                vehicleCommand.value("lon").toDouble(),
                                                10.0);
     spatialAction->setPosition(&goPosition);
-    cmdGoTo.setSpatialCommand(spatialAction);
+    cmdGoTo.setSpatialAction(spatialAction);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
         ptr->Event_IssueCommandGoTo(m_parent, cmdGoTo);
@@ -233,34 +233,6 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonObject &jsonObj)
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
         ptr->Event_IssueCommandTakeoff(m_parent, newTakeoff);
     });
-
-    /*
-    std::shared_ptr<Data::NamedTopicComponentDataObject> data;
-    if(latLonFlag) {
-        data = std::make_shared<Data::TopicComponents::PositionGlobal>(
-                    position.value("alt").toDouble(),
-                    Data::ReferenceAltitude::REF_ALT_MSL,
-                    position.value("lat").toDouble(),
-                    position.value("lng").toDouble(),
-                    Data::ReferenceGeoCoords::REF_GEO_DEG;
-                );
-    }
-    else {
-        data = std::make_shared<Data::TopicComponents::Altitude>(
-                    position.value("alt").toDouble(),
-                    Data::ReferenceAltitude::REF_ALT_MSL
-                );
-    }
-
-    MaceCore::TopicDatagram topicDatagram;
-    m_VehicleTopics->m_CommandTakeoff.SetComponent(data, topicDatagram);
-    MaceCore::ModuleCharacteristic target;
-    target.ID = vehicleID;
-    target.Class = MaceCore::ModuleClasses::VEHICLE_COMMS;
-    m_parent->NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
-        ptr->NewTopicDataValues(this, m_VehicleDataTopic.Name(), systemID, MaceCore::TIME(), topicDatagram);
-    });
-    */
 }
 
 //!
@@ -365,9 +337,9 @@ void GUItoMACE::testFunction2(const int &vehicleID)
     newTarget.setPosition(&newPosition);
 
     mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
-    currentVelocityTarget.setXVelocity(5.0);
-    currentVelocityTarget.setYVelocity(0.0);
-    currentVelocityTarget.setZVelocity(0.0);
+    currentVelocityTarget.setXVelocity(-2.0);
+    currentVelocityTarget.setYVelocity(-2.0);
+    currentVelocityTarget.setZVelocity(1.0);
     newTarget.setVelocity(&currentVelocityTarget);
 
     newCommand.setDynamicTarget(newTarget);

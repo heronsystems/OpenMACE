@@ -1,7 +1,8 @@
-#ifndef STATE_FLIGHT_GUIDED_GOTO_H
-#define STATE_FLIGHT_GUIDED_GOTO_H
+#ifndef STATE_FLIGHT_GUIDED_SPATIAL_ITEM_H
+#define STATE_FLIGHT_GUIDED_SPATIAL_ITEM_H
 
 #include <iostream>
+#include <mavlink.h>
 
 #include "data/timer.h"
 
@@ -22,14 +23,11 @@ namespace ardupilot{
 namespace state{
 
 class State_FlightGuided_Idle;
-class State_FlightGuided_Queue;
-class State_FlightGuided_CarTarget;
-class State_FlightGuided_GeoTarget;
 
-class State_FlightGuided_MissionItem : public AbstractStateArdupilot
+class State_FlightGuided_SpatialItem : public AbstractStateArdupilot
 {
 public:
-    State_FlightGuided_MissionItem();
+    State_FlightGuided_SpatialItem();
 
     void OnExit() override;
 
@@ -51,6 +49,9 @@ public:
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 
 private:
+    void processSpatialWaypoint();
+
+private:
     bool commandAccepted = false;
     ArdupilotTargetProgess guidedProgress;
 };
@@ -58,4 +59,4 @@ private:
 } //end of namespace state
 } //end of namespace arudpilot
 
-#endif // STATE_FLIGHT_GUIDED_GOTO_H
+#endif // STATE_FLIGHT_GUIDED_SPATIAL_ITEM_H

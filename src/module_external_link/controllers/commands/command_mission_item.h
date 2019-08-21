@@ -8,7 +8,7 @@
 namespace ExternalLink {
 
 
-class CommandMissionItem : public Controller_GenericShortCommand<command_item::ActionMissionCommand, (uint8_t)command_item::COMMANDTYPE::CI_ACT_MISSIONITEM>
+class CommandMissionItem : public Controller_GenericShortCommand<command_item::ActionMissionCommand, (uint8_t)command_item::COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM>
 {
 public:
 
