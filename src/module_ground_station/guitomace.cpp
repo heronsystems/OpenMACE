@@ -337,7 +337,7 @@ void GUItoMACE::testFunction1(const int &vehicleID)
 {
 
     command_item::Action_DynamicTarget newCommand;
-    newCommand.setTargetSystem(1);
+    newCommand.setTargetSystem(vehicleID);
     newCommand.setOriginatingSystem(255);
     command_target::DynamicTarget newTarget;
     mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
@@ -350,52 +350,29 @@ void GUItoMACE::testFunction1(const int &vehicleID)
         ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
     });
 
-//    mLogs->debug("Module Ground Station saw a request on test function 1.");
-
-//    MissionItem::MissionList missionList;
-//    missionList.setMissionTXState(MissionItem::MISSIONSTATE::PROPOSED);
-//    missionList.setMissionType(MissionItem::MISSIONTYPE::GUIDED);
-//    missionList.setCreatorID(254);
-//    missionList.setVehicleID(vehicleID);
-//    missionList.initializeQueue(2);
-
-//    std::shared_ptr<command_item::SpatialWaypoint> newWP = std::make_shared<command_item::SpatialWaypoint>();
-//    newWP->position->setPosition3D(14,7.5,20.0);
-//    newWP->setTargetSystem(vehicleID);
-//    newWP->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
-
-//    std::shared_ptr<command_item::SpatialWaypoint> newWP1 = std::make_shared<command_item::SpatialWaypoint>();
-//    newWP1->position->setPosition3D(0,0,10.0);
-//    newWP1->setTargetSystem(vehicleID);
-//    newWP1->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
-
-//    std::shared_ptr<CommandItem::SpatialWaypoint> newWP1 = std::make_shared<CommandItem::SpatialWaypoint>();
-//    newWP1->position->setPosition3D(37.8907477,-76.8152985,65.0);
-//    newWP1->setTargetSystem(vehicleID);
-
-//    std::shared_ptr<CommandItem::SpatialWaypoint> newWP2 = std::make_shared<CommandItem::SpatialWaypoint>();
-//    newWP2->position->setPosition3D(37.8904852,-76.8152341,75.0);
-//    newWP2->setTargetSystem(vehicleID);
-
-//    std::shared_ptr<CommandItem::SpatialWaypoint> newWP3 = std::make_shared<CommandItem::SpatialWaypoint>();
-//    newWP3->position->setPosition3D(37.8905170,-76.8144804,85.0);
-//    newWP3->setTargetSystem(vehicleID);
-
-//    missionList.replaceMissionItemAtIndex(newWP,0);
-//    missionList.replaceMissionItemAtIndex(newWP1,1);
-//    missionList.replaceMissionItemAtIndex(newWP2,2);
-//    missionList.replaceMissionItemAtIndex(newWP3,3);
-
-//    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-//        ptr->GSEvent_UploadMission(this, missionList);
-//    });
-
 }
 
 void GUItoMACE::testFunction2(const int &vehicleID)
 {
+    command_item::Action_DynamicTarget newCommand;
+    newCommand.setTargetSystem(vehicleID);
+    newCommand.setOriginatingSystem(255);
+    command_target::DynamicTarget newTarget;
+
+    mace::pose::GeodeticPosition_3D newPosition(-35.3616686, 149.1638553, 15);
+    newPosition.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT);
+    newPosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+    newTarget.setPosition(&newPosition);
+
+    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+    currentVelocityTarget.setXVelocity(5.0);
+    currentVelocityTarget.setYVelocity(0.0);
+    currentVelocityTarget.setZVelocity(0.0);
+    newTarget.setVelocity(&currentVelocityTarget);
+
+    newCommand.setDynamicTarget(newTarget);
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->RequestDummyFunction(this, vehicleID);
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
     });
 }
 

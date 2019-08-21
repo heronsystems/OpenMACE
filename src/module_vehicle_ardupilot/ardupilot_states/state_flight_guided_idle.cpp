@@ -72,7 +72,8 @@ bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractComman
     {
         this->currentCommand = command->getClone();
         //The command is a target, we therefore have to figure out what type of target it is
-        const mace::pose::Position* targetPosition = command->as<command_item::Action_DynamicTarget>()->getDynamicTarget().getPosition();
+        command_target::DynamicTarget currentTarget = currentCommand->as<command_item::Action_DynamicTarget>()->getDynamicTarget();
+        mace::pose::Position* targetPosition = currentTarget.getPosition();
         if(targetPosition != nullptr)
         {
             if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)

@@ -83,9 +83,9 @@ bool State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<AbstractC
         this->currentCommand = command->getClone();
 
         //The command is a target, we therefore have to figure out what type of target it is
-        const command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
+        command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
 
-        const mace::pose::Position* targetPosition = cmd->getDynamicTarget().getPosition();
+        mace::pose::Position* targetPosition = cmd->getDynamicTarget().getPosition();
         if(targetPosition != nullptr)
         {
             /* Since the positional element within the command is not null, we have to make sure it
