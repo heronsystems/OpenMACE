@@ -108,10 +108,20 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
                 }
                 else
                     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
-
+            }
+            else
+            {
+                if(this->IsInState<State_FlightGuided_CarTarget>())
+                {
+                    ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                    currentInnerState->handleCommand(command);
+                }
+                else
+                    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
             }
         }
-        else {
+        else
+        {
             if(this->IsInState<State_FlightGuided_CarTarget>())
             {
                 ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
@@ -120,6 +130,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
             else
                 desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
         }
+
         break;
     }
 

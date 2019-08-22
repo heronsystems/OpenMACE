@@ -38,7 +38,6 @@ namespace MAVLINKVehicleControllers {
 template<>
 void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillTargetItem(const command_item::Action_DynamicTarget &command, mavlink_set_position_target_local_ned_t &mavlinkItem)
 {
-    double power = pow(10,7);
     uint16_t bitArray = 65535;
     command_target::DynamicTarget currentTarget = command.getDynamicTarget();
     mavlinkItem.coordinate_frame = MAV_FRAME_LOCAL_NED;
@@ -50,9 +49,9 @@ void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillT
         {
             mace::pose::CartesianPosition_2D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::CartesianPosition_2D>();
             if(castPosition->hasXBeenSet())
-                mavlinkItem.x = static_cast<float>(castPosition->getYPosition() * power); bitArray = (bitArray & (~1));
+                mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
             if(castPosition->hasYBeenSet())
-                mavlinkItem.y = static_cast<float>(castPosition->getXPosition() * power); bitArray = (bitArray & (~2));
+                mavlinkItem.y = static_cast<float>(castPosition->getYPosition()); bitArray = (bitArray & (~2));
         }
         else if(currentTarget.getPosition()->is3D())
         {

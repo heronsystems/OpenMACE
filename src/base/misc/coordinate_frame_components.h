@@ -15,8 +15,8 @@ namespace mace {
 enum class CoordinateFrameTypes : uint8_t{
     GLOBAL_FRAMES,
     LOCAL_FRAMES,
-    CF_NOT_RELEVANT,
-    CF_UNKNOWN
+    CF_NOT_RELEVANT = 100,
+    CF_UNKNOWN = 101
 
 };
 

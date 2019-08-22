@@ -11,6 +11,8 @@ namespace pose {
 //!
 void DynamicsAid::GlobalPositionToLocal(const Abstract_GeodeticPosition* origin, const Abstract_GeodeticPosition* refPosition, Abstract_CartesianPosition* targetPosition)
 {
+    targetPosition->setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_ENU);
+
     //First handle the translational components of the position object
     double distance = origin->distanceBetween2D(refPosition);
     double bearing = origin->compassBearingTo(refPosition);
@@ -23,7 +25,7 @@ void DynamicsAid::GlobalPositionToLocal(const Abstract_GeodeticPosition* origin,
         if(refPosition->is3D() && origin->is3D())
         {
             double deltaAltitude = origin->positionAs<GeodeticPosition_3D>()->deltaAltitude(refPosition->positionAs<GeodeticPosition_3D>());
-            targetObj->setZPosition(-deltaAltitude);
+            targetObj->setZPosition(deltaAltitude);
         }
         else if(refPosition->is3D())
         {
@@ -41,6 +43,8 @@ void DynamicsAid::GlobalPositionToLocal(const Abstract_GeodeticPosition* origin,
 //!
 void DynamicsAid::LocalPositionToGlobal(const Abstract_GeodeticPosition* origin, const Abstract_CartesianPosition* refPosition, Abstract_GeodeticPosition* targetPosition)
 {
+    targetPosition->setCoordinateFrame(origin->getGeodeticCoordinateFrame());
+
     if(targetPosition->is3D())
     {
         if(refPosition->is3D() && origin->is3D())

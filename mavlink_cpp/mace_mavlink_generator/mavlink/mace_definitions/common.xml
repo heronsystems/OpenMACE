@@ -500,42 +500,56 @@
       </entry>
     </enum>
     <enum name="UXV_FRAME">
-      <entry value="0" name="UXV_FRAME_GLOBAL">
+      <entry value="0" name="UXV_FRAME_GLOBAL_UNKNOWN">
         <description>Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL)</description>
       </entry>
-      <entry value="1" name="UXV_FRAME_LOCAL_NED">
-        <description>Local coordinate frame, Z-up (x: north, y: east, z: down).</description>
+      <entry value="1" name="UXV_FRAME_GLOBAL_AMSL">
+        <description>Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL)</description>
       </entry>
-      <entry value="2" name="UXV_FRAME_MISSION">
-        <description>NOT a coordinate frame, indicates a mission command.</description>
+      <entry value="2" name="UXV_FRAME_GLOBAL_AMSL_INT">
+        <description>Global coordinate frame, WGS84 coordinate system. First value / x: latitude in degrees*1.0e-7, second value / y: longitude in degrees*1.0e-7, third value / z: positive altitude over mean sea level (MSL)</description>
       </entry>
       <entry value="3" name="UXV_FRAME_GLOBAL_RELATIVE_ALT">
         <description>Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude, second value / y: longitude, third value / z: positive altitude with 0 being at the altitude of the home location.</description>
       </entry>
-      <entry value="4" name="UXV_FRAME_LOCAL_ENU">
-        <description>Local coordinate frame, Z-down (x: east, y: north, z: up)</description>
-      </entry>
-      <entry value="5" name="UXV_FRAME_GLOBAL_INT">
-        <description>Global coordinate frame, WGS84 coordinate system. First value / x: latitude in degrees*1.0e-7, second value / y: longitude in degrees*1.0e-7, third value / z: positive altitude over mean sea level (MSL)</description>
-      </entry>
-      <entry value="6" name="UXV_FRAME_GLOBAL_RELATIVE_ALT_INT">
+      <entry value="4" name="UXV_FRAME_GLOBAL_RELATIVE_ALT_INT">
         <description>Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude with 0 being at the altitude of the home location.</description>
       </entry>
-      <entry value="7" name="UXV_FRAME_LOCAL_OFFSET_NED">
-        <description>Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position.</description>
-      </entry>
-      <entry value="8" name="UXV_FRAME_BODY_NED">
-        <description>Setpoint in body NED frame. This makes sense if all position control is externalized - e.g. useful to command 2 m/s^2 acceleration to the right.</description>
-      </entry>
-      <entry value="9" name="UXV_FRAME_BODY_OFFSET_NED">
-        <description>Offset in body NED frame. This makes sense if adding setpoints to the current flight path, to avoid an obstacle - e.g. useful to command 2 m/s^2 acceleration to the east.</description>
-      </entry>
-      <entry value="10" name="UXV_FRAME_GLOBAL_TERRAIN_ALT">
+      <entry value="5" name="UXV_FRAME_GLOBAL_TERRAIN_ALT">
         <description>Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees, second value / y: longitude in degrees, third value / z: positive altitude in meters with 0 being at ground level in terrain model.</description>
       </entry>
-      <entry value="11" name="UXV_FRAME_GLOBAL_TERRAIN_ALT_INT">
+      <entry value="6" name="UXV_FRAME_GLOBAL_TERRAIN_ALT_INT">
         <description>Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model.</description>
       </entry>
+
+      <entry value="10" name="UXV_FRAME_LOCAL_UNKNOWN">
+        <description>Local coordinate frame, Z-up (x: north, y: east, z: down).</description>
+      </entry>
+      <entry value="11" name="UXV_FRAME_LOCAL_NED">
+        <description>Local coordinate frame, Z-up (x: north, y: east, z: down).</description>
+      </entry>
+      <entry value="12" name="UXV_FRAME_LOCAL_ENU">
+        <description>Local coordinate frame, Z-down (x: east, y: north, z: up)</description>
+      </entry>
+      <entry value="13" name="UXV_FRAME_LOCAL_OFFSET_NED">
+        <description>Position relative to the current vehicle position. Velocity is relative to the origin NED. </description>
+      </entry>
+      <entry value="14" name="UXV_FRAME_LOCAL_OFFSET_ENU">
+        <description>Position relative to the current vehicle position. Velocity is relative to the origin NED. </description>
+      </entry>
+      <entry value="15" name="UXV_FRAME_BODY_NED">
+        <description>Positions are relative to the origin. Velocities are relative to the current vehicle heading.</description>
+      </entry>
+      <entry value="16" name="UXV_FRAME_BODY_ENU">
+        <description>Positions are relative to the origin. Velocities are relative to the current vehicle heading.</description>
+      </entry>
+      <entry value="17" name="UXV_FRAME_BODY_OFFSET_NED">
+        <description>Positions and velocities are relative to the vehicles current position and heading.</description>
+      </entry>
+      <entry value="18" name="UXV_FRAME_BODY_OFFSET_ENU">
+        <description>Positions and velocities are relative to the vehicles current position and heading.</description>
+      </entry>
+
     </enum>
     <enum name="MAVLINK_DATA_STREAM_TYPE">
       <entry name="MAVLINK_DATA_STREAM_IMG_JPEG">

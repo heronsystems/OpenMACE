@@ -100,7 +100,7 @@ bool MATLABListener::commandWaypoint(mace_matlab::CMD_WPT::Request  &req,
     targetWaypoint.setPosition(&targetPosition);
 
     AbstractSpatialActionPtr newPtr = std::make_shared<command_item::SpatialWaypoint>(targetWaypoint);
-    goToCommand.setSpatialCommand(newPtr);
+    goToCommand.setSpatialAction(newPtr);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
         ptr->Event_IssueCommandGoTo(m_parent, goToCommand);
