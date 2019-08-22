@@ -156,7 +156,7 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
     {
     case CoordinateSystemTypes::GEODETIC:
     {
-        const mace::pose::Abstract_GeodeticPosition* cmdPosition = cmd->getSpatialAction()->getPosition()->positionAs<mace::pose::Abstract_GeodeticPosition>();
+        const mace::pose::Abstract_GeodeticPosition* cmdPosition = spatialCommand->getPosition()->positionAs<mace::pose::Abstract_GeodeticPosition>();
 
         Owner().state->vehicleGlobalPosition.AddNotifier(this, [this, cmdPosition]
         {
@@ -198,7 +198,9 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
 
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
-    dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Send(*spatialCommand->as<command_item::SpatialWaypoint>(), sender, target);
+    command_item::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
+    waypoint.setPosition(spatialCommand->getPosition());
+    dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
 }
 
 } //end of namespace ardupilot

@@ -5,7 +5,7 @@ namespace command_item {
 
 COMMANDTYPE ActionMissionCommand::getCommandType() const
 {
-    return COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM;
+    return COMMANDTYPE::CI_ACT_MISSIONCMD;
 }
 
 std::string ActionMissionCommand::getDescription() const
