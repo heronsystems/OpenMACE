@@ -26,7 +26,8 @@ SOURCES += module_vehicle_mavlink.cpp \
     controllers/controller_guided_mission_item.cpp \
     vehicle_object/mission_data_mavlink.cpp \
     controllers/controller_guided_target_item_local.cpp \
-    controllers/controller_guided_target_item_global.cpp
+    controllers/controller_guided_target_item_global.cpp \
+    controllers/controller_gps_global_origin.cpp
 
 HEADERS += module_vehicle_mavlink.h\
         module_vehicle_mavlink_global.h \
@@ -48,7 +49,8 @@ HEADERS += module_vehicle_mavlink.h\
     controllers/controller_guided_target_item_global.h \
     controllers/common.h \
     controllers/commands/command_msg_interval.h \
-    mavlink_coordinate_frames.h
+    mavlink_coordinate_frames.h \
+    controllers/controller_gps_global_origin.h
 
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega

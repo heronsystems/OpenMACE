@@ -39,8 +39,8 @@ datumRequest = rosmessage(datumClient);
 datumRequest.Timestamp = rostime('now');
 datumRequest.VehicleID = 0; % Not necessary for this 
 datumRequest.CommandID = 0; % TODO: Set command ID enum in MACE
-datumRequest.LatitudeDeg = 37.889246;
-datumRequest.LongitudeDeg = -76.814084;
+datumRequest.LatitudeDeg = -35.3632621765137;
+datumRequest.LongitudeDeg = 149.165237426758;
 
 % Setup Arm vehicle command:
 armRequest = rosmessage(armClient);
@@ -62,11 +62,14 @@ takeoffRequest.TakeoffAlt = 10; % Takeoff altitude
 dynamicTargetRequest = rosmessage(dynamicTargetClient);
 dynamicTargetRequest.Timestamp = rostime('now');
 dynamicTargetRequest.VehicleID = 1; % Vehicle ID
-dynamicTargetRequest.CoordinateFrame = 2;
-dynamicTargetRequest.XV = 5;
+dynamicTargetRequest.CoordinateFrame = 11;
+dynamicTargetRequest.XP = -100;
+dynamicTargetRequest.YP = 0;
+dynamicTargetRequest.ZP = -20;
+dynamicTargetRequest.XV = -10;
 dynamicTargetRequest.YV = 0;
-dynamicTargetRequest.ZV = 0;
-dynamicTargetRequest.Bitmask = 65479;
+dynamicTargetRequest.ZV = -2;
+dynamicTargetRequest.Bitmask = 65472; %65528 is for position, 65479 is for velocity, 65472 is position and velocity 
 
 % Setup Waypoint command :
 waypointRequest = rosmessage(waypointClient);
@@ -96,24 +99,24 @@ datumResponse = call(datumClient, datumRequest, 'Timeout', 5);
 % For this test, just wait 5 seconds before issuing arm command:
 pause(5);
 
-disp('Call arm command');
-armResponse = call(armClient, armRequest, 'Timeout', 5);
+%disp('Call arm command');
+%armResponse = call(armClient, armRequest, 'Timeout', 5);
 
 % For this test, just wait 3 seconds before issuing takeoff command:
-pause(2);
+%pause(2);
 
-disp('Call takeoff command');
-takeoffResponse = call(takeoffClient, takeoffRequest, 'Timeout', 10);
+%disp('Call takeoff command');
+%takeoffResponse = call(takeoffClient, takeoffRequest, 'Timeout', 10);
 
 % For this test, just wait 10 seconds before issuing waypoint command (giving vehicle time to reach altitude):
-pause(10);
+%pause(10);
 
 disp('Call dynamic target command');
 %waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
-waypointResponse = call(dynamicTargetClient, dynamicTargetRequest, 'Timeout', 5);
+%waypointResponse = call(dynamicTargetClient, dynamicTargetRequest, 'Timeout', 5);
 % For this test, just wait 20 seconds before issuing land command (giving vehicle time to reach waypoint):
-pause(20);
+%pause(20);
 
-disp('Call land command');
-landResponse = call(landClient, landRequest, 'Timeout', 5);
+%disp('Call land command');
+%landResponse = call(landClient, landRequest, 'Timeout', 5);
 
