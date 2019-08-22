@@ -21,7 +21,7 @@ struct PARAM_VALUE : mavlink::Message {
 
     std::array<char, 16> param_id; /*< Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string */
     float param_value; /*< Onboard parameter value */
-    uint8_t param_type; /*< Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types. */
+    uint8_t param_type; /*< Onboard parameter type: see the UXV_PARAM_TYPE enum for supported data types. */
     uint16_t param_count; /*< Total number of onboard parameters */
     uint16_t param_index; /*< Index of this onboard parameter */
 

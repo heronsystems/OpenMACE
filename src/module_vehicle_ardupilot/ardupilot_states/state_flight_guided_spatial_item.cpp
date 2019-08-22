@@ -39,13 +39,8 @@ hsm::Transition State_FlightGuided_SpatialItem::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE:
-        {
-            rtn = hsm::SiblingTransition<State_FlightGuided_Idle>();
-            break;
-        }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED_SPATIALITEM."<<std::endl;
             break;
         }
     }
@@ -69,7 +64,6 @@ bool State_FlightGuided_SpatialItem::handleCommand(const std::shared_ptr<Abstrac
              */
         if(cmd->getSpatialAction()->getCommandType() != COMMANDTYPE::CI_NAV_WAYPOINT)
         {
-            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
             break;
         }
         processSpatialWaypoint();
@@ -93,7 +87,6 @@ void State_FlightGuided_SpatialItem::OnEnter()
      * or the command is null, or of not the correct type. We therefore will
      * return to the idle state of the guided flight mode.
      */
-    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
 void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
@@ -166,8 +159,6 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
                 double distance = fabs(currentPosition.distanceTo(cmdPosition));
 
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                if(guidedState == Data::ControllerState::ACHIEVED)
-                    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
             }
         });
         break;
@@ -184,8 +175,6 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
                 double distance = fabs(currentPosition.distanceTo(cmdPosition));
 
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                if(guidedState == Data::ControllerState::ACHIEVED)
-                    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
             }
         });
         break;
@@ -205,8 +194,3 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
 
 } //end of namespace ardupilot
 } //end of namespace state
-
-#include "ardupilot_states/state_flight_guided_idle.h"
-#include "ardupilot_states/state_flight_guided_queue.h"
-#include "ardupilot_states/state_flight_guided_target_car.h"
-#include "ardupilot_states/state_flight_guided_target_geo.h"

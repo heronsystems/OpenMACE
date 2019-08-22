@@ -9,7 +9,7 @@ namespace msg {
 /**
  * @brief PARAM_SET message
  *
- * Set a parameter value TEMPORARILY to RAM. It will be reset to default on system reboot. Send the ACTION MAV_ACTION_STORAGE_WRITE to PERMANENTLY write the RAM contents to EEPROM. IMPORTANT: The receiving component should acknowledge the new parameter value by sending a param_value message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message.
+ * Set a parameter value TEMPORARILY to RAM. It will be reset to default on system reboot. Send the ACTION UXV_ACTION_STORAGE_WRITE to PERMANENTLY write the RAM contents to EEPROM. IMPORTANT: The receiving component should acknowledge the new parameter value by sending a param_value message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message.
  */
 struct PARAM_SET : mavlink::Message {
     static constexpr msgid_t MSG_ID = 12;
@@ -23,7 +23,7 @@ struct PARAM_SET : mavlink::Message {
     uint8_t target_component; /*< Component ID */
     std::array<char, 16> param_id; /*< Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string */
     float param_value; /*< Onboard parameter value */
-    uint8_t param_type; /*< Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types. */
+    uint8_t param_type; /*< Onboard parameter type: see the UXV_PARAM_TYPE enum for supported data types. */
 
 
     inline std::string get_name(void) const override

@@ -22,8 +22,6 @@
 namespace ardupilot{
 namespace state{
 
-class State_FlightGuided_Idle;
-
 class State_FlightGuided_SpatialItem : public AbstractStateArdupilot
 {
 public:

@@ -19,9 +19,9 @@ struct HEARTBEAT : mavlink::Message {
     static constexpr auto NAME = "HEARTBEAT";
 
 
-    uint8_t protocol; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM) */
-    uint8_t type; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM) */
-    uint8_t autopilot; /*< Autopilot type / class. defined in MAV_AUTOPILOT ENUM */
+    uint8_t protocol; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM) */
+    uint8_t type; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM) */
+    uint8_t autopilot; /*< Autopilot type / class. defined in UXV_AUTOPILOT ENUM */
     uint8_t mission_state; /*< Defines the current state of the vehicle mission. Useful for determing the next state of the vehicle per mission state. */
     uint8_t mace_companion; /*< Boolean describing whether(T=1) or not(F=0) the vehicle is MACE companion equipped. */
     uint8_t mavlink_version; /*< MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version */

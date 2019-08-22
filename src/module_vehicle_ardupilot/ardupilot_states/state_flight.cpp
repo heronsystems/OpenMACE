@@ -188,6 +188,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
 
         controllerRTL->Send(*cmd,sender,target);
         collection->Insert("RTLController",controllerRTL);
+        break;
     }
     case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
     {

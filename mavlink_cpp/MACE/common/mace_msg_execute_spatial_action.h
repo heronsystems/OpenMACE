@@ -5,18 +5,18 @@
 
 MACEPACKED(
 typedef struct __mace_execute_spatial_action_t {
- float param1; /*< Parameter 1, as defined by MAV_CMD enum.*/
- float param2; /*< Parameter 2, as defined by MAV_CMD enum.*/
- float param3; /*< Parameter 3, as defined by MAV_CMD enum.*/
- float param4; /*< Parameter 4, as defined by MAV_CMD enum.*/
- float param5; /*< Parameter 5, as defined by MAV_CMD enum.*/
- float param6; /*< Parameter 6, as defined by MAV_CMD enum.*/
- float param7; /*< Parameter 7, as defined by MAV_CMD enum.*/
- uint16_t action; /*< Command ID, as defined by MAV_CMD enum.*/
+ float param1; /*< Parameter 1, as defined by UXV_CMD enum.*/
+ float param2; /*< Parameter 2, as defined by UXV_CMD enum.*/
+ float param3; /*< Parameter 3, as defined by UXV_CMD enum.*/
+ float param4; /*< Parameter 4, as defined by UXV_CMD enum.*/
+ float param5; /*< Parameter 5, as defined by UXV_CMD enum.*/
+ float param6; /*< Parameter 6, as defined by UXV_CMD enum.*/
+ float param7; /*< Parameter 7, as defined by UXV_CMD enum.*/
+ uint16_t action; /*< Command ID, as defined by UXV_CMD enum.*/
  uint16_t mask; /*< Mask indicating the invalid dimensions of the position object. 1's indicate a dimesion is invalid.*/
  uint8_t target_system; /*< System which should execute the command*/
  uint8_t target_component; /*< Component which should execute the command, 0 for all components*/
- uint8_t frame; /*< The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h*/
+ uint8_t frame; /*< The coordinate system of the MISSION. see UXV_FRAME in mavlink_types.h*/
  uint8_t dimension; /*< How many dimensions the position object truly is captured in.*/
 }) mace_execute_spatial_action_t;
 
@@ -79,17 +79,17 @@ typedef struct __mace_execute_spatial_action_t {
  *
  * @param target_system System which should execute the command
  * @param target_component Component which should execute the command, 0 for all components
- * @param action Command ID, as defined by MAV_CMD enum.
- * @param frame The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h
+ * @param action Command ID, as defined by UXV_CMD enum.
+ * @param frame The coordinate system of the MISSION. see UXV_FRAME in mavlink_types.h
  * @param dimension How many dimensions the position object truly is captured in.
  * @param mask Mask indicating the invalid dimensions of the position object. 1's indicate a dimesion is invalid.
- * @param param1 Parameter 1, as defined by MAV_CMD enum.
- * @param param2 Parameter 2, as defined by MAV_CMD enum.
- * @param param3 Parameter 3, as defined by MAV_CMD enum.
- * @param param4 Parameter 4, as defined by MAV_CMD enum.
- * @param param5 Parameter 5, as defined by MAV_CMD enum.
- * @param param6 Parameter 6, as defined by MAV_CMD enum.
- * @param param7 Parameter 7, as defined by MAV_CMD enum.
+ * @param param1 Parameter 1, as defined by UXV_CMD enum.
+ * @param param2 Parameter 2, as defined by UXV_CMD enum.
+ * @param param3 Parameter 3, as defined by UXV_CMD enum.
+ * @param param4 Parameter 4, as defined by UXV_CMD enum.
+ * @param param5 Parameter 5, as defined by UXV_CMD enum.
+ * @param param6 Parameter 6, as defined by UXV_CMD enum.
+ * @param param7 Parameter 7, as defined by UXV_CMD enum.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_execute_spatial_action_pack(uint8_t system_id, uint8_t component_id, mace_message_t* msg,
@@ -143,17 +143,17 @@ static inline uint16_t mace_msg_execute_spatial_action_pack(uint8_t system_id, u
  * @param msg The MAVLink message to compress the data into
  * @param target_system System which should execute the command
  * @param target_component Component which should execute the command, 0 for all components
- * @param action Command ID, as defined by MAV_CMD enum.
- * @param frame The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h
+ * @param action Command ID, as defined by UXV_CMD enum.
+ * @param frame The coordinate system of the MISSION. see UXV_FRAME in mavlink_types.h
  * @param dimension How many dimensions the position object truly is captured in.
  * @param mask Mask indicating the invalid dimensions of the position object. 1's indicate a dimesion is invalid.
- * @param param1 Parameter 1, as defined by MAV_CMD enum.
- * @param param2 Parameter 2, as defined by MAV_CMD enum.
- * @param param3 Parameter 3, as defined by MAV_CMD enum.
- * @param param4 Parameter 4, as defined by MAV_CMD enum.
- * @param param5 Parameter 5, as defined by MAV_CMD enum.
- * @param param6 Parameter 6, as defined by MAV_CMD enum.
- * @param param7 Parameter 7, as defined by MAV_CMD enum.
+ * @param param1 Parameter 1, as defined by UXV_CMD enum.
+ * @param param2 Parameter 2, as defined by UXV_CMD enum.
+ * @param param3 Parameter 3, as defined by UXV_CMD enum.
+ * @param param4 Parameter 4, as defined by UXV_CMD enum.
+ * @param param5 Parameter 5, as defined by UXV_CMD enum.
+ * @param param6 Parameter 6, as defined by UXV_CMD enum.
+ * @param param7 Parameter 7, as defined by UXV_CMD enum.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_execute_spatial_action_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -233,17 +233,17 @@ static inline uint16_t mace_msg_execute_spatial_action_encode_chan(uint8_t syste
  *
  * @param target_system System which should execute the command
  * @param target_component Component which should execute the command, 0 for all components
- * @param action Command ID, as defined by MAV_CMD enum.
- * @param frame The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h
+ * @param action Command ID, as defined by UXV_CMD enum.
+ * @param frame The coordinate system of the MISSION. see UXV_FRAME in mavlink_types.h
  * @param dimension How many dimensions the position object truly is captured in.
  * @param mask Mask indicating the invalid dimensions of the position object. 1's indicate a dimesion is invalid.
- * @param param1 Parameter 1, as defined by MAV_CMD enum.
- * @param param2 Parameter 2, as defined by MAV_CMD enum.
- * @param param3 Parameter 3, as defined by MAV_CMD enum.
- * @param param4 Parameter 4, as defined by MAV_CMD enum.
- * @param param5 Parameter 5, as defined by MAV_CMD enum.
- * @param param6 Parameter 6, as defined by MAV_CMD enum.
- * @param param7 Parameter 7, as defined by MAV_CMD enum.
+ * @param param1 Parameter 1, as defined by UXV_CMD enum.
+ * @param param2 Parameter 2, as defined by UXV_CMD enum.
+ * @param param3 Parameter 3, as defined by UXV_CMD enum.
+ * @param param4 Parameter 4, as defined by UXV_CMD enum.
+ * @param param5 Parameter 5, as defined by UXV_CMD enum.
+ * @param param6 Parameter 6, as defined by UXV_CMD enum.
+ * @param param7 Parameter 7, as defined by UXV_CMD enum.
  */
 #ifdef MACE_USE_CONVENIENCE_FUNCTIONS
 
@@ -376,7 +376,7 @@ static inline uint8_t mace_msg_execute_spatial_action_get_target_component(const
 /**
  * @brief Get field action from execute_spatial_action message
  *
- * @return Command ID, as defined by MAV_CMD enum.
+ * @return Command ID, as defined by UXV_CMD enum.
  */
 static inline uint16_t mace_msg_execute_spatial_action_get_action(const mace_message_t* msg)
 {
@@ -386,7 +386,7 @@ static inline uint16_t mace_msg_execute_spatial_action_get_action(const mace_mes
 /**
  * @brief Get field frame from execute_spatial_action message
  *
- * @return The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h
+ * @return The coordinate system of the MISSION. see UXV_FRAME in mavlink_types.h
  */
 static inline uint8_t mace_msg_execute_spatial_action_get_frame(const mace_message_t* msg)
 {
@@ -416,7 +416,7 @@ static inline uint16_t mace_msg_execute_spatial_action_get_mask(const mace_messa
 /**
  * @brief Get field param1 from execute_spatial_action message
  *
- * @return Parameter 1, as defined by MAV_CMD enum.
+ * @return Parameter 1, as defined by UXV_CMD enum.
  */
 static inline float mace_msg_execute_spatial_action_get_param1(const mace_message_t* msg)
 {
@@ -426,7 +426,7 @@ static inline float mace_msg_execute_spatial_action_get_param1(const mace_messag
 /**
  * @brief Get field param2 from execute_spatial_action message
  *
- * @return Parameter 2, as defined by MAV_CMD enum.
+ * @return Parameter 2, as defined by UXV_CMD enum.
  */
 static inline float mace_msg_execute_spatial_action_get_param2(const mace_message_t* msg)
 {
@@ -436,7 +436,7 @@ static inline float mace_msg_execute_spatial_action_get_param2(const mace_messag
 /**
  * @brief Get field param3 from execute_spatial_action message
  *
- * @return Parameter 3, as defined by MAV_CMD enum.
+ * @return Parameter 3, as defined by UXV_CMD enum.
  */
 static inline float mace_msg_execute_spatial_action_get_param3(const mace_message_t* msg)
 {
@@ -446,7 +446,7 @@ static inline float mace_msg_execute_spatial_action_get_param3(const mace_messag
 /**
  * @brief Get field param4 from execute_spatial_action message
  *
- * @return Parameter 4, as defined by MAV_CMD enum.
+ * @return Parameter 4, as defined by UXV_CMD enum.
  */
 static inline float mace_msg_execute_spatial_action_get_param4(const mace_message_t* msg)
 {
@@ -456,7 +456,7 @@ static inline float mace_msg_execute_spatial_action_get_param4(const mace_messag
 /**
  * @brief Get field param5 from execute_spatial_action message
  *
- * @return Parameter 5, as defined by MAV_CMD enum.
+ * @return Parameter 5, as defined by UXV_CMD enum.
  */
 static inline float mace_msg_execute_spatial_action_get_param5(const mace_message_t* msg)
 {
@@ -466,7 +466,7 @@ static inline float mace_msg_execute_spatial_action_get_param5(const mace_messag
 /**
  * @brief Get field param6 from execute_spatial_action message
  *
- * @return Parameter 6, as defined by MAV_CMD enum.
+ * @return Parameter 6, as defined by UXV_CMD enum.
  */
 static inline float mace_msg_execute_spatial_action_get_param6(const mace_message_t* msg)
 {
@@ -476,7 +476,7 @@ static inline float mace_msg_execute_spatial_action_get_param6(const mace_messag
 /**
  * @brief Get field param7 from execute_spatial_action message
  *
- * @return Parameter 7, as defined by MAV_CMD enum.
+ * @return Parameter 7, as defined by UXV_CMD enum.
  */
 static inline float mace_msg_execute_spatial_action_get_param7(const mace_message_t* msg)
 {

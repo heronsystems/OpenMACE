@@ -9,7 +9,7 @@ namespace msg {
 /**
  * @brief CAMERA_SETTINGS message
  *
- * WIP: Settings of a camera, can be requested using MAV_CMD_REQUEST_CAMERA_SETTINGS and written using MAV_CMD_SET_CAMERA_SETTINGS
+ * WIP: Settings of a camera, can be requested using UXV_CMD_REQUEST_CAMERA_SETTINGS and written using UXV_CMD_SET_CAMERA_SETTINGS
  */
 struct CAMERA_SETTINGS : mavlink::Message {
     static constexpr msgid_t MSG_ID = 260;

@@ -45,13 +45,8 @@ hsm::Transition State_FlightGuided_GeoTarget::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE:
-        {
-            rtn = hsm::SiblingTransition<State_FlightGuided_Idle>(currentCommand);
-            break;
-        }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_FlightGuided_Target."<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED_GEOTARGET."<<std::endl;
             break;
         }
     }
@@ -108,7 +103,6 @@ void State_FlightGuided_GeoTarget::OnEnter()
      * or the command is null. We therefore will return to the idle state
      * of the guided flight mode.
      */
-    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
 void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
@@ -122,7 +116,6 @@ void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractCommand
     if(command->getCommandType() != COMMANDTYPE::CI_ACT_TARGET)
     {
         //we dont handle commands of this type in here
-        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
         return;
     }
 
@@ -139,8 +132,3 @@ void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractCommand
 
 } //end of namespace ardupilot
 } //end of namespace state
-
-#include "ardupilot_states/state_flight_guided_idle.h"
-#include "ardupilot_states/state_flight_guided_spatial_item.h"
-#include "ardupilot_states/state_flight_guided_queue.h"
-#include "ardupilot_states/state_flight_guided_target_car.h"

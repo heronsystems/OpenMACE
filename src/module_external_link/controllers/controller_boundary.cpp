@@ -201,7 +201,7 @@ namespace ExternalLink{
         boundaryItem.boundary_host_sysid = msg.boundary_host_sysid;
         boundaryItem.boundary_host_compid = msg.boundary_host_compid;
         boundaryItem.boundary_identifier = msg.boundary_identifier;
-        boundaryItem.frame = MAV_FRAME_LOCAL_ENU;
+        boundaryItem.frame = UXV_FRAME_LOCAL_ENU;
         boundaryItem.seq = index;
         boundaryItem.x = ptrItem.getXPosition();
         boundaryItem.y = ptrItem.getYPosition();

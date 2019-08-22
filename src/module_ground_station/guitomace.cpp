@@ -317,6 +317,11 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     currentVelocityTarget.setYVelocity(0.0);
     currentVelocityTarget.setZVelocity(0.0);
     newTarget.setVelocity(&currentVelocityTarget);
+
+    mace::pose::Rotation_2D yaw;
+    yaw.setPhi(M_PI_4);
+    newTarget.setYaw(&yaw);
+
     newCommand.setDynamicTarget(newTarget);
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
         ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);

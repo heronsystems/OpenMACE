@@ -19,7 +19,7 @@ struct STATUSTEXT : mavlink::Message {
     static constexpr auto NAME = "STATUSTEXT";
 
 
-    uint8_t severity; /*< Severity of status. Relies on the definitions within RFC-5424. See enum MAV_SEVERITY. */
+    uint8_t severity; /*< Severity of status. Relies on the definitions within RFC-5424. See enum UXV_SEVERITY. */
     std::array<char, 50> text; /*< Status text message, without null termination character */
 
 

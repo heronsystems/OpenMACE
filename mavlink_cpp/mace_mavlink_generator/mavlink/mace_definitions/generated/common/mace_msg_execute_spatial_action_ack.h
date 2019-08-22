@@ -5,7 +5,7 @@
 
 MACEPACKED(
 typedef struct __mace_execute_spatial_action_ack_t {
- uint8_t result; /*< See MAV_RESULT enum*/
+ uint8_t result; /*< See UXV_RESULT enum*/
 }) mace_execute_spatial_action_ack_t;
 
 #define MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK_LEN 1
@@ -41,7 +41,7 @@ typedef struct __mace_execute_spatial_action_ack_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param result See MAV_RESULT enum
+ * @param result See UXV_RESULT enum
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_execute_spatial_action_ack_pack(uint8_t system_id, uint8_t component_id, mace_message_t* msg,
@@ -69,7 +69,7 @@ static inline uint16_t mace_msg_execute_spatial_action_ack_pack(uint8_t system_i
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param result See MAV_RESULT enum
+ * @param result See UXV_RESULT enum
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_execute_spatial_action_ack_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -123,7 +123,7 @@ static inline uint16_t mace_msg_execute_spatial_action_ack_encode_chan(uint8_t s
  * @brief Send a execute_spatial_action_ack message
  * @param chan MAVLink channel to send the message
  *
- * @param result See MAV_RESULT enum
+ * @param result See UXV_RESULT enum
  */
 #ifdef MACE_USE_CONVENIENCE_FUNCTIONS
 
@@ -188,7 +188,7 @@ static inline void mace_msg_execute_spatial_action_ack_send_buf(mace_message_t *
 /**
  * @brief Get field result from execute_spatial_action_ack message
  *
- * @return See MAV_RESULT enum
+ * @return See UXV_RESULT enum
  */
 static inline uint8_t mace_msg_execute_spatial_action_ack_get_result(const mace_message_t* msg)
 {

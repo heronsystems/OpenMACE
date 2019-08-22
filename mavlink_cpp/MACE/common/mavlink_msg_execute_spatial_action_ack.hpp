@@ -19,7 +19,7 @@ struct EXECUTE_SPATIAL_ACTION_ACK : mavlink::Message {
     static constexpr auto NAME = "EXECUTE_SPATIAL_ACTION_ACK";
 
 
-    uint8_t result; /*< See MAV_RESULT enum */
+    uint8_t result; /*< See UXV_RESULT enum */
 
 
     inline std::string get_name(void) const override

@@ -19,11 +19,11 @@ struct COMMAND_SHORT : mavlink::Message {
     static constexpr auto NAME = "COMMAND_SHORT";
 
 
-    uint16_t command; /*< Command ID, as defined by MAV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data. */
+    uint16_t command; /*< Command ID, as defined by UXV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data. */
     uint8_t target_system; /*< System which should execute the command */
     uint8_t target_component; /*< Component which should execute the command, 0 for all components */
     uint8_t confirmation; /*< 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command) */
-    float param; /*< Parameter as defined by MAV_CMD enum. */
+    float param; /*< Parameter as defined by UXV_CMD enum. */
 
 
     inline std::string get_name(void) const override

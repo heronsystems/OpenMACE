@@ -31,7 +31,7 @@ constexpr auto MAVLINK_VERSION = 3;
 
 
 /** @brief Micro air vehicle / autopilot classes. This identifies the individual model. */
-enum class MAV_PROTOCOL
+enum class UXV_PROTOCOL
 {
     MACE=0, /* MACE protocol | */
     PROTCOL_MAVLINK=1, /* MAVLINK protocol. | */
@@ -39,11 +39,11 @@ enum class MAV_PROTOCOL
     UNKNOWN=3, /* Generic autopilot, full support for everything | */
 };
 
-//! MAV_PROTOCOL ENUM_END
-constexpr auto MAV_PROTOCOL_ENUM_END = 4;
+//! UXV_PROTOCOL ENUM_END
+constexpr auto UXV_PROTOCOL_ENUM_END = 4;
 
 /** @brief Micro air vehicle / autopilot classes. This identifies the individual model. */
-enum class MAV_AUTOPILOT : uint8_t
+enum class UXV_AUTOPILOT : uint8_t
 {
     GENERIC=0, /* Generic autopilot, full support for everything | */
     RESERVED=1, /* Reserved for future use. | */
@@ -67,11 +67,11 @@ enum class MAV_AUTOPILOT : uint8_t
     DJI=19, /* DJI Autopilot | */
 };
 
-//! MAV_AUTOPILOT ENUM_END
-constexpr auto MAV_AUTOPILOT_ENUM_END = 20;
+//! UXV_AUTOPILOT ENUM_END
+constexpr auto UXV_AUTOPILOT_ENUM_END = 20;
 
 /** @brief  */
-enum class MAV_TYPE : uint8_t
+enum class UXV_TYPE : uint8_t
 {
     GENERIC=0, /* Generic micro air vehicle. | */
     FIXED_WING=1, /* Fixed wing aircraft. | */
@@ -103,8 +103,8 @@ enum class MAV_TYPE : uint8_t
     ADSB=27, /* Onboard ADSB peripheral | */
 };
 
-//! MAV_TYPE ENUM_END
-constexpr auto MAV_TYPE_ENUM_END = 28;
+//! UXV_TYPE ENUM_END
+constexpr auto UXV_TYPE_ENUM_END = 28;
 
 /** @brief These values define the type of firmware release.  These values indicate the first version or release of this type.  For example the first alpha release would be 64, the second would be 65. */
 enum class FIRMWARE_VERSION_TYPE
@@ -120,7 +120,7 @@ enum class FIRMWARE_VERSION_TYPE
 constexpr auto FIRMWARE_VERSION_TYPE_ENUM_END = 256;
 
 /** @brief These flags encode the MAV mode. */
-enum class MAV_MODE_FLAG
+enum class UXV_MODE_FLAG
 {
     CUSTOM_MODE_ENABLED=1, /* 0b00000001 Reserved for future use. | */
     TEST_ENABLED=2, /* 0b00000010 system has a test mode enabled. This flag is intended for temporary system tests and should not be used for stable implementations. | */
@@ -129,14 +129,14 @@ enum class MAV_MODE_FLAG
     STABILIZE_ENABLED=16, /* 0b00010000 system stabilizes electronically its attitude (and optionally position). It needs however further control inputs to move around. | */
     HIL_ENABLED=32, /* 0b00100000 hardware in the loop simulation. All motors / actuators are blocked, but internal software is full operational. | */
     MANUAL_INPUT_ENABLED=64, /* 0b01000000 remote control input is enabled. | */
-    SAFETY_ARMED=128, /* 0b10000000 MAV safety set to armed. Motors are enabled / running / can start. Ready to fly. Additional note: this flag is to be ignore when sent in the command MAV_CMD_DO_SET_MODE and MAV_CMD_COMPONENT_ARM_DISARM shall be used instead. The flag can still be used to report the armed state. | */
+    SAFETY_ARMED=128, /* 0b10000000 MAV safety set to armed. Motors are enabled / running / can start. Ready to fly. Additional note: this flag is to be ignore when sent in the command UXV_CMD_DO_SET_MODE and UXV_CMD_COMPONENT_ARM_DISARM shall be used instead. The flag can still be used to report the armed state. | */
 };
 
-//! MAV_MODE_FLAG ENUM_END
-constexpr auto MAV_MODE_FLAG_ENUM_END = 129;
+//! UXV_MODE_FLAG ENUM_END
+constexpr auto UXV_MODE_FLAG_ENUM_END = 129;
 
 /** @brief These values encode the bit positions of the decode position. These values can be used to read the value of a flag bit by combining the base_mode variable with AND with the flag position value. The result will be either 0 or 1, depending on if the flag is set or not. */
-enum class MAV_MODE_FLAG_DECODE_POSITION
+enum class UXV_MODE_FLAG_DECODE_POSITION
 {
     CUSTOM_MODE=1, /* Eighth bit: 00000001 | */
     TEST=2, /* Seventh bit: 00000010 | */
@@ -148,11 +148,11 @@ enum class MAV_MODE_FLAG_DECODE_POSITION
     SAFETY=128, /* First bit:  10000000 | */
 };
 
-//! MAV_MODE_FLAG_DECODE_POSITION ENUM_END
-constexpr auto MAV_MODE_FLAG_DECODE_POSITION_ENUM_END = 129;
+//! UXV_MODE_FLAG_DECODE_POSITION ENUM_END
+constexpr auto UXV_MODE_FLAG_DECODE_POSITION_ENUM_END = 129;
 
 /** @brief Override command, pauses current mission execution and moves immediately to a position */
-enum class MAV_GOTO
+enum class UXV_GOTO
 {
     DO_HOLD=0, /* Hold at the current position. | */
     DO_CONTINUE=1, /* Continue with the next item in mission execution. | */
@@ -160,12 +160,12 @@ enum class MAV_GOTO
     HOLD_AT_SPECIFIED_POSITION=3, /* Hold at the position specified in the parameters of the DO_HOLD action | */
 };
 
-//! MAV_GOTO ENUM_END
-constexpr auto MAV_GOTO_ENUM_END = 4;
+//! UXV_GOTO ENUM_END
+constexpr auto UXV_GOTO_ENUM_END = 4;
 
 /** @brief These defines are predefined OR-combined mode flags. There is no need to use values from this enum, but it
                simplifies the use of the mode flags. Note that manual input is enabled in all modes as a safety override. */
-enum class MAV_MODE
+enum class UXV_MODE
 {
     PREFLIGHT=0, /* System is not ready to fly, booting, calibrating, etc. No flag is set. | */
     MANUAL_DISARMED=64, /* System is allowed to be active, under manual (RC) control, no stabilization | */
@@ -180,11 +180,11 @@ enum class MAV_MODE
     AUTO_ARMED=220, /* System is allowed to be active, under autonomous control and navigation (the trajectory is decided onboard and not pre-programmed by MISSIONs) | */
 };
 
-//! MAV_MODE ENUM_END
-constexpr auto MAV_MODE_ENUM_END = 221;
+//! UXV_MODE ENUM_END
+constexpr auto UXV_MODE_ENUM_END = 221;
 
 /** @brief  */
-enum class MAV_STATE
+enum class UXV_STATE
 {
     UNINIT=0, /* Uninitialized system, state is unknown. | */
     BOOT=1, /* System is booting up. | */
@@ -196,11 +196,11 @@ enum class MAV_STATE
     POWEROFF=7, /* System just initialized its power-down sequence, will shut down now. | */
 };
 
-//! MAV_STATE ENUM_END
-constexpr auto MAV_STATE_ENUM_END = 8;
+//! UXV_STATE ENUM_END
+constexpr auto UXV_STATE_ENUM_END = 8;
 
 /** @brief  */
-enum class MAV_COMPONENT
+enum class UXV_COMPONENT
 {
     COMP_ID_ALL=0, /*  | */
     COMP_ID_CAMERA=100, /*  | */
@@ -236,11 +236,11 @@ enum class MAV_COMPONENT
     COMP_ID_SYSTEM_CONTROL=250, /*  | */
 };
 
-//! MAV_COMPONENT ENUM_END
-constexpr auto MAV_COMPONENT_ENUM_END = 251;
+//! UXV_COMPONENT ENUM_END
+constexpr auto UXV_COMPONENT_ENUM_END = 251;
 
 /** @brief These encode the sensors whose status is sent as part of the SYS_STATUS message. */
-enum class MAV_SYS_STATUS_SENSOR
+enum class UXV_SYS_STATUS_SENSOR
 {
     SENSOR_3D_GYRO=1, /* 0x01 3D gyro | */
     SENSOR_3D_ACCEL=2, /* 0x02 3D accelerometer | */
@@ -270,11 +270,11 @@ enum class MAV_SYS_STATUS_SENSOR
     BATTERY=33554432, /* 0x2000000 Battery | */
 };
 
-//! MAV_SYS_STATUS_SENSOR ENUM_END
-constexpr auto MAV_SYS_STATUS_SENSOR_ENUM_END = 33554433;
+//! UXV_SYS_STATUS_SENSOR ENUM_END
+constexpr auto UXV_SYS_STATUS_SENSOR_ENUM_END = 33554433;
 
 /** @brief  */
-enum class MAV_FRAME : uint8_t
+enum class UXV_FRAME : uint8_t
 {
     GLOBAL=0, /* Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL) | */
     LOCAL_NED=1, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */
@@ -290,8 +290,8 @@ enum class MAV_FRAME : uint8_t
     GLOBAL_TERRAIN_ALT_INT=11, /* Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model. | */
 };
 
-//! MAV_FRAME ENUM_END
-constexpr auto MAV_FRAME_ENUM_END = 12;
+//! UXV_FRAME ENUM_END
+constexpr auto UXV_FRAME_ENUM_END = 12;
 
 /** @brief  */
 enum class MAVLINK_DATA_STREAM_TYPE
@@ -333,7 +333,7 @@ enum class FENCE_BREACH
 constexpr auto FENCE_BREACH_ENUM_END = 4;
 
 /** @brief Enumeration of possible mount operation modes */
-enum class MAV_MOUNT_MODE
+enum class UXV_MOUNT_MODE
 {
     RETRACT=0, /* Load and keep safe position (Roll,Pitch,Yaw) from permant memory and stop stabilization | */
     NEUTRAL=1, /* Load and keep neutral position (Roll,Pitch,Yaw) from permanent memory. | */
@@ -342,11 +342,11 @@ enum class MAV_MOUNT_MODE
     GPS_POINT=4, /* Load neutral position and start to point to Lat,Lon,Alt | */
 };
 
-//! MAV_MOUNT_MODE ENUM_END
-constexpr auto MAV_MOUNT_MODE_ENUM_END = 5;
+//! UXV_MOUNT_MODE ENUM_END
+constexpr auto UXV_MOUNT_MODE_ENUM_END = 5;
 
 /** @brief Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data. */
-enum class MAV_CMD : uint16_t
+enum class UXV_CMD : uint16_t
 {
     NAV_WAYPOINT=16, /* Navigate to MISSION. |Hold time in decimal seconds. (ignored by fixed wing, time to stay at MISSION for rotary wing)| Acceptance radius in meters (if the sphere with this radius is hit, the MISSION counts as reached)| 0 to pass through the WP, if > 0 radius in meters to pass by WP. Positive value for clockwise orbit, negative value for counter-clockwise orbit. Allows trajectory control.| Desired yaw angle at MISSION (rotary wing). NaN for unchanged.| Latitude| Longitude| Altitude|  */
     NAV_LOITER_UNLIM=17, /* Loiter around this MISSION an unlimited amount of time |Empty| Empty| Radius around MISSION, in meters. If positive loiter clockwise, else counter-clockwise| Desired yaw angle.| Latitude| Longitude| Altitude|  */
@@ -362,7 +362,7 @@ enum class MAV_CMD : uint16_t
     NAV_LOITER_TO_ALT=31, /* Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint.  |Heading Required (0 = False)| Radius in meters. If positive loiter clockwise, negative counter-clockwise, 0 means no change to standard loiter.| Empty| Forward moving aircraft this sets exit xtrack location: 0 for center of loiter wp, 1 for exit location| Latitude| Longitude| Altitude|  */
     DO_FOLLOW=32, /* Being following a target |System ID (the system ID of the FOLLOW_TARGET beacon). Send 0 to disable follow-me and return to the default position hold mode| RESERVED| RESERVED| altitude flag: 0: Keep current altitude, 1: keep altitude difference to target, 2: go to a fixed altitude above home| altitude| RESERVED| TTL in seconds in which the MAV should go to the default position hold mode after a message rx timeout|  */
     DO_FOLLOW_REPOSITION=33, /* Reposition the MAV after a follow target command has been sent |Camera q1 (where 0 is on the ray from the camera to the tracking device)| Camera q2| Camera q3| Camera q4| altitude offset from target (m)| X offset from target (m)| Y offset from target (m)|  */
-    NAV_ROI=80, /* Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. |Region of intereset mode. (see MAV_ROI enum)| MISSION index/ target ID. (see MAV_ROI enum)| ROI index (allows a vehicle to manage multiple ROI's)| Empty| x the location of the fixed ROI (see MAV_FRAME)| y| z|  */
+    NAV_ROI=80, /* Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. |Region of intereset mode. (see UXV_ROI enum)| MISSION index/ target ID. (see UXV_ROI enum)| ROI index (allows a vehicle to manage multiple ROI's)| Empty| x the location of the fixed ROI (see UXV_FRAME)| y| z|  */
     NAV_PATHPLANNING=81, /* Control autonomous path planning on the MAV. |0: Disable local obstacle avoidance / local path planning (without resetting map), 1: Enable local path planning, 2: Enable and reset local path planning| 0: Disable full path planning (without resetting map), 1: Enable, 2: Enable and reset map/occupancy grid, 3: Enable and reset planned route, but not occupancy grid| Empty| Yaw angle at goal, in compass degrees, [0..360]| Latitude/X of goal| Longitude/Y of goal| Altitude/Z of goal|  */
     NAV_SPLINE_WAYPOINT=82, /* Navigate to MISSION using a spline path. |Hold time in decimal seconds. (ignored by fixed wing, time to stay at MISSION for rotary wing)| Empty| Empty| Empty| Latitude/X of goal| Longitude/Y of goal| Altitude/Z of goal|  */
     NAV_VTOL_TAKEOFF=84, /* Takeoff from ground using VTOL mode |Empty| Empty| Empty| Yaw angle in degrees. NaN for unchanged.| Latitude| Longitude| Altitude|  */
@@ -376,7 +376,7 @@ enum class MAV_CMD : uint16_t
     CONDITION_DISTANCE=114, /* Delay mission state machine until within desired distance of next NAV point. |Distance (meters)| Empty| Empty| Empty| Empty| Empty| Empty|  */
     CONDITION_YAW=115, /* Reach a certain target angle. |target angle: [0-360], 0 is north| speed during yaw change:[deg per second]| direction: negative: counter clockwise, positive: clockwise [-1,1]| relative offset or absolute angle: [ 1,0]| Empty| Empty| Empty|  */
     CONDITION_LAST=159, /* NOP - This command is only used to mark the upper limit of the CONDITION commands in the enumeration |Empty| Empty| Empty| Empty| Empty| Empty| Empty|  */
-    DO_SET_MODE=176, /* Set system mode. |Mode, as defined by ENUM MAV_MODE| Custom mode - this is system specific, please refer to the individual autopilot specifications for details.| Custom sub mode - this is system specific, please refer to the individual autopilot specifications for details.| Empty| Empty| Empty| Empty|  */
+    DO_SET_MODE=176, /* Set system mode. |Mode, as defined by ENUM UXV_MODE| Custom mode - this is system specific, please refer to the individual autopilot specifications for details.| Custom sub mode - this is system specific, please refer to the individual autopilot specifications for details.| Empty| Empty| Empty| Empty|  */
     DO_JUMP=177, /* Jump to the desired command in the mission list.  Repeat this action only the specified number of times |Sequence number| Repeat count| Empty| Empty| Empty| Empty| Empty|  */
     DO_CHANGE_SPEED=178, /* Change speed and/or throttle set points. |Speed type (0=Airspeed, 1=Ground Speed)| Speed  (m/s, -1 indicates no change)| Throttle  ( Percent, -1 indicates no change)| absolute or relative [0,1]| Empty| Empty| Empty|  */
     DO_SET_HOME=179, /* Changes the home location either to the current location or a specified location. |Use current (1=use current location, 0=use specified location)| Empty| Empty| Empty| Latitude| Longitude| Altitude|  */
@@ -386,19 +386,19 @@ enum class MAV_CMD : uint16_t
     DO_SET_SERVO=183, /* Set a servo to a desired PWM value. |Servo number| PWM (microseconds, 1000 to 2000 typical)| Empty| Empty| Empty| Empty| Empty|  */
     DO_REPEAT_SERVO=184, /* Cycle a between its nominal setting and a desired PWM for a desired number of cycles with a desired period. |Servo number| PWM (microseconds, 1000 to 2000 typical)| Cycle count| Cycle time (seconds)| Empty| Empty| Empty|  */
     DO_FLIGHTTERMINATION=185, /* Terminate flight immediately |Flight termination activated if > 0.5| Empty| Empty| Empty| Empty| Empty| Empty|  */
-    DO_CHANGE_ALTITUDE=186, /* Change altitude set point. |Altitude in meters| Mav frame of new altitude (see MAV_FRAME)| Empty| Empty| Empty| Empty| Empty|  */
+    DO_CHANGE_ALTITUDE=186, /* Change altitude set point. |Altitude in meters| Mav frame of new altitude (see UXV_FRAME)| Empty| Empty| Empty| Empty| Empty|  */
     DO_LAND_START=189, /* Mission command to perform a landing. This is used as a marker in a mission to tell the autopilot where a sequence of mission items that represents a landing starts. It may also be sent via a COMMAND_LONG to trigger a landing, in which case the nearest (geographically) landing sequence in the mission will be used. The Latitude/Longitude is optional, and may be set to 0/0 if not needed. If specified then it will be used to help find the closest landing sequence. |Empty| Empty| Empty| Empty| Latitude| Longitude| Empty|  */
     DO_RALLY_LAND=190, /* Mission command to perform a landing from a rally point. |Break altitude (meters)| Landing speed (m/s)| Empty| Empty| Empty| Empty| Empty|  */
     DO_GO_AROUND=191, /* Mission command to safely abort an autonmous landing. |Altitude (meters)| Empty| Empty| Empty| Empty| Empty| Empty|  */
-    DO_REPOSITION=192, /* Reposition the vehicle to a specific WGS84 global position. |Ground speed, less than 0 (-1) for default| Bitmask of option flags, see the MAV_DO_REPOSITION_FLAGS enum.| Reserved| Yaw heading, NaN for unchanged. For planes indicates loiter direction (0: clockwise, 1: counter clockwise)| Latitude (deg * 1E7)| Longitude (deg * 1E7)| Altitude (meters)|  */
+    DO_REPOSITION=192, /* Reposition the vehicle to a specific WGS84 global position. |Ground speed, less than 0 (-1) for default| Bitmask of option flags, see the UXV_DO_REPOSITION_FLAGS enum.| Reserved| Yaw heading, NaN for unchanged. For planes indicates loiter direction (0: clockwise, 1: counter clockwise)| Latitude (deg * 1E7)| Longitude (deg * 1E7)| Altitude (meters)|  */
     DO_PAUSE_CONTINUE=193, /* If in a GPS controlled position mode, hold the current position or continue. |0: Pause current mission or reposition command, hold current position. 1: Continue mission. A VTOL capable vehicle should enter hover mode (multicopter and VTOL planes). A plane should loiter with the default loiter radius.| Reserved| Reserved| Reserved| Reserved| Reserved| Reserved|  */
     DO_SET_REVERSE=194, /* Set moving direction to forward or reverse. |Direction (0=Forward, 1=Reverse)| Empty| Empty| Empty| Empty| Empty| Empty|  */
     DO_CONTROL_VIDEO=200, /* Control onboard camera system. |Camera ID (-1 for all)| Transmission: 0: disabled, 1: enabled compressed, 2: enabled raw| Transmission mode: 0: video stream, >0: single images every n seconds (decimal)| Recording: 0: disabled, 1: enabled compressed, 2: enabled raw| Empty| Empty| Empty|  */
-    DO_SET_ROI=201, /* Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. |Region of intereset mode. (see MAV_ROI enum)| MISSION index/ target ID. (see MAV_ROI enum)| ROI index (allows a vehicle to manage multiple ROI's)| Empty| x the location of the fixed ROI (see MAV_FRAME)| y| z|  */
+    DO_SET_ROI=201, /* Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras. |Region of intereset mode. (see UXV_ROI enum)| MISSION index/ target ID. (see UXV_ROI enum)| ROI index (allows a vehicle to manage multiple ROI's)| Empty| x the location of the fixed ROI (see UXV_FRAME)| y| z|  */
     DO_DIGICAM_CONFIGURE=202, /* Mission command to configure an on-board camera controller system. |Modes: P, TV, AV, M, Etc| Shutter speed: Divisor number for one second| Aperture: F stop number| ISO number e.g. 80, 100, 200, Etc| Exposure type enumerator| Command Identity| Main engine cut-off time before camera trigger in seconds/10 (0 means no cut-off)|  */
     DO_DIGICAM_CONTROL=203, /* Mission command to control an on-board camera controller system. |Session control e.g. show/hide lens| Zoom's absolute position| Zooming step value to offset zoom from the current position| Focus Locking, Unlocking or Re-locking| Shooting Command| Command Identity| Empty|  */
-    DO_MOUNT_CONFIGURE=204, /* Mission command to configure a camera or antenna mount |Mount operation mode (see MAV_MOUNT_MODE enum)| stabilize roll? (1 = yes, 0 = no)| stabilize pitch? (1 = yes, 0 = no)| stabilize yaw? (1 = yes, 0 = no)| Empty| Empty| Empty|  */
-    DO_MOUNT_CONTROL=205, /* Mission command to control a camera or antenna mount |pitch (WIP: DEPRECATED: or lat in degrees) depending on mount mode.| roll (WIP: DEPRECATED: or lon in degrees) depending on mount mode.| yaw (WIP: DEPRECATED: or alt in meters) depending on mount mode.| WIP: alt in meters depending on mount mode.| WIP: latitude in degrees * 1E7, set if appropriate mount mode.| WIP: longitude in degrees * 1E7, set if appropriate mount mode.| MAV_MOUNT_MODE enum value|  */
+    DO_MOUNT_CONFIGURE=204, /* Mission command to configure a camera or antenna mount |Mount operation mode (see UXV_MOUNT_MODE enum)| stabilize roll? (1 = yes, 0 = no)| stabilize pitch? (1 = yes, 0 = no)| stabilize yaw? (1 = yes, 0 = no)| Empty| Empty| Empty|  */
+    DO_MOUNT_CONTROL=205, /* Mission command to control a camera or antenna mount |pitch (WIP: DEPRECATED: or lat in degrees) depending on mount mode.| roll (WIP: DEPRECATED: or lon in degrees) depending on mount mode.| yaw (WIP: DEPRECATED: or alt in meters) depending on mount mode.| WIP: alt in meters depending on mount mode.| WIP: latitude in degrees * 1E7, set if appropriate mount mode.| WIP: longitude in degrees * 1E7, set if appropriate mount mode.| UXV_MOUNT_MODE enum value|  */
     DO_SET_CAM_TRIGG_DIST=206, /* Mission command to set CAM_TRIGG_DIST for this flight |Camera trigger distance (meters)| Empty| Empty| Empty| Empty| Empty| Empty|  */
     DO_FENCE_ENABLE=207, /* Mission command to enable the geofence |enable? (0=disable, 1=enable, 2=disable_floor_only)| Empty| Empty| Empty| Empty| Empty| Empty|  */
     DO_PARACHUTE=208, /* Mission command to trigger a parachute |action (0=disable, 1=enable, 2=release, for some systems see PARACHUTE_ACTION enum, not in general message set.)| Empty| Empty| Empty| Empty| Empty| Empty|  */
@@ -415,7 +415,7 @@ enum class MAV_CMD : uint16_t
     PREFLIGHT_UAVCAN=243, /* Trigger UAVCAN config. This command will be only accepted if in pre-flight mode. |1: Trigger actuator ID assignment and direction mapping.| Reserved| Reserved| Reserved| Reserved| Reserved| Reserved|  */
     PREFLIGHT_STORAGE=245, /* Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode. |Parameter storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM, 2: Reset to defaults| Mission storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM, 2: Reset to defaults| Onboard logging: 0: Ignore, 1: Start default rate logging, -1: Stop logging, > 1: start logging with rate of param 3 in Hz (e.g. set to 1000 for 1000 Hz logging)| Reserved| Empty| Empty| Empty|  */
     PREFLIGHT_REBOOT_SHUTDOWN=246, /* Request the reboot or shutdown of system components. |0: Do nothing for autopilot, 1: Reboot autopilot, 2: Shutdown autopilot, 3: Reboot autopilot and keep it in the bootloader until upgraded.| 0: Do nothing for onboard computer, 1: Reboot onboard computer, 2: Shutdown onboard computer, 3: Reboot onboard computer and keep it in the bootloader until upgraded.| WIP: 0: Do nothing for camera, 1: Reboot onboard camera, 2: Shutdown onboard camera, 3: Reboot onboard camera and keep it in the bootloader until upgraded| WIP: 0: Do nothing for mount (e.g. gimbal), 1: Reboot mount, 2: Shutdown mount, 3: Reboot mount and keep it in the bootloader until upgraded| Reserved, send 0| Reserved, send 0| WIP: ID (e.g. camera ID -1 for all IDs)|  */
-    OVERRIDE_GOTO=252, /* Hold / continue the current action |MAV_GOTO_DO_HOLD: hold MAV_GOTO_DO_CONTINUE: continue with next item in mission plan| MAV_GOTO_HOLD_AT_CURRENT_POSITION: Hold at current position MAV_GOTO_HOLD_AT_SPECIFIED_POSITION: hold at specified position| MAV_FRAME coordinate frame of hold point| Desired yaw angle in degrees| Latitude / X position| Longitude / Y position| Altitude / Z position|  */
+    OVERRIDE_GOTO=252, /* Hold / continue the current action |UXV_GOTO_DO_HOLD: hold UXV_GOTO_DO_CONTINUE: continue with next item in mission plan| UXV_GOTO_HOLD_AT_CURRENT_POSITION: Hold at current position UXV_GOTO_HOLD_AT_SPECIFIED_POSITION: hold at specified position| UXV_FRAME coordinate frame of hold point| Desired yaw angle in degrees| Latitude / X position| Longitude / Y position| Altitude / Z position|  */
     MISSION_START=300, /* start running a mission |first_item: the first mission item to run| last_item:  the last mission item to run (after this item is run, the mission ends)|  */
     COMPONENT_ARM_DISARM=400, /* Arms / Disarms a component |1 to arm, 0 to disarm|  */
     GET_HOME_POSITION=410, /* Request the home position from the vehicle. |Reserved| Reserved| Reserved| Reserved| Reserved| Reserved| Reserved|  */
@@ -440,7 +440,7 @@ enum class MAV_CMD : uint16_t
     LOGGING_STOP=2511, /* Request to stop streaming log data over MAVLink |Reserved (set to 0)| Reserved (set to 0)| Reserved (set to 0)| Reserved (set to 0)| Reserved (set to 0)| Reserved (set to 0)| Reserved (set to 0)|  */
     AIRFRAME_CONFIGURATION=2520, /*  |Landing gear ID (default: 0, -1 for all)| Landing gear position (Down: 0, Up: 1, NAN for no change)| Reserved, set to NAN| Reserved, set to NAN| Reserved, set to NAN| Reserved, set to NAN| Reserved, set to NAN|  */
     PANORAMA_CREATE=2800, /* Create a panorama at the current position |Viewing angle horizontal of the panorama (in degrees, +- 0.5 the total angle)| Viewing angle vertical of panorama (in degrees)| Speed of the horizontal rotation (in degrees per second)| Speed of the vertical rotation (in degrees per second)|  */
-    DO_VTOL_TRANSITION=3000, /* Request VTOL transition |The target VTOL state, as defined by ENUM MAV_VTOL_STATE. Only MAV_VTOL_STATE_MC and MAV_VTOL_STATE_FW can be used.|  */
+    DO_VTOL_TRANSITION=3000, /* Request VTOL transition |The target VTOL state, as defined by ENUM UXV_VTOL_STATE. Only UXV_VTOL_STATE_MC and UXV_VTOL_STATE_FW can be used.|  */
     SET_GUIDED_SUBMODE_STANDARD=4000, /* This command sets the submode to standard guided when vehicle is in guided mode. The vehicle holds position and altitude and the user can input the desired velocites along all three axes.
                    | */
     SET_GUIDED_SUBMODE_CIRCLE=4001, /* This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.
@@ -465,20 +465,20 @@ enum class MAV_CMD : uint16_t
     SPATIAL_USER_3=31007, /* User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item. |User defined| User defined| User defined| User defined| Latitude unscaled| Longitude unscaled| Altitude, in meters AMSL|  */
     SPATIAL_USER_4=31008, /* User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item. |User defined| User defined| User defined| User defined| Latitude unscaled| Longitude unscaled| Altitude, in meters AMSL|  */
     SPATIAL_USER_5=31009, /* User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item. |User defined| User defined| User defined| User defined| Latitude unscaled| Longitude unscaled| Altitude, in meters AMSL|  */
-    USER_1=31010, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
-    USER_2=31011, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
-    USER_3=31012, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
-    USER_4=31013, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
-    USER_5=31014, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
+    USER_1=31010, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
+    USER_2=31011, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
+    USER_3=31012, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
+    USER_4=31013, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
+    USER_5=31014, /* User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item. |User defined| User defined| User defined| User defined| User defined| User defined| User defined|  */
 };
 
-//! MAV_CMD ENUM_END
-constexpr auto MAV_CMD_ENUM_END = 31015;
+//! UXV_CMD ENUM_END
+constexpr auto UXV_CMD_ENUM_END = 31015;
 
 /** @brief THIS INTERFACE IS DEPRECATED AS OF JULY 2015. Please use MESSAGE_INTERVAL instead. A data stream is not a fixed set of messages, but rather a
      recommendation to the autopilot software. Individual autopilots may or may not obey
      the recommended messages. */
-enum class MAV_DATA_STREAM
+enum class UXV_DATA_STREAM
 {
     ALL=0, /* Enable all data streams | */
     RAW_SENSORS=1, /* Enable IMU_RAW, GPS_RAW, GPS_STATUS packets. | */
@@ -491,11 +491,11 @@ enum class MAV_DATA_STREAM
     EXTRA3=12, /* Dependent on the autopilot | */
 };
 
-//! MAV_DATA_STREAM ENUM_END
-constexpr auto MAV_DATA_STREAM_ENUM_END = 13;
+//! UXV_DATA_STREAM ENUM_END
+constexpr auto UXV_DATA_STREAM_ENUM_END = 13;
 
-/** @brief ACK / NACK / ERROR values as a result of MAV_CMDs and for mission item transmission. */
-enum class MAV_CMD_ACK
+/** @brief ACK / NACK / ERROR values as a result of UXV_CMDs and for mission item transmission. */
+enum class UXV_CMD_ACK
 {
     OK=1, /* Command / mission item is ok. | */
     ERR_FAIL=2, /* Generic error message if none of the other reasons fails or if no detailed error reporting is implemented. | */
@@ -508,11 +508,11 @@ enum class MAV_CMD_ACK
     ERR_Z_ALT_OUT_OF_RANGE=9, /* The Z or altitude value is out of range. | */
 };
 
-//! MAV_CMD_ACK ENUM_END
-constexpr auto MAV_CMD_ACK_ENUM_END = 10;
+//! UXV_CMD_ACK ENUM_END
+constexpr auto UXV_CMD_ACK_ENUM_END = 10;
 
 /** @brief Specifies the datatype of a MAVLink parameter. */
-enum class MAV_PARAM_TYPE : uint8_t
+enum class UXV_PARAM_TYPE : uint8_t
 {
     UINT8=1, /* 8-bit unsigned integer | */
     INT8=2, /* 8-bit signed integer | */
@@ -526,11 +526,11 @@ enum class MAV_PARAM_TYPE : uint8_t
     REAL64=10, /* 64-bit floating-point | */
 };
 
-//! MAV_PARAM_TYPE ENUM_END
-constexpr auto MAV_PARAM_TYPE_ENUM_END = 11;
+//! UXV_PARAM_TYPE ENUM_END
+constexpr auto UXV_PARAM_TYPE_ENUM_END = 11;
 
 /** @brief result from a mavlink command */
-enum class MAV_RESULT : uint8_t
+enum class UXV_RESULT : uint8_t
 {
     ACCEPTED=0, /* Command ACCEPTED and EXECUTED | */
     TEMPORARILY_REJECTED=1, /* Command TEMPORARY REJECTED/DENIED | */
@@ -539,11 +539,11 @@ enum class MAV_RESULT : uint8_t
     FAILED=4, /* Command executed, but failed | */
 };
 
-//! MAV_RESULT ENUM_END
-constexpr auto MAV_RESULT_ENUM_END = 5;
+//! UXV_RESULT ENUM_END
+constexpr auto UXV_RESULT_ENUM_END = 5;
 
 /** @brief Indicates the severity level, generally used for status messages to indicate their relative urgency. Based on RFC-5424 using expanded definitions at: http://www.kiwisyslog.com/kb/info:-syslog-message-levels/. */
-enum class MAV_SEVERITY : uint8_t
+enum class UXV_SEVERITY : uint8_t
 {
     EMERGENCY=0, /* System is unusable. This is a "panic" condition. | */
     ALERT=1, /* Action should be taken immediately. Indicates error in non-critical systems. | */
@@ -555,11 +555,11 @@ enum class MAV_SEVERITY : uint8_t
     DEBUG=7, /* Useful non-operational messages that can assist in debugging. These should not occur during normal operation. | */
 };
 
-//! MAV_SEVERITY ENUM_END
-constexpr auto MAV_SEVERITY_ENUM_END = 8;
+//! UXV_SEVERITY ENUM_END
+constexpr auto UXV_SEVERITY_ENUM_END = 8;
 
 /** @brief Power supply status flags (bitmask) */
-enum class MAV_POWER_STATUS : uint16_t
+enum class UXV_POWER_STATUS : uint16_t
 {
     BRICK_VALID=1, /* main brick power supply valid | */
     SERVO_VALID=2, /* main servo power supply valid for FMU | */
@@ -569,8 +569,8 @@ enum class MAV_POWER_STATUS : uint16_t
     CHANGED=32, /* Power status has changed since boot | */
 };
 
-//! MAV_POWER_STATUS ENUM_END
-constexpr auto MAV_POWER_STATUS_ENUM_END = 33;
+//! UXV_POWER_STATUS ENUM_END
+constexpr auto UXV_POWER_STATUS_ENUM_END = 33;
 
 /** @brief SERIAL_CONTROL device types */
 enum class SERIAL_CONTROL_DEV
@@ -599,18 +599,18 @@ enum class SERIAL_CONTROL_FLAG
 constexpr auto SERIAL_CONTROL_FLAG_ENUM_END = 17;
 
 /** @brief Enumeration of distance sensor types */
-enum class MAV_DISTANCE_SENSOR : uint8_t
+enum class UXV_DISTANCE_SENSOR : uint8_t
 {
     LASER=0, /* Laser rangefinder, e.g. LightWare SF02/F or PulsedLight units | */
     ULTRASOUND=1, /* Ultrasound rangefinder, e.g. MaxBotix units | */
     INFRARED=2, /* Infrared rangefinder, e.g. Sharp units | */
 };
 
-//! MAV_DISTANCE_SENSOR ENUM_END
-constexpr auto MAV_DISTANCE_SENSOR_ENUM_END = 3;
+//! UXV_DISTANCE_SENSOR ENUM_END
+constexpr auto UXV_DISTANCE_SENSOR_ENUM_END = 3;
 
 /** @brief Enumeration of sensor orientation, according to its rotations */
-enum class MAV_SENSOR_ORIENTATION : uint8_t
+enum class UXV_SENSOR_ORIENTATION : uint8_t
 {
     ROTATION_NONE=0, /* Roll: 0, Pitch: 0, Yaw: 0 | */
     ROTATION_YAW_45=1, /* Roll: 0, Pitch: 0, Yaw: 45 | */
@@ -653,11 +653,11 @@ enum class MAV_SENSOR_ORIENTATION : uint8_t
     ROTATION_ROLL_315_PITCH_315_YAW_315=38, /* Roll: 315, Pitch: 315, Yaw: 315 | */
 };
 
-//! MAV_SENSOR_ORIENTATION ENUM_END
-constexpr auto MAV_SENSOR_ORIENTATION_ENUM_END = 39;
+//! UXV_SENSOR_ORIENTATION ENUM_END
+constexpr auto UXV_SENSOR_ORIENTATION_ENUM_END = 39;
 
 /** @brief Bitmask of (optional) autopilot capabilities (64 bit). If a bit is set, the autopilot supports this capability. */
-enum class MAV_PROTOCOL_CAPABILITY
+enum class UXV_PROTOCOL_CAPABILITY
 {
     MISSION_FLOAT=1, /* Autopilot supports MISSION float message type. | */
     PARAM_FLOAT=2, /* Autopilot supports the new param float message type. | */
@@ -677,11 +677,11 @@ enum class MAV_PROTOCOL_CAPABILITY
     MISSION_RALLY=32768, /* Autopilot supports mission rally point protocol. | */
 };
 
-//! MAV_PROTOCOL_CAPABILITY ENUM_END
-constexpr auto MAV_PROTOCOL_CAPABILITY_ENUM_END = 32769;
+//! UXV_PROTOCOL_CAPABILITY ENUM_END
+constexpr auto UXV_PROTOCOL_CAPABILITY_ENUM_END = 32769;
 
 /** @brief Enumeration of estimator types */
-enum class MAV_ESTIMATOR_TYPE
+enum class UXV_ESTIMATOR_TYPE
 {
     NAIVE=1, /* This is a naive estimator without any real covariance feedback. | */
     VISION=2, /* Computer vision based estimate. Might be up to scale. | */
@@ -690,11 +690,11 @@ enum class MAV_ESTIMATOR_TYPE
     GPS_INS=5, /* Estimator integrating GPS and inertial sensing. | */
 };
 
-//! MAV_ESTIMATOR_TYPE ENUM_END
-constexpr auto MAV_ESTIMATOR_TYPE_ENUM_END = 6;
+//! UXV_ESTIMATOR_TYPE ENUM_END
+constexpr auto UXV_ESTIMATOR_TYPE_ENUM_END = 6;
 
 /** @brief Enumeration of battery types */
-enum class MAV_BATTERY_TYPE : uint8_t
+enum class UXV_BATTERY_TYPE : uint8_t
 {
     UNKNOWN=0, /* Not specified. | */
     LIPO=1, /* Lithium polymer battery | */
@@ -703,11 +703,11 @@ enum class MAV_BATTERY_TYPE : uint8_t
     NIMH=4, /* Nickel metal hydride battery | */
 };
 
-//! MAV_BATTERY_TYPE ENUM_END
-constexpr auto MAV_BATTERY_TYPE_ENUM_END = 5;
+//! UXV_BATTERY_TYPE ENUM_END
+constexpr auto UXV_BATTERY_TYPE_ENUM_END = 5;
 
 /** @brief Enumeration of battery functions */
-enum class MAV_BATTERY_FUNCTION : uint8_t
+enum class UXV_BATTERY_FUNCTION : uint8_t
 {
     UNKNOWN=0, /* Battery function is unknown | */
     ALL=1, /* Battery supports all flight systems | */
@@ -716,11 +716,11 @@ enum class MAV_BATTERY_FUNCTION : uint8_t
     TYPE_PAYLOAD=4, /* Payload battery | */
 };
 
-//! MAV_BATTERY_FUNCTION ENUM_END
-constexpr auto MAV_BATTERY_FUNCTION_ENUM_END = 5;
+//! UXV_BATTERY_FUNCTION ENUM_END
+constexpr auto UXV_BATTERY_FUNCTION_ENUM_END = 5;
 
 /** @brief Enumeration of VTOL states */
-enum class MAV_VTOL_STATE : uint8_t
+enum class UXV_VTOL_STATE : uint8_t
 {
     UNDEFINED=0, /* MAV is not configured as VTOL | */
     TRANSITION_TO_FW=1, /* VTOL is in transition from multicopter to fixed-wing | */
@@ -729,11 +729,11 @@ enum class MAV_VTOL_STATE : uint8_t
     FW=4, /* VTOL is in fixed-wing state | */
 };
 
-//! MAV_VTOL_STATE ENUM_END
-constexpr auto MAV_VTOL_STATE_ENUM_END = 5;
+//! UXV_VTOL_STATE ENUM_END
+constexpr auto UXV_VTOL_STATE_ENUM_END = 5;
 
 /** @brief Enumeration of landed detector states */
-enum class MAV_LANDED_STATE : uint8_t
+enum class UXV_LANDED_STATE : uint8_t
 {
     UNDEFINED=0, /* MAV landed state is unknown | */
     ON_GROUND=1, /* MAV is landed (on ground) | */
@@ -742,8 +742,8 @@ enum class MAV_LANDED_STATE : uint8_t
     LANDING=4, /* MAV currently landing | */
 };
 
-//! MAV_LANDED_STATE ENUM_END
-constexpr auto MAV_LANDED_STATE_ENUM_END = 5;
+//! UXV_LANDED_STATE ENUM_END
+constexpr auto UXV_LANDED_STATE_ENUM_END = 5;
 
 /** @brief Enumeration of the ADSB altimeter types */
 enum class ADSB_ALTITUDE_TYPE : uint8_t
@@ -798,14 +798,14 @@ enum class ADSB_FLAGS : uint16_t
 //! ADSB_FLAGS ENUM_END
 constexpr auto ADSB_FLAGS_ENUM_END = 65;
 
-/** @brief Bitmask of options for the MAV_CMD_DO_REPOSITION */
-enum class MAV_DO_REPOSITION_FLAGS
+/** @brief Bitmask of options for the UXV_CMD_DO_REPOSITION */
+enum class UXV_DO_REPOSITION_FLAGS
 {
     CHANGE_MODE=1, /* The aircraft should immediately transition into guided. This should not be set for follow me applications | */
 };
 
-//! MAV_DO_REPOSITION_FLAGS ENUM_END
-constexpr auto MAV_DO_REPOSITION_FLAGS_ENUM_END = 2;
+//! UXV_DO_REPOSITION_FLAGS ENUM_END
+constexpr auto UXV_DO_REPOSITION_FLAGS_ENUM_END = 2;
 
 /** @brief Flags in EKF_STATUS message */
 enum class ESTIMATOR_STATUS_FLAGS
@@ -854,7 +854,7 @@ enum class GPS_INPUT_IGNORE_FLAGS
 constexpr auto GPS_INPUT_IGNORE_FLAGS_ENUM_END = 129;
 
 /** @brief Possible actions an aircraft can take to avoid a collision. */
-enum class MAV_COLLISION_ACTION : uint8_t
+enum class UXV_COLLISION_ACTION : uint8_t
 {
     NONE=0, /* Ignore any potential collisions | */
     REPORT=1, /* Report potential collision | */
@@ -865,29 +865,29 @@ enum class MAV_COLLISION_ACTION : uint8_t
     HOVER=6, /* Aircraft to stop in place | */
 };
 
-//! MAV_COLLISION_ACTION ENUM_END
-constexpr auto MAV_COLLISION_ACTION_ENUM_END = 7;
+//! UXV_COLLISION_ACTION ENUM_END
+constexpr auto UXV_COLLISION_ACTION_ENUM_END = 7;
 
 /** @brief Aircraft-rated danger from this threat. */
-enum class MAV_COLLISION_THREAT_LEVEL : uint8_t
+enum class UXV_COLLISION_THREAT_LEVEL : uint8_t
 {
     NONE=0, /* Not a threat | */
     LOW=1, /* Craft is mildly concerned about this threat | */
     HIGH=2, /* Craft is panicing, and may take actions to avoid threat | */
 };
 
-//! MAV_COLLISION_THREAT_LEVEL ENUM_END
-constexpr auto MAV_COLLISION_THREAT_LEVEL_ENUM_END = 3;
+//! UXV_COLLISION_THREAT_LEVEL ENUM_END
+constexpr auto UXV_COLLISION_THREAT_LEVEL_ENUM_END = 3;
 
 /** @brief Source of information about this collision. */
-enum class MAV_COLLISION_SRC : uint8_t
+enum class UXV_COLLISION_SRC : uint8_t
 {
     ADSB=0, /* ID field references ADSB_VEHICLE packets | */
     MAVLINK_GPS_GLOBAL_INT=1, /* ID field references MAVLink SRC ID | */
 };
 
-//! MAV_COLLISION_SRC ENUM_END
-constexpr auto MAV_COLLISION_SRC_ENUM_END = 2;
+//! UXV_COLLISION_SRC ENUM_END
+constexpr auto UXV_COLLISION_SRC_ENUM_END = 2;
 
 /** @brief Type of GPS fix */
 enum class GPS_FIX_TYPE : uint8_t

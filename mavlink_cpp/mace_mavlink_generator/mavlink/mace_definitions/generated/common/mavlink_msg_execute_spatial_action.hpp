@@ -21,17 +21,17 @@ struct EXECUTE_SPATIAL_ACTION : mavlink::Message {
 
     uint8_t target_system; /*< System which should execute the command */
     uint8_t target_component; /*< Component which should execute the command, 0 for all components */
-    uint16_t action; /*< Command ID, as defined by MAV_CMD enum. */
-    uint8_t frame; /*< The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h */
+    uint16_t action; /*< Command ID, as defined by UXV_CMD enum. */
+    uint8_t frame; /*< The coordinate system of the MISSION. see UXV_FRAME in mavlink_types.h */
     uint8_t dimension; /*< How many dimensions the position object truly is captured in. */
     uint16_t mask; /*< Mask indicating the invalid dimensions of the position object. 1's indicate a dimesion is invalid. */
-    float param1; /*< Parameter 1, as defined by MAV_CMD enum. */
-    float param2; /*< Parameter 2, as defined by MAV_CMD enum. */
-    float param3; /*< Parameter 3, as defined by MAV_CMD enum. */
-    float param4; /*< Parameter 4, as defined by MAV_CMD enum. */
-    float param5; /*< Parameter 5, as defined by MAV_CMD enum. */
-    float param6; /*< Parameter 6, as defined by MAV_CMD enum. */
-    float param7; /*< Parameter 7, as defined by MAV_CMD enum. */
+    float param1; /*< Parameter 1, as defined by UXV_CMD enum. */
+    float param2; /*< Parameter 2, as defined by UXV_CMD enum. */
+    float param3; /*< Parameter 3, as defined by UXV_CMD enum. */
+    float param4; /*< Parameter 4, as defined by UXV_CMD enum. */
+    float param5; /*< Parameter 5, as defined by UXV_CMD enum. */
+    float param6; /*< Parameter 6, as defined by UXV_CMD enum. */
+    float param7; /*< Parameter 7, as defined by UXV_CMD enum. */
 
 
     inline std::string get_name(void) const override

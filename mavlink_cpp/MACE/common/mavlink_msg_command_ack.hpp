@@ -19,8 +19,8 @@ struct COMMAND_ACK : mavlink::Message {
     static constexpr auto NAME = "COMMAND_ACK";
 
 
-    uint16_t command; /*< Command ID, as defined by MAV_CMD enum. */
-    uint8_t result; /*< See MAV_RESULT enum */
+    uint16_t command; /*< Command ID, as defined by UXV_CMD enum. */
+    uint8_t result; /*< See UXV_RESULT enum */
 
 
     inline std::string get_name(void) const override

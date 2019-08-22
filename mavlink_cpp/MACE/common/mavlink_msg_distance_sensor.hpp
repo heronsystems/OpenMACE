@@ -23,9 +23,9 @@ struct DISTANCE_SENSOR : mavlink::Message {
     uint16_t min_distance; /*< Minimum distance the sensor can measure in centimeters */
     uint16_t max_distance; /*< Maximum distance the sensor can measure in centimeters */
     uint16_t current_distance; /*< Current distance reading */
-    uint8_t type; /*< Type from MAV_DISTANCE_SENSOR enum. */
+    uint8_t type; /*< Type from UXV_DISTANCE_SENSOR enum. */
     uint8_t id; /*< Onboard ID of the sensor */
-    uint8_t orientation; /*< Direction the sensor faces from MAV_SENSOR_ORIENTATION enum. */
+    uint8_t orientation; /*< Direction the sensor faces from UXV_SENSOR_ORIENTATION enum. */
     uint8_t covariance; /*< Measurement covariance in centimeters, 0 for unknown / invalid readings */
 
 

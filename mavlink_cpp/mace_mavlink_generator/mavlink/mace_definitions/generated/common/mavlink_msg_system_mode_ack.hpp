@@ -19,7 +19,7 @@ struct SYSTEM_MODE_ACK : mavlink::Message {
     static constexpr auto NAME = "SYSTEM_MODE_ACK";
 
 
-    uint8_t result; /*< See MAV_RESULT enum */
+    uint8_t result; /*< See UXV_RESULT enum */
 
 
     inline std::string get_name(void) const override
