@@ -58,7 +58,7 @@ public:
             NewlyAvailableHomePosition(home, sender);
         });
 
-        AddCommandLogic<mace::pose::GeodeticPosition_3D>(GroundStationCommands::NEWLY_UPDATED_GLOBAL_ORIGIN, [this](const mace::pose::GeodeticPosition_3D &position, const OptionalParameter<ModuleCharacteristic> &sender){
+        AddCommandLogic<mace::pose::GeodeticPosition_3D>(GroundStationCommands::UPDATE_GLOBAL_ORIGIN, [this](const mace::pose::GeodeticPosition_3D &position, const OptionalParameter<ModuleCharacteristic> &sender){
             UNUSED(sender);
             NewlyUpdatedGlobalOrigin(position);
         });

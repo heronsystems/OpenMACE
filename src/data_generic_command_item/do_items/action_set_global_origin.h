@@ -79,6 +79,7 @@ public:
         if(m_Origin != nullptr)
             delete m_Origin; m_Origin = nullptr;
     }
+
 public:
     void setGlobalOrigin(const mace::pose::Abstract_GeodeticPosition* cmd)
     {

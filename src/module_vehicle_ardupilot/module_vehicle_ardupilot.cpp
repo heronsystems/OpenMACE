@@ -82,6 +82,15 @@ void ModuleVehicleArdupilot::AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
 /// acknowledgement or an event to take place when calling these items.
 ////////////////////////////////////////////////////////////////////////////
 
+void ModuleVehicleArdupilot::Command_SetGlobalOrigin(const Action_SetGlobalOrigin &command, const OptionalParameter<ModuleCharacteristic> &sender)
+{
+    //We first should update the swarms global origin object
+
+    //Next, we should see if we can transmit this to the autopilot so everyone can work within a unified coordinate frame
+
+    //Following the reception of that, update the transform contained within this class
+}
+
 void ModuleVehicleArdupilot::Command_ExecuteSpatialItem(const Action_ExecuteSpatialItem &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     Action_ExecuteSpatialItem commandWithTarget = CopyCommandAndInsertTarget<Action_ExecuteSpatialItem>(command, this->GetAttachedMavlinkEntity());

@@ -15,7 +15,7 @@
 
 #include "module_characteristics.h"
 
-#define BASE_MODULE_LISTENER_ENUMS NEWLY_UPDATED_GLOBAL_ORIGIN
+#define BASE_MODULE_LISTENER_ENUMS UPDATE_GLOBAL_ORIGIN
 
 namespace MaceCore
 {

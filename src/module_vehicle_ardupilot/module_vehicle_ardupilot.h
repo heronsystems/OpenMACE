@@ -133,6 +133,14 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     //!
+    //! \brief Command_SetGlobalOrigin
+    //! \param command
+    //! \param sender
+    //!
+    void Command_SetGlobalOrigin(const command_item::Action_SetGlobalOrigin &command, const OptionalParameter<ModuleCharacteristic> &sender) override;
+
+
+    //!
     //! \brief Command_SystemArm Command a systm arm
     //! \param command Arm/Disarm command
     //! \param sender Sender module

@@ -9,5 +9,6 @@
 #include "action_execute_spatial_item.h"
 #include "action_mission_command.h"
 #include "action_motor_test.h"
+#include "action_set_global_origin.h"
 
 #endif // DO_COMPONENTS_H

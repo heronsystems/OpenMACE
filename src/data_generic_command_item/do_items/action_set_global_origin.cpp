@@ -4,7 +4,7 @@ namespace command_item {
 
 COMMANDTYPE Action_SetGlobalOrigin::getCommandType() const
 {
-    return COMMANDTYPE::CI_ACT_CHANGEMODE;
+    return COMMANDTYPE::CI_ACT_SET_GLOBAL_ORIGIN;
 }
 
 std::string Action_SetGlobalOrigin::getDescription() const

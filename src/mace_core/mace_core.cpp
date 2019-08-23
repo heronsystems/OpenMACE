@@ -806,16 +806,16 @@ void MaceCore::Event_SetGlobalOrigin(const void *sender, const GeodeticPosition_
     m_DataFusion->UpdateGlobalOrigin(position);
 
     if(m_PathPlanning && m_PathPlanning.get() != sender) {
-        m_PathPlanning->MarshalCommand(PathPlanningCommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_PathPlanning->MarshalCommand(PathPlanningCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_GroundStation && m_GroundStation.get() != sender) {
-        m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_GroundStation->MarshalCommand(GroundStationCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_GlobalRTA) {
-        m_GlobalRTA->MarshalCommand(RTACommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_GlobalRTA->MarshalCommand(RTACommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_Sensors) {
-        m_Sensors->MarshalCommand(SensorCommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_Sensors->MarshalCommand(SensorCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
 }
 

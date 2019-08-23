@@ -43,6 +43,11 @@ public:
         /// or an event to take place when calling these items.
         /////////////////////////////////////////////////////////////////////////
 
+
+        this->template AddCommandLogic<command_item::Action_SetGlobalOrigin>(CT::UPDATE_GLOBAL_ORIGIN, [this](const command_item::Action_SetGlobalOrigin &command, const OptionalParameter<ModuleCharacteristic> &sender){
+            Command_SetGlobalOrigin(command, sender);
+        });
+
         this->template AddCommandLogic<command_item::Action_ExecuteSpatialItem>(CT::EXECUTE_ACTION_SPATIALITEM, [this](const command_item::Action_ExecuteSpatialItem &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_ExecuteSpatialItem(command, sender);
         });
@@ -165,6 +170,13 @@ public:
     }
 
 public:
+
+    //!
+    //! \brief Command_SetGlobalOrigin
+    //! \param command
+    //! \param sender
+    //!
+    virtual void Command_SetGlobalOrigin(const command_item::Action_SetGlobalOrigin &command, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief Command_GoTo
