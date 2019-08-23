@@ -138,24 +138,6 @@ public:
     ///              MACE COMMANDS
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //!
-    //! \brief Command_SystemArm Command an ARM/DISARM action
-    //! \param vehicleArm Arm action
-    //!
-    virtual void Command_SystemArm(const command_item::ActionArm &vehicleArm)
-    {
-        UNUSED(vehicleArm);
-    }
-
-    //!
-    //!= \brief Command_ChangeSystemMode Command a CHANGE MODE action
-    //! \param vehicleMode Mode to change to
-    //!
-    virtual void Command_ChangeSystemMode(const command_item::ActionChangeMode &vehicleMode)
-    {
-        UNUSED(vehicleMode);
-    }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///              COMM EVENTS
@@ -382,7 +364,6 @@ protected:
     //! \brief m_ControllersCollection
     //!
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> m_ControllersCollection;
-
 
 };
 

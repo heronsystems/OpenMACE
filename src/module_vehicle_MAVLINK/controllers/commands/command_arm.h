@@ -5,7 +5,7 @@
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 
-namespace MAVLINKVehicleControllers{
+namespace MAVLINKUXVControllers{
 
 
 class CommandARM : public Controller_GenericLongCommand<command_item::ActionArm, MAV_CMD_COMPONENT_ARM_DISARM>

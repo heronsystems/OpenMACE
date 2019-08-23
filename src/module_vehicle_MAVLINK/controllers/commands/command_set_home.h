@@ -6,7 +6,7 @@
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 
-namespace MAVLINKVehicleControllers{
+namespace MAVLINKUXVControllers{
 
 
 class Command_SetHomeLong : public Controller_GenericLongCommand<command_item::SpatialHome, MAV_CMD_DO_SET_HOME>

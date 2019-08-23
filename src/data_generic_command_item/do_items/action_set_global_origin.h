@@ -74,7 +74,7 @@ public:
     Action_SetGlobalOrigin(const Action_SetGlobalOrigin &obj);
     Action_SetGlobalOrigin(const unsigned int &systemOrigin, const unsigned int &systemTarget);
 
-    ~Action_SetGlobalOrigin()
+    ~Action_SetGlobalOrigin() override
     {
         if(m_Origin != nullptr)
             delete m_Origin; m_Origin = nullptr;

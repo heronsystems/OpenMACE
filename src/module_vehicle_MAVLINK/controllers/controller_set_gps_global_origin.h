@@ -17,10 +17,17 @@
 
 namespace MAVLINKUXVControllers {
 
+using CONTROLLER_GLOBALORIGIN_TYPE = Controllers::GenericController<
+    mavlink_message_t, MavlinkEntityKey,
+    TransmitQueueWithKeys<MavlinkEntityKey, ObjectMAVLINKMsgIDTuple<MavlinkEntityKey>>,
+    mace::pose::GeodeticPosition_3D,
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::Action_SetGlobalOrigin>
+>;
+
 using GPSOriginSend = Controllers::ActionSend<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<command_item::Action_SetGlobalOrigin>,
+    CONTROLLER_GLOBALORIGIN_TYPE,
     MavlinkEntityKey,
     command_item::Action_SetGlobalOrigin,
     mavlink_set_gps_global_origin_t,
@@ -30,14 +37,14 @@ using GPSOriginSend = Controllers::ActionSend<
 using GPSOriginFinish = Controllers::ActionFinish<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<command_item::Action_SetGlobalOrigin>,
+    CONTROLLER_GLOBALORIGIN_TYPE,
     MavlinkEntityKey,
-    uint8_t,
+    mace::pose::GeodeticPosition_3D,
     mavlink_gps_global_origin_t,
     MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN
 >;
 
-class Controller_SetGPSGlobalOrigin : public BasicMavlinkController_ModuleKeyed<command_item::Action_SetGlobalOrigin>,
+class Controller_SetGPSGlobalOrigin : public CONTROLLER_GLOBALORIGIN_TYPE,
         public GPSOriginSend,
         public GPSOriginFinish
 {
@@ -47,14 +54,14 @@ private:
 
 protected:
 
-    virtual bool Construct_Send(const command_item::Action_SetGlobalOrigin &commandItem, const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_set_gps_global_origin_t &gpsOriginItem, MavlinkEntityKey &queueObj)
+    bool Construct_Send(const command_item::Action_SetGlobalOrigin &commandItem, const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_set_gps_global_origin_t &gpsOriginItem, MavlinkEntityKey &queueObj) override
     {
         UNUSED(sender);
         UNUSED(target);
         queueObj = this->GetKeyFromSecondaryID(commandItem.getTargetSystem());
 
         gpsOriginItem = initializeGlobalOrigin();
-        gpsOriginItem.target_system = commandItem.getTargetSystem();
+        gpsOriginItem.target_system = static_cast<uint8_t>(commandItem.getTargetSystem());
 
         FillGPSOriginItem(commandItem,gpsOriginItem);
 
@@ -62,11 +69,17 @@ protected:
     }
 
 
-    virtual bool Finish_Receive(const mavlink_mission_ack_t &msg, const MavlinkEntityKey &sender, uint8_t & ack, MavlinkEntityKey &queueObj)
+    bool Finish_Receive(const mavlink_gps_global_origin_t &msg, const MavlinkEntityKey &sender, mace::pose::GeodeticPosition_3D &ack, MavlinkEntityKey &queueObj) override
     {
-        UNUSED(msg);
-        queueObj = sender;
-        ack = msg.type; //this is MAV_MISSION_RESULT
+        UNUSED(sender); UNUSED(queueObj);
+
+        double power = std::pow(10,7);
+        ack.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
+        ack.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+        ack.setAltitude(msg.altitude);
+        ack.setLatitude(msg.latitude / power);
+        ack.setLongitude(msg.longitude / 1000.0); //transforms it from mm to meters
+
         return true;
     }
 
@@ -86,14 +99,14 @@ protected:
 
 public:
     Controller_SetGPSGlobalOrigin(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<command_item::Action_SetGlobalOrigin>(cb, queue, linkChan),
+        CONTROLLER_GLOBALORIGIN_TYPE(cb, queue, linkChan),
         GPSOriginSend(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_gps_global_origin_t>(mavlink_msg_set_gps_global_origin_encode_chan)),
         GPSOriginFinish(this, mavlink_msg_gps_global_origin_decode)
     {
 
     }
 
-    virtual ~Controller_SetGPSGlobalOrigin() = default;
+    ~Controller_SetGPSGlobalOrigin() override = default;
 
 };
 

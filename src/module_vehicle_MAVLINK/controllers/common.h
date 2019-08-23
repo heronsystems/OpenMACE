@@ -9,7 +9,7 @@
 
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 //!
 //! \brief ObjectMaceMsgIDTuple And class that wraps up some object with an integer identifying the mace message ID

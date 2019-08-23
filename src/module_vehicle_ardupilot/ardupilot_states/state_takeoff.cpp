@@ -78,7 +78,7 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
         AbstractStateArdupilot::handleCommand(command);
-        MAVLINKVehicleControllers::ControllerSystemMode* modeController = (MAVLINKVehicleControllers::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
+        MAVLINKUXVControllers::ControllerSystemMode* modeController = (MAVLINKUXVControllers::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
         modeController->AddLambda_Finished(this, [this,modeController](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
             {
@@ -120,7 +120,7 @@ void State_Takeoff::OnEnter()
 {
     //check that the vehicle is truely armed and switch us into the guided mode
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    auto controllerSystemMode = new MAVLINKVehicleControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
         controllerSystemMode->Shutdown();
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
@@ -139,7 +139,7 @@ void State_Takeoff::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    MAVLINKVehicleControllers::MAVLINKModeStruct commandMode;
+    MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
     commandMode.targetID = Owner().getMAVLINKID();
     commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString("GUIDED");
     controllerSystemMode->Send(commandMode,sender,target);

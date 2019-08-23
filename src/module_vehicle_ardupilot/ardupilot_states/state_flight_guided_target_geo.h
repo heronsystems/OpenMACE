@@ -53,7 +53,7 @@ private:
     void constructAndSendTarget(const command_item::Action_DynamicTarget &command)
     {
         MavlinkEntityKey sender = 255;
-        static_cast<MAVLINKVehicleControllers::ControllerGuidedTargetItem_Global<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->At("GeodeticTargetController"))->Broadcast(command, sender);
+        static_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Global<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->At("GeodeticTargetController"))->Broadcast(command, sender);
     }
 
 private:

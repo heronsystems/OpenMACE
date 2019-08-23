@@ -26,6 +26,7 @@ namespace MaceCore
 
 enum class ExternalLinkCommands
 {
+    BASE_MODULE_LISTENER_ENUMS,
     BASE_MODULE_VEHICLE_LISTENER_ENUMS,
     GENERIC_MODULE_BOUNDARY_LISTENER_ENUMS,
     REQUEST_REMOTE_BOUNDARY,
@@ -34,11 +35,6 @@ enum class ExternalLinkCommands
     NEWLY_AVAILABLE_HOME_POSITION,
     NEWLY_AVAILABLE_MODULE,
     RECEIVED_MISSION_ACK
-};
-
-template <class U>
-class Testing{
-
 };
 
 class MACE_CORESHARED_EXPORT IModuleCommandExternalLink :

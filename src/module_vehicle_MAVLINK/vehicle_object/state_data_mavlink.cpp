@@ -2,19 +2,31 @@
 
 StateData_MAVLINK::StateData_MAVLINK()
 {
-    m_swarmTOvehicle = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
-    m_swarmTOvehicle.translation() = Eigen::Vector3d::Zero();
+    m_swarmTOvehicleHome = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
+    m_swarmTOvehicleHome.translation() = Eigen::Vector3d::Zero();
 
-    m_vehicleTOswarm = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
-    m_swarmTOvehicle.translation() = Eigen::Vector3d::Zero();
+    m_swarmTOvehicleEKF = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
+    m_swarmTOvehicleEKF.translation() = Eigen::Vector3d::Zero();
+
+    m_vehicleHomeTOswarm = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
+    m_vehicleHomeTOswarm.translation() = Eigen::Vector3d::Zero();
+
+    m_vehicleEKFTOswarm = Eigen::Transform<double, 3, Eigen::Affine>::Identity();
+    m_vehicleEKFTOswarm.translation() = Eigen::Vector3d::Zero();
 
     vehicleGlobalOrigin.AddNotifier(this,[this]{
-        updatePositionalTransformations();
+        updatePositionalTransformations_EKF();
+    });
+
+    vehicleGlobalHome.AddNotifier(this,[this]{
+        updatePositionalTransformations_Home();
     });
 
     swarmGlobalOrigin.AddNotifier(this,[this]{
-        updatePositionalTransformations();
+        updatePositionalTransformations_Home();
+        updatePositionalTransformations_EKF();
     });
+
 }
 
 std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> StateData_MAVLINK::GetTopicData()
@@ -46,24 +58,46 @@ std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> StateData_MAVLINK:
 }
 
 
-void StateData_MAVLINK::updatePositionalTransformations()
+void StateData_MAVLINK::updatePositionalTransformations_Home()
+{
+    //check to see if both the origins have been set, if not, we have no knowledge
+    //on how to achieve the correct transformation
+    if(swarmGlobalOrigin.hasBeenSet() && vehicleGlobalHome.hasBeenSet())
+    {
+        mace::pose::GeodeticPosition_3D swarmOrigin = swarmGlobalOrigin.get();
+        mace::pose::GeodeticPosition_3D vehicleHome = vehicleGlobalHome.get();
+
+        double bearingTo = swarmOrigin.polarBearingTo(&vehicleHome);
+        double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleHome);
+        double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleHome);
+
+        double distanceTranslateX = translationalDistance * cos(correctForAcuteAngle(bearingTo));
+        double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
+        correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
+
+        m_vehicleHomeTOswarm.translation() = Eigen::Vector3d(distanceTranslateX, distanceTranslateY, altitudeDifference);
+        m_swarmTOvehicleHome.translation() = m_vehicleHomeTOswarm.translation() * -1;
+    }
+}
+
+void StateData_MAVLINK::updatePositionalTransformations_EKF()
 {
     //check to see if both the origins have been set, if not, we have no knowledge
     //on how to achieve the correct transformation
     if(swarmGlobalOrigin.hasBeenSet() && vehicleGlobalOrigin.hasBeenSet())
     {
         mace::pose::GeodeticPosition_3D swarmOrigin = swarmGlobalOrigin.get();
-        mace::pose::GeodeticPosition_3D vehicleOrigin = vehicleGlobalOrigin.get();
+        mace::pose::GeodeticPosition_3D vehicleEKF = vehicleGlobalOrigin.get();
 
-        double bearingTo = swarmOrigin.polarBearingTo(&vehicleOrigin);
-        double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleOrigin);
-        double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleOrigin);
+        double bearingTo = swarmOrigin.polarBearingTo(&vehicleEKF);
+        double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleEKF);
+        double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleEKF);
 
         double distanceTranslateX = translationalDistance * cos(correctForAcuteAngle(bearingTo));
         double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
         correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
 
-        m_vehicleTOswarm.translation() = Eigen::Vector3d(distanceTranslateX, distanceTranslateY, altitudeDifference);
-        m_swarmTOvehicle.translation() = m_vehicleTOswarm.translation() * -1;
+        m_vehicleEKFTOswarm.translation() = Eigen::Vector3d(distanceTranslateX, distanceTranslateY, altitudeDifference);
+        m_swarmTOvehicleEKF.translation() = m_vehicleEKFTOswarm.translation() * -1;
     }
 }

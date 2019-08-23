@@ -82,17 +82,15 @@ void ModuleVehicleArdupilot::AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
 /// acknowledgement or an event to take place when calling these items.
 ////////////////////////////////////////////////////////////////////////////
 
-void ModuleVehicleArdupilot::Command_SetGlobalOrigin(const Action_SetGlobalOrigin &command, const OptionalParameter<ModuleCharacteristic> &sender)
+void ModuleVehicleArdupilot::Command_SetGlobalOrigin(const Action_SetGlobalOrigin &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
-    //We first should update the swarms global origin object
-
-    //Next, we should see if we can transmit this to the autopilot so everyone can work within a unified coordinate frame
-
-    //Following the reception of that, update the transform contained within this class
+    UNUSED(sender);
+    handleGlobalOriginController(command);
 }
 
 void ModuleVehicleArdupilot::Command_ExecuteSpatialItem(const Action_ExecuteSpatialItem &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     Action_ExecuteSpatialItem commandWithTarget = CopyCommandAndInsertTarget<Action_ExecuteSpatialItem>(command, this->GetAttachedMavlinkEntity());
 
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
@@ -106,6 +104,7 @@ void ModuleVehicleArdupilot::Command_ExecuteSpatialItem(const Action_ExecuteSpat
 //!
 void ModuleVehicleArdupilot::Request_FullDataSync(const int &targetSystem, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> objectData = vehicleData->state->GetTopicData();
     this->PublishVehicleData(targetSystem,objectData);
     //vehicleData->m_MissionController->requestMission();
@@ -118,6 +117,7 @@ void ModuleVehicleArdupilot::Request_FullDataSync(const int &targetSystem, const
 //!
 void ModuleVehicleArdupilot::Command_SystemArm(const command_item::ActionArm &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     //Temporary solution to solve boadcasting until rework of commands can be done
     command_item::ActionArm commandWithTarget = CopyCommandAndInsertTarget<command_item::ActionArm>(command, this->GetAttachedMavlinkEntity());
 
@@ -139,6 +139,7 @@ void ModuleVehicleArdupilot::Command_SystemArm(const command_item::ActionArm &co
 //!
 void ModuleVehicleArdupilot::Command_VehicleTakeoff(const command_item::SpatialTakeoff &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     //Temporary solution to solve boadcasting until rework of commands can be done
     command_item::SpatialTakeoff commandWithTarget = CopyCommandAndInsertTarget<command_item::SpatialTakeoff>(command, this->GetAttachedMavlinkEntity());
 
@@ -160,6 +161,7 @@ void ModuleVehicleArdupilot::Command_VehicleTakeoff(const command_item::SpatialT
 //!
 void ModuleVehicleArdupilot::Command_Land(const command_item::SpatialLand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     //Temporary solution to solve boadcasting until rework of commands can be done
     command_item::SpatialLand commandWithTarget = CopyCommandAndInsertTarget<command_item::SpatialLand>(command, this->GetAttachedMavlinkEntity());
 
@@ -181,6 +183,7 @@ void ModuleVehicleArdupilot::Command_Land(const command_item::SpatialLand &comma
 //!
 void ModuleVehicleArdupilot::Command_ReturnToLaunch(const command_item::SpatialRTL &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     //Temporary solution to solve boadcasting until rework of commands can be done
     command_item::SpatialRTL commandWithTarget = CopyCommandAndInsertTarget<command_item::SpatialRTL>(command, this->GetAttachedMavlinkEntity());
 
@@ -198,6 +201,7 @@ void ModuleVehicleArdupilot::Command_ReturnToLaunch(const command_item::SpatialR
 //!
 void ModuleVehicleArdupilot::Command_MissionState(const command_item::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     //Temporary solution to solve boadcasting until rework of commands can be done
     command_item::ActionMissionCommand commandWithTarget = CopyCommandAndInsertTarget<command_item::ActionMissionCommand>(command, this->GetAttachedMavlinkEntity());
 
@@ -220,6 +224,7 @@ void ModuleVehicleArdupilot::Command_MissionState(const command_item::ActionMiss
 //!
 void ModuleVehicleArdupilot::Command_ChangeSystemMode(const command_item::ActionChangeMode &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     //Temporary solution to solve boadcasting until rework of commands can be done
     command_item::ActionChangeMode commandWithTarget = CopyCommandAndInsertTarget<command_item::ActionChangeMode>(command, this->GetAttachedMavlinkEntity());
 
@@ -237,7 +242,6 @@ void ModuleVehicleArdupilot::Command_ChangeSystemMode(const command_item::Action
 void ModuleVehicleArdupilot::Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-
     ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     AbstractCommandItemPtr currentCommand = std::make_shared<command_item::Action_DynamicTarget>(command);
     outerState->handleCommand(currentCommand);
@@ -250,6 +254,7 @@ void ModuleVehicleArdupilot::Command_ExecuteDynamicTarget(const command_item::Ac
 //!
 void ModuleVehicleArdupilot::Command_IssueGeneralCommand(const std::shared_ptr<command_item::AbstractCommandItem> &command)
 {
+    UNUSED(command);
     std::cout<<"Ken: we have seen the issuing of a general command!!!! Pay attention to this."<<std::endl;
 }
 
@@ -265,6 +270,7 @@ void ModuleVehicleArdupilot::Command_IssueGeneralCommand(const std::shared_ptr<c
 //!
 void ModuleVehicleArdupilot::Command_GetHomePosition(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(vehicleID); UNUSED(sender);
     //    if((vehicleData) && (vehicleData->getSystemID() == vehicleID))
     //        vehicleData->command->getSystemHome();
 }
@@ -275,6 +281,7 @@ void ModuleVehicleArdupilot::Command_GetHomePosition(const int &vehicleID, const
 //!
 void ModuleVehicleArdupilot::Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
     std::stringstream buffer;
     buffer << vehicleHome;
 
@@ -326,27 +333,27 @@ void ModuleVehicleArdupilot::Command_UploadMission(const MissionItem::MissionLis
     {
         //request the current mission on the vehicle
         this->prepareMissionController();
-        MAVLINKVehicleControllers::ControllerMission* missionController = static_cast<MAVLINKVehicleControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
+        MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
 
-            missionController->AddLambda_Finished(this, [this, missionController, missionList](const bool completed, const uint8_t code){
-                UNUSED(code);
-                if (completed)
-                    printf("Mission Upload Completed\n");
-                else
-                    printf("Mission Upload Failed\n");
-                //Ken Fix: We should handle stuff related to the completion and the code
-                //update the data contained for the vehicle mission
-                //vehicleData->mission->currentAutoMission.set(missionList);
-                //we should notify everyone that this the current auto mission
-                missionController->Shutdown();
-            });
+        missionController->AddLambda_Finished(this, [this, missionController, missionList](const bool completed, const uint8_t code){
+            UNUSED(code);
+            if (completed)
+                printf("Mission Upload Completed\n");
+            else
+                printf("Mission Upload Failed\n");
+            //Ken Fix: We should handle stuff related to the completion and the code
+            //update the data contained for the vehicle mission
+            //vehicleData->mission->currentAutoMission.set(missionList);
+            //we should notify everyone that this the current auto mission
+            missionController->Shutdown();
+        });
 
-//            MavlinkEntityKey target = missionList.getVehicleID();
-//            command_item::SpatialHome home;
-//            home.setTargetSystem(2);
-//            home.setOriginatingSystem(255);
-//            home.setPosition(Base3DPosition(-35.3625523,149.165201,15));
-//            missionController->UploadMission(missionList,home,target);
+        //            MavlinkEntityKey target = missionList.getVehicleID();
+        //            command_item::SpatialHome home;
+        //            home.setTargetSystem(2);
+        //            home.setOriginatingSystem(255);
+        //            home.setPosition(Base3DPosition(-35.3625523,149.165201,15));
+        //            missionController->UploadMission(missionList,home,target);
         //        if(vehicleData)
         //            vehicleData->m_MissionController->transmitMission(missionList);
         break;
@@ -521,13 +528,13 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
         vehicleData->connectCallback(this);
         vehicleData->connectTargetCallback(ModuleVehicleArdupilot::staticCallbackFunction_VehicleTarget, this);
 
-//        this->vehicleData->mission->vehicleHomePosition.AddNotifier(this,[this]{
-//            TransformDynamicMissionQueue();
-//        });
+        //        this->vehicleData->mission->vehicleHomePosition.AddNotifier(this,[this]{
+        //            TransformDynamicMissionQueue();
+        //        });
 
         //request the current mission on the vehicle
         this->prepareMissionController();
-        MAVLINKVehicleControllers::ControllerMission* missionController = static_cast<MAVLINKVehicleControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
+        MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
         if(missionController)
         {
             missionController->AddLambda_Finished(this, [missionController](const bool completed, const uint8_t code){
@@ -544,11 +551,9 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
             missionController->GetMissions(systemID);
         }
 
-        m_PublicVehicleID = systemID;
-
         MaceCore::ModuleCharacteristic moduleCharacterstic = this->GetCharacteristic();
         ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr){
-            ptr->Events_NewVehicle(this, systemID, moduleCharacterstic);
+            ptr->Events_NewVehicle(this, static_cast<uint8_t>(systemID), moduleCharacterstic);
         });
 
         if(stateMachine)
@@ -559,6 +564,7 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
 
         stateMachine = new hsm::StateMachine();
         stateMachine->Initialize<ardupilot::state::State_Unknown>(vehicleData.get());
+
     }
 
     std::string currentFlightMode = vehicleData->ardupilotMode.parseMAVLINK(heartbeatMSG);
@@ -603,6 +609,7 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
     ModuleVehicleMAVLINK::cbi_VehicleStateData(systemID,ptrHeartbeat);
 
     ProgressStateMachineStates();
+
 }
 
 //!
@@ -697,49 +704,100 @@ void ModuleVehicleArdupilot::ProgressStateMachineStates()
 
 void ModuleVehicleArdupilot::UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue)
 {
-//    if(this->vehicleData != nullptr)
-//    {
-//        this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.set(queue);
-//        //Transform the data into the frame we need
-//        this->TransformDynamicMissionQueue();
-//    }
+    //    if(this->vehicleData != nullptr)
+    //    {
+    //        this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.set(queue);
+    //        //Transform the data into the frame we need
+    //        this->TransformDynamicMissionQueue();
+    //    }
 }
 
 void ModuleVehicleArdupilot::TransformDynamicMissionQueue()
 {
-//    command_item::SpatialHome home = this->vehicleData->mission->vehicleHomePosition.get();
-//    if(home.getPosition().has2DPositionSet() && (this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.hasBeenSet())) //if the position has been set we can transform the data
-//    {
-//        TargetItem::DynamicMissionQueue queue = this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.get();
+    //    command_item::SpatialHome home = this->vehicleData->mission->vehicleHomePosition.get();
+    //    if(home.getPosition().has2DPositionSet() && (this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.hasBeenSet())) //if the position has been set we can transform the data
+    //    {
+    //        TargetItem::DynamicMissionQueue queue = this->vehicleData->mission->currentDynamicQueue_GlobalCartesian.get();
 
-//        //the sent queue will be in the local frame relative to the global origin
-//        //we therefore have to transform this data into the local frame relative
-//        //to the vehicles origin/home position
+    //        //the sent queue will be in the local frame relative to the global origin
+    //        //we therefore have to transform this data into the local frame relative
+    //        //to the vehicles origin/home position
 
-//        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+    //        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
 
-//        mace::pose::GeodeticPosition_3D vehicleOrigin(home.getPosition().getX(),home.getPosition().getY(),home.getPosition().getZ());
+    //        mace::pose::GeodeticPosition_3D vehicleOrigin(home.getPosition().getX(),home.getPosition().getY(),home.getPosition().getZ());
 
-//        double compassBearing = globalOrigin.compassBearingTo(vehicleOrigin); //this is degrees not radians
-//        double distanceBetween = globalOrigin.distanceBetween2D(vehicleOrigin);
-//        double elevationDifference = globalOrigin.deltaAltitude(vehicleOrigin);
+    //        double compassBearing = globalOrigin.compassBearingTo(vehicleOrigin); //this is degrees not radians
+    //        double distanceBetween = globalOrigin.distanceBetween2D(vehicleOrigin);
+    //        double elevationDifference = globalOrigin.deltaAltitude(vehicleOrigin);
 
-//        TargetItem::DynamicTargetList targetList;
+    //        TargetItem::DynamicTargetList targetList;
 
-//        for(size_t i = 0; i < queue.getDynamicTargetList()->listSize(); i++)
-//        {
-//            TargetItem::CartesianDynamicTarget target = queue.getDynamicTargetList()->getTargetAtIndex(i);
-//            mace::pose::CartesianPosition_3D position = target.getPosition();
-//            position.applyPositionalShiftFromCompass(distanceBetween,mace::math::reverseBearing(mace::math::convertDegreesToRadians(compassBearing)));
-//            position.setZPosition(position.getZPosition() - elevationDifference);
-//            target.setPosition(position);
-//            targetList.appendDynamicTarget(target);
-//        }
+    //        for(size_t i = 0; i < queue.getDynamicTargetList()->listSize(); i++)
+    //        {
+    //            TargetItem::CartesianDynamicTarget target = queue.getDynamicTargetList()->getTargetAtIndex(i);
+    //            mace::pose::CartesianPosition_3D position = target.getPosition();
+    //            position.applyPositionalShiftFromCompass(distanceBetween,mace::math::reverseBearing(mace::math::convertDegreesToRadians(compassBearing)));
+    //            position.setZPosition(position.getZPosition() - elevationDifference);
+    //            target.setPosition(position);
+    //            targetList.appendDynamicTarget(target);
+    //        }
 
-//        TargetItem::DynamicMissionQueue transformedQueue(queue.getAssociatedMissionKey(),queue.getAssociatedMissionItem());
-//        transformedQueue.setDynamicTargetList(targetList);
-//        this->vehicleData->mission->currentDynamicQueue_LocalCartesian.set(transformedQueue);
-//    }
+    //        TargetItem::DynamicMissionQueue transformedQueue(queue.getAssociatedMissionKey(),queue.getAssociatedMissionItem());
+    //        transformedQueue.setDynamicTargetList(targetList);
+    //        this->vehicleData->mission->currentDynamicQueue_LocalCartesian.set(transformedQueue);
+    //    }
+}
+
+void ModuleVehicleArdupilot::handleGlobalOriginController(const command_item::Action_SetGlobalOrigin &originObj)
+{
+    if((vehicleData != nullptr) && (originObj.getGlobalOrigin()->areTranslationalComponentsValid())) // this means that this module currently has a vehicle
+    {
+        mace::pose::GeodeticPosition_3D* originPosition = originObj.getGlobalOrigin()->positionAs<mace::pose::GeodeticPosition_3D>();
+        vehicleData->state->swarmGlobalOrigin.set(*originPosition);
+        if(m_ControllersCollection.Exist("Controllers_GlobalOrigin"))
+        {
+            auto globalOriginOld = static_cast<MAVLINKUXVControllers::Controller_SetGPSGlobalOrigin*>(m_ControllersCollection.At("Controllers_GlobalOrigin"));
+            if(globalOriginOld != nullptr)
+            {
+                std::cout << "Shutting down the previous global origin controller which was still active prior to receiving this update." << std::endl;
+                globalOriginOld->Shutdown();
+
+                // Need to wait for the old controller to be shutdown.
+                std::unique_lock<std::mutex> controllerLock(m_mutex_GlobalOriginController);
+                while (!m_oldGlobalOriginControllerShutdown)
+                    m_condition_GlobalOriginController.wait(controllerLock);
+                m_oldGlobalOriginControllerShutdown = false;
+                controllerLock.unlock();
+            }
+        }
+
+
+        //create "stateless" global origin controller that exists within the module itself
+        auto globalOriginController = new MAVLINKUXVControllers::Controller_SetGPSGlobalOrigin(vehicleData.get(), m_TransmissionQueue, m_LinkChan);
+        globalOriginController->AddLambda_Finished(this, [this, globalOriginController](const bool completed, const mace::pose::GeodeticPosition_3D receivedOrigin){
+            globalOriginController->Shutdown();
+
+            if(!completed)
+                return;
+
+            //The received origin from the autopilot is the one it will reference
+            if(this->vehicleData != nullptr)
+                this->vehicleData->state->vehicleGlobalOrigin.set(receivedOrigin);
+        });
+
+        globalOriginController->setLambda_Shutdown([this]()
+        {
+            auto ptr = m_ControllersCollection.Remove("armController");
+            delete ptr;
+        });
+
+        MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
+        MavlinkEntityKey sender = 255;
+        command_item::Action_SetGlobalOrigin originCopy(originObj);
+        globalOriginController->Send(originCopy, sender, target);
+        m_ControllersCollection.Insert("Controllers_GlobalOrigin", globalOriginController);
+    }
 }
 
 void ModuleVehicleArdupilot::prepareMissionController()
@@ -747,7 +805,7 @@ void ModuleVehicleArdupilot::prepareMissionController()
     //If there is an old mission controller still running, allow us to shut it down
     if(m_ControllersCollection.Exist("missionController"))
     {
-        auto missionControllerOld = static_cast<MAVLINKVehicleControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
+        auto missionControllerOld = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
         if(missionControllerOld != nullptr)
         {
             std::cout << "Shutting down previous mission controller, which was still active" << std::endl;
@@ -763,9 +821,9 @@ void ModuleVehicleArdupilot::prepareMissionController()
     }
 
     //create "stateless" mission controller that exists within the module itself
-    auto missionController = new MAVLINKVehicleControllers::ControllerMission(vehicleData.get(), m_TransmissionQueue, m_LinkChan);
+    auto missionController = new MAVLINKUXVControllers::ControllerMission(vehicleData.get(), m_TransmissionQueue, m_LinkChan);
 
-    missionController->setLambda_DataReceived([this](const MavlinkEntityKey key, const MAVLINKVehicleControllers::MissionDownloadResult &data){
+    missionController->setLambda_DataReceived([this](const MavlinkEntityKey key, const MAVLINKUXVControllers::MissionDownloadResult &data){
 
         UNUSED(key);
 
@@ -788,7 +846,7 @@ void ModuleVehicleArdupilot::prepareMissionController()
 
     missionController->setLambda_Shutdown([this, missionController]() mutable
     {
-        auto ptr = static_cast<MAVLINKVehicleControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
+        auto ptr = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
 
         if (ptr == missionController && ptr != nullptr)
         {

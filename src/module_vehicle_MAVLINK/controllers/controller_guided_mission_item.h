@@ -15,7 +15,7 @@
 #include "module_vehicle_MAVLINK/controllers/common.h"
 #include "module_vehicle_MAVLINK/mavlink_coordinate_frames.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template <typename T>
 using GuidedMISend = Controllers::ActionSend<

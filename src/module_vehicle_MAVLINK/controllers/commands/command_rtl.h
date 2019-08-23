@@ -5,7 +5,7 @@
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 
 class CommandRTL : public Controller_GenericLongCommand<command_item::SpatialRTL, MAV_CMD_NAV_RETURN_TO_LAUNCH>

@@ -14,6 +14,7 @@ namespace MaceCore
 
 enum class VehicleCommands
 {
+    BASE_MODULE_LISTENER_ENUMS,
     BASE_MODULE_VEHICLE_LISTENER_ENUMS,
     REQUEST_DUMMY_FUNCTION,
     UPDATE_MISSION_KEY,

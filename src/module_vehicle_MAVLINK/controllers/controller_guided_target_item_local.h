@@ -19,7 +19,7 @@
 
 using namespace mace::pose;
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template <typename T>
 using GuidedTGTLocalBroadcast = Controllers::ActionBroadcast<

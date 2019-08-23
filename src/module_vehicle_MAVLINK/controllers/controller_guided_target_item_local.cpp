@@ -33,7 +33,7 @@ I.e x=1,y=2,z=3 is 1m North, 2m East and 3m Down from the origin
 Velocities are relative to the current vehicle heading. Use this to specify the speed forward, right and down (or the opposite if you use negative values).
 */
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template<>
 void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillTargetItem(const command_item::Action_DynamicTarget &command, mavlink_set_position_target_local_ned_t &mavlinkItem)

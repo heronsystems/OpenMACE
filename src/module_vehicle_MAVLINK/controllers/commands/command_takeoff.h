@@ -5,7 +5,7 @@
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 class CommandTakeoff : public Controller_GenericLongCommand<command_item::SpatialTakeoff, MAV_CMD_NAV_TAKEOFF>
 {

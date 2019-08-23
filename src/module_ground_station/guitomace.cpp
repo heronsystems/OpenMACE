@@ -312,11 +312,16 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     newCommand.setTargetSystem(vehicleID);
     newCommand.setOriginatingSystem(255);
     command_target::DynamicTarget newTarget;
-    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
-    currentVelocityTarget.setXVelocity(5.0);
-    currentVelocityTarget.setYVelocity(0.0);
-    currentVelocityTarget.setZVelocity(0.0);
-    newTarget.setVelocity(&currentVelocityTarget);
+    mace::pose::CartesianPosition_3D currentPositionTarget;
+    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_NED);
+    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+    currentPositionTarget.updatePosition(10,0,-20);
+    newTarget.setPosition(&currentPositionTarget);
+//    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+//    currentVelocityTarget.setXVelocity(5.0);
+//    currentVelocityTarget.setYVelocity(0.0);
+//    currentVelocityTarget.setZVelocity(0.0);
+//    newTarget.setVelocity(&currentVelocityTarget);
 
     mace::pose::Rotation_2D yaw;
     yaw.setPhi(M_PI_4);

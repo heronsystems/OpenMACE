@@ -13,7 +13,7 @@
 
 #include "module_vehicle_MAVLINK/controllers/common.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template <typename T>
 using ActionSend_LongCommand_TargedWithResponse = Controllers::ActionSend<

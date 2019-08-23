@@ -7,7 +7,7 @@
 
 #include "mavlink.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 
 class CommandLand : public Controller_GenericLongCommand<command_item::SpatialLand, MAV_CMD_NAV_LAND>

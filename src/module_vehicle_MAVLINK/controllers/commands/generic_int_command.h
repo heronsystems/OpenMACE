@@ -12,7 +12,7 @@
 
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template <typename T>
 using ActionSend_IntCommand_TargedWithResponse = Controllers::ActionSend<

@@ -11,7 +11,7 @@ MAV_FRAME_GLOBAL_RELATIVE_TERRAIN_ALT: alt is meters above terrain
 MAV_FRAME_GLOBAL_RELATIVE_TERRAIN_ALT_INT: alt is meters above terrain
 */
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template<>
 void ControllerGuidedTargetItem_Global<command_item::Action_DynamicTarget>::FillTargetItem(const command_item::Action_DynamicTarget &command, mavlink_set_position_target_global_int_t &mavlinkItem)

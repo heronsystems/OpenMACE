@@ -16,7 +16,7 @@ void State_FlightGuided_SpatialItem::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
-    dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Shutdown();
+    dynamic_cast<MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Shutdown();
 }
 
 AbstractStateArdupilot* State_FlightGuided_SpatialItem::getClone() const
@@ -99,7 +99,7 @@ void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractComma
 
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are goto
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    auto goToController = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto goToController = new MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     goToController->AddLambda_Finished(this, [this](const bool completed, const uint8_t finishCode){
         if(!completed)
         {
@@ -189,7 +189,7 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
     MavlinkEntityKey sender = 255;
     command_item::SpatialWaypoint waypoint(sender, cmd->getTargetSystem());
     waypoint.setPosition(spatialCommand->getPosition());
-    dynamic_cast<MAVLINKVehicleControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
+    dynamic_cast<MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
 }
 
 } //end of namespace ardupilot

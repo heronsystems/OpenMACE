@@ -39,7 +39,8 @@ public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalHome;
 
 private:
-    void updatePositionalTransformations();
+    void updatePositionalTransformations_Home();
+    void updatePositionalTransformations_EKF();
 
 public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalPosition;
@@ -50,18 +51,32 @@ public:
 
 
 public:
-    Eigen::Transform<double,3,Eigen::Affine> getTransform_VehicleTOSwarm() const
+    Eigen::Transform<double,3,Eigen::Affine> getTransform_VehicleHomeTOSwarm() const
     {
-        return m_vehicleTOswarm;
+        return m_vehicleHomeTOswarm;
     }
 
-    Eigen::Transform<double,3,Eigen::Affine> getTransform_SwarmTOVehicle() const
+    Eigen::Transform<double,3,Eigen::Affine> getTransform_VehicleEKFTOSwarm() const
     {
-        return m_swarmTOvehicle;
+        return m_vehicleEKFTOswarm;
     }
+
+    Eigen::Transform<double,3,Eigen::Affine> getTransform_SwarmTOVehicleHome() const
+    {
+        return m_swarmTOvehicleHome;
+    }
+
+    Eigen::Transform<double,3,Eigen::Affine> getTransform_SwarmTOVehicleEKF() const
+    {
+        return m_swarmTOvehicleEKF;
+    }
+
 private:
-    Eigen::Transform<double,3,Eigen::Affine> m_vehicleTOswarm;
-    Eigen::Transform<double,3,Eigen::Affine> m_swarmTOvehicle;
+    Eigen::Transform<double,3,Eigen::Affine> m_vehicleHomeTOswarm;
+    Eigen::Transform<double,3,Eigen::Affine> m_vehicleEKFTOswarm;
+
+    Eigen::Transform<double,3,Eigen::Affine> m_swarmTOvehicleHome;
+    Eigen::Transform<double,3,Eigen::Affine> m_swarmTOvehicleEKF;
 };
 
 #endif // STATE_DATA_MAVLINK_H

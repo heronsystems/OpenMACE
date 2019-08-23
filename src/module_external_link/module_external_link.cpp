@@ -636,6 +636,12 @@ void ModuleExternalLink::PublishMissionData(const MaceCore::ModuleCharacteristic
 /// acknowledgement or an event to take place when calling these items.
 ////////////////////////////////////////////////////////////////////////////
 
+void ModuleExternalLink::Command_SetGlobalOrigin(const Action_SetGlobalOrigin &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(sender);
+}
+
+
 void ModuleExternalLink::Command_ExecuteSpatialItem(const Action_ExecuteSpatialItem &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     unsigned int targetMavlinkSystemID = goTo.getTargetSystem();

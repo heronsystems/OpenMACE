@@ -30,6 +30,7 @@
 #include "controllers/I_message_notifier.h"
 
 #include "module_vehicle_MAVLINK/controllers/controller_mission.h"
+#include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
 
 using namespace std::placeholders;
 
@@ -137,8 +138,7 @@ public:
     //! \param command
     //! \param sender
     //!
-    void Command_SetGlobalOrigin(const command_item::Action_SetGlobalOrigin &command, const OptionalParameter<ModuleCharacteristic> &sender) override;
-
+    void Command_SetGlobalOrigin(const command_item::Action_SetGlobalOrigin &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Command_SystemArm Command a systm arm
@@ -344,7 +344,17 @@ public:
     }
 
 private:
+    void handleGlobalOriginController(const Action_SetGlobalOrigin &originObj);
+
+    std::mutex m_mutex_GlobalOriginController;
+    std::condition_variable m_condition_GlobalOriginController;
+    bool m_oldGlobalOriginControllerShutdown = false;
+
+private:
     void prepareMissionController();
+    std::mutex m_mutex_MissionController;
+    std::condition_variable m_condition_MissionController;
+    bool m_oldMissionControllerShutdown = false;
 
 private:
     static void staticCallbackFunction_VehicleTarget(void *p, MissionTopic::VehicleTargetTopic &target)
@@ -354,7 +364,6 @@ private:
 
     void callbackFunction_VehicleTarget(const MissionTopic::VehicleTargetTopic &target)
     {
-//        std::cout << target << std::endl;
         std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrTarget = std::make_shared<MissionTopic::VehicleTargetTopic>(target);
         ModuleVehicleMAVLINK::cbi_VehicleMissionData(target.getVehicleID(),ptrTarget);
     }
@@ -376,20 +385,11 @@ private:
     std::shared_ptr<ArdupilotVehicleObject> vehicleData;
 
 private:
-
-    uint8_t m_PublicVehicleID;
-
     std::mutex m_Mutex_StateMachine;
     hsm::StateMachine* stateMachine; /**< Member variable containing a pointer to the state
  machine. This state machine evolves the state per event updates and/or external commands. */
 
     std::unordered_map<std::string, Controllers::IController<mavlink_message_t, int>*> m_TopicToControllers;
-
-//    MAVLINKVehicleControllers::ControllerMission* m_MissionController;
-    std::mutex m_mutex_MissionController;
-
-    std::condition_variable m_condition_MissionController;
-    bool m_oldMissionControllerShutdown = false;
 
     TransmitQueue *m_TransmissionQueue;
 };

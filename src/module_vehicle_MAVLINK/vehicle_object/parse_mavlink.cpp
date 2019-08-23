@@ -137,11 +137,11 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         if(state->vehicleLocalPosition.set(localPosition))
         {
-            if(!state->swarmGlobalOrigin.get().isAnyPositionValid() || !state->vehicleGlobalOrigin.get().isAnyPositionValid())
-                break;
+//            if(!state->swarmGlobalOrigin.get().isAnyPositionValid() || !state->vehicleGlobalOrigin.get().isAnyPositionValid()) //This check may not be necessary as handled via autopilot correctly
+//                break;
 
             //Before publishing the topic we need to transform it
-            localPosition.applyTransformation(state->getTransform_VehicleTOSwarm());
+            localPosition.applyTransformation(state->getTransform_VehicleHomeTOSwarm());
             std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> ptrPosition = std::make_shared<mace::pose_topics::Topic_CartesianPosition>(&localPosition);
             if(this->m_CB)
                 this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
@@ -384,14 +384,14 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     {
         mavlink_position_target_local_ned_t decodedMSG;
         mavlink_msg_position_target_local_ned_decode(msg,&decodedMSG);
-
+        std::cout<<"I have received a new local target in the coordinate frame of: "<<decodedMSG.coordinate_frame<<std::endl;
         if(!(decodedMSG.type_mask & IGNORE_POS_TYPE_MASK)) //means the position was to not be ignored
         {
 //            mace::pose::CartesianPosition_3D targetPosition(CartesianFrameTypes::CF_GLOBAL_RELATIVE_ALT,
-//                                                           static_cast<double>(decodedMSG.x),
-//                                                           static_cast<double>(decodedMSG.y),
-//                                                           AltitudeReferenceTypes::REF_ALT_RELATIVE,
-//                                                           static_cast<double>(decodedMSG.z), "Target Cartesian Position");
+//                                                            static_cast<double>(decodedMSG.x),
+//                                                            static_cast<double>(decodedMSG.y),
+//                                                            AltitudeReferenceTypes::REF_ALT_RELATIVE,
+//                                                            statiatleac_cast<double>(decodedMSG.z), "Target Cartesian Position");
         }
 
 
@@ -400,6 +400,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     }
     case MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN:
     {
+        std::cout<<"I have received a new gps global origin."<<std::endl;
         //This position is what the ardupilot uses to reference all of the local commands and position elements
         mavlink_gps_global_origin_t decodedMSG;
         mavlink_msg_gps_global_origin_decode(msg,&decodedMSG);
@@ -413,6 +414,13 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         currentOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
         state->vehicleGlobalOrigin.set(currentOrigin);
 
+        break;
+    }
+    case MAVLINK_MSG_ID_LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET:
+    {
+        mavlink_local_position_ned_system_global_offset_t decodedMSG;
+        mavlink_msg_local_position_ned_system_global_offset_decode(msg,&decodedMSG);
+        std::cout<<"This is an interesting one."<<std::endl;
         break;
     }
     default:

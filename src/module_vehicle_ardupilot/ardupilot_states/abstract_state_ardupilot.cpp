@@ -57,7 +57,7 @@ bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<AbstractCommand
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
         Controllers::ControllerCollection<mavlink_message_t, int> *collection = Owner().ControllersCollection();
-        auto controllerSystemMode = new MAVLINKVehicleControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerSystemMode->AddLambda_Finished(this, [this, controllerSystemMode](const bool completed, const uint8_t finishCode){
 
             controllerSystemMode->Shutdown();
@@ -72,7 +72,7 @@ bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<AbstractCommand
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
 
-        MAVLINKVehicleControllers::MAVLINKModeStruct commandMode;
+        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
         commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
         controllerSystemMode->Send(commandMode, sender, target);

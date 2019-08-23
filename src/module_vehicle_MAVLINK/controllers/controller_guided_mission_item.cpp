@@ -1,6 +1,6 @@
 #include "controller_guided_mission_item.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template <>
 void ControllerGuidedMissionItem<command_item::SpatialWaypoint>::FillMissionItem(const command_item::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem)

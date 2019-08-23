@@ -5,7 +5,7 @@
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 
-namespace MAVLINKVehicleControllers{
+namespace MAVLINKUXVControllers{
 
 class CommandMSGInterval : public Controller_GenericLongCommand<command_item::ActionMessageInterval, MAV_CMD_SET_MESSAGE_INTERVAL>
 {
