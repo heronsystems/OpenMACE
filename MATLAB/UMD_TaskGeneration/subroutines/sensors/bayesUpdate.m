@@ -3,6 +3,9 @@ function [V, U, O] = bayesUpdate( cellDetMat , V, U, O, cellsInView, mapSignals,
 for i = 1:1:size(cellsInView,1)
     bx = cellsInView(i,1);
     by = cellsInView(i,2);
+    if ( (bx == 3) && (by == 37) )
+       1; 
+    end
     if ( cellDetMat(by,bx) == 0 )
         l = mapSignals(i);
         q = targSignals(i);

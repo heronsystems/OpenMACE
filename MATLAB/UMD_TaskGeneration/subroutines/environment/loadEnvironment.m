@@ -11,7 +11,7 @@ if ( exist([trueWorld.folder trueWorld.fileName '_' trueWorld.type '_full.mat'],
             [ nodeXY ] = loadCityBlocksNodes_atF3(trueWorld.blockLength, trueWorld.numBlocks, trueWorld.binWidth, trueWorld.f3Workspace);
             [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );
         case 'openStreetMap'
-            [ nodeXY, LatRef, LongRef, G_env, A_env] = loadOpenStreetMapNodesFlex(trueWorld.fileName, trueWorld.refX, trueWorld.refY, trueWorld.boxlength, trueWorld.boxwidth, trueWorld.angle, trueWorld.binWidth, trueWorld.removeList);
+            [ nodeXY, LatRef, LongRef, G_env, A_env] = loadOpenStreetMapNodesFlex(trueWorld.fileName, trueWorld.refX, trueWorld.refY, trueWorld.boxlength, trueWorld.boxwidth, trueWorld.angle, trueWorld.binWidth, trueWorld.removeList, trueWorld.scale);
             nodeX = nodeXY(:,1);
             nodeY = nodeXY(:,2);        
         case 'osmAtF3'
@@ -57,7 +57,7 @@ if ( exist([trueWorld.folder trueWorld.fileName '_' trueWorld.type '_full.mat'],
     % numNodesMat gives number of nodes in each bin
     % bin2NodeID returns nodeIndex given bin coordinates
     disp('Creating Search Grid...');
-    [trueWorld.xcp,trueWorld.ycp,trueWorld.numNodesMat,trueWorld.bin2NodeID] = createSearchGrid(trueWorld.minX, trueWorld.maxX, trueWorld.minY, trueWorld.maxY, nodeX, nodeY, trueWorld.numBinsX, trueWorld.numBinsY);
+    [trueWorld.xcp,trueWorld.ycp,trueWorld.bin2NodeID] = createSearchGrid(trueWorld.minX, trueWorld.maxX, trueWorld.minY, trueWorld.maxY, nodeX, nodeY, trueWorld.numBinsX, trueWorld.numBinsY);
     
     [trueWorld.xx,trueWorld.yy] = meshgrid(trueWorld.xcp, trueWorld.ycp);
     trueWorld.binWidth = trueWorld.ycp(2) - trueWorld.ycp(1);

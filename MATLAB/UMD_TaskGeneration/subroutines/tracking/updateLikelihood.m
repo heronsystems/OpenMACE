@@ -38,10 +38,17 @@ if ( ~isempty(swarmWorld.log_likelihood) )
     V = []; % nodes in view corresponding to target signals
     signals = [];
     for i = 1:1:length(swarmWorld.cellsInView)
-        nodeID = swarmWorld.bin2NodeIDexplored( swarmWorld.cellsInView(i,1) , swarmWorld.cellsInView(i,2) );
+%         if (( swarmWorld.cellsInView(i,1) == 3) && (swarmWorld.cellsInView(i,2) == 37) )
+%             pause;
+%         end
+        % bin2NodeIDexplored has format bin2NodeIDexplored(by,bx)
+        nodeID = swarmWorld.bin2NodeIDexplored( swarmWorld.cellsInView(i,2) , swarmWorld.cellsInView(i,1) );
         if ( nodeID ~= 0 )
             signals = [signals swarmModel.zval(swarmWorld.targSignals(i))]; % index values
             V = [V nodeID];
+        end
+        if swarmModel.zval(swarmWorld.targSignals(i)) > swarmModel.mZ
+            1;
         end
     end
     
@@ -113,7 +120,7 @@ if ( ~isempty(swarmWorld.log_likelihood) )
         swarmWorld.targetDetectedFlag = 1;
         disp('Target Detected!')
         fprintf('\n\n\n\nTarget Detected! cumlLR = %3.1f >= %3.1f \n\n\n\n', swarmWorld.cumlLR , swarmModel.cumlLRthresh);
-        
+        sound(sin(1:3000));
         swarmWorld.timeAtDetection = swarmState.t;
         % check if target detected is accurate or not
         [maxVal, maxInd] = max(swarmWorld.env_probPresent); %log_likelihood_env);

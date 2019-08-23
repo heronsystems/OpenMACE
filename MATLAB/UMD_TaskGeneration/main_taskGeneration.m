@@ -15,6 +15,9 @@ if ~exist('MonteCarloSwitch','var')
     rng(1);
 end
 
+
+rng(2);
+
 % simulate
 % temporary fix to allow plotting with time on ROS message callback
 % will be replaced with MACE timestamp when available
@@ -76,12 +79,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ~exist('MonteCarloSwitch','var')
 % various movie profiles can be specified here
-movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )    
-%movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-%movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+%movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )    
+movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 
 % plots
-%plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 %plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 end

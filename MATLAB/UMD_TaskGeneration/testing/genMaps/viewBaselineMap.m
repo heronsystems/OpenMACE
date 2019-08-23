@@ -9,8 +9,8 @@ cd(curPath);
 
 %% plot baseline map
 %fileName = 'RandallsIsland_Big.osm';
-%fileName = 'SilverSpring.osm';
-fileName = 'NYC.osm';
+fileName = 'SilverSpring.osm';
+%fileName = 'NYC.osm';
 refX = -600;
 refY = 350;
 

@@ -11,36 +11,39 @@ rng(10);
 
 
 % common to all maps
-boxlength = 300;
-boxwidth = 300;
+boxlength = 200;
+boxwidth = 200;
 dx = 5;
 buffer = 0;
 
 
-%% Map 1
+% Map 1
 % fileName = 'RandallsIsland_Big.osm';
 % refX = -300;
 % refY = -200;
 % removeList = [10,16,29]; %[4,34,35,36,37,61,25];
-%angle = 0*pi/180;
+% angle = 0*pi/180;
+% scale = 2;
 
 % %% Map 2
 % fileName = 'SilverSpring.osm';
-% refX = -620;
+% refX = -750;
 % refY = 450;
-% removeList = []; %[4,34,35,36,37,61,25];
-%angle = 0*pi/180;
+% removeList = [23,25,16]; %[4,34,35,36,37,61,25];
+% scale = 2;
+% angle = 0*pi/180;
 
 % %% Map 3
 fileName = 'NYC.osm';
 refX = 600;
 refY = -350;
 removeList = []; %[4,34,35,36,37,61,25];
-angle = 60*pi/180;
+angle = 0*pi/180;
+scale = 2;
 
 %% remove some ways
-plotOpenStreetMapLabels(fileName, refX, refY, boxlength, boxwidth, angle, dx)
-[nodesXY, LatRef, LongRef, G] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList);
+plotOpenStreetMapLabels(fileName, refX, refY, boxlength, boxwidth, angle, dx, scale)
+[nodesXY, LatRef, LongRef, G] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList, scale);
 
 plot(nodesXY(:,1), nodesXY(:,2),'ko','MarkerSize',4)
 set(gca,'FontSize',16)

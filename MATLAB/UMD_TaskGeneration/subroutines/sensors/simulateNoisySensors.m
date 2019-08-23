@@ -1,4 +1,4 @@
-function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat, numViews ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, cellMsmtMat, numNodesMat, mG, nG, mZ, nZ, trueWorldGraph, numViews )
+function [cellsInView, mapSignals, targSignals, cellStateMat, numViews ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, bin2NodeID, mG, nG, mZ, nZ, trueWorldGraph, numViews )
 % Input:
 
 % Output:
@@ -22,8 +22,8 @@ for i = 1:1:targetModel.M
     curNode = targetState.x(2*i-1,1);
     targXY(i,1) = trueWorldGraph.Nodes.x( curNode );
     targXY(i,2) = trueWorldGraph.Nodes.y( curNode );
-    targetBinX(i) = max(floor( (targXY(i,1) - xcp(1)) /  dx ),1);
-    targetBinY(i) = max(floor( (targXY(i,2) - ycp(1)) /  dy ),1);
+    targetBinX(i) = max(ceil( (targXY(i,1) ) /  dx ),1);
+    targetBinY(i) = max(ceil( (targXY(i,2) ) /  dy ),1);
     targetBinX(i) = min(targetBinX(i), numBinsX);
     targetBinY(i) = min(targetBinY(i), numBinsY);
 end
@@ -66,12 +66,11 @@ for i = 1:1:size(agents,1)
             % check if control point is within sensing range
             if ( norm(controlPt-agent) <= Rsense )
                 cellsInView = [ cellsInView; bx by];
-                cellMsmtMat(by,bx) = cellMsmtMat(by,bx) + 1;
                 
                 % grid sensor
                 % 1 - if it contains a node of the occupancy graph
                 % 0 - if it is an obstacle cell
-                cellStateMat(by,bx) = (numNodesMat(by,bx)~= 0);  %
+                cellStateMat(by,bx) = (bin2NodeID(by,bx)~= 0);  %
                 if ( cellStateMat(by,bx) == 1 ) % is a node
                     mapSignals(k) = quantizedSensor(mG, nG, 1);
                 else
@@ -81,9 +80,13 @@ for i = 1:1:size(agents,1)
                 for j = 1:1:targetModel.M                       
                    if ( (bx == targetBinX(j)) && (by == targetBinY(j)) )
                        targSignals(k) = quantizedSensor(mZ, nZ, 1);
-                       disp('Target In View!');
-                       targSignals(k)
+                       fprintf('Target In View! Bin (bx,by) = (%d, %d), Pos (x,y) = (%3.3f,%3.3f)\n', bx, by, xcp(bx), ycp(by));
                        numViews = numViews + 1;
+%                        figure;
+%                        plot(swarmWorld.exploredGraph,'XData',swarmWorld.exploredGraph.Nodes.nodeX,'YData',swarmWorld.exploredGraph.Nodes.nodeY)
+%                        hold on;
+%                        drawgrid(0, 40, 0, 40, 5);
+%                        plot(xcp(bx), ycp(by),'m+','MarkerSize',10);
                    else
                        %fprintf('Target is in (%3.3f, %3.3f)\n',targXY(j,1),targXY(j,2));
                        targSignals(k) = quantizedSensor(mZ, nZ, 0);

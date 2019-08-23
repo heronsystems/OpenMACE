@@ -1,8 +1,8 @@
 function swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueWorld, targetModel, targetState)
 
 % map and target sensor
-[swarmWorld.cellsInView, swarmWorld.mapSignals, swarmWorld.targSignals, swarmWorld.cellStateMat, swarmWorld.cellMsmtMat, swarmWorld.numViews ] = simulateNoisySensors( trueWorld.xcp, trueWorld.ycp, swarmModel.Rsense, swarmState.x, ...
-    swarmModel.N, targetState, targetModel, swarmWorld.cellStateMat, swarmWorld.cellMsmtMat, trueWorld.numNodesMat, ...
+[swarmWorld.cellsInView, swarmWorld.mapSignals, swarmWorld.targSignals, swarmWorld.cellStateMat, swarmWorld.numViews ] = simulateNoisySensors( trueWorld.xcp, trueWorld.ycp, swarmModel.Rsense, swarmState.x, ...
+    swarmModel.N, targetState, targetModel, swarmWorld.cellStateMat, trueWorld.bin2NodeID, ...
     swarmModel.mG, swarmModel.nG, swarmModel.mZ, swarmModel.nZ, trueWorld.G_env, swarmWorld.numViews );
 
 % Bayes update at explored cells
@@ -16,7 +16,10 @@ function swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueW
 [swarmWorld] = buildOccupancyGraphOnTheFly( swarmWorld, swarmModel, trueWorld, targetModel, detectedCells );
 
 % update unexplored prior
+tic;
 [swarmWorld.V, swarmWorld.U, swarmWorld.O] = updateUnexploredPrior(swarmWorld.cellStateMat, trueWorld.xx, trueWorld.yy, numnodes(swarmWorld.exploredGraph), swarmModel.probAbsentPrior, swarmWorld.V, swarmWorld.U, swarmWorld.O, swarmWorld.edgeDir);
+disp('updateUnexploredPrior')
+toc;
 
 % compute metrics: percentage of explored nodes
 swarmWorld.mapPercentage = [swarmWorld.mapPercentage; (numnodes(swarmWorld.exploredGraph)-1)/length(trueWorld.nodeX)];

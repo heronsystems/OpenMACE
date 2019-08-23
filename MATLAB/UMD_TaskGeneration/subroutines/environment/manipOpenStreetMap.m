@@ -15,8 +15,8 @@ for i = 1:1:length(ways)
             nodeXYmod(j,2) = ptrot(2);
         end
         % 3) scale resulting nodes
-        nodeXYmod(:,1) = scale*nodeXYmod(:,1);
-        nodeXYmod(:,2) = scale*nodeXYmod(:,2);        
+        nodeXYmod(:,1) = 1/scale*nodeXYmod(:,1);
+        nodeXYmod(:,2) = 1/scale*nodeXYmod(:,2);        
         waysmod{k} = nodeXYmod;
         k = k + 1;
     end

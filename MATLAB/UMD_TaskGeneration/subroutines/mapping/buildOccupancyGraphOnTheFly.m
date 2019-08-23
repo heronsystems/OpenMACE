@@ -54,6 +54,9 @@ if (~isempty(nodeCells))
         % update bin to point to new node
         idNew = numnodes(swarmWorld.exploredGraph);
         swarmWorld.bin2NodeIDexplored(by,bx) = idNew;
+        if ( idNew == 17 )
+           1; 
+        end
         % add edges
         % check if any of the  8 cells around it have also been detected
         [bxNeighbor, byNeighbor] = getNeighborCells( bx, by, trueWorld.numBinsX, trueWorld.numBinsY );
@@ -69,8 +72,8 @@ if (~isempty(nodeCells))
                         % if one of the nodes is zero, then this is a
                         % spurious node (false positive/not a real one)
                         % we add the edge to any nearby nodes
-                        if ( idNewTrue == 0 || idNeighborTrue == 0 )
-                            swarmWorld.exploredGraph = addedge(swarmWorld.exploredGraph,idNew,idNeighbor);
+                        if ( idNewTrue == 0 || idNeighborTrue == 0 )                                                        
+                            %swarmWorld.exploredGraph = addedge(swarmWorld.exploredGraph,idNew,idNeighbor);
                             % otherwise we add edges according to true world
                         elseif ( trueWorld.A_env(idNewTrue,idNeighborTrue)==1 )
                             swarmWorld.exploredGraph = addedge(swarmWorld.exploredGraph,idNew,idNeighbor);

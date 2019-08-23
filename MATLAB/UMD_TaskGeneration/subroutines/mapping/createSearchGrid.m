@@ -1,4 +1,4 @@
-function [xControlPts,yControlPts,numNodesMat,bin2NodeID] = createSearchGrid(minX, maxX, minY, maxY, nodeX, nodeY, numBinsX, numBinsY)
+function [xControlPts,yControlPts,bin2NodeID] = createSearchGrid(minX, maxX, minY, maxY, nodeX, nodeY, numBinsX, numBinsY)
 % Input:
 % (xpoly, ypoly) : boundaries of search area used to define grid
 % (nodeX, nodeY) : locations of nodes
@@ -28,7 +28,7 @@ yControlPts = [dx/2:dy:(dy)*(numBinsY)] + minY;
 
 % initialize
 N = length(nodeX); 
-numNodesMat = zeros(numBinsY, numBinsX);
+%numNodesMat = zeros(numBinsY, numBinsX);
 bin2NodeID = zeros(numBinsY, numBinsX);
 
 for i = 1:1:N
@@ -41,8 +41,13 @@ for i = 1:1:N
     elseif ( binY < 1 || binY > numBinsY )
        error('creatSampleNeedGrid: binY out of range');  
     end
+    if ( ( binX == 3) )
+       binY
+       1; 
+    end
+    
     % increment 
-    numNodesMat(binY,binX) = numNodesMat(binY,binX) + 1;
+    % numNodesMat(binY,binX) = numNodesMat(binY,binX) + 1;
     % record the coordinate of this node in cptNodesMat
     bin2NodeID(binY,binX) = i;
 end
@@ -51,7 +56,8 @@ end
 flattenBin2NodeID = reshape(bin2NodeID,numBinsY*numBinsX,1);
 for i = 1:1:N
     if ( isempty(find( flattenBin2NodeID == i ) ) )
-        fprintf('Warning, Node %i not found in bin2NodeID matrix!\n', i);        
+        fprintf('Node %d located at (x,y) = (%3.3f, %3.3f) not found. \n',i,nodeX(i),nodeY(i));
+        error('Error: Node not found in bin2NodeID matrix!\n');        
     end
 end
 

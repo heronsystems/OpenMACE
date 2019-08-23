@@ -31,6 +31,7 @@ addpath('./external/lat_lon_proportions')
 addpath('./external/plotmd')
 addpath('./external/openstreetmap')
 addpath('./external/geodetic299/geodetic')
+addpath('./external/xml2struct')
 %
 addpath('./data')
 

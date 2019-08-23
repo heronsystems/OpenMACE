@@ -1,15 +1,15 @@
-function [nodesXY, LatRef, LongRef, G, A ] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList)
+function [nodesXY, LatRef, LongRef, G, A ] = loadOpenStreetMapNodesFlex(fileName, refX, refY, boxlength, boxwidth, angle, dx, removeList, scale)
 
 % parse baseline map
 [ways, LatRef, LongRef] = parseOpenStreetMap(fileName);
 
 % generate box
-boxXY = boxCorners(refX,refY,boxlength,boxwidth,angle);
+boxXY = boxCorners(refX,refY,boxlength*scale,boxwidth*scale,angle);
 
 % clip, shift to origin, and scale
 shiftX = -refX;
 shiftY = -refY;
-waysmod = manipOpenStreetMap( ways, boxXY, -angle, 1, shiftX, shiftY );
+waysmod = manipOpenStreetMap( ways, boxXY, -angle, scale, shiftX, shiftY );
 
 % define grid
 numX = floor(boxlength/dx);
@@ -25,7 +25,6 @@ for i = 1:1:length(waysmod)
 end
 
 % init
-bin2NodeID = zeros(numY, numX);
 nodesXY = [];
 A = [];
 numNodes = 0;
@@ -39,7 +38,7 @@ for i = 1:1:length(waysmodtrunc)
     binNum = bins(:,3); % binNum is index of bin for each (x,y) pt on curve
     curBin = binNum(1);
     binChange = [];
-    maxBinNum = numX*numY;
+    
     % bins are determined differently depending on if edge starts on or off
     % or in middle of gridded area
     % binChange : index along resampled curve when the bin number changes
@@ -67,6 +66,7 @@ for i = 1:1:length(waysmodtrunc)
         end
         
         %         % error checking
+        % maxBinNum = numX*numY;
         %         if ( ~isempty(binChange) )
         %            lastBin = binNum(binChange(end));
         %             if ( lastBin > maxBinNum || lastBin <= 0 || isnan(lastBin) )
@@ -76,7 +76,7 @@ for i = 1:1:length(waysmodtrunc)
         curBin = binNum(j);
     end
     % assign node at middle range of each bin
-    edgeList = [];    
+    edgeList = [];
     k = 1; % number of segments
     for j = 1:1:length(binChange)-1
         % special case: if a curve goes into and outside of the grid then
@@ -90,24 +90,19 @@ for i = 1:1:length(waysmodtrunc)
                 edgeList(k,1) = numNodes;
             else
                 edgeList(k,end+1) = numNodes;
-            end
-            node2bin(numNodes) = bins(midInd,3);
-            % bin2NodeID is a matrix indicating node ID
-            bin2NodeID( bins(midInd,1) , bins(midInd,2) ) = 1;
+            end            
             nodeID2bin( numNodes,:) = [bins(midInd,1) , bins(midInd,2)];
         else
-            
             k = k + 1;
         end
     end
     for k = 1:1:size(edgeList,1)
-    
-    for j = 1:1:length(edgeList(k,:))-1
-        if ( edgeList(k,j+1)~= 0 && edgeList(k,j)~= 0 )
-        A(edgeList(k,j),edgeList(k,j+1)) = 1;
-        A(edgeList(k,j+1),edgeList(k,j)) = 1;
+        for j = 1:1:length(edgeList(k,:))-1
+            if ( edgeList(k,j+1)~= 0 && edgeList(k,j)~= 0 )
+                A(edgeList(k,j),edgeList(k,j+1)) = 1;
+                A(edgeList(k,j+1),edgeList(k,j)) = 1;
+            end
         end
-    end
     end
 end
 
@@ -120,9 +115,13 @@ end
 % we must handle any node that is a duplicate
 duplicate_ind = setdiff(1:size(nodeID2bin, 1), ind);
 nodesToDelete = [];
-for i = 1:1:length(duplicate_ind)
+% determine the first node that is a duplicate only otherwise additional
+% replacement nodes are added for each duplicate
+[~,first_duplicates_ind] = unique( nodeID2bin(duplicate_ind,:), 'rows' );
+first_duplicates = duplicate_ind(first_duplicates_ind);
+for i = 1:1:length(first_duplicates)
     % find set of all nodes in this bin
-    commonBinNodes = find(ismember(nodeID2bin, nodeID2bin(duplicate_ind(i),:),'rows')==1);
+    commonBinNodes = find(ismember(nodeID2bin, nodeID2bin(first_duplicates(i),:),'rows')==1);
     % get list of (other) nodes that are connected to each common node
     edgeList = [];
     for j = 1:1:length(commonBinNodes)
@@ -132,6 +131,7 @@ for i = 1:1:length(duplicate_ind)
     % add new node to nodeXY list
     newNodeX = mean( nodesXY(commonBinNodes,1) );
     newNodeY = mean( nodesXY(commonBinNodes,2) );
+    %
     nodesXY(end+1,:) = [newNodeX newNodeY];
     A(end+1,:) = zeros(1,size(A,2));
     A(:,end+1) = zeros(size(A,1),1);
@@ -149,15 +149,27 @@ nodesXY(nodesToDelete,:) = [];
 A(nodesToDelete,:) = [];
 A(:,nodesToDelete) = [];
 
+% check that nodes are all unique bins
+[bins] = curveToBins(nodesXY(:,1),nodesXY(:,2),dx,numX, numY);
+if ( length(bins(:,3)) ~= length(unique(bins(:,3))) )
+   [vals,ind] = unique(bins(:,3));
+   nonUnique = setdiff([1:size(bins,1)],ind);   
+   for i = 1:1:length(nonUnique)
+      j = nonUnique(i);
+      fprintf('nonUnique(%d): (bx,by,binID) = (%d,%d,%d) \n',j, bins(j,1),bins(j,2),bins(j,3)); 
+   end
+   error('Error: bins not unique'); 
+end
+
+
 nodeProps = table(nodesXY(:,1),nodesXY(:,2),'VariableNames',{'x','y'});
 G = graph(A,nodeProps);
 
 
-plotFlag = 1;
+plotFlag = 0;
 if (plotFlag)
     % figure;
     figure;
-    imagesc(bin2NodeID)
     
     % plot ways with labels
     for i = 1:1:length(waysmod)

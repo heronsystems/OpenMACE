@@ -76,3 +76,10 @@ Obsolete:
 2. Run configCluster each matlab session.
 
 3. Validate the cluster before running scripts in matlab. The validation can be done under the 'HOME' tab, in the 'parallel' dropdown and click 'Select and Manage Clusters...'
+
+
+================================
+Other useful commands:
+scp -r $FOLDER $USER@login.deepthought2.umd.edu:~/glue_home
+ssh $USER@login.deepthought2.umd.edu './startMonteCarlo.sh'
+/bin/rm -rf /lustre/$USER/$FOLDER
