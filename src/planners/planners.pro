@@ -39,7 +39,9 @@ SOURCES += \
 #    nearest_neighbor_flann.cpp
     path_reduction.cpp \
     graph_planning_node.cpp \
-    a_star_base.cpp
+    a_star_base.cpp \
+    virtual_potential_fields/potential_fields.cpp \
+    virtual_potential_fields/virtual_force.cpp
 
 HEADERS += \
         planners.h \
@@ -54,7 +56,9 @@ HEADERS += \
     rrt_node.h \
     path_reduction.h \
     graph_planning_node.h \
-    a_star_base.h
+    a_star_base.h \
+    virtual_potential_fields/potential_fields.h \
+    virtual_potential_fields/virtual_force.h
 
 
 #Header file copy
