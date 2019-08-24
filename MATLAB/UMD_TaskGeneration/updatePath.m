@@ -32,6 +32,7 @@ addpath('./external/plotmd')
 addpath('./external/openstreetmap')
 addpath('./external/geodetic299/geodetic')
 addpath('./external/xml2struct')
+addpath('./external/brewer')
 %
 addpath('./data')
 

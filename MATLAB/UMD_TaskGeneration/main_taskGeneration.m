@@ -15,9 +15,6 @@ if ~exist('MonteCarloSwitch','var')
     rng(1);
 end
 
-
-rng(2);
-
 % simulate
 % temporary fix to allow plotting with time on ROS message callback
 % will be replaced with MACE timestamp when available

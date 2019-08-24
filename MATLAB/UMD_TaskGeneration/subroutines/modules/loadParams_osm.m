@@ -3,7 +3,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % Simulation
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 15; %5*60; % total simulation/mission time
+runParams.T = 2.5*60; %5*60; % total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
 
 % F3 Flight Test
@@ -79,7 +79,7 @@ trueWorld.binWidth = 5;
 trueWorld.boxlength = 200;
 trueWorld.boxwidth = 200;
 trueWorld.buffer = 0;
-trueWorld.mapID = 3; % choose 1, 2, or 3
+trueWorld.mapID = 1; % choose 1, 2, or 3
 trueWorld.angle = 0*pi/180;
 trueWorld.scale = 2;
 % override default values if this is a monte-carlo run
