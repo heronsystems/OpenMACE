@@ -54,12 +54,15 @@ elseif ( strcmp(runParams.type, 'mace') )
     % origin in utm coordinates
     [ROS_MACE.XRef,ROS_MACE.YRef,ROS_MACE.utmzone] = deg2utm(ROS_MACE.LatRef,ROS_MACE.LongRef);
     ROS_MACE.N = swarmModel.N; % make copy
+    ROS_MACE.tempHandle = cell(2,ROS_MACE.N);
     % initial position of quads is along a line according to initSpacing
     xInit = linspace(ROS_MACE.xInit,ROS_MACE.xInit+ROS_MACE.initSpacing*ROS_MACE.N,ROS_MACE.N);
     yInit = ones(1,ROS_MACE.N)*ROS_MACE.yInit;
     % create arducopter script with these initial conditions
     generateArducopterCmds( ROS_MACE , xInit , yInit );
+    
+    diary off;
+    diaryFileName = ['F3DiaryLog_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.txt'];
+    diary(diaryFileName);
 end
-
-
 end

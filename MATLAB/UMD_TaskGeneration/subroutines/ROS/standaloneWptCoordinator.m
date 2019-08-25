@@ -1,4 +1,4 @@
-function standaloneWptCoordinator(runTime,cptRadius,N,agentIDs)
+function standaloneWptCoordinator(runTime,cptRadius,bundleSize,N,agentIDs)
 
 
 % parameters
@@ -90,7 +90,7 @@ while toc(loopStart) <= runTime+10
             if (bundleResponse.BundleID > currentBundleID(k)) && (bundleResponse.BundleStatus == 1)
                 fprintf('bundle status is %d\n',bundleResponse.BundleStatus);
                 expression = [];
-                for j = 1:5
+                for j = 1:bundleSize
                     expression = [expression 'bundleResponse.Agent' num2str(k) 'E' num2str(j) ',bundleResponse.Agent' num2str(k) 'N' num2str(j) ';'];
                 end
                 eval(['bundle{k} = [' expression '];']);
@@ -206,7 +206,7 @@ while toc(loopStart) <= runTime+10
         distToWpt = norm(agentLocation(k,:)-bundle{k}(bundleWptCounter(k),:));
         fprintf('Distance of agent %d to wpt is %3.3f (capture radius = %3.3f) \n', agentIDs(k), distToWpt, captureRadius);
         if distToWpt <= captureRadius
-            if bundleWptCounter(k) < 5 % TODO: fix this hardcode
+            if bundleWptCounter(k) < bundleSize 
                 bundleWptCounter(k) = bundleWptCounter(k) + 1;
             end
             fprintf('Updating bundle wpt counter to %d\n',bundleWptCounter(k));

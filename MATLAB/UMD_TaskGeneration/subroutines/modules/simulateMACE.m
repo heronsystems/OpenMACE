@@ -12,14 +12,14 @@ if strcmp(ROS_MACE.wptCoordinator,'standalone')
         % the first column is the current bundle number, starting from 1
         % the second column is the waypoint altitude
         % the third to the twelfth columns represent easting1, northing1, easting2, northing2,..., easting5, northing5
-        bundleSource = zeros(swarmModel.N,1+1+2*swarmModel.bundleSize);
+        bundleSource = zeros(swarmModel.N,1+1+2*6);
         bundleSource(:,1) = 0;
         % the last row is used for status of the bundle
         % specifically, the first column of the last row has two values: 0 or 1
         % 0 means the bundleSource is being written and the value is not
         % complete (temporarily unreliable)
         % 1 means the bundleSource is ready to be read
-        bundleSource = [bundleSource; zeros(1,1+1+2*swarmModel.bundleSize)];
+        bundleSource = [bundleSource; zeros(1,1+1+2*6)];
     end
 end
 
