@@ -34,7 +34,6 @@ if ( strcmp(runParams.type, 'mace') )
 end
 
 % Display
-runParams.flags.movie = 1;
 runParams.flags.movie = 1; % play movie
 runParams.movie.useBackgroundImg = 1; %
 if ( runParams.movie.useBackgroundImg )

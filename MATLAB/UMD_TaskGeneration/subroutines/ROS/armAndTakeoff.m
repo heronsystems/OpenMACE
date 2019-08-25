@@ -10,13 +10,13 @@ for i = 1:1:ROS_MACE.N
     armRequest.VehicleID = ROS_MACE.agentIDs(i); % Vehicle ID
     armResponse = call(ROS_MACE.armClient, armRequest, 'Timeout', 5);
     if ( armResponse.Success )
-        fprintf('VehicleID %d Arm Command Sent.\n',i);
+        fprintf('VehicleID %d Arm Command Sent.\n',ROS_MACE.agentIDs(i));
     else 
-        fprintf('VehicleID %d Arm Command Failed.\n',i);
+        fprintf('VehicleID %d Arm Command Failed.\n',ROS_MACE.agentIDs(i));
     end    
 end
 disp('Arm Complete. Begin Takeoff.')
-countdownVerbose(3);
+countdownVerbose(10);
 
 
 % Setup Vehicle takeoff command:
@@ -33,9 +33,9 @@ for i = 1:1:ROS_MACE.N
     takeoffRequest
     takeoffResponse = call(ROS_MACE.takeoffClient, takeoffRequest, 'Timeout', 5)
     if ( takeoffResponse.Success )
-        fprintf('VehicleID %d Takeoff Command Sent.\n',i);
+        fprintf('VehicleID %d Takeoff Command Sent.\n',ROS_MACE.agentIDs(i));
     else 
-        fprintf('VehicleID %d Takeoff Command Failed.\n',i);
+        fprintf('VehicleID %d Takeoff Command Failed.\n',ROS_MACE.agentIDs(i));
     end    
 end
 disp('Waiting for takeoff to complete...')

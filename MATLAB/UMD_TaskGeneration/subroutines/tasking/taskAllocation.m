@@ -2,6 +2,7 @@ function [swarmState, swarmWorld] = taskAllocation(tasks, swarmState, swarmModel
 % This function should produce a desired waypoint or desired waypoint list
 % for each agent
 % taskManagment assigns the waypoints in the list
+
 if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
     if ( strcmp(swarmModel.taskGeneration,'mutualInfoWpts') )
         % initial cells are given by the cells where agents
@@ -14,7 +15,9 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
         for kk = 1:swarmModel.N
             % find knnNumber+1 nearest neighbor (returns indices of
             % cellCenterOfMass)
-            idx = knnsearch(swarmWorld.cellCenterOfMass,swarmState.x(4*(kk-1)+1:4*(kk-1)+2),'K',swarmModel.knnNumber+1);
+            idx = knnsearch(swarmWorld.cellCenterOfMass,reshape(swarmState.x(4*(kk-1)+1:4*(kk-1)+2),1,2),'K',swarmModel.knnNumber+1);
+            % we might need to unify the representation of swarmState.x as
+            % a column or row vector for the above line
             neighborNodes(kk,:) = idx(2:end);  % check if idx is a row vector
             % neighborNodes(kk,:) = idx(1:end);  % check if idx is a row vector
             for ii = 1:5
@@ -151,6 +154,7 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
         end
         
     end
+
 elseif strcmp(swarmModel.taskAllocation,'none')
     % for random wpts they are managed only at allocation time
     if strcmp(swarmModel.taskGeneration,'randomWpts')

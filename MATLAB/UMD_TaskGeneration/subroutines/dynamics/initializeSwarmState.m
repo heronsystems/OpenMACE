@@ -9,7 +9,7 @@ if ( strcmp(runParams.type, 'mace') )
     
     if strcmp(ROS_MACE.wptCoordinator,'standalone')
         %     !matlab -r standaloneWptCoordinator 120 &
-        eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ',' num2str(swarmModel.Rsense) ')'' &']);
+        eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ',' num2str(swarmModel.Rsense) ',' num2str(swarmModel.N) ',[' num2str(ROS_MACE.agentIDs) '])'' &']);
         %eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ')'' &']);
         % -desktop will start a new MATLAB window for debugging
         fprintf('***Wait for the StandalongWptCoordinator to start*** \n');
