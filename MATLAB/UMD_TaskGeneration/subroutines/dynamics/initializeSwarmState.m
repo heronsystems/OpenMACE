@@ -13,7 +13,7 @@ if ( strcmp(runParams.type, 'mace') )
         %eval(['!matlab -desktop -r ''standaloneWptCoordinator(' num2str(runParams.T) ')'' &']);
         % -desktop will start a new MATLAB window for debugging
         fprintf('***Wait for the StandalongWptCoordinator to start*** \n');
-        countdownVerbose(15);
+        countdownVerbose(45);
     end
     
     armAndTakeoff( ROS_MACE );
