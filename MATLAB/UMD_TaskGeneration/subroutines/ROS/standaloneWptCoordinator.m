@@ -48,6 +48,7 @@ while 1
     bundleRequest.NumVehicle = uint8(N);
     try
         bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 1);
+        fprintf('Bundle request is responded by the server.\n');
     catch
         ; % do nothing
     end
