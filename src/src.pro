@@ -36,8 +36,8 @@ SUBDIRS += \
     module_ROS_UMD \
     #commsExample \
     #example_vehicle_module \
-    mace 
-    #TestMaps \
+    mace \
+    TestMaps
     #example \
     #Testing_CommsLink \
     #TestGraph \

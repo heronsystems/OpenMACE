@@ -66,9 +66,7 @@ namespace mace {
 class PotentialFields: public planners::Planners
 {
 public:
-    PotentialFields(const state_space::SpaceInformationPtr &spaceInfo, mace::maps::BaseGridMap* staticMap);
-
-    PotentialFields(const state_space::SpaceInformationPtr &spaceInfo);
+    PotentialFields(const state_space::SpaceInformationPtr &spaceInfo, const mace::maps::Data2DGrid<maps::OccupiedResult>* staticMap = nullptr);
 
     virtual ~PotentialFields() = default;
 
@@ -92,12 +90,11 @@ public:
 
     void updateStaticObstacleGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap);
 
+    void computeFullAttractionGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap);
 
     VPF_ResultingForce retrieveStaticObstacleGradient(int);
 
-    VPF_ResultingForce computeRepulsiveGradient(const mace::pose::Abstract_CartesianPosition* obstaclePosition, const mace::pose::CartesianPosition_2D &);
-
-    VPF_ResultingForce computeDynamicObstacleGradient(const mace::pose::CartesianPosition_2D, mace::maps::BaseGridMap* bgm);
+    VPF_ResultingForce computeRepulsiveGradient(const mace::pose::Abstract_CartesianPosition* obstaclePosition, const mace::pose::Abstract_CartesianPosition* cellPosition);
 
     VPF_ResultingForce computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,  const mace::pose::CartesianPosition_2D targetPosition);
 
@@ -105,9 +102,9 @@ public:
 
     void computeVirtualPotentialField();
 
-    TargetItem::Cartesian3DDynamicTarget computeTotalGradient(mace::maps::BaseGridMap* dynamicMap,
-                                                              mace::pose::CartesianPosition_2D agentPose,
-                                                              mace::pose::CartesianPosition_2D targetPosition);
+//    TargetItem::Cartesian3DDynamicTarget computeTotalGradient(mace::maps::BaseGridMap* dynamicMap,
+//                                                              mace::pose::CartesianPosition_2D agentPose,
+//                                                              mace::pose::CartesianPosition_2D targetPosition);
 
     double getRepulsionRadius() const;
     void setRepulsionRadius(double repulsionRadius);
@@ -126,9 +123,6 @@ public:
 
     double getRadialInfluence() const;
     void setRadialInfluence(double radialInfluence);
-
-    std::string getStaticLayerName() const;
-    void setStaticLayerName(const std::string &staticLayerName);
 
     void printGrid();
 
@@ -169,7 +163,7 @@ private:
     //local layered map
     mace::maps::LayeredMap* m_currentMapObject;
 
-    mace::maps::Data2DGrid<VPF_ResultingForce>* m_staticRespulsiveFields;
+    mace::maps::Data2DGrid<VPF_ResultingForce>* m_staticRespulsiveMap;
 
     mace::maps::Data2DGrid<VPF_ResultingForce>* m_totalForceGrid;
 

@@ -7,10 +7,10 @@
 class VPF_ResultingForce
 {
 
-    enum class{
+    enum class ForceType{
         REPULSIVE,
         ATTRACTION
-    } ForceType;
+    };
 
 public:
     VPF_ResultingForce(const double &saturation = 0);
