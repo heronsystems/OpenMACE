@@ -9,6 +9,6 @@ spArray(4) = subplot(rows,cols,4);
 spArray(5) = subplot(rows,cols,5);
 spArray(6) = subplot(rows,cols,6);
 
-spTypes = {'GroundTruth','CellExplored','Signals','CumlLR','MutualInfoWpts','Entropy'};
+spTypes = {'GroundTruth','CellExplored','Signals','CumlLR','PriorP','Entropy'};
 playMovie(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel,spArray, spTypes);
 end

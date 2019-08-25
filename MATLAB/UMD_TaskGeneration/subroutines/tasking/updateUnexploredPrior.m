@@ -1,4 +1,4 @@
-function [V,U,O] = updateUnexploredPrior(cellStateMat, xx, yy, numNodesExploredGraph, probAbsent, V, U, O, edgeDir)
+function [V,U,O] = updateUnexploredPrior(cellStateMat, xx, yy, numNodesExploredGraph, probAbsent, V, U, O, edgeDir, inc, npeaks, ax, ay)
 
 % compute adaptive prior for an unexplored cell based on node density
 % this becomes the floor
@@ -37,17 +37,9 @@ if ( ~isempty(measurements) )
     %     forecast(forecast > 1) = 1;
     %     forecast(forecast < 0) = 0;
     
-    %%
-    inc = 3;
-    %nbins = floor(180/inc);
-    
-    %histogram(edgeDir*180/pi,nbins)
-    npeaks = 4;
-    ax = 12;
-    ay = 0.25;
     
     %
-    binEdges = [0:inc:180-inc];
+    binEdges = [0:inc:180];
     theta = diff(binEdges)/2+binEdges(1:end-1);
     if isempty(edgeDir)       
         peaks = linspace(0,pi,npeaks+1);
@@ -55,21 +47,25 @@ if ( ~isempty(measurements) )
         weights = ones(1,npeaks);
         disp('Graph is empty');
     else
-       
-
-        
-        %
-        %sep = inc;
         [N,~] = histcounts(edgeDir*180/pi,binEdges);        
         [peaks,weights] = findPeaks(N, npeaks);
         peaks = theta(peaks)*pi/180;
-        %peakVal = N(peaks);
-        if (min(weights) == 0)
-            error('Error with weight computation');
+        if ( isempty(weights) )
+            error('Error: weights empty');
+        elseif( min(weights)==0 )
+            error('Error: weights zero');
         end
+        
     end
     
-     forecast = anisotropicAdaptiveKrigFast2(measurements, ax,ay, peaks, weights, xcp, ycp);
+    tKrig = tic;
+    disp('////////////////////')
+    %forecast = anisotropicAdaptiveKrigFast2(measurements, ax,ay, peaks, weights, xcp, ycp);
+    forecast = anisotropicAdaptiveKrigFast3(measurements, ax,ay, peaks, weights, xcp, ycp, V, cellStateMat);    
+    disp('anisotropicAdaptiveKrigFast2 took:');
+    toc(tKrig);
+    disp('////////////////////')
+    
 %     peaks*180/pi
 %     weights
 %     figure;

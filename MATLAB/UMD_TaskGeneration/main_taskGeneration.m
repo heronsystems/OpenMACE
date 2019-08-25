@@ -14,6 +14,7 @@ if ~exist('MonteCarloSwitch','var')
     %rng('default');
     rng(1);
 end
+rng(1);
 
 % simulate
 % temporary fix to allow plotting with time on ROS message callback
@@ -22,16 +23,14 @@ global tStart;
 tStart = tic;
 
 % user should modify loadParams.m as desired for single run
-if ~exist('MonteCarloSwitch','var')  
-    disp('Running standard (non Monte-Carlo) simulation or MACE run')    
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();         
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osmAtF3();
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityBlocksAtF3();    
+if ~exist('MonteCarloSwitch','var')
+    disp('Running standard (non Monte-Carlo) simulation or MACE run')
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocksAtF3();
 else
-    % for Monte Carlo, specify the IDs of the scenes    
+    % for Monte Carlo, specify the IDs of the scenes
     disp('Running Monte-Carlo simulation')
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm(mapID, algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m       
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm(mapID, algorithmID,initialFormationID,targetMotionID); % IDs are defined in MonteCarloEngine.m
 end
 
 % initialize the swarm world, target and swarm states
@@ -62,7 +61,7 @@ if ~exist('MonteCarloSwitch','var')
         matFileName = ['F3FlightData_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
         diary off
     end
-    disp('Saving standard (non Monte-Carlo) simulation');    
+    disp('Saving standard (non Monte-Carlo) simulation');
     save(matFileName,'-v7.3');
 else
     % this is for saving Monte Carlo results
@@ -75,13 +74,13 @@ end
 % Display Results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ~exist('MonteCarloSwitch','var')
-% various movie profiles can be specified here
-%movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )    
-movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-%movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-
-% plots
-plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-%plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    % various movie profiles can be specified here
+    %movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    
+    % plots
+    %plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    %plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 end

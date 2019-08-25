@@ -17,13 +17,15 @@ dy = ycp(2) - ycp(1);
 windowWidth = 3*ceil(Rsense/dx)+1;
 halfWidth = floor((windowWidth-1)/2);
 
+minX = xcp(1) - dx;
+minY = ycp(1) - dy;
 % get targets xy
 for i = 1:1:targetModel.M
     curNode = targetState.x(2*i-1,1);
     targXY(i,1) = trueWorldGraph.Nodes.x( curNode );
     targXY(i,2) = trueWorldGraph.Nodes.y( curNode );
-    targetBinX(i) = max(ceil( (targXY(i,1) ) /  dx ),1);
-    targetBinY(i) = max(ceil( (targXY(i,2) ) /  dy ),1);
+    targetBinX(i) = max(ceil( (targXY(i,1) - minX ) /  dx ),1);
+    targetBinY(i) = max(ceil( (targXY(i,2) - minY ) /  dy ),1);
     targetBinX(i) = min(targetBinX(i), numBinsX);
     targetBinY(i) = min(targetBinY(i), numBinsY);
 end
@@ -80,7 +82,7 @@ for i = 1:1:size(agents,1)
                 for j = 1:1:targetModel.M                       
                    if ( (bx == targetBinX(j)) && (by == targetBinY(j)) )
                        targSignals(k) = quantizedSensor(mZ, nZ, 1);
-                       fprintf('Target In View! Bin (bx,by) = (%d, %d), Pos (x,y) = (%3.3f,%3.3f)\n', bx, by, xcp(bx), ycp(by));
+                       fprintf('\n\n Target In View! Bin (bx,by) = (%d, %d), Pos (x,y) = (%3.3f,%3.3f)\n', bx, by, xcp(bx), ycp(by));
                        numViews = numViews + 1;
 %                        figure;
 %                        plot(swarmWorld.exploredGraph,'XData',swarmWorld.exploredGraph.Nodes.nodeX,'YData',swarmWorld.exploredGraph.Nodes.nodeY)

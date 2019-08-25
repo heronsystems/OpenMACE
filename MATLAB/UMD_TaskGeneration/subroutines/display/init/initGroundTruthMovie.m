@@ -34,12 +34,12 @@ for i = 1:1:swarmModel.N
     yc = ycnom + xk(2);
     plotHandles.figh_sensingRadius(i) = plot(xc,yc,'k-');
 end
-% % plot target locations
-% for i = 1:1:targetModel.M
-% curNode = targetState.x(2*i-1);
-%     targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
-%     plotHandles.figh_targetLoc(i) = plot(targXY(1), targXY(2), 'r+','linewidth',2);
-% end
+% plot target locations
+for i = 1:1:targetModel.M
+curNode = targetState.x(2*i-1);
+    targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
+    plotHandles.figh_targetLoc(i) = plot(targXY(1), targXY(2), 'r+','linewidth',2);
+end
 % plot F3 boundary
 if ( runParams.movie.plotF3Obstacles )
     plot(runParams.movie.perimX, runParams.movie.perimY, 'k-','Linewidth',2);

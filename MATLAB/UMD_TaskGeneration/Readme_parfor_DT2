@@ -27,7 +27,10 @@ This document lists the steps of using the cluster on DT2 to run matlab using a 
 	$ cd /lustre/DT2USERNAME
 	$ mv ~/glue_home/FOLDER_TO_BE_SENT ./TARGETFOLDER
 	Note that /TARGETFOLDER is under /lustre/DT2USERNAME
-	
+	Create an 'Outputs' folder:
+  $ cd /lustre/DT2USERNAME
+  $ mkdir /lustre/DT2USERNAME/Outputs
+
 	3. [SSH DT2] Use nano or vim to edit files, e.g.,
 	$ nano trial.sh
 	$ vim trial.sh
@@ -80,6 +83,9 @@ Obsolete:
 
 ================================
 Other useful commands:
-scp -r $FOLDER $USER@login.deepthought2.umd.edu:~/glue_home
-ssh $USER@login.deepthought2.umd.edu './startMonteCarlo.sh'
-/bin/rm -rf /lustre/$USER/$FOLDER
+scp -r UMD_TaskGeneration wolek@login.deepthought2.umd.edu:/lustre/wolek
+ssh wolek@login.deepthought2.umd.edu
+cd /lustre/wolek
+sbatch trial.sh
+
+

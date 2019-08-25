@@ -12,12 +12,12 @@ for i = 1:1:swarmModel.N
     yc = ycnom + xk(2);
     set(plotHandles.figh_sensingRadius(i),'XData',xc,'YData',yc);
 end
-% % update target locations
-% for i = 1:1:targetModel.M
-% curNode = targetState.x(2*i-1);
-%     targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
-%     set(plotHandles.figh_targetLoc(i),'XData',targXY(1),'YData',targXY(2));
-% end
+% update target locations
+for i = 1:1:targetModel.M
+curNode = targetState.x(2*i-1);
+    targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
+    set(plotHandles.figh_targetLoc(i),'XData',targXY(1),'YData',targXY(2));
+end
 title(['Occupancy Graph, time = ' num2str(swarmWorld.time)]);
 
 end

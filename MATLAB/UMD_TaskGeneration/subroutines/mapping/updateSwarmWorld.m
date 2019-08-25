@@ -17,7 +17,7 @@ function swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueW
 
 % update unexplored prior
 tic;
-[swarmWorld.V, swarmWorld.U, swarmWorld.O] = updateUnexploredPrior(swarmWorld.cellStateMat, trueWorld.xx, trueWorld.yy, numnodes(swarmWorld.exploredGraph), swarmModel.probAbsentPrior, swarmWorld.V, swarmWorld.U, swarmWorld.O, swarmWorld.edgeDir);
+[swarmWorld.V, swarmWorld.U, swarmWorld.O] = updateUnexploredPrior(swarmWorld.cellStateMat, trueWorld.xx, trueWorld.yy, numnodes(swarmWorld.exploredGraph), swarmModel.probAbsentPrior, swarmWorld.V, swarmWorld.U, swarmWorld.O, swarmWorld.edgeDir, swarmModel.inc, swarmModel.npeaks, swarmModel.ax, swarmModel.ay);
 disp('updateUnexploredPrior')
 toc;
 

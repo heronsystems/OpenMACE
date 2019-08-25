@@ -14,8 +14,8 @@ processingType = 'plot'; % options are: 'analysis' or 'plot'
 
 % user inputs:
 algRange = 1:3; % index for algorithm
-agentInitRange = 1:5; % index for generated scenes (agent initial location and target behavior)
-mapRange = 1:2; % index for maps
+agentInitRange = 1:20; % index for generated scenes (agent initial location and target behavior)
+mapRange = 1; % index for maps
 
 
 totalTime=  tic;
@@ -89,7 +89,7 @@ end
 
 if strcmp(processingType,'plot')
     load('MonteCarloData_processed.mat');
-    missionTimeMin = 2.5;
+    missionTimeMin = 5;
     % determine maximum number of pts
     maxPts = 0;
     numTrials = length(agentInitRange);
@@ -292,13 +292,15 @@ if strcmp(processingType,'plot')
     detTime_lm = sort(detTime_lm);
     detTime_mi = sort(detTime_mi);
     
+    numTrials = length(agentInitRange)*length(mapRange);
+    
     % plot
     figure(2);
     %subplot(3,3,j);
-    p1 = plot(detTime_rm/(missionTimeMin*60),[1:1:length(detTime_rm)]./100*100,'-','Color',mapB(4,:),'linewidth',1.5);
+    p1 = plot(detTime_rm/(missionTimeMin*60),[1:1:length(detTime_rm)]./numTrials*100,'-','Color',mapB(4,:),'linewidth',1.5);
     hold on;
-    p2 = plot(detTime_lm/(missionTimeMin*60),[1:1:length(detTime_lm)]./100*100,'-','Color',mapG(4,:),'linewidth',1.5);
-    p3 = plot(detTime_mi/(missionTimeMin*60),[1:1:length(detTime_mi)]./100*100,'-','Color',mapP(4,:),'linewidth',1.5);
+    p2 = plot(detTime_lm/(missionTimeMin*60),[1:1:length(detTime_lm)]./numTrials*100,'-','Color',mapG(4,:),'linewidth',1.5);
+    p3 = plot(detTime_mi/(missionTimeMin*60),[1:1:length(detTime_mi)]./numTrials*100,'-','Color',mapP(4,:),'linewidth',1.5);
     xlabel('Normalized Time')
     ylabel('Targets Detected (%)')
     set(gca,'FontName','Arial','FontSize',10)
@@ -335,14 +337,16 @@ if strcmp(processingType,'plot')
     dataNodeStdev_mi = stdevOmitNaN(data,1);
     clear data;
     
-    % augment detection times
+    % augment detection times with a zero
     detTime_rm = [ 0 detTime_rm ];
     detTime_lm = [ 0 detTime_lm ];
     detTime_mi = [ 0 detTime_mi ];
     
-    detPercent_rm = [0:1:length(detTime_rm)-1]./100;
-    detPercent_lm = [0:1:length(detTime_lm)-1]./100;
-    detPercent_mi = [0:1:length(detTime_mi)-1]./100;
+    % 
+    
+    detPercent_rm = [0:1:length(detTime_rm)-1]./numTrials;
+    detPercent_lm = [0:1:length(detTime_lm)-1]./numTrials;
+    detPercent_mi = [0:1:length(detTime_mi)-1]./numTrials;
     
     % make unique
     [detTime_rm, ind] = unique(detTime_rm,'last');

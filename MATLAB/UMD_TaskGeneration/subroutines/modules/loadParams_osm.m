@@ -3,7 +3,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % Simulation
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 2.5*60; %5*60; % total simulation/mission time
+runParams.T =  5*60;% total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
 
 % F3 Flight Test
@@ -31,9 +31,9 @@ swarmModel.useGeneratedTargetMotion = 0; % 0 will use a random target motion
 
 % Communication / task allocation
 % Options: 'stepwiseHungarian_unique' or 'none'
-swarmModel.taskAllocation = 'stepwiseHungarian_unique';
-swarmModel.samplesPerTask = 10;
-swarmModel.bundleSize = 2;
+swarmModel.taskAllocation = 'stepwiseHungarian_unique'; %'stepwiseHungarian_unique';
+swarmModel.samplesPerTask = 15;
+swarmModel.bundleSize = 3;
 swarmModel.knnNumber = 10;
 
 % Task Generation
@@ -46,8 +46,12 @@ swarmModel.maxIters = 100;
 
 % Mapping
 swarmModel.nG = 25; % number of discrete sensor levels
-swarmModel.mG = 3; % sensitivity
+swarmModel.mG = 3.5; % sensitivity
 swarmModel.mapConfLevel = 0.95;
+swarmModel.inc = 3;% kriging
+swarmModel.npeaks = 5;
+swarmModel.ax = 12;
+swarmModel.ay = 0.25;
 
 % Detection / Tracking (LRDT)
 swarmModel.LRDTOnTheFlyFlag = 1;
@@ -56,7 +60,7 @@ swarmModel.probAbsentPrior = 0.50; % for initialization
 swarmModel.decayRate = 0.05; % value from 0 to 1
 swarmModel.terminateSimOnDetect = 0;
 swarmModel.confLevel = 0.95;
-swarmModel.mZ = 6;
+swarmModel.mZ = 2.5;
 swarmModel.nZ = 25;
 
 % Target
@@ -64,7 +68,7 @@ targetModel = struct;
 % options: 'constantSpeedRandomWalk' or 'generative'
 targetModel.type = 'constantSpeedRandomWalk';
 targetModel.M = 1; % number of targets
-targetModel.probStopping = 0.75;
+targetModel.probStopping = 0.25;
 targetModel.m = 1.0;
 targetModel.d = 0.1;
 targetModel.inertia = 100; % a value greater than zero
@@ -79,7 +83,7 @@ trueWorld.binWidth = 5;
 trueWorld.boxlength = 200;
 trueWorld.boxwidth = 200;
 trueWorld.buffer = 0;
-trueWorld.mapID = 1; % choose 1, 2, or 3
+trueWorld.mapID = 3; % choose 1, 2, or 3
 trueWorld.angle = 0*pi/180;
 trueWorld.scale = 2;
 % override default values if this is a monte-carlo run

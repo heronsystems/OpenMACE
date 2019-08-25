@@ -36,16 +36,27 @@ if ( exist([trueWorld.folder trueWorld.fileName '_' trueWorld.type '_full.mat'],
             trueWorld.numBinsY = floor(trueWorld.boxwidth/trueWorld.binWidth); 
             [trueWorld.xpoly,trueWorld.ypoly] = buildRectangularBoundaryFromCorners(0, trueWorld.maxX, 0, trueWorld.maxY, trueWorld.borderOffset);
         otherwise
+            % cityblocks
             [xpoly,ypoly] = buildRectangularBoundary(nodeX, nodeY, trueWorld.borderOffset);
             trueWorld.xpoly = xpoly;
             trueWorld.ypoly = ypoly;
-            trueWorld.minX = min(trueWorld.xpoly);
-            trueWorld.maxX = max(trueWorld.xpoly);
-            trueWorld.minY = min(trueWorld.ypoly);
-            trueWorld.maxY = max(trueWorld.ypoly);            
+%             trueWorld.minX = min(trueWorld.xpoly);
+%             trueWorld.maxX = max(trueWorld.xpoly);
+%             trueWorld.minY = min(trueWorld.ypoly);
+%             trueWorld.maxY = max(trueWorld.ypoly);    
+            f3LowerLeftCornerX = 5;
+            f3LowerLeftCornerY = -11;
+            L = trueWorld.blockLength*trueWorld.numBlocks;
+            trueWorld.minX = f3LowerLeftCornerX - trueWorld.borderOffset;
+            trueWorld.maxX = f3LowerLeftCornerX + L + trueWorld.borderOffset;
+            trueWorld.minY = f3LowerLeftCornerY - trueWorld.borderOffset;
+            trueWorld.maxY = f3LowerLeftCornerY + L + trueWorld.borderOffset;            
+                        
             % the whole environment is discretized into this many bins:
-            trueWorld.numBinsX = floor( (max(trueWorld.xpoly) - min(trueWorld.xpoly))/trueWorld.binWidth ) + 1;
-            trueWorld.numBinsY = floor( (max(trueWorld.ypoly) - min(trueWorld.ypoly))/trueWorld.binWidth ) + 1;
+            %trueWorld.numBinsX = floor( (max(trueWorld.xpoly) - min(trueWorld.xpoly))/trueWorld.binWidth ) + 1;
+            %trueWorld.numBinsY = floor( (max(trueWorld.ypoly) - min(trueWorld.ypoly))/trueWorld.binWidth ) + 1;
+            trueWorld.numBinsX = floor( (trueWorld.maxX - trueWorld.minX)/trueWorld.binWidth );
+            trueWorld.numBinsY = floor( (trueWorld.maxY - trueWorld.minY)/trueWorld.binWidth );
     end
     
     if ( ~isempty(LatRef) )
