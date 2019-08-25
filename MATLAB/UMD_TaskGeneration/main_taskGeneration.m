@@ -14,7 +14,7 @@ if ~exist('MonteCarloSwitch','var')
     %rng('default');
     rng(1);
 end
-rng(1);
+
 
 % simulate
 % temporary fix to allow plotting with time on ROS message callback

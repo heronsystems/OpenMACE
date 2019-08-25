@@ -15,7 +15,7 @@ processingType = 'plot'; % options are: 'analysis' or 'plot'
 % user inputs:
 algRange = 1:3; % index for algorithm
 agentInitRange = 1:20; % index for generated scenes (agent initial location and target behavior)
-mapRange = 1; % index for maps
+mapRange = 1:3; % index for maps
 
 
 totalTime=  tic;
