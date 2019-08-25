@@ -32,7 +32,7 @@ function [voronoiVertices, voronoiCells, cellMass, cellCenterOfMass] = approxEqu
 % issues experienced when zz contains data points equal to zero (when
 % computing mass, centroid, etc. this may cause dividing by zero)
 % we fix this by adding a small constant
-zz = zz + 0.00001;
+zz = zz + 0.001;
 
 % world dimensions
 minX = min(min(xx));
@@ -81,7 +81,10 @@ while ( maxOffsetSqPercent > percentTol && i < maxIters )
     % reflect along bottom edge
     MX(4*N+1:5*N,:) = [X(:,1), 2*minY-X(:,2)];
   
-    % calculate the voronoi vertices and cells
+    % avoids the Warning: Duplicate data points have been detected.
+    % MX = unique(MX,'rows');
+    
+    % calculate the voronoi vertices and cells    
     [voronoiVertices,voronoiCells] = voronoin(MX);
     
     % calculate center of mass of each cell

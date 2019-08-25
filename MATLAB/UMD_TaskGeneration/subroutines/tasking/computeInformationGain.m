@@ -26,36 +26,26 @@ u = [];
 effort = 0;
 x = state';
 
-switch swarmModel.utilityComputation
-    case 'computeInformationGain'
-        path = x(1:2)';
-        % first propogate the state to compute all future control actions and the
-        % terminal state
-        time = 0;
-        
-        for k = 1:round(swarmModel.planningHorizon/simParams.dt)
-            u = [u waypointController(x,taskLocation(1),taskLocation(2),swarmModel.kp_wpt,swarmModel.kd_wpt,swarmModel.umax)];
-            x = x + simParams.dt*(swarmModel.A*x + swarmModel.B*u(:,end));
-            path = [path; x(1:2)'];
-            %effort = effort + simParams.dt*sqrt(u(1,end)*u(1,end)' + u(2,end)*u(2,end)');
-            time = time + simParams.dt;
-            % adaptive terminal time: if the agents is close to the taskLocation by
-            % Rsense, then we terminate the process of computing trajectory and
-            % effort
-            if sqrt((x(1)-taskLocation(1))^2+(x(2)-taskLocation(2))^2) <= swarmModel.Rsense/25
-                %disp('wpt reached in planner');
-                break;
-            end
-        end
-    case 'computeInformationGainLinearPath'
-        effort = norm(taskLocation - x(1:2)); % total length of linear path
-        ds = trueWorld.binWidth / 3;
-        N = max(1,floor(effort / ds)); % number of pts to define path
-        path = zeros(N,2);
-        path(:,1) = linspace(x(1),taskLocation(1),N);
-        path(:,2) = linspace(x(2),taskLocation(2),N);
-        
+path = x(1:2)';
+% first propogate the state to compute all future control actions and the
+% terminal state
+time = 0;
+
+for k = 1:round(swarmModel.planningHorizon/simParams.dt)
+    u = [u waypointController(x,taskLocation(1),taskLocation(2),swarmModel.kp_wpt,swarmModel.kd_wpt,swarmModel.umax)];
+    x = x + simParams.dt*(swarmModel.A*x + swarmModel.B*u(:,end));
+    path = [path; x(1:2)'];
+    %effort = effort + simParams.dt*sqrt(u(1,end)*u(1,end)' + u(2,end)*u(2,end)');
+    time = time + simParams.dt;
+    % adaptive terminal time: if the agents is close to the taskLocation by
+    % Rsense, then we terminate the process of computing trajectory and
+    % effort
+    if sqrt((x(1)-taskLocation(1))^2+(x(2)-taskLocation(2))^2) <= swarmModel.Rsense/25
+        %disp('wpt reached in planner');
+        break;
+    end
 end
+
 
 % Artur : this was attempt to make computation faster by checking only unique
 % bins but it turns out to be somewhat inaccurate due to rounding error may
@@ -112,12 +102,14 @@ end
 % if norm(taskLocation - state(1:2))<swarmModel.Rsense
 %     varargout{1} = 0; % if the task is within Rsense, then ignore this task
 % else
-    % info/effort
+% info/effort
 %     varargout{1} = sum(sum(reachedCell.*mutualInfoSurface))/effort;
-    % info/arriving time
-    
-    varargout{1} = sum(sum(reachedCell.*mutualInfoSurface))/time;
-    
+% info/arriving time
+
+eta = 0.95;
+%varargout{1} = 0.95;
+varargout{1} = eta*max(max(reachedCell.*mutualInfoSurface))/time + (1-eta)*sum(sum(reachedCell.*mutualInfoSurface))/time;
+
 % end
 
 % if terminal state is required, return this vector

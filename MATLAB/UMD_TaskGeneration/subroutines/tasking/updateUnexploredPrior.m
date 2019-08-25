@@ -1,4 +1,4 @@
-function [V,U,O] = updateUnexploredPrior(cellStateMat, xx, yy, krigingSigma, numNodesExploredGraph, probAbsent, V, U, O)
+function [V,U,O] = updateUnexploredPrior(cellStateMat, xx, yy, numNodesExploredGraph, probAbsent, V, U, O, edgeDir, inc, npeaks, ax, ay)
 
 % compute adaptive prior for an unexplored cell based on node density
 % this becomes the floor
@@ -17,8 +17,8 @@ measurements = [];
 for i = 1:1:numBinsY
     for j = 1:1:numBinsX
         if ( cellStateMat(i,j) ~= 2 ) % cellStateMat(j,i) == 1 )
-            measurements(k,1) = xcp(j);
-            measurements(k,2) = ycp(i);
+            measurements(k,1) = j;
+            measurements(k,2) = i;
             measurements(k,3) = V(i,j);
             k = k + 1;
         end
@@ -32,29 +32,72 @@ end
 
 if ( ~isempty(measurements) )
     
-
-%     forecast = ordinaryKrig(xx,yy,measurements,krigingSigma);
-%     forecast(forecast > 1) = 1;
-%     forecast(forecast < 0) = 0;
     
-    ax = 1.5;
-    ay = 0.1;
-    forecast = anisotropicKrig( xx, yy,measurements,ax,ay);
-    forecast(forecast > 1) = 1;
-    forecast(forecast < 0) = 0;
-
+    %     forecast = ordinaryKrig(xx,yy,measurements,krigingSigma);
+    %     forecast(forecast > 1) = 1;
+    %     forecast(forecast < 0) = 0;
     
-%     % deviation from mean
-%     %vals(:,3) = vals(:,3) - voidDensityEstimate;
+    
+    %
+    binEdges = [0:inc:180];
+    theta = diff(binEdges)/2+binEdges(1:end-1);
+    if isempty(edgeDir)       
+        peaks = linspace(0,pi,npeaks+1);
+        peaks = peaks(1:end-1);
+        weights = ones(1,npeaks);
+        disp('Graph is empty');
+    else
+        [N,~] = histcounts(edgeDir*180/pi,binEdges);        
+        [peaks,weights] = findPeaks(N, npeaks);
+        peaks = theta(peaks)*pi/180;
+        if ( isempty(weights) )
+            error('Error: weights empty');
+        elseif( min(weights)==0 )
+            error('Error: weights zero');
+        end
+        
+    end
+    
+    tKrig = tic;
+    disp('////////////////////')
+    %forecast = anisotropicAdaptiveKrigFast2(measurements, ax,ay, peaks, weights, xcp, ycp);
+    forecast = anisotropicAdaptiveKrigFast3(measurements, ax,ay, peaks, weights, xcp, ycp, V, cellStateMat);    
+    disp('anisotropicAdaptiveKrigFast2 took:');
+    toc(tKrig);
+    disp('////////////////////')
+    
+%     peaks*180/pi
+%     weights
+%     figure;
+%     subplot(1,2,1)
+%     imagesc(forecast,'XData', xcp, 'YData', ycp); hold on;
+%     set(gca,'YDir','Normal');    
+%     axis equal;
+%     title('Adaptive (4-Peak) Anisotropic Kriging')
+%     set(gca,'FontSize',16)
+%     xlabel('X')
+%     ylabel('Y')
+%     colorbar;
 %     
-%     % performance a linear interpolation
-%     predictedVoidMat = krigInterp(xx,yy,vals,krigingSigma);
+%     subplot(1,2,2);
+%     data = ones(numel(xcp),numel(ycp))*NaN;
+%     for i = 1:1:size(measurements,1)
+%         data(measurements(i,2),measurements(i,1)) = measurements(i,3);
+%     end
 %     
-%     % scale
-%     % predictedVoidMat = normalizeMatrix(predictedVoidMat, min( vals(:,3) ), max( vals(:,3) ) ) + voidDensityEstimate;
-%     predictedVoidMat = normalizeMatrix(predictedVoidMat, min( vals(:,3) ), max( vals(:,3) ) );
-%     
-    % determine unexplored area    
+%     imagesc(data,'XData', xcp, 'YData', ycp,'AlphaData',~isnan(data)); hold on;
+%     colorbar;
+%     set(gca,'YDir','Normal');    
+%     axis equal;
+%     title('Input data')
+%     set(gca,'FontSize',16)
+%     xlabel('X')
+%     ylabel('Y')
+%     pause;
+%     close all;
+
+
+    % determine unexplored area
     [rows, cols] = find(cellStateMat == 2);
     
     % used for prior of target
@@ -72,7 +115,7 @@ if ( ~isempty(measurements) )
         end
         O(r,c) = (1 - V(r,c))*factor;
         U(r,c) = 1 - O(r,c) - V(r,c);
-    end    
+    end
 end
 
 end

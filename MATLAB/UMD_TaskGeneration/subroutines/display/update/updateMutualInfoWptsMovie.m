@@ -6,8 +6,12 @@ set(plotHandles.figh_subplot2,'CData', swarmWorld.mutualInfoSurface );
 
 for i = 1:1:length(swarmWorld.voronoiCells)
     ind = swarmWorld.voronoiCells{i};
+    if (~isempty(ind) )
     ind = [ind ind(1)];
     set(plotHandles.figh_voronoiCells(i),'XData',swarmWorld.voronoiVertices(ind,1),'YData',swarmWorld.voronoiVertices(ind,2));
+    else
+        disp('Warning, empty voronoi cell indices');
+    end
 end
 set(plotHandles.figh_voronoiCenters,'XData',swarmWorld.cellCenterOfMass(:,1), 'YData',swarmWorld.cellCenterOfMass(:,2));
 
@@ -28,12 +32,26 @@ end
 for i = 1:1:swarmModel.N
     if (swarmState.wptIndex(i) > 1)
         %
-        if ( isfield(plotHandles,'figh_visitedWpt') && isgraphics(plotHandles.figh_visitedWpt(i)) )
-            set(plotHandles.figh_visitedWpt(i),'XData',bundleX(i,1:swarmState.wptIndex(i)-1),'YData',bundleY(i,1:swarmState.wptIndex(i)-1));
+        if ( isfield(plotHandles,'figh_visitedWpt') )
+            if ( length(isgraphics(plotHandles.figh_visitedWpt)) >= i )
+                if ( isgraphics(plotHandles.figh_visitedWpt(i)) )
+                    set(plotHandles.figh_visitedWpt(i),'XData',bundleX(i,1:swarmState.wptIndex(i)-1),'YData',bundleY(i,1:swarmState.wptIndex(i)-1));
+                end
+            end
         else
             plotHandles.figh_visitedWpt(i) = plot(bundleX(i,1:swarmState.wptIndex(i)-1),bundleY(i,1:swarmState.wptIndex(i)-1),'mo','linewidth',2,'MarkerFaceColor','m');
         end
+    else
+        if ( isfield(plotHandles,'figh_visitedWpt') )
+            if ( length(isgraphics(plotHandles.figh_visitedWpt)) >= i )
+                if ( isgraphics(plotHandles.figh_visitedWpt(i)) )
+                    set(plotHandles.figh_visitedWpt(i),'XData',[],'YData',[]);
+                end
+            end
+        end
     end
+    
+    
 end
 
 % plot Path
@@ -69,12 +87,7 @@ numPts = 20;
 % loop through updates
 subplot(plotHandles.subplotHandle)
 for i = 1:1:swarmModel.N
-    switch swarmModel.communicationTopology
-        case 'centralized'
-            xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
-        case 'allToAll'
-            xk = [ swarmState{i}.x(1); swarmState{i}.x(2); swarmState{i}.x(3); swarmState{i}.x(4) ];
-    end
+    xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
     xc = xcnom + xk(1);
     yc = ycnom + xk(2);
     set(plotHandles.figh_sensingRadius(i),'XData',xc,'YData',yc);
