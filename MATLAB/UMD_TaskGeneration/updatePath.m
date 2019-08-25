@@ -7,6 +7,9 @@ function updatePath(varargin)
 if ( length(varargin)==2 )
    cd(varargin{1}); 
 end
+
+%addpath('/home/wolek/Desktop/Research/Projects/UMD/Heron/OpenMACE/catkin_sim_environment/src/matlab_gen/msggen')
+
 addpath('./subroutines')
 addpath('./subroutines/tracking')
 addpath('./subroutines/tasking')

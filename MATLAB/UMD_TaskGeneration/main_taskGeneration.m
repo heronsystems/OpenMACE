@@ -25,8 +25,8 @@ tStart = tic;
 % user should modify loadParams.m as desired for single run
 if ~exist('MonteCarloSwitch','var')
     disp('Running standard (non Monte-Carlo) simulation or MACE run')
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocksAtF3();
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocksAtF3();
     % We used loadParams_cityBlocksAtF3 for the flight test at F3 during
     % the summer
 else

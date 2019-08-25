@@ -3,8 +3,8 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % simulation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 runParams = struct;
-runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 1*30; % total simulation/mission time
+runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
+runParams.T = 1*60; % total simulation/mission time
 
 
 % F3 Flight Test
@@ -12,8 +12,8 @@ runParams.T = 1*30; % total simulation/mission time
 ROS_MACE = [];
 if ( strcmp(runParams.type, 'mace') )
     ROS_MACE = struct;
-    ROS_MACE.operationalAlt = [3 5]; % m OR [4 8 2 6]; if running four quads
-    ROS_MACE.agentIDs = [1 2]; % m OR [1 2 3 4]; if running four quads
+    ROS_MACE.operationalAlt = [1.5 2.5 3.5 4.5]; % m OR [4 8 2 6]; if running four quads
+    ROS_MACE.agentIDs = [3 4 5 6]; % m OR [1 2 3 4]; if running four quads
     ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
     for i = 1:1:length(ROS_MACE.agentIDs)
         ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
@@ -21,7 +21,7 @@ if ( strcmp(runParams.type, 'mace') )
     
     %ROS_MACE.ip ='10.104.193.156'; % Artur Office
     ROS_MACE.ip ='127.0.0.1';
-    %ROS_MACE.ip ='192.168.1.219'; % Artur Home
+    %ROS_MACE.ip ='192.168.1.219'; % Artur Home    
     ROS_MACE.xInit = 0; % position of first quad in local frame
     ROS_MACE.yInit = 0;
     ROS_MACE.initSpacing = 3;
@@ -63,7 +63,7 @@ end
 % Swarm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 swarmModel = struct;
-swarmModel.N = 2; % number of agents OR 4; if running four quads
+swarmModel.N = 4; % number of agents OR 4; if running four quads
 swarmModel.Rsense = 1.5; % sensing radius
 
 %swarmModel.delay = 1.3564;
@@ -80,13 +80,15 @@ swarmModel.A = [0 0 1 0; 0 0 0 1; 0 0 -swarmModel.d 0; 0 0 0 -swarmModel.d];
 swarmModel.B = [0 0; 0 0; 1 0; 0 1];
 runParams.Tsamp = swarmModel.Tsamp; % make a copy
 
-%swarmModel.samplesPerTask = 2;
+%swarmModel.samplesPerTask = 2; 
+%swarmModel.taskGeneration = 'frontierWpts'; % 'randomWpts', or 'frontierWpts' 
 %swarmModel.Told = 60; % sec, time used for saturated pixel "age".
 % Note, even if MACE is running we need these for prediction (i.e., Sheng's
 % cost function)
 
 % Communication / task allocation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+swarmModel.communicationTopology = 'centralized';   % options are: 'centralized' or 'allToAll'
 if ( nargin ~=3 ) % if running a single-run, use this value:
     swarmModel.taskAllocation = 'stepwiseHungarian_unique'; %'stepwiseHungarian'; % options are: 'none', 'stepwiseHungarian', 'Hungarian' or 'Auctioneer';
 end
@@ -100,7 +102,7 @@ switch swarmModel.taskAllocation
     case 'stepwiseHungarian_unique' % original
         swarmModel.samplesPerTask = 10;
         swarmModel.bundleSize = 5;
-        swarmModel.neighborMethod = 'knn';
+        swarmModel.neighborMethod = 'knn';  
         swarmModel.knnNumber = 15;
     case 'stepwiseHungarian_max' % original
         swarmModel.samplesPerTask = 10;
@@ -108,21 +110,37 @@ switch swarmModel.taskAllocation
     case 'stepwiseHungarian_2ndOrder' % original
         swarmModel.samplesPerTask = 10;
         swarmModel.bundleSize = 4;
-        
+    
     case 'none'
         swarmModel.samplesPerTask = 5;
 end
 
 % Task Generation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-swarmModel.numTasks = 100;
-swarmModel.stepSizeGain = 0.2;
-swarmModel.percentTol = 0.05;
-swarmModel.maxIters = 250;
-
+if ( nargin ~=3 ) % if running a single-run, use this value:
+    swarmModel.taskGeneration = 'mutualInfoWpts'; % 'randomWpts', or 'frontierWpts', 'lawnmower' 'mutualInfoWpts'
+end
+switch swarmModel.taskGeneration
+    case 'frontierWpts'
+        swarmModel.wptChangePeriod = 10; % sec, how often we generate a new random wpt
+        swarmModel.mapping.method = 'frontierAndBlob'; % options are: 'frontierOnly' or 'frontierAndBlob'
+        swarmModel.mapping.minBlobArea = pi*swarmModel.Rsense^2*2;  % threshold for the minimum area of a blob
+        swarmModel.mapping.maxMajorMinorAxisRatio = 10; % threshold for the ratio between majoraxislength and minor axis length of a subblob, give inf if you do not want to apply this filter
+        swarmModel.mapping.blobCostScale = 1.4; % scale the cost for reaching a subblob centroid by this amount
+    case 'mutualInfoWpts'
+        swarmModel.numTasks = 100;
+        swarmModel.stepSizeGain = 0.2;
+        swarmModel.percentTol = 0.05;
+        swarmModel.maxIters = 250;
+    case 'likelihoodWpts'
+        swarmModel.numTasks = 200;
+        swarmModel.stepSizeGain = 0.2;
+        swarmModel.percentTol = 0.03;
+        swarmModel.maxIters = 500;
+end
 
 swarmModel.mapping.krigingSigma = 0.5; % controls how much kriging interp diffuses
+swarmModel.utilityComputation = 'computeInformationGain'; % options are: 'computeEnergyAndPenalty' or 'computeInformationGain'
 swarmModel.planningHorizon = swarmModel.samplesPerTask * swarmModel.Tsamp; %runParams.T; %
 
 % Mapping
@@ -154,7 +172,7 @@ swarmModel.LRDTOnTheFlyFlag = 1;
 %swarmModel.maxUnexploredPrior = 0.85;
 swarmModel.nodeDensityInitGuess = 1/3; % used on first step before kriging takes place
 swarmModel.probAbsentPrior = 0.50; % for initialization
-swarmModel.numNodesEstPercent = 1/5;
+swarmModel.numNodesEstPercent = 1/5; 
 
 swarmModel.decayRate = 0.05; % value from 0 to 1
 swarmModel.q_s_n =  swarmModel.decayRate*(1-swarmModel.probAbsentPrior);
@@ -186,18 +204,26 @@ swarmModel.z_O = swarmModel.z_O ./ sum(swarmModel.z_O);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 targetModel = struct;
 targetModel.M = 1; % number of targets
-targetModel.type = 'constantSpeedRandomWalk';
+targetModel.type = 'constantSpeedRandomWalk'; % 'varyingSpeedRandomWalk' or 'constantSpeedRandomWalk'
 targetModel.probStopping = 0.75;
 targetModel.m = 1.0;
 targetModel.d = 0.1;
-
-targetModel.restPeriod = swarmModel.Tsamp;
-targetModel.inertia = 100; % a value greater than zero
-
+switch targetModel.type
+    case 'varyingSpeedRandomWalk'
+        targetModel.maxSpeed = 10;
+    case 'constantSpeedRandomWalk'
+        targetModel.restPeriod = swarmModel.Tsamp;
+        targetModel.inertia = 100; % a value greater than zero
+%         if (monteCarloFlag)
+%             if swarmModel.useGeneratedTargetMotion
+%                 load(['./scenes/targetMotion' num2str(swarmModel.targetMotionID) '.mat']);  % load the generated data to replace the above parameters.
+%             end
+%         end
+end
 
 % Environment/Map
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% load environment
+% load environment 
 trueWorld = struct;
 trueWorld.type = 'cityblocksAtF3'; % 'cityblocks', %'openStreetMap', 'osmAtF3'
 trueWorld.f3Workspace = 'right-square'; % 'full', 'right-square'
