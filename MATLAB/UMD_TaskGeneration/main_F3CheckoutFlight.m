@@ -14,7 +14,7 @@ rosshutdown; % in case there is a leftover instance
 % (See README.txt for further details)
 
 % Setup ROS_MACE
-[runParams, ROS_MACE] = loadParams_testingF3();
+[runParams, ROS_MACE] = loadParams_cityblocksAtF3();
 ROS_MACE = setupF3FlightTestPlot( runParams, ROS_MACE);
 
 % temporary fix to allow plotting with time on ROS message callback
@@ -105,11 +105,11 @@ tStart = tic;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Test: N Quads Takeoff, Wpt Mission, and Land
 
-ROS_MACE.N = 4;
+ROS_MACE.N = 2;
 %ROS_MACE.operationalAlt = [4 8]; % m
 %ROS_MACE.agentIDs = [1 2]; % m
 ROS_MACE.operationalAlt = [2 3 2 3]; % m
-ROS_MACE.agentIDs = [3 4 5 6]; % m
+ROS_MACE.agentIDs = [1 2 ]; % m
 
 ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 ROS_MACE.wptCoordinator = 'integrated';
