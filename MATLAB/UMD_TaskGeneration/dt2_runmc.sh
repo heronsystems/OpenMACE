@@ -1,5 +1,5 @@
 #!/bin/tcsh
-#SBATCH -t 8:00:00
+#SBATCH -t 6:00:00
 #SBATCH -n 20
 #SBATCH -N 1
 #SBATCH -L matlab

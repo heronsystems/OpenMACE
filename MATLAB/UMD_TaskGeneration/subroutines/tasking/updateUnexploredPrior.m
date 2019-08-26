@@ -1,4 +1,4 @@
-function [V,U,O] = updateUnexploredPrior(cellStateMat, xx, yy, numNodesExploredGraph, probAbsent, V, U, O, edgeDir, inc, npeaks, ax, ay)
+function [V,U,O,peaks,weights] = updateUnexploredPrior(cellStateMat, xx, yy, numNodesExploredGraph, probAbsent, V, U, O, edgeDir, inc, npeaks, ax, ay)
 
 % compute adaptive prior for an unexplored cell based on node density
 % this becomes the floor

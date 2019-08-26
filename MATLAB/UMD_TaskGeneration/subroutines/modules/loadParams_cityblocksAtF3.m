@@ -5,6 +5,7 @@ runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
 runParams.T = 5*60; % total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
+runParams.soundFlag = 1;
 
 % F3 Flight Test
 ROS_MACE = [];
@@ -49,7 +50,7 @@ runParams.movie.plotF3Obstacles = 1;
 if ( runParams.movie.plotF3Obstacles )
     runParams.movie.perimX = [-59 28 28 -59 -59];
     runParams.movie.perimY = [13 13 -13 -13 13];
-    R = 2;
+    R = 1.5;
     numPts = 20;
     [runParams.movie.pole1x, runParams.movie.pole1y] = generateCircle(0, 0, R, numPts);
     [runParams.movie.pole2x, runParams.movie.pole2y] = generateCircle(-30, 0, R, numPts);
@@ -58,7 +59,7 @@ end
 % Swarm
 swarmModel = struct;
 swarmModel.N = 2; % number of agents OR 4; if running four quads
-swarmModel.Rsense = 2; % sensing radius
+swarmModel.Rsense = 1.5; % sensing radius
 
 %swarmModel.delay = 1.3564;
 swarmModel.vmax = 1.2145; % maximum speed
@@ -75,14 +76,14 @@ swarmModel.useGeneratedTargetMotion = 0; % 0 will use a random target motion
 % Communication / task allocation
 % Options: 'stepwiseHungarian_unique' or 'none'
 swarmModel.taskAllocation = 'stepwiseHungarian_unique';
-swarmModel.samplesPerTask = 15;
+swarmModel.samplesPerTask = 6;
 swarmModel.bundleSize = 2;
-swarmModel.knnNumber = 10;
+swarmModel.knnNumber = 8;
 
 % Task Generation
 % Options 'mutualInfoWpts' , 'randomWpts' , 'lawnmower'
 swarmModel.taskGeneration = 'mutualInfoWpts';
-swarmModel.numTasks = 75;
+swarmModel.numTasks = 100;
 swarmModel.stepSizeGain = 0.2;
 swarmModel.percentTol = 0.05;
 swarmModel.maxIters = 100;
@@ -91,10 +92,10 @@ swarmModel.maxIters = 100;
 swarmModel.nG = 25; % number of discrete sensor levels
 swarmModel.mG = 3; % sensitivity
 swarmModel.mapConfLevel = 0.95;
-swarmModel.inc = 30;% kriging, deg
-swarmModel.npeaks = 2;
-swarmModel.ax = 2;
-swarmModel.ay = 0.05;
+swarmModel.inc = 2;% kriging, deg
+swarmModel.npeaks = 4;
+swarmModel.ax = 1;
+swarmModel.ay = 0.01;
     
 % Detection / Tracking (LRDT)
 swarmModel.LRDTOnTheFlyFlag = 1;

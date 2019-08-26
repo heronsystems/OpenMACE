@@ -20,8 +20,11 @@ if( strcmp(targetModel.type, 'constantSpeedRandomWalk') )
                                     trueWorld.nodeX(newNodes) - trueWorld.nodeX(curNode) );
                                 
                 % calculate the weights
-                weights = angularDist(headingCur, headingNew)*(-targetModel.inertia/pi) + targetModel.inertia + 1;
+                %weights = angularDist(headingCur, headingNew)*(-targetModel.inertia/pi) + targetModel.inertia + 1;
                 
+                headingDiff = angularDist(headingCur, headingNew);
+                weights = relWeightFun(headingDiff,targetModel.m,targetModel.d);
+            
                 % create a cumulative probability function of normalized weights
                 cpf = cumsum(weights/ sum(weights));
                                                 

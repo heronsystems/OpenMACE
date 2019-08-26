@@ -9,6 +9,7 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
         % reside
         % first determine the closest four cell centers and see
         % if the agent is in one of them
+        tStart = tic;
         initialNodes = [];
         neighborNodes = zeros(swarmModel.N,swarmModel.knnNumber);
         state = zeros(swarmModel.N,4);
@@ -20,8 +21,7 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
             % a column or row vector for the above line
             neighborNodes(kk,:) = idx(2:end);  % check if idx is a row vector
             % neighborNodes(kk,:) = idx(1:end);  % check if idx is a row vector
-            for ii = 1:5
-                %for ii = 1:swarmModel.knnNumber
+            for ii = 1:swarmModel.knnNumber+1
                 % check if agent kk is in voronoi cell ii
                 VC = swarmWorld.voronoiVertices(swarmWorld.voronoiCells{idx(ii)},:);
                 initialNodeIndex = find(inpolygon(swarmState.x(4*(kk-1)+1),swarmState.x(4*(kk-1)+2),VC(:,1),VC(:,2)));
@@ -34,9 +34,13 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
             if length(initialNodes) < kk % if no Voronoi cell contains the agent, just give the cell of closet centroid to the agent.
                 initialNodes = [initialNodes; idx(1)];
             end
+            % initial state of swarm
             state(kk,:) = swarmState.x(4*(kk-1)+1:4*(kk-1)+4);
         end
         q = swarmModel.bundleSize; % queue size
+        disp('taskAllocation: initialNode finding took:');
+        toc(tStart);
+        
         
         % columns give assignements, rows give each agent,
         bundleSteps = initialNodes;
@@ -44,7 +48,9 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
         terminateBundle = 0;
         % build the bundle
         for p = 1:q
+            fprintf('Bundle %d:\n',p);
             if ( terminateBundle == 0 )
+                tStart = tic;
                 % update the target nodes
                 targetNodes = [];
                 
@@ -77,10 +83,9 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
                     % go through all of connected targetNodes
                     for jj = 1:length(targetNodes)
                         if adjacencyMatrix(kk,jj) == 1 % if these two edges are connected
-                            [temp1,temp2,~,path] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(targetNodes(jj),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); % maybe should also return the ending state
-                            %[temp1,temp2] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(targetNodes(jj),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); % maybe should also return the ending state
-                            utilityMatrix(kk,jj) = temp1;
-                            terminalState{kk,jj} = temp2;
+                            [utility,finalState,~,path] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(targetNodes(jj),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); % maybe should also return the ending state                            
+                            utilityMatrix(kk,jj) = utility;
+                            terminalState{kk,jj} = finalState;                            
                         else
                             utilityMatrix(kk,jj) = -1e5; % if not connected, then the utitily is -10
                             path = [];
@@ -91,9 +96,14 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
                 
                 swarmWorld.initialNodes{p} = initialNodes;
                 swarmWorld.targetNodes{p} = targetNodes;
-                
+                disp('taskAllocation: computeUtilities/wpts');
+                toc(tStart);
+        
+                tStart = tic;
                 % Hungarian
                 assignmentIndex = munkres(-utilityMatrix);
+                disp('taskAllocation: hungarian');
+                toc(tStart);
                 
                 % assign new nodes
                 initialNodesNew = targetNodes(assignmentIndex);
@@ -101,15 +111,14 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
                 % add assignment to bundle
                 bundleSteps = [bundleSteps initialNodesNew];
                 
-                % update availableNodes
-                
-                
                 % update the initialNodes
                 initialNodes = initialNodesNew;
                 
+                tStart = tic;
                 for kk = 1:swarmModel.N
                     % update the infomation surface sequentially
-                    [~,~,infoSurfaceForAssignment] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(initialNodesNew(kk),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); % maybe should also return the ending state
+                    [~,~,infoSurfaceForAssignment] = computeInformationGain(state(kk,:),swarmWorld.cellCenterOfMass(initialNodesNew(kk),:),swarmModel,simParams,infoSurfaceForAssignment,trueWorld); 
+                    % maybe should also return the ending state
                     % update initial states for the next step
                     
                     % warning: if an error occurs on the following line, it means that
@@ -133,6 +142,7 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
                         fprintf('Warning: Bundle building terminating early with %d of %d tasks assigned\n',size(bundleSteps,2),q);
                         break;
                     else
+                        % update initial state
                         state(kk,:) = terminalState{kk,assignmentIndex(kk)};
                     end
                     
@@ -140,6 +150,8 @@ if strcmp(swarmModel.taskAllocation,'stepwiseHungarian_unique')
                     idx = knnsearch(swarmWorld.cellCenterOfMass,swarmWorld.cellCenterOfMass(initialNodes(kk),:),'K',swarmModel.knnNumber+1); % find knnNumber nearest neighbors
                     neighborNodes(kk,:) = idx(2:end);  % check if idx is a row vector
                 end
+                disp('taskAllocation: info surface / current cell update');
+                toc(tStart);                
             end
         end
         

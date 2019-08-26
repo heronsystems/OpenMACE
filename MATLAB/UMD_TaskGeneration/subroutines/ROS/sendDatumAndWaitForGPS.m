@@ -34,14 +34,14 @@ while( ~all(gpsAvailable) )
                 case 'ENU'
                     swarmState.x0(4*i-3,1) = msg.Easting;
                     swarmState.x0(4*i-2,1) = msg.Northing;
-                    swarmState.x0(4*i-1,1) = -1; % unused for now
-                    swarmState.x0(4*i,1) = -1;
+                    swarmState.x0(4*i-1,1) = 0; % unused for now
+                    swarmState.x0(4*i,1) = 0;
                 case 'F3'
                     [xF3, yF3] = ENUtoF3(msg.Easting, msg.Northing);
                     swarmState.x0(4*i-3,1) = xF3;
                     swarmState.x0(4*i-2,1) = yF3;
-                    swarmState.x0(4*i-1,1) = -1; % unused for now
-                    swarmState.x0(4*i,1) = -1;
+                    swarmState.x0(4*i-1,1) = 0; % unused for now
+                    swarmState.x0(4*i,1) = 0;
             end
         end
     end
