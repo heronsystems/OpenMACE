@@ -47,18 +47,26 @@ while 1
     % need to try to request bundle in while loop
     bundleRequest.NumVehicle = uint8(N);
     try
-        bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 1);
-    catch
-        ; % do nothing
+        bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
+    catch e %e is an MException struct
+        fprintf(1,'The identifier was:\n%s',e.identifier);
+        fprintf(1,'There was an error! The message was:\n%s',e.message);
     end
     if exist('bundleResponse','var')
+        % for debugging
+        fprintf('bundleResponse exists \n');
         if ~isempty(bundleResponse)
+            % for debugging
+            fprintf('bundleResponse is not empty \n');
+            fprintf('bundleResponseID = %d\n',bundleResponse.BundleID);
             if bundleResponse.BundleID > 0
                 break;
             end
         end
     end
 end
+
+fprintf('Bundle request is responded by the server.\n');
 
 % ====== initialization done ========================
 
