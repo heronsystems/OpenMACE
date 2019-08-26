@@ -14,11 +14,12 @@ PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceIn
      m_linearAttractionRadius(2),
      m_planningRadius(2),
      m_repulsionGain(100),
-     m_attractionGain(2),
+     m_linearAttractionGain(2),
      m_radialInfluence(4),
      m_goalThreshold(1),
      m_goalRadialInfluence(0.5)
 {
+    m_conicalAttractionGain = m_linearAttractionGain/m_goalThreshold;
     m_currentMapObject = nullptr;
     m_totalForceGrid = nullptr;
 
@@ -73,7 +74,9 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
         {
             const mace::maps::OccupiedResult* ptr = staticMap->getCellByIndex(*gridMapItr);
 
-            if(*ptr == mace::maps::OccupiedResult::OCCUPIED)
+            switch (*ptr) {
+            case mace::maps::OccupiedResult::OCCUPIED:
+            case mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY:
             {
                 double obstacleX,obstacleY;
                 staticMap->getPositionFromIndex(*gridMapItr, obstacleX, obstacleY);
@@ -90,7 +93,11 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
                     mace::pose::CartesianPosition_2D currentPos(indexX,indexY);
 
                     //call updateRepulsiveGradient on current x,y position and obstacle position
-                    VPF_ResultingForce rf = computeRepulsiveGradient(&obstacle, &currentPos);
+                    double incidentAngle = 0.0;
+                    if(*ptr == mace::maps::OccupiedResult::OCCUPIED)
+                        incidentAngle = M_PI_2;
+
+                    VPF_ResultingForce rf = computeRepulsiveGradient(&obstacle, &currentPos, incidentAngle);
 
                     //get correct cell in locally stored static grid
                     VPF_ResultingForce* currentStaticIndex = m_staticRespulsiveMap->getCellByIndex(*circleMapItr);
@@ -99,6 +106,8 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
                     *currentStaticIndex += rf;
                     *currentTotalForceIndex += rf;
                 }
+                break;
+            }
             }
         }
     }
@@ -133,29 +142,22 @@ VPF_ResultingForce PotentialFields::retrieveStaticObstacleGradient(int index)
 
 }
 
-VPF_ResultingForce PotentialFields::computeRepulsiveGradient(const Abstract_CartesianPosition *obstaclePosition, const Abstract_CartesianPosition *cellPosition)
+VPF_ResultingForce PotentialFields::computeRepulsiveGradient(const Abstract_CartesianPosition *obstaclePosition, const Abstract_CartesianPosition *cellPosition, const double &incidentAngle)
 {
     VPF_ResultingForce rf;
-    bool fuzzyLogicApplied = false;
 
     double distance = obstaclePosition->distanceBetween2D(cellPosition);
-    double bearing = cellPosition->polarBearingTo(obstaclePosition);
 
     //calculate repulsive force magnitude for each axis
-    if((distance <= m_radialInfluence) && (distance > 0)) //should be relative to some epsilon
+    if((distance <= m_radialInfluence) && (distance > std::numeric_limits<double>::epsilon())) //should be relative to some epsilon
     {
-        rf.setForceX((m_repulsionGain / pow(distance, 2)) * ((1/distance) - (1/m_radialInfluence)) * (cos(bearing)));
-        rf.setForceY((m_repulsionGain / pow(distance, 2)) * ((1/distance) - (1/m_radialInfluence)) * (sin(bearing)));
-
-        //apply fuzzy logic
-        //TODO actually apply fuzzy logic
-        fuzzyLogicApplied = true; //we would want to compute this outside of the function
+        Eigen::VectorXd normalizedVector = (obstaclePosition->getDataVector() - cellPosition->getDataVector()).normalized();
+        Eigen::Vector2d dimensionVector = normalizedVector.head(2);
+        Eigen::Matrix2d rotation = Eigen::Matrix2d::Zero(); rotation << cos(incidentAngle), -sin(incidentAngle), sin(incidentAngle), cos(incidentAngle); //[cos(theta) -sin(theta); sin(theta) cos(theta)]
+        Eigen::Vector2d rotatedVector = rotation*dimensionVector;
+        rf.setForceX((m_repulsionGain / pow(distance, 2)) * ((1/distance) - (1/m_radialInfluence)) * -rotatedVector.x());
+        rf.setForceY((m_repulsionGain / pow(distance, 2)) * ((1/distance) - (1/m_radialInfluence)) * -rotatedVector.y());
     }
-    else
-    {
-
-    }
-
     return rf;
 }
 
@@ -164,15 +166,15 @@ VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::
 
     VPF_ResultingForce vf;
 
-    if(targetPosition.distanceBetween2D(agentPose) < m_goalThreshold)
+    if(targetPosition.distanceBetween2D(agentPose) <= m_goalThreshold)
     {
-        vf.setForceX(m_attractionGain * (targetPosition.deltaX(agentPose) - m_goalRadialInfluence));
-        vf.setForceY(m_attractionGain * (targetPosition.deltaY(agentPose) - m_goalRadialInfluence));
+        vf.setForceX(-m_conicalAttractionGain * agentPose.deltaX(targetPosition));
+        vf.setForceY(-m_conicalAttractionGain * agentPose.deltaY(targetPosition));
     }
     else
     {
-        vf.setForceX(m_goalThreshold * ((m_attractionGain * (targetPosition.deltaX(agentPose) - m_goalRadialInfluence)) / (targetPosition.distanceBetween2D(agentPose))));
-        vf.setForceY(m_goalThreshold * ((m_attractionGain *  (targetPosition.deltaY(agentPose)- m_goalRadialInfluence)) / (targetPosition.distanceBetween2D(agentPose))));
+        vf.setForceX(-m_goalThreshold * m_linearAttractionGain * (agentPose.deltaX(targetPosition) / targetPosition.distanceBetween2D(agentPose)));
+        vf.setForceY(-m_goalThreshold * m_linearAttractionGain * (agentPose.deltaY(targetPosition) / targetPosition.distanceBetween2D(agentPose)));
     }
     return vf;
 }
@@ -289,12 +291,12 @@ void PotentialFields::setRepulsionGain(double repulsionGain)
 
 double PotentialFields::getAttractionGain() const
 {
-    return m_attractionGain;
+    return m_linearAttractionGain;
 }
 
 void PotentialFields::setAttractionGain(double attractionGain)
 {
-    m_attractionGain = attractionGain;
+    m_linearAttractionGain = attractionGain;
 }
 
 double PotentialFields::getRadialInfluence() const

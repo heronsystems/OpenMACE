@@ -94,7 +94,7 @@ public:
 
     VPF_ResultingForce retrieveStaticObstacleGradient(int);
 
-    VPF_ResultingForce computeRepulsiveGradient(const mace::pose::Abstract_CartesianPosition* obstaclePosition, const mace::pose::Abstract_CartesianPosition* cellPosition);
+    VPF_ResultingForce computeRepulsiveGradient(const mace::pose::Abstract_CartesianPosition* obstaclePosition, const mace::pose::Abstract_CartesianPosition* cellPosition, const double &incidentAngle = 0.0);
 
     VPF_ResultingForce computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,  const mace::pose::CartesianPosition_2D targetPosition);
 
@@ -145,9 +145,11 @@ private:
 
     double m_repulsionRadius;
     double m_linearAttractionRadius;
+    double m_linearAttractionGain;
+    double m_conicalAttractionGain;
+
     double m_planningRadius;
     double m_repulsionGain;
-    double m_attractionGain;
     double m_goalThreshold;
     double m_resultingSearchRadius;
     double m_radialInfluence;

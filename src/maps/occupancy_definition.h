@@ -7,6 +7,7 @@ namespace maps {
 enum class OccupiedResult
 {
     UNKNOWN,
+    ENVIRONMENT_BOUNDARY,
     OUTSIDE_ENVIRONMENT,
     OCCUPIED,
     NOT_OCCUPIED

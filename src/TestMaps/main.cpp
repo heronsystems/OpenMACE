@@ -50,47 +50,47 @@ int main(int argc, char *argv[])
     mace::maps::OccupiedResult fillData = mace::maps::OccupiedResult::NOT_OCCUPIED;
 
     mace::maps::Data2DGrid<mace::maps::OccupiedResult>* exampleMap = new mace::maps::Data2DGrid<mace::maps::OccupiedResult>(&fillData);
-    exampleMap->updateGridSize(-5,5,-5,5,1,1);
+    exampleMap->updateGridSize(-43,43,-13,13,1,1);
 //    mace::pose::CartesianPosition_2D originPosition(-15,0);
 //    exampleMap->updateOriginPosition(originPosition);
 
     mace::maps::OccupiedResult* value;
 
     //construct the two horizontal portions
-//    unsigned int xIndex = 0, yIndex = 0;
-//    for(xIndex = 1; xIndex < exampleMap->getSizeX() - 1; xIndex++)
-//    {
-//        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
-//        *value = mace::maps::OccupiedResult::OCCUPIED;
-//    }
-//    yIndex = exampleMap->getSizeY() - 1;
-//    for(xIndex = 1; xIndex < exampleMap->getSizeX() - 1; xIndex++)
-//    {
-//        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
-//        *value = mace::maps::OccupiedResult::OCCUPIED;
-//    }
+    unsigned int xIndex = 0, yIndex = 0;
+    for(xIndex = 1; xIndex < exampleMap->getSizeX() - 1; xIndex++)
+    {
+        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
+        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+    }
+    yIndex = exampleMap->getSizeY() - 1;
+    for(xIndex = 1; xIndex < exampleMap->getSizeX() - 1; xIndex++)
+    {
+        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
+        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+    }
 
 //    //construct the two vertical portions
-//    xIndex = 0;
-//    for(yIndex = 0; yIndex < exampleMap->getSizeY(); yIndex++)
-//    {
-//        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
-//        *value = mace::maps::OccupiedResult::OCCUPIED;
-//    }
-//    xIndex = exampleMap->getSizeX() - 1;
-//    for(yIndex = 0; yIndex < exampleMap->getSizeY(); yIndex++)
-//    {
-//        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
-//        *value = mace::maps::OccupiedResult::OCCUPIED;
-//    }
+    xIndex = 0;
+    for(yIndex = 0; yIndex < exampleMap->getSizeY(); yIndex++)
+    {
+        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
+        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+    }
+    xIndex = exampleMap->getSizeX() - 1;
+    for(yIndex = 0; yIndex < exampleMap->getSizeY(); yIndex++)
+    {
+        value = exampleMap->getCellByPosIndex(xIndex,yIndex);
+        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+    }
 
     //establish boundary around pillar one
-    value = exampleMap->getCellByPos(0,0);
+    value = exampleMap->getCellByPos(15,0);
     *value = mace::maps::OccupiedResult::OCCUPIED;
 
     //establish boundary around pillar two
-//    value = exampleMap->getCellByPos(-15,0);
-//    *value = mace::maps::OccupiedResult::OCCUPIED;
+    value = exampleMap->getCellByPos(-15,0);
+    *value = mace::maps::OccupiedResult::OCCUPIED;
 
 
     mace::state_space::SpaceInformationPtr spaceInfo;
