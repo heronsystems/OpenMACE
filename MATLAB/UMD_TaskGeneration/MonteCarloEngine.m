@@ -27,10 +27,10 @@ parfor jj = 1:1:length(jjIndex) % for target motions
             % set the ID of algorithm, initial formation, and target motion 
             % here (remember to load the IDs to the loadParams(ID1,ID2,ID3) 
             % function)
-            algorithmID = ii;
-            initialFormationID = jj;
-            targetMotionID = jj; 
-            mapID = m;
+            algorithmID = iiIndex(for_i);
+            initialFormationID = jjIndex(jj);
+            targetMotionID = jjIndex(jj); 
+            mapID = mapIndex(m);
             
             % run sim
             main_taskGeneration_parforWrapper(MonteCarloSwitch,algorithmID,initialFormationID,targetMotionID, mapID);

@@ -47,7 +47,7 @@ while 1
     % need to try to request bundle in while loop
     bundleRequest.NumVehicle = uint8(N);
     try
-        bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
+        bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 10);
     catch e %e is an MException struct
         fprintf(1,'The identifier was:\n%s',e.identifier);
         fprintf(1,'There was an error! The message was:\n%s',e.message);

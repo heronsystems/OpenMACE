@@ -41,11 +41,10 @@ end
 disp('Waiting for takeoff to complete...')
 % Wait for each vehicle to achieve takeoff altitude
 takeoffAchieved = zeros(1,ROS_MACE.N);
-colors = ['rbk'];
 
 while( ~all(takeoffAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;   
-    positionCallback( ROS_MACE, msg); 
+    %positionCallback( ROS_MACE, msg); 
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( takeoffAchieved(agentIndex) == 0 )

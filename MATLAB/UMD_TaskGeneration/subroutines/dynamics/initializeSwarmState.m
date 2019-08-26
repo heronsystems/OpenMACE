@@ -1,6 +1,6 @@
 function [swarmState, ROS_MACE] = initializeSwarmState(swarmModel, trueWorld, runParams, ROS_MACE)
 if ( strcmp(runParams.type, 'mace') )
-    ROS_MACE = setupF3FlightTestPlot( runParams,ROS_MACE );
+    %ROS_MACE = setupF3FlightTestPlot( runParams,ROS_MACE );
     ROS_MACE = launchROS( ROS_MACE );
     disp('Press key when IMU01 using GPS across all quads');
     pause;

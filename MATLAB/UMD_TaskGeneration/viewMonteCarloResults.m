@@ -15,7 +15,7 @@ processingType = 'plot'; % options are: 'analysis' or 'plot'
 % user inputs:
 algRange = 1:3; % index for algorithm
 agentInitRange = 1:50; % index for generated scenes (agent initial location and target behavior)
-mapRange = 1:3; % index for maps
+mapRange = 1:4; % index for maps
 
 
 totalTime=  tic;
@@ -49,13 +49,13 @@ for initialFormationID = 1:1:length(agentInitRange) % for target motions
                 for i = 1:1:length(swarmWorldHist)
                     t(i) = swarmWorldHist{i}.time;
                     % compute entropy of entire search grid
-                    entropyHist{i} = swarmWorldHist{i}.entropyMat;
-                    totalEntropy(i) = swarmWorldHist{i}.totalEntropy;
+                    %entropyHist{i} = swarmWorldHist{i}.entropyMat;
+                    %totalEntropy(i) = swarmWorldHist{i}.totalEntropy;
                     
                     %
-                    cellStateHist{i} = swarmWorldHist{i}.cellStateMat;
-                    cellDetHist{i} = swarmWorldHist{i}.cellDetMat;
-                    numViews(i) = swarmWorldHist{i}.numViews;
+                    %cellStateHist{i} = swarmWorldHist{i}.cellStateMat;
+                    %cellDetHist{i} = swarmWorldHist{i}.cellDetMat;
+                    %numViews(i) = swarmWorldHist{i}.numViews;
                     % compute the percentage of discovered nodes
                     discoveredNodePercentage(i) = 100*numnodes(swarmWorldHist{i}.exploredGraph)/numnodes(trueWorld.G_env);
                 end
@@ -66,13 +66,13 @@ for initialFormationID = 1:1:length(agentInitRange) % for target motions
                 alg{algorithmID}.map{mapID}.trial{initialFormationID}.detectionValid = detectionValid;
                 alg{algorithmID}.map{mapID}.trial{initialFormationID}.detectionTime = detectionTime;
                 
-                alg{algorithmID}.map{mapID}.trial{initialFormationID}.cellDetHist = cellDetHist;
-                alg{algorithmID}.map{mapID}.trial{initialFormationID}.cellStateHist = cellStateHist;
-                alg{algorithmID}.map{mapID}.trial{initialFormationID}.numViews = numViews;
-                alg{algorithmID}.map{mapID}.trial{initialFormationID}.entropyHist = entropyHist;
+                %alg{algorithmID}.map{mapID}.trial{initialFormationID}.cellDetHist = cellDetHist;
+                %alg{algorithmID}.map{mapID}.trial{initialFormationID}.cellStateHist = cellStateHist;
+                %alg{algorithmID}.map{mapID}.trial{initialFormationID}.numViews = numViews;
+                %alg{algorithmID}.map{mapID}.trial{initialFormationID}.entropyHist = entropyHist;
                 
                 alg{algorithmID}.map{mapID}.trial{initialFormationID}.t = t;
-                alg{algorithmID}.map{mapID}.trial{initialFormationID}.totalEntropy = totalEntropy;
+                %alg{algorithmID}.map{mapID}.trial{initialFormationID}.totalEntropy = totalEntropy;
                 alg{algorithmID}.map{mapID}.trial{initialFormationID}.discoveredNodePercentage = discoveredNodePercentage;
                 
                 clearvars -except totalTime algRange agentInitRange mapRange processingType algorithmID mapID initialFormationID MonteCarloSwitch detection detectionValid detectionTime alg;
@@ -123,7 +123,7 @@ if strcmp(processingType,'plot')
             for m = mapRange
                 numPts = length(alg{i}.map{m}.trial{j}.t);
                 for k = 1:1:numPts % total target motions
-                    alg{i}.totalEntropyMat(j+(m-1)*numTrials,k) = alg{i}.map{m}.trial{j}.totalEntropy(k);
+                    %alg{i}.totalEntropyMat(j+(m-1)*numTrials,k) = alg{i}.map{m}.trial{j}.totalEntropy(k);
                     alg{i}.discoveredNodePercentageMat(j+(m-1)*numTrials,k) = alg{i}.map{m}.trial{j}.discoveredNodePercentage(k);
                 end
             end

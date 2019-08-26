@@ -110,12 +110,12 @@ while ( tNow <= runParams.T )
     swarmState.t = tNow;
     fprintf('Measurement No. %d (Time = %3.3f sec) \n', swarmState.k, swarmState.t);
     
-    for k = 1:ROS_MACE.N
-        positionCallback( ROS_MACE, msgCollection{k} );
-    end
-    
-    fprintf('Plot loop took %3.3f sec \n',toc(tStartWhile)-time_stamp);
-    time_stamp = toc(tStartWhile);
+%     for k = 1:ROS_MACE.N
+%         positionCallback( ROS_MACE, msgCollection{k} );
+%     end
+%     
+%     fprintf('Plot loop took %3.3f sec \n',toc(tStartWhile)-time_stamp);
+%     time_stamp = toc(tStartWhile);
     
     % simulate measurements/update the swarmWorld
     swarmWorld = updateSwarmWorld(swarmWorld, swarmState, swarmModel, trueWorld, targetModel, targetState);
@@ -181,7 +181,7 @@ while ( tNow <= runParams.T )
         
     end
     % plot the task bundle using variables
-    ROS_MACE = plotTaskBundleRealTime(swarmWorld, swarmState, ROS_MACE);
+    % ROS_MACE = plotTaskBundleRealTime(swarmWorld, swarmState, ROS_MACE);
     
     % save the swarm world for later use
     swarmWorldHist{s} = swarmWorld;

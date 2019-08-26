@@ -11,6 +11,7 @@ function [ outputArgument ] = positionCallback( ROS_MACE, msg)
 %       EastSpeed: 0
 
     global tStart;
+
     colors=['rbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcy'];
     time = toc(tStart);
     if ( ~isempty(msg) )   

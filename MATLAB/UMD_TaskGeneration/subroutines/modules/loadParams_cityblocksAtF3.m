@@ -3,7 +3,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % Simulation
 runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
-runParams.T = 5*60; % total simulation/mission time
+runParams.T = 8*60; % total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
 runParams.soundFlag = 1;
 
@@ -83,7 +83,7 @@ swarmModel.knnNumber = 8;
 % Task Generation
 % Options 'mutualInfoWpts' , 'randomWpts' , 'lawnmower'
 swarmModel.taskGeneration = 'mutualInfoWpts';
-swarmModel.numTasks = 100;
+swarmModel.numTasks = 75;
 swarmModel.stepSizeGain = 0.2;
 swarmModel.percentTol = 0.05;
 swarmModel.maxIters = 100;
