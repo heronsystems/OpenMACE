@@ -15,7 +15,7 @@ targetState = targetMotionUpdate(targetState, targetModel, trueWorld, runParams,
 for k = 2:1:runParams.Nsim
     % run only at sample times
     sampleTimeFlag = mod( swarmState.k , floor(swarmModel.Tsamp/runParams.dt) ) == 0;
-    planTimeFlag = mod( swarmState.k , swarmModel.samplesPerTask ) == 0;
+    planTimeFlag = mod( swarmState.k , floor(swarmModel.Tsamp/runParams.dt)*swarmModel.samplesPerTask  ) == 0;
     if ( sampleTimeFlag )
         tLoopStart = tic;
         disp('**** Processing Measurements and Tasking ****');

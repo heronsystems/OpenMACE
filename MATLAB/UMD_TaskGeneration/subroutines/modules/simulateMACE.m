@@ -63,14 +63,14 @@ while ( tNow <= runParams.T )
             case 'ENU'
                 swarmState.x(4*agentIndex-3,1) = msg.Easting;
                 swarmState.x(4*agentIndex-2,1) = msg.Northing;
-                swarmState.x(4*agentIndex-1,1) = -1; % unused for now
-                swarmState.x(4*agentIndex,1) = -1;
+                swarmState.x(4*agentIndex-1,1) = 0; % unused for now
+                swarmState.x(4*agentIndex,1) = 0;
             case 'F3'
                 [xF3, yF3] = ENUtoF3(msg.Easting, msg.Northing);
                 swarmState.x(4*agentIndex-3,1) = xF3;
                 swarmState.x(4*agentIndex-2,1) = yF3;
-                swarmState.x(4*agentIndex-1,1) = -1; % unused for now
-                swarmState.x(4*agentIndex,1) = -1;
+                swarmState.x(4*agentIndex-1,1) = 0; % unused for now
+                swarmState.x(4*agentIndex,1) = 0;
         end
         
         %         if ( toc(tSampleStart) > tSample )
@@ -85,8 +85,21 @@ while ( tNow <= runParams.T )
         end
         
     end
+  
+    % Approximate speed of agents by finite difference 
+    % (needed for task allocation)
+    for i = 1:1:swarmModel.N
+        if ( s > 1 ) % (otherwise if s == 1 use default zero velocity)
+        lastSwarmState = swarmStateHist{s-1};
+        delX = swarmState.x(4*i-3,1) - lastSwarmState.x(4*i-3,1);
+        delY = swarmState.x(4*i-2,1) - lastSwarmState.x(4*i-2,1);
+        swarmState.x(4*i-1,1) = delX/runParams.T;
+        swarmState.x(4*i,1) = delY/runParams.T;
+        end
+    end
     
     
+    %
     tSampleStart = tic;
     
     time_stamp = toc(tStartWhile);

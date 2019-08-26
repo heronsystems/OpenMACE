@@ -10,11 +10,11 @@ updatePath;
 % 1) first run 'analysis' on a new data set to generate an intermediate
 % mat file (lengthy process)
 % 2) then run 'plot' to quickly view/manipulate analyzed data
-processingType = 'plot'; % options are: 'analysis' or 'plot'
+processingType = 'analysis'; % options are: 'analysis' or 'plot'
 
 % user inputs:
 algRange = 1:3; % index for algorithm
-agentInitRange = 1:20; % index for generated scenes (agent initial location and target behavior)
+agentInitRange = 1:50; % index for generated scenes (agent initial location and target behavior)
 mapRange = 1:3; % index for maps
 
 
@@ -195,7 +195,9 @@ if strcmp(processingType,'plot')
     
     %% Fig 2: Target Det. vs Time
     
-    load('./monteCarloRuns/MonteCarlo_Algorithm1_InitialFormation1_mapID1_TargetMotion1.mat','trueWorld')
+    %load('./monteCarloRuns/MonteCarlo_Algorithm1_InitialFormation1_mapID1_TargetMotion1.mat','trueWorld')
+    [~,~, trueWorld, ~,~] = loadParams_osm();
+    
     % scalar data is transformed into cell vector ( numAlgs x numTrials )
     for i = algRange
         numValidAlg = 0;
@@ -233,9 +235,9 @@ if strcmp(processingType,'plot')
                             % detected
                             if( alg{i}.map{m}.trial{j}.cellDetHist{k}(l,n) == 1 )
                                 numNodesTotal = numNodesTotal + 1;
-                                if ( trueWorld.bin2NodeID(l,n) ~= 0)
-                                    numNodesValid = numNodesValid + 1;
-                                end
+%                                 if ( trueWorld.bin2NodeID(l,n) ~= 0)
+%                                     numNodesValid = numNodesValid + 1;
+%                                 end
                             end
                             % calculate the true entropy
                         end

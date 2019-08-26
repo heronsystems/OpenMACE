@@ -15,7 +15,6 @@ if ~exist('MonteCarloSwitch','var')
     rng(1);
 end
 
-
 % simulate
 % temporary fix to allow plotting with time on ROS message callback
 % will be replaced with MACE timestamp when available
@@ -72,13 +71,16 @@ else
     save(matFileName,'-v7.3');
 end
 
+% play train sound that simulation is done
+load train
+sound(y,Fs)
 
 % Display Results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ~exist('MonteCarloSwitch','var')
     % various movie profiles can be specified here
     %movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-    movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    %movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
     movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
     %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
     

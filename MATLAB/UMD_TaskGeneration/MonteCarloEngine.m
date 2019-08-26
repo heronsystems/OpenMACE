@@ -15,7 +15,7 @@ MonteCarloSwitch = 1;
 
 % user inputs:
 iiIndex = 1:3; % index for algorithm
-jjIndex = 1:20; % index for generated scenes (agent initial location and target behavior)
+jjIndex = 1:50; % index for generated scenes (agent initial location and target behavior)
 mapIndex = 1:3; % index for maps
 
 parfor jj = 1:1:length(jjIndex) % for target motions
