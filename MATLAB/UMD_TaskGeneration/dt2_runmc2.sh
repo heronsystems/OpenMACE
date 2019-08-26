@@ -7,4 +7,4 @@
 #SBATCH --mail-user=wolek@umd.edu
 
 module load matlab/2018b
-matlab -nodisplay -nosplash -r "parpool('local',20);run('/lustre/wolek/UMD_TaskGeneration/MonteCarloEngine.m'); exit" > /lustre/wolek/Outputs/dt2_runmc.out
+matlab -nodisplay -nosplash -r "parpool('local',20);run('/lustre/wolek/UMD_TaskGeneration/MonteCarloEngine2.m'); exit" > /lustre/wolek/Outputs/dt2_runmc2.out

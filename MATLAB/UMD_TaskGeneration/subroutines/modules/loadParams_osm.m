@@ -3,9 +3,9 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % Simulation
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 30; %2*60;% total simulation/mission time
+runParams.T = 4*60;% total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
-runParams.soundFlag = 1;
+runParams.soundFlag = 0;
 
 % F3 Flight Test
 ROS_MACE = [];
