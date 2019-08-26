@@ -47,10 +47,11 @@ while 1
     % need to try to request bundle in while loop
     bundleRequest.NumVehicle = uint8(N);
     try
-        bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 10);
-    catch e %e is an MException struct
-        fprintf(1,'The identifier was:\n%s',e.identifier);
-        fprintf(1,'There was an error! The message was:\n%s',e.message);
+        bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 1);
+    catch %e %e is an MException struct
+        ;
+        %fprintf(1,'The identifier was:\n%s',e.identifier);
+        %fprintf(1,'There was an error! The message was:\n%s',e.message);
     end
     if exist('bundleResponse','var')
         % for debugging
@@ -58,7 +59,7 @@ while 1
         if ~isempty(bundleResponse)
             % for debugging
             fprintf('bundleResponse is not empty \n');
-            fprintf('bundleResponseID = %d\n',bundleResponse.BundleID);
+            %fprintf('bundleResponseID = %d\n',bundleResponse.BundleID);
             if bundleResponse.BundleID > 0
                 break;
             end
@@ -83,7 +84,7 @@ while toc(loopStart) <= runTime+10
         % get bundle of all agents in one shot
         bundleRequest.NumVehicle = N;
         try
-            bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
+            bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 1);
         catch
             % If the code catches an error at this moment, then it must be that
             % main program stops. We will issue an exit to the while

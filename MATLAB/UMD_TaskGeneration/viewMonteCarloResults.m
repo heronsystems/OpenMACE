@@ -117,7 +117,7 @@ if strcmp(processingType,'plot')
     
     % create matrix of data for each alg (trials x time)
     for i = algRange
-        alg{i}.totalEntropyMat = NaN*ones(numTrials,maxPts);
+        %alg{i}.totalEntropyMat = NaN*ones(numTrials,maxPts);
         alg{i}.discoveredNodePercentageMat = NaN*ones(numTrials,maxPts);
         for j = 1:1:numTrials
             for m = mapRange
@@ -206,8 +206,8 @@ if strcmp(processingType,'plot')
             for m = mapRange
                 fprintf('Processing alg %d trial %d \n', i, j);
                 % entropy
-                entropyMat(i,j,m) = alg{i}.map{m}.trial{j}.totalEntropy(end);
-                entropyMidwayMat(i,j,m) = alg{i}.map{m}.trial{j}.totalEntropy(floor(end/2));
+                %entropyMat(i,j,m) = alg{i}.map{m}.trial{j}.totalEntropy(end);
+                %entropyMidwayMat(i,j,m) = alg{i}.map{m}.trial{j}.totalEntropy(floor(end/2));
                 % det
                 detectionFlagMat(i,j,m) = alg{i}.map{m}.trial{j}.detectionFlag;
                 detectionValidMat(i,j,m) = alg{i}.map{m}.trial{j}.detectionValid;
@@ -226,26 +226,26 @@ if strcmp(processingType,'plot')
                     numDetAlg = numDetAlg + 1;
                 end
                 % time
-                for k = 1:1:length(alg{i}.map{m}.trial{j}.cellDetHist)
-                    numNodesTotal = 0;
-                    numNodesValid = 0;
-                    for l = 1:1:trueWorld.numBinsX
-                        for n = 1:1:trueWorld.numBinsY
+                %for k = 1:1:length(alg{i}.map{m}.trial{j}.cellDetHist)
+                %    numNodesTotal = 0;
+                %    numNodesValid = 0;
+                %    for l = 1:1:trueWorld.numBinsX
+                %        for n = 1:1:trueWorld.numBinsY
                             % calculate number of valid nodes and total nodes
-                            % detected
-                            if( alg{i}.map{m}.trial{j}.cellDetHist{k}(l,n) == 1 )
-                                numNodesTotal = numNodesTotal + 1;
+                %            % detected
+                %            if( alg{i}.map{m}.trial{j}.cellDetHist{k}(l,n) == 1 )
+                %                numNodesTotal = numNodesTotal + 1;
 %                                 if ( trueWorld.bin2NodeID(l,n) ~= 0)
 %                                     numNodesValid = numNodesValid + 1;
 %                                 end
-                            end
+                %            end
                             % calculate the true entropy
-                        end
-                    end
+                %        end
+                %    end
                     % record entropy
-                end
-                percentNodesTotalMat(i,j,m) = numNodesTotal/trueWorld.numNodes;
-                percentNodesValidMat(i,j,m) = numNodesValid/trueWorld.numNodes;
+                %end
+                %percentNodesTotalMat(i,j,m) = numNodesTotal/trueWorld.numNodes;
+                %percentNodesValidMat(i,j,m) = numNodesValid/trueWorld.numNodes;
             end
             numValid(i,m) = numValidAlg;
             numDet(i,m) = numDetAlg;
