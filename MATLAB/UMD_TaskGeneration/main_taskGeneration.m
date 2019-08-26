@@ -24,8 +24,8 @@ tStart = tic;
 % user should modify loadParams.m as desired for single run
 if ~exist('MonteCarloSwitch','var')
     disp('Running standard (non Monte-Carlo) simulation or MACE run')
-    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
-    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocksAtF3();
+    [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
+    %[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocksAtF3();
     % We used loadParams_cityBlocksAtF3 for the flight test at F3 during
     % the summer
 else
@@ -72,19 +72,21 @@ else
 end
 
 % play train sound that simulation is done
+if (runParams.soundFlag)
 load train
 sound(y,Fs)
+end
 
 % Display Results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ~exist('MonteCarloSwitch','var')
     % various movie profiles can be specified here
     %movie_mutualInfoPriors( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
-    %movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    movie_targetViews( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
     movie_mutualInfoWpts( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
     %movie_lrdt( swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
     
     % plots
-    %plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
+    plotPerformance(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
     %plotOccupGraphTracks(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel )
 end

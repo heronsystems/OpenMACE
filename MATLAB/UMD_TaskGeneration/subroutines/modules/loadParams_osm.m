@@ -3,8 +3,9 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % Simulation
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 4*60;% total simulation/mission time
+runParams.T = 30; %2*60;% total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
+runParams.soundFlag = 1;
 
 % F3 Flight Test
 ROS_MACE = [];
@@ -55,9 +56,9 @@ swarmModel.ay = 0.5;
 
 % Detection / Tracking (LRDT)
 swarmModel.LRDTOnTheFlyFlag = 1;
-swarmModel.nodeDensityInitGuess = 1/6; % used on first step before kriging takes place
+swarmModel.nodeDensityInitGuess = 1/10; % used on first step before kriging takes place
 swarmModel.probAbsentPrior = 0.50; % for initialization
-swarmModel.decayRate = 0.05; % value from 0 to 1
+swarmModel.decayRate = 0.08; % value from 0 to 1
 swarmModel.terminateSimOnDetect = 0;
 swarmModel.confLevel = 0.95;
 swarmModel.mZ = 3.5;
@@ -71,7 +72,7 @@ targetModel.M = 1; % number of targets
 targetModel.probStopping = 0.50;
 targetModel.m = 1.0;
 targetModel.d = 0.1;
-targetModel.inertia = 100; % a value greater than zero
+%targetModel.inertia = 100; % a value greater than zero
 
 % Environment/Map
 % load environment the full map
@@ -83,7 +84,7 @@ trueWorld.binWidth = 5;
 trueWorld.boxlength = 200;
 trueWorld.boxwidth = 200;
 trueWorld.buffer = 0;
-trueWorld.mapID = 3; % choose 1, 2, or 3
+trueWorld.mapID = 4; % choose 1, 2, or 3
 trueWorld.angle = 0*pi/180;
 trueWorld.scale = 2;
 % override default values if this is a monte-carlo run
@@ -141,6 +142,15 @@ switch trueWorld.mapID
         trueWorld.refX = 600;
         trueWorld.refY = -350;
         trueWorld.removeList = [];
+        
+    case 4 % Map 3:
+        disp('Using Map 4: Cityblocks');
+        trueWorld.type = 'cityblocks'; % 'goxel', 'cityblocks', %'openStreetMap', 'osmAtF3', 'cityBlocksAtF3'
+        trueWorld.borderOffset = 25; % used for adding padding to the map
+        trueWorld.folder = './data/'; % folder with map file
+        trueWorld.fileName = 'cityBlocks';
+        trueWorld.blockLength = 50;
+        trueWorld.numBlocks = 3;
 end
 
 % derived

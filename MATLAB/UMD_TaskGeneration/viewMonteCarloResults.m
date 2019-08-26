@@ -10,7 +10,7 @@ updatePath;
 % 1) first run 'analysis' on a new data set to generate an intermediate
 % mat file (lengthy process)
 % 2) then run 'plot' to quickly view/manipulate analyzed data
-processingType = 'analysis'; % options are: 'analysis' or 'plot'
+processingType = 'plot'; % options are: 'analysis' or 'plot'
 
 % user inputs:
 algRange = 1:3; % index for algorithm
@@ -89,7 +89,7 @@ end
 
 if strcmp(processingType,'plot')
     load('MonteCarloData_processed.mat');
-    missionTimeMin = 5;
+    missionTimeMin = 4;
     % determine maximum number of pts
     maxPts = 0;
     numTrials = length(agentInitRange);
@@ -216,7 +216,7 @@ if strcmp(processingType,'plot')
                     numValidAlg = numValidAlg + 1;
                     
                 elseif ( detectionFlagMat(i,j,m)==1 && detectionValidMat(i,j,m) == 0 )
-                    fprintf('Alg %d, Map %m, Trial %m: \n',i,m,j);
+                    fprintf('Alg %d, Map %d, Trial %m: \n',i,m,j);
                     disp('Warning: Detection made that was invalid!');
                     detectionTimeMat(i,j,m) = NaN;
                 else

@@ -36,8 +36,6 @@ swarmModel.z_O = swarmModel.z_O ./ sum(swarmModel.z_O);
 % target
 targetModel.restPeriod = swarmModel.Tsamp;
 
-
-%
 % derived world model parameters
 trueWorld = loadEnvironment(trueWorld, targetModel);
 

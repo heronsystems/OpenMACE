@@ -5,6 +5,7 @@ runParams = struct;
 runParams.type = 'mace'; % 'matlab' 'mace' 'f3'
 runParams.T = 5*60; % total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
+runParams.soundFlag = 1;
 
 % F3 Flight Test
 ROS_MACE = [];
