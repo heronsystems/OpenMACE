@@ -76,8 +76,8 @@ swarmModel.useGeneratedTargetMotion = 0; % 0 will use a random target motion
 % Communication / task allocation
 % Options: 'stepwiseHungarian_unique' or 'none'
 swarmModel.taskAllocation = 'stepwiseHungarian_unique';
-swarmModel.samplesPerTask = 6;
-swarmModel.bundleSize = 2;
+swarmModel.samplesPerTask = 10;
+swarmModel.bundleSize = 3;
 swarmModel.knnNumber = 8;
 
 % Task Generation
@@ -123,7 +123,7 @@ trueWorld = struct;
 trueWorld.type = 'cityblocksAtF3'; % 'cityblocks', %'openStreetMap', 'osmAtF3'
 trueWorld.f3Workspace = 'right-square'; % 'full', 'right-square'
 trueWorld.binWidth = 0.75; % distance used to declare two nodes as connected (use 7 for open street map)
-trueWorld.borderOffset = 2*trueWorld.binWidth; % used for adding padding to the map
+trueWorld.borderOffset = 1*trueWorld.binWidth; % used for adding padding to the map
 trueWorld.folder = './data/'; % folder with map file
 trueWorld.fileName = 'cityblocksAtF3';
 trueWorld.blockLength = 6;

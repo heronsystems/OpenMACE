@@ -121,7 +121,7 @@ if ( ~isempty(swarmWorld.log_likelihood) )
         disp('Target Detected!')
         fprintf('\n\n\n\nTarget Detected! cumlLR = %3.1f >= %3.1f \n\n\n\n', swarmWorld.cumlLR , swarmModel.cumlLRthresh);
         %if ( runParams.soundFlag )
-        %sound(sin(1:3000));
+        sound(sin(1:3000));
         %end
         swarmWorld.timeAtDetection = swarmState.t;
         % check if target detected is accurate or not

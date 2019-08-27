@@ -84,7 +84,7 @@ while toc(loopStart) <= runTime+10
         % get bundle of all agents in one shot
         bundleRequest.NumVehicle = N;
         try
-            bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 1);
+            bundleResponse = call(bundleClient, bundleRequest, 'Timeout', 5);
         catch
             % If the code catches an error at this moment, then it must be that
             % main program stops. We will issue an exit to the while

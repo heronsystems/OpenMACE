@@ -11,6 +11,8 @@ if ( exist([trueWorld.folder trueWorld.fileName '_' trueWorld.type '_full.mat'],
             [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );
         case 'cityblocksAtF3'
             [ nodeXY ] = loadCityBlocksNodes_atF3(trueWorld.blockLength, trueWorld.numBlocks, trueWorld.binWidth, trueWorld.f3Workspace);
+            nodeXY(:,1) = nodeXY(:,1) + trueWorld.borderOffset;
+            nodeXY(:,2) = nodeXY(:,2) + trueWorld.borderOffset;                 
             [ G_env, A_env, nodeX, nodeY ] = convertNodesXYtoGraph(nodeXY, trueWorld.borderOffset, trueWorld.binWidth );
         case 'openStreetMap'
             [ nodeXY, LatRef, LongRef, G_env, A_env] = loadOpenStreetMapNodesFlex(trueWorld.fileName, trueWorld.refX, trueWorld.refY, trueWorld.boxlength, trueWorld.boxwidth, trueWorld.angle, trueWorld.binWidth, trueWorld.removeList, trueWorld.scale);
@@ -42,14 +44,19 @@ if ( exist([trueWorld.folder trueWorld.fileName '_' trueWorld.type '_full.mat'],
             [xpoly,ypoly] = buildRectangularBoundary(nodeX, nodeY, trueWorld.borderOffset);
             trueWorld.xpoly = xpoly;
             trueWorld.ypoly = ypoly;   
-            f3LowerLeftCornerX = 5;
-            f3LowerLeftCornerY = -11;
-            L = trueWorld.blockLength*trueWorld.numBlocks;
-            trueWorld.minX = f3LowerLeftCornerX - trueWorld.borderOffset;
-            trueWorld.maxX = f3LowerLeftCornerX + L + trueWorld.borderOffset;
-            trueWorld.minY = f3LowerLeftCornerY - trueWorld.borderOffset;
-            trueWorld.maxY = f3LowerLeftCornerY + L + trueWorld.borderOffset;            
-                        
+            %f3LowerLeftCornerX = 5;
+            %f3LowerLeftCornerY = -11;
+            %L = trueWorld.blockLength*trueWorld.numBlocks;
+            %trueWorld.minX = f3LowerLeftCornerX - trueWorld.borderOffset;
+            %trueWorld.maxX = f3LowerLeftCornerX + L + trueWorld.borderOffset;
+            %trueWorld.minY = f3LowerLeftCornerY - trueWorld.borderOffset;
+            %trueWorld.maxY = f3LowerLeftCornerY + L + trueWorld.borderOffset;            
+
+            trueWorld.minX = min(xpoly) - trueWorld.borderOffset;
+            trueWorld.maxX = max(xpoly) + trueWorld.borderOffset;
+            trueWorld.minY = min(ypoly) - trueWorld.borderOffset;
+            trueWorld.maxY = max(ypoly) + trueWorld.borderOffset;
+            
             trueWorld.numBinsX = floor( (trueWorld.maxX - trueWorld.minX)/trueWorld.binWidth );
             trueWorld.numBinsY = floor( (trueWorld.maxY - trueWorld.minY)/trueWorld.binWidth );
         case 'cityblocks'

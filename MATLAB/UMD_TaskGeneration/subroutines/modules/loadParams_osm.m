@@ -3,7 +3,7 @@ function [runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_
 % Simulation
 runParams = struct;
 runParams.type = 'matlab'; % 'matlab' 'mace' 'f3'
-runParams.T = 4*60;% total simulation/mission time
+runParams.T = 15; %4*60;% total simulation/mission time
 runParams.dt = 0.01; % time-step (even if MACE is running used for prediction)
 runParams.soundFlag = 0;
 
@@ -47,7 +47,7 @@ swarmModel.maxIters = 100;
 
 % Mapping
 swarmModel.nG = 25; % number of discrete sensor levels
-swarmModel.mG = 3.5; % sensitivity
+swarmModel.mG = 4; % sensitivity
 swarmModel.mapConfLevel = 0.95;
 swarmModel.inc = 2;% kriging
 swarmModel.npeaks = 4;
@@ -60,8 +60,8 @@ swarmModel.nodeDensityInitGuess = 1/10; % used on first step before kriging take
 swarmModel.probAbsentPrior = 0.50; % for initialization
 swarmModel.decayRate = 0.08; % value from 0 to 1
 swarmModel.terminateSimOnDetect = 0;
-swarmModel.confLevel = 0.95;
-swarmModel.mZ = 3.5;
+swarmModel.confLevel = 0.99;
+swarmModel.mZ = 4;
 swarmModel.nZ = 25;
 
 % Target

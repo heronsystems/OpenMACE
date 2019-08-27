@@ -13,9 +13,9 @@ updatePath;
 processingType = 'plot'; % options are: 'analysis' or 'plot'
 
 % user inputs:
-algRange = 1:3; % index for algorithm
-agentInitRange = 1:50; % index for generated scenes (agent initial location and target behavior)
-mapRange = 1:4; % index for maps
+algRange = 1:4; % index for algorithm
+agentInitRange = 1:100; % index for generated scenes (agent initial location and target behavior)
+mapRange = 1; % index for maps
 
 
 totalTime=  tic;
@@ -88,7 +88,10 @@ end
 
 
 if strcmp(processingType,'plot')
-    load('MonteCarloData_processed.mat');
+    load('./results/MonteCarloData_processed.mat');
+    
+    mapRange = [1:4];
+    agentInitRange = 1:50;
     missionTimeMin = 4;
     % determine maximum number of pts
     maxPts = 0;
@@ -104,27 +107,27 @@ if strcmp(processingType,'plot')
         end
     end
     
-    % visual inspection: plot all data
-    for i = algRange
-        for j = mapRange
-            for k = agentInitRange
-                figure(10)
-                plot(alg{i}.map{j}.trial{k}.discoveredNodePercentage,'o-','linewidth',2)
-                hold on;
-            end
-        end
-    end
+%     % visual inspection: plot all data
+%     for i = algRange
+%         for j = mapRange
+%             for k = agentInitRange
+%                 figure(10)
+%                 plot(alg{i}.map{j}.trial{k}.discoveredNodePercentage,'o-','linewidth',2)
+%                 hold on;
+%             end
+%         end
+%     end
     
     % create matrix of data for each alg (trials x time)
     for i = algRange
         %alg{i}.totalEntropyMat = NaN*ones(numTrials,maxPts);
         alg{i}.discoveredNodePercentageMat = NaN*ones(numTrials,maxPts);
         for j = 1:1:numTrials
-            for m = mapRange
-                numPts = length(alg{i}.map{m}.trial{j}.t);
+            for m = 1:1:length(mapRange)
+                numPts = length(alg{i}.map{mapRange(m)}.trial{j}.t);
                 for k = 1:1:numPts % total target motions
                     %alg{i}.totalEntropyMat(j+(m-1)*numTrials,k) = alg{i}.map{m}.trial{j}.totalEntropy(k);
-                    alg{i}.discoveredNodePercentageMat(j+(m-1)*numTrials,k) = alg{i}.map{m}.trial{j}.discoveredNodePercentage(k);
+                    alg{i}.discoveredNodePercentageMat(j+(m-1)*numTrials,k) = alg{i}.map{mapRange(m)}.trial{j}.discoveredNodePercentage(k);
                 end
             end
         end
@@ -149,7 +152,8 @@ if strcmp(processingType,'plot')
     
     % plot random motion
     data = alg{3}.discoveredNodePercentageMat;
-    dataMean = meanOmitNaN(data,1);
+    % data is numTrials x maxPts
+    dataMean = meanOmitNaN(data,1); % averages across maxPts
     dataStdev = stdevOmitNaN(data,1);
     fig=figure(1);
     hold on;
@@ -216,7 +220,7 @@ if strcmp(processingType,'plot')
                     numValidAlg = numValidAlg + 1;
                     
                 elseif ( detectionFlagMat(i,j,m)==1 && detectionValidMat(i,j,m) == 0 )
-                    fprintf('Alg %d, Map %d, Trial %m: \n',i,m,j);
+                    fprintf('Alg %d, Map %d, Trial %d: \n',i,m,j);
                     disp('Warning: Detection made that was invalid!');
                     detectionTimeMat(i,j,m) = NaN;
                 else
