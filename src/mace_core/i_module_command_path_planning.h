@@ -13,6 +13,8 @@
 #include "i_module_command_generic_boundaries.h"
 #include "i_module_command_generic_vehicle_listener.h"
 
+#include "base/state_space/goal_state.h"
+
 namespace MaceCore
 {
 
@@ -24,7 +26,8 @@ enum class PathPlanningCommands
     NEWLY_UPDATED_OPERATIONAL_FENCE,
     NEWLY_LOADED_OCCUPANCY_MAP,
     NEWLY_UPDATED_OCCUPANCY_MAP,
-    NEWLY_AVAILABLE_MISSION
+    NEWLY_AVAILABLE_MISSION,
+    PROCESS_TARGET_STATE
 };
 
 class MACE_CORESHARED_EXPORT IModuleCommandPathPlanning  :
@@ -64,6 +67,11 @@ public:
             UNUSED(sender);
             NewlyAvailableMission(mission);
         });
+
+        AddCommandLogic<mace::state_space::GoalState>(PathPlanningCommands::PROCESS_TARGET_STATE, [this](const mace::state_space::GoalState &goal, const OptionalParameter<ModuleCharacteristic> &sender){
+            UNUSED(sender);
+            NewlyAvailableGoalState(goal);
+        });
     }
 
     virtual ModuleClasses ModuleClass() const
@@ -95,6 +103,13 @@ public:
     //! \param mission
     //!
     virtual void NewlyAvailableMission(const MissionItem::MissionList &mission) = 0;
+
+    //!
+    //! \brief NewlyAvailableGoalState
+    //! \param mission
+    //!
+    virtual void NewlyAvailableGoalState(const mace::state_space::GoalState &goal) = 0;
+
 
 };
 

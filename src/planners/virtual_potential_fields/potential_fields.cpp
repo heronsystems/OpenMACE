@@ -28,10 +28,7 @@ PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceIn
     m_totalForceGrid = new mace::maps::Data2DGrid<VPF_ResultingForce>(&fillValue);
 
     if(staticMap != nullptr)
-    {
         updateStaticObstacleGradient(staticMap);
-    }
-
 }
 
 void PotentialFields::setPlanningParameters(state_space::GoalState* begin, state_space::GoalState* end)
@@ -94,8 +91,8 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
 
                     //call updateRepulsiveGradient on current x,y position and obstacle position
                     double incidentAngle = 0.0;
-                    if(*ptr == mace::maps::OccupiedResult::OCCUPIED)
-                        incidentAngle = M_PI_2;
+//                    if(*ptr == mace::maps::OccupiedResult::OCCUPIED)
+//                        incidentAngle = M_PI_2;
 
                     VPF_ResultingForce rf = computeRepulsiveGradient(&obstacle, &currentPos, incidentAngle);
 
@@ -113,33 +110,17 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
     }
 }
 
-void PotentialFields::computeFullAttractionGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap)
+VPF_ResultingForce PotentialFields::retrieveRepulsiveSummation(const mace::pose::CartesianPosition_2D &currentPosition)
 {
-    mace::maps::GridMapIterator gridMapItr(staticMap);
-
-    for(; !gridMapItr.isPastEnd(); ++gridMapItr)
-    {
-        const mace::maps::OccupiedResult* ptr = staticMap->getCellByIndex(*gridMapItr);
-
-        if(*ptr != mace::maps::OccupiedResult::OCCUPIED)
-        {
-            double openX,openY;
-            staticMap->getPositionFromIndex(*gridMapItr, openX, openY);
-            mace::pose::CartesianPosition_2D openCell(openX,openY);
-
-            VPF_ResultingForce resultingForce = computeAttractionGradient(m_targetPosition, openCell);
-            VPF_ResultingForce* currentTotalForceIndex = m_totalForceGrid->getCellByIndex(*gridMapItr);
-            *currentTotalForceIndex += resultingForce;
-        }
-    }
-
+    //get correct cell in locally stored static grid
+    return *(m_staticRespulsiveMap->getCellByPos(currentPosition.getXPosition(), currentPosition.getYPosition()));
 }
+
 
 VPF_ResultingForce PotentialFields::retrieveStaticObstacleGradient(int index)
 {
     //get correct cell in locally stored static grid
     return *(m_staticRespulsiveMap->getCellByIndex(index));
-
 }
 
 VPF_ResultingForce PotentialFields::computeRepulsiveGradient(const Abstract_CartesianPosition *obstaclePosition, const Abstract_CartesianPosition *cellPosition, const double &incidentAngle)
@@ -168,86 +149,46 @@ VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::
 
     if(targetPosition.distanceBetween2D(agentPose) <= m_goalThreshold)
     {
-        vf.setForceX(-m_conicalAttractionGain * agentPose.deltaX(targetPosition));
-        vf.setForceY(-m_conicalAttractionGain * agentPose.deltaY(targetPosition));
+        vf.setForceX(m_conicalAttractionGain * -agentPose.deltaX(targetPosition));
+        vf.setForceY(m_conicalAttractionGain * -agentPose.deltaY(targetPosition));
     }
     else
     {
-        vf.setForceX(-m_goalThreshold * m_linearAttractionGain * (agentPose.deltaX(targetPosition) / targetPosition.distanceBetween2D(agentPose)));
-        vf.setForceY(-m_goalThreshold * m_linearAttractionGain * (agentPose.deltaY(targetPosition) / targetPosition.distanceBetween2D(agentPose)));
+        double deltaX = targetPosition.deltaX(agentPose);
+        double deltaY = targetPosition.deltaY(agentPose);
+        std::cout<<"The delta positions are: "<<deltaX<<","<<deltaY<<std::endl;
+        vf.setForceX(m_goalThreshold * m_linearAttractionGain * (targetPosition.deltaX(agentPose) / targetPosition.distanceBetween2D(agentPose)));
+        vf.setForceY(m_goalThreshold * m_linearAttractionGain * (targetPosition.deltaY(agentPose) / targetPosition.distanceBetween2D(agentPose)));
     }
     return vf;
 }
 
-void PotentialFields::computeNewTargetState()
+VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition,  const mace::pose::Abstract_CartesianPosition* targetPosition)
 {
+    VPF_ResultingForce rtnObj;
 
+    const mace::pose::CartesianPosition_2D* current = nullptr;
+    const mace::pose::CartesianPosition_2D* target = nullptr;
+
+    if(agentPosition->isGreaterThan1D())
+        current = agentPosition->positionAs<mace::pose::CartesianPosition_2D>();
+    if(targetPosition->isGreaterThan1D())
+        target = targetPosition->positionAs<mace::pose::CartesianPosition_2D>();
+
+    if((current == nullptr) || (target == nullptr))
+        return rtnObj;
+
+    VPF_ResultingForce attraction = computeAttractionGradient(*current,*target);
+    //VPF_ResultingForce repulsion = retrieveRepulsiveSummation(*current);
+
+    rtnObj = attraction;
+    return rtnObj;
 }
 
 void PotentialFields::computeVirtualPotentialField()
 {
 
 }
-
-
-//TargetItem::Cartesian3DDynamicTarget PotentialFields::computeTotalGradient(mace::maps::BaseGridMap* dynamicMap,
-//                                                                            mace::pose::CartesianPosition_2D agentPose,
-//                                                                            mace::pose::CartesianPosition_2D targetPosition)
-//{
-
-//    std::cout<< " compute total gradient" << std::endl;
-
-//    VPF_ResultingForce vf1, vf2, vf3;
-
-//    int index = m_staticGridRepulsiveFields->indexFromPos(agentPose.getXPosition(), agentPose.getYPosition());
-//    vf1 = this->retrieveStaticObstacleGradient(index);
-
-//    if(dynamicMap != nullptr)
-//    {
-//        std::cout<< "dynamic map is not null" << std::endl;
-//        vf2 = this->computeDynamicObstacleGradient(agentPose, dynamicMap);
-//    }
-//    else
-//    {
-//        std::cout<< "dynamic map is null" << std::endl;
-//    }
-//    std::cout<< " dynamicObstacleGradient = " << vf2.getForceX() << ", " <<  vf2.getForceY() << std::endl;
-
-//    vf3 = this->computeAttractionGradient(agentPose, targetPosition);
-
-//    std::cout<< " attractionGradient = " << vf3.getForceX() << ", " <<  vf3.getForceY() << std::endl;
-
-//    VPF_ResultingForce totalForce;
-//    totalForce.addForceX(vf1.getForceX() + vf2.getForceX() + vf3.getForceX());
-//    totalForce.addForceY(vf1.getForceY() + vf2.getForceY() + vf3.getForceY());
-//    totalForce.updateDirection();
-
-//    std::cout<< "TOTAL FORCE:" << totalForce.getForceX() << " , " << totalForce.getForceY() << " , " << totalForce.getDirection() << std::endl;
-
-//    m_totalForceGrid->getCellByIndex(index)->setForceX(totalForce.getForceX());
-//    m_totalForceGrid->getCellByIndex(index)->setForceY(totalForce.getForceY());
-
-//    printGrid();
-
-//    TargetItem::Cartesian3DDynamicTarget target;
-//    CartesianVelocity_3D velocity;
-//    velocity.setXVelocity(totalForce.getForceX());
-//    velocity.setYVelocity(totalForce.getForceY());
-//    velocity.setZVelocity(0);
-
-//  //  target.setVelocity(velocity);
-
-//CartesianPosition_3D position;
-//position.setXPosition(8);
-//position.setYPosition(4);
-//position.setZPosition(10);
-//target.setPosition(position);
-
-//    std::cout << " leaving compute total gradient"<< std::endl;
-//    return target;
-
-
-//}
 
 double PotentialFields::getRepulsionRadius() const
 {

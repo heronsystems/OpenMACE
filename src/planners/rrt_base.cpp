@@ -36,7 +36,7 @@ std::vector<state_space::State*> RRTBase::solve()
 
         // 2. Sample a state from the state space
         if((m_stateEnd != nullptr) && (m_RNG.uniform01() < goalProbability))
-            m_stateEnd->sampleGoal(sampleState);
+            sampleState = m_stateEnd->getState(); //m_stateEnd->sampleGoal(sampleState); //KEN FIX THIS SAMPLING IDEA
         else
             m_samplingStrategy->sampleUniform(sampleState);
 

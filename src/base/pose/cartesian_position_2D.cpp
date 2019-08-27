@@ -32,17 +32,18 @@ CartesianPosition_2D::CartesianPosition_2D(const double &x, const double &y):
     Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, "Cartesian Point"), State(), data(0.0,0.0)
 {
     this->dimension = 2;
-    this->setXPosition(x); this->setYPosition(y);
+    this->updatePosition(x, y);
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_2D &copy):
-    Abstract_CartesianPosition(copy), state_space::State(copy), data(copy.data)
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(0.0,0.0)
 {
-
+    this->dimension = 2;
+    this->updatePosition(copy.getXPosition(), copy.getYPosition());
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
-    Abstract_CartesianPosition(copy), state_space::State(copy)
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(0.0,0.0)
 {
     this->dimension = 2;
     this->updatePosition(copy.getXPosition(), copy.getYPosition());

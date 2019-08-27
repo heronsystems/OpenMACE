@@ -23,4 +23,7 @@
 	</Parameter>
    </Module>
    
+    <Module Class="PathPlanning" Type="NASAPhase2">
+  </Module>
+   
 </ModuleConfigurations>

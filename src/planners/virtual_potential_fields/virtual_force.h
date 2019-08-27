@@ -106,8 +106,6 @@ public:
             return false;
         else if(this->saturated != rhs.saturated)
             return false;
-        else
-            return true;
         return true;
     }
 

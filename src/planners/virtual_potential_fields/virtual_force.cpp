@@ -33,7 +33,7 @@ void VPF_ResultingForce::updateDirection()
     }
     else
     {
-        this->direction = atan2(forceX, forceY);
+        this->direction = atan2(forceY, forceX);
     }
 }
 

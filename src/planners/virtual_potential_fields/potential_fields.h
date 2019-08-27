@@ -90,7 +90,7 @@ public:
 
     void updateStaticObstacleGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap);
 
-    void computeFullAttractionGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap);
+    VPF_ResultingForce retrieveRepulsiveSummation(const mace::pose::CartesianPosition_2D &currentPosition);
 
     VPF_ResultingForce retrieveStaticObstacleGradient(int);
 
@@ -98,7 +98,7 @@ public:
 
     VPF_ResultingForce computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,  const mace::pose::CartesianPosition_2D targetPosition);
 
-    void computeNewTargetState();
+    VPF_ResultingForce computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition,  const mace::pose::Abstract_CartesianPosition* targetPosition);
 
     void computeVirtualPotentialField();
 

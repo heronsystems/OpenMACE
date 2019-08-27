@@ -23,6 +23,7 @@ public:
     virtual ~StateSpace();
 
     StateSpace(const StateSpace& copy) = delete;
+
     StateSpace &operator =(const StateSpace &copy) = delete;
 
 

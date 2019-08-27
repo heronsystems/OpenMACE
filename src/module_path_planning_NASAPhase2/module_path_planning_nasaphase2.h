@@ -35,6 +35,11 @@ using namespace octomap;
 #include "base/pose/pose_components.h"
 #include "base_topic/base_topic_components.h"
 
+#include "planners/virtual_potential_fields/potential_fields.h"
+#include "planners/virtual_potential_fields/virtual_force.h"
+
+#include "data_generic_command_item/command_item_components.h"
+
 using namespace mace ;
 using namespace geometry;
 using namespace maps;
@@ -58,14 +63,14 @@ public:
     //! \brief Describes the strucure of the parameters for this module
     //! \return Strucure
     //!
-    virtual std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const;
+    std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const override;
 
 
     //!
     //! \brief Provides object contains parameters values to configure module with
     //! \param params Parameters to configure
     //!
-    virtual void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params);
+    void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params) override;
 
     void OnModulesStarted() override;
     //!
@@ -77,7 +82,8 @@ public:
     //! \param data Data for topic
     //! \param target Target module (or broadcasted)
     //!
-    virtual void NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target);
+    void NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data,
+                      const OptionalParameter<MaceCore::ModuleCharacteristic> &target) override;
 
 
     //!
@@ -90,7 +96,8 @@ public:
     //! \param componentsUpdated Components in topic that where updated
     //! \param target Target moudle (or broadcast)
     //!
-    virtual void NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>());
+    void NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated,
+                         const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
 
     //! Virtual functions as defined by IModuleCommandPathPlanning
@@ -106,8 +113,7 @@ public:
     //!
     void NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
-
-    virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+    void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     void NewlyLoadedOccupancyMap() override;
 
@@ -117,61 +123,33 @@ public:
 
     void NewlyAvailableMission(const MissionItem::MissionList &mission) override;
 
+    void NewlyAvailableGoalState(const mace::state_space::GoalState &goal) override;
 
 public:
     void cbiPlanner_SampledState(const mace::state_space::State* sampleState) override;
     void cbiPlanner_NewConnection(const mace::state_space::State* beginState, const mace::state_space::State* secondState) override;
 
 private:
+    mace::state_space::GoalState m_goalState;
+    mace::pose::CartesianPosition_2D m_castGoalState;
 
-    void replanRRT();
+private: //variables explicit for the potential fields approach
+    void setupF3StaticMap();
+    void updateAgentAction();
+    VPF_ResultingForce computeVirtualForce();
+    command_target::DynamicTarget computeDynamicTarget(const VPF_ResultingForce &apfObj);
 
-    /**
-     * @brief parseBoundaryVertices Given a string of delimited (lat, lon) pairs, parse into a vector of points
-     * @param unparsedVertices String to parse with delimiters
-     * @param globalOrigin Global position to convert relative to
-     * @param vertices Container for boundary vertices
-     */
-    void parseBoundaryVertices(std::string unparsedVertices, Polygon_2DG &boundaryPolygon);
-
-
-    //!
-    //! \brief A new Operational boundary has been provided, configure internal variables as needed
-    //! \param boundary New operational boundary
-    //!
-    void NewOperationalBoundary(const BoundaryItem::BoundaryList &boundary);
+    mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap;
+    PotentialFields* m_Planner;
 
 private:
-    unsigned int localVehicleID;
-    double localVehicleSize = 0.01;
-    std::map<int,mace::pose::CartesianPosition_3D> map_CurrentPosition;
-    MissionItem::MissionList m_MissionList;
-    command_target::DynamicMissionQueue m_DynamicPlan;
-
-
     mace::state_space::Cartesian2DSpacePtr m_Space;
     mace::state_space::Cartesian2DSpace_SamplerPtr sampler;
-    mace::state_space::DiscreteMotionValidityCheckPtr motionCheck;
     mace::state_space::SpecialValidityCheckPtr stateCheck;
     mace::state_space::SpaceInformationPtr spaceInfo;
-    mace::planners_sampling::RRTBasePtr m_PlannerRRT;
 
-
-    mace::pose::GeodeticPosition_3D m_globalOrigin;
-
-    mace::geometry::Polygon_2DG m_GlobalOperationalBoundary;
-    mace::geometry::Polygon_Cartesian m_LocalOperationalBoundary;
-
-
-    maps::Data2DGrid<OccupiedResult>* m_ProjectedOccupancyMap;
-    maps::Data2DGrid<OccupiedResult>* m_OccupiedVehicleMap;
-
-    mace::maps::OctomapSensorDefinition m_OctomapSensorProperties;
-
-
-    // Flags:
-    bool originSent;
-
+private:
+    mace::pose::CartesianPosition_3D m_AgentPosition;
 private:
     //!
     //! \brief m_VehicleDataTopic Vehicle data topic collection

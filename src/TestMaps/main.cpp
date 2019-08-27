@@ -98,6 +98,14 @@ int main(int argc, char *argv[])
     mace::PotentialFields pf(spaceInfo,exampleMap);
 
     pf.printGrid();
+
+    mace::pose::CartesianPosition_2D currentPosition(-30,10);
+    mace::pose::CartesianPosition_2D targetPosition(30,10);
+
+    VPF_ResultingForce resultingForce = pf.computeArtificialForceVector(&currentPosition, &targetPosition);
+    double heading = wrapTo2Pi(atan2(resultingForce.getForceY(), resultingForce.getForceX()));
+    double speedY = sin(heading) * 2.0;
+    double speedX = cos(heading) * 2.0;
     unsigned int index = exampleMap->indexFromPos(-43,13);
 
     //    Eigen::Vector2d currentPosition(1,1);

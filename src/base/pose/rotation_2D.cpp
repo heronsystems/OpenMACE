@@ -23,9 +23,9 @@ Rotation_2D::Rotation_2D(const Rotation_3D &copy):
 }
 
 Rotation_2D::Rotation_2D(const double &angle):
-    AbstractRotation(1), Eigen::Rotation2D<double>(angle)
+    AbstractRotation(1)
 {
-
+    this->setPhi(angle);
 }
 
 bool Rotation_2D::isYawDimensionSet() const

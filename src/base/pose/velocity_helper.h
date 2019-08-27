@@ -119,7 +119,7 @@ public:
 
     double getZVelocity() const
     {
-        return this->data(1);
+        return this->data(2);
     }
 
     bool hasXBeenSet() const

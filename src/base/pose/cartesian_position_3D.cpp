@@ -27,13 +27,14 @@ CartesianPosition_3D::CartesianPosition_3D(const double &x, const double &y, con
     Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_UNKNOWN), State(), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
-    this->setXPosition(x); this->setYPosition(y); this->setZPosition(z);
+    this->updatePosition(x,y,z);
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_3D &copy):
-    Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy), data(copy.data)
+    Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
+    this->updatePosition(copy.getXPosition(), copy.getYPosition(), copy.getZPosition());
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_2D &copy):
