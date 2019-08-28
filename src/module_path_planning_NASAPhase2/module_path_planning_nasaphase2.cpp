@@ -244,9 +244,17 @@ VPF_ResultingForce ModulePathPlanningNASAPhase2::computeVirtualForce()
 command_target::DynamicTarget ModulePathPlanningNASAPhase2::computeDynamicTarget(const VPF_ResultingForce &apfObj)
 {
     double heading = wrapTo2Pi(atan2(apfObj.getForceY(), apfObj.getForceX()));
-    double speedY = sin(heading) * 2.0;
-    double speedX = cos(heading) * 2.0;
+    double speedY = apfObj.getForceY();
+    double speedX = apfObj.getForceX();
+    double magnitude = sqrt(pow(speedY,2) + pow(speedX,2));
 
+    if(magnitude > 2)
+    {
+        //normalize the velocities
+        speedX = speedX / magnitude;
+        speedY = speedY / magnitude;
+    }
+    std::cout<<heading<<","<<speedY<<","<<speedX<<std::endl;
     command_target::DynamicTarget newTarget;
     mace::pose::Cartesian_Velocity3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
     newVelocity.setXVelocity(speedY);
@@ -254,8 +262,8 @@ command_target::DynamicTarget ModulePathPlanningNASAPhase2::computeDynamicTarget
     newVelocity.setZVelocity(0.0);
     newTarget.setVelocity(&newVelocity);
 
-    mace::pose::Rotation_2D newHeading(polarToCompassBearing(heading));
-    newTarget.setYaw(&newHeading);
+//    mace::pose::Rotation_2D newHeading(polarToCompassBearing(heading));
+//    newTarget.setYaw(&newHeading);
 
     return newTarget;
 }

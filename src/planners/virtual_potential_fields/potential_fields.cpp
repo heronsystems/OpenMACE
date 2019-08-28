@@ -14,10 +14,10 @@ PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceIn
      m_linearAttractionRadius(2),
      m_planningRadius(2),
      m_repulsionGain(100),
-     m_linearAttractionGain(2),
+     m_linearAttractionGain(10),
      m_radialInfluence(4),
      m_goalThreshold(1),
-     m_goalRadialInfluence(0.5)
+     m_goalRadialInfluence(3)
 {
     m_conicalAttractionGain = m_linearAttractionGain/m_goalThreshold;
     m_currentMapObject = nullptr;
@@ -149,8 +149,14 @@ VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::
 
     if(targetPosition.distanceBetween2D(agentPose) <= m_goalThreshold)
     {
-        vf.setForceX(m_conicalAttractionGain * -agentPose.deltaX(targetPosition));
-        vf.setForceY(m_conicalAttractionGain * -agentPose.deltaY(targetPosition));
+    double distance = agentPose.distanceBetween2D(targetPosition);
+    double gain_attraction = 2;
+    double gain_zero = 0.005;
+    double gain_transition = 0.8;
+    double denomenator = 1 + std::exp(-gain_transition * distance) / gain_zero;
+    double f_att = gain_attraction / denomenator;
+    vf.setForceX(f_att * (targetPosition.getXPosition() - agentPose.getXPosition()) / distance);
+    vf.setForceY(f_att * (targetPosition.getYPosition() - agentPose.getYPosition()) / distance);
     }
     else
     {
@@ -160,6 +166,7 @@ VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::
         vf.setForceX(m_goalThreshold * m_linearAttractionGain * (targetPosition.deltaX(agentPose) / targetPosition.distanceBetween2D(agentPose)));
         vf.setForceY(m_goalThreshold * m_linearAttractionGain * (targetPosition.deltaY(agentPose) / targetPosition.distanceBetween2D(agentPose)));
     }
+
     return vf;
 }
 
@@ -179,6 +186,7 @@ VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pos
         return rtnObj;
 
     VPF_ResultingForce attraction = computeAttractionGradient(*current,*target);
+    std::cout<<"The attraction potential here is: "<<attraction.getForceX()<<","<<attraction.getForceY()<<std::endl;
     //VPF_ResultingForce repulsion = retrieveRepulsiveSummation(*current);
 
     rtnObj = attraction;
