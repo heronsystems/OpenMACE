@@ -1,6 +1,6 @@
 #ifndef POTENTIAL_FIELDS_H
 #define POTENTIAL_FIELDS_H
-
+#include <fstream>
 #include "maps/layered_map.h"
 #include "virtual_force.h"
 #include "../planners.h"
@@ -171,6 +171,8 @@ private:
 
     std::shared_ptr<mace::state_space::SpaceInformation> spaceInfo;
     std::shared_ptr<mace::state_space::Cartesian2DSpace> space;
+
+    std::ofstream myfile;
 
 };
 

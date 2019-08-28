@@ -13,7 +13,7 @@ PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceIn
      m_repulsionRadius(3),
      m_linearAttractionRadius(2),
      m_planningRadius(2),
-     m_repulsionGain(100),
+     m_repulsionGain(1000),
      m_linearAttractionGain(10),
      m_radialInfluence(4),
      m_goalThreshold(1),
@@ -29,6 +29,9 @@ PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceIn
 
     if(staticMap != nullptr)
         updateStaticObstacleGradient(staticMap);
+
+    myfile.open("/home/majorpr13/OpenMACE/potential_fields_logging.csv");
+
 }
 
 void PotentialFields::setPlanningParameters(state_space::GoalState* begin, state_space::GoalState* end)
@@ -186,10 +189,16 @@ VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pos
         return rtnObj;
 
     VPF_ResultingForce attraction = computeAttractionGradient(*current,*target);
-    std::cout<<"The attraction potential here is: "<<attraction.getForceX()<<","<<attraction.getForceY()<<std::endl;
-    //VPF_ResultingForce repulsion = retrieveRepulsiveSummation(*current);
+    VPF_ResultingForce repulsion = retrieveRepulsiveSummation(*current);
 
-    rtnObj = attraction;
+    rtnObj = attraction + repulsion;
+
+    myfile << current->getXPosition() << ",";
+    myfile << current->getYPosition() << ",";
+
+    myfile << rtnObj.getForceX() << ", " ;
+    myfile << rtnObj.getForceY() << "\n " ;
+
     return rtnObj;
 }
 
@@ -265,24 +274,24 @@ void PotentialFields::setRadialInfluence(double radialInfluence)
  */
 void PotentialFields::printGrid()
 {
-    std::ofstream myfile;
+//    std::ofstream myfile;
     std::cout<< " print grid " << std::endl;
 
-    myfile.open("C:/Github/OpenMACE/potential_fields.csv");
+//    myfile.open("C:/Github/OpenMACE/potential_fields.csv");
 
     for(unsigned int index = 0; index < m_staticRespulsiveMap->getSize(); index++)
     {
         double x = 0.0, y = 0.0;
 
         m_staticRespulsiveMap->getPositionFromIndex(index, x, y);
-        myfile << x << ",";
-        myfile << y << ",";
+//        myfile << x << ",";
+//        myfile << y << ",";
 
-        myfile << m_totalForceGrid->getCellByIndex(index)->getForceX() << ", " ;
-        myfile << m_totalForceGrid->getCellByIndex(index)->getForceY() << "\n " ;
+//        myfile << m_totalForceGrid->getCellByIndex(index)->getForceX() << ", " ;
+//        myfile << m_totalForceGrid->getCellByIndex(index)->getForceY() << "\n " ;
     }
 
-    myfile.close();
+//    myfile.close();
     std::cout<<" ____________________ " <<std::endl;
 
 

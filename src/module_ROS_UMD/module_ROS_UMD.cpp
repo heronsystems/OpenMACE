@@ -326,17 +326,15 @@ void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_pt
         z = position->getZPosition();
     }
 
-    std::cout<<"The position here is: "<<x<<","<<y<<","<<z<<std::endl;
-//    if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
-//        std::tuple<mace::pose::CartesianPosition_3D, mace::pose::Rotation_3D> tmpTuple;
-//        mace::pose::Rotation_3D tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
-//        tmpTuple = std::make_tuple(, tmpAtt);
-//        m_vehicleMap[vehicleID] = tmpTuple;
-//    }
-
 #ifdef ROS_EXISTS
-    // TODO: Publish vehicle Pose to MATLAB
-//    publishVehiclePosition(vehicleID);
+    mace_matlab::UPDATE_POSITION position;
+    position.vehicleID = vehicleID;
+    position.northing = y;
+    position.easting = x;
+    position.altitude = -z;
+    position.northSpeed = 0.0; // TODO
+    position.eastSpeed = 0.0; // TODO
+    m_vehiclePosPub.publish(position);
 #endif
 }
 

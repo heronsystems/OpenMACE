@@ -39,7 +39,7 @@ ModulePathPlanningNASAPhase2::ModulePathPlanningNASAPhase2() :
     m_Planner = new mace::PotentialFields(spaceInfo,staticMap); //setup the potential fields planner
 
     m_castGoalState.setCoordinateFrame(CartesianFrameTypes::CF_BODY_ENU);
-    m_castGoalState.setXPosition(30); m_castGoalState.setYPosition(10);
+    m_castGoalState.setXPosition(30); m_castGoalState.setYPosition(8);
 
 }
 
