@@ -9,17 +9,20 @@ namespace mace
 {
 PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceInfo, const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap):
     Planners(spaceInfo),
-     targetPositionActive(false),
-     m_repulsionRadius(3),
-     m_linearAttractionRadius(2),
-     m_planningRadius(2),
-     m_repulsionGain(1000),
-     m_linearAttractionGain(10),
-     m_radialInfluence(4),
-     m_goalThreshold(1),
-     m_goalRadialInfluence(3)
+    targetPositionActive(false),
+    m_repulsionRadius(6),
+    m_linearAttractionRadius(2),
+    m_planningRadius(2),
+    m_repulsionGain(30),
+    m_linearAttractionGain(0.5),
+    m_radialInfluence(5),
+    m_attractiveGoalThreshold(2),
+    m_attractiveLinearGoalThreshold(5),
+    m_goalRadialInfluence(3)
 {
-    m_conicalAttractionGain = m_linearAttractionGain/m_goalThreshold;
+
+    m_repulsionGain = m_attractiveLinearGoalThreshold * m_linearAttractionGain * 2;
+    m_conicalAttractionGain = m_linearAttractionGain/m_attractiveGoalThreshold;
     m_currentMapObject = nullptr;
     m_totalForceGrid = nullptr;
 
@@ -28,9 +31,12 @@ PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceIn
     m_totalForceGrid = new mace::maps::Data2DGrid<VPF_ResultingForce>(&fillValue);
 
     if(staticMap != nullptr)
+    {
         updateStaticObstacleGradient(staticMap);
+        printGrid();
+    }
 
-    myfile.open("/home/majorpr13/OpenMACE/potential_fields_logging.csv");
+    myfile.open("C:/Github/OpenMACE/potential_fields_logging.csv");
 
 }
 
@@ -60,8 +66,8 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
     else
     {
         m_staticRespulsiveMap->updateGridSize(staticMap->getXMin(), staticMap->getXMax(),
-                                 staticMap->getYMin(), staticMap->getYMax(),
-                                 staticMap->getXResolution(),staticMap->getYResolution());
+                                              staticMap->getYMin(), staticMap->getYMax(),
+                                              staticMap->getXResolution(),staticMap->getYResolution());
 
         m_totalForceGrid->updateGridSize(staticMap->getXMin(), staticMap->getXMax(),
                                          staticMap->getYMin(), staticMap->getYMax(),
@@ -82,7 +88,7 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
                 staticMap->getPositionFromIndex(*gridMapItr, obstacleX, obstacleY);
                 mace::pose::CartesianPosition_2D obstacle(obstacleX,obstacleY);
 
-              //generate circle iterator for the map layer of the influential radius an obstacle can have
+                //generate circle iterator for the map layer of the influential radius an obstacle can have
                 mace::maps::CircleMapIterator circleMapItr(staticMap,obstacle,m_radialInfluence);
 
                 for(circleMapItr.begin();!circleMapItr.isPastEnd();++circleMapItr)
@@ -94,8 +100,8 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
 
                     //call updateRepulsiveGradient on current x,y position and obstacle position
                     double incidentAngle = 0.0;
-//                    if(*ptr == mace::maps::OccupiedResult::OCCUPIED)
-//                        incidentAngle = M_PI_2;
+                    //                    if(*ptr == mace::maps::OccupiedResult::OCCUPIED)
+                    //                        incidentAngle = M_PI_2;
 
                     VPF_ResultingForce rf = computeRepulsiveGradient(&obstacle, &currentPos, incidentAngle);
 
@@ -150,30 +156,37 @@ VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::
 
     VPF_ResultingForce vf;
 
-    if(targetPosition.distanceBetween2D(agentPose) <= m_goalThreshold)
-    {
+    double deltaX = targetPosition.deltaX(agentPose);
+    double deltaY = targetPosition.deltaY(agentPose);
     double distance = agentPose.distanceBetween2D(targetPosition);
-    double gain_attraction = 2;
-    double gain_zero = 0.005;
-    double gain_transition = 0.8;
-    double denomenator = 1 + std::exp(-gain_transition * distance) / gain_zero;
-    double f_att = gain_attraction / denomenator;
-    vf.setForceX(f_att * (targetPosition.getXPosition() - agentPose.getXPosition()) / distance);
-    vf.setForceY(f_att * (targetPosition.getYPosition() - agentPose.getYPosition()) / distance);
+    std::cout<<"The delta positions are: "<<deltaX<<","<<deltaY<<std::endl;
+
+    if(distance <= m_attractiveGoalThreshold)
+    {
+        double gain_attraction = 2;
+        double gain_zero = 0.005;
+        double gain_transition = 0.8;
+        double denomenator = 1 + std::exp(-gain_transition * distance) / gain_zero;
+        double f_att = gain_attraction / denomenator;
+        vf.setForceX(f_att * (targetPosition.getXPosition() - agentPose.getXPosition()) / distance);
+        vf.setForceY(f_att * (targetPosition.getYPosition() - agentPose.getYPosition()) / distance);
+    }
+    else if((distance > m_attractiveGoalThreshold) && (distance <= m_attractiveLinearGoalThreshold))
+    {
+        vf.setForceX(m_linearAttractionGain * (targetPosition.deltaX(agentPose) / targetPosition.distanceBetween2D(agentPose)));
+        vf.setForceY(m_linearAttractionGain * (targetPosition.deltaY(agentPose) / targetPosition.distanceBetween2D(agentPose)));
     }
     else
     {
-        double deltaX = targetPosition.deltaX(agentPose);
-        double deltaY = targetPosition.deltaY(agentPose);
-        std::cout<<"The delta positions are: "<<deltaX<<","<<deltaY<<std::endl;
-        vf.setForceX(m_goalThreshold * m_linearAttractionGain * (targetPosition.deltaX(agentPose) / targetPosition.distanceBetween2D(agentPose)));
-        vf.setForceY(m_goalThreshold * m_linearAttractionGain * (targetPosition.deltaY(agentPose) / targetPosition.distanceBetween2D(agentPose)));
+        vf.setForceX(m_linearAttractionGain * m_attractiveLinearGoalThreshold * (targetPosition.deltaX(agentPose) / targetPosition.distanceBetween2D(agentPose)));
+        vf.setForceY(m_linearAttractionGain * m_attractiveLinearGoalThreshold * (targetPosition.deltaY(agentPose) / targetPosition.distanceBetween2D(agentPose)));
     }
 
     return vf;
 }
 
-VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition,  const mace::pose::Abstract_CartesianPosition* targetPosition)
+VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition, const mace::pose::Cartesian_Velocity2D* agentVelocity,
+                                                                 const mace::pose::Abstract_CartesianPosition* targetPosition, double &vResponse)
 {
     VPF_ResultingForce rtnObj;
 
@@ -188,16 +201,60 @@ VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pos
     if((current == nullptr) || (target == nullptr))
         return rtnObj;
 
+    mace::pose::CartesianPosition_2D evalPosition(*current);
+    evalPosition.setXPosition(evalPosition.getXPosition() + agentVelocity->getXVelocity());
+    evalPosition.setYPosition(evalPosition.getYPosition() + agentVelocity->getYVelocity());
+
+
     VPF_ResultingForce attraction = computeAttractionGradient(*current,*target);
-    VPF_ResultingForce repulsion = retrieveRepulsiveSummation(*current);
+    VPF_ResultingForce repulsion = retrieveRepulsiveSummation(evalPosition);
+
+    //apply fuzzy logic
+    Eigen::Vector2d attractionVector(attraction.getForceX(), attraction.getForceY());
+    Eigen::Vector2d repulsionVector(repulsion.getForceX(), repulsion.getForceY());
+    Eigen::Vector2d rotatedRepulsionVector = repulsionVector;
+
+    double angle = 0.0;
+
+    if((fabs(repulsion.getForceX()) > std::numeric_limits<double>::epsilon()) || (fabs(repulsion.getForceY()) > std::numeric_limits<double>::epsilon()))
+    {
+        angle = acos(attractionVector.dot(repulsionVector) / (attractionVector.norm() * repulsionVector.norm()));
+        angle = mace::math::wrapToPi(angle);
+        if(fabs(angle) > mace::math::convertDegreesToRadians(90))
+        {
+            int signValue = mace::math::sgn<double>(angle);
+            double incidentAngle = M_PI_4 * signValue;
+            Eigen::Matrix2d rotation = Eigen::Matrix2d::Zero(); rotation << cos(incidentAngle), -sin(incidentAngle), sin(incidentAngle), cos(incidentAngle); //[cos(theta) -sin(theta); sin(theta) cos(theta)]
+            rotatedRepulsionVector = rotation*repulsionVector + repulsionVector;
+        }
+//        else if (fabs(angle) > mace::math::convertDegreesToRadians(90)) {
+//            int signValue = mace::math::sgn<double>(angle);
+//            double incidentAngle = M_PI_4 * signValue;
+//            Eigen::Matrix2d rotation = Eigen::Matrix2d::Zero(); rotation << cos(incidentAngle), -sin(incidentAngle), sin(incidentAngle), cos(incidentAngle); //[cos(theta) -sin(theta); sin(theta) cos(theta)]
+//            rotatedRepulsionVector = rotation*repulsionVector;
+//        }
+    }
+
+    repulsion.setForceX(rotatedRepulsionVector.x());
+    repulsion.setForceY(rotatedRepulsionVector.y());
+
 
     rtnObj = attraction + repulsion;
 
+    double forceFactor = sqrt(pow(repulsion.getForceX(),2) + pow(repulsion.getForceY(),2)) / 6;
+
+    vResponse = 2/(1+forceFactor);
+
     myfile << current->getXPosition() << ",";
     myfile << current->getYPosition() << ",";
-
-    myfile << rtnObj.getForceX() << ", " ;
-    myfile << rtnObj.getForceY() << "\n " ;
+    myfile << evalPosition.getXPosition() << ",";
+    myfile << evalPosition.getYPosition() << ",";
+    myfile << attraction.getForceX() << ", " ;
+    myfile << attraction.getForceY() << ", " ;
+    myfile << repulsion.getForceX() << ", " ;
+    myfile << repulsion.getForceY() << ", " ;
+    myfile << vResponse << ", " ;
+    myfile << angle << "\n " ;
 
     return rtnObj;
 }
@@ -274,24 +331,23 @@ void PotentialFields::setRadialInfluence(double radialInfluence)
  */
 void PotentialFields::printGrid()
 {
-//    std::ofstream myfile;
-    std::cout<< " print grid " << std::endl;
+    //    std::ofstream myfile;
 
-//    myfile.open("C:/Github/OpenMACE/potential_fields.csv");
+    myfile.open("C:/Github/OpenMACE/potential_fields.csv");
 
     for(unsigned int index = 0; index < m_staticRespulsiveMap->getSize(); index++)
     {
         double x = 0.0, y = 0.0;
 
         m_staticRespulsiveMap->getPositionFromIndex(index, x, y);
-//        myfile << x << ",";
-//        myfile << y << ",";
+        myfile << x << ",";
+        myfile << y << ",";
 
-//        myfile << m_totalForceGrid->getCellByIndex(index)->getForceX() << ", " ;
-//        myfile << m_totalForceGrid->getCellByIndex(index)->getForceY() << "\n " ;
+        myfile << m_totalForceGrid->getCellByIndex(index)->getForceX() << ", " ;
+        myfile << m_totalForceGrid->getCellByIndex(index)->getForceY() << "\n " ;
     }
 
-//    myfile.close();
+    myfile.close();
     std::cout<<" ____________________ " <<std::endl;
 
 
@@ -299,12 +355,12 @@ void PotentialFields::printGrid()
 
 double PotentialFields::getGoalThreshold() const
 {
-    return m_goalThreshold;
+    return m_attractiveGoalThreshold;
 }
 
 void PotentialFields::setGoalThreshold(double goalThreshold)
 {
-    m_goalThreshold = goalThreshold;
+    m_attractiveGoalThreshold = goalThreshold;
 }
 
 double PotentialFields::getGoalRadialInfluence() const

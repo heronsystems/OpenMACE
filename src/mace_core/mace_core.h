@@ -347,6 +347,8 @@ public:
     void Event_SetGlobalOrigin(const void* sender, const mace::pose::GeodeticPosition_3D &globalHome) override;
 
 
+    void Event_ProcessGoalState(const ModuleBase* sender, const mace::state_space::GoalState &state) override;
+
 public:
     /////////////////////////////////////////////////////////////////////////
     /// SENSOR EVENTS

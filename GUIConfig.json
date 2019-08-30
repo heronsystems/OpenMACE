@@ -1,14 +1,14 @@
 {
     "MACEComms": {
 
-		"ipAddress": "192.168.1.216",
+		"ipAddress": "192.168.1.166",
 		"listenPortNumber": 1234,
 		"sendPortNumber": 5678
     },
 	"GUIInit": {
 		"mapCenter": {
-			"lat": 38.973699,
-			"lng": -76.921897
+			"lat": -35.3632621765137,
+			"lng": 149.165237426758
 		},
 		"mapZoom": 17
 	},

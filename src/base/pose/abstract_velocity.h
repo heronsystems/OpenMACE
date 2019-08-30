@@ -49,7 +49,7 @@ public:
 public:
     virtual Eigen::VectorXd getDataVector() const = 0;
 
-    virtual void updateDataVector(const Eigen::VectorXd &vecObj) const = 0;
+    virtual void updateDataVector(const Eigen::VectorXd &vecObj) = 0;
 
     bool areAllVelocitiesValid() const
     {

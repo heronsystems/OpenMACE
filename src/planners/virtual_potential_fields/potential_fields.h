@@ -5,6 +5,7 @@
 #include "virtual_force.h"
 #include "../planners.h"
 #include "../planners_global.h"
+#include "base/pose/pose_components.h"
 #include "data_generic_command_item/target_items/dynamic_target.h"
 
 #include <base/state_space/cartesian_2D_space.h>
@@ -98,7 +99,8 @@ public:
 
     VPF_ResultingForce computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,  const mace::pose::CartesianPosition_2D targetPosition);
 
-    VPF_ResultingForce computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition,  const mace::pose::Abstract_CartesianPosition* targetPosition);
+    VPF_ResultingForce computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition, const mace::pose::Cartesian_Velocity2D* agentVelocity,
+                                                    const mace::pose::Abstract_CartesianPosition* targetPosition, double &vResponse);
 
     void computeVirtualPotentialField();
 
@@ -150,7 +152,9 @@ private:
 
     double m_planningRadius;
     double m_repulsionGain;
-    double m_goalThreshold;
+    double m_attractiveGoalThreshold;
+    double m_attractiveLinearGoalThreshold;
+
     double m_resultingSearchRadius;
     double m_radialInfluence;
     double m_goalRadialInfluence;

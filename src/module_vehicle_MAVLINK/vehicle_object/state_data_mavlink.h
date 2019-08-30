@@ -45,6 +45,9 @@ private:
 public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalPosition;
     Data::DataGetSetNotifier<mace::pose::CartesianPosition_3D> vehicleLocalPosition;
+
+    Data::DataGetSetNotifier<mace::pose::Cartesian_Velocity3D> vehicleLocalVelocity;
+
     Data::DataGetSetNotifier<mace::pose::Rotation_3D> vehicleAttitude;
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleAirspeed;
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleGroundSpeed;

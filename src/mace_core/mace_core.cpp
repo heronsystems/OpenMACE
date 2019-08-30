@@ -458,12 +458,6 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 //!
 void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 {
-    UNUSED(sender);
-    try{
-        m_VehicleIDToPort.at(vehicleID)->MarshalCommand(VehicleCommands::REQUEST_DUMMY_FUNCTION,vehicleID);
-    }catch(const std::out_of_range &oor){
-        UNUSED(oor);
-    }
 
 }
 
@@ -816,6 +810,13 @@ void MaceCore::Event_SetGlobalOrigin(const void *sender, const GeodeticPosition_
     }
     if(m_Sensors) {
         m_Sensors->MarshalCommand(SensorCommands::UPDATE_GLOBAL_ORIGIN, position);
+    }
+}
+
+void MaceCore::Event_ProcessGoalState(const ModuleBase *sender, const mace::state_space::GoalState &state)
+{
+    if(m_PathPlanning && m_PathPlanning.get() != sender) {
+        m_PathPlanning->MarshalCommand(PathPlanningCommands::PROCESS_TARGET_STATE, state);
     }
 }
 

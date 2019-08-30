@@ -11,6 +11,10 @@ namespace mace
 namespace math
 {
 
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
+
 /** Modifies the given angle to translate it into the [0,2pi[ range.
   * \note Take care of not instancing this template for integer numbers, since
  * it only works for float, double and long double.

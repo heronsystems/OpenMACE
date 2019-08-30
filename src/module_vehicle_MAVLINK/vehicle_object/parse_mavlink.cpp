@@ -135,6 +135,11 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                        AltitudeReferenceTypes::REF_ALT_RELATIVE,
                                                        static_cast<double>(decodedMSG.z));
 
+        mace::pose::Cartesian_Velocity3D localVelocity(CartesianFrameTypes::CF_BODY_NED);
+        localVelocity.setXVelocity(static_cast<double>(decodedMSG.vx));
+        localVelocity.setYVelocity(static_cast<double>(decodedMSG.vy));
+        localVelocity.setZVelocity(static_cast<double>(decodedMSG.vz));
+
         if(state->vehicleLocalPosition.set(localPosition))
         {
 //            if(!state->swarmGlobalOrigin.get().isAnyPositionValid() || !state->vehicleGlobalOrigin.get().isAnyPositionValid()) //This check may not be necessary as handled via autopilot correctly
@@ -145,6 +150,13 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
             std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> ptrPosition = std::make_shared<mace::pose_topics::Topic_CartesianPosition>(&localPosition);
             if(this->m_CB)
                 this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
+        }
+
+        if(state->vehicleLocalVelocity.set(localVelocity))
+        {
+            std::shared_ptr<mace::pose_topics::Topic_CartesianVelocity> ptrVelocity = std::make_shared<mace::pose_topics::Topic_CartesianVelocity>(&localVelocity);
+            if(this->m_CB)
+                this->m_CB->cbi_VehicleStateData(systemID,ptrVelocity);
         }
         break;
     }

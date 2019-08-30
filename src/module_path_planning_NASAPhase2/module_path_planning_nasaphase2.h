@@ -136,8 +136,8 @@ private:
 private: //variables explicit for the potential fields approach
     void setupF3StaticMap();
     void updateAgentAction();
-    VPF_ResultingForce computeVirtualForce();
-    command_target::DynamicTarget computeDynamicTarget(const VPF_ResultingForce &apfObj);
+    VPF_ResultingForce computeVirtualForce(double &vResponse);
+    command_target::DynamicTarget computeDynamicTarget(const VPF_ResultingForce &apfObj, const double &vResponse);
 
     mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap;
     PotentialFields* m_Planner;
@@ -150,6 +150,8 @@ private:
 
 private:
     mace::pose::CartesianPosition_3D m_AgentPosition;
+    mace::pose::Cartesian_Velocity3D m_AgentVelocity;
+
 private:
     //!
     //! \brief m_VehicleDataTopic Vehicle data topic collection
@@ -171,6 +173,9 @@ private:
     //!
     Data::TopicDataObjectCollection<MAP_DATA_TOPICS> m_MapTopic;
 
+    private:
+    mace::state_space::Cartesian2DSpacePtr goalSpace;
+    mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
 
 };
 #endif // MODULE_PATH_PLANNING_NASAPHASE2_H

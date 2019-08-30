@@ -3,7 +3,9 @@ function [ output_args ] = positionCallback( subscriber, msg )
 %   Detailed explanation goes here
 
      X = sprintf('UPDATE_POSITION: %f %f %f',msg.Northing,msg.Easting,msg.Altitude);
-     disp(X)
-     
+     disp(X);
+
+     plot(msg.Northing, msg.Easting,'r*')
+     hold on
 end
 

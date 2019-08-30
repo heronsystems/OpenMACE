@@ -19,11 +19,18 @@ template<const CoordinateSystemTypes coordType, typename CFDATA>
 class VelocityHelper<coordType, CFDATA, Eigen::Vector2d> : public VelocityInterface<coordType, CFDATA, Eigen::Vector2d>
 {
 public:
+    VelocityHelper():
+        VelocityInterface<coordType, CFDATA, Eigen::Vector2d>()
+    {
+        this->dimension = 2;
+    }
+
     VelocityHelper(const CFDATA &frame):
         VelocityInterface<coordType, CFDATA, Eigen::Vector2d>(frame)
     {
         this->dimension = 2;
     }
+
     VelocityHelper(const VelocityHelper &copy):
         VelocityInterface<coordType, CFDATA, Eigen::Vector2d>(copy)
     {
@@ -74,6 +81,12 @@ template<const CoordinateSystemTypes coordType, typename CFDATA>
 class VelocityHelper<coordType, CFDATA, Eigen::Vector3d> : public VelocityInterface<coordType, CFDATA, Eigen::Vector3d>
 {
 public:
+    VelocityHelper():
+        VelocityInterface<coordType, CFDATA, Eigen::Vector3d>()
+    {
+        this->dimension = 3;
+    }
+
     VelocityHelper(const CFDATA &frame):
         VelocityInterface<coordType, CFDATA, Eigen::Vector3d>(frame)
     {
@@ -142,6 +155,7 @@ public:
             return true;
         return false;
     }
+
 };
 
 

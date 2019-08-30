@@ -5,6 +5,7 @@
 
 #include "data/system_description.h"
 #include "data_generic_command_item/command_item_components.h"
+#include "base/state_space/goal_state.h"
 
 #include "abstract_module_base.h"
 
@@ -179,6 +180,13 @@ public:
     //! \param gotTo
     //!
     virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo) = 0;
+
+    //!
+    //! \brief Event_ProcessGoalState
+    //! \param sender
+    //! \param state
+    //!
+    virtual void Event_ProcessGoalState(const ModuleBase* sender, const mace::state_space::GoalState &state) = 0;
 };
 
 } //End MaceCore Namespace

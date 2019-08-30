@@ -33,13 +33,19 @@ ModulePathPlanningNASAPhase2::ModulePathPlanningNASAPhase2() :
     spaceInfo->setStateValidityCheck(stateCheck);
 
     mace::maps::OccupiedResult fillData = mace::maps::OccupiedResult::NOT_OCCUPIED;
-    staticMap = new mace::maps::Data2DGrid<mace::maps::OccupiedResult>(&fillData, -43,43,-13,13,1,1);
+    staticMap = new mace::maps::Data2DGrid<mace::maps::OccupiedResult>(&fillData, -43,43,-13,13,0.5,0.5);
     setupF3StaticMap();
 
     m_Planner = new mace::PotentialFields(spaceInfo,staticMap); //setup the potential fields planner
 
     m_castGoalState.setCoordinateFrame(CartesianFrameTypes::CF_BODY_ENU);
     m_castGoalState.setXPosition(30); m_castGoalState.setYPosition(8);
+
+    goalSpace = std::make_shared<mace::state_space::Cartesian2DSpace>();
+    mace::state_space::Cartesian2DSpaceBounds bounds(-20,20,-10,10);
+    goalSpace->setBounds(bounds);
+
+    m_goalSampler = std::make_shared<mace::state_space::Cartesian2DSpace_Sampler>(goalSpace);
 
 }
 
@@ -150,6 +156,25 @@ void ModulePathPlanningNASAPhase2::NewTopicSpooled(const std::string &topicName,
                 m_VehicleDataTopic.GetComponent(localPositionData, read_topicDatagram);
                 mace::pose::Abstract_CartesianPosition* currentPosition = localPositionData->getPositionObj();
                 m_AgentPosition = *currentPosition->positionAs<mace::pose::CartesianPosition_3D>();
+
+                if(m_AgentPosition.distanceBetween2D(&m_castGoalState) < 1)
+                {
+                    mace::state_space::GoalState goal;
+                    mace::state_space::State* newState = goalSpace->getNewState();
+                    m_goalSampler->sampleUniform(newState);
+                    goal.setState(newState);
+                    goalSpace->removeState(newState);
+                    NewlyAvailableGoalState(goal);
+                }
+
+                this->updateAgentAction();
+            }
+            else if(componentsUpdated.at(i) == mace::pose_topics::Topic_CartesianVelocity::Name())
+            {
+                std::shared_ptr<mace::pose_topics::Topic_CartesianVelocity> localVelocityData = std::make_shared<mace::pose_topics::Topic_CartesianVelocity>();
+                m_VehicleDataTopic.GetComponent(localVelocityData, read_topicDatagram);
+                mace::pose::Velocity* currentVelocity = localVelocityData->getVelocityObj();
+                m_AgentVelocity = *currentVelocity->velocityAs<mace::pose::Cartesian_Velocity3D>();
                 this->updateAgentAction();
             }
         }
@@ -200,12 +225,12 @@ void ModulePathPlanningNASAPhase2::NewlyAvailableMission(const MissionItem::Miss
 
 void ModulePathPlanningNASAPhase2::NewlyAvailableGoalState(const mace::state_space::GoalState &goal)
 {
-    if(isOfType<mace::pose::Abstract_CartesianPosition>(goal.getState()))
-    {
+//    if(isOfType<mace::pose::Abstract_CartesianPosition*>(goal.getState()))
+//    {
         this->m_goalState = goal;
         m_castGoalState = *m_goalState.getState()->stateAs<mace::pose::CartesianPosition_2D>();
         this->updateAgentAction();
-    }
+//    }
 }
 
 void ModulePathPlanningNASAPhase2::cbiPlanner_SampledState(const mace::state_space::State *sampleState)
@@ -220,8 +245,9 @@ void ModulePathPlanningNASAPhase2::cbiPlanner_NewConnection(const mace::state_sp
 
 void ModulePathPlanningNASAPhase2::updateAgentAction()
 {
-    VPF_ResultingForce artificialForce = computeVirtualForce();
-    command_target::DynamicTarget newTarget = computeDynamicTarget(artificialForce);
+    double vehicleVelocity = 0.0;
+    VPF_ResultingForce artificialForce = computeVirtualForce(vehicleVelocity);
+    command_target::DynamicTarget newTarget = computeDynamicTarget(artificialForce, vehicleVelocity);
     command_item::Action_DynamicTarget newAction(255,1);
     newAction.setDynamicTarget(newTarget);
 
@@ -230,31 +256,41 @@ void ModulePathPlanningNASAPhase2::updateAgentAction()
     });
 }
 
-VPF_ResultingForce ModulePathPlanningNASAPhase2::computeVirtualForce()
+VPF_ResultingForce ModulePathPlanningNASAPhase2::computeVirtualForce(double &vResponse)
 {
     mace::pose::CartesianPosition_2D transformedPosition(m_AgentPosition);
     transformedPosition.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_ENU);
     transformedPosition.setXPosition(m_AgentPosition.getYPosition());
     transformedPosition.setYPosition(m_AgentPosition.getXPosition());
 
-    VPF_ResultingForce resultingForce = m_Planner->computeArtificialForceVector(&transformedPosition, &m_castGoalState);
+    mace::pose::Cartesian_Velocity2D transformedVelocity;
+    transformedVelocity.setExplicitCoordinateFrame(CartesianFrameTypes::CF_LOCAL_ENU);
+    transformedVelocity.setXVelocity(m_AgentVelocity.getYVelocity());
+    transformedVelocity.setYVelocity(m_AgentVelocity.getXVelocity());
+
+    VPF_ResultingForce resultingForce = m_Planner->computeArtificialForceVector(&transformedPosition, &transformedVelocity,
+                                                                                &m_castGoalState, vResponse);
     return resultingForce;
 }
 
-command_target::DynamicTarget ModulePathPlanningNASAPhase2::computeDynamicTarget(const VPF_ResultingForce &apfObj)
+command_target::DynamicTarget ModulePathPlanningNASAPhase2::computeDynamicTarget(const VPF_ResultingForce &apfObj, const double &vResponse)
 {
     double heading = wrapTo2Pi(atan2(apfObj.getForceY(), apfObj.getForceX()));
-    double speedY = apfObj.getForceY();
-    double speedX = apfObj.getForceX();
-    double magnitude = sqrt(pow(speedY,2) + pow(speedX,2));
+    double forceY = apfObj.getForceY();
+    double forceX = apfObj.getForceX();
+    double magnitude = sqrt(pow(forceY,2) + pow(forceX,2));
+    double speedX = 0.0, speedY = 0.0;
 
-    if(magnitude > 2)
+    if(magnitude > vResponse)
     {
-        //normalize the velocities
-        speedX = speedX / magnitude;
-        speedY = speedY / magnitude;
+        speedX = vResponse * (forceX / magnitude);
+        speedY = vResponse * (forceY / magnitude);
     }
-    std::cout<<heading<<","<<speedY<<","<<speedX<<std::endl;
+    else {
+        speedX = forceX;
+        speedY = forceY;
+    }
+
     command_target::DynamicTarget newTarget;
     mace::pose::Cartesian_Velocity3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
     newVelocity.setXVelocity(speedY);
@@ -273,32 +309,32 @@ void ModulePathPlanningNASAPhase2::setupF3StaticMap()
     mace::maps::OccupiedResult* value;
 
     //construct the two horizontal portions
-    unsigned int xIndex = 0, yIndex = 0;
-    for(xIndex = 1; xIndex < staticMap->getSizeX() - 1; xIndex++)
-    {
-        value = staticMap->getCellByPosIndex(xIndex,yIndex);
-        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
-    }
-    yIndex = staticMap->getSizeY() - 1;
-    for(xIndex = 1; xIndex < staticMap->getSizeX() - 1; xIndex++)
-    {
-        value = staticMap->getCellByPosIndex(xIndex,yIndex);
-        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
-    }
+//    unsigned int xIndex = 0, yIndex = 0;
+//    for(xIndex = 1; xIndex < staticMap->getSizeX() - 1; xIndex++)
+//    {
+//        value = staticMap->getCellByPosIndex(xIndex,yIndex);
+//        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+//    }
+//    yIndex = staticMap->getSizeY() - 1;
+//    for(xIndex = 1; xIndex < staticMap->getSizeX() - 1; xIndex++)
+//    {
+//        value = staticMap->getCellByPosIndex(xIndex,yIndex);
+//        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+//    }
 
 //    //construct the two vertical portions
-    xIndex = 0;
-    for(yIndex = 0; yIndex < staticMap->getSizeY(); yIndex++)
-    {
-        value = staticMap->getCellByPosIndex(xIndex,yIndex);
-        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
-    }
-    xIndex = staticMap->getSizeX() - 1;
-    for(yIndex = 0; yIndex < staticMap->getSizeY(); yIndex++)
-    {
-        value = staticMap->getCellByPosIndex(xIndex,yIndex);
-        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
-    }
+//    xIndex = 0;
+//    for(yIndex = 0; yIndex < staticMap->getSizeY(); yIndex++)
+//    {
+//        value = staticMap->getCellByPosIndex(xIndex,yIndex);
+//        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+//    }
+//    xIndex = staticMap->getSizeX() - 1;
+//    for(yIndex = 0; yIndex < staticMap->getSizeY(); yIndex++)
+//    {
+//        value = staticMap->getCellByPosIndex(xIndex,yIndex);
+//        *value = mace::maps::OccupiedResult::ENVIRONMENT_BOUNDARY;
+//    }
 
     //establish boundary around pillar one
     value = staticMap->getCellByPos(15,0);
@@ -306,6 +342,22 @@ void ModulePathPlanningNASAPhase2::setupF3StaticMap()
 
     //establish boundary around pillar two
     value = staticMap->getCellByPos(-15,0);
+    *value = mace::maps::OccupiedResult::OCCUPIED;
+
+    //establish boundary around pillar two
+    value = staticMap->getCellByPos(-10,7);
+    *value = mace::maps::OccupiedResult::OCCUPIED;
+
+    //establish boundary around pillar two
+    value = staticMap->getCellByPos(10,7);
+    *value = mace::maps::OccupiedResult::OCCUPIED;
+
+    //establish boundary around pillar two
+    value = staticMap->getCellByPos(-2,9);
+    *value = mace::maps::OccupiedResult::OCCUPIED;
+
+    //establish boundary around pillar two
+    value = staticMap->getCellByPos(4,7);
     *value = mace::maps::OccupiedResult::OCCUPIED;
 }
 

@@ -105,6 +105,27 @@ public:
         return *this;
     }
 
+    /** Relational Operators */
+public:
+    //!
+    //! \brief operator ==
+    //! \param rhs
+    //! \return
+    //!
+    bool operator == (const GoalState &rhs) const
+    {
+        return false;
+    }
+
+    //!
+    //! \brief operator !=
+    //! \param rhs
+    //! \return
+    //!
+    bool operator != (const GoalState &rhs) {
+        return !(*this == rhs);
+    }
+
 private:
     State* goalState;
 };

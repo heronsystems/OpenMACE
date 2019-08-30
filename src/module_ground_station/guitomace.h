@@ -27,6 +27,8 @@
 
 #include "data_vehicle_sensors/components.h"
 
+#include "base/state_space/cartesian_2D_space.h"
+
 class GUItoMACE
 {
 public:
@@ -169,6 +171,10 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
+
+    mace::state_space::Cartesian2DSpacePtr goalSpace;
+    mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
+
 };
 
 #endif // GUITOMACE_H

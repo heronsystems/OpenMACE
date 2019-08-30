@@ -13,6 +13,12 @@ template<const CoordinateSystemTypes coordType, typename CFDATA, class DATA>
 class VelocityInterface: public Velocity
 {
 public:
+    VelocityInterface():
+        Velocity(), explicitFrame()
+    {
+
+    }
+
     VelocityInterface(const CFDATA &frame):
         Velocity(), explicitFrame(frame)
     {
@@ -29,13 +35,13 @@ public:
 
     Eigen::VectorXd getDataVector() const override
     {
-        return this->data;
+        return data;
     }
-    void updateDataVector(const Eigen::VectorXd &vecObj) const override
+
+    void updateDataVector(const Eigen::VectorXd &vecObj) override
     {
-
+        data = vecObj.head(dimension);
     }
-
 
 public:
     Velocity* getVelocityClone() const override
@@ -63,6 +69,29 @@ public:
     void setExplicitCoordinateFrame(const CFDATA &frame)
     {
         explicitFrame = frame;
+    }
+
+public:
+    bool operator == (const VelocityInterface &rhs) const
+    {
+        if(!Velocity::operator ==(rhs))
+            return false;
+
+        if(explicitType != rhs.explicitType){
+            return false;
+        }
+        if(explicitFrame != rhs.explicitFrame){
+            return false;
+        }
+        if(data != rhs.data){
+            return false;
+        }
+        return true;
+    }
+
+    bool operator !=(const Velocity &rhs) const
+    {
+        return !(*this == rhs);
     }
 
 private:

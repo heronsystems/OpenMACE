@@ -2,9 +2,16 @@
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
-    m_sendPort(1234)
+    m_sendPort(1234),
+    goalSpace(nullptr),
+    m_goalSampler(nullptr)
 {
     m_parent = ptrRef;
+    goalSpace = std::make_shared<mace::state_space::Cartesian2DSpace>();
+    mace::state_space::Cartesian2DSpaceBounds bounds(-20,20,-10,10);
+    goalSpace->setBounds(bounds);
+
+    m_goalSampler = std::make_shared<mace::state_space::Cartesian2DSpace_Sampler>(goalSpace);
 }
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
@@ -315,7 +322,7 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     mace::pose::CartesianPosition_3D currentPositionTarget;
     currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_NED);
     currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
-    currentPositionTarget.updatePosition(10,0,-20);
+    currentPositionTarget.updatePosition(-10,0,-20);
     newTarget.setPosition(&currentPositionTarget);
 //    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
 //    currentVelocityTarget.setXVelocity(5.0);
@@ -336,25 +343,13 @@ void GUItoMACE::testFunction1(const int &vehicleID)
 
 void GUItoMACE::testFunction2(const int &vehicleID)
 {
-    command_item::Action_DynamicTarget newCommand;
-    newCommand.setTargetSystem(vehicleID);
-    newCommand.setOriginatingSystem(255);
-    command_target::DynamicTarget newTarget;
-
-    mace::pose::GeodeticPosition_3D newPosition(-35.3616686, 149.1638553, 15);
-    newPosition.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT);
-    newPosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
-    newTarget.setPosition(&newPosition);
-
-    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
-    currentVelocityTarget.setXVelocity(-2.0);
-    currentVelocityTarget.setYVelocity(-2.0);
-    currentVelocityTarget.setZVelocity(1.0);
-    newTarget.setVelocity(&currentVelocityTarget);
-
-    newCommand.setDynamicTarget(newTarget);
+    mace::state_space::GoalState goal;
+    mace::state_space::State* newState = goalSpace->getNewState();
+    m_goalSampler->sampleUniform(newState);
+    goal.setState(newState);
+    goalSpace->removeState(newState);
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
+        ptr->Event_ProcessGoalState(m_parent, goal);
     });
 }
 

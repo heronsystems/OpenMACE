@@ -1,10 +1,13 @@
 % Clear any previously running ROS nodes:
-clear
-rosshutdown
+clc
+close all
+clear all
+figure()
+hold on
 
 % Initialize ROS:
 setenv('ROS_MASTER_URI','http://192.168.1.20:11311') % ROS Core location
-setenv('ROS_IP','192.168.1.216') % MATLAB location
+setenv('ROS_IP','192.168.1.166') % MATLAB location
 rosinit
 
 % List ROS topics:
@@ -93,11 +96,11 @@ waypointResponse = false;
 landResponse = false;
 
 
-disp('Call set datum command');
-datumResponse = call(datumClient, datumRequest, 'Timeout', 5);
+%disp('Call set datum command');
+%datumResponse = call(datumClient, datumRequest, 'Timeout', 5);
 
 % For this test, just wait 5 seconds before issuing arm command:
-pause(5);
+%pause(5);
 
 %disp('Call arm command');
 %armResponse = call(armClient, armRequest, 'Timeout', 5);
@@ -111,7 +114,7 @@ pause(5);
 % For this test, just wait 10 seconds before issuing waypoint command (giving vehicle time to reach altitude):
 %pause(10);
 
-disp('Call dynamic target command');
+%disp('Call dynamic target command');
 %waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
 %waypointResponse = call(dynamicTargetClient, dynamicTargetRequest, 'Timeout', 5);
 % For this test, just wait 20 seconds before issuing land command (giving vehicle time to reach waypoint):
