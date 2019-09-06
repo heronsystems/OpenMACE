@@ -1,3 +1,6 @@
+import getMuiTheme from "material-ui/styles/getMuiTheme"
+const lightMuiTheme = getMuiTheme()
+
 export const styles = {
     avatar: {
         borderRadius: 30 + "%"
@@ -104,5 +107,11 @@ export const styles = {
     },
     cardActions: {
         textAlign: "center" as "center"
+    },
+    selectField: {
+        position: "relative" as "relative",
+        right: 15,
+        width: "140px",
+        backgroundColor: lightMuiTheme.palette.canvasColor
     }
 };
