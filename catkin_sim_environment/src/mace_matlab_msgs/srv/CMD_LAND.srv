@@ -1,0 +1,8 @@
+# CMD_LAND
+# Command drone to land at current position
+
+time    timestamp
+uint8   vehicleID
+uint8   commandID
+---
+bool    success
