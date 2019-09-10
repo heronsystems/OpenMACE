@@ -19,7 +19,7 @@
 
 #include <ctime>
 
-//#include <mace_matlab/UPDATE_POSE.h>
+//#include <mace_matlab_msgs/UPDATE_POSE.h>
 
 
 //!

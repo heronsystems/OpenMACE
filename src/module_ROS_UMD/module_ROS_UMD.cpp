@@ -20,13 +20,13 @@
 #include <ctime>
 
 #ifdef ROS_EXISTS
-#include <mace_matlab/UPDATE_ATTITUDE.h>
-#include <mace_matlab/UPDATE_BATTERY.h>
-#include <mace_matlab/UPDATE_CMD_STATUS.h>
-#include <mace_matlab/UPDATE_GPS.h>
-#include <mace_matlab/UPDATE_HEARTBEAT.h>
-#include <mace_matlab/UPDATE_POSITION.h>
-#include <mace_matlab/UPDATE_VEHICLE_TARGET.h>
+#include <mace_matlab_msgs/UPDATE_ATTITUDE.h>
+#include <mace_matlab_msgs/UPDATE_BATTERY.h>
+#include <mace_matlab_msgs/UPDATE_CMD_STATUS.h>
+#include <mace_matlab_msgs/UPDATE_GPS.h>
+#include <mace_matlab_msgs/UPDATE_HEARTBEAT.h>
+#include <mace_matlab_msgs/UPDATE_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_VEHICLE_TARGET.h>
 #endif
 
 //!
