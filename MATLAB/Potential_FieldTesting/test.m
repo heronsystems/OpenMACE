@@ -2,6 +2,8 @@ clc
 clear all
 close all
 
+
+%%
 for force = 0:1:10
     rho = -1 * (force/10 * (1-0.2)-1);
     for i = 1:1:361

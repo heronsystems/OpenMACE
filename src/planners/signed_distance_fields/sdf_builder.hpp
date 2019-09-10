@@ -2,11 +2,19 @@
 #define SDF_BUILDER_HPP
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+#include <zlib.h>
+
 #include <Eigen/Geometry>
 
 #include "sdf.hpp"
+#include "sdf_generation.hpp"
 
 #ifdef ROS_EXISTS
 #include "sdf_tools/SDF.h"
@@ -15,6 +23,7 @@
 #include <urdf_model/model.h>
 #include <moveit/robot_model_loader/robot_model_loader.h>
 #include <moveit/planning_scene/planning_scene.h>
+#include <octomap_msgs/conversions.h>
 #endif
 
 namespace sdf_tools

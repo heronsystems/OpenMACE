@@ -45,7 +45,8 @@
 /// \todo Improve coord2idx function in order to just pass n coordinates and not an array.
 /// \todo Create d_ with 1 and d_[1] size of X, d_[2] size of Y, etc, to generalize dimensions.
 
-template <class T, size_t ndims> class nDGridMap {
+template <class T, size_t ndims>
+class nDGridMap {
 
     friend std::ostream& operator <<
     (std::ostream & os, nDGridMap<T,ndims> & g) {

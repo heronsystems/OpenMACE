@@ -1,6 +1,7 @@
 ﻿#ifndef EIGEN_HELPERS_HPP
 #define EIGEN_HELPERS_HPP
 
+#include <Eigen/Core>
 #include <Eigen/StdVector>
 #include <Eigen/Geometry>
 #include <Eigen/Eigenvalues>

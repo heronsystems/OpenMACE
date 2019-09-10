@@ -1,25 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <stdexcept>
-#include <zlib.h>
-#include <list>
-#include <unordered_map>
-
-#ifdef ROS_EXISTS
-#include <ros/ros.h>
-#include <sdf_tools/CollisionMap.h>
-#endif
-
-#include "arc_utilities/eigen_helpers_conversions.hpp"
-#include "arc_utilities/zlib_helpers.hpp"
-
 #include "collision_map.hpp"
-#include "topology_computation.hpp"
 
 using namespace sdf_tools;
 

@@ -10,8 +10,7 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -std=c++11
-DEFINES += EIGEN_DONT_VECTORIZE
-DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+QMAKE_CXXFLAGS += -O0
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unknown-pragmas
 
@@ -43,7 +42,9 @@ LIBS += -lX11
 }
 
 win32 {
-INCLUDEPATH += $$PWD/../../tools/boost/boost_install/include
+INCLUDEPATH += $$(MACE_ROOT)/tools/boost_local
+LIBS += -L $$(MACE_ROOT)/tools/boost_local
+LIBS += -lgdi32
 }
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../maps/release/ -lmaps

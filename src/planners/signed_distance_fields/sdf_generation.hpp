@@ -10,9 +10,7 @@
 #include <stdexcept>
 #include <Eigen/Geometry>
 
-#include "arc_utilities/eigen_helpers.hpp"
 #include "arc_utilities/voxel_grid.hpp"
-#include "arc_utilities/pretty_print.hpp"
 
 #include "sdf.hpp"
 
@@ -32,12 +30,12 @@ struct bucket_cell
 
 typedef VoxelGrid::VoxelGrid<bucket_cell> DistanceField;
 
-inline int GetDirectionNumber(const int dx, const int dy, const int dz)
+static int GetDirectionNumber(const int dx, const int dy, const int dz)
 {
     return ((dx + 1) * 9) + ((dy + 1) * 3) + (dz + 1);
 }
 
-inline std::vector<std::vector<std::vector<std::vector<int>>>> MakeNeighborhoods()
+static std::vector<std::vector<std::vector<std::vector<int>>>> MakeNeighborhoods()
 {
     std::vector<std::vector<std::vector<std::vector<int>>>> neighborhoods;
     neighborhoods.resize(2);
@@ -90,7 +88,7 @@ inline std::vector<std::vector<std::vector<std::vector<int>>>> MakeNeighborhoods
     return neighborhoods;
 }
 
-inline double ComputeDistanceSquared(const int32_t x1, const int32_t y1, const int32_t z1, const int32_t x2, const int32_t y2, const int32_t z2)
+static double ComputeDistanceSquared(const int32_t x1, const int32_t y1, const int32_t z1, const int32_t x2, const int32_t y2, const int32_t z2)
 {
     int32_t dx = x1 - x2;
     int32_t dy = y1 - y2;
@@ -98,12 +96,12 @@ inline double ComputeDistanceSquared(const int32_t x1, const int32_t y1, const i
     return double((dx * dx) + (dy * dy) + (dz * dz));
 }
 
-inline DistanceField BuildDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
-                                        const double grid_resolution,
-                                        const int64_t grid_num_x_cells,
-                                        const int64_t grid_num_y_cells,
-                                        const int64_t grid_num_z_cells,
-                                        const std::vector<VoxelGrid::GRID_INDEX>& points)
+static DistanceField BuildDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
+                                 const double grid_resolution,
+                                 const int64_t grid_num_x_cells,
+                                 const int64_t grid_num_y_cells,
+                                 const int64_t grid_num_z_cells,
+                                 const std::vector<VoxelGrid::GRID_INDEX>& points)
 {
     // Make the DistanceField container
     bucket_cell default_cell;
@@ -213,14 +211,14 @@ inline DistanceField BuildDistanceField(const Eigen::Isometry3d& grid_origin_tra
 }
 
 template<typename T>
-inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
-                                                                                                       const double grid_resolution,
-                                                                                                       const int64_t grid_num_x_cells,
-                                                                                                       const int64_t grid_num_y_cells,
-                                                                                                       const int64_t grid_num_z_cells,
-                                                                                                       const std::function<bool(const VoxelGrid::GRID_INDEX&)>& is_filled_fn,
-                                                                                                       const float oob_value,
-                                                                                                       const std::string& frame)
+static std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
+                                                                                                const double grid_resolution,
+                                                                                                const int64_t grid_num_x_cells,
+                                                                                                const int64_t grid_num_y_cells,
+                                                                                                const int64_t grid_num_z_cells,
+                                                                                                const std::function<bool(const VoxelGrid::GRID_INDEX&)>& is_filled_fn,
+                                                                                                const float oob_value,
+                                                                                                const std::string& frame)
 {
     std::vector<VoxelGrid::GRID_INDEX> filled;
     std::vector<VoxelGrid::GRID_INDEX> free;
@@ -277,7 +275,7 @@ inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> Extr
 }
 
 template<typename T, typename BackingStore=std::vector<T>>
-inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const VoxelGrid::GRID_INDEX&)>& is_filled_fn, const float oob_value, const std::string& frame, const bool add_virtual_border)
+static std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const VoxelGrid::GRID_INDEX&)>& is_filled_fn, const float oob_value, const std::string& frame, const bool add_virtual_border)
 {
     (void)(add_virtual_border);
     const Eigen::Vector3d cell_sizes = grid.GetCellSizes();
@@ -426,7 +424,7 @@ inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> Extr
 }
 
 template<typename T, typename BackingStore=std::vector<T>>
-inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const T&)>& is_filled_fn, const float oob_value, const std::string& frame)
+static std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const T&)>& is_filled_fn, const float oob_value, const std::string& frame)
 {
     const std::function<bool(const VoxelGrid::GRID_INDEX&)> real_is_filled_fn = [&] (const VoxelGrid::GRID_INDEX& index)
     {

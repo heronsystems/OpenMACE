@@ -2,21 +2,34 @@
 #define COLLISION_MAP_HPP
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+#include <zlib.h>
+#include <list>
+#include <unordered_map>
+
 #include <Eigen/Geometry>
+
+#ifdef ROS_EXISTS
+#include <ros/ros.h>
+#include <sdf_tools/CollisionMap.h>
+#include <visualization_msgs/MarkerArray.h>
+#endif
 
 #include "arc_utilities/arc_helpers.hpp"
 #include "arc_utilities/serialization.hpp"
 #include "arc_utilities/voxel_grid.hpp"
+#include "arc_utilities/zlib_helpers.hpp"
+#include "arc_utilities/eigen_helpers_conversions.hpp"
 
 #include "sdf.hpp"
 #include "sdf_generation.hpp"
-
-#ifdef ROS_EXISTS
-#include <visualization_msgs/MarkerArray.h>
-#include <sdf_tools/CollisionMap.h>
-#endif
+#include "topology_computation.hpp"
 
 #define ENABLE_UNORDERED_MAP_SIZE_HINTS
 
@@ -41,7 +54,7 @@ class CollisionMapGrid : public VoxelGrid::VoxelGrid<COLLISION_CELL>
 protected:
 
 #ifdef ROS_EXISTS
-    inline static std_msgs::ColorRGBA GenerateComponentColor(
+    static std_msgs::ColorRGBA GenerateComponentColor(
             const uint32_t component, const float alpha=1.0f)
     {
         return arc_helpers::GenerateUniqueColor<std_msgs::ColorRGBA>(
@@ -49,9 +62,9 @@ protected:
     }
 #endif
 
-    inline bool IsSurfaceIndex(const int64_t x_index,
-                               const int64_t y_index,
-                               const int64_t z_index) const
+    bool IsSurfaceIndex(const int64_t x_index,
+                        const int64_t y_index,
+                        const int64_t z_index) const
     {
         // First, we make sure that indices are within bounds
         // Out of bounds indices are NOT surface cells
@@ -98,9 +111,9 @@ protected:
         return false;
     }
 
-    inline bool IsConnectedComponentSurfaceIndex(const int64_t x_index,
-                                                 const int64_t y_index,
-                                                 const int64_t z_index) const
+    bool IsConnectedComponentSurfaceIndex(const int64_t x_index,
+                                          const int64_t y_index,
+                                          const int64_t z_index) const
     {
         // First, we make sure that indices are within bounds
         // Out of bounds indices are NOT surface cells
@@ -165,29 +178,26 @@ protected:
     bool components_valid_;
 
 public:
-
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-    inline CollisionMapGrid(const double resolution,
-                            const int64_t x_cells,
-                            const int64_t y_cells,
-                            const int64_t z_cells,
-                            const COLLISION_CELL& default_value,
-                            const COLLISION_CELL& OOB_value)
+    CollisionMapGrid(const double resolution,
+                     const int64_t x_cells,
+                     const int64_t y_cells,
+                     const int64_t z_cells,
+                     const COLLISION_CELL& default_value,
+                     const COLLISION_CELL& OOB_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(resolution, x_cells, y_cells,
                                                z_cells, default_value, OOB_value),
           number_of_components_(0u),
           frame_(""),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
-                            const std::string& frame,
-                            const double resolution,
-                            const double x_size,
-                            const double y_size,
-                            const double z_size,
-                            const COLLISION_CELL& default_value,
-                            const COLLISION_CELL& OOB_value)
+    CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
+                     const std::string& frame,
+                     const double resolution,
+                     const double x_size,
+                     const double y_size,
+                     const double z_size,
+                     const COLLISION_CELL& default_value,
+                     const COLLISION_CELL& OOB_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(origin_transform, resolution,
                                                x_size, y_size, z_size,
                                                default_value, OOB_value),
@@ -195,26 +205,26 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const std::string& frame,
-                            const double resolution,
-                            const double x_size,
-                            const double y_size,
-                            const double z_size,
-                            const COLLISION_CELL& default_value,
-                            const COLLISION_CELL& OOB_value)
+    CollisionMapGrid(const std::string& frame,
+                     const double resolution,
+                     const double x_size,
+                     const double y_size,
+                     const double z_size,
+                     const COLLISION_CELL& default_value,
+                     const COLLISION_CELL& OOB_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(resolution, x_size, y_size, z_size,
                                                default_value, OOB_value),
           number_of_components_(0u),
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
-                            const std::string& frame,
-                            const double resolution,
-                            const double x_size,
-                            const double y_size,
-                            const double z_size,
-                            const COLLISION_CELL& oob_default_value)
+    CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
+                     const std::string& frame,
+                     const double resolution,
+                     const double x_size,
+                     const double y_size,
+                     const double z_size,
+                     const COLLISION_CELL& oob_default_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(origin_transform, resolution,
                                                x_size, y_size, z_size,
                                                oob_default_value),
@@ -222,26 +232,26 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const std::string& frame,
-                            const double resolution,
-                            const double x_size,
-                            const double y_size,
-                            const double z_size,
-                            const COLLISION_CELL& oob_default_value)
+    CollisionMapGrid(const std::string& frame,
+                     const double resolution,
+                     const double x_size,
+                     const double y_size,
+                     const double z_size,
+                     const COLLISION_CELL& oob_default_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(resolution, x_size, y_size, z_size,
                                                oob_default_value),
           number_of_components_(0u),
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
-                            const std::string& frame,
-                            const double resolution,
-                            const int64_t x_cells,
-                            const int64_t y_cells,
-                            const int64_t z_cells,
-                            const COLLISION_CELL& default_value,
-                            const COLLISION_CELL& OOB_value)
+    CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
+                     const std::string& frame,
+                     const double resolution,
+                     const int64_t x_cells,
+                     const int64_t y_cells,
+                     const int64_t z_cells,
+                     const COLLISION_CELL& default_value,
+                     const COLLISION_CELL& OOB_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(origin_transform, resolution,
                                                x_cells, y_cells, z_cells,
                                                default_value, OOB_value),
@@ -249,26 +259,26 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const std::string& frame,
-                            const double resolution,
-                            const int64_t x_cells,
-                            const int64_t y_cells,
-                            const int64_t z_cells,
-                            const COLLISION_CELL& default_value,
-                            const COLLISION_CELL& OOB_value)
+    CollisionMapGrid(const std::string& frame,
+                     const double resolution,
+                     const int64_t x_cells,
+                     const int64_t y_cells,
+                     const int64_t z_cells,
+                     const COLLISION_CELL& default_value,
+                     const COLLISION_CELL& OOB_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(resolution, x_cells, y_cells,
                                                z_cells, default_value, OOB_value),
           number_of_components_(0u),
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
-                            const std::string& frame,
-                            const double resolution,
-                            const int64_t x_cells,
-                            const int64_t y_cells,
-                            const int64_t z_cells,
-                            const COLLISION_CELL& oob_default_value)
+    CollisionMapGrid(const Eigen::Isometry3d& origin_transform,
+                     const std::string& frame,
+                     const double resolution,
+                     const int64_t x_cells,
+                     const int64_t y_cells,
+                     const int64_t z_cells,
+                     const COLLISION_CELL& oob_default_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(origin_transform, resolution,
                                                x_cells, y_cells, z_cells,
                                                oob_default_value),
@@ -276,19 +286,19 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid(const std::string& frame,
-                            const double resolution,
-                            const int64_t x_cells,
-                            const int64_t y_cells,
-                            const int64_t z_cells,
-                            const COLLISION_CELL& oob_default_value)
+    CollisionMapGrid(const std::string& frame,
+                     const double resolution,
+                     const int64_t x_cells,
+                     const int64_t y_cells,
+                     const int64_t z_cells,
+                     const COLLISION_CELL& oob_default_value)
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(resolution, x_cells, y_cells,
                                                z_cells, oob_default_value),
           number_of_components_(0u),
           frame_(frame),
           components_valid_(false) {}
 
-    inline CollisionMapGrid()
+    CollisionMapGrid()
         : VoxelGrid::VoxelGrid<COLLISION_CELL>(),
           number_of_components_(0), frame_(""), components_valid_(false) {}
 
@@ -298,7 +308,7 @@ public:
                     static_cast<const CollisionMapGrid&>(*this));
     }
 
-    inline bool AreComponentsValid() const
+    bool AreComponentsValid() const
     {
         return components_valid_;
     }
@@ -507,24 +517,24 @@ public:
         }
     }
 
-    inline double GetResolution() const { return GetCellSizes().x(); }
+    double GetResolution() const { return GetCellSizes().x(); }
 
-    inline std::string GetFrame() const
+    std::string GetFrame() const
     {
         return frame_;
     }
 
-    inline void SetFrame(const std::string& new_frame)
+    void SetFrame(const std::string& new_frame)
     {
         frame_ = new_frame;
     }
 
-    inline std::pair<uint32_t, bool> GetNumConnectedComponents() const
+    std::pair<uint32_t, bool> GetNumConnectedComponents() const
     {
         return std::pair<uint32_t, bool>(number_of_components_, components_valid_);
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner3d(
+    std::pair<bool, bool> CheckIfCandidateCorner3d(
             const Eigen::Vector3d& location) const
     {
         const GRID_INDEX index = LocationToGridIndex3d(location);
@@ -538,7 +548,7 @@ public:
         }
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner4d(
+    std::pair<bool, bool> CheckIfCandidateCorner4d(
             const Eigen::Vector4d& location) const
     {
         const GRID_INDEX index = LocationToGridIndex4d(location);
@@ -552,20 +562,20 @@ public:
         }
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner(
+    std::pair<bool, bool> CheckIfCandidateCorner(
             const double x, const double y, const double z) const
     {
         const Eigen::Vector4d location(x, y, z, 1.0);
         return CheckIfCandidateCorner4d(location);
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner(
+    std::pair<bool, bool> CheckIfCandidateCorner(
             const GRID_INDEX& index) const
     {
         return CheckIfCandidateCorner(index.x, index.y, index.z);
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner(
+    std::pair<bool, bool> CheckIfCandidateCorner(
             const int64_t x_index, const int64_t y_index, const int64_t z_index) const
     {
         const std::pair<const COLLISION_CELL&, bool> current_cell
@@ -732,7 +742,7 @@ public:
                     *this, is_filled_fn, oob_value, GetFrame(), add_virtual_border);
     }
 
-    inline sdf_generation::DistanceField ExtractDistanceField(const float oob_value) const
+    sdf_generation::DistanceField ExtractDistanceField(const float oob_value) const
     {
         // Make the SDF
         std::vector<GRID_INDEX> filled;

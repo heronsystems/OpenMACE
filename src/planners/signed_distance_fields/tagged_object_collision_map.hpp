@@ -1,25 +1,38 @@
+#ifndef TAGGED_OBJECT_COLLISION_MAP_HPP
+#define TAGGED_OBJECT_COLLISION_MAP_HPP
+
 #include <stdlib.h>
+#include <stdio.h>
 #include <vector>
 #include <string>
-#include <Eigen/Geometry>
-#include <Eigen/Sparse>
-
-#ifdef ROS_EXISTS
-#include <visualization_msgs/Marker.h>
-#include <sdf_tools/TaggedObjectCollisionMap.h>
-#endif
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <stdexcept>
+#include <zlib.h>
+#include <list>
+#include <unordered_map>
 
 #include "arc_utilities/voxel_grid.hpp"
 #include "arc_utilities/arc_helpers.hpp"
 #include "arc_utilities/eigen_helpers.hpp"
 #include "arc_utilities/serialization.hpp"
+#include "arc_utilities/zlib_helpers.hpp"
+#include "arc_utilities/eigen_helpers.hpp"
+#include "arc_utilities/eigen_helpers_conversions.hpp"
+#include "arc_utilities/pretty_print.hpp"
+#include "arc_utilities/simple_kmeans_clustering.hpp"
 
 #include "sdf.hpp"
 #include "sdf_generation.hpp"
 #include "topology_computation.hpp"
 
-#ifndef TAGGED_OBJECT_COLLISION_MAP_HPP
-#define TAGGED_OBJECT_COLLISION_MAP_HPP
+#ifdef ROS_EXISTS
+#include <ros/ros.h>
+#include <visualization_msgs/Marker.h>
+#include <sdf_tools/TaggedObjectCollisionMap.h>
+#endif
+
 
 #define ENABLE_UNORDERED_MAP_SIZE_HINTS
 
@@ -62,9 +75,9 @@ protected:
     }
 #endif
 
-    inline bool IsSurfaceIndex(const int64_t x_index,
-                               const int64_t y_index,
-                               const int64_t z_index) const
+    bool IsSurfaceIndex(const int64_t x_index,
+                        const int64_t y_index,
+                        const int64_t z_index) const
     {
         // First, we make sure that indices are within bounds
         // Out of bounds indices are NOT surface cells
@@ -111,9 +124,9 @@ protected:
         return false;
     }
 
-    inline bool IsConnectedComponentSurfaceIndex(const int64_t x_index,
-                                                 const int64_t y_index,
-                                                 const int64_t z_index) const
+    bool IsConnectedComponentSurfaceIndex(const int64_t x_index,
+                                          const int64_t y_index,
+                                          const int64_t z_index) const
     {
         // First, we make sure that indices are within bounds
         // Out of bounds indices are NOT surface cells
@@ -204,7 +217,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid(
+    TaggedObjectCollisionMapGrid(
             const std::string& frame,
             const double resolution,
             const double x_size,
@@ -219,7 +232,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid(
+    TaggedObjectCollisionMapGrid(
             const Eigen::Isometry3d& origin_transform,
             const std::string& frame,
             const double resolution,
@@ -236,7 +249,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid(
+    TaggedObjectCollisionMapGrid(
             const std::string& frame,
             const double resolution,
             const double x_size,
@@ -250,7 +263,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid(
+    TaggedObjectCollisionMapGrid(
             const Eigen::Isometry3d& origin_transform,
             const std::string& frame,
             const double resolution,
@@ -268,7 +281,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid(
+    TaggedObjectCollisionMapGrid(
             const std::string& frame,
             const double resolution,
             const int64_t x_cells,
@@ -283,7 +296,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid(
+    TaggedObjectCollisionMapGrid(
             const Eigen::Isometry3d& origin_transform,
             const std::string& frame,
             const double resolution,
@@ -300,7 +313,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid(
+    TaggedObjectCollisionMapGrid(
             const std::string& frame,
             const double resolution,
             const int64_t x_cells,
@@ -314,7 +327,7 @@ public:
           frame_(frame),
           components_valid_(false) {}
 
-    inline TaggedObjectCollisionMapGrid()
+    TaggedObjectCollisionMapGrid()
         : VoxelGrid::VoxelGrid<TAGGED_OBJECT_COLLISION_CELL>(),
           number_of_components_(0u),
           number_of_convex_segments_(0u),
@@ -541,29 +554,29 @@ public:
         }
     }
 
-    inline double GetResolution() const { return GetCellSizes().x(); }
+    double GetResolution() const { return GetCellSizes().x(); }
 
-    inline std::string GetFrame() const
+    std::string GetFrame() const
     {
         return frame_;
     }
 
-    inline void SetFrame(const std::string& new_frame)
+    void SetFrame(const std::string& new_frame)
     {
         frame_ = new_frame;
     }
 
-    inline std::pair<uint32_t, bool> GetNumConnectedComponents() const
+    std::pair<uint32_t, bool> GetNumConnectedComponents() const
     {
         return std::pair<uint32_t, bool>(number_of_components_, components_valid_);
     }
 
-    inline std::pair<uint32_t, bool> GetNumConvexSegments() const
+    std::pair<uint32_t, bool> GetNumConvexSegments() const
     {
         return std::pair<uint32_t, bool>(number_of_convex_segments_, convex_segments_valid_);
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner3d(
+    std::pair<bool, bool> CheckIfCandidateCorner3d(
             const Eigen::Vector3d& location) const
     {
         const GRID_INDEX index = LocationToGridIndex3d(location);
@@ -577,7 +590,7 @@ public:
         }
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner4d(
+    std::pair<bool, bool> CheckIfCandidateCorner4d(
             const Eigen::Vector4d& location) const
     {
         const GRID_INDEX index = LocationToGridIndex4d(location);
@@ -591,20 +604,20 @@ public:
         }
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner(
+    std::pair<bool, bool> CheckIfCandidateCorner(
             const double x, const double y, const double z) const
     {
         const Eigen::Vector4d location(x, y, z, 1.0);
         return CheckIfCandidateCorner4d(location);
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner(
+    std::pair<bool, bool> CheckIfCandidateCorner(
             const GRID_INDEX& index) const
     {
         return CheckIfCandidateCorner(index.x, index.y, index.z);
     }
 
-    inline std::pair<bool, bool> CheckIfCandidateCorner(
+    std::pair<bool, bool> CheckIfCandidateCorner(
             const int64_t x_index, const int64_t y_index, const int64_t z_index) const
     {
         const std::pair<const TAGGED_OBJECT_COLLISION_CELL&, bool> current_cell

@@ -2,21 +2,29 @@
 #define SDF_HPP
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
 #include <stdexcept>
+#include <unordered_map>
 #include <Eigen/Geometry>
 #include <Eigen_Unsupported/AutoDiff>
 
 #include "arc_utilities/eigen_helpers.hpp"
 #include "arc_utilities/serialization.hpp"
 #include "arc_utilities/voxel_grid.hpp"
-#include "arc_utilities/pretty_print.hpp"
+#include "arc_utilities/eigen_helpers_conversions.hpp"
+#include "arc_utilities/zlib_helpers.hpp"
 
 #ifdef ROS_EXISTS
+#include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
 #include <sdf_tools/SDF.h>
 #endif
+
 
 namespace sdf_tools
 {
@@ -30,59 +38,56 @@ protected:
     bool locked_;
 
 public:
-
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
     typedef std::shared_ptr<SignedDistanceField> Ptr;
     typedef std::shared_ptr<const SignedDistanceField> ConstPtr;
 
-    inline SignedDistanceField(const std::string& frame,
-                               double resolution,
-                               double x_size,
-                               double y_size,
-                               double z_size,
-                               float OOB_value)
+    SignedDistanceField(const std::string& frame,
+                        double resolution,
+                        double x_size,
+                        double y_size,
+                        double z_size,
+                        float OOB_value)
         : VoxelGrid::VoxelGrid<float>(resolution,
                                       x_size, y_size, z_size,
                                       OOB_value),
           frame_(frame), locked_(false) {}
 
-    inline SignedDistanceField(const Eigen::Isometry3d& origin_transform,
-                               const std::string& frame,
-                               double resolution,
-                               double x_size,
-                               double y_size,
-                               double z_size,
-                               float OOB_value)
+    SignedDistanceField(const Eigen::Isometry3d& origin_transform,
+                        const std::string& frame,
+                        double resolution,
+                        double x_size,
+                        double y_size,
+                        double z_size,
+                        float OOB_value)
         : VoxelGrid::VoxelGrid<float>(origin_transform, resolution,
                                       x_size, y_size, z_size,
                                       OOB_value),
           frame_(frame), locked_(false) {}
 
-    inline SignedDistanceField(const std::string& frame,
-                               double resolution,
-                               int64_t x_cells,
-                               int64_t y_cells,
-                               int64_t z_cells,
-                               float OOB_value)
+    SignedDistanceField(const std::string& frame,
+                        double resolution,
+                        int64_t x_cells,
+                        int64_t y_cells,
+                        int64_t z_cells,
+                        float OOB_value)
         : VoxelGrid::VoxelGrid<float>(resolution,
                                       x_cells, y_cells, z_cells,
                                       OOB_value),
           frame_(frame), locked_(false) {}
 
-    inline SignedDistanceField(const Eigen::Isometry3d& origin_transform,
-                               const std::string& frame,
-                               double resolution,
-                               int64_t x_cells,
-                               int64_t y_cells,
-                               int64_t z_cells,
-                               float OOB_value)
+    SignedDistanceField(const Eigen::Isometry3d& origin_transform,
+                        const std::string& frame,
+                        double resolution,
+                        int64_t x_cells,
+                        int64_t y_cells,
+                        int64_t z_cells,
+                        float OOB_value)
         : VoxelGrid::VoxelGrid<float>(origin_transform, resolution,
                                       x_cells, y_cells, z_cells,
                                       OOB_value),
           frame_(frame), locked_(false) {}
 
-    inline SignedDistanceField()
+    SignedDistanceField()
         : VoxelGrid::VoxelGrid<float>(), frame_(""), locked_(false) {}
 
     virtual VoxelGrid<float>* Clone() const
@@ -95,17 +100,17 @@ public:
     // Misc data access
     ////////////////////////////////////////////////////////////////////////////
 
-    inline double GetResolution() const
+    double GetResolution() const
     {
         return GetCellSizes().x();
     }
 
-    inline std::string GetFrame() const
+    std::string GetFrame() const
     {
         return frame_;
     }
 
-    inline void SetFrame(const std::string& new_frame)
+    void SetFrame(const std::string& new_frame)
     {
         frame_ = new_frame;
     }
@@ -114,17 +119,17 @@ public:
     // Access/mutability protection functions
     ////////////////////////////////////////////////////////////////////////////
 
-    inline bool IsLocked() const
+    bool IsLocked() const
     {
         return locked_;
     }
 
-    inline void Lock()
+    void Lock()
     {
         locked_ = true;
     }
 
-    inline void Unlock()
+    void Unlock()
     {
         locked_ = false;
     }
@@ -343,11 +348,11 @@ public:
 
     /** the return vector is a flat array, which will be reshape to be
    * X/Y/Z/gradient when saved as numpy **/
-    inline VoxelGrid<std::vector<double>> GetFullGradient(const GradientFunction& gradient_function,
-                                                          const bool enable_edge_gradients = false) const
+    VoxelGrid<std::vector<double>> GetFullGradient(const GradientFunction& gradient_function,
+                                                   const bool enable_edge_gradients = false) const
     {
         VoxelGrid<std::vector<double>> gradient_grid(origin_transform_, GetResolution(), GetNumXCells(), GetNumYCells(),
-                    GetNumZCells(), std::vector<double>(3, oob_value_));
+                                                     GetNumZCells(), std::vector<double>(3, oob_value_));
 
         //Ken changed the lines and variable types in here
         for (int64_t x_idx = 0; x_idx < GetNumXCells(); ++x_idx)
@@ -365,14 +370,14 @@ public:
     }
 
 
-    inline std::vector<double> GetGradient(
+    std::vector<double> GetGradient(
             const double x, const double y, const double z,
             const bool enable_edge_gradients = false) const
     {
         return GetGradient4d(Eigen::Vector4d(x, y, z, 1.0), enable_edge_gradients);
     }
 
-    inline std::vector<double> GetGradient3d(
+    std::vector<double> GetGradient3d(
             const Eigen::Vector3d& location,
             const bool enable_edge_gradients = false) const
     {
@@ -387,7 +392,7 @@ public:
         }
     }
 
-    inline std::vector<double> GetGradient4d(
+    std::vector<double> GetGradient4d(
             const Eigen::Vector4d& location,
             const bool enable_edge_gradients = false) const
     {
@@ -402,14 +407,14 @@ public:
         }
     }
 
-    inline std::vector<double> GetGradient(
+    std::vector<double> GetGradient(
             const GRID_INDEX& index,
             const bool enable_edge_gradients = false) const
     {
         return GetGradient(index.x, index.y, index.z, enable_edge_gradients);
     }
 
-    inline std::vector<double> GetGradient(
+    std::vector<double> GetGradient(
             const int64_t x_index, const int64_t y_index, const int64_t z_index,
             const bool enable_edge_gradients = false) const
     {
@@ -436,7 +441,7 @@ public:
         }
     }
 
-    inline std::vector<double> GetGridAlignedGradient(
+    std::vector<double> GetGridAlignedGradient(
             const int64_t x_index, const int64_t y_index, const int64_t z_index,
             const bool enable_edge_gradients = false) const
     {
@@ -532,7 +537,7 @@ public:
         }
     }
 
-    inline std::vector<double> GetSmoothGradient3d(
+    std::vector<double> GetSmoothGradient3d(
             const Eigen::Vector3d& location,
             const double nominal_window_size) const
     {
@@ -540,7 +545,7 @@ public:
                                  nominal_window_size);
     }
 
-    inline std::vector<double> GetSmoothGradient4d(
+    std::vector<double> GetSmoothGradient4d(
             const Eigen::Vector4d& location,
             const double nominal_window_size) const
     {
@@ -548,7 +553,7 @@ public:
                                  nominal_window_size);
     }
 
-    inline std::vector<double> GetSmoothGradient(
+    std::vector<double> GetSmoothGradient(
             const double x, const double y, const double z,
             const double nominal_window_size) const
     {
@@ -590,13 +595,13 @@ public:
         }
     }
 
-    inline std::vector<double> GetSmoothGradient(
+    std::vector<double> GetSmoothGradient(
             const GRID_INDEX& index, const double nominal_window_size) const
     {
         return GetSmoothGradient4d(GridIndexToLocation(index), nominal_window_size);
     }
 
-    inline std::vector<double> GetSmoothGradient(
+    std::vector<double> GetSmoothGradient(
             const int64_t x_index, const int64_t y_index, const int64_t z_index,
             const double nominal_window_size) const
     {
@@ -604,20 +609,20 @@ public:
                     GridIndexToLocation(x_index, y_index, z_index), nominal_window_size);
     }
 
-    inline std::vector<double> GetAutoDiffGradient3d(
+    std::vector<double> GetAutoDiffGradient3d(
             const Eigen::Vector3d& location) const
     {
         return GetAutoDiffGradient(location.x(), location.y(), location.z());
     }
 
-    inline std::vector<double> GetAutoDiffGradient4d(
+    std::vector<double> GetAutoDiffGradient4d(
             const Eigen::Vector4d& location) const
     {
         return GetAutoDiffGradient(location(0), location(1), location(2));
     }
 
     // TODO: this does not work if you query at cell centers!
-    inline std::vector<double> GetAutoDiffGradient(
+    std::vector<double> GetAutoDiffGradient(
             const double x, const double y, const double z) const
     {
         const GRID_INDEX index = LocationToGridIndex(x, y, z);
@@ -646,12 +651,12 @@ public:
         }
     }
 
-    inline std::vector<double> GetAutoDiffGradient(const GRID_INDEX& index) const
+    std::vector<double> GetAutoDiffGradient(const GRID_INDEX& index) const
     {
         return GetAutoDiffGradient4d(GridIndexToLocation(index));
     }
 
-    inline std::vector<double> GetAutoDiffGradient(
+    std::vector<double> GetAutoDiffGradient(
             const int64_t x_index, const int64_t y_index, const int64_t z_index) const
     {
         return GetAutoDiffGradient4d(
@@ -660,7 +665,7 @@ public:
 
 protected:
 
-    inline double ComputeAxisSmoothGradient(
+    double ComputeAxisSmoothGradient(
             const std::pair<double, bool>& query_point_distance_estimate,
             const std::pair<double, bool>& minus_axis_distance_estimate,
             const std::pair<double, bool>& plus_axis_distance_estimate,
@@ -704,16 +709,16 @@ protected:
     }
 
     template<typename T>
-    inline T BilinearInterpolate(const double low_d1,
-                                 const double high_d1,
-                                 const double low_d2,
-                                 const double high_d2,
-                                 const T query_d1,
-                                 const T query_d2,
-                                 const double l1l2_val,
-                                 const double l1h2_val,
-                                 const double h1l2_val,
-                                 const double h1h2_val) const
+    T BilinearInterpolate(const double low_d1,
+                          const double high_d1,
+                          const double low_d2,
+                          const double high_d2,
+                          const T query_d1,
+                          const T query_d2,
+                          const double l1l2_val,
+                          const double l1h2_val,
+                          const double h1l2_val,
+                          const double h1h2_val) const
     {
         Eigen::Matrix<T, 1, 2> d1_offsets;
         d1_offsets(0, 0) = high_d1 - query_d1;
@@ -733,7 +738,7 @@ protected:
     }
 
     template<typename T>
-    inline T BilinearInterpolateDistanceXY(
+    T BilinearInterpolateDistanceXY(
             const Eigen::Vector4d& corner_location,
             const Eigen::Matrix<T, 4, 1>& query_location,
             const double mxmy_dist, const double mxpy_dist,
@@ -750,7 +755,7 @@ protected:
     }
 
     template<typename T>
-    inline T TrilinearInterpolateDistance(
+    T TrilinearInterpolateDistance(
             const Eigen::Vector4d& corner_location,
             const Eigen::Matrix<T, 4, 1>& query_location,
             const double mxmymz_dist, const double mxmypz_dist,
@@ -777,9 +782,9 @@ protected:
         return mz_bilinear_interpolated + (query_z_delta * distance_slope);
     }
 
-    inline double GetCorrectedCenterDistance(const int64_t x_idx,
-                                             const int64_t y_idx,
-                                             const int64_t z_idx) const
+    double GetCorrectedCenterDistance(const int64_t x_idx,
+                                      const int64_t y_idx,
+                                      const int64_t z_idx) const
     {
         const std::pair<const float&, bool> query
                 = GetImmutable(x_idx, y_idx, z_idx);
@@ -840,7 +845,7 @@ protected:
     }
 
     template<typename T>
-    inline T EstimateDistanceInterpolateFromNeighborsGridFrame(
+    T EstimateDistanceInterpolateFromNeighborsGridFrame(
             const Eigen::Matrix<T, 4, 1>& grid_frame_query_location,
             const int64_t x_idx, const int64_t y_idx, const int64_t z_idx) const
     {
@@ -908,7 +913,7 @@ protected:
     }
 
     template<typename T>
-    inline T EstimateDistanceInterpolateFromNeighbors(
+    T EstimateDistanceInterpolateFromNeighbors(
             const Eigen::Matrix<T, 4, 1>& query_location,
             const int64_t x_idx, const int64_t y_idx, const int64_t z_idx) const
     {
@@ -926,14 +931,14 @@ public:
     // Estimate distance functions
     /////////////////////////////////////////////////////////////////////
 
-    inline std::pair<double, bool> EstimateDistance(const double x,
-                                                    const double y,
-                                                    const double z) const
+    std::pair<double, bool> EstimateDistance(const double x,
+                                             const double y,
+                                             const double z) const
     {
         return EstimateDistance4d(Eigen::Vector4d(x, y, z, 1.0));
     }
 
-    inline std::pair<double, bool> EstimateDistance3d(
+    std::pair<double, bool> EstimateDistance3d(
             const Eigen::Vector3d& location) const
     {
         const GRID_INDEX index = LocationToGridIndex3d(location);
@@ -951,7 +956,7 @@ public:
         }
     }
 
-    inline std::pair<double, bool> EstimateDistance4d(
+    std::pair<double, bool> EstimateDistance4d(
             const Eigen::Vector4d& location) const
     {
         const GRID_INDEX index = LocationToGridIndex4d(location);
@@ -967,20 +972,20 @@ public:
         }
     }
 
-    inline std::pair<double, bool> DistanceToBoundary(const double x,
-                                                      const double y,
-                                                      const double z) const
+    std::pair<double, bool> DistanceToBoundary(const double x,
+                                               const double y,
+                                               const double z) const
     {
         return DistanceToBoundary4d(Eigen::Vector4d(x, y, z, 1.0));
     }
 
-    inline std::pair<double, bool> DistanceToBoundary3d(
+    std::pair<double, bool> DistanceToBoundary3d(
             const Eigen::Vector3d& location) const
     {
         return DistanceToBoundary(location.x(), location.y(), location.z());
     }
 
-    inline std::pair<double, bool> DistanceToBoundary4d(
+    std::pair<double, bool> DistanceToBoundary4d(
             const Eigen::Vector4d& location) const
     {
         const auto aligned_location = inverse_origin_transform_ * location;
@@ -1000,7 +1005,7 @@ public:
     // Projection functions
     /////////////////////////////////////////////////////////////////////
 
-    inline Eigen::Vector3d ProjectOutOfCollision(
+    Eigen::Vector3d ProjectOutOfCollision(
             const double x, const double y, const double z,
             const double stepsize_multiplier = 1.0 / 8.0) const
     {
@@ -1010,7 +1015,7 @@ public:
         return result.head<3>();
     }
 
-    inline Eigen::Vector3d ProjectOutOfCollision3d(
+    Eigen::Vector3d ProjectOutOfCollision3d(
             const Eigen::Vector3d& location,
             const double stepsize_multiplier = 1.0 / 8.0) const
     {
@@ -1018,7 +1023,7 @@ public:
                                      stepsize_multiplier);
     }
 
-    inline Eigen::Vector4d ProjectOutOfCollision4d(
+    Eigen::Vector4d ProjectOutOfCollision4d(
             const Eigen::Vector4d& location,
             const double stepsize_multiplier = 1.0 / 8.0) const
     {
@@ -1026,7 +1031,7 @@ public:
                                                         stepsize_multiplier);
     }
 
-    inline Eigen::Vector3d ProjectOutOfCollisionToMinimumDistance(
+    Eigen::Vector3d ProjectOutOfCollisionToMinimumDistance(
             const double x, const double y, const double z,
             const double minimum_distance,
             const double stepsize_multiplier = 1.0 / 8.0) const
@@ -1036,7 +1041,7 @@ public:
                     minimum_distance, stepsize_multiplier).head<3>();
     }
 
-    inline Eigen::Vector3d ProjectOutOfCollisionToMinimumDistance3d(
+    Eigen::Vector3d ProjectOutOfCollisionToMinimumDistance3d(
             const Eigen::Vector3d& location, const double minimum_distance,
             const double stepsize_multiplier = 1.0 / 8.0) const
     {
@@ -1045,7 +1050,7 @@ public:
                     minimum_distance, stepsize_multiplier);
     }
 
-    inline Eigen::Vector4d ProjectOutOfCollisionToMinimumDistance4d(
+    Eigen::Vector4d ProjectOutOfCollisionToMinimumDistance4d(
             const Eigen::Vector4d& location,
             const double minimum_distance,
             const double stepsize_multiplier = 1.0 / 8.0) const
@@ -1128,7 +1133,7 @@ public:
         return mutable_location;
     }
 
-    inline Eigen::Vector3d ProjectIntoValidVolume(
+    Eigen::Vector3d ProjectIntoValidVolume(
             const double x, const double y, const double z) const
     {
         const Eigen::Vector4d result =
@@ -1136,7 +1141,7 @@ public:
         return result.head<3>();
     }
 
-    inline Eigen::Vector3d ProjectIntoValidVolumeToMinimumDistance(
+    Eigen::Vector3d ProjectIntoValidVolumeToMinimumDistance(
             const double x, const double y, const double z,
             const double minimum_distance) const
     {
@@ -1146,13 +1151,13 @@ public:
         return result.head<3>();
     }
 
-    inline Eigen::Vector3d ProjectIntoValidVolume3d(
+    Eigen::Vector3d ProjectIntoValidVolume3d(
             const Eigen::Vector3d& location) const
     {
         return ProjectIntoValidVolume(location.x(), location.y(), location.z());
     }
 
-    inline Eigen::Vector3d ProjectIntoValidVolumeToMinimumDistance3d(
+    Eigen::Vector3d ProjectIntoValidVolumeToMinimumDistance3d(
             const Eigen::Vector3d& location,
             const double minimum_distance) const
     {
@@ -1160,13 +1165,13 @@ public:
                     location.x(), location.y(), location.z(), minimum_distance);
     }
 
-    inline Eigen::Vector4d ProjectIntoValidVolume4d(
+    Eigen::Vector4d ProjectIntoValidVolume4d(
             const Eigen::Vector4d& location) const
     {
         return ProjectIntoValidVolumeToMinimumDistance4d(location, 0.0);
     }
 
-    inline Eigen::Vector4d ProjectIntoValidVolumeToMinimumDistance4d(
+    Eigen::Vector4d ProjectIntoValidVolumeToMinimumDistance4d(
             const Eigen::Vector4d& location,
             const double minimum_distance) const
     {

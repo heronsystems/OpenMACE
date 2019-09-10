@@ -18,11 +18,15 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
+#include <fstream>
+#include <iostream>
 #include <string>
+#include <sstream>
+#include <cstring>
+#include <cstdlib>
 #include <vector>
 
 /// \todo a member method like string but with const char* is missing.

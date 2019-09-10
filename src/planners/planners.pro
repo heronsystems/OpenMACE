@@ -13,8 +13,7 @@ TEMPLATE = lib
 DEFINES += PLANNERS_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
-DEFINES += EIGEN_DONT_VECTORIZE
-DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+QMAKE_CXXFLAGS += -O0
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unknown-pragmas
 
@@ -44,23 +43,7 @@ SOURCES += \
     virtual_potential_fields/virtual_force.cpp \
     fast_marching/console/console.cpp \
     fast_marching/ndgridmap/cell.cpp \
-    fast_marching/ndgridmap/fmcell.cpp \
-    signed_distance_fields/collision_map.cpp \
-    signed_distance_fields/compute_convex_segments_test.cpp \
-    signed_distance_fields/dynamic_spatial_hashed_collision_map.cpp \
-    signed_distance_fields/estimate_distance_test.cpp \
-    signed_distance_fields/image_2d_sdf_node.cpp \
-    signed_distance_fields/sdf.cpp \
-    signed_distance_fields/sdf_builder.cpp \
-    signed_distance_fields/sdf_generation_node.cpp \
-    signed_distance_fields/sdf_tools_tutorial.cpp \
-    signed_distance_fields/tagged_object_collision_map.cpp \
-    signed_distance_fields/test_voxel_grid.cpp \
-    signed_distance_fields/arc_utilities/base64_helpers.cpp \
-    signed_distance_fields/arc_utilities/first_order_deformation.cpp \
-    signed_distance_fields/arc_utilities/time_optimal_trajectory_parametrization.cpp \
-    signed_distance_fields/arc_utilities/timing.cpp \
-    signed_distance_fields/arc_utilities/zlib_helpers.cpp
+    fast_marching/ndgridmap/fmcell.cpp
 
 HEADERS += \
         planners.h \
@@ -110,50 +93,7 @@ HEADERS += \
     fast_marching/thirdparty/reference/queue.hpp \
     fast_marching/thirdparty/untidy_queue.hpp \
     fast_marching/utils/utils.h \
-    fast_marching/io/CImg.h \
-    signed_distance_fields/collision_map.hpp \
-    signed_distance_fields/dynamic_spatial_hashed_collision_map.hpp \
-    signed_distance_fields/sdf.hpp \
-    signed_distance_fields/sdf_builder.hpp \
-    signed_distance_fields/sdf_generation.hpp \
-    signed_distance_fields/tagged_object_collision_map.hpp \
-    signed_distance_fields/topology_computation.hpp \
-    signed_distance_fields/arc_utilities/aligned_eigen_types.hpp \
-    signed_distance_fields/arc_utilities/arc_exceptions.hpp \
-    signed_distance_fields/arc_utilities/arc_helpers.hpp \
-    signed_distance_fields/arc_utilities/base64_helpers.hpp \
-    signed_distance_fields/arc_utilities/dijkstras.hpp \
-    signed_distance_fields/arc_utilities/dynamic_spatial_hashed_voxel_grid.hpp \
-    signed_distance_fields/arc_utilities/eigen_helpers.hpp \
-    signed_distance_fields/arc_utilities/eigen_helpers_conversions.hpp \
-    signed_distance_fields/arc_utilities/eigen_typedefs.hpp \
-    signed_distance_fields/arc_utilities/filesystem.hpp \
-    signed_distance_fields/arc_utilities/first_order_deformation.h \
-    signed_distance_fields/arc_utilities/get_neighbours.hpp \
-    signed_distance_fields/arc_utilities/hash.hpp \
-    signed_distance_fields/arc_utilities/log.hpp \
-    signed_distance_fields/arc_utilities/math_helpers.hpp \
-    signed_distance_fields/arc_utilities/maybe.hpp \
-    signed_distance_fields/arc_utilities/path_utils.hpp \
-    signed_distance_fields/arc_utilities/pretty_print.hpp \
-    signed_distance_fields/arc_utilities/ros_helpers.hpp \
-    signed_distance_fields/arc_utilities/serialization.hpp \
-    signed_distance_fields/arc_utilities/serialization_eigen.hpp \
-    signed_distance_fields/arc_utilities/serialization_ros.hpp \
-    signed_distance_fields/arc_utilities/simple_astar_planner.hpp \
-    signed_distance_fields/arc_utilities/simple_dtw.hpp \
-    signed_distance_fields/arc_utilities/simple_hausdorff_distance.hpp \
-    signed_distance_fields/arc_utilities/simple_hierarchical_clustering.hpp \
-    signed_distance_fields/arc_utilities/simple_kmeans_clustering.hpp \
-    signed_distance_fields/arc_utilities/simple_prm_planner.hpp \
-    signed_distance_fields/arc_utilities/simple_rrt_planner.hpp \
-    signed_distance_fields/arc_utilities/thin_plate_spline.hpp \
-    signed_distance_fields/arc_utilities/time_optimal_trajectory_parametrization.hpp \
-    signed_distance_fields/arc_utilities/timing.hpp \
-    signed_distance_fields/arc_utilities/vector_math.hpp \
-    signed_distance_fields/arc_utilities/voxel_grid.hpp \
-    signed_distance_fields/arc_utilities/zlib_helpers.hpp \
-    signed_distance_fields/arc_utilities/portable_endian.h
+    fast_marching/io/CImg.h
 
 
 #Header file copy
@@ -190,7 +130,9 @@ LIBS += -lX11
 }
 
 win32 {
-INCLUDEPATH += $$PWD/../../tools/boost/boost_install/include
+INCLUDEPATH += $$(MACE_ROOT)/tools/boost_local
+LIBS += -L $$(MACE_ROOT)/tools/boost_local
+LIBS += -lgdi32
 }
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase

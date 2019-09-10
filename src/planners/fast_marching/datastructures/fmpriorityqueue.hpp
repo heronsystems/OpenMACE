@@ -25,7 +25,8 @@
 #include "../ndgridmap/fmcell.h"
 #include "../datastructures/fmcompare.hpp"
 
-template <class cell_t = FMCell> class FMPriorityQueue{
+template <class cell_t = FMCell>
+class FMPriorityQueue{
 
     public:
         FMPriorityQueue () {}

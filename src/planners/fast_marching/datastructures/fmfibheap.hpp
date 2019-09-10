@@ -26,7 +26,8 @@
 #include "../datastructures/fmcompare.hpp"
 
 /// \note for memory efficiency, use map instead of vector for handles_.
-template <class cell_t = FMCell> class FMFibHeap {
+template <class cell_t = FMCell>
+class FMFibHeap {
 
     /** \brief Shorthand for heap type. */
     typedef boost::heap::fibonacci_heap<const cell_t *, boost::heap::compare<FMCompare<cell_t> > > fib_heap_t;

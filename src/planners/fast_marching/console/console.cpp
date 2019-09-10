@@ -15,13 +15,6 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <cstring>
-#include <cstdlib>
-
 #include "console.h"
 
 using namespace std;

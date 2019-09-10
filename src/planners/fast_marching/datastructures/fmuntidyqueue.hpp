@@ -24,7 +24,8 @@
 #include "../ndgridmap/fmcell.h"
 
 /// \todo save buckets here as a hash table instead of saving them in FMCell.
-template<class cell_t = FMCell> class FMUntidyQueue {
+template<class cell_t = FMCell>
+class FMUntidyQueue {
 
     public:
         /** \brief Creates an object with s buckets of size s. */

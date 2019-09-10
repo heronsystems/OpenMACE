@@ -7,6 +7,7 @@ SUBDIRS += \
     common \
     base \
     data \
+    graphs \
     maps \
     planners \
     comms \

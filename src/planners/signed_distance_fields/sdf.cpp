@@ -1,23 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <fstream>
-#include <stdexcept>
-#include <unordered_map>
-
 #include "sdf.hpp"
-
-#include "arc_utilities/eigen_helpers_conversions.hpp"
-#include "arc_utilities/serialization_eigen.hpp"
-#include "arc_utilities/zlib_helpers.hpp"
-
-#ifdef ROS_EXISTS
-#include <ros/ros.h>
-#include <sdf_tools/SDF.h>
-#endif
 
 using namespace sdf_tools;
 
