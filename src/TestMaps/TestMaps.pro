@@ -31,9 +31,20 @@ INSTALLS += target
 #Necessary header includes
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../tools/boost/boost_install/include
 INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+
+unix {
+INCLUDEPATH += /usr/include/boost
+LIBS += -lm
+LIBS += -lpthread
+LIBS += -llz4
+LIBS += -lX11
+}
+
+win32 {
+INCLUDEPATH += $$PWD/../../tools/boost/boost_install/include
+}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../maps/release/ -lmaps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lmaps

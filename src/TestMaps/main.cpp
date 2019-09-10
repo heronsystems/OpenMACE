@@ -39,13 +39,6 @@
 #include "planners/fast_marching/io/gridplotter.hpp"
 #include "planners/fast_marching/io/gridwriter.hpp"
 
-const char XValue =
-        #ifdef _WIN32
-        '\\';
-#else
-        '/';
-#endif
-
 const char kPathSeperator =
         #ifdef _WIN32
         '\\';
@@ -209,7 +202,7 @@ int main(int argc, char *argv[])
 
 
     console::info("Parsing input arguments.");
-    string filename = "C:\\Github\\OpenMACE\\map.png";
+    string filename = "/home/majorpr13/OpenMACE/map.png";
 
     // A bit of shorthand.
     constexpr unsigned int ndims2 = 2; // Setting two dimensions.

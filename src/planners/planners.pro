@@ -177,12 +177,21 @@ INSTALLS += lib
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../speedLog/
-INCLUDEPATH += $$PWD/../../tools/boost/boost_install/include
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
+unix {
+INCLUDEPATH += /usr/include/boost
+LIBS += -lm
+LIBS += -lpthread
+LIBS += -llz4
+LIBS += -lX11
+}
 
+win32 {
+INCLUDEPATH += $$PWD/../../tools/boost/boost_install/include
+}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
@@ -208,5 +217,4 @@ unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 
-unix: LIBS += -llz4
 LIBS += -lz

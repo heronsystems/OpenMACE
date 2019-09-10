@@ -16,10 +16,10 @@ static std::vector<ConfigType> GetNeighbours(const ConfigType& config, const ssi
 {
     std::vector<ConfigType> neighbours;
     neighbours.reserve(8);
-    const ssize_t row_min = std::max(0, config.first - 1);
+    const ssize_t row_min = std::max(0L, config.first - 1);
     const ssize_t row_max = std::min(rows - 1, config.first + 1);
 
-    const ssize_t col_min = std::max(0, config.second - 1);
+    const ssize_t col_min = std::max(0L, config.second - 1);
     const ssize_t col_max = std::min(cols - 1, config.second + 1);
 
     for (ssize_t col = col_min; col <= col_max; col++)
