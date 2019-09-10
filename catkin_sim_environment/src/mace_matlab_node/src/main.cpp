@@ -5,13 +5,13 @@
 #include <thread>
 #include <geometry_msgs/Pose.h>
 
-#include <mace_matlab/UPDATE_POSITION.h>
-#include <mace_matlab/UPDATE_ATTITUDE.h>
-#include <mace_matlab/UPDATE_HEARTBEAT.h>
-#include <mace_matlab/UPDATE_CMD_STATUS.h>
-#include <mace_matlab/UPDATE_BATTERY.h>
-#include <mace_matlab/UPDATE_GPS.h>
-#include <mace_matlab/UPDATE_VEHICLE_TARGET.h>
+#include <mace_matlab_msgs/UPDATE_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_ATTITUDE.h>
+#include <mace_matlab_msgs/UPDATE_HEARTBEAT.h>
+#include <mace_matlab_msgs/UPDATE_CMD_STATUS.h>
+#include <mace_matlab_msgs/UPDATE_BATTERY.h>
+#include <mace_matlab_msgs/UPDATE_GPS.h>
+#include <mace_matlab_msgs/UPDATE_VEHICLE_TARGET.h>
 
 #include <matlab_listener.h>
 #include <mace_listener.h>
@@ -48,41 +48,41 @@ int main(int argc, char **argv)
     // *************************** //
     // **** Setup publishers: **** //
     // *************************** //
-    ros::Publisher vehiclePosPub = nh.advertise<mace_matlab::UPDATE_POSITION> ("/ROS/UPDATE_POSITION", 1000);
+    ros::Publisher vehiclePosPub = nh.advertise<mace_matlab_msgs::UPDATE_POSITION> ("/ROS/UPDATE_POSITION", 1000);
 
-    ros::Publisher vehicleAttPub = nh.advertise<mace_matlab::UPDATE_ATTITUDE> ("/ROS/UPDATE_ATTITUDE", 1000);
+    ros::Publisher vehicleAttPub = nh.advertise<mace_matlab_msgs::UPDATE_ATTITUDE> ("/ROS/UPDATE_ATTITUDE", 1000);
 
-    ros::Publisher gpsPub = nh.advertise<mace_matlab::UPDATE_GPS> ("/ROS/UPDATE_GPS", 1000);
+    ros::Publisher gpsPub = nh.advertise<mace_matlab_msgs::UPDATE_GPS> ("/ROS/UPDATE_GPS", 1000);
 
-    ros::Publisher heartbeatPub = nh.advertise<mace_matlab::UPDATE_HEARTBEAT> ("/ROS/UPDATE_HEARTBEAT", 1000);
+    ros::Publisher heartbeatPub = nh.advertise<mace_matlab_msgs::UPDATE_HEARTBEAT> ("/ROS/UPDATE_HEARTBEAT", 1000);
 
-    ros::Publisher batteryPub = nh.advertise<mace_matlab::UPDATE_BATTERY> ("/ROS/UPDATE_BATTERY", 1000);
+    ros::Publisher batteryPub = nh.advertise<mace_matlab_msgs::UPDATE_BATTERY> ("/ROS/UPDATE_BATTERY", 1000);
 
-    ros::Publisher vehicleTargetPub = nh.advertise<mace_matlab::UPDATE_VEHICLE_TARGET> ("/ROS/UPDATE_VEHICLE_TARGET", 1000);
+    ros::Publisher vehicleTargetPub = nh.advertise<mace_matlab_msgs::UPDATE_VEHICLE_TARGET> ("/ROS/UPDATE_VEHICLE_TARGET", 1000);
 
 // Don't think this is needed, as services request a response at send time:
-    ros::Publisher cmdStatusPub = nh.advertise<mace_matlab::UPDATE_CMD_STATUS> ("/ROS/UPDATE_CMD_STATUS", 1000);     
+    ros::Publisher cmdStatusPub = nh.advertise<mace_matlab_msgs::UPDATE_CMD_STATUS> ("/ROS/UPDATE_CMD_STATUS", 1000);
 
 
     // *************************** //
     // **** Setup subcribers: **** //
-    // *************************** //      
+    // *************************** //
     // Instantiate MACE listener:
     MACEListener maceListener;
 
-    ros::Subscriber positionPub = nh.subscribe<mace_matlab::UPDATE_POSITION>("MACE/UPDATE_POSITION", 500, &MACEListener::positionCallback, &maceListener);
+    ros::Subscriber positionPub = nh.subscribe<mace_matlab_msgs::UPDATE_POSITION>("MACE/UPDATE_POSITION", 500, &MACEListener::positionCallback, &maceListener);
 
-    ros::Subscriber attitudeSub = nh.subscribe<mace_matlab::UPDATE_ATTITUDE>("MACE/UPDATE_ATTITUDE", 500, &MACEListener::attitudeCallback, &maceListener);
+    ros::Subscriber attitudeSub = nh.subscribe<mace_matlab_msgs::UPDATE_ATTITUDE>("MACE/UPDATE_ATTITUDE", 500, &MACEListener::attitudeCallback, &maceListener);
 
-    ros::Subscriber heartbeatSub = nh.subscribe<mace_matlab::UPDATE_HEARTBEAT>("MACE/UPDATE_HEARTBEAT", 500, &MACEListener::heartbeatCallback, &maceListener);
+    ros::Subscriber heartbeatSub = nh.subscribe<mace_matlab_msgs::UPDATE_HEARTBEAT>("MACE/UPDATE_HEARTBEAT", 500, &MACEListener::heartbeatCallback, &maceListener);
 
-    ros::Subscriber gpsSub = nh.subscribe<mace_matlab::UPDATE_GPS>("MACE/UPDATE_GPS", 500, &MACEListener::gpsCallback, &maceListener);
+    ros::Subscriber gpsSub = nh.subscribe<mace_matlab_msgs::UPDATE_GPS>("MACE/UPDATE_GPS", 500, &MACEListener::gpsCallback, &maceListener);
 
-    ros::Subscriber batterySub = nh.subscribe<mace_matlab::UPDATE_BATTERY>("MACE/UPDATE_BATTERY", 500, &MACEListener::batteryCallback, &maceListener);
+    ros::Subscriber batterySub = nh.subscribe<mace_matlab_msgs::UPDATE_BATTERY>("MACE/UPDATE_BATTERY", 500, &MACEListener::batteryCallback, &maceListener);
 
-    ros::Subscriber cmdStatusSub = nh.subscribe<mace_matlab::UPDATE_CMD_STATUS>("MACE/UPDATE_CMD_STATUS", 500, &MACEListener::cmdStatusCallback, &maceListener);
+    ros::Subscriber cmdStatusSub = nh.subscribe<mace_matlab_msgs::UPDATE_CMD_STATUS>("MACE/UPDATE_CMD_STATUS", 500, &MACEListener::cmdStatusCallback, &maceListener);
 
-    ros::Subscriber vehicleTargetSub = nh.subscribe<mace_matlab::UPDATE_VEHICLE_TARGET>("/MACE/TARGET_STATUS", 500, &MACEListener::vehicleTargetCallback, &maceListener);
+    ros::Subscriber vehicleTargetSub = nh.subscribe<mace_matlab_msgs::UPDATE_VEHICLE_TARGET>("/MACE/TARGET_STATUS", 500, &MACEListener::vehicleTargetCallback, &maceListener);
 
 
     // TEST MESSAGE LOOP:
