@@ -11,8 +11,8 @@ MATLABListener::MATLABListener(const MaceCore::IModuleCommandROS* ptrRef)
 
 
 #ifdef ROS_EXISTS
-bool MATLABListener::commandTakeoff(mace_matlab::CMD_TAKEOFF::Request  &req,
-                                    mace_matlab::CMD_TAKEOFF::Response &res)
+bool MATLABListener::commandTakeoff(mace_matlab_msgs::CMD_TAKEOFF::Request  &req,
+                                    mace_matlab_msgs::CMD_TAKEOFF::Response &res)
 {
     res.success = true;
 
@@ -33,8 +33,8 @@ bool MATLABListener::commandTakeoff(mace_matlab::CMD_TAKEOFF::Request  &req,
     return true;
 }
 
-bool MATLABListener::commandArm(mace_matlab::CMD_ARM::Request  &req,
-                                mace_matlab::CMD_ARM::Response &res)
+bool MATLABListener::commandArm(mace_matlab_msgs::CMD_ARM::Request  &req,
+                                mace_matlab_msgs::CMD_ARM::Response &res)
 {
     res.success = true;
 
@@ -52,8 +52,8 @@ bool MATLABListener::commandArm(mace_matlab::CMD_ARM::Request  &req,
     return true;
 }
 
-bool MATLABListener::commandLand(mace_matlab::CMD_LAND::Request  &req,
-                                 mace_matlab::CMD_LAND::Response &res)
+bool MATLABListener::commandLand(mace_matlab_msgs::CMD_LAND::Request  &req,
+                                 mace_matlab_msgs::CMD_LAND::Response &res)
 {
     res.success = true;
 
@@ -70,8 +70,8 @@ bool MATLABListener::commandLand(mace_matlab::CMD_LAND::Request  &req,
     return true;
 }
 
-bool MATLABListener::commandWaypoint(mace_matlab::CMD_WPT::Request  &req,
-                                     mace_matlab::CMD_WPT::Response &res)
+bool MATLABListener::commandWaypoint(mace_matlab_msgs::CMD_WPT::Request  &req,
+                                     mace_matlab_msgs::CMD_WPT::Response &res)
 {
     res.success = true;
 
@@ -100,8 +100,8 @@ bool MATLABListener::commandWaypoint(mace_matlab::CMD_WPT::Request  &req,
     return true;
 }
 
-bool MATLABListener::commandDatum(mace_matlab::CMD_DATUM::Request  &req,
-                                  mace_matlab::CMD_DATUM::Response &res)
+bool MATLABListener::commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
+                                  mace_matlab_msgs::CMD_DATUM::Response &res)
 {
     res.success = true;
 

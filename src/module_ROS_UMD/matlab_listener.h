@@ -58,20 +58,20 @@ public:
     MATLABListener(const MaceCore::IModuleCommandROS* ptrRef);
 
 #ifdef ROS_EXISTS
-    bool commandTakeoff(mace_matlab::CMD_TAKEOFF::Request  &req,
-                        mace_matlab::CMD_TAKEOFF::Response &res);
+    bool commandTakeoff(mace_matlab_msgs::CMD_TAKEOFF::Request  &req,
+                        mace_matlab_msgs::CMD_TAKEOFF::Response &res);
 
-    bool commandArm(mace_matlab::CMD_ARM::Request  &req,
-                    mace_matlab::CMD_ARM::Response &res);
+    bool commandArm(mace_matlab_msgs::CMD_ARM::Request  &req,
+                    mace_matlab_msgs::CMD_ARM::Response &res);
 
-    bool commandLand(mace_matlab::CMD_LAND::Request  &req,
-                     mace_matlab::CMD_LAND::Response &res);
+    bool commandLand(mace_matlab_msgs::CMD_LAND::Request  &req,
+                     mace_matlab_msgs::CMD_LAND::Response &res);
 
-    bool commandWaypoint(mace_matlab::CMD_WPT::Request  &req,
-                         mace_matlab::CMD_WPT::Response &res);
+    bool commandWaypoint(mace_matlab_msgs::CMD_WPT::Request  &req,
+                         mace_matlab_msgs::CMD_WPT::Response &res);
 
-    bool commandDatum(mace_matlab::CMD_DATUM::Request  &req,
-                      mace_matlab::CMD_DATUM::Response &res);
+    bool commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
+                      mace_matlab_msgs::CMD_DATUM::Response &res);
 #endif
 
 private:

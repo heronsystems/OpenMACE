@@ -373,14 +373,14 @@ void ModuleROSUMD::setupROS() {
     // *************************** //
     // **** Setup publishers: **** //
     // *************************** //
-    m_vehiclePosPub = nh.advertise<mace_matlab::UPDATE_POSITION> ("/MACE/UPDATE_POSITION", 1);
-    m_vehicleAttPub = nh.advertise<mace_matlab::UPDATE_ATTITUDE> ("/MACE/UPDATE_ATTITUDE", 1);
-    m_gpsPub = nh.advertise<mace_matlab::UPDATE_GPS> ("/MACE/UPDATE_GPS", 1);
-    m_heartbeatPub = nh.advertise<mace_matlab::UPDATE_HEARTBEAT> ("/MACE/UPDATE_HEARTBEAT", 1);
-    m_batteryPub = nh.advertise<mace_matlab::UPDATE_BATTERY> ("/MACE/UPDATE_BATTERY", 1);
-    m_vehicleTargetPub = nh.advertise<mace_matlab::UPDATE_VEHICLE_TARGET>("/MACE/TARGET_STATUS",1);
+    m_vehiclePosPub = nh.advertise<mace_matlab_msgs::UPDATE_POSITION> ("/MACE/UPDATE_POSITION", 1);
+    m_vehicleAttPub = nh.advertise<mace_matlab_msgs::UPDATE_ATTITUDE> ("/MACE/UPDATE_ATTITUDE", 1);
+    m_gpsPub = nh.advertise<mace_matlab_msgs::UPDATE_GPS> ("/MACE/UPDATE_GPS", 1);
+    m_heartbeatPub = nh.advertise<mace_matlab_msgs::UPDATE_HEARTBEAT> ("/MACE/UPDATE_HEARTBEAT", 1);
+    m_batteryPub = nh.advertise<mace_matlab_msgs::UPDATE_BATTERY> ("/MACE/UPDATE_BATTERY", 1);
+    m_vehicleTargetPub = nh.advertise<mace_matlab_msgs::UPDATE_VEHICLE_TARGET>("/MACE/TARGET_STATUS",1);
 // Don't think this is needed, as services request a response at send time:
-    m_cmdStatusPub = nh.advertise<mace_matlab::UPDATE_CMD_STATUS> ("/MACE/UPDATE_CMD_STATUS", 1);
+    m_cmdStatusPub = nh.advertise<mace_matlab_msgs::UPDATE_CMD_STATUS> ("/MACE/UPDATE_CMD_STATUS", 1);
 
     ros::spinOnce();
 }
@@ -443,7 +443,7 @@ bool ModuleROSUMD::publishVehiclePosition(const int &vehicleID)
         tmpLocalPos.setZ(-tmpLocalPos.getZ());
     }
 
-    mace_matlab::UPDATE_POSITION position;
+    mace_matlab_msgs::UPDATE_POSITION position;
     position.vehicleID = vehicleID;
     position.northing = tmpLocalPos.getPositionY();
     position.easting = tmpLocalPos.getPositionX();
@@ -467,7 +467,7 @@ bool ModuleROSUMD::publishVehicleAttitude(const int &vehicleID)
     // robot state
     DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
 
-    mace_matlab::UPDATE_ATTITUDE attitude;
+    mace_matlab_msgs::UPDATE_ATTITUDE attitude;
     attitude.vehicleID = vehicleID;
     attitude.roll = tmpAtt.getMACEEuler().roll;
     attitude.pitch = tmpAtt.getMACEEuler().pitch;
@@ -488,7 +488,7 @@ bool ModuleROSUMD::publishVehicleAttitude(const int &vehicleID)
 //!
 bool ModuleROSUMD::publishVehicleGPS(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> &component)
 {
-    mace_matlab::UPDATE_GPS gps;
+    mace_matlab_msgs::UPDATE_GPS gps;
     gps.vehicleID = vehicleID;
     gps.gpsFix = DataGenericItem::DataGenericItem_GPS::GPSFixTypeToString(component->getGPSFix());
     gps.numSats = component->getSatVisible();
@@ -506,7 +506,7 @@ bool ModuleROSUMD::publishVehicleGPS(const int &vehicleID, const std::shared_ptr
 //!
 bool ModuleROSUMD::publishVehicleBattery(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> &component)
 {
-    mace_matlab::UPDATE_BATTERY battery;
+    mace_matlab_msgs::UPDATE_BATTERY battery;
     battery.vehicleID = vehicleID;
     battery.voltage = component->getBatteryVoltage();
     battery.current = component->getBatteryCurrent();
@@ -523,7 +523,7 @@ bool ModuleROSUMD::publishVehicleBattery(const int &vehicleID, const std::shared
 //!
 bool ModuleROSUMD::publishVehicleHeartbeat(const int &vehicleID, const std::shared_ptr<DataGenericItem::DataGenericItem_Heartbeat> &component)
 {
-    mace_matlab::UPDATE_HEARTBEAT heartbeat;
+    mace_matlab_msgs::UPDATE_HEARTBEAT heartbeat;
     heartbeat.vehicleID = vehicleID;
     heartbeat.aircraftType = Data::SystemTypeToString(component->getType());
     heartbeat.autopilot = Data::AutopilotTypeToString(component->getAutopilot());
@@ -537,7 +537,7 @@ bool ModuleROSUMD::publishVehicleHeartbeat(const int &vehicleID, const std::shar
 bool ModuleROSUMD::publishVehicleTargetInfo(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
 {
 
-    mace_matlab::UPDATE_VEHICLE_TARGET target;
+    mace_matlab_msgs::UPDATE_VEHICLE_TARGET target;
     target.vehicleID = vehicleID;
     target.state = static_cast<uint8_t>(component->targetState);
     target.distance = component->targetDistance;

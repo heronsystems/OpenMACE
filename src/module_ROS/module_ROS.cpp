@@ -457,7 +457,7 @@ void ModuleROS::insertVehicleIfNotExist(const int &vehicleID) {
 
 
         // Add publishers to the vehicle publisher map:
-//        ros::Publisher tmpPub = nh.advertise<mace_matlab::UPDATE_POSE>("MACE/UPDATE_POSE", 1);
+//        ros::Publisher tmpPub = nh.advertise<mace_matlab_msgs::UPDATE_POSE>("MACE/UPDATE_POSE", 1);
 //        m_vehiclePosePubMap.insert(std::make_pair(vehicleID, tmpPub));
     }
 #endif
@@ -973,7 +973,7 @@ bool ModuleROS::publishVehiclePose(const int &vehicleID) {
 //    pose.position = robotPosition;
 //    pose.orientation = attitude;
 
-//    mace_matlab::UPDATE_POSE pose;
+//    mace_matlab_msgs::UPDATE_POSE pose;
 //    pose.vehicleID = vehicleID;
 //    pose.northing = 13;
 
