@@ -62,7 +62,8 @@ SOURCES += \
     pose/abstract_position.cpp \
     pose/rotation_2D.cpp \
     pose/velocity_interface.cpp \
-    misc/kinematic_definitions.cpp
+    misc/kinematic_definitions.cpp \
+    pose/pose.cpp
 
 HEADERS +=\
     base_global.h \
@@ -124,7 +125,8 @@ HEADERS +=\
     pose/pose_components.h \
     pose/velocity_interface.h \
     pose/velocity_helper.h \
-    misc/dimension.h
+    misc/dimension.h \
+    pose/pose.h
 
 # Unix lib Install
 unix:!symbian {

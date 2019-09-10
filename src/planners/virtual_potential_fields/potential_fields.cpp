@@ -24,15 +24,15 @@ PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceIn
     m_repulsionGain = m_attractiveLinearGoalThreshold * m_linearAttractionGain * 2;
     m_conicalAttractionGain = m_linearAttractionGain/m_attractiveGoalThreshold;
     m_currentMapObject = nullptr;
-    m_totalForceGrid = nullptr;
 
     VPF_ResultingForce fillValue;
     m_staticRespulsiveMap = new mace::maps::Data2DGrid<VPF_ResultingForce>(&fillValue);
-    m_totalForceGrid = new mace::maps::Data2DGrid<VPF_ResultingForce>(&fillValue);
+    m_staticAttractionMap = new mace::maps::Data2DGrid<VPF_ResultingForce>(&fillValue);
 
     if(staticMap != nullptr)
     {
         updateStaticObstacleGradient(staticMap);
+
         printGrid();
     }
 
@@ -57,6 +57,26 @@ void PotentialFields::setPlanningParameters(state_space::GoalState* begin, state
 
     m_targetPosition.setXPosition(cast->getXPosition());
     m_targetPosition.setYPosition(cast->getYPosition());
+
+}
+
+void PotentialFields::updateStaticAttractionGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult> *staticMap)
+{
+    if(staticMap == nullptr)
+        m_staticAttractionMap->clear();
+    else
+    {
+        m_staticAttractionMap->updateGridSize(staticMap->getXMin(), staticMap->getXMax(),
+                                              staticMap->getYMin(), staticMap->getYMax(),
+                                              staticMap->getXResolution(),staticMap->getYResolution());
+
+        mace::maps::GridMapIterator gridMapItr(staticMap);
+        for(; !gridMapItr.isPastEnd(); ++gridMapItr)
+        {
+            double positionX,positionY;
+            staticMap->getPositionFromIndex(*gridMapItr, positionX, positionY);
+        } //end of for loop iterator
+    }
 }
 
 void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap)
@@ -68,10 +88,6 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
         m_staticRespulsiveMap->updateGridSize(staticMap->getXMin(), staticMap->getXMax(),
                                               staticMap->getYMin(), staticMap->getYMax(),
                                               staticMap->getXResolution(),staticMap->getYResolution());
-
-        m_totalForceGrid->updateGridSize(staticMap->getXMin(), staticMap->getXMax(),
-                                         staticMap->getYMin(), staticMap->getYMax(),
-                                         staticMap->getXResolution(), staticMap->getYResolution());
 
 
         mace::maps::GridMapIterator gridMapItr(staticMap);
@@ -107,10 +123,8 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
 
                     //get correct cell in locally stored static grid
                     VPF_ResultingForce* currentStaticIndex = m_staticRespulsiveMap->getCellByIndex(*circleMapItr);
-                    VPF_ResultingForce* currentTotalForceIndex = m_totalForceGrid->getCellByIndex(*circleMapItr);
 
                     *currentStaticIndex += rf;
-                    *currentTotalForceIndex += rf;
                 }
                 break;
             }
@@ -151,27 +165,32 @@ VPF_ResultingForce PotentialFields::computeRepulsiveGradient(const Abstract_Cart
     return rf;
 }
 
-VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,  const mace::pose::CartesianPosition_2D targetPosition)
+VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose, const mace::pose::Rotation_2D &agentRotation,
+                                                              const mace::pose::CartesianPosition_2D targetPosition)
 {
-
     VPF_ResultingForce vf;
+
+    Eigen::Vector2d targetVector = targetPosition.getDataVector();
+    Eigen::Vector2d agentVector = agentPose.getDataVector();
+
+    double bearing = agentPose.polarBearingTo(&targetPosition);
 
     double deltaX = targetPosition.deltaX(agentPose);
     double deltaY = targetPosition.deltaY(agentPose);
-    double distance = agentPose.distanceBetween2D(targetPosition);
+    double distanceToGoal = agentPose.distanceBetween2D(targetPosition);
     std::cout<<"The delta positions are: "<<deltaX<<","<<deltaY<<std::endl;
 
-    if(distance <= m_attractiveGoalThreshold)
+    if(distanceToGoal <= m_attractiveGoalThreshold)
     {
         double gain_attraction = 2;
         double gain_zero = 0.005;
         double gain_transition = 0.8;
-        double denomenator = 1 + std::exp(-gain_transition * distance) / gain_zero;
+        double denomenator = 1 + std::exp(-gain_transition * distanceToGoal) / gain_zero;
         double f_att = gain_attraction / denomenator;
-        vf.setForceX(f_att * (targetPosition.getXPosition() - agentPose.getXPosition()) / distance);
-        vf.setForceY(f_att * (targetPosition.getYPosition() - agentPose.getYPosition()) / distance);
+        vf.setForceX(f_att * (targetPosition.getXPosition() - agentPose.getXPosition()) / distanceToGoal);
+        vf.setForceY(f_att * (targetPosition.getYPosition() - agentPose.getYPosition()) / distanceToGoal);
     }
-    else if((distance > m_attractiveGoalThreshold) && (distance <= m_attractiveLinearGoalThreshold))
+    else if((distanceToGoal > m_attractiveGoalThreshold) && (distanceToGoal <= m_attractiveLinearGoalThreshold))
     {
         vf.setForceX(m_linearAttractionGain * (targetPosition.deltaX(agentPose) / targetPosition.distanceBetween2D(agentPose)));
         vf.setForceY(m_linearAttractionGain * (targetPosition.deltaY(agentPose) / targetPosition.distanceBetween2D(agentPose)));
@@ -206,7 +225,8 @@ VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pos
     evalPosition.setYPosition(evalPosition.getYPosition() + agentVelocity->getYVelocity());
 
 
-    VPF_ResultingForce attraction = computeAttractionGradient(*current,*target);
+    //VPF_ResultingForce attraction = computeAttractionGradient(*current,*target);
+    VPF_ResultingForce attraction;
     VPF_ResultingForce repulsion = retrieveRepulsiveSummation(evalPosition);
 
     //apply fuzzy logic
@@ -342,9 +362,6 @@ void PotentialFields::printGrid()
         m_staticRespulsiveMap->getPositionFromIndex(index, x, y);
         myfile << x << ",";
         myfile << y << ",";
-
-        myfile << m_totalForceGrid->getCellByIndex(index)->getForceX() << ", " ;
-        myfile << m_totalForceGrid->getCellByIndex(index)->getForceY() << "\n " ;
     }
 
     myfile.close();

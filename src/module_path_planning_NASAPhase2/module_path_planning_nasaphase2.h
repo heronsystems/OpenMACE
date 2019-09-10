@@ -149,6 +149,7 @@ private:
     mace::state_space::SpaceInformationPtr spaceInfo;
 
 private:
+    mace::pose::Rotation_3D m_AgentRotation;
     mace::pose::CartesianPosition_3D m_AgentPosition;
     mace::pose::Cartesian_Velocity3D m_AgentVelocity;
 
@@ -176,6 +177,9 @@ private:
     private:
     mace::state_space::Cartesian2DSpacePtr goalSpace;
     mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
+
+    std::ofstream myfile;
+
 
 };
 #endif // MODULE_PATH_PLANNING_NASAPHASE2_H

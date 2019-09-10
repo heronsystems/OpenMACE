@@ -17,6 +17,7 @@ ModulePathPlanningNASAPhase2::ModulePathPlanningNASAPhase2() :
     spaceInfo(nullptr)
 {    
 
+    myfile.open("C:/Github/OpenMACE/potential_fields_velocity_response.csv");
 
     m_Space = std::make_shared<state_space::Cartesian2DSpace>();
 
@@ -38,8 +39,8 @@ ModulePathPlanningNASAPhase2::ModulePathPlanningNASAPhase2() :
 
     m_Planner = new mace::PotentialFields(spaceInfo,staticMap); //setup the potential fields planner
 
-    m_castGoalState.setCoordinateFrame(CartesianFrameTypes::CF_BODY_ENU);
-    m_castGoalState.setXPosition(30); m_castGoalState.setYPosition(8);
+    m_castGoalState.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_NED);
+    m_castGoalState.setXPosition(8); m_castGoalState.setYPosition(30);
 
     goalSpace = std::make_shared<mace::state_space::Cartesian2DSpace>();
     mace::state_space::Cartesian2DSpaceBounds bounds(-20,20,-10,10);
@@ -156,17 +157,6 @@ void ModulePathPlanningNASAPhase2::NewTopicSpooled(const std::string &topicName,
                 m_VehicleDataTopic.GetComponent(localPositionData, read_topicDatagram);
                 mace::pose::Abstract_CartesianPosition* currentPosition = localPositionData->getPositionObj();
                 m_AgentPosition = *currentPosition->positionAs<mace::pose::CartesianPosition_3D>();
-
-                if(m_AgentPosition.distanceBetween2D(&m_castGoalState) < 1)
-                {
-                    mace::state_space::GoalState goal;
-                    mace::state_space::State* newState = goalSpace->getNewState();
-                    m_goalSampler->sampleUniform(newState);
-                    goal.setState(newState);
-                    goalSpace->removeState(newState);
-                    NewlyAvailableGoalState(goal);
-                }
-
                 this->updateAgentAction();
             }
             else if(componentsUpdated.at(i) == mace::pose_topics::Topic_CartesianVelocity::Name())
@@ -175,6 +165,14 @@ void ModulePathPlanningNASAPhase2::NewTopicSpooled(const std::string &topicName,
                 m_VehicleDataTopic.GetComponent(localVelocityData, read_topicDatagram);
                 mace::pose::Velocity* currentVelocity = localVelocityData->getVelocityObj();
                 m_AgentVelocity = *currentVelocity->velocityAs<mace::pose::Cartesian_Velocity3D>();
+                this->updateAgentAction();
+            }
+            else if(componentsUpdated.at(i) == mace::pose_topics::Topic_AgentOrientation::Name())
+            {
+                mace::pose_topics::Topic_AgentOrientationPtr orientationData = std::make_shared<mace::pose_topics::Topic_AgentOrientation>();
+                m_VehicleDataTopic.GetComponent(orientationData, read_topicDatagram);
+                mace::pose::AbstractRotation* currentOrientation = orientationData->getRotationObj();
+                m_AgentRotation = *currentOrientation->rotationAs<mace::pose::Rotation_3D>();
                 this->updateAgentAction();
             }
         }
@@ -245,9 +243,37 @@ void ModulePathPlanningNASAPhase2::cbiPlanner_NewConnection(const mace::state_sp
 
 void ModulePathPlanningNASAPhase2::updateAgentAction()
 {
-    double vehicleVelocity = 0.0;
-    VPF_ResultingForce artificialForce = computeVirtualForce(vehicleVelocity);
-    command_target::DynamicTarget newTarget = computeDynamicTarget(artificialForce, vehicleVelocity);
+    //VPF_ResultingForce artificialForce = computeVirtualForce(vehicleVelocity);
+    //command_target::DynamicTarget newTarget = computeDynamicTarget(artificialForce, vehicleVelocity);
+    command_target::DynamicTarget newTarget;
+
+    double attractionGain = 0.5;
+    double c1 = 1.5;
+    double c2 = 0.5;
+
+    double distance = m_castGoalState.distanceBetween2D(m_AgentPosition);
+    double bearing = m_AgentPosition.polarBearingTo(&m_castGoalState);
+    double deltaBearing = mace::math::angDistance(m_AgentRotation.getYaw(), bearing);
+
+    std::cout<<"The distance to the target is: "<<mace::math::wrapTo2Pi(m_AgentRotation.getYaw())<<std::endl;
+    std::cout<<"The current yaw is: "<<mace::math::wrapTo2Pi(m_AgentRotation.getYaw())<<std::endl;
+    std::cout<<"The bearing to the target is: "<<bearing<<std::endl;
+    std::cout<<"The delat to the target is: "<<deltaBearing<<std::endl;
+    mace::pose::Rotation_2D rotationRate;
+    rotationRate.setPhi(attractionGain * deltaBearing * (exp(-c1 * distance) + c2));
+    newTarget.setYawRate(&rotationRate);
+
+    mace::pose::Cartesian_Velocity3D currentVelocity;
+    currentVelocity.setExplicitCoordinateFrame(CartesianFrameTypes::CF_BODY_NED);
+    if(distance > 4)
+        currentVelocity.setXVelocity(2.0);
+    else
+        currentVelocity.setXVelocity(2 * (distance / 4));
+
+    currentVelocity.setYVelocity(0.0);
+    currentVelocity.setZVelocity(0.0);
+    newTarget.setVelocity(&currentVelocity);
+
     command_item::Action_DynamicTarget newAction(255,1);
     newAction.setDynamicTarget(newTarget);
 
@@ -297,6 +323,12 @@ command_target::DynamicTarget ModulePathPlanningNASAPhase2::computeDynamicTarget
     newVelocity.setYVelocity(speedX);
     newVelocity.setZVelocity(0.0);
     newTarget.setVelocity(&newVelocity);
+
+    myfile << speedY << ",";
+    myfile << speedX << ",";
+    myfile << m_AgentVelocity.getXVelocity() << ",";
+    myfile << m_AgentVelocity.getYVelocity() << "\n";
+
 
 //    mace::pose::Rotation_2D newHeading(polarToCompassBearing(heading));
 //    newTarget.setYaw(&newHeading);

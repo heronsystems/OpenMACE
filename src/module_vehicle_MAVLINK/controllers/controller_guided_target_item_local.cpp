@@ -56,6 +56,7 @@ void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillT
         else if(currentTarget.getPosition()->is3D())
         {
             mace::pose::CartesianPosition_3D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
+            mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
             if(castPosition->hasXBeenSet())
                 mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
             if(castPosition->hasYBeenSet())
@@ -79,6 +80,7 @@ void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillT
         else if(currentTarget.getVelocity()->is3D())
         {
             mace::pose::Cartesian_Velocity3D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Cartesian_Velocity3D>();
+            mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castVelocity->getExplicitCoordinateFrame());
             if(castVelocity->hasXBeenSet())
                 mavlinkItem.vx = static_cast<float>(castVelocity->getXVelocity()); bitArray = (bitArray & (~8));
             if(castVelocity->hasYBeenSet())

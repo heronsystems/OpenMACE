@@ -17,6 +17,8 @@
 
 #include "data_generic_command_item/do_items/action_dynamic_target.h"
 
+#include "../mavlink_coordinate_frames.h"
+
 using namespace mace::pose;
 
 namespace MAVLINKUXVControllers {

@@ -91,13 +91,17 @@ public:
 
     void updateStaticObstacleGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap);
 
+    void updateStaticAttractionGradient(const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap);
+
+
     VPF_ResultingForce retrieveRepulsiveSummation(const mace::pose::CartesianPosition_2D &currentPosition);
 
     VPF_ResultingForce retrieveStaticObstacleGradient(int);
 
     VPF_ResultingForce computeRepulsiveGradient(const mace::pose::Abstract_CartesianPosition* obstaclePosition, const mace::pose::Abstract_CartesianPosition* cellPosition, const double &incidentAngle = 0.0);
 
-    VPF_ResultingForce computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,  const mace::pose::CartesianPosition_2D targetPosition);
+    VPF_ResultingForce computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,const mace::pose::Rotation_2D &agentRotation,
+                                                 const mace::pose::CartesianPosition_2D targetPosition);
 
     VPF_ResultingForce computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition, const mace::pose::Cartesian_Velocity2D* agentVelocity,
                                                     const mace::pose::Abstract_CartesianPosition* targetPosition, double &vResponse);
@@ -170,8 +174,7 @@ private:
     mace::maps::LayeredMap* m_currentMapObject;
 
     mace::maps::Data2DGrid<VPF_ResultingForce>* m_staticRespulsiveMap;
-
-    mace::maps::Data2DGrid<VPF_ResultingForce>* m_totalForceGrid;
+    mace::maps::Data2DGrid<VPF_ResultingForce>* m_staticAttractionMap;
 
     std::shared_ptr<mace::state_space::SpaceInformation> spaceInfo;
     std::shared_ptr<mace::state_space::Cartesian2DSpace> space;

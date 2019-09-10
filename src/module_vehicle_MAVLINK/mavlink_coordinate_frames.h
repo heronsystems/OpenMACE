@@ -59,7 +59,7 @@ inline MAV_FRAME getMAVLINKCoordinateFrame(const mace::CartesianFrameTypes &fram
         currentFrame = MAV_FRAME_LOCAL_OFFSET_NED;
         break;
     case mace::CartesianFrameTypes::CF_BODY_NED:
-        currentFrame = MAV_FRAME_BODY_FRD;
+        currentFrame = MAV_FRAME_BODY_NED;
         break;
     case mace::CartesianFrameTypes::CF_BODY_ENU:
         throw std::logic_error("There is no coordinate frame that is equivalent within the mavlink definition set.");
@@ -75,7 +75,7 @@ inline MAV_FRAME getMAVLINKCoordinateFrame(const mace::CoordinateFrameTypes &fra
     if(getCoordinateSystemType(frame) == CoordinateSystemTypes::GEODETIC)
         currentFrame = getMAVLINKCoordinateFrame(mace::getGeodeticCoordinateFrame(frame));
     else if(getCoordinateSystemType(frame) == CoordinateSystemTypes::CARTESIAN)
-        currentFrame = getMAVLINKCoordinateFrame(mace::getGeodeticCoordinateFrame(frame));
+        currentFrame = getMAVLINKCoordinateFrame(mace::getCartesianCoordinateFrame(frame));
     else {
         throw std::logic_error("There is no coordinate system type that can be parsed into a mavlink definition.");
     }

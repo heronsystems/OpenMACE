@@ -222,8 +222,8 @@ double CartesianPosition_3D::polarBearingTo(const Abstract_CartesianPosition* po
     if(pos->isGreaterThan1D())
     {
         const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
-        double deltaY = this->getYPosition() - tmpPos->getYPosition();
-        double deltaX = this->getXPosition() - tmpPos->getXPosition();
+        double deltaY = tmpPos->getYPosition() - this->getYPosition();
+        double deltaX = tmpPos->getXPosition() - this->getXPosition();
         polarBearing = atan2(deltaY,deltaX);
     }
 
