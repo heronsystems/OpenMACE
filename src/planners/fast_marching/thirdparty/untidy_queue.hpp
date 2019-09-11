@@ -4,27 +4,7 @@
 #include <list>
 #include <cmath>
 #include <iomanip>
-
-/*TODO expliquer que c est en O(n) mais au detriment de la stabilite (minime) si le range des valeur contenues simultanement dans la queue est > incmax.
-
-TODO tester sans debug car sur 2000x2000 1000buckets nous => 11sec eux, 1.5 sec. (a la limite remettre les iters + buckets , pour remove temps constant, et tester complexite en augmentant taille progressivement.)\
-TODO en fait en utilisant gprof, increase priority est appele 4000 fois sur les 4000000 pop et push ==> iterateur negligeable pour le removede plus moyenne remplisage = 13 avec 257 max elet par list donc ...
-TODO 3sec en -O4 sans debugs.6sec en -O4 version Jphil .... 
-TODO tester les increments >> 1.5 (wtf?)
-
-TODO compris les >> increment : quabnd on fait init trial from alive, recupere les anciennes valeur de phi, du coup fais des push successifs, sans pop, et ptet que 2 push separes de 1
- fortement possible car pas de PDEreinit
-TODO finalemenmt implemente le push et increase pas dans l'ordre . aucun tests possibles sur les increments ,  mais en pratique (pour le fast marching) devrait marcher.
-TODO juste preciser que l ensemble des valeurs de la queue doit etre comprise dans un range precis.
-
-TODO ATTENTION !!!!!!!!!!!!!!!!!! si precision float , desfois incmax > 1.05 , si precision double passe avec incmax = 1.002 . en theorie <=1 pas plus.
-TODO rendre + clair la partie push dans le desordre.
-
-
-TODO incmax chelou a prendre, car meme si a 2, plante pour le cas d utilisation me masque (parties trop pointues.)
-
-TODO rq : kan laisse passser si bug, marche quand meme au top., meme avec 1 incmax, si foire a 2.
-*/
+#include <iostream>
 
 namespace levelset {
 

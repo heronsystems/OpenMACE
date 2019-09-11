@@ -13,7 +13,6 @@ TEMPLATE = lib
 DEFINES += PLANNERS_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
-QMAKE_CXXFLAGS += -O0
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unknown-pragmas
 
@@ -43,7 +42,8 @@ SOURCES += \
     virtual_potential_fields/virtual_force.cpp \
     fast_marching/console/console.cpp \
     fast_marching/ndgridmap/cell.cpp \
-    fast_marching/ndgridmap/fmcell.cpp
+    fast_marching/ndgridmap/fmcell.cpp \
+    fast_marching/thirdparty/reference/queue.cpp
 
 HEADERS += \
         planners.h \
@@ -89,7 +89,6 @@ HEADERS += \
     fast_marching/ndgridmap/cell.h \
     fast_marching/ndgridmap/fmcell.h \
     fast_marching/ndgridmap/ndgridmap.hpp \
-    fast_marching/thirdparty/reference/fast_marching.hpp \
     fast_marching/thirdparty/reference/queue.hpp \
     fast_marching/thirdparty/untidy_queue.hpp \
     fast_marching/utils/utils.h \
@@ -127,13 +126,19 @@ LIBS += -lm
 LIBS += -lpthread
 LIBS += -llz4
 LIBS += -lX11
+LIBS += -lz
 }
 
 win32 {
 INCLUDEPATH += $$(MACE_ROOT)/tools/boost_local
 LIBS += -L $$(MACE_ROOT)/tools/boost_local
 LIBS += -lgdi32
+LIBS += -lz
 }
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
+else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
@@ -146,17 +151,9 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../maps/ -lmaps
 INCLUDEPATH += $$PWD/../maps
 DEPENDPATH += $$PWD/../maps
 
-#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../tools/flann/build/lib/release/ -lflann
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../tools/flann/build/lib/debug/ -lflann
-#else:unix:!macx: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann
-
-#INCLUDEPATH += $$PWD/../../tools/flann/build
-#DEPENDPATH += $$PWD/../../tools/flann/build
-
 unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann
 unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 
-LIBS += -lz

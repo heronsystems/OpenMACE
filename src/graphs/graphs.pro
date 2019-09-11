@@ -74,12 +74,18 @@ LIBS += -lm
 LIBS += -lpthread
 LIBS += -llz4
 LIBS += -lX11
+LIBS += -lz
 }
 
 win32 {
 INCLUDEPATH += $$(MACE_ROOT)/tools/boost_local
 LIBS += -L $$(MACE_ROOT)/tools/boost_local
 LIBS += -lgdi32
+LIBS += -lz
 }
 
-LIBS += -lz
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
+else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
+

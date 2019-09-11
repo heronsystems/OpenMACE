@@ -20,8 +20,6 @@
 #ifndef FMCOMPARE_H_
 #define FMCOMPARE_H_
 
-#include "../ndgridmap/fmcell.h"
-
 /** \brief This struct is used a comparator for the heap. Since a minimum-heap
     is desired the operation checked is param1 > param2 as seen in this
     [Stack Overflow post](http://stackoverflow.com/a/16706002/2283531). */

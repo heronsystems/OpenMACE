@@ -38,7 +38,8 @@ T sgnGD(T val) {
     return (T(0) < val) - (val < T(0));
 }
 
-template <class grid_t> class GradientDescent {
+template <class grid_t>
+class GradientDescent {
 
     /** \brief Shorthand for number of dimensions. */
     static constexpr size_t ndims_ = grid_t::getNDims();

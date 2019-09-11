@@ -1,36 +1,19 @@
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
-
-#include "base/state_space/space_information.h"
-#include "base/state_space/discrete_motion_validity_check.h"
-#include "base/state_space/special_validity_check.h"
-#include "base/state_space/cartesian_2D_space.h"
-
 #include <QCoreApplication>
 #include <iostream>
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
 
-#include "maps/data_2d_grid.h"
-#include "maps/occupancy_definition.h"
-
-#include "base/pose/pose_components.h"
-#include "base/unit_tests/unittests_orientation.h"
-#include "base/pose/dynamics_aid.h"
-
-#include "planners/virtual_potential_fields/potential_fields.h"
+#include "graphs/signed_distance_fields/collision_map.hpp"
 
 #include "planners/fast_marching/ndgridmap/fmcell.h"
 #include "planners/fast_marching/ndgridmap/ndgridmap.hpp"
-#include "planners/signed_distance_fields/collision_map.hpp"
+#include "planners/fast_marching/fm2/fm2.hpp"
+#include "planners/graph_planning_node.h"
 
-
-#include "planners/fast_marching/ndgridmap/fmcell.h"
-#include "planners/fast_marching/ndgridmap/ndgridmap.hpp"
+/*
 #include "planners/fast_marching/console/console.h"
 
-#include "planners/fast_marching/fm2/fm2.hpp"
 #include "planners/fast_marching/fm2/fm2star.hpp"
 #include "planners/fast_marching/datastructures/fmfibheap.hpp"
 #include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
@@ -38,7 +21,7 @@
 #include "planners/fast_marching/io/maploader.hpp"
 #include "planners/fast_marching/io/gridplotter.hpp"
 #include "planners/fast_marching/io/gridwriter.hpp"
-
+*/
 const char kPathSeperator =
         #ifdef _WIN32
         '\\';
@@ -48,7 +31,7 @@ const char kPathSeperator =
 using namespace std;
 using namespace Eigen;
 
-typedef nDGridMap<FMCell, 3> FMGrid3D;
+typedef nDGridMap<FMCell, 2> FMGrid2D;
 typedef array<unsigned int, 3> Coord3D;
 
 sdf_tools::COLLISION_CELL _free_cell(0.0);
@@ -74,18 +57,16 @@ double velMapping(double d, double max_v)
 int main(int argc, char *argv[])
 {
     // A bit of shorthand.
-    constexpr unsigned int ndims2 = 2; // Setting two dimensions.
-    typedef nDGridMap<FMCell, ndims2> FMGrid2D;
-    typedef typename std::vector< std::array<double, ndims2> > Path2D; // A bit of short-hand.
+    typedef typename std::vector< std::array<double, 2> > Path2D; // A bit of short-hand.
     Path2D path;
 
     string filename = "map.jpg";
 
     // Loading grid.
     FMGrid2D grid_fm2;
-    MapLoader::loadMapFromImg(filename.c_str(), grid_fm2); // Loading from image
-    GridPlotter::plotArrivalTimesPath(grid_fm2, path);
-
+//    MapLoader::loadMapFromImg(filename.c_str(), grid_fm2); // Loading from image
+//    GridPlotter::plotArrivalTimesPath(grid_fm2, path);
+    mace::planners_graph::GraphNode newOp;
     // Solvers declaration.
     FM2<FMGrid2D>* solver = new FM2<FMGrid2D>("FM2_Dary");
     /*

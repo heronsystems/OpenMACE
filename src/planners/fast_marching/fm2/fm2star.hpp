@@ -48,7 +48,8 @@
 /// \todo Include support to other solvers (GMM, FIM, UFMM). Requires theoretical work on heuristics on these methods.
 // template < class grid_t, class solver_t = FMM<grid_t> > class FM2Star : public FM2<grid_t> {
 
-template < class grid_t, class heap_t = FMDaryHeap<FMCell> > class FM2Star : public FM2<grid_t, heap_t> {
+template < class grid_t, class heap_t = FMDaryHeap<FMCell> >
+class FM2Star : public FM2<grid_t, heap_t> {
 
     /** \brief Path type encapsulation. */
     typedef std::vector< std::array<double, grid_t::getNDims()> > path_t;
