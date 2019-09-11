@@ -30,12 +30,12 @@ struct bucket_cell
 
 typedef VoxelGrid::VoxelGrid<bucket_cell> DistanceField;
 
-int GetDirectionNumber(const int dx, const int dy, const int dz)
+static int GetDirectionNumber(const int dx, const int dy, const int dz)
 {
     return ((dx + 1) * 9) + ((dy + 1) * 3) + (dz + 1);
 }
 
-std::vector<std::vector<std::vector<std::vector<int>>>> MakeNeighborhoods()
+static std::vector<std::vector<std::vector<std::vector<int>>>> MakeNeighborhoods()
 {
     std::vector<std::vector<std::vector<std::vector<int>>>> neighborhoods;
     neighborhoods.resize(2);
@@ -88,7 +88,7 @@ std::vector<std::vector<std::vector<std::vector<int>>>> MakeNeighborhoods()
     return neighborhoods;
 }
 
-double ComputeDistanceSquared(const int32_t x1, const int32_t y1, const int32_t z1, const int32_t x2, const int32_t y2, const int32_t z2)
+static double ComputeDistanceSquared(const int32_t x1, const int32_t y1, const int32_t z1, const int32_t x2, const int32_t y2, const int32_t z2)
 {
     int32_t dx = x1 - x2;
     int32_t dy = y1 - y2;
@@ -217,8 +217,7 @@ std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSign
                                                                                                 const int64_t grid_num_y_cells,
                                                                                                 const int64_t grid_num_z_cells,
                                                                                                 const std::function<bool(const VoxelGrid::GRID_INDEX&)>& is_filled_fn,
-                                                                                                const float oob_value,
-                                                                                                const std::string& frame)
+                                                                                                const float oob_value,                                                                                              const std::string& frame)
 {
     std::vector<VoxelGrid::GRID_INDEX> filled;
     std::vector<VoxelGrid::GRID_INDEX> free;

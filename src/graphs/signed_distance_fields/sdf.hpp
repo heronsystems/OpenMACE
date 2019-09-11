@@ -10,6 +10,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <unordered_map>
+#include <memory>
 #include <Eigen/Geometry>
 #include <Eigen_Unsupported/AutoDiff>
 

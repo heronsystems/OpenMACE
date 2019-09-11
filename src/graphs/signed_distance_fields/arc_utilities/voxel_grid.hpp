@@ -13,8 +13,8 @@
 
 #include "arc_helpers.hpp"
 
-namespace VoxelGrid
-{
+namespace VoxelGrid {
+
 struct GRID_INDEX
 {
     int64_t x;
@@ -29,6 +29,12 @@ struct GRID_INDEX
     bool operator==(const GRID_INDEX& other) const
     {
         return (x == other.x && y == other.y && z == other.z);
+    }
+
+    friend std::ostream& operator<<(std::ostream& strm, const GRID_INDEX& index)
+    {
+        strm << "GRID_INDEX: (" << index.x << "," << index.y << "," << index.z << ")";
+        return strm;
     }
 };
 
@@ -1127,7 +1133,8 @@ public:
         return (x_index * stride1_) + (y_index * stride2_) + z_index;
     }
 };
-}
+
+} //end of namespace VoxelGrid
 
 namespace std
 {
@@ -1143,13 +1150,6 @@ struct hash<VoxelGrid::GRID_INDEX>
                 ^ (std::hash<int64_t>()(index.z) << 1));
     }
 };
-}
-
-std::ostream& operator<<(std::ostream& strm,
-                         const VoxelGrid::GRID_INDEX& index)
-{
-    strm << "GRID_INDEX: (" << index.x << "," << index.y << "," << index.z << ")";
-    return strm;
-}
+} //end of namespace std
 
 #endif // VOXEL_GRID_HPP

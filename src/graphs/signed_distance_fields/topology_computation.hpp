@@ -23,7 +23,7 @@ namespace topology_computation
 using VoxelGrid::GRID_INDEX;
 
 template<typename T, typename BackingStore=std::vector<T>>
-int64_t MarkConnectedComponent(
+inline int64_t MarkConnectedComponent(
         const VoxelGrid::VoxelGrid<T, BackingStore>& source_grid,
         const std::function<bool(const GRID_INDEX&,
                                  const GRID_INDEX&)>& are_connected_fn,
@@ -91,7 +91,7 @@ int64_t MarkConnectedComponent(
 }
 
 template<typename T, typename BackingStore=std::vector<T>>
-uint32_t ComputeConnectedComponents(
+inline uint32_t ComputeConnectedComponents(
         const VoxelGrid::VoxelGrid<T, BackingStore>& source_grid,
         const std::function<bool(const GRID_INDEX&,
                                  const GRID_INDEX&)>& are_connected_fn,
@@ -149,7 +149,7 @@ uint32_t ComputeConnectedComponents(
     return connected_components;
 }
 
-int32_t ComputeConnectivityOfSurfaceVertices(
+inline int32_t ComputeConnectivityOfSurfaceVertices(
         const std::unordered_map<GRID_INDEX, uint8_t>&
         surface_vertex_connectivity)
 {
@@ -297,7 +297,7 @@ int32_t ComputeConnectivityOfSurfaceVertices(
 }
 
 template<typename T, typename BackingStore=std::vector<T>>
-std::map<uint32_t, std::unordered_map<GRID_INDEX, uint8_t>>
+inline std::map<uint32_t, std::unordered_map<GRID_INDEX, uint8_t>>
 ExtractComponentSurfaces(
         const VoxelGrid::VoxelGrid<T, BackingStore>& source_grid,
         const std::function<int64_t(const GRID_INDEX&)>& get_component_fn,
@@ -324,7 +324,7 @@ ExtractComponentSurfaces(
     return component_surfaces;
 }
 
-std::pair<int32_t, int32_t> ComputeHolesInSurface(
+inline std::pair<int32_t, int32_t> ComputeHolesInSurface(
         const uint32_t component,
         const std::unordered_map<GRID_INDEX, uint8_t>& surface,
         const std::function<int64_t(const GRID_INDEX&)>& get_component_fn,
@@ -640,7 +640,7 @@ std::pair<int32_t, int32_t> ComputeHolesInSurface(
 }
 
 template<typename T, typename BackingStore=std::vector<T>>
-std::map<uint32_t, std::pair<int32_t, int32_t>>
+inline std::map<uint32_t, std::pair<int32_t, int32_t>>
 ComputeComponentTopology(
         const VoxelGrid::VoxelGrid<T, BackingStore>& source_grid,
         const std::function<int64_t(const GRID_INDEX&)>& get_component_fn,
@@ -673,7 +673,7 @@ ComputeComponentTopology(
 
 // Extracts the active indices from a surface map as a vector, which is useful
 // in contexts where a 1-dimensional index into the surface is needed
-std::vector<GRID_INDEX> ExtractStaticSurface(
+inline std::vector<GRID_INDEX> ExtractStaticSurface(
         const std::unordered_map<GRID_INDEX, uint8_t>& raw_surface)
 {
     std::vector<GRID_INDEX> static_surface;
@@ -693,7 +693,7 @@ std::vector<GRID_INDEX> ExtractStaticSurface(
     return static_surface;
 }
 
-std::unordered_map<GRID_INDEX, uint8_t> ConvertToDynamicSurface(
+inline std::unordered_map<GRID_INDEX, uint8_t> ConvertToDynamicSurface(
         const std::vector<GRID_INDEX>& static_surface)
 {
     std::unordered_map<GRID_INDEX, uint8_t> dynamic_surface(
@@ -706,7 +706,7 @@ std::unordered_map<GRID_INDEX, uint8_t> ConvertToDynamicSurface(
     return dynamic_surface;
 }
 
-std::unordered_map<GRID_INDEX, size_t> BuildSurfaceIndexMap(
+inline std::unordered_map<GRID_INDEX, size_t> BuildSurfaceIndexMap(
         const std::vector<GRID_INDEX>& static_surface)
 {
     std::unordered_map<GRID_INDEX, size_t> dynamic_surface(static_surface.size());
