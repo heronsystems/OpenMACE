@@ -96,7 +96,7 @@ static double ComputeDistanceSquared(const int32_t x1, const int32_t y1, const i
     return double((dx * dx) + (dy * dy) + (dz * dz));
 }
 
-DistanceField BuildDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
+inline DistanceField BuildDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
                                  const double grid_resolution,
                                  const int64_t grid_num_x_cells,
                                  const int64_t grid_num_y_cells,
@@ -211,7 +211,7 @@ DistanceField BuildDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
 }
 
 template<typename T>
-std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
+inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const Eigen::Isometry3d& grid_origin_tranform,
                                                                                                 const double grid_resolution,
                                                                                                 const int64_t grid_num_x_cells,
                                                                                                 const int64_t grid_num_y_cells,
@@ -274,7 +274,7 @@ std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSign
 }
 
 template<typename T, typename BackingStore=std::vector<T>>
-std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const VoxelGrid::GRID_INDEX&)>& is_filled_fn, const float oob_value, const std::string& frame, const bool add_virtual_border)
+inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const VoxelGrid::GRID_INDEX&)>& is_filled_fn, const float oob_value, const std::string& frame, const bool add_virtual_border)
 {
     (void)(add_virtual_border);
     const Eigen::Vector3d cell_sizes = grid.GetCellSizes();
@@ -423,7 +423,7 @@ std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSign
 }
 
 template<typename T, typename BackingStore=std::vector<T>>
-std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const T&)>& is_filled_fn, const float oob_value, const std::string& frame)
+inline std::pair<sdf_tools::SignedDistanceField, std::pair<double, double>> ExtractSignedDistanceField(const VoxelGrid::VoxelGrid<T, BackingStore>& grid, const std::function<bool(const T&)>& is_filled_fn, const float oob_value, const std::string& frame)
 {
     const std::function<bool(const VoxelGrid::GRID_INDEX&)> real_is_filled_fn = [&] (const VoxelGrid::GRID_INDEX& index)
     {
