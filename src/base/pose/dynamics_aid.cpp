@@ -24,6 +24,7 @@ void DynamicsAid::GlobalPositionToLocal(const Abstract_GeodeticPosition* origin,
         CartesianPosition_3D* targetObj = targetPosition->positionAs<CartesianPosition_3D>();
         if(refPosition->is3D() && origin->is3D())
         {
+            targetObj->setAltitudeReferenceFrame(origin->positionAs<mace::pose::GeodeticPosition_3D>()->getAltitudeReferenceFrame());
             double deltaAltitude = origin->positionAs<GeodeticPosition_3D>()->deltaAltitude(refPosition->positionAs<GeodeticPosition_3D>());
             targetObj->setZPosition(deltaAltitude);
         }
@@ -44,7 +45,6 @@ void DynamicsAid::GlobalPositionToLocal(const Abstract_GeodeticPosition* origin,
 void DynamicsAid::LocalPositionToGlobal(const Abstract_GeodeticPosition* origin, const Abstract_CartesianPosition* refPosition, Abstract_GeodeticPosition* targetPosition)
 {
     targetPosition->setCoordinateFrame(origin->getGeodeticCoordinateFrame());
-
     if(targetPosition->is3D())
     {
         if(refPosition->is3D() && origin->is3D())
@@ -54,6 +54,7 @@ void DynamicsAid::LocalPositionToGlobal(const Abstract_GeodeticPosition* origin,
             double elevation = refPosition->positionAs<CartesianPosition_3D>()->elevationAngleFromOrigin();
             mace::pose::GeodeticPosition_3D newPosition = origin->positionAs<GeodeticPosition_3D>()->newPositionFromPolar(distance, bearing, elevation);
             targetPosition->positionAs<mace::pose::GeodeticPosition_3D>()->updateFromPosition(newPosition);
+            targetPosition->positionAs<mace::pose::GeodeticPosition_3D>()->setAltitudeReferenceFrame(refPosition->positionAs<mace::pose::GeodeticPosition_3D>()->getAltitudeReferenceFrame());
         }
         else if(refPosition->is3D() && origin->is2D())
         {

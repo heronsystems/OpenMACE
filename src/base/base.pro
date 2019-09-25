@@ -126,7 +126,8 @@ HEADERS +=\
     pose/velocity_interface.h \
     pose/velocity_helper.h \
     misc/dimension.h \
-    pose/pose.h
+    pose/pose.h \
+    unit_tests/unittests_position.h
 
 # Unix lib Install
 unix:!symbian {

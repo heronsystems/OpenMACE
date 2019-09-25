@@ -6,7 +6,7 @@ namespace pose{
 
 
 CartesianPosition_3D::CartesianPosition_3D():
-    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, "Cartesian Point"), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_UNKNOWN), State(), data(0.0,0.0,0.0)
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, "Cartesian Point"), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE), State(), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
     this->setDimensionMask(ignoreAllPositions);
@@ -24,7 +24,7 @@ CartesianPosition_3D::CartesianPosition_3D(const CartesianFrameTypes &frameType,
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const double &x, const double &y, const double &z, const std::string &pointName):
-    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_UNKNOWN), State(), data(0.0,0.0,0.0)
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), Abstract_Altitude(AltitudeReferenceTypes::REF_ALT_RELATIVE), State(), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
     this->updatePosition(x,y,z);
