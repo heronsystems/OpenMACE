@@ -63,7 +63,8 @@ SOURCES += \
     do_items/action_dynamic_target.cpp \
     do_items/action_message_interval.cpp \
     do_items/action_execute_spatial_item.cpp \
-    do_items/action_set_global_origin.cpp
+    do_items/action_set_global_origin.cpp \
+    target_items/dynamic_target_orientation.cpp
 HEADERS +=\
     do_items/action_arm.h \
     do_items/action_change_mode.h \
@@ -109,7 +110,8 @@ HEADERS +=\
     do_items/action_dynamic_target.h \
     do_items/action_message_interval.h \
     do_items/action_execute_spatial_item.h \
-    do_items/action_set_global_origin.h
+    do_items/action_set_global_origin.h \
+    target_items/dynamic_target_orientation.h
 
 # Unix lib Install
 unix:!symbian {
