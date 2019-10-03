@@ -245,7 +245,7 @@ void ModulePathPlanningNASAPhase2::updateAgentAction()
 {
     //VPF_ResultingForce artificialForce = computeVirtualForce(vehicleVelocity);
     //command_target::DynamicTarget newTarget = computeDynamicTarget(artificialForce, vehicleVelocity);
-    command_target::DynamicTarget newTarget;
+    command_target::DynamicTarget_Kinematic newTarget;
 
     double attractionGain = 0.5;
     double c1 = 1.5;
@@ -299,7 +299,7 @@ VPF_ResultingForce ModulePathPlanningNASAPhase2::computeVirtualForce(double &vRe
     return resultingForce;
 }
 
-command_target::DynamicTarget ModulePathPlanningNASAPhase2::computeDynamicTarget(const VPF_ResultingForce &apfObj, const double &vResponse)
+command_target::DynamicTarget_Kinematic ModulePathPlanningNASAPhase2::computeDynamicTarget(const VPF_ResultingForce &apfObj, const double &vResponse)
 {
     double heading = wrapTo2Pi(atan2(apfObj.getForceY(), apfObj.getForceX()));
     double forceY = apfObj.getForceY();
@@ -317,7 +317,7 @@ command_target::DynamicTarget ModulePathPlanningNASAPhase2::computeDynamicTarget
         speedY = forceY;
     }
 
-    command_target::DynamicTarget newTarget;
+    command_target::DynamicTarget_Kinematic newTarget;
     mace::pose::Cartesian_Velocity3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
     newVelocity.setXVelocity(speedY);
     newVelocity.setYVelocity(speedX);

@@ -1,14 +1,14 @@
-#include "dynamic_target.h"
+#include "dynamic_target_kinematic.h"
 
 namespace command_target {
 
-DynamicTarget::DynamicTarget():
+DynamicTarget_Kinematic::DynamicTarget_Kinematic():
     m_Position(nullptr), m_Velocity(nullptr), m_Yaw(nullptr), m_YawRate(nullptr)
 {
 
 }
 
-DynamicTarget::DynamicTarget(const Position* pos, const Velocity* vel, const Rotation_2D *rot, const Rotation_2D* rotRate):
+DynamicTarget_Kinematic::DynamicTarget_Kinematic(const Position* pos, const Velocity* vel, const Rotation_2D *rot, const Rotation_2D* rotRate):
     m_Position(nullptr), m_Velocity(nullptr), m_Yaw(nullptr), m_YawRate(nullptr)
 {
     this->setPosition(pos);
@@ -17,7 +17,7 @@ DynamicTarget::DynamicTarget(const Position* pos, const Velocity* vel, const Rot
     this->setYawRate(rotRate);
 }
 
-DynamicTarget::DynamicTarget(const DynamicTarget &copy):
+DynamicTarget_Kinematic::DynamicTarget_Kinematic(const DynamicTarget_Kinematic &copy):
     m_Position(nullptr), m_Velocity(nullptr), m_Yaw(nullptr), m_YawRate(nullptr)
 {
     this->setPosition(copy.getPosition());
@@ -26,7 +26,7 @@ DynamicTarget::DynamicTarget(const DynamicTarget &copy):
     this->setYawRate(copy.getYawRate());
 }
 
-DynamicTarget::~DynamicTarget()
+DynamicTarget_Kinematic::~DynamicTarget_Kinematic()
 {
     delete m_Position; m_Position = nullptr;
     delete m_Velocity; m_Velocity = nullptr;
@@ -34,7 +34,7 @@ DynamicTarget::~DynamicTarget()
     delete m_YawRate; m_YawRate = nullptr;
 }
 
-void DynamicTarget::setPosition(const Position* pos)
+void DynamicTarget_Kinematic::setPosition(const Position* pos)
 {
     if(m_Position != nullptr)
     {
@@ -45,7 +45,7 @@ void DynamicTarget::setPosition(const Position* pos)
         this->m_Position = pos->getPositionalClone();
 }
 
-void DynamicTarget::setVelocity(const Velocity* vel)
+void DynamicTarget_Kinematic::setVelocity(const Velocity* vel)
 {
     if(m_Velocity)
     {
@@ -56,7 +56,7 @@ void DynamicTarget::setVelocity(const Velocity* vel)
         this->m_Velocity = vel->getVelocityClone();
 }
 
-void DynamicTarget::setYaw(const Rotation_2D* rot)
+void DynamicTarget_Kinematic::setYaw(const Rotation_2D* rot)
 {
     if(m_Yaw)
     {
@@ -67,7 +67,7 @@ void DynamicTarget::setYaw(const Rotation_2D* rot)
         this->m_Yaw = rot->getRotationalClone()->rotationAs<Rotation_2D>();
 }
 
-void DynamicTarget::setYawRate(const Rotation_2D* rotRate)
+void DynamicTarget_Kinematic::setYawRate(const Rotation_2D* rotRate)
 {
     if(m_YawRate)
     {
@@ -78,54 +78,54 @@ void DynamicTarget::setYawRate(const Rotation_2D* rotRate)
         this->m_YawRate = rotRate->getRotationalClone()->rotationAs<Rotation_2D>();
 }
 
-const Position* DynamicTarget::getPosition() const
+const Position* DynamicTarget_Kinematic::getPosition() const
 {
     return this->m_Position;
 }
 
-const Velocity* DynamicTarget::getVelocity() const
+const Velocity* DynamicTarget_Kinematic::getVelocity() const
 {
     return this->m_Velocity;
 }
 
-const Rotation_2D* DynamicTarget::getYaw() const
+const Rotation_2D* DynamicTarget_Kinematic::getYaw() const
 {
     return this->m_Yaw;
 }
 
-const Rotation_2D* DynamicTarget::getYawRate() const
+const Rotation_2D* DynamicTarget_Kinematic::getYawRate() const
 {
     return this->m_YawRate;
 }
 
-Position* DynamicTarget::getPosition()
+Position* DynamicTarget_Kinematic::getPosition()
 {
     return this->m_Position;
 }
 
-Velocity* DynamicTarget::getVelocity()
+Velocity* DynamicTarget_Kinematic::getVelocity()
 {
     return this->m_Velocity;
 }
 
-Rotation_2D* DynamicTarget::getYaw()
+Rotation_2D* DynamicTarget_Kinematic::getYaw()
 {
     return this->m_Yaw;
 }
 
-Rotation_2D* DynamicTarget::getYawRate()
+Rotation_2D* DynamicTarget_Kinematic::getYawRate()
 {
     return this->m_YawRate;
 }
 
-bool DynamicTarget::isCurrentTargetValid() const
+bool DynamicTarget_Kinematic::isCurrentTargetValid() const
 {
     if(getCurrentTargetMask() != std::numeric_limits<uint16_t>::max())
         return true;
     return false;
 }
 
-uint16_t DynamicTarget::getCurrentTargetMask() const
+uint16_t DynamicTarget_Kinematic::getCurrentTargetMask() const
 {
     uint16_t currentMask = 0;
 

@@ -1,11 +1,11 @@
 #ifndef DYNAMIC_TARGET_STATE_H
 #define DYNAMIC_TARGET_STATE_H
 
-#include "dynamic_target.h"
+#include "dynamic_target_kinematic.h"
 
 namespace command_target {
 
-class DynamicTargetState : public DynamicTarget
+class DynamicTargetState : public DynamicTarget_Kinematic
 {
 public:
     enum class TARGETSTATE : uint8_t{
@@ -24,7 +24,7 @@ public:
     //! \param target
     //! \param state
     //!
-    DynamicTargetState(const DynamicTarget &target, const TARGETSTATE &state = TARGETSTATE::INCOMPLETE);
+    DynamicTargetState(const DynamicTarget_Kinematic &target, const TARGETSTATE &state = TARGETSTATE::INCOMPLETE);
 
     //!
     //! \brief DynamicTargetState
@@ -51,7 +51,7 @@ public:
 public:
     DynamicTargetState& operator = (const DynamicTargetState &rhs)
     {
-        DynamicTarget::operator =(rhs);
+        DynamicTarget_Kinematic::operator =(rhs);
         this->currentState = rhs.currentState;
         return *this;
     }
@@ -65,7 +65,7 @@ public:
     //!
     bool operator == (const DynamicTargetState &rhs) const
     {
-        if(!DynamicTarget::operator ==(rhs))
+        if(!DynamicTarget_Kinematic::operator ==(rhs))
             return false;
         if(this->currentState != rhs.currentState)
             return false;

@@ -318,7 +318,7 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     command_item::Action_DynamicTarget newCommand;
     newCommand.setTargetSystem(vehicleID);
     newCommand.setOriginatingSystem(255);
-    command_target::DynamicTarget newTarget;
+    command_target::DynamicTarget_Kinematic newTarget;
     mace::pose::CartesianPosition_3D currentPositionTarget;
     currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_NED);
     currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);

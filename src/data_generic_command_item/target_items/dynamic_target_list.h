@@ -26,11 +26,11 @@ public:
 public:
     void clearList();
 
-    void appendDynamicTarget(const DynamicTarget &target, const DynamicTargetState::TARGETSTATE &state = DynamicTargetState::TARGETSTATE::INCOMPLETE);
+    void appendDynamicTarget(const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state = DynamicTargetState::TARGETSTATE::INCOMPLETE);
 
     void removeTargetAtIndex(const unsigned int &index);
 
-    void replaceTargetAtIndex(const unsigned int &index, const DynamicTarget &target, const DynamicTargetState::TARGETSTATE &state = DynamicTargetState::TARGETSTATE::INCOMPLETE);
+    void replaceTargetAtIndex(const unsigned int &index, const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state = DynamicTargetState::TARGETSTATE::INCOMPLETE);
 
     void spliceTargetListAtIndex(const unsigned int &index, const std::list<DynamicTargetState> &list);
 
@@ -41,13 +41,13 @@ public:
 public:
     const DynamicTargetState* getDynamicTargetState(const unsigned int &index) const;
 
-    DynamicTarget getDynamicTarget(const unsigned int &index) const;
+    DynamicTarget_Kinematic getDynamicTarget(const unsigned int &index) const;
 
-    const DynamicTarget* getDynamicTarget_Pointer(const unsigned int &index) const;
+    const DynamicTarget_Kinematic* getDynamicTarget_Pointer(const unsigned int &index) const;
 
-    const DynamicTarget* getNextIncompleteTarget() const;
+    const DynamicTarget_Kinematic* getNextIncompleteTarget() const;
 
-    const DynamicTarget* updateTargetState(const unsigned int &index, const DynamicTargetState::TARGETSTATE &state);
+    const DynamicTarget_Kinematic* updateTargetState(const unsigned int &index, const DynamicTargetState::TARGETSTATE &state);
 
     /** Assignment Operators */
 public:

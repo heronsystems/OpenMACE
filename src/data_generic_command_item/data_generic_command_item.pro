@@ -52,9 +52,9 @@ SOURCES += \
     mission_items/mission_key_change.cpp \
     boundary_items/boundary_key.cpp \
     boundary_items/boundary_list.cpp \
+    target_items/dynamic_target_kinematic.cpp \
     target_items/dynamic_target_list.cpp \
     target_items/dynamic_mission_queue.cpp \
-    target_items/dynamic_target.cpp \
     target_items/dynamic_target_state.cpp \
     spatial_items/abstract_spatial_action.cpp \
     mission_items/abstract_mission_item.cpp \
@@ -96,9 +96,9 @@ HEADERS +=\
     boundary_items/boundary_key.h \
     boundary_items/boundary_type.h \
     boundary_items/boundary_list.h \
+    target_items/dynamic_target_kinematic.h \
     target_items/dynamic_target_list.h \
     target_items/dynamic_mission_queue.h \
-    target_items/dynamic_target.h \
     spatial_items/abstract_spatial_action.h \
     spatial_items/spatial_action_factory.h \
     mission_items/typedef_mission_types.h \

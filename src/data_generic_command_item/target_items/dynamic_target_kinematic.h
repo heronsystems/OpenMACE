@@ -1,5 +1,5 @@
-#ifndef DYNAMIC_TARGET_H
-#define DYNAMIC_TARGET_H
+#ifndef DYNAMIC_TARGET_KINEMATIC_H
+#define DYNAMIC_TARGET_KINEMATIC_H
 
 #include <iostream>
 #include <string>
@@ -15,17 +15,17 @@ using namespace mace::pose;
 
 namespace command_target {
 
-MACE_CLASS_FORWARD(DynamicTarget);
+MACE_CLASS_FORWARD(DynamicTarget_Kinematic);
 
-class DynamicTarget{
+class DynamicTarget_Kinematic{
 public:
-    DynamicTarget();
+    DynamicTarget_Kinematic();
 
-    DynamicTarget(const Position* pos, const Velocity* vel, const Rotation_2D* rot, const Rotation_2D* rotRate);
+    DynamicTarget_Kinematic(const Position* pos, const Velocity* vel, const Rotation_2D* rot, const Rotation_2D* rotRate);
 
-    DynamicTarget(const DynamicTarget &copy);
+    DynamicTarget_Kinematic(const DynamicTarget_Kinematic &copy);
 
-    ~DynamicTarget();
+    ~DynamicTarget_Kinematic();
 
 public:
     void setPosition(const Position* pos);
@@ -59,7 +59,7 @@ public:
     bool isCurrentTargetValid() const;
 
 public:
-    DynamicTarget& operator = (const DynamicTarget &rhs)
+    DynamicTarget_Kinematic& operator = (const DynamicTarget_Kinematic &rhs)
     {
         if(rhs.m_Position != nullptr)
             this->m_Position = rhs.m_Position->getPositionalClone();
@@ -84,7 +84,7 @@ public:
         return *this;
     }
 
-    bool operator == (const DynamicTarget &rhs) const{
+    bool operator == (const DynamicTarget_Kinematic &rhs) const{
         if(this->m_Position != rhs.m_Position){
             return false;
         }
@@ -100,7 +100,7 @@ public:
         return true;
     }
 
-    bool operator != (const DynamicTarget &rhs) const{
+    bool operator != (const DynamicTarget_Kinematic &rhs) const{
         return !(*this == rhs);
     }
 
@@ -112,7 +112,7 @@ public:
         return stream.str();
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const DynamicTarget& t)
+    friend std::ostream& operator<<(std::ostream& os, const DynamicTarget_Kinematic& t)
     {
         std::stringstream newStream;
         t.printDynamicTargetLog(newStream);
@@ -137,4 +137,4 @@ protected:
 
 } //end of namespace command_target
 
-#endif // DYNAMIC_TARGET_H
+#endif // DYNAMIC_TARGET_KINEMATIC_H

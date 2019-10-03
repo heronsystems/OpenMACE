@@ -19,7 +19,7 @@ void ControllerGuidedTargetItem_Global<command_item::Action_DynamicTarget>::Fill
     double power = pow(10,7);
     uint16_t bitArray = 3583; // first let us assume that they are all
 
-    command_target::DynamicTarget currentTarget = command.getDynamicTarget();
+    command_target::DynamicTarget_Kinematic currentTarget = command.getDynamicTarget();
 
     mavlinkItem.coordinate_frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
 

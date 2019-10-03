@@ -4,7 +4,7 @@
 #include "common/common.h"
 #include "common/class_forward.h"
 
-#include "../target_items/dynamic_target.h"
+#include "../target_items/dynamic_target_kinematic.h"
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
 #include "data_generic_command_item/interface_command_helper.h"
@@ -61,17 +61,17 @@ public: //The logic behind this is that every command item can be used to genera
 
 public:
     Action_DynamicTarget();
-    Action_DynamicTarget(const command_target::DynamicTarget cmd);
+    Action_DynamicTarget(const command_target::DynamicTarget_Kinematic cmd);
     Action_DynamicTarget(const Action_DynamicTarget &obj);
     Action_DynamicTarget(const unsigned int &systemOrigin, const unsigned int &systemTarget);
 
 public:
-    void setDynamicTarget(const command_target::DynamicTarget cmd)
+    void setDynamicTarget(const command_target::DynamicTarget_Kinematic cmd)
     {
         m_Target = cmd;
     }
 
-    command_target::DynamicTarget getDynamicTarget() const{
+    command_target::DynamicTarget_Kinematic getDynamicTarget() const{
         return m_Target;
     }
 
@@ -114,7 +114,7 @@ public:
     }
 
 private:
-    command_target::DynamicTarget m_Target;
+    command_target::DynamicTarget_Kinematic m_Target;
 
 };
 

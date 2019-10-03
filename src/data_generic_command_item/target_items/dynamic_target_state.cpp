@@ -15,8 +15,8 @@ DynamicTargetState::DynamicTargetState()
 //! \param target
 //! \param state
 //!
-DynamicTargetState::DynamicTargetState(const DynamicTarget &target, const TARGETSTATE &state):
-    DynamicTarget(target)
+DynamicTargetState::DynamicTargetState(const DynamicTarget_Kinematic &target, const TARGETSTATE &state):
+    DynamicTarget_Kinematic(target)
 {
     this->currentState = state;
 }
@@ -26,7 +26,7 @@ DynamicTargetState::DynamicTargetState(const DynamicTarget &target, const TARGET
 //! \param copy
 //!
 DynamicTargetState::DynamicTargetState(const DynamicTargetState &copy):
-    DynamicTarget(copy)
+    DynamicTarget_Kinematic(copy)
 {
     this->currentState = copy.currentState;
 }

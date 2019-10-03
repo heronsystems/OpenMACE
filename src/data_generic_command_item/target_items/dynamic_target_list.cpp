@@ -25,7 +25,7 @@ void DynamicTargetList::clearList()
     this->activeTargetItem = 0;
 }
 
-void DynamicTargetList::appendDynamicTarget(const DynamicTarget &target, const DynamicTargetState::TARGETSTATE &state)
+void DynamicTargetList::appendDynamicTarget(const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state)
 {
     DynamicTargetState obj(target,state);
     m_TargetList.push_back(obj);
@@ -38,7 +38,7 @@ void DynamicTargetList::removeTargetAtIndex(const unsigned int &index)
     m_TargetList.erase(it);
 }
 
-void DynamicTargetList::replaceTargetAtIndex(const unsigned int &index, const DynamicTarget &target, const DynamicTargetState::TARGETSTATE &state)
+void DynamicTargetList::replaceTargetAtIndex(const unsigned int &index, const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state)
 {
     DynamicTargetState obj(target,state);
     std::list<DynamicTargetState>::iterator it = m_TargetList.begin();
@@ -73,21 +73,21 @@ const DynamicTargetState* DynamicTargetList::getDynamicTargetState(const unsigne
     return &(*it);
 }
 
-DynamicTarget DynamicTargetList::getDynamicTarget(const unsigned int &index) const
+DynamicTarget_Kinematic DynamicTargetList::getDynamicTarget(const unsigned int &index) const
 {
     std::list<DynamicTargetState>::const_iterator it = m_TargetList.begin();
     std::advance(it,index);
     return (*it);
 }
 
-const DynamicTarget* DynamicTargetList::getDynamicTarget_Pointer(const unsigned int &index) const
+const DynamicTarget_Kinematic* DynamicTargetList::getDynamicTarget_Pointer(const unsigned int &index) const
 {
     std::list<DynamicTargetState>::const_iterator it = m_TargetList.begin();
     std::advance(it,index);
     return &(*it);
 }
 
-const DynamicTarget* DynamicTargetList::getNextIncompleteTarget() const
+const DynamicTarget_Kinematic* DynamicTargetList::getNextIncompleteTarget() const
 {
     std::list<DynamicTargetState>::const_iterator it = m_TargetList.begin();
     for (; it != m_TargetList.end(); ++it)
@@ -99,7 +99,7 @@ const DynamicTarget* DynamicTargetList::getNextIncompleteTarget() const
 }
 
 
-const DynamicTarget* DynamicTargetList::updateTargetState(const unsigned int &index, const DynamicTargetState::TARGETSTATE &state)
+const DynamicTarget_Kinematic* DynamicTargetList::updateTargetState(const unsigned int &index, const DynamicTargetState::TARGETSTATE &state)
 {
     std::list<DynamicTargetState>::iterator it = m_TargetList.begin();
     std::advance(it,index);

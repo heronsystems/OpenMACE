@@ -39,7 +39,7 @@ template<>
 void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillTargetItem(const command_item::Action_DynamicTarget &command, mavlink_set_position_target_local_ned_t &mavlinkItem)
 {
     uint16_t bitArray = 65535;
-    command_target::DynamicTarget currentTarget = command.getDynamicTarget();
+    command_target::DynamicTarget_Kinematic currentTarget = command.getDynamicTarget();
     mavlinkItem.coordinate_frame = MAV_FRAME_LOCAL_NED;
 
     //This handles the packing of the position components

@@ -137,7 +137,7 @@ private: //variables explicit for the potential fields approach
     void setupF3StaticMap();
     void updateAgentAction();
     VPF_ResultingForce computeVirtualForce(double &vResponse);
-    command_target::DynamicTarget computeDynamicTarget(const VPF_ResultingForce &apfObj, const double &vResponse);
+    command_target::DynamicTarget_Kinematic computeDynamicTarget(const VPF_ResultingForce &apfObj, const double &vResponse);
 
     mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap;
     PotentialFields* m_Planner;

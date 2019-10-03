@@ -6,7 +6,7 @@
 #include "../planners.h"
 #include "../planners_global.h"
 #include "base/pose/pose_components.h"
-#include "data_generic_command_item/target_items/dynamic_target.h"
+#include "data_generic_command_item/target_items/dynamic_target_kinematic.h"
 
 #include <base/state_space/cartesian_2D_space.h>
 

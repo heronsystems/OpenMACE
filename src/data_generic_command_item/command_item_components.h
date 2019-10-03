@@ -35,7 +35,7 @@
 #include "data_generic_command_item/mission_items/typedef_mission_types.h"
 
 #include "data_generic_command_item/target_items/dynamic_mission_queue.h"
-#include "data_generic_command_item/target_items/dynamic_target.h"
+#include "data_generic_command_item/target_items/dynamic_target_kinematic.h"
 #include "data_generic_command_item/target_items/dynamic_target_list.h"
 #include "data_generic_command_item/target_items/dynamic_target_state.h"
 

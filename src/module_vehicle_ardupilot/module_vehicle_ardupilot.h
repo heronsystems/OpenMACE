@@ -324,7 +324,7 @@ public:
         command_item::Action_DynamicTarget newCommand;
         newCommand.setTargetSystem(1);
         newCommand.setOriginatingSystem(255);
-        command_target::DynamicTarget newTarget;
+        command_target::DynamicTarget_Kinematic newTarget;
 //        mace::pose::GeodeticPosition_3D currentPositionTarget;
 //        currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
 //        currentPositionTarget.updateTranslationalComponents(-35.3621531, 149.1650811);

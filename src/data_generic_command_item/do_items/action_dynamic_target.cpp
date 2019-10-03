@@ -34,7 +34,7 @@ Action_DynamicTarget::Action_DynamicTarget():
 
 }
 
-Action_DynamicTarget::Action_DynamicTarget(const command_target::DynamicTarget cmd):
+Action_DynamicTarget::Action_DynamicTarget(const command_target::DynamicTarget_Kinematic cmd):
     AbstractCommandItem(0,0)
 {
     this->m_Target = cmd;

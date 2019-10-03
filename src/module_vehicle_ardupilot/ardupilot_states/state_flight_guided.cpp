@@ -90,7 +90,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
     {
         currentCommand = command->getClone();
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
-        command_target::DynamicTarget currentTarget = cmd->getDynamicTarget();
+        command_target::DynamicTarget_Kinematic currentTarget = cmd->getDynamicTarget();
         mace::pose::Position* targetPosition = currentTarget.getPosition();
         if(targetPosition != nullptr)
         {
