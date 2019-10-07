@@ -38,56 +38,56 @@ waypointClient = rossvcclient('command_waypoint');
 %   5) Land vehicle after waypoint achieved
 
 % Setup datum command:
-datumRequest = rosmessage(datumClient);
-datumRequest.Timestamp = rostime('now');
-datumRequest.VehicleID = 0; % Not necessary for this 
-datumRequest.CommandID = 0; % TODO: Set command ID enum in MACE
-datumRequest.LatitudeDeg = -35.3632621765137;
-datumRequest.LongitudeDeg = 149.165237426758;
+% datumRequest = rosmessage(datumClient);
+% datumRequest.Timestamp = rostime('now');
+% datumRequest.VehicleID = 0; % Not necessary for this 
+% datumRequest.CommandID = 0; % TODO: Set command ID enum in MACE
+% datumRequest.LatitudeDeg = -35.3632621765137;
+% datumRequest.LongitudeDeg = 149.165237426758;
 
 % Setup Arm vehicle command:
-armRequest = rosmessage(armClient);
-armRequest.Timestamp = rostime('now');
-armRequest.VehicleID = 1; % Vehicle ID
-armRequest.CommandID = 1; % TODO: Set command ID enum in MACE
-armRequest.ArmCmd = true; % True to ARM throttle, False to DISARM
+% armRequest = rosmessage(armClient);
+% armRequest.Timestamp = rostime('now');
+% armRequest.VehicleID = 1; % Vehicle ID
+% armRequest.CommandID = 1; % TODO: Set command ID enum in MACE
+% armRequest.ArmCmd = true; % True to ARM throttle, False to DISARM
 
 % Setup Vehicle takeoff command:
-takeoffRequest = rosmessage(takeoffClient);
-takeoffRequest.Timestamp = rostime('now');
-takeoffRequest.VehicleID = 1; % Vehicle ID
-takeoffRequest.CommandID = 2; % TODO: Set command ID enum in MACE
-takeoffRequest.TakeoffAlt = 10; % Takeoff altitude
+% takeoffRequest = rosmessage(takeoffClient);
+% takeoffRequest.Timestamp = rostime('now');
+% takeoffRequest.VehicleID = 1; % Vehicle ID
+% takeoffRequest.CommandID = 2; % TODO: Set command ID enum in MACE
+% takeoffRequest.TakeoffAlt = 10; % Takeoff altitude
 % If you don't set lat/lon (or set them to 0.0), it will takeoff in current position
 % takeoffRequest.LatitudeDeg = 0.0; % If 0.0, takeoff where you currently are
 % takeoffRequest.LongitudeDeg = 0.0; % If 0.0, takeoff where you currently are
 
-dynamicTargetRequest = rosmessage(dynamicTargetClient);
-dynamicTargetRequest.Timestamp = rostime('now');
-dynamicTargetRequest.VehicleID = 1; % Vehicle ID
-dynamicTargetRequest.CoordinateFrame = 11;
-dynamicTargetRequest.XP = -100;
-dynamicTargetRequest.YP = 0;
-dynamicTargetRequest.ZP = -20;
-dynamicTargetRequest.XV = -10;
-dynamicTargetRequest.YV = 0;
-dynamicTargetRequest.ZV = -2;
-dynamicTargetRequest.Bitmask = 65472; %65528 is for position, 65479 is for velocity, 65472 is position and velocity 
+% dynamicTargetRequest = rosmessage(dynamicTargetClient);
+% dynamicTargetRequest.Timestamp = rostime('now');
+% dynamicTargetRequest.VehicleID = 1; % Vehicle ID
+% dynamicTargetRequest.CoordinateFrame = 11;
+% dynamicTargetRequest.XP = 100;
+% dynamicTargetRequest.YP = 0;
+% dynamicTargetRequest.ZP = -20;
+% dynamicTargetRequest.XV = 0;
+% dynamicTargetRequest.YV = 0;
+% dynamicTargetRequest.ZV = 0;
+% dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity 
 
 % Setup Waypoint command :
-waypointRequest = rosmessage(waypointClient);
-waypointRequest.Timestamp = rostime('now');
-waypointRequest.VehicleID = 1; % Vehicle ID
-waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
-waypointRequest.Northing = 10; % Relative northing position to Datum
-waypointRequest.Easting = 10; % Relative easting position to Datum
-waypointRequest.Altitude = 10;
+% waypointRequest = rosmessage(waypointClient);
+% waypointRequest.Timestamp = rostime('now');
+% waypointRequest.VehicleID = 1; % Vehicle ID
+% waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
+% waypointRequest.Northing = 10; % Relative northing position to Datum
+% waypointRequest.Easting = 10; % Relative easting position to Datum
+% waypointRequest.Altitude = 10;
 
 % Setup Land command:
-landRequest = rosmessage(landClient);
-landRequest.Timestamp = rostime('now');
-landRequest.VehicleID = 1; % Vehicle ID
-landRequest.CommandID = 4; % TODO: Set command ID enum in MACE
+% landRequest = rosmessage(landClient);
+% landRequest.Timestamp = rostime('now');
+% landRequest.VehicleID = 1; % Vehicle ID
+% landRequest.CommandID = 4; % TODO: Set command ID enum in MACE
 
 datumResponse = false;
 armResponse = false;

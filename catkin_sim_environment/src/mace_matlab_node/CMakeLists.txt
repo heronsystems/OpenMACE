@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
   std_msgs
-  mace_matlab
+  mace_matlab_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -79,9 +79,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES mace_matlab_node
- CATKIN_DEPENDS geometry_msgs roscpp std_msgs mace_matlab
+ CATKIN_DEPENDS geometry_msgs roscpp std_msgs mace_matlab_msgs
 #  DEPENDS system_lib
 )
 
@@ -92,14 +92,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp src/mace_listener.cpp src/matlab_listener.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}

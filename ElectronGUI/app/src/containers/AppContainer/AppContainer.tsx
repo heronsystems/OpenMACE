@@ -294,6 +294,7 @@ export default class AppContainer extends React.Component<Props, State> {
         delete this.appHelper.maceCommsHelper.vehicleDB.vehicles[vehicleID];
     };
 
+
     render() {
         // const ToolbarRight = () => (
         //     <FlatButton
