@@ -4,14 +4,14 @@
 #ifdef ROS_EXISTS
 #include <ros/ros.h>
 
-#include <mace_matlab/CMD_ARM.h>
-#include <mace_matlab/CMD_DATUM.h>
-#include <mace_matlab/CMD_LAND.h>
-#include <mace_matlab/CMD_TAKEOFF.h>
-#include <mace_matlab/CMD_DYNAMIC_TARGET.h>
-#include <mace_matlab/CMD_DYNAMIC_ORIENTATION_EULER.h>
-#include <mace_matlab/CMD_DYNAMIC_ORIENTATION_QUAT.h>
-#include <mace_matlab/CMD_WPT.h>
+#include <mace_matlab_msgs/CMD_ARM.h>
+#include <mace_matlab_msgs/CMD_DATUM.h>
+#include <mace_matlab_msgs/CMD_LAND.h>
+#include <mace_matlab_msgs/CMD_TAKEOFF.h>
+#include <mace_matlab_msgs/CMD_DYNAMIC_TARGET.h>
+#include <mace_matlab_msgs/CMD_DYNAMIC_ORIENTATION_EULER.h>
+#include <mace_matlab_msgs/CMD_DYNAMIC_ORIENTATION_QUAT.h>
+#include <mace_matlab_msgs/CMD_WPT.h>
 
 #endif
 
@@ -68,17 +68,17 @@ public:
     bool commandWaypoint(mace_matlab_msgs::CMD_WPT::Request  &req,
                          mace_matlab_msgs::CMD_WPT::Response &res);
 
-    bool commandDatum(mace_matlab::CMD_DATUM::Request  &req,
-                      mace_matlab::CMD_DATUM::Response &res);
+    bool commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
+                      mace_matlab_msgs::CMD_DATUM::Response &res);
 
-    bool commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Request &req,
-                              mace_matlab::CMD_DYNAMIC_TARGET::Response &res);
+    bool commandDynamicTarget(mace_matlab_msgs::CMD_DYNAMIC_TARGET::Request &req,
+                              mace_matlab_msgs::CMD_DYNAMIC_TARGET::Response &res);
 
-    bool commandDynamicTarget_OrientationEuler(mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Request &req,
-                                               mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Response &res);
+    bool commandDynamicTarget_OrientationEuler(mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_EULER::Request &req,
+                                               mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_EULER::Response &res);
 
-    bool commandDynamicTarget_OrientationQuat(mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Request &req,
-                                               mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Response &res);
+    bool commandDynamicTarget_OrientationQuat(mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_QUAT::Request &req,
+                                               mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_QUAT::Response &res);
 #endif
 
 private:

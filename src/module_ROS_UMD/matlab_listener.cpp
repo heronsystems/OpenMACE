@@ -130,8 +130,8 @@ bool MATLABListener::commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
     return true;
 }
 
-bool MATLABListener::commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Request &req,
-                                          mace_matlab::CMD_DYNAMIC_TARGET::Response &res)
+bool MATLABListener::commandDynamicTarget(mace_matlab_msgs::CMD_DYNAMIC_TARGET::Request &req,
+                                          mace_matlab_msgs::CMD_DYNAMIC_TARGET::Response &res)
 {
     res.success = true;
 
@@ -203,8 +203,8 @@ bool MATLABListener::commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Reque
     return true;
 }
 
-bool MATLABListener::commandDynamicTarget_OrientationEuler(mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Request &req,
-                                                           mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Response &res)
+bool MATLABListener::commandDynamicTarget_OrientationEuler(mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_EULER::Request &req,
+                                                           mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_EULER::Response &res)
 {
     res.success = true;
 
@@ -236,8 +236,8 @@ bool MATLABListener::commandDynamicTarget_OrientationEuler(mace_matlab::CMD_DYNA
     return true;
 }
 
-bool MATLABListener::commandDynamicTarget_OrientationQuat(mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Request &req,
-                                                          mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Response &res)
+bool MATLABListener::commandDynamicTarget_OrientationQuat(mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_QUAT::Request &req,
+                                                          mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_QUAT::Response &res)
 {
     res.success = true;
 
