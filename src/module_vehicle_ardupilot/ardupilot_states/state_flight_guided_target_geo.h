@@ -49,7 +49,6 @@ private:
     {
         static_cast<State_FlightGuided_GeoTarget*>(p)->constructAndSendTarget(commandTarget);
     }
-
     void constructAndSendTarget(const command_item::Action_DynamicTarget &command)
     {
         MavlinkEntityKey sender = 255;

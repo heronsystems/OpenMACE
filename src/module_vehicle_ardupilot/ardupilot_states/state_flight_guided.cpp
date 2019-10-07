@@ -41,6 +41,11 @@ hsm::Transition State_FlightGuided::GetTransition()
             rtn = hsm::InnerTransition<State_FlightGuided_Idle>(currentCommand);
             break;
         }
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET:
+        {
+            rtn = hsm::InnerTransition<State_FlightGuided_AttTarget>(currentCommand);
+            break;
+        }
         case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_CarTarget>(currentCommand);
@@ -90,24 +95,38 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
     {
         currentCommand = command->getClone();
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
-        command_target::DynamicTarget_Kinematic currentTarget = cmd->getDynamicTarget();
-        mace::pose::Position* targetPosition = currentTarget.getPosition();
-        if(targetPosition != nullptr)
+        switch (cmd->getDynamicTarget()->getTargetType()) {
+        case command_target::DynamicTarget::TargetTypes::KINEMATIC:
         {
-            /* Since the positional element within the command is not null, we have to make sure it
-             * is of the coordinate frame type that can be supported within the appropriate guided mode.
-             * The only explicit case is if the coordinate system is geodetic, if not, the remaining can
-             * all be handled by the cartesian guided state.
-             */
-            if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+            command_target::DynamicTarget_Kinematic* currentTarget = cmd->getDynamicTarget()->targetAs<command_target::DynamicTarget_Kinematic>();
+            mace::pose::Position* targetPosition = currentTarget->getPosition();
+            if(targetPosition != nullptr)
             {
-                if(this->IsInState<State_FlightGuided_GeoTarget>())
+                /* Since the positional element within the command is not null, we have to make sure it
+                 * is of the coordinate frame type that can be supported within the appropriate guided mode.
+                 * The only explicit case is if the coordinate system is geodetic, if not, the remaining can
+                 * all be handled by the cartesian guided state.
+                 */
+                if(targetPosition->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
                 {
-                    ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
-                    currentInnerState->handleCommand(command);
+                    if(this->IsInState<State_FlightGuided_GeoTarget>())
+                    {
+                        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                        currentInnerState->handleCommand(command);
+                    }
+                    else
+                        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
                 }
                 else
-                    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+                {
+                    if(this->IsInState<State_FlightGuided_CarTarget>())
+                    {
+                        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                        currentInnerState->handleCommand(command);
+                    }
+                    else
+                        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+                }
             }
             else
             {
@@ -119,25 +138,28 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
                 else
                     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
             }
-        }
-        else
+            break;
+        } //end of case command_target::DynamicTarget::TargetTypes::KINEMATIC
+        case command_target::DynamicTarget::TargetTypes::ORIENTATION:
         {
-            if(this->IsInState<State_FlightGuided_CarTarget>())
+            if(this->IsInState<State_FlightGuided_GeoTarget>())
             {
                 ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
                 currentInnerState->handleCommand(command);
             }
             else
-                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
-        }
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+            break;
+        } //end of case command_target::DynamicTarget::TargetTypes::ORIENTATION
 
+        } //end of switch statement for target type
         break;
-    }
+    } //end of case COMMANDTYPE::CI_ACT_TARGET
 
     default:
         break;
 
-    } //end of switch statement
+    } //end of switch statement command type
 }
 
 void State_FlightGuided::Update()
@@ -163,6 +185,7 @@ void State_FlightGuided::OnEnter(const std::shared_ptr<AbstractCommandItem> comm
 #include "ardupilot_states/state_flight_guided_idle.h"
 #include "ardupilot_states/state_flight_guided_spatial_item.h"
 #include "ardupilot_states/state_flight_guided_queue.h"
+#include "ardupilot_states/state_flight_guided_target_att.h"
 #include "ardupilot_states/state_flight_guided_target_car.h"
 #include "ardupilot_states/state_flight_guided_target_geo.h"
 

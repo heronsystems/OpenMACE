@@ -18,7 +18,7 @@ void State_FlightGuided_CarTarget::OnExit()
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
     if(Owner().ControllersCollection()->Exist("CartesianTargetController")){
-        MAVLINKUXVControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->Remove("CartesianTargetController"));
+        MAVLINKUXVControllers::ControllerGuidedTargetItem_Local* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Local*>(Owner().ControllersCollection()->Remove("CartesianTargetController"));
         delete ptr;
     }
 
@@ -57,6 +57,7 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
     bool commandHandled = false;
 
     switch (command->getCommandType()) {
+
     case COMMANDTYPE::CI_ACT_TARGET:
     {
         //stop the current controllers target transmission if it is running
@@ -67,24 +68,33 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
 
         //The command is a target, we therefore have to figure out what type of target it is
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
-
-        constructAndSendTarget(cmd->getDynamicTarget());
-
-        /*
-         * Determine if the velocity component is valid, and if so, update the timeout controller
-         * with the appropriate target to ensure that upon the designated timeout, the controller
-         * retransmits the command to the ardupilot.
-         *
-         * NOTE: Ardupilot requires that all the velocities be valid
-         */
-        if((cmd->getDynamicTarget().getVelocity() != nullptr) && (cmd->getDynamicTarget().getVelocity()->areAllVelocitiesValid()))
+        if(cmd->getDynamicTarget()->getTargetType() == command_target::DynamicTarget::TargetTypes::KINEMATIC)
         {
-            m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
+            constructAndSendTarget(*cmd);
+
+            /*
+             * Determine if the velocity component is valid, and if so, update the timeout controller
+             * with the appropriate target to ensure that upon the designated timeout, the controller
+             * retransmits the command to the ardupilot.
+             *
+             * NOTE: Ardupilot requires that all the velocities be valid
+             */
+            command_target::DynamicTarget_Kinematic* castCommand = cmd->getDynamicTarget()->targetAs<command_target::DynamicTarget_Kinematic>();
+            if((castCommand->getVelocity() != nullptr) && (castCommand->getVelocity()->areAllVelocitiesValid()))
+            {
+                m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
+            }
+
+            commandHandled = true;
         }
-        commandHandled = true;
+        else
+        {
+            commandHandled = false;
+        }
+
         break;
     }
-    default: //The only command this state is responsible for addressing is COMMANDTYPE::CI_ACT_TARGET
+    default:
         break;
     }
 

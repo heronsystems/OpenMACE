@@ -18,7 +18,7 @@ void State_FlightGuided_AttTarget::OnExit()
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
     if(Owner().ControllersCollection()->Exist("AttitudeTargetController")){
-        MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude<command_item::Action_DynamicTarget>* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->Remove("AttitudeTargetController"));
+        MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude*>(Owner().ControllersCollection()->Remove("AttitudeTargetController"));
         delete ptr;
     }
 
@@ -26,12 +26,12 @@ void State_FlightGuided_AttTarget::OnExit()
 
 AbstractStateArdupilot* State_FlightGuided_AttTarget::getClone() const
 {
-    return (new State_FlightGuided_CarTarget(*this));
+    return (new State_FlightGuided_AttTarget(*this));
 }
 
 void State_FlightGuided_AttTarget::getClone(AbstractStateArdupilot** state) const
 {
-    *state = new State_FlightGuided_CarTarget(*this);
+    *state = new State_FlightGuided_AttTarget(*this);
 }
 
 hsm::Transition State_FlightGuided_AttTarget::GetTransition()
@@ -68,7 +68,7 @@ bool State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<AbstractC
         //The command is a target, we therefore have to figure out what type of target it is
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
 
-        constructAndSendTarget(cmd->getDynamicTarget());
+        constructAndSendTarget(*cmd);
 
         commandHandled = true;
         break;
@@ -112,7 +112,7 @@ void State_FlightGuided_AttTarget::OnEnter(const std::shared_ptr<AbstractCommand
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-    auto attitudeTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude<command_item::Action_DynamicTarget>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto attitudeTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
 
     collection->Insert("AttitudeTargetController",attitudeTargetController);
 

@@ -24,6 +24,7 @@ namespace state{
 class State_FlightGuided_Idle;
 class State_FlightGuided_Queue;
 class State_FlightGuided_SpatialItem;
+class State_FlightGuided_AttTarget;
 class State_FlightGuided_CarTarget;
 class State_FlightGuided_GeoTarget;
 
