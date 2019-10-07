@@ -17,24 +17,24 @@
 
 #include "data_generic_command_item/do_items/action_dynamic_target.h"
 
+#include "data_generic_command_item/target_items/dynamic_target_kinematic.h"
+
 #include "../mavlink_coordinate_frames.h"
 
 using namespace mace::pose;
 
 namespace MAVLINKUXVControllers {
 
-template <typename T>
 using GuidedTGTLocalBroadcast = Controllers::ActionBroadcast<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<T>,
-    T,
+    BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>,
+    command_item::Action_DynamicTarget,
     mavlink_set_position_target_local_ned_t
 >;
 
-template <typename COMMANDDATASTRUCTURE>
-class ControllerGuidedTargetItem_Local : public BasicMavlinkController_ModuleKeyed<COMMANDDATASTRUCTURE>,
-        public GuidedTGTLocalBroadcast<COMMANDDATASTRUCTURE>
+class ControllerGuidedTargetItem_Local : public BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>,
+        public GuidedTGTLocalBroadcast
 {
 private:
 
@@ -48,7 +48,7 @@ private:
 protected:
 
 
-    virtual void Construct_Broadcast(const COMMANDDATASTRUCTURE &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_local_ned_t &targetItem)
+    virtual void Construct_Broadcast(const command_item::Action_DynamicTarget &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_local_ned_t &targetItem)
     {
         UNUSED(sender);
 
@@ -56,11 +56,14 @@ protected:
         targetItem.target_system = commandItem.getTargetSystem();
         targetItem.target_component = static_cast<uint8_t>(MaceCore::ModuleClasses::VEHICLE_COMMS);
 
-        FillTargetItem(commandItem,targetItem);
+        command_target::DynamicTarget* currentTarget = commandItem.getDynamicTarget();
+
+        if(currentTarget->getTargetType() == command_target::DynamicTarget::TargetTypes::KINEMATIC)
+            FillTargetItem(*currentTarget->targetAs<command_target::DynamicTarget_Kinematic>(),targetItem);
     }
 
 protected:
-    void FillTargetItem(const COMMANDDATASTRUCTURE &targetItem, mavlink_set_position_target_local_ned_t &mavlinkItem);
+    void FillTargetItem(const command_target::DynamicTarget_Kinematic &targetItem, mavlink_set_position_target_local_ned_t &mavlinkItem);
 
     mavlink_set_position_target_local_ned_t initializeMAVLINKTargetItem()
     {
@@ -86,8 +89,8 @@ protected:
 
 public:
     ControllerGuidedTargetItem_Local(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<COMMANDDATASTRUCTURE>(cb, queue, linkChan),
-        GuidedTGTLocalBroadcast<COMMANDDATASTRUCTURE>(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_local_ned_t>(mavlink_msg_set_position_target_local_ned_encode_chan))
+        BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>(cb, queue, linkChan),
+        GuidedTGTLocalBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_position_target_local_ned_t>(mavlink_msg_set_position_target_local_ned_encode_chan))
     {
 
     }

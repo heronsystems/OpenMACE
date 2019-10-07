@@ -61,18 +61,20 @@ public: //The logic behind this is that every command item can be used to genera
 
 public:
     Action_DynamicTarget();
-    Action_DynamicTarget(const command_target::DynamicTarget_Kinematic cmd);
+    Action_DynamicTarget(const command_target::DynamicTarget* cmd);
     Action_DynamicTarget(const Action_DynamicTarget &obj);
     Action_DynamicTarget(const unsigned int &systemOrigin, const unsigned int &systemTarget);
 
+    ~Action_DynamicTarget() override;
+
 public:
-    void setDynamicTarget(const command_target::DynamicTarget_Kinematic cmd)
+    void setDynamicTarget(const command_target::DynamicTarget* cmd)
     {
-        m_Target = cmd;
+        m_Target = cmd->getDynamicTargetClone();
     }
 
-    command_target::DynamicTarget_Kinematic getDynamicTarget() const{
-        return m_Target;
+    command_target::DynamicTarget* getDynamicTarget() const{
+        return m_Target->getDynamicTargetClone();
     }
 
 public:
@@ -114,7 +116,7 @@ public:
     }
 
 private:
-    command_target::DynamicTarget_Kinematic m_Target;
+    command_target::DynamicTarget* m_Target;
 
 };
 

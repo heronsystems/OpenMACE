@@ -123,7 +123,7 @@ void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommand
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-    auto cartesianTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto cartesianTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Local(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
 
     collection->Insert("CartesianTargetController",cartesianTargetController);
 

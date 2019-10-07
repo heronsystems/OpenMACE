@@ -14,36 +14,37 @@
 
 #include "module_vehicle_MAVLINK/controllers/common.h"
 
+#include "data_generic_command_item/do_items/action_dynamic_target.h"
+
+#include "data_generic_command_item/target_items/dynamic_target_orientation.h"
 
 namespace MAVLINKUXVControllers {
 
 using namespace mace::pose;
 
-template <typename T>
 using GuidedTGTAttBroadcast = Controllers::ActionBroadcast<
     mavlink_message_t,
     MavlinkEntityKey,
-    BasicMavlinkController_ModuleKeyed<T>,
-    T,
-    mavlink_set_position_target_global_int_t
+    BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>,
+    command_item::Action_DynamicTarget,
+    mavlink_set_attitude_target_t
 >;
 
-template <typename COMMANDDATASTRUCTURE>
-class ControllerGuidedTargetItem_Attitude : public BasicMavlinkController_ModuleKeyed<COMMANDDATASTRUCTURE>,
-        public GuidedTGTAttBroadcast<COMMANDDATASTRUCTURE>
+class ControllerGuidedTargetItem_Attitude : public BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>,
+        public GuidedTGTAttBroadcast
 {
 private:
 
     std::unordered_map<MaceCore::ModuleCharacteristic, MaceCore::ModuleCharacteristic> m_CommandRequestedFrom;
 
-    mavlink_set_position_target_global_int_t m_targetMSG;
+    mavlink_set_attitude_target_t m_targetMSG;
 
 private:
     bool doesMatchTransmitted(const mavlink_position_target_global_int_t &msg) const;
 
 protected:
 
-    void Construct_Broadcast(const COMMANDDATASTRUCTURE &commandItem, const MavlinkEntityKey &sender, mavlink_set_position_target_global_int_t &targetItem) override
+    void Construct_Broadcast(const command_item::Action_DynamicTarget &commandItem, const MavlinkEntityKey &sender, mavlink_set_attitude_target_t &targetItem) override
     {
         UNUSED(sender);
 
@@ -51,13 +52,16 @@ protected:
         targetItem.target_system = commandItem.getTargetSystem();
         targetItem.target_component = static_cast<uint8_t>(MaceCore::ModuleClasses::VEHICLE_COMMS);
 
-        FillTargetItem(commandItem,targetItem);
+        command_target::DynamicTarget* currentTarget = commandItem.getDynamicTarget();
+
+        if(currentTarget->getTargetType() == command_target::DynamicTarget::TargetTypes::ORIENTATION)
+            FillTargetItem(*currentTarget->targetAs<command_target::DynamicTarget_Orientation>(),targetItem);
 
         m_targetMSG = targetItem;
     }
 
 protected:
-    void FillTargetItem(const COMMANDDATASTRUCTURE &command, mavlink_set_attitude_target_t &mavlinkItem);
+    void FillTargetItem(const command_target::DynamicTarget_Orientation &command, mavlink_set_attitude_target_t &mavlinkItem);
 
     mavlink_set_attitude_target_t initializeMAVLINKTargetItem()
     {
@@ -80,8 +84,8 @@ protected:
 
 public:
     ControllerGuidedTargetItem_Attitude(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<COMMANDDATASTRUCTURE>(cb, queue, linkChan),
-        GuidedTGTAttBroadcast<COMMANDDATASTRUCTURE>(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_attitude_target_t>(mavlink_msg_set_attitude_target_encode_chan))
+        BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>(cb, queue, linkChan),
+        GuidedTGTAttBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_attitude_target_t>(mavlink_msg_set_attitude_target_encode_chan))
     {
 
     }

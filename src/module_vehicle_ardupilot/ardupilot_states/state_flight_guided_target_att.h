@@ -10,7 +10,7 @@
 
 #include "../guided_timeout_controller.h"
 
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
+#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_attitude.h"
 
 #include "data_generic_command_item/command_item_components.h"
 
@@ -53,7 +53,7 @@ private:
     void constructAndSendTarget(const command_item::Action_DynamicTarget &command)
     {
         MavlinkEntityKey sender = 255;
-        static_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(command, sender);
+        static_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude*>(Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(command, sender);
     }
 
 private:

@@ -29,27 +29,35 @@ void Action_DynamicTarget::getClone(std::shared_ptr<AbstractCommandItem> &comman
 }
 
 Action_DynamicTarget::Action_DynamicTarget():
-    AbstractCommandItem(0,0)
+    AbstractCommandItem(0,0), m_Target(nullptr)
 {
 
 }
 
-Action_DynamicTarget::Action_DynamicTarget(const command_target::DynamicTarget_Kinematic cmd):
+Action_DynamicTarget::Action_DynamicTarget(const command_target::DynamicTarget* cmd):
     AbstractCommandItem(0,0)
 {
-    this->m_Target = cmd;
+    if(cmd != nullptr)
+        m_Target = cmd->getDynamicTargetClone();
 }
 
 Action_DynamicTarget::Action_DynamicTarget(const Action_DynamicTarget &obj):
     AbstractCommandItem(obj)
 {
-    this->m_Target = obj.getDynamicTarget();
+    if(obj.getDynamicTarget() != nullptr)
+        this->m_Target = obj.getDynamicTarget()->getDynamicTargetClone();
 }
 
 Action_DynamicTarget::Action_DynamicTarget(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractCommandItem(systemOrigin,systemTarget)
 {
 
+}
+
+Action_DynamicTarget::~Action_DynamicTarget()
+{
+    if(m_Target != nullptr)
+        delete m_Target; m_Target = nullptr;
 }
 
 void Action_DynamicTarget::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
@@ -78,7 +86,7 @@ void Action_DynamicTarget::generateMACEMSG_CommandItem(mace_message_t &msg) cons
 
 std::string Action_DynamicTarget::printCommandInfo() const
 {
-
+    return "";
 }
 
 

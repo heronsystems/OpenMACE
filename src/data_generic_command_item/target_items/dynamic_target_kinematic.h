@@ -7,6 +7,8 @@
 
 #include "common/class_forward.h"
 
+#include "abstract_dynamic_target.h"
+
 #include "base/pose/abstract_position.h"
 #include "base/pose/abstract_velocity.h"
 #include "base/pose/rotation_2D.h"
@@ -17,7 +19,7 @@ namespace command_target {
 
 MACE_CLASS_FORWARD(DynamicTarget_Kinematic);
 
-class DynamicTarget_Kinematic{
+class DynamicTarget_Kinematic : public DynamicTarget{
 public:
     DynamicTarget_Kinematic();
 
@@ -25,7 +27,28 @@ public:
 
     DynamicTarget_Kinematic(const DynamicTarget_Kinematic &copy);
 
-    ~DynamicTarget_Kinematic();
+    ~DynamicTarget_Kinematic() override;
+
+public: //imposed interface items from Dynamic Target
+    TargetTypes getTargetType() const override;
+
+    /**
+         * @brief getClone
+         * @return
+         */
+    DynamicTarget* getDynamicTargetClone() const override
+    {
+        return (new DynamicTarget_Kinematic(*this));
+    }
+
+    /**
+         * @brief getClone
+         * @param state
+         */
+    void getDynamicTargetClone(DynamicTarget** target) const override
+    {
+        *target = new DynamicTarget_Kinematic(*this);
+    }
 
 public:
     void setPosition(const Position* pos);

@@ -10,15 +10,15 @@ State_FlightGuided_AttTarget::State_FlightGuided_AttTarget():
     currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
 
-    m_TimeoutController.connectTargetCallback(State_FlightGuided_CarTarget::retransmitGuidedCommand, this);
+    m_TimeoutController.connectTargetCallback(State_FlightGuided_AttTarget::retransmitGuidedCommand, this);
 }
 
 void State_FlightGuided_AttTarget::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
-    if(Owner().ControllersCollection()->Exist("CartesianTargetController")){
-        MAVLINKUXVControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->Remove("CartesianTargetController"));
+    if(Owner().ControllersCollection()->Exist("AttitudeTargetController")){
+        MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude<command_item::Action_DynamicTarget>* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude<command_item::Action_DynamicTarget>*>(Owner().ControllersCollection()->Remove("AttitudeTargetController"));
         delete ptr;
     }
 
@@ -70,17 +70,6 @@ bool State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<AbstractC
 
         constructAndSendTarget(cmd->getDynamicTarget());
 
-        /*
-         * Determine if the velocity component is valid, and if so, update the timeout controller
-         * with the appropriate target to ensure that upon the designated timeout, the controller
-         * retransmits the command to the ardupilot.
-         *
-         * NOTE: Ardupilot requires that all the velocities be valid
-         */
-        if((cmd->getDynamicTarget().getVelocity() != nullptr) && (cmd->getDynamicTarget().getVelocity()->areAllVelocitiesValid()))
-        {
-            m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
-        }
         commandHandled = true;
         break;
     }
@@ -123,9 +112,9 @@ void State_FlightGuided_AttTarget::OnEnter(const std::shared_ptr<AbstractCommand
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-    auto cartesianTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto attitudeTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude<command_item::Action_DynamicTarget>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
 
-    collection->Insert("CartesianTargetController",cartesianTargetController);
+    collection->Insert("AttitudeTargetController",attitudeTargetController);
 
     this->handleCommand(command);
 }

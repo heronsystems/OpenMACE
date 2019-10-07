@@ -35,11 +35,11 @@ Velocities are relative to the current vehicle heading. Use this to specify the 
 
 namespace MAVLINKUXVControllers {
 
-template<>
-void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillTargetItem(const command_item::Action_DynamicTarget &command, mavlink_set_position_target_local_ned_t &mavlinkItem)
+void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::DynamicTarget_Kinematic &command, mavlink_set_position_target_local_ned_t &mavlinkItem)
 {
     uint16_t bitArray = 65535;
-    command_target::DynamicTarget_Kinematic currentTarget = command.getDynamicTarget();
+    command_target::DynamicTarget_Kinematic currentTarget = command;
+
     mavlinkItem.coordinate_frame = MAV_FRAME_LOCAL_NED;
 
     //This handles the packing of the position components
@@ -105,8 +105,7 @@ void ControllerGuidedTargetItem_Local<command_item::Action_DynamicTarget>::FillT
     mavlinkItem.type_mask = bitArray;
 }
 
-template <typename T>
-bool ControllerGuidedTargetItem_Local<T>::doesMatchTransmitted(const mavlink_position_target_local_ned_t &msg) const
+bool ControllerGuidedTargetItem_Local::doesMatchTransmitted(const mavlink_position_target_local_ned_t &msg) const
 {
     if(fabsf(m_targetMSG.vx - msg.vx) > std::numeric_limits<float>::epsilon())
         return false;
@@ -123,9 +122,9 @@ bool ControllerGuidedTargetItem_Local<T>::doesMatchTransmitted(const mavlink_pos
     if(fabsf(m_targetMSG.yaw_rate - msg.yaw_rate) > std::numeric_limits<float>::epsilon())
         return false;
 
-    if(fabs(m_targetMSG.x - msg.x) > 0.1)
+    if(fabs(m_targetMSG.x - static_cast<double>(msg.x)) > 0.1)
         return false;
-    if(fabs(m_targetMSG.y - msg.y) > 0.1)
+    if(fabs(m_targetMSG.y - static_cast<double>(msg.y)) > 0.1)
         return false;
 
 //    if(m_targetMSG.coordinate_frame != msg.coordinate_frame)
