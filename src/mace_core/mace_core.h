@@ -344,7 +344,7 @@ public:
     //! \param sender Sender module
     //! \param globalHome New global origin position
     //!
-    void Event_SetGlobalOrigin(const void* sender, const mace::pose::GeodeticPosition_3D &globalHome) override;
+    void Event_SetGlobalOrigin(const ModuleBase* sender, const mace::pose::GeodeticPosition_3D &globalHome) override;
 
 
     void Event_ProcessGoalState(const ModuleBase* sender, const mace::state_space::GoalState &state) override;

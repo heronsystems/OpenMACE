@@ -165,7 +165,7 @@ public:
     //! \param sender Sender module
     //! \param globalHome New global origin position
     //!
-    virtual void Event_SetGlobalOrigin(const void* sender, const mace::pose::GeodeticPosition_3D &globalHome) = 0;
+    virtual void Event_SetGlobalOrigin(const ModuleBase* sender, const mace::pose::GeodeticPosition_3D &globalHome) = 0;
 
     //!
     //! \brief Event_SetBoundary Event to set a new boundary (boundary key determines type of boundary)

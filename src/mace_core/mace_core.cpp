@@ -795,9 +795,13 @@ void MaceCore::Event_SetGridSpacing(const void *sender, const double &gridSpacin
 //! \param sender Sender module
 //! \param globalHome New global origin position
 //!
-void MaceCore::Event_SetGlobalOrigin(const void *sender, const GeodeticPosition_3D &position)
+void MaceCore::Event_SetGlobalOrigin(const ModuleBase* sender, const GeodeticPosition_3D &position)
 {
     m_DataFusion->UpdateGlobalOrigin(position);
+
+    command_item::Action_SetGlobalOrigin swarmOrigin;
+    swarmOrigin.setGlobalOrigin(&position);
+    MarshalCommandToVehicle<command_item::Action_SetGlobalOrigin>(swarmOrigin.getTargetSystem(), VehicleCommands::UPDATE_GLOBAL_ORIGIN, ExternalLinkCommands::UPDATE_GLOBAL_ORIGIN, swarmOrigin, sender->GetCharacteristic());
 
     if(m_PathPlanning && m_PathPlanning.get() != sender) {
         m_PathPlanning->MarshalCommand(PathPlanningCommands::UPDATE_GLOBAL_ORIGIN, position);

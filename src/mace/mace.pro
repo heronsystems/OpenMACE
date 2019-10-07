@@ -200,7 +200,7 @@ unix {
         LIBS += -L/opt/ros/kinetic/lib -loctomap
         LIBS += -L/opt/ros/kinetic/lib -loctomath
 
-        LIBS += -L$$(MACE_ROOT)/catkin_sim_environment/devel/lib/ -lmace_matlab_msgs
+#        LIBS += -L$$(MACE_ROOT)/catkin_sim_environment/devel/lib/ -lmace_matlab_msgs
 
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include

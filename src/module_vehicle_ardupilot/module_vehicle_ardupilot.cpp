@@ -755,7 +755,7 @@ void ModuleVehicleArdupilot::handleGlobalOriginController(const command_item::Ac
     {
         mace::pose::GeodeticPosition_3D* originPosition = originObj.getGlobalOrigin()->positionAs<mace::pose::GeodeticPosition_3D>();
         vehicleData->state->swarmGlobalOrigin.set(*originPosition);
-        if(m_ControllersCollection.Exist("Controllers_GlobalOrigin"))
+        if(m_ControllersCollection.Exist("swarmOriginController"))
         {
             auto globalOriginOld = static_cast<MAVLINKUXVControllers::Controller_SetGPSGlobalOrigin*>(m_ControllersCollection.At("Controllers_GlobalOrigin"));
             if(globalOriginOld != nullptr)
@@ -788,15 +788,17 @@ void ModuleVehicleArdupilot::handleGlobalOriginController(const command_item::Ac
 
         globalOriginController->setLambda_Shutdown([this]()
         {
-            auto ptr = m_ControllersCollection.Remove("armController");
+            auto ptr = m_ControllersCollection.Remove("swarmOriginController");
             delete ptr;
         });
 
         MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
         MavlinkEntityKey sender = 255;
         command_item::Action_SetGlobalOrigin originCopy(originObj);
+        originCopy.setTargetSystem(target);
+        originCopy.setOriginatingSystem(sender);
         globalOriginController->Send(originCopy, sender, target);
-        m_ControllersCollection.Insert("Controllers_GlobalOrigin", globalOriginController);
+        m_ControllersCollection.Insert("swarmOriginController", globalOriginController);
     }
 }
 

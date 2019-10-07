@@ -134,7 +134,7 @@ void GUItoMACE::setGlobalOrigin(const QJsonObject &jsonObj)
     origin.setAltitude(position.value("alt").toDouble());
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr) {
-        ptr->Event_SetGlobalOrigin(this, origin);
+        ptr->Event_SetGlobalOrigin(m_parent, origin);
     });
 }
 

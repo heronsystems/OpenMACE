@@ -49,9 +49,9 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include ${catkin_INCLUDE_DIRS}
   CATKIN_DEPENDS roscpp geometry_msgs sensor_msgs std_msgs message_runtime
-  LIBRARIES mace_matlab
+  LIBRARIES mace_matlab_msgs
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_library(mace_matlab src/matlab_listener.cpp src/mace_listener.cpp)
+add_library(mace_matlab_msgs src/matlab_listener.cpp src/mace_listener.cpp)
