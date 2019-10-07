@@ -23,7 +23,10 @@
 	</Parameter>
    </Module>
    
-  <Module Class="PathPlanning" Type="NASAPhase2">
-  </Module>
+<Module Class='ROS' Type='OFFSET_Auctioneer'>
+      <Parameter Name='ModuleParameters'>
+        <Parameter Name='AirborneInstance'>false</Parameter>
+      </Parameter>
+  </Module> 
   
 </ModuleConfigurations>

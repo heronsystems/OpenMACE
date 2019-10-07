@@ -320,6 +320,7 @@ public:
     //!
     virtual void RequestDummyFunction(const int &vehicleID) override
     {
+        /*
         UNUSED(vehicleID);
         command_item::Action_DynamicTarget newCommand;
         newCommand.setTargetSystem(1);
@@ -341,6 +342,7 @@ public:
         AbstractCommandItemPtr currentCommand = std::make_shared<command_item::Action_DynamicTarget>(newCommand);
         outerState->handleCommand(currentCommand);
         ProgressStateMachineStates();
+        */
     }
 
 private:

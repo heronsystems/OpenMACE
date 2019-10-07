@@ -9,6 +9,8 @@
 #include <mace_matlab/CMD_LAND.h>
 #include <mace_matlab/CMD_TAKEOFF.h>
 #include <mace_matlab/CMD_DYNAMIC_TARGET.h>
+#include <mace_matlab/CMD_DYNAMIC_ORIENTATION_EULER.h>
+#include <mace_matlab/CMD_DYNAMIC_ORIENTATION_QUAT.h>
 #include <mace_matlab/CMD_WPT.h>
 
 #endif
@@ -71,6 +73,12 @@ public:
 
     bool commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Request &req,
                               mace_matlab::CMD_DYNAMIC_TARGET::Response &res);
+
+    bool commandDynamicTarget_OrientationEuler(mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Request &req,
+                                               mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Response &res);
+
+    bool commandDynamicTarget_OrientationQuat(mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Request &req,
+                                               mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Response &res);
 #endif
 
 private:

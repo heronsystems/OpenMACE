@@ -334,10 +334,10 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     yaw.setPhi(M_PI_4);
     newTarget.setYaw(&yaw);
 
-    newCommand.setDynamicTarget(newTarget);
-    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
-    });
+//    newCommand.setDynamicTarget(newTarget);
+//    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
+//        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
+//    });
 
 }
 

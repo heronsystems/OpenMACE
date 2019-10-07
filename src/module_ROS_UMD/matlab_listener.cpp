@@ -136,7 +136,7 @@ bool MATLABListener::commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Reque
     res.success = true;
 
     command_item::Action_DynamicTarget dynamicTarget;
-    command_target::DynamicTarget currentTarget;
+    command_target::DynamicTarget_Kinematic currentTarget;
 
     CoordinateSystemTypes currentType = mace::getCoordinateSystemType(static_cast<CoordinateFrameTypes>(req.coordinateFrame));
 
@@ -193,7 +193,79 @@ bool MATLABListener::commandDynamicTarget(mace_matlab::CMD_DYNAMIC_TARGET::Reque
         currentTarget.setYawRate(&yawRate);
     }
 
-    dynamicTarget.setDynamicTarget(currentTarget);
+    dynamicTarget.setDynamicTarget(&currentTarget);
+    dynamicTarget.setTargetSystem(req.vehicleID);
+
+    m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, dynamicTarget);
+    });
+
+    return true;
+}
+
+bool MATLABListener::commandDynamicTarget_OrientationEuler(mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Request &req,
+                                                           mace_matlab::CMD_DYNAMIC_ORIENTATION_EULER::Response &res)
+{
+    res.success = true;
+
+    command_item::Action_DynamicTarget dynamicTarget;
+    command_target::DynamicTarget_Orientation currentTarget;
+
+    printf("Command Orientation Euler vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
+
+    if((req.bitmask&6) == 0)
+    {
+        mace::pose::Rotation_3D orientation;
+        orientation.updateFromEuler(req.roll, req.pitch, req.yaw);
+        currentTarget.setTargetOrientation(&orientation);
+    }
+
+    if((req.bitmask&7) == 0)
+    {
+        currentTarget.setTargetThrust(req.thrust);
+    }
+
+
+    dynamicTarget.setDynamicTarget(&currentTarget);
+    dynamicTarget.setTargetSystem(req.vehicleID);
+
+    m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, dynamicTarget);
+    });
+
+    return true;
+}
+
+bool MATLABListener::commandDynamicTarget_OrientationQuat(mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Request &req,
+                                                          mace_matlab::CMD_DYNAMIC_ORIENTATION_QUAT::Response &res)
+{
+    res.success = true;
+
+    command_item::Action_DynamicTarget dynamicTarget;
+    command_target::DynamicTarget_Orientation currentTarget;
+
+    printf("Command Orientation Quat vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
+
+    if((req.bitmask&6) == 0)
+    {
+        mace::pose::Rotation_3D orientation;
+        Eigen::Quaterniond quat;
+        quat.w() = req.quaternion_w;
+        quat.x() = req.quaternion_x;
+        quat.y() = req.quaternion_y;
+        quat.z() = req.quaternion_z;
+
+        orientation.setQuaternion(quat);
+        currentTarget.setTargetOrientation(&orientation);
+    }
+
+    if((req.bitmask&7) == 0)
+    {
+        currentTarget.setTargetThrust(req.thrust);
+    }
+
+
+    dynamicTarget.setDynamicTarget(&currentTarget);
     dynamicTarget.setTargetSystem(req.vehicleID);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {

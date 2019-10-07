@@ -304,9 +304,19 @@ private:
     ros::ServiceServer m_datumService;
 
     //!
-    //! \brief m_client Service client for datum commands issued from MATLAB
+    //! \brief m_client Service client for dynamic kinematic commands issued from MATLAB
     //!
-    ros::ServiceServer m_dynamicTargetService;
+    ros::ServiceServer m_dynamicTargetService_Kinematic;
+
+    //!
+    //! \brief m_client Service client for dynamic orientation based on Euler commands issued from MATLAB
+    //!
+    ros::ServiceServer m_dynamicTargetService_OrientationEuler;
+
+    //!
+    //! \brief m_client Service client for dynamic orientation based on Euler commands issued from MATLAB
+    //!
+    ros::ServiceServer m_dynamicTargetService_OrientationQuat;
 
     //!
     //! \brief m_client Service client for land commands issued from MATLAB

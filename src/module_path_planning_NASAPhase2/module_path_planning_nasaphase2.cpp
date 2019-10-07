@@ -274,12 +274,12 @@ void ModulePathPlanningNASAPhase2::updateAgentAction()
     currentVelocity.setZVelocity(0.0);
     newTarget.setVelocity(&currentVelocity);
 
-    command_item::Action_DynamicTarget newAction(255,1);
-    newAction.setDynamicTarget(newTarget);
+//    command_item::Action_DynamicTarget newAction(255,1);
+//    newAction.setDynamicTarget(newTarget);
 
-    ModulePathPlanningNASAPhase2::NotifyListeners([&](MaceCore::IModuleEventsPathPlanning* ptr){
-        ptr->EventPP_ExecuteDynamicTarget(this, newAction);
-    });
+//    ModulePathPlanningNASAPhase2::NotifyListeners([&](MaceCore::IModuleEventsPathPlanning* ptr){
+//        ptr->EventPP_ExecuteDynamicTarget(this, newAction);
+//    });
 }
 
 VPF_ResultingForce ModulePathPlanningNASAPhase2::computeVirtualForce(double &vResponse)

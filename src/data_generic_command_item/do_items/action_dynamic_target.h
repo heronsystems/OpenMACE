@@ -5,6 +5,7 @@
 #include "common/class_forward.h"
 
 #include "../target_items/dynamic_target_kinematic.h"
+#include "../target_items/dynamic_target_orientation.h"
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
 #include "data_generic_command_item/interface_command_helper.h"

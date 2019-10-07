@@ -385,7 +385,10 @@ void ModuleROSUMD::setupROS() {
     // *************************** //
     m_armService = nh.advertiseService("command_arm", &MATLABListener::commandArm, m_matlabListener.get());
     m_datumService = nh.advertiseService("command_datum", &MATLABListener::commandDatum, m_matlabListener.get());
-    m_dynamicTargetService = nh.advertiseService("command_dynamic_target", &MATLABListener::commandDynamicTarget, m_matlabListener.get());
+    m_dynamicTargetService_Kinematic = nh.advertiseService("command_dynamic_target_kinematic", &MATLABListener::commandDynamicTarget, m_matlabListener.get());
+    m_dynamicTargetService_OrientationEuler = nh.advertiseService("command_dynamic_target_euler", &MATLABListener::commandDynamicTarget_OrientationEuler, m_matlabListener.get());
+    m_dynamicTargetService_OrientationQuat = nh.advertiseService("command_dynamic_target_quat", &MATLABListener::commandDynamicTarget_OrientationQuat, m_matlabListener.get());
+
     m_landService = nh.advertiseService("command_land", &MATLABListener::commandLand, m_matlabListener.get());
     m_takeoffService = nh.advertiseService("command_takeoff", &MATLABListener::commandTakeoff, m_matlabListener.get());
     m_wptService = nh.advertiseService("command_waypoint", &MATLABListener::commandWaypoint, m_matlabListener.get());
