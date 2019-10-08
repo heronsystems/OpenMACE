@@ -6,19 +6,19 @@
 #include <vector>
 #include <array>
 
-#include "opencv2/opencv.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/highgui.hpp"
+//#include "opencv2/opencv.hpp"
+//#include "opencv2/imgproc.hpp"
+//#include "opencv2/highgui.hpp"
 
-#include "graphs/signed_distance_fields/collision_map.hpp"
+//#include "graphs/signed_distance_fields/collision_map.hpp"
 
-#include "planners/fast_marching/ndgridmap/fmcell.h"
-#include "planners/fast_marching/ndgridmap/ndgridmap.hpp"
-#include "planners/fast_marching/fm2/fm2.hpp"
-#include "planners/graph_planning_node.h"
-#include "planners/fast_marching/fm2/fm2star.hpp"
-#include "planners/fast_marching/fm/fmm.hpp"
-#include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
+//#include "planners/fast_marching/ndgridmap/fmcell.h"
+//#include "planners/fast_marching/ndgridmap/ndgridmap.hpp"
+//#include "planners/fast_marching/fm2/fm2.hpp"
+//#include "planners/graph_planning_node.h"
+//#include "planners/fast_marching/fm2/fm2star.hpp"
+//#include "planners/fast_marching/fm/fmm.hpp"
+//#include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
 
 #include "base/unit_tests/unittests_position.h"
 
@@ -39,15 +39,16 @@ const char kPathSeperator =
 #endif
 using namespace std;
 
-typedef nDGridMap<FMCell, 2> FMGrid2D;
-typedef std::vector<std::array<double, 2>> Path2D;
+//typedef nDGridMap<FMCell, 2> FMGrid2D;
+//typedef std::vector<std::array<double, 2>> Path2D;
 
 //typedef array<unsigned int, 3> Coord3D;
 
-sdf_tools::COLLISION_CELL _free_cell(0.0);
-sdf_tools::COLLISION_CELL _obst_cell(1.0);
-sdf_tools::COLLISION_CELL _oob_cell(INFINITY);
+//sdf_tools::COLLISION_CELL _free_cell(0.0);
+//sdf_tools::COLLISION_CELL _obst_cell(1.0);
+//sdf_tools::COLLISION_CELL _oob_cell(INFINITY);
 
+/*
 double velMapping(double d, double max_v)
 {
     double vel;
@@ -134,11 +135,24 @@ void plotMyArrivalTimesPath(nDGridMap<FMCell, 2>& grid, const Path2D& path, std:
     cv::imshow("Result Map Image",colorResult);
     cv::waitKey(0);
 }
-
+*/
 
 int main(int argc, char *argv[])
 {
-    runPositionTests();
+    //runPositionTests();
+    mace::pose::GeodeticPosition_3D swarmOrigin(-35.3631970,149.1653205,584);
+    mace::pose::GeodeticPosition_3D vehicleOrigin(-35.363261,149.165230,583.83);
+
+    double bearingTo = swarmOrigin.polarBearingTo(&vehicleOrigin);
+    double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleOrigin);
+    double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleOrigin);
+
+    double distanceTranslateX = translationalDistance * cos(correctForAcuteAngle(bearingTo));
+    double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
+    correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
+    Eigen::Vector3d test(distanceTranslateY, distanceTranslateX, altitudeDifference);
+    std::cout<<"Waiting here."<<std::endl;
+//    m_swarmTOvehicleHome.translation() = m_vehicleHomeTOswarm.translation() * -1;
     /*
     Path2D path;
 

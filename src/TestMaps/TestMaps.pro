@@ -51,12 +51,12 @@ LIBS += -lgdi32
 LIBS += -lz
 }
 
-INCLUDEPATH += C:\opencv\opencv4_1_1\release\install\include
+#INCLUDEPATH += C:\opencv\opencv4_1_1\release\install\include
 
-LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_core411.dll
-LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_highgui411.dll
-LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_imgproc411.dll
-LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_imgcodecs411.dll
+#LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_core411.dll
+#LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_highgui411.dll
+#LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_imgproc411.dll
+#LIBS += C:\opencv\opencv4_1_1\release\bin\libopencv_imgcodecs411.dll
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon

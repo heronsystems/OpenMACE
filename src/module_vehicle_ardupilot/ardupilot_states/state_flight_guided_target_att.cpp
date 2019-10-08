@@ -70,6 +70,8 @@ bool State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<AbstractC
 
         constructAndSendTarget(*cmd);
 
+        m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
+
         commandHandled = true;
         break;
     }

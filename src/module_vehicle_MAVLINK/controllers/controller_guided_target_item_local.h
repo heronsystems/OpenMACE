@@ -95,6 +95,13 @@ public:
 
     }
 
+    void updateTransformation(const Eigen::Transform<double,3,Eigen::Affine> &transform)
+    {
+        m_vehicleHomeTOswarm = transform;
+    }
+
+private:
+    Eigen::Transform<double,3,Eigen::Affine> m_vehicleHomeTOswarm;
 };
 
 } //end of namespace MAVLINKVehicleControllers

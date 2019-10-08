@@ -10,7 +10,7 @@ void ControllerGuidedTargetItem_Attitude::FillTargetItem(const command_target::D
 
     if(currentRotation != nullptr)
     {
-        bitArray = bitArray|128;
+        bitArray = (bitArray & (~128));
         Eigen::Quaterniond quat = currentRotation->getQuaternion();
         mavlinkItem.q[0] = static_cast<float>(quat.w());
         mavlinkItem.q[1] = static_cast<float>(quat.x());
@@ -20,10 +20,11 @@ void ControllerGuidedTargetItem_Attitude::FillTargetItem(const command_target::D
 
     if(fabs(command.getTargetThrust() - -1000) > std::numeric_limits<double>::epsilon())
     {
-        bitArray = bitArray|64;
+        bitArray = (bitArray & (~64));
         mavlinkItem.thrust = static_cast<float>(command.getTargetThrust());
     }
 
+    mavlinkItem.type_mask = bitArray;
 }
 
 }// end of namespace MAVLINKVehicleControllers

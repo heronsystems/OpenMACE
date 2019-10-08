@@ -53,7 +53,7 @@ private:
     void constructAndSendTarget(const command_item::Action_DynamicTarget &command)
     {
         MavlinkEntityKey sender = 255;
-        static_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude*>(Owner().ControllersCollection()->At("CartesianTargetController"))->Broadcast(command, sender);
+        static_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude*>(Owner().ControllersCollection()->At("AttitudeTargetController"))->Broadcast(command, sender);
     }
 
 private:

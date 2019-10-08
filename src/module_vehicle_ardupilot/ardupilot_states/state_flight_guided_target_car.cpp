@@ -70,6 +70,7 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
         if(cmd->getDynamicTarget()->getTargetType() == command_target::DynamicTarget::TargetTypes::KINEMATIC)
         {
+            command_target::DynamicTarget_Kinematic* castCommand = cmd->getDynamicTarget()->targetAs<command_target::DynamicTarget_Kinematic>();
             constructAndSendTarget(*cmd);
 
             /*
@@ -79,17 +80,12 @@ bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractC
              *
              * NOTE: Ardupilot requires that all the velocities be valid
              */
-            command_target::DynamicTarget_Kinematic* castCommand = cmd->getDynamicTarget()->targetAs<command_target::DynamicTarget_Kinematic>();
             if((castCommand->getVelocity() != nullptr) && (castCommand->getVelocity()->areAllVelocitiesValid()))
             {
                 m_TimeoutController.registerCurrentTarget(cmd->getDynamicTarget());
             }
 
             commandHandled = true;
-        }
-        else
-        {
-            commandHandled = false;
         }
 
         break;
@@ -134,7 +130,7 @@ void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommand
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
     auto cartesianTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Local(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-
+    cartesianTargetController->updateTransformation(Owner().state->getTransform_SwarmTOVehicleEKF());
     collection->Insert("CartesianTargetController",cartesianTargetController);
 
     this->handleCommand(command);

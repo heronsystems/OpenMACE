@@ -142,13 +142,13 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
         } //end of case command_target::DynamicTarget::TargetTypes::KINEMATIC
         case command_target::DynamicTarget::TargetTypes::ORIENTATION:
         {
-            if(this->IsInState<State_FlightGuided_GeoTarget>())
+            if(this->IsInState<State_FlightGuided_AttTarget>())
             {
                 ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
                 currentInnerState->handleCommand(command);
             }
             else
-                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
             break;
         } //end of case command_target::DynamicTarget::TargetTypes::ORIENTATION
 

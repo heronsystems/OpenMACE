@@ -72,7 +72,7 @@ inline T correctForAcuteAngle(const T &value)
         acuteAngle = value;
     else if((value > M_PI_2) && (value <= M_PI))
         acuteAngle = M_PI - value;
-    else if((value > M_PI) && (value <= (M_PI / 3)))
+    else if((value > M_PI) && (value <= (3 * M_PI / 2)))
         acuteAngle = value - M_PI;
     else
         acuteAngle = M_2_PI - value;
@@ -91,7 +91,7 @@ inline T correctSignFromPolar(T &xValue, T &yValue, const T &polarValue )
     {
         xValue = -1.0 * xValue; yValue = 1.0 * yValue; //we have to change the signs of the x component in the 2nd quadrant
     }
-    else if((polarValue > M_PI) && (polarValue <= (M_PI / 3)))
+    else if((polarValue > M_PI) && (polarValue <= (3 * M_PI / 2)))
     {
         xValue = -1.0 * xValue; yValue = -1.0 * yValue; //we have to change the signs of the x and y components as its in the 3rd quadrant
     }

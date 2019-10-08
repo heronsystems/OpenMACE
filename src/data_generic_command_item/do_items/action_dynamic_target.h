@@ -82,7 +82,8 @@ public:
     void operator = (const Action_DynamicTarget &rhs)
     {
         AbstractCommandItem::operator =(rhs);
-        this->m_Target = rhs.m_Target;
+        if(rhs.m_Target != nullptr)
+            this->m_Target = rhs.m_Target->getDynamicTargetClone();
     }
 
     bool operator == (const Action_DynamicTarget &rhs) {

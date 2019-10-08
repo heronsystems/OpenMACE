@@ -122,7 +122,7 @@ bool MATLABListener::commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
 
     origin.setLatitude(req.latitudeDeg);
     origin.setLongitude(req.longitudeDeg);
-    origin.setAltitude(req.altitudeMSL);
+    origin.setAltitude(req.altitudeMsl);
 
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
@@ -215,14 +215,14 @@ bool MATLABListener::commandDynamicTarget_OrientationEuler(mace_matlab_msgs::CMD
 
     printf("Command Orientation Euler vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
 
-    if((req.bitmask&6) == 0)
+    if((req.bitmask&128) == 0)
     {
         mace::pose::Rotation_3D orientation;
         orientation.updateFromEuler(req.roll, req.pitch, req.yaw);
         currentTarget.setTargetOrientation(&orientation);
     }
 
-    if((req.bitmask&7) == 0)
+    if((req.bitmask&64) == 0)
     {
         currentTarget.setTargetThrust(req.thrust);
     }
@@ -248,7 +248,7 @@ bool MATLABListener::commandDynamicTarget_OrientationQuat(mace_matlab_msgs::CMD_
 
     printf("Command Orientation Quat vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
 
-    if((req.bitmask&6) == 0)
+    if((req.bitmask&128) == 0)
     {
         mace::pose::Rotation_3D orientation;
         Eigen::Quaterniond quat;
@@ -261,7 +261,7 @@ bool MATLABListener::commandDynamicTarget_OrientationQuat(mace_matlab_msgs::CMD_
         currentTarget.setTargetOrientation(&orientation);
     }
 
-    if((req.bitmask&7) == 0)
+    if((req.bitmask&64) == 0)
     {
         currentTarget.setTargetThrust(req.thrust);
     }

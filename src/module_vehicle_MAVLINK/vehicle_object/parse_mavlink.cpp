@@ -142,11 +142,9 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         if(state->vehicleLocalPosition.set(localPosition))
         {
-//            if(!state->swarmGlobalOrigin.get().isAnyPositionValid() || !state->vehicleGlobalOrigin.get().isAnyPositionValid()) //This check may not be necessary as handled via autopilot correctly
-//                break;
-
             //Before publishing the topic we need to transform it
-            localPosition.applyTransformation(state->getTransform_VehicleEKFTOSwarm());
+            localPosition.applyTransformation(state->getTransform_VehicleHomeTOSwarm());
+
             std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> ptrPosition = std::make_shared<mace::pose_topics::Topic_CartesianPosition>(&localPosition);
             if(this->m_CB)
                 this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
@@ -357,7 +355,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                     decodedMSG.longitude / power,
                                                     decodedMSG.altitude / 1000.0);
 
-        currentHome.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_INT);
+        currentHome.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
         currentHome.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
 
         //check that something has actually changed

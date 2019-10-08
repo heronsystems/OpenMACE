@@ -329,8 +329,8 @@ void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_pt
 #ifdef ROS_EXISTS
     mace_matlab_msgs::UPDATE_POSITION position;
     position.vehicleID = vehicleID;
-    position.northing = y;
-    position.easting = x;
+    position.northing = x;
+    position.easting = y;
     position.altitude = -z;
     position.northSpeed = 0.0; // TODO
     position.eastSpeed = 0.0; // TODO
