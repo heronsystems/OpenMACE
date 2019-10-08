@@ -31,9 +31,9 @@ hsm::Transition State_GroundedDisarming::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArdupilotFlightState::STATE_GROUNDED_IDLE:
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
         {
-            return hsm::SiblingTransition<State_GroundedIdle>();
+            rtn = hsm::SiblingTransition<State_GroundedDisarmed>();
             break;
         }
         default:
@@ -46,6 +46,8 @@ hsm::Transition State_GroundedDisarming::GetTransition()
 
 bool State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool handledCommand = false;
+
     COMMANDTYPE type = command->getCommandType();
     switch (type) {
     case COMMANDTYPE::CI_ACT_ARM:
@@ -57,13 +59,15 @@ bool State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractComman
         currentCommand = command->getClone();
         break;
     }
+
+    return handledCommand;
 }
 
 void State_GroundedDisarming::Update()
 {
     if(Owner().state->vehicleArm.get().getSystemArm() == false)
     {
-        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
     }
 }
 
@@ -82,6 +86,7 @@ void State_GroundedDisarming::OnEnter()
 
     controllerArm->setLambda_Shutdown([this, collection]()
     {
+        UNUSED(this);
         auto ptr = collection->Remove("disarmController");
         delete ptr;
     });
@@ -106,7 +111,7 @@ void State_GroundedDisarming::OnEnter(const std::shared_ptr<AbstractCommandItem>
 }
 
 } //end of namespace ardupilot
-} //end of namespace state
+} //end of namespace
 
-#include "ardupilot_states/state_grounded_idle.h"
 #include "ardupilot_states/state_grounded_armed.h"
+#include "ardupilot_states/state_grounded_disarmed.h"

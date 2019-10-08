@@ -20,6 +20,7 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += module_vehicle_ardupilot.cpp \
+    ardupilot_states/state_grounded_disarmed.cpp \
     module_vehicle_ardupilot_mission_parser.cpp \
     ardupilot_states/abstract_state_ardupilot.cpp \
     ardupilot_states/state_takeoff_climbing.cpp \
@@ -58,6 +59,7 @@ SOURCES += module_vehicle_ardupilot.cpp \
     ardupilot_states/state_flight_guided_target_att.cpp
 
 HEADERS += module_vehicle_ardupilot.h\
+    ardupilot_states/state_grounded_disarmed.h \
         module_vehicle_ardupilot_global.h \
     ardupilot_states/abstract_state_ardupilot.h \
     ardupilot_states/ardupilot_hsm.h \

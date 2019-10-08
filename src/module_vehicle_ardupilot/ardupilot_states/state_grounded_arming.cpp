@@ -34,16 +34,16 @@ hsm::Transition State_GroundedArming::GetTransition()
         switch (desiredStateEnum) {
         case ArdupilotFlightState::STATE_GROUNDED_IDLE:
         {
-            return hsm::SiblingTransition<State_GroundedIdle>();
+            rtn = hsm::SiblingTransition<State_GroundedIdle>();
             break;
         }
         case ArdupilotFlightState::STATE_GROUNDED_ARMED:
         {
-            return hsm::SiblingTransition<State_GroundedArmed>(currentCommand);
+            rtn = hsm::SiblingTransition<State_GroundedArmed>(currentCommand);
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_GROUNDED_ARMING."<<(int)desiredStateEnum<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from STATE_GROUNDED_ARMING."<<static_cast<int>(desiredStateEnum)<<std::endl;
             break;
         }
     }

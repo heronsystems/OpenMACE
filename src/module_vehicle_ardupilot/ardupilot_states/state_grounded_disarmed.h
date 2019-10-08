@@ -1,18 +1,17 @@
-#ifndef STATE_GROUNDED_DISARMING_H
-#define STATE_GROUNDED_DISARMING_H
+#ifndef STATE_GROUNDEDDISARMED_H
+#define STATE_GROUNDEDDISARMED_H
 
 #include "abstract_state_ardupilot.h"
 
 namespace ardupilot{
 namespace state{
 
-class State_GroundedArmed;
-class State_GroundedDisarmed;
+class State_GroundedIdle;
 
-class State_GroundedDisarming : public AbstractStateArdupilot
+class State_GroundedDisarmed : public AbstractStateArdupilot
 {
 public:
-    State_GroundedDisarming();
+    State_GroundedDisarmed();
 
 public:
     AbstractStateArdupilot* getClone() const override;
@@ -35,4 +34,4 @@ public:
 } //end of namespace ardupilot
 } //end of namespace state
 
-#endif // STATE_GROUNDED_DISARMING_H
+#endif // STATE_GROUNDEDDISARMED_H
