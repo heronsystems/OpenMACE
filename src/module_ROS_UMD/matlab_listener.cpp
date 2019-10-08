@@ -122,7 +122,7 @@ bool MATLABListener::commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
 
     origin.setLatitude(req.latitudeDeg);
     origin.setLongitude(req.longitudeDeg);
-    origin.setAltitude(0.0);
+    origin.setAltitude(req.altitudeMSL);
 
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
