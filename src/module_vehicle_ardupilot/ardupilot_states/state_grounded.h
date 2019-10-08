@@ -10,6 +10,7 @@ class State_GroundedIdle;
 class State_GroundedArming;
 class State_GroundedArmed;
 class State_GroundedDisarming;
+class State_GroundedDisarmed;
 
 class State_Takeoff;
 

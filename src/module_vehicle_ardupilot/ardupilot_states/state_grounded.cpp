@@ -51,6 +51,11 @@ hsm::Transition State_Grounded::GetTransition()
             return hsm::InnerEntryTransition<State_GroundedDisarming>();
             break;
         }
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
+        {
+            return hsm::InnerEntryTransition<State_GroundedDisarmed>();
+            break;
+        }
         case ArdupilotFlightState::STATE_TAKEOFF:
         case ArdupilotFlightState::STATE_TAKEOFF_CLIMBING:
         case ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING:
@@ -97,6 +102,10 @@ void State_Grounded::OnEnter()
     {
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
     }
+    else if((Owner().state->vehicleArm.hasBeenSet()) && (!Owner().state->vehicleArm.get().getSystemArm()))
+    {
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
+    }
     else
     {
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
@@ -114,6 +123,7 @@ void State_Grounded::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 #include "ardupilot_states/state_grounded_armed.h"
 #include "ardupilot_states/state_grounded_arming.h"
 #include "ardupilot_states/state_grounded_disarming.h"
+#include "ardupilot_states/state_grounded_disarmed.h"
 #include "ardupilot_states/state_grounded_idle.h"
 
 #include "ardupilot_states/state_takeoff.h"

@@ -101,5 +101,4 @@ void State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> 
 } //end of namespace ardupilot
 } //end of namespace
 
-#include "ardupilot_states/state_grounded_armed.h"
-#include "ardupilot_states/state_grounded_disarmed.h"
+#include "ardupilot_states/state_grounded_idle.h"

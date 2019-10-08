@@ -179,9 +179,6 @@ public:
     //!
     void updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component);
 
-    // TODO: Better workaround for transformations
-    void convertToENU(mace::pose::CartesianPosition_3D &localPos);
-
     // ============================================================================= //
     // ========================  ROS Specific functions:  ========================== //
     // ============================================================================= //
@@ -336,7 +333,8 @@ private:
     //!
     //! \brief m_vehiclePosPub Publisher for vehicle position
     //!
-    ros::Publisher m_vehiclePosPub;
+    ros::Publisher m_vehicleLocalPosPub;
+    ros::Publisher m_vehicleGeodeticPosPub;
 
     //!
     //! \brief m_vehicleAttPub Publisher for vehicle attitude

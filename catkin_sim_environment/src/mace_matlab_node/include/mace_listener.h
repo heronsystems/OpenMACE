@@ -8,7 +8,8 @@
 #include <mace_matlab_msgs/UPDATE_CMD_STATUS.h>
 #include <mace_matlab_msgs/UPDATE_GPS.h>
 #include <mace_matlab_msgs/UPDATE_HEARTBEAT.h>
-#include <mace_matlab_msgs/UPDATE_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_GEODETIC_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_LOCAL_POSITION.h>
 #include <mace_matlab_msgs/UPDATE_VEHICLE_TARGET.h>
 
 class MACEListener
@@ -27,7 +28,7 @@ public:
 
     void heartbeatCallback(const mace_matlab_msgs::UPDATE_HEARTBEAT::ConstPtr &msg);
 
-    void positionCallback(const mace_matlab_msgs::UPDATE_POSITION::ConstPtr &msg);
+    void positionCallback(const mace_matlab_msgs::UPDATE_LOCAL_POSITION::ConstPtr &msg);
 
     void vehicleTargetCallback(const mace_matlab_msgs::UPDATE_VEHICLE_TARGET::ConstPtr &msg);
 

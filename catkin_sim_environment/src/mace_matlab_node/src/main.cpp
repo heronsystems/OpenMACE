@@ -5,7 +5,8 @@
 #include <thread>
 #include <geometry_msgs/Pose.h>
 
-#include <mace_matlab_msgs/UPDATE_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_GEODETIC_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_LOCAL_POSITION.h>
 #include <mace_matlab_msgs/UPDATE_ATTITUDE.h>
 #include <mace_matlab_msgs/UPDATE_HEARTBEAT.h>
 #include <mace_matlab_msgs/UPDATE_CMD_STATUS.h>
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
     // *************************** //
     // **** Setup publishers: **** //
     // *************************** //
-    ros::Publisher vehiclePosPub = nh.advertise<mace_matlab_msgs::UPDATE_POSITION> ("/ROS/UPDATE_POSITION", 1000);
+    ros::Publisher vehiclePosPub = nh.advertise<mace_matlab_msgs::UPDATE_LOCAL_POSITION> ("/ROS/UPDATE_LOCAL_POSITION", 1000);
 
     ros::Publisher vehicleAttPub = nh.advertise<mace_matlab_msgs::UPDATE_ATTITUDE> ("/ROS/UPDATE_ATTITUDE", 1000);
 
@@ -70,7 +71,7 @@ int main(int argc, char **argv)
     // Instantiate MACE listener:
     MACEListener maceListener;
 
-    ros::Subscriber positionPub = nh.subscribe<mace_matlab_msgs::UPDATE_POSITION>("MACE/UPDATE_POSITION", 500, &MACEListener::positionCallback, &maceListener);
+    ros::Subscriber positionPub = nh.subscribe<mace_matlab_msgs::UPDATE_LOCAL_POSITION>("MACE/UPDATE_LOCAL_POSITION", 500, &MACEListener::positionCallback, &maceListener);
 
     ros::Subscriber attitudeSub = nh.subscribe<mace_matlab_msgs::UPDATE_ATTITUDE>("MACE/UPDATE_ATTITUDE", 500, &MACEListener::attitudeCallback, &maceListener);
 
