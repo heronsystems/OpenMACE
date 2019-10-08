@@ -52,10 +52,7 @@ bool State_GroundedDisarmed::handleCommand(const std::shared_ptr<AbstractCommand
 
 void State_GroundedDisarmed::Update()
 {
-    StateData_MAVLINK* vehicleData = Owner().state;
 
-    if(vehicleData->vehicleMode.get().getFlightModeString() == "STABILIZE")
-        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
 }
 
 void State_GroundedDisarmed::OnEnter()
@@ -64,15 +61,16 @@ void State_GroundedDisarmed::OnEnter()
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
     auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
+        controllerSystemMode->Shutdown();
         //This does not matter as we shall transition to the idle state
-        UNUSED(controllerSystemMode); UNUSED(completed); UNUSED(finishCode);
+        UNUSED(completed); UNUSED(finishCode);
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     });
 
     controllerSystemMode->setLambda_Shutdown([this, collection]()
     {
         UNUSED(this);
-        auto ptr = collection->Remove("modeController");
+        auto ptr = collection->Remove("State_GroundedDisarmed_modeController");
         delete ptr;
     });
 
@@ -83,7 +81,7 @@ void State_GroundedDisarmed::OnEnter()
     commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
     commandMode.vehicleMode = static_cast<uint8_t>(Owner().ardupilotMode.getFlightModeFromString("STABILIZE"));
     controllerSystemMode->Send(commandMode,sender,target);
-    collection->Insert("modeController",controllerSystemMode);
+    collection->Insert("State_GroundedDisarmed_modeController",controllerSystemMode);
 }
 
 void State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
