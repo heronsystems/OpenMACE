@@ -117,14 +117,16 @@ bool MATLABListener::commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
     printf("Command DATUM vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
 
     mace::pose::GeodeticPosition_3D origin;
+    origin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
+    origin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+
     origin.setLatitude(req.latitudeDeg);
     origin.setLongitude(req.longitudeDeg);
     origin.setAltitude(0.0);
 
-    origin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
-        ptr->Event_SetGlobalOrigin(this, origin);
+        ptr->Event_SetGlobalOrigin(m_parent, origin);
     });
 
     return true;

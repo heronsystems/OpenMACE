@@ -76,9 +76,9 @@ protected:
         double power = std::pow(10,7);
         ack.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
         ack.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
-        ack.setAltitude(msg.altitude);
+        ack.setAltitude(msg.altitude / 1000.0);
         ack.setLatitude(msg.latitude / power);
-        ack.setLongitude(msg.longitude / 1000.0); //transforms it from mm to meters
+        ack.setLongitude(msg.longitude / power); //transforms it from mm to meters
 
         return true;
     }

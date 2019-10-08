@@ -801,7 +801,7 @@ void MaceCore::Event_SetGlobalOrigin(const ModuleBase* sender, const GeodeticPos
 
     command_item::Action_SetGlobalOrigin swarmOrigin;
     swarmOrigin.setGlobalOrigin(&position);
-    MarshalCommandToVehicle<command_item::Action_SetGlobalOrigin>(swarmOrigin.getTargetSystem(), VehicleCommands::UPDATE_GLOBAL_ORIGIN, ExternalLinkCommands::UPDATE_GLOBAL_ORIGIN, swarmOrigin, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::Action_SetGlobalOrigin>(swarmOrigin.getTargetSystem(), VehicleCommands::UPDATE_GLOBAL_ORIGIN, ExternalLinkCommands::UPDATE_GLOBAL_ORIGIN, swarmOrigin);
 
     if(m_PathPlanning && m_PathPlanning.get() != sender) {
         m_PathPlanning->MarshalCommand(PathPlanningCommands::UPDATE_GLOBAL_ORIGIN, position);

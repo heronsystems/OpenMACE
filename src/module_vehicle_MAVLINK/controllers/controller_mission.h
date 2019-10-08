@@ -469,6 +469,7 @@ private:
         {
             //Mission exchanges are always going to exist on a geodetic frame and eventually we should check this Ken
             mace::pose::GeodeticPosition_3D homePosition;
+            homePosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
             homePosition.setLatitude(msg.x);
             homePosition.setLongitude(msg.y);
             homePosition.setAltitude(msg.z);
