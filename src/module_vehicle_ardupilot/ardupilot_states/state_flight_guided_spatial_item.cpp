@@ -39,6 +39,11 @@ hsm::Transition State_FlightGuided_SpatialItem::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE:
+        {
+            rtn = hsm::SiblingTransition<State_FlightGuided_Idle>(currentCommand);
+            break;
+        }
         default:
             std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED_SPATIALITEM."<<std::endl;
             break;
@@ -194,3 +199,5 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
 
 } //end of namespace ardupilot
 } //end of namespace state
+
+#include "state_flight_guided_idle.h"
