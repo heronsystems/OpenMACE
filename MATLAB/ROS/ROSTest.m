@@ -10,7 +10,7 @@ should_arm = true;
 should_takeoff = true;
 
 test_PositionSequence_Local = true;
-test_VelocitySequence = true;
+test_VelocitySequence = true
 test_PositionSequence_Global = true;
 test_AttitudeSequence_Euler = true;
 
@@ -26,7 +26,9 @@ rosinit
 rostopic list
 
 % Set up subscribers:
-positionSub = rossubscriber('/MACE/UPDATE_POSITION', @positionCallback, 'BufferSize', 10);
+localPositionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION', @localPositionCallback, 'BufferSize', 10);
+geodeticPositionSub = rossubscriber('/MACE/UPDATE_GEODETIC_POSITION', @geodeticPositionCallback, 'BufferSize', 10);
+
 attitudeSub = rossubscriber('/MACE/UPDATE_ATTITUDE', @attitudeCallback, 'BufferSize', 10);
 batterySub = rossubscriber('/MACE/UPDATE_BATTERY', @batteryCallback, 'BufferSize', 10);
 gpsSub = rossubscriber('/MACE/UPDATE_GPS', @gpsCallback, 'BufferSize', 10);
@@ -113,7 +115,7 @@ if should_takeoff
     % takeoffRequest.LongitudeDeg = 0.0; % If 0.0, takeoff where you currently are
     
     takeoffResponse = call(takeoffClient, takeoffRequest, 'Timeout', 10);
-    pause(10);
+    pause(15);
 end
 
 
