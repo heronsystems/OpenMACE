@@ -176,8 +176,8 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         if(state->vehicleGlobalPosition.set(globalPosition))
         {
             std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> ptrPosition = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>(&globalPosition);
-//            if(this->m_CB)
-//                this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
+            if(this->m_CB)
+                this->m_CB->cbi_VehicleStateData(systemID,ptrPosition);
         }
         break;
     }

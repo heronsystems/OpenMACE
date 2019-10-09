@@ -320,9 +320,9 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     newCommand.setOriginatingSystem(255);
     command_target::DynamicTarget_Kinematic newTarget;
     mace::pose::CartesianPosition_3D currentPositionTarget;
-    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_NED);
+    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_OFFSET_NED);
     currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
-    currentPositionTarget.updatePosition(-10,0,-20);
+    currentPositionTarget.updatePosition(10,0,0);
     newTarget.setPosition(&currentPositionTarget);
 //    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
 //    currentVelocityTarget.setXVelocity(5.0);
@@ -334,22 +334,37 @@ void GUItoMACE::testFunction1(const int &vehicleID)
     yaw.setPhi(M_PI_4);
     newTarget.setYaw(&yaw);
 
-//    newCommand.setDynamicTarget(newTarget);
-//    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-//        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
-//    });
+    newCommand.setDynamicTarget(&newTarget);
+    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
+    });
 
 }
 
 void GUItoMACE::testFunction2(const int &vehicleID)
 {
-    mace::state_space::GoalState goal;
-    mace::state_space::State* newState = goalSpace->getNewState();
-    m_goalSampler->sampleUniform(newState);
-    goal.setState(newState);
-    goalSpace->removeState(newState);
+    command_item::Action_DynamicTarget newCommand;
+    newCommand.setTargetSystem(vehicleID);
+    newCommand.setOriginatingSystem(255);
+    command_target::DynamicTarget_Kinematic newTarget;
+    mace::pose::CartesianPosition_3D currentPositionTarget;
+    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_BODY_OFFSET_NED);
+    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+    currentPositionTarget.updatePosition(10,0,0);
+    newTarget.setPosition(&currentPositionTarget);
+//    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+//    currentVelocityTarget.setXVelocity(5.0);
+//    currentVelocityTarget.setYVelocity(0.0);
+//    currentVelocityTarget.setZVelocity(0.0);
+//    newTarget.setVelocity(&currentVelocityTarget);
+
+    mace::pose::Rotation_2D yaw;
+    yaw.setPhi(M_PI_4);
+    newTarget.setYaw(&yaw);
+
+    newCommand.setDynamicTarget(&newTarget);
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->Event_ProcessGoalState(m_parent, goal);
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
     });
 }
 

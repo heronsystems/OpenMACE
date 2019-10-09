@@ -49,7 +49,7 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
         {
             mace::pose::CartesianPosition_2D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::CartesianPosition_2D>();
             mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
-            if(!isInBodyFrame(castPosition->getCartesianCoordinateFrame())) //if not in the body frame we can move it
+            if(castPosition->getCartesianCoordinateFrame() == mace::CartesianFrameTypes::CF_LOCAL_NED) //if not in the body frame we can move it
                 castPosition->applyTransformation(m_vehicleHomeTOswarm);
             if(castPosition->hasXBeenSet())
                 mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
@@ -60,7 +60,7 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
         {
             mace::pose::CartesianPosition_3D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
             mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
-            if(!isInBodyFrame(castPosition->getCartesianCoordinateFrame())) //if not in the body frame we can move it
+            if(castPosition->getCartesianCoordinateFrame() == mace::CartesianFrameTypes::CF_LOCAL_NED) //if not in the body frame we can move it
                 castPosition->applyTransformation(m_vehicleHomeTOswarm);
             if(castPosition->hasXBeenSet())
                 mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
