@@ -57,9 +57,7 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
         {
             mace::pose::CartesianPosition_3D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
             mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
-            std::cout<<"Position Before: "<<castPosition->printPositionalInfo()<<std::endl;
             castPosition->applyTransformation(m_vehicleHomeTOswarm);
-            std::cout<<"Position After: "<<castPosition->printPositionalInfo()<<std::endl;
 
             if(castPosition->hasXBeenSet())
                 mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
