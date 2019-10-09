@@ -10,9 +10,10 @@ should_arm = true;
 should_takeoff = true;
 
 test_PositionSequence_Local = true;
-test_VelocitySequence = true
+test_VelocitySequence = true;
 test_PositionSequence_Global = true;
 test_AttitudeSequence_Euler = true;
+test_WaypointCommand = true;
 
 should_land = true;
 
@@ -55,15 +56,6 @@ waypointClient = rossvcclient('command_waypoint');
 %   3) Takeoff vehicle
 %   4) Issue waypoint command after altitude achieved
 %   5) Land vehicle after waypoint achieved
-
-% Setup Waypoint command :
-% waypointRequest = rosmessage(waypointClient);
-% waypointRequest.Timestamp = rostime('now');
-% waypointRequest.VehicleID = 1; % Vehicle ID
-% waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
-% waypointRequest.Northing = 10; % Relative northing position to Datum
-% waypointRequest.Easting = 10; % Relative easting position to Datum
-% waypointRequest.Altitude = 10;
 
 %% Execute Datum Sequence
 if should_setDatum
@@ -115,66 +107,26 @@ if should_takeoff
     % takeoffRequest.LongitudeDeg = 0.0; % If 0.0, takeoff where you currently are
     
     takeoffResponse = call(takeoffClient, takeoffRequest, 'Timeout', 10);
-    pause(15);
+    pause(20);
+    
+    dynamicTargetRequest = rosmessage(dynamicTargetClient_Kinematic);
+    dynamicTargetRequest.Timestamp = rostime('now');
+    dynamicTargetRequest.VehicleID = 1; % Vehicle ID
+    dynamicTargetRequest.CoordinateFrame = 3; %3 is global relative alt
+    dynamicTargetRequest.XP = 149.1653205; %longitude is in the X position
+    dynamicTargetRequest.YP = -35.3631970; %latitude is in the Y position
+    dynamicTargetRequest.ZP = 20;
+    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
+    disp('Call dynamic target command');
+    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
+    pause(20);
 end
 
 
 %% Execute a square pattern with local coordinates
 
 if test_PositionSequence_Local
-    dynamicTargetRequest = rosmessage(dynamicTargetClient_Kinematic);
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.VehicleID = 1; % Vehicle ID
-    dynamicTargetRequest.CoordinateFrame = 11; %11 is local NED
-    dynamicTargetRequest.XP = 0;
-    dynamicTargetRequest.YP = 0;
-    dynamicTargetRequest.ZP = -20;
-    dynamicTargetRequest.XV = 0;
-    dynamicTargetRequest.YV = 0;
-    dynamicTargetRequest.ZV = 0;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    
-    %waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.XP = 0;
-    dynamicTargetRequest.YP = 10;
-    dynamicTargetRequest.ZP = -20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.XP = 10;
-    dynamicTargetRequest.YP = 10;
-    dynamicTargetRequest.ZP = -20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.XP = 10;
-    dynamicTargetRequest.YP = 0;
-    dynamicTargetRequest.ZP = -20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.XP = 0;
-    dynamicTargetRequest.YP = 0;
-    dynamicTargetRequest.ZP = -20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
+    local_position_test();
 end
 
 %% Execute a series of velocity commands
@@ -253,48 +205,10 @@ end
 %% Execute a square pattern with Global coordinates
 
 if test_PositionSequence_Global
-    dynamicTargetRequest = rosmessage(dynamicTargetClient_Kinematic);
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.VehicleID = 1; % Vehicle ID
-    dynamicTargetRequest.CoordinateFrame = 3; %3 is global relative alt
-    dynamicTargetRequest.XP = 149.1655330; %longitude is in the X position
-    dynamicTargetRequest.YP = -35.3631790; %latitude is in the Y position
-    dynamicTargetRequest.ZP = 20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.XP = 149.1655424;
-    dynamicTargetRequest.YP = -35.3629690;
-    dynamicTargetRequest.ZP = 20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.XP = 149.1652742;
-    dynamicTargetRequest.YP = -35.3629679;
-    dynamicTargetRequest.ZP = 20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
-    dynamicTargetRequest.Timestamp = rostime('now');
-    dynamicTargetRequest.XP = 149.1652688;
-    dynamicTargetRequest.YP = -35.3631943;
-    dynamicTargetRequest.ZP = 20;
-    dynamicTargetRequest.Bitmask = 65528; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-    disp('Call dynamic target command');
-    waypointResponse = call(dynamicTargetClient_Kinematic, dynamicTargetRequest, 'Timeout', 5);
-    pause(10);
-    
+    global_position_test();
 end
 
-%% Execute Euler Commands 
+%% Execute Euler Commands
 
 if test_AttitudeSequence_Euler
     % Setup orientation command:
@@ -337,7 +251,7 @@ if test_AttitudeSequence_Euler
     waypointResponse = call(dynamicTargetClient_EOrientation, dynamicTargetRequest, 'Timeout', 5);
     pause(2);
     
-        % Setup orientation command:
+    % Setup orientation command:
     dynamicTargetRequest = rosmessage(dynamicTargetClient_EOrientation);
     dynamicTargetRequest.Timestamp = rostime('now');
     dynamicTargetRequest.VehicleID = 1; % Vehicle ID
@@ -363,7 +277,7 @@ if test_AttitudeSequence_Euler
     waypointResponse = call(dynamicTargetClient_EOrientation, dynamicTargetRequest, 'Timeout', 5);
     pause(2);
     
-        % Setup orientation command:
+    % Setup orientation command:
     dynamicTargetRequest = rosmessage(dynamicTargetClient_EOrientation);
     dynamicTargetRequest.Timestamp = rostime('now');
     dynamicTargetRequest.VehicleID = 1; % Vehicle ID
@@ -390,7 +304,7 @@ if test_AttitudeSequence_Euler
     waypointResponse = call(dynamicTargetClient_EOrientation, dynamicTargetRequest, 'Timeout', 5);
     pause(2);
     
-            % Setup orientation command:
+    % Setup orientation command:
     dynamicTargetRequest = rosmessage(dynamicTargetClient_EOrientation);
     dynamicTargetRequest.Timestamp = rostime('now');
     dynamicTargetRequest.VehicleID = 1; % Vehicle ID
@@ -415,6 +329,26 @@ if test_AttitudeSequence_Euler
     disp('Call set desired euler');
     waypointResponse = call(dynamicTargetClient_EOrientation, dynamicTargetRequest, 'Timeout', 5);
     pause(2);
+end
+
+
+%% Execute a Simple Waypoint Test
+
+if test_WaypointCommand
+    
+    %     Setup Waypoint command :
+    waypointRequest = rosmessage(waypointClient);
+    waypointRequest.Timestamp = rostime('now');
+    waypointRequest.VehicleID = 1; % Vehicle ID
+    waypointRequest.CommandID = 3; % TODO: Set command ID enum in MACE
+    waypointRequest.Northing = 10; % Relative northing position to Datum
+    waypointRequest.Easting = 10; % Relative easting position to Datum
+    waypointRequest.Altitude = 10;
+    
+    disp('Call waypoint command');
+    waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
+    
+    
 end
 
 %% Execute a landing
