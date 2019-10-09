@@ -41,7 +41,7 @@ hsm::Transition State_FlightGuided_SpatialItem::GetTransition()
         switch (desiredStateEnum) {
         case ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE:
         {
-            rtn = hsm::SiblingTransition<State_FlightGuided_Idle>(currentCommand);
+            rtn = hsm::SiblingTransition<State_FlightGuided_Idle>();
             break;
         }
         default:

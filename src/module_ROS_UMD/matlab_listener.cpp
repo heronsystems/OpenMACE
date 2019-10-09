@@ -90,15 +90,14 @@ bool MATLABListener::commandWaypoint(mace_matlab_msgs::CMD_WPT::Request  &req,
     DynamicsAid::LocalPositionToGlobal(&globalOrigin,&localPosition,&tgtImmediate);
 
     mace::pose::GeodeticPosition_3D targetPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
-                                  tgtImmediate.getLongitude(), tgtImmediate.getLatitude(),
-                                  AltitudeReferenceTypes::REF_ALT_RELATIVE, tgtImmediate.getAltitude(), "");
+                                  tgtImmediate.getLatitude(), tgtImmediate.getLongitude(),
+                                  AltitudeReferenceTypes::REF_ALT_RELATIVE, req.altitude, "");
 
     command_item::Action_ExecuteSpatialItem goToCommand;
     goToCommand.setTargetSystem(req.vehicleID);
 
     command_item::SpatialWaypoint targetWaypoint;
     targetWaypoint.setPosition(&targetPosition);
-
     AbstractSpatialActionPtr newPtr = std::make_shared<command_item::SpatialWaypoint>(targetWaypoint);
     goToCommand.setSpatialAction(newPtr);
 
