@@ -23,6 +23,21 @@ enum class CartesianFrameTypes: uint8_t{
     LOCAL_FRAMES
 };
 
+inline bool isInBodyFrame(const CartesianFrameTypes &frame)
+{
+    bool isBody = false;
+    switch (frame) {
+    case CartesianFrameTypes::CF_BODY_OFFSET_NED:
+    case CartesianFrameTypes::CF_BODY_NED:
+    case CartesianFrameTypes::CF_BODY_ENU:
+        isBody = true;
+        break;
+    default:
+        break;
+    }
+    return isBody;
+}
+
 inline AltitudeReferenceTypes getAltitudeReference(const CartesianFrameTypes &frame)
 {
     AltitudeReferenceTypes altitudeFrame = AltitudeReferenceTypes::REF_ALT_UNKNOWN;

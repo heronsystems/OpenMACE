@@ -48,6 +48,9 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
         if(currentTarget.getPosition()->is2D())
         {
             mace::pose::CartesianPosition_2D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::CartesianPosition_2D>();
+            mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
+            if(!isInBodyFrame(castPosition->getCartesianCoordinateFrame())) //if not in the body frame we can move it
+                castPosition->applyTransformation(m_vehicleHomeTOswarm);
             if(castPosition->hasXBeenSet())
                 mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
             if(castPosition->hasYBeenSet())
@@ -57,8 +60,8 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
         {
             mace::pose::CartesianPosition_3D* castPosition = currentTarget.getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
             mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
-            castPosition->applyTransformation(m_vehicleHomeTOswarm);
-
+            if(!isInBodyFrame(castPosition->getCartesianCoordinateFrame())) //if not in the body frame we can move it
+                castPosition->applyTransformation(m_vehicleHomeTOswarm);
             if(castPosition->hasXBeenSet())
                 mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
             if(castPosition->hasYBeenSet())
@@ -124,9 +127,9 @@ bool ControllerGuidedTargetItem_Local::doesMatchTransmitted(const mavlink_positi
     if(fabsf(m_targetMSG.yaw_rate - msg.yaw_rate) > std::numeric_limits<float>::epsilon())
         return false;
 
-    if(fabs(m_targetMSG.x - static_cast<double>(msg.x)) > 0.1)
+    if(fabs(static_cast<double>(m_targetMSG.x) - static_cast<double>(msg.x)) > 0.1)
         return false;
-    if(fabs(m_targetMSG.y - static_cast<double>(msg.y)) > 0.1)
+    if(fabs(static_cast<double>(m_targetMSG.y) - static_cast<double>(msg.y)) > 0.1)
         return false;
 
 //    if(m_targetMSG.coordinate_frame != msg.coordinate_frame)
