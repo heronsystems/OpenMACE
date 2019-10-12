@@ -15,7 +15,6 @@
 #include <tuple>
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
 #include "base/pose/cartesian_position_2D.h"
 #include "base/geometry/cell_2DC.h"
 #include "maps/bounded_2D_grid.h"
@@ -49,7 +48,7 @@ public:
      * @param gridSpacing Spacing between grid points
      * @param globalOrigin Global origin for environment
      */
-    Environment_Map(const Polygon_2DC &boundingPolygon, const double &gridSpacing, const bool &globalInstance);
+    Environment_Map(const Polygon_Cartesian &boundingPolygon, const double &gridSpacing, const bool &globalInstance);
 
     ~Environment_Map()
     {
@@ -62,14 +61,14 @@ public:
      * @param sitePositions Positions of sites (in x,y coordinates)
      * @return Success or Failure
      */
-    bool computeVoronoi(std::vector<Cell_2DC> &cellVec, const std::vector<Position<CartesianPosition_2D> > &sitePositions);
+    bool computeVoronoi(std::vector<Cell_2DC> &cellVec, const std::vector<mace::pose::CartesianPosition_2D> &sitePositions);
 
     /**
      * @brief Environment_Map::computeBalancedVoronoi Use the number of vehicles and their positions to create a balanced Voronoi partition
      * @param vehicles Map of vehicles and their positions
      * @return Success or Failure
      */
-    bool computeBalancedVoronoi(const std::map<int, Position<CartesianPosition_2D> > &vehicles);
+    bool computeBalancedVoronoi(const std::map<int, mace::pose::CartesianPosition_2D> &vehicles);
 
     /**
      * @brief getCells Return the cells that make up our Voronoi partition
@@ -81,13 +80,13 @@ public:
      * @brief getBoundaryVerts Return the vector of points that make up the boundary
      * @return Vector of points making up a boundary
      */
-    std::vector<Position<CartesianPosition_2D>> getBoundaryVerts() { return boundaryVerts ;}
+    std::vector<mace::pose::CartesianPosition_2D> getBoundaryVerts() { return boundaryVerts ;}
 
     /**
      * @brief getBoundingBox Return the bounding polygon
      * @return Polygon representing the boundary
      */
-    Polygon_2DC getBoundingPolygon() { return m_boundary; }
+    Polygon_Cartesian getBoundingPolygon() { return m_boundary; }
 
 
     /**
@@ -112,7 +111,7 @@ private:
     {
         if(!m_globalInstance) {
             delete m_dataGrid;
-            m_dataGrid = NULL;
+            m_dataGrid = nullptr;
         }
     }
 
@@ -130,12 +129,12 @@ private:
      * that define the boundary in which the environment is valid for vehicle
      * movement.
      */
-    mace::geometry::Polygon_2DC m_boundary;
+    mace::geometry::Polygon_Cartesian m_boundary;
 
     /**
      * @brief boundaryVerts Vertices that make up the environment boundary
      */
-    std::vector<Position<CartesianPosition_2D> > boundaryVerts;
+    std::vector<mace::pose::CartesianPosition_2D> boundaryVerts;
 
     /**
      * @brief cells Container for cells corresponding to each vehicle

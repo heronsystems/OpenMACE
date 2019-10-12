@@ -11,10 +11,7 @@ class OctomapSensorDefinition
 {
 public:
 
-    OctomapSensorDefinition()
-    {
-
-    }
+    OctomapSensorDefinition() = default;
 
     OctomapSensorDefinition(const OctomapSensorDefinition &copy)
     {

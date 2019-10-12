@@ -1,62 +1,71 @@
 #ifndef DYNAMIC_TARGET_LIST_H
 #define DYNAMIC_TARGET_LIST_H
-#include <iostream>
-#include <stdint.h>
-#include <memory>
+
 #include <list>
-#include <map>
 
-#include "../mission_items/mission_list.h"
+#include "dynamic_target_state.h"
 
-#include "base/pose/cartesian_position_3D.h"
-#include "base/pose/cartesian_velocity_3D.h"
+namespace command_target {
 
-#include "dynamic_target_storage.h"
-
-namespace TargetItem {
+MACE_CLASS_FORWARD(DynamicTargetList);
 
 class DynamicTargetList{
 
 public:
+    //!
+    //! \brief DynamicTargetList
+    //!
     DynamicTargetList();
+
+    //!
+    //! \brief DynamicTargetList
+    //! \param rhs
+    //!
     DynamicTargetList(const DynamicTargetList &rhs);
 
 public:
-    size_t listSize() const;
     void clearList();
 
-    void appendDynamicTarget(const CartesianDynamicTarget &target, const DynamicTargetStorage::TargetCompletion &state = DynamicTargetStorage::TargetCompletion::INCOMPLETE);
+    void appendDynamicTarget(const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state = DynamicTargetState::TARGETSTATE::INCOMPLETE);
+
     void removeTargetAtIndex(const unsigned int &index);
 
-    void replaceTargetAtIndex(const unsigned int &index, const CartesianDynamicTarget &target, const DynamicTargetStorage::TargetCompletion &state = DynamicTargetStorage::TargetCompletion::INCOMPLETE);
-    void spliceTargetListAtIndex(const unsigned int &index, const std::list<DynamicTargetStorage> &list);
+    void replaceTargetAtIndex(const unsigned int &index, const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state = DynamicTargetState::TARGETSTATE::INCOMPLETE);
 
-    bool isCompleted() const;
+    void spliceTargetListAtIndex(const unsigned int &index, const std::list<DynamicTargetState> &list);
 
-    unsigned int getActiveTargetItem() const;
+    bool isListCompleted() const;
 
-
-public:
-    const DynamicTargetStorage* getTargetStorageAtIndex(const unsigned int &index) const;
-    CartesianDynamicTarget getTargetAtIndex(const unsigned int &index) const;
-    const CartesianDynamicTarget* getTargetPointerAtIndex(const unsigned int &index) const;
-    const CartesianDynamicTarget* getNextIncomplete() const;
-    const CartesianDynamicTarget* markCompletionState(const unsigned int &index, const DynamicTargetStorage::TargetCompletion &state);
+    unsigned int getActiveTargetIndex() const;
 
 public:
+    const DynamicTargetState* getDynamicTargetState(const unsigned int &index) const;
 
+    DynamicTarget_Kinematic getDynamicTarget(const unsigned int &index) const;
+
+    const DynamicTarget_Kinematic* getDynamicTarget_Pointer(const unsigned int &index) const;
+
+    const DynamicTarget_Kinematic* getNextIncompleteTarget() const;
+
+    const DynamicTarget_Kinematic* updateTargetState(const unsigned int &index, const DynamicTargetState::TARGETSTATE &state);
+
+    /** Assignment Operators */
+public:
     DynamicTargetList& operator = (const DynamicTargetList &rhs)
     {
         this->activeTargetItem = rhs.activeTargetItem;
-        this->targetList = rhs.targetList;
+
+        this->m_TargetList = rhs.m_TargetList;
         return *this;
     }
 
+    /** Relational Operators */
+public:
     bool operator == (const DynamicTargetList &rhs) const{
         if(this->activeTargetItem != rhs.activeTargetItem){
             return false;
         }
-        if(this->targetList != rhs.targetList){
+        if(this->m_TargetList != rhs.m_TargetList){
             return false;
         }
         return true;
@@ -66,10 +75,11 @@ public:
         return !(*this == rhs);
     }
 
-private:
-    std::list<DynamicTargetStorage> targetList;
-    unsigned int activeTargetItem = 0;
+public:
+    std::list<DynamicTargetState> m_TargetList;
 
+private:
+    unsigned int activeTargetItem = 0;
 };
 
 } //end of namespace MissionItem

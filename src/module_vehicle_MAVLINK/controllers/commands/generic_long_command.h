@@ -10,10 +10,9 @@
 
 #include "mavlink.h"
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-
 #include "module_vehicle_MAVLINK/controllers/common.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template <typename T>
 using ActionSend_LongCommand_TargedWithResponse = Controllers::ActionSend<

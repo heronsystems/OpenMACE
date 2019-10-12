@@ -50,35 +50,49 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 {
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
         currentCommand = command->getClone();
-        const CommandItem::SpatialLand* cmd = currentCommand->as<CommandItem::SpatialLand>();
-        if(cmd->getPosition().has3DPositionSet())
+        const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
+        if(cmd->getPosition()->areTranslationalComponentsValid())
         {
-            Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd]
+            switch (cmd->getPosition()->getCoordinateSystemType()) {
+            case(CoordinateSystemTypes::GEODETIC):
             {
-                if(cmd->getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
+                Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd]
                 {
-                    StateGlobalPosition cmdPos(cmd->getPosition().getX(),cmd->getPosition().getY(),cmd->getPosition().getZ());
-                    StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
-                    double distance = fabs(currentPosition.distanceBetween2D(cmdPos));
+                    mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
+                    double distance = fabs(currentPosition.distanceBetween2D(cmd->getPosition()->positionAs<mace::pose::Abstract_GeodeticPosition>()));
 
                     Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
 
-                    MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmdPos, distance, guidedState);
-                    Owner().callTargetCallback(vehicleTarget);
+//                    MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), cmd->getPosition());
+//                    Owner().callTargetCallback(vehicleTarget);
 
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {
                         desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
                     }
-                }
-            });
+                     });
+                break;
+            }
+            case(CoordinateSystemTypes::CARTESIAN):
+            {
+                desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
+                break;
+            }
+            case(CoordinateSystemTypes::UNKNOWN):
+            case (CoordinateSystemTypes::NOT_IMPLIED):
+            {
+                desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
+                break;
+            }
+            }
 
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-            auto landingTransitioning = new MAVLINKVehicleControllers::ControllerGuidedMissionItem<CommandItem::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            auto landingTransitioning = new MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             landingTransitioning->AddLambda_Finished(this, [this,landingTransitioning](const bool completed, const uint8_t finishCode){
+                UNUSED(this);
                 if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
                     std::cout<<"We are not going to perform the transition portion of the landing."<<std::endl;
                 landingTransitioning->Shutdown();
@@ -86,6 +100,7 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 
             landingTransitioning->setLambda_Shutdown([this, collection]()
             {
+                UNUSED(this);
                 auto ptr = collection->Remove("landingTransition");
                 delete ptr;
             });
@@ -93,9 +108,8 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
             MavlinkEntityKey target = Owner().getMAVLINKID();
             MavlinkEntityKey sender = 255;
 
-            Base3DPosition cmdPosition = cmd->getPosition();
-            CommandItem::SpatialWaypoint landingTarget(255,cmd->getTargetSystem());
-            landingTarget.setPosition(cmdPosition);
+            command_item::SpatialWaypoint landingTarget(255,static_cast<uint8_t>(cmd->getTargetSystem()));
+            landingTarget.setPosition(cmd->getPosition());
             landingTransitioning->Send(landingTarget,sender,target);
             collection->Insert("landingTransition",landingTransitioning);
         }

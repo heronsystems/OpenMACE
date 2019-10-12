@@ -1,17 +1,19 @@
 #ifndef LAYERED_MAP_H
 #define LAYERED_MAP_H
 
-
 #include <map>
 #include <string>
-#include <maps/bounded_2D_grid.h>
-#include <maps/iterators/circle_map_iterator.h>
-#include <maps/iterators/polygon_map_iterator.h>
-#include <maps/iterators/grid_map_iterator.h>
-#include <maps/base_grid_map.h>
-#include <maps/occupancy_definition.h>
-#include <maps/data_2d_grid.h>
-#include <maps/map_cell.h>
+#include <unordered_map>
+
+#include "base_grid_map.h"
+
+#include "bounded_2D_grid.h"
+#include "iterators/circle_map_iterator.h"
+#include "iterators/polygon_map_iterator.h"
+#include "iterators/grid_map_iterator.h"
+#include "occupancy_definition.h"
+#include "data_2d_grid.h"
+#include "map_cell.h"
 
 #include <common/logging/macelog.h>
 
@@ -155,7 +157,7 @@ private:
     //!
     static void staticCallbackFunction_UpdateGridSize(void *p, mace::maps::mapSize &mapSize)
     {
-        ((LayeredMap *)p)->callbackUpdateGridSize(mapSize);
+        ((LayeredMap*)p)->callbackUpdateGridSize(mapSize);
     }
 
     //!

@@ -197,11 +197,11 @@ namespace ExternalLink{
 
 
         //construct return message
-        mace::pose::Position<mace::pose::CartesianPosition_2D> ptrItem = this->m_BoundariesUploading[pair].getBoundaryItemAtIndex(index);
+        mace::pose::CartesianPosition_2D ptrItem = this->m_BoundariesUploading[pair].getBoundaryItemAtIndex(index);
         boundaryItem.boundary_host_sysid = msg.boundary_host_sysid;
         boundaryItem.boundary_host_compid = msg.boundary_host_compid;
         boundaryItem.boundary_identifier = msg.boundary_identifier;
-        boundaryItem.frame = MAV_FRAME_LOCAL_ENU;
+        boundaryItem.frame = UXV_FRAME_LOCAL_ENU;
         boundaryItem.seq = index;
         boundaryItem.x = ptrItem.getXPosition();
         boundaryItem.y = ptrItem.getYPosition();
@@ -263,11 +263,11 @@ namespace ExternalLink{
             return false;
         }
 
-        Position<CartesianPosition_2D> newVertex;
+        CartesianPosition_2D newVertex;
         newVertex.setXPosition(msg.x);
         newVertex.setYPosition(msg.y);
 
-        std::get<1>(m_BoundariesBeingFetching[pair]).replaceVertexItemAtIndex(newVertex, seqReceived);
+        std::get<1>(m_BoundariesBeingFetching[pair]).replaceVertexItemAtIndex(&newVertex, seqReceived);
 
         BoundaryItem::BoundaryList::BoundaryListStatus status = std::get<1>(m_BoundariesBeingFetching[pair]).getBoundaryListStatus();
         if(status.state == BoundaryItem::BoundaryList::COMPLETE)
@@ -338,11 +338,11 @@ namespace ExternalLink{
             return false;
         }
 
-        Position<CartesianPosition_2D> newVertex;
+        CartesianPosition_2D newVertex;
         newVertex.setXPosition(msg.x);
         newVertex.setYPosition(msg.y);
 
-        std::get<1>(m_BoundariesBeingFetching[pair]).replaceVertexItemAtIndex(newVertex, seqReceived);
+        std::get<1>(m_BoundariesBeingFetching[pair]).replaceVertexItemAtIndex(&newVertex, seqReceived);
 
         BoundaryItem::BoundaryList::BoundaryListStatus status = std::get<1>(m_BoundariesBeingFetching[pair]).getBoundaryListStatus();
         if(status.state == BoundaryItem::BoundaryList::INCOMPLETE)

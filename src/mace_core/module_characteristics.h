@@ -28,8 +28,8 @@ enum class ModuleClasses
 //!
 struct ModuleCharacteristic
 {
-    int MaceInstance;
-    int ModuleID;
+    unsigned int MaceInstance;
+    unsigned int ModuleID;
 
     bool operator== (const ModuleCharacteristic &rhs) const
     {

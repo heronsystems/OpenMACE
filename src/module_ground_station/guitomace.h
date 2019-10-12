@@ -21,26 +21,19 @@
 #include "data_generic_item/data_generic_item_components.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
 
-#include "data_generic_state_item/state_item_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
-
 #include "data_generic_command_item/command_item_components.h"
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
 #include "data_vehicle_sensors/components.h"
-#include "data_generic_state_item/positional_aid.h"
 
-#include "base_topic/vehicle_topics.h"
+#include "base/state_space/cartesian_2D_space.h"
 
 class GUItoMACE
 {
-private:
-
-    const BaseTopic::VehicleTopics *m_VehicleTopics;
 public:
-    GUItoMACE(const MaceCore::IModuleCommandGroundStation *ptrRef, const BaseTopic::VehicleTopics *);
-    GUItoMACE(const MaceCore::IModuleCommandGroundStation *ptrRef, const BaseTopic::VehicleTopics *, const QHostAddress &sendAddress, const int &sendPort);
+    GUItoMACE(const MaceCore::IModuleCommandGroundStation *ptrRef);
+    GUItoMACE(const MaceCore::IModuleCommandGroundStation *ptrRef, const QHostAddress &sendAddress, const int &sendPort);
 
     ~GUItoMACE();
 
@@ -178,6 +171,10 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
+
+    mace::state_space::Cartesian2DSpacePtr goalSpace;
+    mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
+
 };
 
 #endif // GUITOMACE_H

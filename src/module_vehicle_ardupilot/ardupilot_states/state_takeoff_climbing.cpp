@@ -6,8 +6,8 @@ namespace state{
 State_TakeoffClimbing::State_TakeoffClimbing():
     AbstractStateArdupilot()
 {
-    guidedProgress = ArdupilotTargetProgess(1,10,10);
     std::cout<<"We are in the constructor of STATE_TAKEOFF_CLIMBING"<<std::endl;
+    guidedProgress = ArdupilotTargetProgess(1,10,10);
     currentStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
     desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
 }
@@ -60,44 +60,66 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
 {
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDITEM::CI_NAV_TAKEOFF:
+    case COMMANDTYPE::CI_NAV_TAKEOFF:
     {
         currentCommand = command->getClone();
-        const CommandItem::SpatialTakeoff* cmd = currentCommand->as<CommandItem::SpatialTakeoff>();
-        if(cmd->getPosition().getPosZFlag())
+        double targetAltitude = 0.0;
+        const command_item::SpatialTakeoff* cmd = currentCommand->as<command_item::SpatialTakeoff>();
+        if(cmd->getPosition()->is3D()) //we only proceed if at a minimum the altitude has been set
         {
-            StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
-            StateGlobalPosition targetPosition(currentPosition.getX(), currentPosition.getY(), cmd->getPosition().getZ());
+            switch (cmd->getPosition()->getCoordinateSystemType()) {
+            case CoordinateSystemTypes::GEODETIC:
+            {
+                const mace::pose::GeodeticPosition_3D* castPosition = cmd->getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
+                if(castPosition->hasAltitudeBeenSet())
+                    targetAltitude = castPosition->getAltitude();
+                break;
+            }
+            case CoordinateSystemTypes::CARTESIAN:
+            {
+                const mace::pose::CartesianPosition_3D* castPosition = cmd->getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
+                if(castPosition->hasZBeenSet())
+                    targetAltitude = castPosition->getZPosition();
+                break;
+            }
+            case CoordinateSystemTypes::UNKNOWN:
+            case CoordinateSystemTypes::NOT_IMPLIED:
+            {
+                //In these conditions we really don't know how to handle it yet
+                break;
+            }
+            }
+
+            mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
+            mace::pose::GeodeticPosition_3D targetPosition(currentPosition.getLatitude(),
+                                                           currentPosition.getLongitude(), targetAltitude);
+
 
             Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd,targetPosition]
             {
-                if(cmd->getPosition().getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT)
+                mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
+                double distance = fabs(currentPosition.deltaAltitude(&targetPosition));
+
+                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+//                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), &targetPosition);
+//                Owner().callTargetCallback(vehicleTarget);
+
+                if(guidedState == Data::ControllerState::ACHIEVED)
                 {
-                    StateGlobalPosition currentPosition = Owner().state->vehicleGlobalPosition.get();
-                    double distance = fabs(currentPosition.deltaAltitude(targetPosition));
-
-                    Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
-                    MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), targetPosition, distance, guidedState);
-                    Owner().callTargetCallback(vehicleTarget);
-
-                    if(guidedState == Data::ControllerState::ACHIEVED)
+                    if(cmd->getPosition()->areTranslationalComponentsValid())
                     {
-                        if(cmd->getPosition().has3DPositionSet())
-                        {
-                            this->currentCommand = cmd->getClone();
-                            desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;
-                        }
-                        else
-                        {
-                            desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
-                        }
+                        desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;
+                    }
+                    else
+                    {
+                        desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
                     }
                 }
             });
 
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-            auto controllerClimb = new MAVLINKVehicleControllers::CommandTakeoff(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            auto controllerClimb = new MAVLINKUXVControllers::CommandTakeoff(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             controllerClimb->AddLambda_Finished(this, [this,controllerClimb](const bool completed, const uint8_t finishCode){
                 if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
                     GetImmediateOuterState()->setDesiredStateEnum(ArdupilotFlightState::STATE_GROUNDED);
@@ -106,6 +128,7 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
 
             controllerClimb->setLambda_Shutdown([this, collection]()
             {
+                UNUSED(this);
                 auto ptr = collection->Remove("takeoffClimb");
                 delete ptr;
             });
@@ -115,6 +138,11 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
 
             controllerClimb->Send(*cmd,sender,target);
             collection->Insert("takeoffClimb", controllerClimb);
+
+        }
+        else
+        {
+            //There is no target component to climb to, there are several options in how we can handle this and we shall investigate at a later time
         }
         break;
     }

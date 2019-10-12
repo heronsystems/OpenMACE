@@ -8,7 +8,7 @@
 namespace ExternalLink {
 
 
-class CommandARM : public Controller_GenericShortCommand<CommandItem::ActionArm, (uint8_t)CommandItem::COMMANDITEM::CI_ACT_ARM>
+class CommandARM : public Controller_GenericShortCommand<command_item::ActionArm, static_cast<uint8_t>(command_item::COMMANDTYPE::CI_ACT_ARM)>
 {
 public:
 
@@ -16,9 +16,9 @@ public:
 
 protected:
 
-    virtual void FillCommand(const CommandItem::ActionArm &commandItem, mace_command_short_t &cmd) const;
+    virtual void FillCommand(const command_item::ActionArm &commandItem, mace_command_short_t &cmd) const;
 
-    virtual void BuildCommand(const mace_command_short_t &message, CommandItem::ActionArm &data) const;
+    virtual void BuildCommand(const mace_command_short_t &message, command_item::ActionArm &data) const;
 
 };
 

@@ -7,7 +7,7 @@ MACEPACKED(
 typedef struct __mace_power_status_t {
  uint16_t Vcc; /*< 5V rail voltage in millivolts*/
  uint16_t Vservo; /*< servo rail voltage in millivolts*/
- uint16_t flags; /*< power supply status flags (see MAV_POWER_STATUS enum)*/
+ uint16_t flags; /*< power supply status flags (see UXV_POWER_STATUS enum)*/
 }) mace_power_status_t;
 
 #define MACE_MSG_ID_POWER_STATUS_LEN 6
@@ -49,7 +49,7 @@ typedef struct __mace_power_status_t {
  *
  * @param Vcc 5V rail voltage in millivolts
  * @param Vservo servo rail voltage in millivolts
- * @param flags power supply status flags (see MAV_POWER_STATUS enum)
+ * @param flags power supply status flags (see UXV_POWER_STATUS enum)
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_power_status_pack(uint8_t system_id, uint8_t component_id, mace_message_t* msg,
@@ -83,7 +83,7 @@ static inline uint16_t mace_msg_power_status_pack(uint8_t system_id, uint8_t com
  * @param msg The MAVLink message to compress the data into
  * @param Vcc 5V rail voltage in millivolts
  * @param Vservo servo rail voltage in millivolts
- * @param flags power supply status flags (see MAV_POWER_STATUS enum)
+ * @param flags power supply status flags (see UXV_POWER_STATUS enum)
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_power_status_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -143,7 +143,7 @@ static inline uint16_t mace_msg_power_status_encode_chan(uint8_t system_id, uint
  *
  * @param Vcc 5V rail voltage in millivolts
  * @param Vservo servo rail voltage in millivolts
- * @param flags power supply status flags (see MAV_POWER_STATUS enum)
+ * @param flags power supply status flags (see UXV_POWER_STATUS enum)
  */
 #ifdef MACE_USE_CONVENIENCE_FUNCTIONS
 
@@ -236,7 +236,7 @@ static inline uint16_t mace_msg_power_status_get_Vservo(const mace_message_t* ms
 /**
  * @brief Get field flags from power_status message
  *
- * @return power supply status flags (see MAV_POWER_STATUS enum)
+ * @return power supply status flags (see UXV_POWER_STATUS enum)
  */
 static inline uint16_t mace_msg_power_status_get_flags(const mace_message_t* msg)
 {

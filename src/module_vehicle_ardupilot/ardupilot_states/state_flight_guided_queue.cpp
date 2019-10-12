@@ -66,3 +66,4 @@ void State_FlightGuided_Queue::OnEnter(const std::shared_ptr<AbstractCommandItem
 
 } //end of namespace ardupilot
 } //end of namespace state
+

@@ -18,7 +18,7 @@ public:
 
     CircleMapIterator(const CircleMapIterator* copy);
 
-    ~CircleMapIterator()
+    virtual ~CircleMapIterator()
     {
         if(it)
         {

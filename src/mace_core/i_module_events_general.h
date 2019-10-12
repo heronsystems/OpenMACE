@@ -5,7 +5,7 @@
 
 #include "data/system_description.h"
 #include "data_generic_command_item/command_item_components.h"
-#include "data_generic_state_item/state_global_position.h"
+#include "base/state_space/goal_state.h"
 
 #include "abstract_module_base.h"
 
@@ -19,6 +19,9 @@ namespace MaceCore
 //!
 class IModuleEventsGeneral
 {
+public:
+    virtual ~IModuleEventsGeneral() = default;
+
 public:
 
     //!
@@ -51,49 +54,49 @@ public:
     //! \param sender Sender module
     //! \param command Arm/Disarm action
     //!
-    virtual void Event_IssueCommandSystemArm(const ModuleBase* sender, const CommandItem::ActionArm &command) = 0;
+    virtual void Event_IssueCommandSystemArm(const ModuleBase* sender, const command_item::ActionArm &command) = 0;
 
     //!
     //! \brief Event_IssueCommandTakeoff Event to trigger a TAKEOFF command
     //! \param sender Sender module
     //! \param command Takeoff command
     //!
-    virtual void Event_IssueCommandTakeoff(const ModuleBase* sender, const CommandItem::SpatialTakeoff &command) = 0;
+    virtual void Event_IssueCommandTakeoff(const ModuleBase* sender, const command_item::SpatialTakeoff &command) = 0;
 
     //!
     //! \brief Event_IssueCommandLand Event to trigger a LAND command
     //! \param sender Sender module
     //! \param command Land command
     //!
-    virtual void Event_IssueCommandLand(const ModuleBase* sender, const CommandItem::SpatialLand &command) = 0;
+    virtual void Event_IssueCommandLand(const ModuleBase* sender, const command_item::SpatialLand &command) = 0;
 
     //!
     //! \brief Event_IssueCommandRTL Event to trigger an RTL command
     //! \param sender Sender module
     //! \param command RTL command
     //!
-    virtual void Event_IssueCommandRTL(const ModuleBase* sender, const CommandItem::SpatialRTL &command) = 0;
+    virtual void Event_IssueCommandRTL(const ModuleBase* sender, const command_item::SpatialRTL &command) = 0;
 
     //!
     //! \brief Event_IssueMissionCommand Event to trigger a mission command
     //! \param sender Sender module
     //! \param command Mission command
     //!
-    virtual void Event_IssueMissionCommand(const ModuleBase* sender, const CommandItem::ActionMissionCommand &command) = 0;
+    virtual void Event_IssueMissionCommand(const ModuleBase* sender, const command_item::ActionMissionCommand &command) = 0;
 
     //!
     //! \brief Event_ChangeSystemMode Event to trigger a mode change
     //! \param sender Sender module
     //! \param command Mode change command
     //!
-    virtual void Event_ChangeSystemMode(const ModuleBase *sender, const CommandItem::ActionChangeMode &command) = 0;
+    virtual void Event_ChangeSystemMode(const ModuleBase *sender, const command_item::ActionChangeMode &command) = 0;
 
     //!
     //! \brief Event_IssueGeneralCommand Event to trigger a general command
     //! \param sender Sender module
     //! \param command General command
     //!
-    virtual void Event_IssueGeneralCommand(const ModuleBase* sender, const CommandItem::AbstractCommandItem &command) = 0;
+    virtual void Event_IssueGeneralCommand(const ModuleBase* sender, const command_item::AbstractCommandItem &command) = 0;
 
     //!
     //! \brief Event_GetMission Event to trigger a "get mission" action
@@ -143,7 +146,7 @@ public:
     //! \param sender Sender module
     //! \param vehicleHome New vehicle home position
     //!
-    virtual void Event_SetHomePosition(const ModuleBase *sender, const CommandItem::SpatialHome &vehicleHome) = 0;
+    virtual void Event_SetHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome) = 0;
 
     //!
     //! \brief Event_SetGridSpacing Event to set a new grid spacing
@@ -162,7 +165,7 @@ public:
     //! \param sender Sender module
     //! \param globalHome New global origin position
     //!
-    virtual void Event_SetGlobalOrigin(const void* sender, const mace::pose::GeodeticPosition_3D &globalHome) = 0;
+    virtual void Event_SetGlobalOrigin(const ModuleBase* sender, const mace::pose::GeodeticPosition_3D &globalHome) = 0;
 
     //!
     //! \brief Event_SetBoundary Event to set a new boundary (boundary key determines type of boundary)
@@ -176,7 +179,14 @@ public:
     //! \param sender
     //! \param gotTo
     //!
-    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const CommandItem::CommandGoTo &gotTo) = 0;
+    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo) = 0;
+
+    //!
+    //! \brief Event_ProcessGoalState
+    //! \param sender
+    //! \param state
+    //!
+    virtual void Event_ProcessGoalState(const ModuleBase* sender, const mace::state_space::GoalState &state) = 0;
 };
 
 } //End MaceCore Namespace

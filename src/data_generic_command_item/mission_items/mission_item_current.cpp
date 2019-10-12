@@ -7,7 +7,7 @@ MissionItemCurrent::MissionItemCurrent()
 
 }
 
-MissionItemCurrent::MissionItemCurrent(const MissionKey &missionKey, const int &index):
+MissionItemCurrent::MissionItemCurrent(const MissionKey &missionKey, const unsigned int &index):
     key(missionKey), indexCurrent(index)
 {
 
@@ -26,12 +26,12 @@ MissionItemCurrent::MissionItemCurrent(const mace_mission_item_current_t &obj)
 mace_mission_item_current_t MissionItemCurrent::getMACECommsObject() const
 {
     mace_mission_item_current_t rtn;
-    rtn.mission_creator = key.m_creatorID;
-    rtn.mission_id = key.m_missionID;
-    rtn.mission_state = (uint8_t)key.m_missionState;
-    rtn.mission_type = (uint8_t)key.m_missionType;
-    rtn.mission_system = key.m_systemID;
-    rtn.seq = indexCurrent;
+    rtn.mission_creator = static_cast<uint8_t>(key.m_creatorID);
+    rtn.mission_id = static_cast<uint8_t>(key.m_missionID);
+    rtn.mission_state = static_cast<uint8_t>(key.m_missionState);
+    rtn.mission_type = static_cast<uint8_t>(key.m_missionType);
+    rtn.mission_system = static_cast<uint8_t>(key.m_systemID);
+    rtn.seq = static_cast<uint16_t>(indexCurrent);
     return rtn;
 }
 

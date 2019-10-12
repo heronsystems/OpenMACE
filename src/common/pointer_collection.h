@@ -21,7 +21,7 @@ private:
 public:
     _PointerCollection<Head, Tail...>() :
         _PointerCollection<Tail...>(),
-        m_ptr(NULL)
+        m_ptr(nullptr)
     {
     }
 
@@ -84,7 +84,7 @@ public:
         std::vector<void*> list = this->GetAll();
         for(auto it = list.cbegin() ; it != list.cend() ; ++it)
         {
-            if(*it == NULL)
+            if(*it == nullptr)
             {
                 continue;
             }

@@ -2,6 +2,9 @@
 #define SENSOR_CIRCULAR_CAMERA_H
 
 #include <string>
+#include <cmath>
+#include <limits>
+
 #include "data/i_topic_component_data_object.h"
 
 namespace DataVehicleSensors
@@ -144,22 +147,22 @@ public:
         if(this->cameraName != rhs.cameraName){
             return false;
         }
-        if(this->viewHalfAngle != rhs.viewHalfAngle){
+        if(fabs(this->viewHalfAngle - rhs.viewHalfAngle) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->alphaAttenuation != rhs.alphaAttenuation){
+        if(fabs(this->alphaAttenuation - rhs.alphaAttenuation) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->betaAttenuation != rhs.betaAttenuation){
+        if(fabs(this->betaAttenuation - rhs.betaAttenuation) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->certainRangePercent != rhs.certainRangePercent){
+        if(fabs(this->certainRangePercent - rhs.certainRangePercent) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->p_d != rhs.p_d){
+        if(fabs(this->p_d - rhs.p_d) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->p_fa != rhs.p_fa){
+        if(fabs(this->p_fa - rhs.p_fa) > std::numeric_limits<double>::epsilon()){
             return false;
         }
 

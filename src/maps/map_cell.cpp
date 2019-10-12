@@ -66,7 +66,7 @@ void MapCell::updateLogOddsProbability(const OccupiedResult &occupiedResult, con
     else if(occupiedResult == OccupiedResult::UNKNOWN) {
         logOdds = 0.0;
     }
-    else if(occupiedResult == OccupiedResult::OUTSIDE_ENVIRONMENT) {
+    else if(occupiedResult == OccupiedResult::ENVIRONMENT_BOUNDARY) {
         logOdds = 0.0;
     }
 

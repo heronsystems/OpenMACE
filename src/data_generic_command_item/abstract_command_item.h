@@ -1,13 +1,17 @@
 #ifndef ABSTRACT_MISSION_ITEM_H
 #define ABSTRACT_MISSION_ITEM_H
 
+#include <sstream>
 #include <string>
 
+#include "mace.h"
+
+#include "common/common.h"
 #include "common/class_forward.h"
 
 #include "command_item_type.h"
 
-namespace CommandItem {
+namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractCommandItem);
 
@@ -20,6 +24,13 @@ MACE_CLASS_FORWARD(AbstractCommandItem);
 class AbstractCommandItem
 {
 public:
+    enum getORset
+    {
+        GET_COMMAND,
+        SET_COMMAND
+    };
+
+public:
     //!
     //! \brief AbstractCommandItem The default constructor used when this class is inherited. The default
     //! constructor shall assign the initial originating system and target system to IDs of 0. A developer
@@ -29,9 +40,17 @@ public:
     //! in the MACE network.
     //!
     AbstractCommandItem():
-        originatingSystem(0), targetSystem(0)
+        originatingSystem(0), targetSystem(0), targetComponent(0)
     {
 
+    }
+
+    AbstractCommandItem(const AbstractCommandItem &copy)
+    {
+        this->originatingSystem = copy.originatingSystem;
+        this->targetSystem = copy.targetSystem;
+        this->targetComponent = copy.targetComponent;
+        this->actionType = copy.actionType;
     }
 
     //!
@@ -41,8 +60,8 @@ public:
     //! \param systemTarget The ID value of the system that is the intended recipient of the command item.
     //! A developer should be aware that this value defaults to 0 if no arguments are provided.
     //!
-    AbstractCommandItem(const int &systemOrigin, const int &systemTarget = 0):
-        originatingSystem(systemOrigin), targetSystem(systemTarget)
+    AbstractCommandItem(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0, const unsigned int &componentTarget = 0):
+        originatingSystem(systemOrigin), targetSystem(systemTarget), targetComponent(componentTarget)
     {
 
     }
@@ -58,7 +77,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    virtual COMMANDITEM getCommandType() const = 0;
+    virtual COMMANDTYPE getCommandType() const = 0;
 
     //!
     //! \brief hasSpatialInfluence returns a boolean reflecting whether or not the commandItem has
@@ -84,7 +103,7 @@ public:
     //! \param systemID value of the target system that should be receiving and enacting this command.
     //! A value of 0 here means that all systems will receive the command.
     //!
-    void setTargetSystem(const int &systemID){
+    void setTargetSystem(const unsigned int &systemID){
         targetSystem = systemID;
     }
 
@@ -92,7 +111,7 @@ public:
     //! \brief getTargetSystem retrieves the int value of the targetSystem of the commandItem object;
     //! \return int value of the targetSystem member object.
     //!
-    int getTargetSystem() const{
+    unsigned int getTargetSystem() const{
         return targetSystem;
     }
 
@@ -100,7 +119,7 @@ public:
     //! \brief setOriginatingSystem sets the originatingSystem of the commandItem object.
     //! \param systemID int value of the originatingSystem member object.
     //!
-    void setOriginatingSystem(const int &systemID){
+    void setOriginatingSystem(const unsigned int &systemID){
         originatingSystem = systemID;
     }
 
@@ -108,9 +127,35 @@ public:
     //! \brief getOriginatingSystem retries the int value of the originatingSystem of the commandItem object.
     //! \return int value of the originatingSystem member object.
     //!
-    int getOriginatingSystem() const{
+    unsigned int getOriginatingSystem() const{
         return originatingSystem;
     }
+
+public:
+    getORset getActionType() const
+    {
+        return this->actionType;
+    }
+
+    void setActionType(const getORset &action)
+    {
+        this->actionType = action;
+    }
+
+public: //The logic behind this is that every command item can be used to generate a mission item
+    virtual void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+    {
+        cmd.target_system = static_cast<uint8_t>(this->targetSystem);
+    }
+
+    virtual void fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+    {
+        this->targetSystem = cmd.target_system;
+    }
+
+    virtual void generateMACEMSG_MissionItem(mace_message_t &msg) const = 0;
+
+    virtual void generateMACEMSG_CommandItem(mace_message_t &msg) const = 0; //we know that you must cast to the specific type to get something explicit based on the command
 
 public:
     /**
@@ -155,6 +200,8 @@ public:
     {
         this->originatingSystem = rhs.originatingSystem;
         this->targetSystem = rhs.targetSystem;
+        this->targetComponent = rhs.targetComponent;
+        this->actionType = rhs.actionType;
         return *this;
     }
 
@@ -170,6 +217,12 @@ public:
         if(this->targetSystem != rhs.targetSystem){
             return false;
         }
+        if(this->targetComponent != rhs.targetComponent){
+            return false;
+        }
+        if(this->actionType != rhs.actionType){
+            return false;
+        }
         return true;
     }
 
@@ -182,18 +235,60 @@ public:
         return !(*this == rhs);
     }
 
+private:
+
+
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    virtual std::string printCommandInfo() const = 0;
+
+    //!
+    //! \brief printPositionLog
+    //! \param os
+    //!
+    virtual void printCommandLog(std::stringstream &stream) const
+    {
+        stream << "CMD|" <<std::to_string(originatingSystem)<<"|"<<std::to_string(targetSystem)<<"|"<<CommandItemToString(this->getCommandType())<<"[";
+        stream << printCommandInfo();
+        stream << "]";
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const AbstractCommandItem* t)
+    {
+        std::stringstream newStream;
+        t->printCommandLog(newStream);
+        os << newStream.str();
+        return os;
+    }
+
 protected:
     //!
     //! \brief originatingSystem value relating to the systemID of the system that had initially generated
     //! or transmitted the command item.
     //!
-    int originatingSystem;
+    unsigned int originatingSystem;
 
     //!
     //! \brief targetSystem value relating to the systemID of the system that should be receiving and enacting
     //! the command item.
     //!
-    int targetSystem;
+    unsigned int targetSystem;
+
+    //!
+    //! \brief targetSystem value relating to the systemID of the system that should be receiving and enacting
+    //! the command item.
+    //!
+    unsigned int targetComponent;
+
+
+    //!
+    //! \brief actionType value letting know if the type of command is getting or setting information
+    //!
+    getORset actionType = getORset::SET_COMMAND;
+
 };
 
 }

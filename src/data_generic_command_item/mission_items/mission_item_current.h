@@ -11,7 +11,7 @@ class MissionItemCurrent
 {
 public:
     MissionItemCurrent();
-    MissionItemCurrent(const MissionKey &missionKey, const int &index);
+    MissionItemCurrent(const MissionKey &missionKey, const unsigned int &index);
     MissionItemCurrent(const mace_mission_item_current_t &obj);
 
 public:
@@ -23,11 +23,11 @@ public:
         return key;
     }
 
-    void setMissionCurrentIndex(const int &index){
+    void setMissionCurrentIndex(const unsigned int &index){
         this->indexCurrent = index;
     }
 
-    int getMissionCurrentIndex() const{
+    unsigned int getMissionCurrentIndex() const{
         return indexCurrent;
     }
 
@@ -56,7 +56,7 @@ public:
 
 protected:
     MissionKey key;
-    int indexCurrent;
+    unsigned int indexCurrent = 0;
 };
 
 } //end of namepsace MissionItem

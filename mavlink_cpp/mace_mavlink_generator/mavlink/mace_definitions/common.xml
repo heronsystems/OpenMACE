@@ -4,168 +4,168 @@
   <dialect>0</dialect>
   
   <enums>
-    <enum name="MAV_PROTOCOL">
+    <enum name="UXV_PROTOCOL">
       <description>Micro air vehicle / autopilot classes. This identifies the individual model.</description>
-      <entry value="0" name="MAV_PROTOCOL_MACE">
+      <entry value="0" name="UXV_PROTOCOL_MACE">
         <description>MACE protocol</description>
       </entry>
-      <entry value="1" name="MAV_PROTCOL_MAVLINK">
+      <entry value="1" name="UXV_PROTCOL_MAVLINK">
         <description>MAVLINK protocol.</description>
       </entry>
-      <entry value="2" name="MAV_PROTOCOL_DJI">
+      <entry value="2" name="UXV_PROTOCOL_DJI">
         <description>DJI protocol</description>
       </entry>
-      <entry value="3" name="MAV_PROTOCOL_UNKNOWN">
+      <entry value="3" name="UXV_PROTOCOL_UNKNOWN">
         <description>Generic autopilot, full support for everything</description>
       </entry>
     </enum>
-    <enum name="MAV_AUTOPILOT">
+    <enum name="UXV_AUTOPILOT">
       <description>Micro air vehicle / autopilot classes. This identifies the individual model.</description>
-      <entry value="0" name="MAV_AUTOPILOT_GENERIC">
+      <entry value="0" name="UXV_AUTOPILOT_GENERIC">
         <description>Generic autopilot, full support for everything</description>
       </entry>
-      <entry value="1" name="MAV_AUTOPILOT_RESERVED">
+      <entry value="1" name="UXV_AUTOPILOT_RESERVED">
         <description>Reserved for future use.</description>
       </entry>
-      <entry value="2" name="MAV_AUTOPILOT_SLUGS">
+      <entry value="2" name="UXV_AUTOPILOT_SLUGS">
         <description>SLUGS autopilot, http://slugsuav.soe.ucsc.edu</description>
       </entry>
-      <entry value="3" name="MAV_AUTOPILOT_ARDUPILOTMEGA">
+      <entry value="3" name="UXV_AUTOPILOT_ARDUPILOTMEGA">
         <description>ArduPilotMega / ArduCopter, http://diydrones.com</description>
       </entry>
-      <entry value="4" name="MAV_AUTOPILOT_OPENPILOT">
+      <entry value="4" name="UXV_AUTOPILOT_OPENPILOT">
         <description>OpenPilot, http://openpilot.org</description>
       </entry>
-      <entry value="5" name="MAV_AUTOPILOT_GENERIC_WAYPOINTS_ONLY">
+      <entry value="5" name="UXV_AUTOPILOT_GENERIC_WAYPOINTS_ONLY">
         <description>Generic autopilot only supporting simple waypoints</description>
       </entry>
-      <entry value="6" name="MAV_AUTOPILOT_GENERIC_WAYPOINTS_AND_SIMPLE_NAVIGATION_ONLY">
+      <entry value="6" name="UXV_AUTOPILOT_GENERIC_WAYPOINTS_AND_SIMPLE_NAVIGATION_ONLY">
         <description>Generic autopilot supporting waypoints and other simple navigation commands</description>
       </entry>
-      <entry value="7" name="MAV_AUTOPILOT_GENERIC_MISSION_FULL">
+      <entry value="7" name="UXV_AUTOPILOT_GENERIC_MISSION_FULL">
         <description>Generic autopilot supporting the full mission command set</description>
       </entry>
-      <entry value="8" name="MAV_AUTOPILOT_INVALID">
+      <entry value="8" name="UXV_AUTOPILOT_INVALID">
         <description>No valid autopilot, e.g. a GCS or other MAVLink component</description>
       </entry>
-      <entry value="9" name="MAV_AUTOPILOT_PPZ">
+      <entry value="9" name="UXV_AUTOPILOT_PPZ">
         <description>PPZ UAV - http://nongnu.org/paparazzi</description>
       </entry>
-      <entry value="10" name="MAV_AUTOPILOT_UDB">
+      <entry value="10" name="UXV_AUTOPILOT_UDB">
         <description>UAV Dev Board</description>
       </entry>
-      <entry value="11" name="MAV_AUTOPILOT_FP">
+      <entry value="11" name="UXV_AUTOPILOT_FP">
         <description>FlexiPilot</description>
       </entry>
-      <entry value="12" name="MAV_AUTOPILOT_PX4">
+      <entry value="12" name="UXV_AUTOPILOT_PX4">
         <description>PX4 Autopilot - http://pixhawk.ethz.ch/px4/</description>
       </entry>
-      <entry value="13" name="MAV_AUTOPILOT_SMACCMPILOT">
+      <entry value="13" name="UXV_AUTOPILOT_SMACCMPILOT">
         <description>SMACCMPilot - http://smaccmpilot.org</description>
       </entry>
-      <entry value="14" name="MAV_AUTOPILOT_AUTOQUAD">
+      <entry value="14" name="UXV_AUTOPILOT_AUTOQUAD">
         <description>AutoQuad -- http://autoquad.org</description>
       </entry>
-      <entry value="15" name="MAV_AUTOPILOT_ARMAZILA">
+      <entry value="15" name="UXV_AUTOPILOT_ARMAZILA">
         <description>Armazila -- http://armazila.com</description>
       </entry>
-      <entry value="16" name="MAV_AUTOPILOT_AEROB">
+      <entry value="16" name="UXV_AUTOPILOT_AEROB">
         <description>Aerob -- http://aerob.ru</description>
       </entry>
-      <entry value="17" name="MAV_AUTOPILOT_ASLUAV">
+      <entry value="17" name="UXV_AUTOPILOT_ASLUAV">
         <description>ASLUAV autopilot -- http://www.asl.ethz.ch</description>
       </entry>
-      <entry value="18" name="MAV_AUTOPILOT_SMARTAP">
+      <entry value="18" name="UXV_AUTOPILOT_SMARTAP">
         <description>SmartAP Autopilot - http://sky-drones.com</description>
       </entry>
-      <entry value="19" name="MAV_AUTOPILOT_DJI">
+      <entry value="19" name="UXV_AUTOPILOT_DJI">
         <description>DJI Autopilot</description>
       </entry>
     </enum>
-    <enum name="MAV_TYPE">
-      <entry value="0" name="MAV_TYPE_GENERIC">
+    <enum name="UXV_TYPE">
+      <entry value="0" name="UXV_TYPE_GENERIC">
         <description>Generic micro air vehicle.</description>
       </entry>
-      <entry value="1" name="MAV_TYPE_FIXED_WING">
+      <entry value="1" name="UXV_TYPE_FIXED_WING">
         <description>Fixed wing aircraft.</description>
       </entry>
-      <entry value="2" name="MAV_TYPE_QUADROTOR">
+      <entry value="2" name="UXV_TYPE_QUADROTOR">
         <description>Quadrotor</description>
       </entry>
-      <entry value="3" name="MAV_TYPE_COAXIAL">
+      <entry value="3" name="UXV_TYPE_COAXIAL">
         <description>Coaxial helicopter</description>
       </entry>
-      <entry value="4" name="MAV_TYPE_HELICOPTER">
+      <entry value="4" name="UXV_TYPE_HELICOPTER">
         <description>Normal helicopter with tail rotor.</description>
       </entry>
-      <entry value="5" name="MAV_TYPE_ANTENNA_TRACKER">
+      <entry value="5" name="UXV_TYPE_ANTENNA_TRACKER">
         <description>Ground installation</description>
       </entry>
-      <entry value="6" name="MAV_TYPE_GCS">
+      <entry value="6" name="UXV_TYPE_GCS">
         <description>Operator control unit / ground control station</description>
       </entry>
-      <entry value="7" name="MAV_TYPE_AIRSHIP">
+      <entry value="7" name="UXV_TYPE_AIRSHIP">
         <description>Airship, controlled</description>
       </entry>
-      <entry value="8" name="MAV_TYPE_FREE_BALLOON">
+      <entry value="8" name="UXV_TYPE_FREE_BALLOON">
         <description>Free balloon, uncontrolled</description>
       </entry>
-      <entry value="9" name="MAV_TYPE_ROCKET">
+      <entry value="9" name="UXV_TYPE_ROCKET">
         <description>Rocket</description>
       </entry>
-      <entry value="10" name="MAV_TYPE_GROUND_ROVER">
+      <entry value="10" name="UXV_TYPE_GROUND_ROVER">
         <description>Ground rover</description>
       </entry>
-      <entry value="11" name="MAV_TYPE_SURFACE_BOAT">
+      <entry value="11" name="UXV_TYPE_SURFACE_BOAT">
         <description>Surface vessel, boat, ship</description>
       </entry>
-      <entry value="12" name="MAV_TYPE_SUBMARINE">
+      <entry value="12" name="UXV_TYPE_SUBMARINE">
         <description>Submarine</description>
       </entry>
-      <entry value="13" name="MAV_TYPE_HEXAROTOR">
+      <entry value="13" name="UXV_TYPE_HEXAROTOR">
         <description>Hexarotor</description>
       </entry>
-      <entry value="14" name="MAV_TYPE_OCTOROTOR">
+      <entry value="14" name="UXV_TYPE_OCTOROTOR">
         <description>Octorotor</description>
       </entry>
-      <entry value="15" name="MAV_TYPE_TRICOPTER">
+      <entry value="15" name="UXV_TYPE_TRICOPTER">
         <description>Tricopter</description>
       </entry>
-      <entry value="16" name="MAV_TYPE_FLAPPING_WING">
+      <entry value="16" name="UXV_TYPE_FLAPPING_WING">
         <description>Flapping wing</description>
       </entry>
-      <entry value="17" name="MAV_TYPE_KITE">
+      <entry value="17" name="UXV_TYPE_KITE">
         <description>Kite</description>
       </entry>
-      <entry value="18" name="MAV_TYPE_ONBOARD_CONTROLLER">
+      <entry value="18" name="UXV_TYPE_ONBOARD_CONTROLLER">
         <description>Onboard companion controller</description>
       </entry>
-      <entry value="19" name="MAV_TYPE_VTOL_DUOROTOR">
+      <entry value="19" name="UXV_TYPE_VTOL_DUOROTOR">
         <description>Two-rotor VTOL using control surfaces in vertical operation in addition. Tailsitter.</description>
       </entry>
-      <entry value="20" name="MAV_TYPE_VTOL_QUADROTOR">
+      <entry value="20" name="UXV_TYPE_VTOL_QUADROTOR">
         <description>Quad-rotor VTOL using a V-shaped quad config in vertical operation. Tailsitter.</description>
       </entry>
-      <entry value="21" name="MAV_TYPE_VTOL_TILTROTOR">
+      <entry value="21" name="UXV_TYPE_VTOL_TILTROTOR">
         <description>Tiltrotor VTOL</description>
       </entry>
       <!-- Entries up to 25 reserved for other VTOL airframes -->
-      <entry value="22" name="MAV_TYPE_VTOL_RESERVED2">
+      <entry value="22" name="UXV_TYPE_VTOL_RESERVED2">
         <description>VTOL reserved 2</description>
       </entry>
-      <entry value="23" name="MAV_TYPE_VTOL_RESERVED3">
+      <entry value="23" name="UXV_TYPE_VTOL_RESERVED3">
         <description>VTOL reserved 3</description>
       </entry>
-      <entry value="24" name="MAV_TYPE_VTOL_RESERVED4">
+      <entry value="24" name="UXV_TYPE_VTOL_RESERVED4">
         <description>VTOL reserved 4</description>
       </entry>
-      <entry value="25" name="MAV_TYPE_VTOL_RESERVED5">
+      <entry value="25" name="UXV_TYPE_VTOL_RESERVED5">
         <description>VTOL reserved 5</description>
       </entry>
-      <entry value="26" name="MAV_TYPE_GIMBAL">
+      <entry value="26" name="UXV_TYPE_GIMBAL">
         <description>Onboard gimbal</description>
       </entry>
-      <entry value="27" name="MAV_TYPE_ADSB">
+      <entry value="27" name="UXV_TYPE_ADSB">
         <description>Onboard ADSB peripheral</description>
       </entry>
     </enum>
@@ -187,355 +187,369 @@
         <description>official stable release</description>
       </entry>
     </enum>
-    <!-- WARNING: MAV_ACTION Enum is no longer supported - has been removed. Please use MAV_CMD -->
-    <enum name="MAV_MODE_FLAG">
+    <!-- WARNING: UXV_ACTION Enum is no longer supported - has been removed. Please use UXV_CMD -->
+    <enum name="UXV_MODE_FLAG">
       <description>These flags encode the MAV mode.</description>
-      <entry value="128" name="MAV_MODE_FLAG_SAFETY_ARMED">
-        <description>0b10000000 MAV safety set to armed. Motors are enabled / running / can start. Ready to fly. Additional note: this flag is to be ignore when sent in the command MAV_CMD_DO_SET_MODE and MAV_CMD_COMPONENT_ARM_DISARM shall be used instead. The flag can still be used to report the armed state.</description>
+      <entry value="128" name="UXV_MODE_FLAG_SAFETY_ARMED">
+        <description>0b10000000 MAV safety set to armed. Motors are enabled / running / can start. Ready to fly. Additional note: this flag is to be ignore when sent in the command UXV_CMD_DO_SET_MODE and UXV_CMD_COMPONENT_ARM_DISARM shall be used instead. The flag can still be used to report the armed state.</description>
       </entry>
-      <entry value="64" name="MAV_MODE_FLAG_MANUAL_INPUT_ENABLED">
+      <entry value="64" name="UXV_MODE_FLAG_MANUAL_INPUT_ENABLED">
         <description>0b01000000 remote control input is enabled.</description>
       </entry>
-      <entry value="32" name="MAV_MODE_FLAG_HIL_ENABLED">
+      <entry value="32" name="UXV_MODE_FLAG_HIL_ENABLED">
         <description>0b00100000 hardware in the loop simulation. All motors / actuators are blocked, but internal software is full operational.</description>
       </entry>
-      <entry value="16" name="MAV_MODE_FLAG_STABILIZE_ENABLED">
+      <entry value="16" name="UXV_MODE_FLAG_STABILIZE_ENABLED">
         <description>0b00010000 system stabilizes electronically its attitude (and optionally position). It needs however further control inputs to move around.</description>
       </entry>
-      <entry value="8" name="MAV_MODE_FLAG_GUIDED_ENABLED">
+      <entry value="8" name="UXV_MODE_FLAG_GUIDED_ENABLED">
         <description>0b00001000 guided mode enabled, system flies MISSIONs / mission items.</description>
       </entry>
-      <entry value="4" name="MAV_MODE_FLAG_AUTO_ENABLED">
+      <entry value="4" name="UXV_MODE_FLAG_AUTO_ENABLED">
         <description>0b00000100 autonomous mode enabled, system finds its own goal positions. Guided flag can be set or not, depends on the actual implementation.</description>
       </entry>
-      <entry value="2" name="MAV_MODE_FLAG_TEST_ENABLED">
+      <entry value="2" name="UXV_MODE_FLAG_TEST_ENABLED">
         <description>0b00000010 system has a test mode enabled. This flag is intended for temporary system tests and should not be used for stable implementations.</description>
       </entry>
-      <entry value="1" name="MAV_MODE_FLAG_CUSTOM_MODE_ENABLED">
+      <entry value="1" name="UXV_MODE_FLAG_CUSTOM_MODE_ENABLED">
         <description>0b00000001 Reserved for future use.</description>
       </entry>
     </enum>
-    <enum name="MAV_MODE_FLAG_DECODE_POSITION">
+    <enum name="UXV_MODE_FLAG_DECODE_POSITION">
       <description>These values encode the bit positions of the decode position. These values can be used to read the value of a flag bit by combining the base_mode variable with AND with the flag position value. The result will be either 0 or 1, depending on if the flag is set or not.</description>
-      <entry value="128" name="MAV_MODE_FLAG_DECODE_POSITION_SAFETY">
+      <entry value="128" name="UXV_MODE_FLAG_DECODE_POSITION_SAFETY">
         <description>First bit:  10000000</description>
       </entry>
-      <entry value="64" name="MAV_MODE_FLAG_DECODE_POSITION_MANUAL">
+      <entry value="64" name="UXV_MODE_FLAG_DECODE_POSITION_MANUAL">
         <description>Second bit: 01000000</description>
       </entry>
-      <entry value="32" name="MAV_MODE_FLAG_DECODE_POSITION_HIL">
+      <entry value="32" name="UXV_MODE_FLAG_DECODE_POSITION_HIL">
         <description>Third bit:  00100000</description>
       </entry>
-      <entry value="16" name="MAV_MODE_FLAG_DECODE_POSITION_STABILIZE">
+      <entry value="16" name="UXV_MODE_FLAG_DECODE_POSITION_STABILIZE">
         <description>Fourth bit: 00010000</description>
       </entry>
-      <entry value="8" name="MAV_MODE_FLAG_DECODE_POSITION_GUIDED">
+      <entry value="8" name="UXV_MODE_FLAG_DECODE_POSITION_GUIDED">
         <description>Fifth bit:  00001000</description>
       </entry>
-      <entry value="4" name="MAV_MODE_FLAG_DECODE_POSITION_AUTO">
+      <entry value="4" name="UXV_MODE_FLAG_DECODE_POSITION_AUTO">
         <description>Sixt bit:   00000100</description>
       </entry>
-      <entry value="2" name="MAV_MODE_FLAG_DECODE_POSITION_TEST">
+      <entry value="2" name="UXV_MODE_FLAG_DECODE_POSITION_TEST">
         <description>Seventh bit: 00000010</description>
       </entry>
-      <entry value="1" name="MAV_MODE_FLAG_DECODE_POSITION_CUSTOM_MODE">
+      <entry value="1" name="UXV_MODE_FLAG_DECODE_POSITION_CUSTOM_MODE">
         <description>Eighth bit: 00000001</description>
       </entry>
     </enum>
-    <enum name="MAV_GOTO">
+    <enum name="UXV_GOTO">
       <description>Override command, pauses current mission execution and moves immediately to a position</description>
-      <entry value="0" name="MAV_GOTO_DO_HOLD">
+      <entry value="0" name="UXV_GOTO_DO_HOLD">
         <description>Hold at the current position.</description>
       </entry>
-      <entry value="1" name="MAV_GOTO_DO_CONTINUE">
+      <entry value="1" name="UXV_GOTO_DO_CONTINUE">
         <description>Continue with the next item in mission execution.</description>
       </entry>
-      <entry value="2" name="MAV_GOTO_HOLD_AT_CURRENT_POSITION">
+      <entry value="2" name="UXV_GOTO_HOLD_AT_CURRENT_POSITION">
         <description>Hold at the current position of the system</description>
       </entry>
-      <entry value="3" name="MAV_GOTO_HOLD_AT_SPECIFIED_POSITION">
+      <entry value="3" name="UXV_GOTO_HOLD_AT_SPECIFIED_POSITION">
         <description>Hold at the position specified in the parameters of the DO_HOLD action</description>
       </entry>
     </enum>
-    <enum name="MAV_MODE">
+    <enum name="UXV_MODE">
       <description>These defines are predefined OR-combined mode flags. There is no need to use values from this enum, but it
                simplifies the use of the mode flags. Note that manual input is enabled in all modes as a safety override.</description>
-      <entry value="0" name="MAV_MODE_PREFLIGHT">
+      <entry value="0" name="UXV_MODE_PREFLIGHT">
         <description>System is not ready to fly, booting, calibrating, etc. No flag is set.</description>
       </entry>
-      <entry value="80" name="MAV_MODE_STABILIZE_DISARMED">
+      <entry value="80" name="UXV_MODE_STABILIZE_DISARMED">
         <description>System is allowed to be active, under assisted RC control.</description>
       </entry>
-      <entry value="208" name="MAV_MODE_STABILIZE_ARMED">
+      <entry value="208" name="UXV_MODE_STABILIZE_ARMED">
         <description>System is allowed to be active, under assisted RC control.</description>
       </entry>
-      <entry value="64" name="MAV_MODE_MANUAL_DISARMED">
+      <entry value="64" name="UXV_MODE_MANUAL_DISARMED">
         <description>System is allowed to be active, under manual (RC) control, no stabilization</description>
       </entry>
-      <entry value="192" name="MAV_MODE_MANUAL_ARMED">
+      <entry value="192" name="UXV_MODE_MANUAL_ARMED">
         <description>System is allowed to be active, under manual (RC) control, no stabilization</description>
       </entry>
-      <entry value="88" name="MAV_MODE_GUIDED_DISARMED">
+      <entry value="88" name="UXV_MODE_GUIDED_DISARMED">
         <description>System is allowed to be active, under autonomous control, manual setpoint</description>
       </entry>
-      <entry value="216" name="MAV_MODE_GUIDED_ARMED">
+      <entry value="216" name="UXV_MODE_GUIDED_ARMED">
         <description>System is allowed to be active, under autonomous control, manual setpoint</description>
       </entry>
-      <entry value="92" name="MAV_MODE_AUTO_DISARMED">
+      <entry value="92" name="UXV_MODE_AUTO_DISARMED">
         <description>System is allowed to be active, under autonomous control and navigation (the trajectory is decided onboard and not pre-programmed by MISSIONs)</description>
       </entry>
-      <entry value="220" name="MAV_MODE_AUTO_ARMED">
+      <entry value="220" name="UXV_MODE_AUTO_ARMED">
         <description>System is allowed to be active, under autonomous control and navigation (the trajectory is decided onboard and not pre-programmed by MISSIONs)</description>
       </entry>
-      <entry value="66" name="MAV_MODE_TEST_DISARMED">
+      <entry value="66" name="UXV_MODE_TEST_DISARMED">
         <description>UNDEFINED mode. This solely depends on the autopilot - use with caution, intended for developers only.</description>
       </entry>
-      <entry value="194" name="MAV_MODE_TEST_ARMED">
+      <entry value="194" name="UXV_MODE_TEST_ARMED">
         <description>UNDEFINED mode. This solely depends on the autopilot - use with caution, intended for developers only.</description>
       </entry>
     </enum>
-    <enum name="MAV_STATE">
-      <entry value="0" name="MAV_STATE_UNINIT">
+    <enum name="UXV_STATE">
+      <entry value="0" name="UXV_STATE_UNINIT">
         <description>Uninitialized system, state is unknown.</description>
       </entry>
-      <entry name="MAV_STATE_BOOT">
+      <entry name="UXV_STATE_BOOT">
         <description>System is booting up.</description>
       </entry>
-      <entry name="MAV_STATE_CALIBRATING">
+      <entry name="UXV_STATE_CALIBRATING">
         <description>System is calibrating and not flight-ready.</description>
       </entry>
-      <entry name="MAV_STATE_STANDBY">
+      <entry name="UXV_STATE_STANDBY">
         <description>System is grounded and on standby. It can be launched any time.</description>
       </entry>
-      <entry name="MAV_STATE_ACTIVE">
+      <entry name="UXV_STATE_ACTIVE">
         <description>System is active and might be already airborne. Motors are engaged.</description>
       </entry>
-      <entry name="MAV_STATE_CRITICAL">
+      <entry name="UXV_STATE_CRITICAL">
         <description>System is in a non-normal flight mode. It can however still navigate.</description>
       </entry>
-      <entry name="MAV_STATE_EMERGENCY">
+      <entry name="UXV_STATE_EMERGENCY">
         <description>System is in a non-normal flight mode. It lost control over parts or over the whole airframe. It is in mayday and going down.</description>
       </entry>
-      <entry name="MAV_STATE_POWEROFF">
+      <entry name="UXV_STATE_POWEROFF">
         <description>System just initialized its power-down sequence, will shut down now.</description>
       </entry>
     </enum>
-    <enum name="MAV_COMPONENT">
-      <entry value="0" name="MAV_COMP_ID_ALL">
+    <enum name="UXV_COMPONENT">
+      <entry value="0" name="UXV_COMP_ID_ALL">
         <description/>
       </entry>
-      <entry value="220" name="MAV_COMP_ID_GPS">
+      <entry value="220" name="UXV_COMP_ID_GPS">
         <description/>
       </entry>
-      <entry value="190" name="MAV_COMP_ID_MISSIONPLANNER">
+      <entry value="190" name="UXV_COMP_ID_MISSIONPLANNER">
         <description/>
       </entry>
-      <entry value="195" name="MAV_COMP_ID_PATHPLANNER">
+      <entry value="195" name="UXV_COMP_ID_PATHPLANNER">
         <description/>
       </entry>
-      <entry value="180" name="MAV_COMP_ID_MAPPER">
+      <entry value="180" name="UXV_COMP_ID_MAPPER">
         <description/>
       </entry>
-      <entry value="100" name="MAV_COMP_ID_CAMERA">
+      <entry value="100" name="UXV_COMP_ID_CAMERA">
         <description/>
       </entry>
-      <entry value="200" name="MAV_COMP_ID_IMU">
+      <entry value="200" name="UXV_COMP_ID_IMU">
         <description/>
       </entry>
-      <entry value="201" name="MAV_COMP_ID_IMU_2">
+      <entry value="201" name="UXV_COMP_ID_IMU_2">
         <description/>
       </entry>
-      <entry value="202" name="MAV_COMP_ID_IMU_3">
+      <entry value="202" name="UXV_COMP_ID_IMU_3">
         <description/>
       </entry>
-      <entry value="240" name="MAV_COMP_ID_UDP_BRIDGE">
+      <entry value="240" name="UXV_COMP_ID_UDP_BRIDGE">
         <description/>
       </entry>
-      <entry value="241" name="MAV_COMP_ID_UART_BRIDGE">
+      <entry value="241" name="UXV_COMP_ID_UART_BRIDGE">
         <description/>
       </entry>
-      <entry value="250" name="MAV_COMP_ID_SYSTEM_CONTROL">
+      <entry value="250" name="UXV_COMP_ID_SYSTEM_CONTROL">
         <description/>
       </entry>
-      <entry value="140" name="MAV_COMP_ID_SERVO1">
+      <entry value="140" name="UXV_COMP_ID_SERVO1">
         <description/>
       </entry>
-      <entry value="141" name="MAV_COMP_ID_SERVO2">
+      <entry value="141" name="UXV_COMP_ID_SERVO2">
         <description/>
       </entry>
-      <entry value="142" name="MAV_COMP_ID_SERVO3">
+      <entry value="142" name="UXV_COMP_ID_SERVO3">
         <description/>
       </entry>
-      <entry value="143" name="MAV_COMP_ID_SERVO4">
+      <entry value="143" name="UXV_COMP_ID_SERVO4">
         <description/>
       </entry>
-      <entry value="144" name="MAV_COMP_ID_SERVO5">
+      <entry value="144" name="UXV_COMP_ID_SERVO5">
         <description/>
       </entry>
-      <entry value="145" name="MAV_COMP_ID_SERVO6">
+      <entry value="145" name="UXV_COMP_ID_SERVO6">
         <description/>
       </entry>
-      <entry value="146" name="MAV_COMP_ID_SERVO7">
+      <entry value="146" name="UXV_COMP_ID_SERVO7">
         <description/>
       </entry>
-      <entry value="147" name="MAV_COMP_ID_SERVO8">
+      <entry value="147" name="UXV_COMP_ID_SERVO8">
         <description/>
       </entry>
-      <entry value="148" name="MAV_COMP_ID_SERVO9">
+      <entry value="148" name="UXV_COMP_ID_SERVO9">
         <description/>
       </entry>
-      <entry value="149" name="MAV_COMP_ID_SERVO10">
+      <entry value="149" name="UXV_COMP_ID_SERVO10">
         <description/>
       </entry>
-      <entry value="150" name="MAV_COMP_ID_SERVO11">
+      <entry value="150" name="UXV_COMP_ID_SERVO11">
         <description/>
       </entry>
-      <entry value="151" name="MAV_COMP_ID_SERVO12">
+      <entry value="151" name="UXV_COMP_ID_SERVO12">
         <description/>
       </entry>
-      <entry value="152" name="MAV_COMP_ID_SERVO13">
+      <entry value="152" name="UXV_COMP_ID_SERVO13">
         <description/>
       </entry>
-      <entry value="153" name="MAV_COMP_ID_SERVO14">
+      <entry value="153" name="UXV_COMP_ID_SERVO14">
         <description/>
       </entry>
-      <entry value="154" name="MAV_COMP_ID_GIMBAL">
+      <entry value="154" name="UXV_COMP_ID_GIMBAL">
         <description/>
       </entry>
-      <entry value="155" name="MAV_COMP_ID_LOG">
+      <entry value="155" name="UXV_COMP_ID_LOG">
         <description/>
       </entry>
-      <entry value="156" name="MAV_COMP_ID_ADSB">
+      <entry value="156" name="UXV_COMP_ID_ADSB">
         <description/>
       </entry>
-      <entry value="157" name="MAV_COMP_ID_OSD">
+      <entry value="157" name="UXV_COMP_ID_OSD">
         <description>On Screen Display (OSD) devices for video links</description>
       </entry>
-      <entry value="158" name="MAV_COMP_ID_PERIPHERAL">
+      <entry value="158" name="UXV_COMP_ID_PERIPHERAL">
         <description>Generic autopilot peripheral component ID. Meant for devices that do not implement the parameter sub-protocol</description>
       </entry>
-      <entry value="159" name="MAV_COMP_ID_QX1_GIMBAL">
+      <entry value="159" name="UXV_COMP_ID_QX1_GIMBAL">
         <description/>
       </entry>
     </enum>
-    <enum name="MAV_SYS_STATUS_SENSOR">
+    <enum name="UXV_SYS_STATUS_SENSOR">
       <description>These encode the sensors whose status is sent as part of the SYS_STATUS message.</description>
-      <entry value="1" name="MAV_SYS_STATUS_SENSOR_3D_GYRO">
+      <entry value="1" name="UXV_SYS_STATUS_SENSOR_3D_GYRO">
         <description>0x01 3D gyro</description>
       </entry>
-      <entry value="2" name="MAV_SYS_STATUS_SENSOR_3D_ACCEL">
+      <entry value="2" name="UXV_SYS_STATUS_SENSOR_3D_ACCEL">
         <description>0x02 3D accelerometer</description>
       </entry>
-      <entry value="4" name="MAV_SYS_STATUS_SENSOR_3D_MAG">
+      <entry value="4" name="UXV_SYS_STATUS_SENSOR_3D_MAG">
         <description>0x04 3D magnetometer</description>
       </entry>
-      <entry value="8" name="MAV_SYS_STATUS_SENSOR_ABSOLUTE_PRESSURE">
+      <entry value="8" name="UXV_SYS_STATUS_SENSOR_ABSOLUTE_PRESSURE">
         <description>0x08 absolute pressure</description>
       </entry>
-      <entry value="16" name="MAV_SYS_STATUS_SENSOR_DIFFERENTIAL_PRESSURE">
+      <entry value="16" name="UXV_SYS_STATUS_SENSOR_DIFFERENTIAL_PRESSURE">
         <description>0x10 differential pressure</description>
       </entry>
-      <entry value="32" name="MAV_SYS_STATUS_SENSOR_GPS">
+      <entry value="32" name="UXV_SYS_STATUS_SENSOR_GPS">
         <description>0x20 GPS</description>
       </entry>
-      <entry value="64" name="MAV_SYS_STATUS_SENSOR_OPTICAL_FLOW">
+      <entry value="64" name="UXV_SYS_STATUS_SENSOR_OPTICAL_FLOW">
         <description>0x40 optical flow</description>
       </entry>
-      <entry value="128" name="MAV_SYS_STATUS_SENSOR_VISION_POSITION">
+      <entry value="128" name="UXV_SYS_STATUS_SENSOR_VISION_POSITION">
         <description>0x80 computer vision position</description>
       </entry>
-      <entry value="256" name="MAV_SYS_STATUS_SENSOR_LASER_POSITION">
+      <entry value="256" name="UXV_SYS_STATUS_SENSOR_LASER_POSITION">
         <description>0x100 laser based position</description>
       </entry>
-      <entry value="512" name="MAV_SYS_STATUS_SENSOR_EXTERNAL_GROUND_TRUTH">
+      <entry value="512" name="UXV_SYS_STATUS_SENSOR_EXTERNAL_GROUND_TRUTH">
         <description>0x200 external ground truth (Vicon or Leica)</description>
       </entry>
-      <entry value="1024" name="MAV_SYS_STATUS_SENSOR_ANGULAR_RATE_CONTROL">
+      <entry value="1024" name="UXV_SYS_STATUS_SENSOR_ANGULAR_RATE_CONTROL">
         <description>0x400 3D angular rate control</description>
       </entry>
-      <entry value="2048" name="MAV_SYS_STATUS_SENSOR_ATTITUDE_STABILIZATION">
+      <entry value="2048" name="UXV_SYS_STATUS_SENSOR_ATTITUDE_STABILIZATION">
         <description>0x800 attitude stabilization</description>
       </entry>
-      <entry value="4096" name="MAV_SYS_STATUS_SENSOR_YAW_POSITION">
+      <entry value="4096" name="UXV_SYS_STATUS_SENSOR_YAW_POSITION">
         <description>0x1000 yaw position</description>
       </entry>
-      <entry value="8192" name="MAV_SYS_STATUS_SENSOR_Z_ALTITUDE_CONTROL">
+      <entry value="8192" name="UXV_SYS_STATUS_SENSOR_Z_ALTITUDE_CONTROL">
         <description>0x2000 z/altitude control</description>
       </entry>
-      <entry value="16384" name="MAV_SYS_STATUS_SENSOR_XY_POSITION_CONTROL">
+      <entry value="16384" name="UXV_SYS_STATUS_SENSOR_XY_POSITION_CONTROL">
         <description>0x4000 x/y position control</description>
       </entry>
-      <entry value="32768" name="MAV_SYS_STATUS_SENSOR_MOTOR_OUTPUTS">
+      <entry value="32768" name="UXV_SYS_STATUS_SENSOR_MOTOR_OUTPUTS">
         <description>0x8000 motor outputs / control</description>
       </entry>
-      <entry value="65536" name="MAV_SYS_STATUS_SENSOR_RC_RECEIVER">
+      <entry value="65536" name="UXV_SYS_STATUS_SENSOR_RC_RECEIVER">
         <description>0x10000 rc receiver</description>
       </entry>
-      <entry value="131072" name="MAV_SYS_STATUS_SENSOR_3D_GYRO2">
+      <entry value="131072" name="UXV_SYS_STATUS_SENSOR_3D_GYRO2">
         <description>0x20000 2nd 3D gyro</description>
       </entry>
-      <entry value="262144" name="MAV_SYS_STATUS_SENSOR_3D_ACCEL2">
+      <entry value="262144" name="UXV_SYS_STATUS_SENSOR_3D_ACCEL2">
         <description>0x40000 2nd 3D accelerometer</description>
       </entry>
-      <entry value="524288" name="MAV_SYS_STATUS_SENSOR_3D_MAG2">
+      <entry value="524288" name="UXV_SYS_STATUS_SENSOR_3D_MAG2">
         <description>0x80000 2nd 3D magnetometer</description>
       </entry>
-      <entry value="1048576" name="MAV_SYS_STATUS_GEOFENCE">
+      <entry value="1048576" name="UXV_SYS_STATUS_GEOFENCE">
         <description>0x100000 geofence</description>
       </entry>
-      <entry value="2097152" name="MAV_SYS_STATUS_AHRS">
+      <entry value="2097152" name="UXV_SYS_STATUS_AHRS">
         <description>0x200000 AHRS subsystem health</description>
       </entry>
-      <entry value="4194304" name="MAV_SYS_STATUS_TERRAIN">
+      <entry value="4194304" name="UXV_SYS_STATUS_TERRAIN">
         <description>0x400000 Terrain subsystem health</description>
       </entry>
-      <entry value="8388608" name="MAV_SYS_STATUS_REVERSE_MOTOR">
+      <entry value="8388608" name="UXV_SYS_STATUS_REVERSE_MOTOR">
         <description>0x800000 Motors are reversed</description>
       </entry>
-      <entry value="16777216" name="MAV_SYS_STATUS_LOGGING">
+      <entry value="16777216" name="UXV_SYS_STATUS_LOGGING">
         <description>0x1000000 Logging</description>
       </entry>
-      <entry value="33554432" name="MAV_SYS_STATUS_SENSOR_BATTERY">
+      <entry value="33554432" name="UXV_SYS_STATUS_SENSOR_BATTERY">
         <description>0x2000000 Battery</description>
       </entry>
     </enum>
-    <enum name="MAV_FRAME">
-      <entry value="0" name="MAV_FRAME_GLOBAL">
+    <enum name="UXV_FRAME">
+      <entry value="0" name="UXV_FRAME_GLOBAL_UNKNOWN">
         <description>Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL)</description>
       </entry>
-      <entry value="1" name="MAV_FRAME_LOCAL_NED">
-        <description>Local coordinate frame, Z-up (x: north, y: east, z: down).</description>
+      <entry value="1" name="UXV_FRAME_GLOBAL_AMSL">
+        <description>Global coordinate frame, WGS84 coordinate system. First value / x: latitude, second value / y: longitude, third value / z: positive altitude over mean sea level (MSL)</description>
       </entry>
-      <entry value="2" name="MAV_FRAME_MISSION">
-        <description>NOT a coordinate frame, indicates a mission command.</description>
-      </entry>
-      <entry value="3" name="MAV_FRAME_GLOBAL_RELATIVE_ALT">
-        <description>Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude, second value / y: longitude, third value / z: positive altitude with 0 being at the altitude of the home location.</description>
-      </entry>
-      <entry value="4" name="MAV_FRAME_LOCAL_ENU">
-        <description>Local coordinate frame, Z-down (x: east, y: north, z: up)</description>
-      </entry>
-      <entry value="5" name="MAV_FRAME_GLOBAL_INT">
+      <entry value="2" name="UXV_FRAME_GLOBAL_AMSL_INT">
         <description>Global coordinate frame, WGS84 coordinate system. First value / x: latitude in degrees*1.0e-7, second value / y: longitude in degrees*1.0e-7, third value / z: positive altitude over mean sea level (MSL)</description>
       </entry>
-      <entry value="6" name="MAV_FRAME_GLOBAL_RELATIVE_ALT_INT">
+      <entry value="3" name="UXV_FRAME_GLOBAL_RELATIVE_ALT">
+        <description>Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude, second value / y: longitude, third value / z: positive altitude with 0 being at the altitude of the home location.</description>
+      </entry>
+      <entry value="4" name="UXV_FRAME_GLOBAL_RELATIVE_ALT_INT">
         <description>Global coordinate frame, WGS84 coordinate system, relative altitude over ground with respect to the home position. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude with 0 being at the altitude of the home location.</description>
       </entry>
-      <entry value="7" name="MAV_FRAME_LOCAL_OFFSET_NED">
-        <description>Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position.</description>
-      </entry>
-      <entry value="8" name="MAV_FRAME_BODY_NED">
-        <description>Setpoint in body NED frame. This makes sense if all position control is externalized - e.g. useful to command 2 m/s^2 acceleration to the right.</description>
-      </entry>
-      <entry value="9" name="MAV_FRAME_BODY_OFFSET_NED">
-        <description>Offset in body NED frame. This makes sense if adding setpoints to the current flight path, to avoid an obstacle - e.g. useful to command 2 m/s^2 acceleration to the east.</description>
-      </entry>
-      <entry value="10" name="MAV_FRAME_GLOBAL_TERRAIN_ALT">
+      <entry value="5" name="UXV_FRAME_GLOBAL_TERRAIN_ALT">
         <description>Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees, second value / y: longitude in degrees, third value / z: positive altitude in meters with 0 being at ground level in terrain model.</description>
       </entry>
-      <entry value="11" name="MAV_FRAME_GLOBAL_TERRAIN_ALT_INT">
+      <entry value="6" name="UXV_FRAME_GLOBAL_TERRAIN_ALT_INT">
         <description>Global coordinate frame with above terrain level altitude. WGS84 coordinate system, relative altitude over terrain with respect to the waypoint coordinate. First value / x: latitude in degrees*10e-7, second value / y: longitude in degrees*10e-7, third value / z: positive altitude in meters with 0 being at ground level in terrain model.</description>
       </entry>
+
+      <entry value="10" name="UXV_FRAME_LOCAL_UNKNOWN">
+        <description>Local coordinate frame, Z-up (x: north, y: east, z: down).</description>
+      </entry>
+      <entry value="11" name="UXV_FRAME_LOCAL_NED">
+        <description>Local coordinate frame, Z-up (x: north, y: east, z: down).</description>
+      </entry>
+      <entry value="12" name="UXV_FRAME_LOCAL_ENU">
+        <description>Local coordinate frame, Z-down (x: east, y: north, z: up)</description>
+      </entry>
+      <entry value="13" name="UXV_FRAME_LOCAL_OFFSET_NED">
+        <description>Position relative to the current vehicle position. Velocity is relative to the origin NED. </description>
+      </entry>
+      <entry value="14" name="UXV_FRAME_LOCAL_OFFSET_ENU">
+        <description>Position relative to the current vehicle position. Velocity is relative to the origin NED. </description>
+      </entry>
+      <entry value="15" name="UXV_FRAME_BODY_NED">
+        <description>Positions are relative to the origin. Velocities are relative to the current vehicle heading.</description>
+      </entry>
+      <entry value="16" name="UXV_FRAME_BODY_ENU">
+        <description>Positions are relative to the origin. Velocities are relative to the current vehicle heading.</description>
+      </entry>
+      <entry value="17" name="UXV_FRAME_BODY_OFFSET_NED">
+        <description>Positions and velocities are relative to the vehicles current position and heading.</description>
+      </entry>
+      <entry value="18" name="UXV_FRAME_BODY_OFFSET_ENU">
+        <description>Positions and velocities are relative to the vehicles current position and heading.</description>
+      </entry>
+
     </enum>
     <enum name="MAVLINK_DATA_STREAM_TYPE">
       <entry name="MAVLINK_DATA_STREAM_IMG_JPEG">
@@ -590,27 +604,27 @@
       </entry>
     </enum>
     <!-- Camera Mount mode Enumeration -->
-    <enum name="MAV_MOUNT_MODE">
+    <enum name="UXV_MOUNT_MODE">
       <description>Enumeration of possible mount operation modes</description>
-      <entry value="0" name="MAV_MOUNT_MODE_RETRACT">
+      <entry value="0" name="UXV_MOUNT_MODE_RETRACT">
         <description>Load and keep safe position (Roll,Pitch,Yaw) from permant memory and stop stabilization</description>
       </entry>
-      <entry value="1" name="MAV_MOUNT_MODE_NEUTRAL">
+      <entry value="1" name="UXV_MOUNT_MODE_NEUTRAL">
         <description>Load and keep neutral position (Roll,Pitch,Yaw) from permanent memory.</description>
       </entry>
-      <entry value="2" name="MAV_MOUNT_MODE_MAVLINK_TARGETING">
+      <entry value="2" name="UXV_MOUNT_MODE_MAVLINK_TARGETING">
         <description>Load neutral position and start MAVLink Roll,Pitch,Yaw control with stabilization</description>
       </entry>
-      <entry value="3" name="MAV_MOUNT_MODE_RC_TARGETING">
+      <entry value="3" name="UXV_MOUNT_MODE_RC_TARGETING">
         <description>Load neutral position and start RC Roll,Pitch,Yaw control with stabilization</description>
       </entry>
-      <entry value="4" name="MAV_MOUNT_MODE_GPS_POINT">
+      <entry value="4" name="UXV_MOUNT_MODE_GPS_POINT">
         <description>Load neutral position and start to point to Lat,Lon,Alt</description>
       </entry>
     </enum>
-    <enum name="MAV_CMD">
+    <enum name="UXV_CMD">
       <description>Commands to be executed by the MAV. They can be executed on user request, or as part of a mission script. If the action is used in a mission, the parameter mapping to the waypoint/mission message is as follows: Param 1, Param 2, Param 3, Param 4, X: Param 5, Y:Param 6, Z:Param 7. This command list is similar what ARINC 424 is for commercial aircraft: A data format how to interpret waypoint/mission data.</description>
-      <entry value="16" name="MAV_CMD_NAV_WAYPOINT">
+      <entry value="16" name="UXV_CMD_NAV_WAYPOINT">
         <description>Navigate to MISSION.</description>
         <param index="1">Hold time in decimal seconds. (ignored by fixed wing, time to stay at MISSION for rotary wing)</param>
         <param index="2">Acceptance radius in meters (if the sphere with this radius is hit, the MISSION counts as reached)</param>
@@ -620,7 +634,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="17" name="MAV_CMD_NAV_LOITER_UNLIM">
+      <entry value="17" name="UXV_CMD_NAV_LOITER_UNLIM">
         <description>Loiter around this MISSION an unlimited amount of time</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -630,7 +644,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="18" name="MAV_CMD_NAV_LOITER_TURNS">
+      <entry value="18" name="UXV_CMD_NAV_LOITER_TURNS">
         <description>Loiter around this MISSION for X turns</description>
         <param index="1">Turns</param>
         <param index="2">Empty</param>
@@ -640,7 +654,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="19" name="MAV_CMD_NAV_LOITER_TIME">
+      <entry value="19" name="UXV_CMD_NAV_LOITER_TIME">
         <description>Loiter around this MISSION for X seconds</description>
         <param index="1">Seconds (decimal)</param>
         <param index="2">Empty</param>
@@ -650,7 +664,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="20" name="MAV_CMD_NAV_RETURN_TO_LAUNCH">
+      <entry value="20" name="UXV_CMD_NAV_RETURN_TO_LAUNCH">
         <description>Return to launch location</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -660,7 +674,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="21" name="MAV_CMD_NAV_LAND">
+      <entry value="21" name="UXV_CMD_NAV_LAND">
         <description>Land at location</description>
         <param index="1">Abort Alt</param>
         <param index="2">Empty</param>
@@ -670,7 +684,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="22" name="MAV_CMD_NAV_TAKEOFF">
+      <entry value="22" name="UXV_CMD_NAV_TAKEOFF">
         <description>Takeoff from ground / hand</description>
         <param index="1">Minimum pitch (if airspeed sensor present), desired pitch without sensor</param>
         <param index="2">Empty</param>
@@ -680,7 +694,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="23" name="MAV_CMD_NAV_LAND_LOCAL">
+      <entry value="23" name="UXV_CMD_NAV_LAND_LOCAL">
         <description>Land at local position (local frame only)</description>
         <param index="1">Landing target number (if available)</param>
         <param index="2">Maximum accepted offset from desired landing position [m] - computed magnitude from spherical coordinates: d = sqrt(x^2 + y^2 + z^2), which gives the maximum accepted distance between the desired landing position and the position where the vehicle is about to land</param>
@@ -690,7 +704,7 @@
         <param index="6">X-axis position [m]</param>
         <param index="7">Z-axis / ground level position [m]</param>
       </entry>
-      <entry value="24" name="MAV_CMD_NAV_TAKEOFF_LOCAL">
+      <entry value="24" name="UXV_CMD_NAV_TAKEOFF_LOCAL">
         <description>Takeoff from local position (local frame only)</description>
         <param index="1">Minimum pitch (if airspeed sensor present), desired pitch without sensor [rad]</param>
         <param index="2">Empty</param>
@@ -700,7 +714,7 @@
         <param index="6">X-axis position [m]</param>
         <param index="7">Z-axis position [m]</param>
       </entry>
-      <entry value="25" name="MAV_CMD_NAV_FOLLOW">
+      <entry value="25" name="UXV_CMD_NAV_FOLLOW">
         <description>Vehicle following, i.e. this waypoint represents the position of a moving vehicle</description>
         <param index="1">Following logic to use (e.g. loitering or sinusoidal following) - depends on specific autopilot implementation</param>
         <param index="2">Ground speed of vehicle to be followed</param>
@@ -710,7 +724,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="30" name="MAV_CMD_NAV_CONTINUE_AND_CHANGE_ALT">
+      <entry value="30" name="UXV_CMD_NAV_CONTINUE_AND_CHANGE_ALT">
         <description>Continue on the current course and climb/descend to specified altitude.  When the altitude is reached continue to the next command (i.e., don't proceed to the next command until the desired altitude is reached.</description>
         <param index="1">Climb or Descend (0 = Neutral, command completes when within 5m of this command's altitude, 1 = Climbing, command completes when at or above this command's altitude, 2 = Descending, command completes when at or below this command's altitude. </param>
         <param index="2">Empty</param>
@@ -720,7 +734,7 @@
         <param index="6">Empty</param>
         <param index="7">Desired altitude in meters</param>
       </entry>
-      <entry value="31" name="MAV_CMD_NAV_LOITER_TO_ALT">
+      <entry value="31" name="UXV_CMD_NAV_LOITER_TO_ALT">
         <description>Begin loiter at the specified Latitude and Longitude.  If Lat=Lon=0, then loiter at the current position.  Don't consider the navigation command complete (don't leave loiter) until the altitude has been reached.  Additionally, if the Heading Required parameter is non-zero the  aircraft will not leave the loiter until heading toward the next waypoint. </description>
         <param index="1">Heading Required (0 = False)</param>
         <param index="2">Radius in meters. If positive loiter clockwise, negative counter-clockwise, 0 means no change to standard loiter.</param>
@@ -730,7 +744,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="32" name="MAV_CMD_DO_FOLLOW">
+      <entry value="32" name="UXV_CMD_DO_FOLLOW">
         <description>Being following a target</description>
         <param index="1">System ID (the system ID of the FOLLOW_TARGET beacon). Send 0 to disable follow-me and return to the default position hold mode</param>
         <param index="2">RESERVED</param>
@@ -740,7 +754,7 @@
         <param index="6">RESERVED</param>
         <param index="7">TTL in seconds in which the MAV should go to the default position hold mode after a message rx timeout</param>
       </entry>
-      <entry value="33" name="MAV_CMD_DO_FOLLOW_REPOSITION">
+      <entry value="33" name="UXV_CMD_DO_FOLLOW_REPOSITION">
         <description>Reposition the MAV after a follow target command has been sent</description>
         <param index="1">Camera q1 (where 0 is on the ray from the camera to the tracking device)</param>
         <param index="2">Camera q2</param>
@@ -750,17 +764,17 @@
         <param index="6">X offset from target (m)</param>
         <param index="7">Y offset from target (m)</param>
       </entry>
-      <entry value="80" name="MAV_CMD_NAV_ROI">
+      <entry value="80" name="UXV_CMD_NAV_ROI">
         <description>Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.</description>
-        <param index="1">Region of intereset mode. (see MAV_ROI enum)</param>
-        <param index="2">MISSION index/ target ID. (see MAV_ROI enum)</param>
+        <param index="1">Region of intereset mode. (see UXV_ROI enum)</param>
+        <param index="2">MISSION index/ target ID. (see UXV_ROI enum)</param>
         <param index="3">ROI index (allows a vehicle to manage multiple ROI's)</param>
         <param index="4">Empty</param>
-        <param index="5">x the location of the fixed ROI (see MAV_FRAME)</param>
+        <param index="5">x the location of the fixed ROI (see UXV_FRAME)</param>
         <param index="6">y</param>
         <param index="7">z</param>
       </entry>
-      <entry value="81" name="MAV_CMD_NAV_PATHPLANNING">
+      <entry value="81" name="UXV_CMD_NAV_PATHPLANNING">
         <description>Control autonomous path planning on the MAV.</description>
         <param index="1">0: Disable local obstacle avoidance / local path planning (without resetting map), 1: Enable local path planning, 2: Enable and reset local path planning</param>
         <param index="2">0: Disable full path planning (without resetting map), 1: Enable, 2: Enable and reset map/occupancy grid, 3: Enable and reset planned route, but not occupancy grid</param>
@@ -770,7 +784,7 @@
         <param index="6">Longitude/Y of goal</param>
         <param index="7">Altitude/Z of goal</param>
       </entry>
-      <entry value="82" name="MAV_CMD_NAV_SPLINE_WAYPOINT">
+      <entry value="82" name="UXV_CMD_NAV_SPLINE_WAYPOINT">
         <description>Navigate to MISSION using a spline path.</description>
         <param index="1">Hold time in decimal seconds. (ignored by fixed wing, time to stay at MISSION for rotary wing)</param>
         <param index="2">Empty</param>
@@ -780,7 +794,7 @@
         <param index="6">Longitude/Y of goal</param>
         <param index="7">Altitude/Z of goal</param>
       </entry>
-      <entry value="84" name="MAV_CMD_NAV_VTOL_TAKEOFF">
+      <entry value="84" name="UXV_CMD_NAV_VTOL_TAKEOFF">
         <description>Takeoff from ground using VTOL mode</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -790,7 +804,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="85" name="MAV_CMD_NAV_VTOL_LAND">
+      <entry value="85" name="UXV_CMD_NAV_VTOL_LAND">
         <description>Land using VTOL mode</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -804,7 +818,7 @@
                     as they were used in some conflicting proposals
                     between PX4 and ardupilot and need to be kept
                     unused to prevent errors -->
-      <entry value="92" name="MAV_CMD_NAV_GUIDED_ENABLE">
+      <entry value="92" name="UXV_CMD_NAV_GUIDED_ENABLE">
         <description>hand control over to an external controller</description>
         <param index="1">On / Off (&gt; 0.5f on)</param>
         <param index="2">Empty</param>
@@ -814,7 +828,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="93" name="MAV_CMD_NAV_DELAY">
+      <entry value="93" name="UXV_CMD_NAV_DELAY">
         <description>Delay the next navigation command a number of seconds or until a specified time</description>
         <param index="1">Delay in seconds (decimal, -1 to enable time-of-day fields)</param>
         <param index="2">hour (24h format, UTC, -1 to ignore)</param>
@@ -824,7 +838,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="94" name="MAV_CMD_NAV_PAYLOAD_PLACE">
+      <entry value="94" name="UXV_CMD_NAV_PAYLOAD_PLACE">
         <description>Descend and place payload.  Vehicle descends until it detects a hanging payload has reached the ground, the gripper is opened to release the payload</description>
         <param index="1">Maximum distance to descend (meters)</param>
         <param index="2">Empty</param>
@@ -834,7 +848,7 @@
         <param index="6">Longitude (deg * 1E7)</param>
         <param index="7">Altitude (meters)</param>
       </entry>
-      <entry value="95" name="MAV_CMD_NAV_LAST">
+      <entry value="95" name="UXV_CMD_NAV_LAST">
         <description>NOP - This command is only used to mark the upper limit of the NAV/ACTION commands in the enumeration</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -844,7 +858,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="112" name="MAV_CMD_CONDITION_DELAY">
+      <entry value="112" name="UXV_CMD_CONDITION_DELAY">
         <description>Delay mission state machine.</description>
         <param index="1">Delay in seconds (decimal)</param>
         <param index="2">Empty</param>
@@ -854,7 +868,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="113" name="MAV_CMD_CONDITION_CHANGE_ALT">
+      <entry value="113" name="UXV_CMD_CONDITION_CHANGE_ALT">
         <description>Ascend/descend at rate.  Delay mission state machine until desired altitude reached.</description>
         <param index="1">Descent / Ascend rate (m/s)</param>
         <param index="2">Empty</param>
@@ -864,7 +878,7 @@
         <param index="6">Empty</param>
         <param index="7">Finish Altitude</param>
       </entry>
-      <entry value="114" name="MAV_CMD_CONDITION_DISTANCE">
+      <entry value="114" name="UXV_CMD_CONDITION_DISTANCE">
         <description>Delay mission state machine until within desired distance of next NAV point.</description>
         <param index="1">Distance (meters)</param>
         <param index="2">Empty</param>
@@ -874,7 +888,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="115" name="MAV_CMD_CONDITION_YAW">
+      <entry value="115" name="UXV_CMD_CONDITION_YAW">
         <description>Reach a certain target angle.</description>
         <param index="1">target angle: [0-360], 0 is north</param>
         <param index="2">speed during yaw change:[deg per second]</param>
@@ -884,7 +898,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="159" name="MAV_CMD_CONDITION_LAST">
+      <entry value="159" name="UXV_CMD_CONDITION_LAST">
         <description>NOP - This command is only used to mark the upper limit of the CONDITION commands in the enumeration</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -894,9 +908,9 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="176" name="MAV_CMD_DO_SET_MODE">
+      <entry value="176" name="UXV_CMD_DO_SET_MODE">
         <description>Set system mode.</description>
-        <param index="1">Mode, as defined by ENUM MAV_MODE</param>
+        <param index="1">Mode, as defined by ENUM UXV_MODE</param>
         <param index="2">Custom mode - this is system specific, please refer to the individual autopilot specifications for details.</param>
         <param index="3">Custom sub mode - this is system specific, please refer to the individual autopilot specifications for details.</param>
         <param index="4">Empty</param>
@@ -904,7 +918,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="177" name="MAV_CMD_DO_JUMP">
+      <entry value="177" name="UXV_CMD_DO_JUMP">
         <description>Jump to the desired command in the mission list.  Repeat this action only the specified number of times</description>
         <param index="1">Sequence number</param>
         <param index="2">Repeat count</param>
@@ -914,7 +928,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="178" name="MAV_CMD_DO_CHANGE_SPEED">
+      <entry value="178" name="UXV_CMD_DO_CHANGE_SPEED">
         <description>Change speed and/or throttle set points.</description>
         <param index="1">Speed type (0=Airspeed, 1=Ground Speed)</param>
         <param index="2">Speed  (m/s, -1 indicates no change)</param>
@@ -924,7 +938,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="179" name="MAV_CMD_DO_SET_HOME">
+      <entry value="179" name="UXV_CMD_DO_SET_HOME">
         <description>Changes the home location either to the current location or a specified location.</description>
         <param index="1">Use current (1=use current location, 0=use specified location)</param>
         <param index="2">Empty</param>
@@ -934,7 +948,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="180" name="MAV_CMD_DO_SET_PARAMETER">
+      <entry value="180" name="UXV_CMD_DO_SET_PARAMETER">
         <description>Set a system parameter.  Caution!  Use of this command requires knowledge of the numeric enumeration value of the parameter.</description>
         <param index="1">Parameter number</param>
         <param index="2">Parameter value</param>
@@ -944,7 +958,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="181" name="MAV_CMD_DO_SET_RELAY">
+      <entry value="181" name="UXV_CMD_DO_SET_RELAY">
         <description>Set a relay to a condition.</description>
         <param index="1">Relay number</param>
         <param index="2">Setting (1=on, 0=off, others possible depending on system hardware)</param>
@@ -954,7 +968,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="182" name="MAV_CMD_DO_REPEAT_RELAY">
+      <entry value="182" name="UXV_CMD_DO_REPEAT_RELAY">
         <description>Cycle a relay on and off for a desired number of cyles with a desired period.</description>
         <param index="1">Relay number</param>
         <param index="2">Cycle count</param>
@@ -964,7 +978,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="183" name="MAV_CMD_DO_SET_SERVO">
+      <entry value="183" name="UXV_CMD_DO_SET_SERVO">
         <description>Set a servo to a desired PWM value.</description>
         <param index="1">Servo number</param>
         <param index="2">PWM (microseconds, 1000 to 2000 typical)</param>
@@ -974,7 +988,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="184" name="MAV_CMD_DO_REPEAT_SERVO">
+      <entry value="184" name="UXV_CMD_DO_REPEAT_SERVO">
         <description>Cycle a between its nominal setting and a desired PWM for a desired number of cycles with a desired period.</description>
         <param index="1">Servo number</param>
         <param index="2">PWM (microseconds, 1000 to 2000 typical)</param>
@@ -984,7 +998,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="185" name="MAV_CMD_DO_FLIGHTTERMINATION">
+      <entry value="185" name="UXV_CMD_DO_FLIGHTTERMINATION">
         <description>Terminate flight immediately</description>
         <param index="1">Flight termination activated if &gt; 0.5</param>
         <param index="2">Empty</param>
@@ -994,17 +1008,17 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="186" name="MAV_CMD_DO_CHANGE_ALTITUDE">
+      <entry value="186" name="UXV_CMD_DO_CHANGE_ALTITUDE">
         <description>Change altitude set point.</description>
         <param index="1">Altitude in meters</param>
-        <param index="2">Mav frame of new altitude (see MAV_FRAME)</param>
+        <param index="2">Mav frame of new altitude (see UXV_FRAME)</param>
         <param index="3">Empty</param>
         <param index="4">Empty</param>
         <param index="5">Empty</param>
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="189" name="MAV_CMD_DO_LAND_START">
+      <entry value="189" name="UXV_CMD_DO_LAND_START">
         <description>Mission command to perform a landing. This is used as a marker in a mission to tell the autopilot where a sequence of mission items that represents a landing starts. It may also be sent via a COMMAND_LONG to trigger a landing, in which case the nearest (geographically) landing sequence in the mission will be used. The Latitude/Longitude is optional, and may be set to 0/0 if not needed. If specified then it will be used to help find the closest landing sequence.</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -1014,7 +1028,7 @@
         <param index="6">Longitude</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="190" name="MAV_CMD_DO_RALLY_LAND">
+      <entry value="190" name="UXV_CMD_DO_RALLY_LAND">
         <description>Mission command to perform a landing from a rally point.</description>
         <param index="1">Break altitude (meters)</param>
         <param index="2">Landing speed (m/s)</param>
@@ -1024,7 +1038,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="191" name="MAV_CMD_DO_GO_AROUND">
+      <entry value="191" name="UXV_CMD_DO_GO_AROUND">
         <description>Mission command to safely abort an autonmous landing.</description>
         <param index="1">Altitude (meters)</param>
         <param index="2">Empty</param>
@@ -1034,17 +1048,17 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="192" name="MAV_CMD_DO_REPOSITION">
+      <entry value="192" name="UXV_CMD_DO_REPOSITION">
         <description>Reposition the vehicle to a specific WGS84 global position.</description>
         <param index="1">Ground speed, less than 0 (-1) for default</param>
-        <param index="2">Bitmask of option flags, see the MAV_DO_REPOSITION_FLAGS enum.</param>
+        <param index="2">Bitmask of option flags, see the UXV_DO_REPOSITION_FLAGS enum.</param>
         <param index="3">Reserved</param>
         <param index="4">Yaw heading, NaN for unchanged. For planes indicates loiter direction (0: clockwise, 1: counter clockwise)</param>
         <param index="5">Latitude (deg * 1E7)</param>
         <param index="6">Longitude (deg * 1E7)</param>
         <param index="7">Altitude (meters)</param>
       </entry>
-      <entry value="193" name="MAV_CMD_DO_PAUSE_CONTINUE">
+      <entry value="193" name="UXV_CMD_DO_PAUSE_CONTINUE">
         <description>If in a GPS controlled position mode, hold the current position or continue.</description>
         <param index="1">0: Pause current mission or reposition command, hold current position. 1: Continue mission. A VTOL capable vehicle should enter hover mode (multicopter and VTOL planes). A plane should loiter with the default loiter radius.</param>
         <param index="2">Reserved</param>
@@ -1054,7 +1068,7 @@
         <param index="6">Reserved</param>
         <param index="7">Reserved</param>
       </entry>
-      <entry value="194" name="MAV_CMD_DO_SET_REVERSE">
+      <entry value="194" name="UXV_CMD_DO_SET_REVERSE">
         <description>Set moving direction to forward or reverse.</description>
         <param index="1">Direction (0=Forward, 1=Reverse)</param>
         <param index="2">Empty</param>
@@ -1064,7 +1078,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="200" name="MAV_CMD_DO_CONTROL_VIDEO">
+      <entry value="200" name="UXV_CMD_DO_CONTROL_VIDEO">
         <description>Control onboard camera system.</description>
         <param index="1">Camera ID (-1 for all)</param>
         <param index="2">Transmission: 0: disabled, 1: enabled compressed, 2: enabled raw</param>
@@ -1074,19 +1088,19 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="201" name="MAV_CMD_DO_SET_ROI">
+      <entry value="201" name="UXV_CMD_DO_SET_ROI">
         <description>Sets the region of interest (ROI) for a sensor set or the vehicle itself. This can then be used by the vehicles control system to control the vehicle attitude and the attitude of various sensors such as cameras.</description>
-        <param index="1">Region of intereset mode. (see MAV_ROI enum)</param>
-        <param index="2">MISSION index/ target ID. (see MAV_ROI enum)</param>
+        <param index="1">Region of intereset mode. (see UXV_ROI enum)</param>
+        <param index="2">MISSION index/ target ID. (see UXV_ROI enum)</param>
         <param index="3">ROI index (allows a vehicle to manage multiple ROI's)</param>
         <param index="4">Empty</param>
-        <param index="5">x the location of the fixed ROI (see MAV_FRAME)</param>
+        <param index="5">x the location of the fixed ROI (see UXV_FRAME)</param>
         <param index="6">y</param>
         <param index="7">z</param>
       </entry>
       <!-- Camera Controller Mission Commands Enumeration -->
-      <!-- MAV_CMD_DO_DIGICAM_CONFIGURE should be deprecated and replaced with CAMERA_SETTINGS -->
-      <entry value="202" name="MAV_CMD_DO_DIGICAM_CONFIGURE">
+      <!-- UXV_CMD_DO_DIGICAM_CONFIGURE should be deprecated and replaced with CAMERA_SETTINGS -->
+      <entry value="202" name="UXV_CMD_DO_DIGICAM_CONFIGURE">
         <description>Mission command to configure an on-board camera controller system.</description>
         <param index="1">Modes: P, TV, AV, M, Etc</param>
         <param index="2">Shutter speed: Divisor number for one second</param>
@@ -1096,7 +1110,7 @@
         <param index="6">Command Identity</param>
         <param index="7">Main engine cut-off time before camera trigger in seconds/10 (0 means no cut-off)</param>
       </entry>
-      <entry value="203" name="MAV_CMD_DO_DIGICAM_CONTROL">
+      <entry value="203" name="UXV_CMD_DO_DIGICAM_CONTROL">
         <description>Mission command to control an on-board camera controller system.</description>
         <param index="1">Session control e.g. show/hide lens</param>
         <param index="2">Zoom's absolute position</param>
@@ -1107,9 +1121,9 @@
         <param index="7">Empty</param>
       </entry>
       <!-- Camera Mount Mission Commands Enumeration -->
-      <entry value="204" name="MAV_CMD_DO_MOUNT_CONFIGURE">
+      <entry value="204" name="UXV_CMD_DO_MOUNT_CONFIGURE">
         <description>Mission command to configure a camera or antenna mount</description>
-        <param index="1">Mount operation mode (see MAV_MOUNT_MODE enum)</param>
+        <param index="1">Mount operation mode (see UXV_MOUNT_MODE enum)</param>
         <param index="2">stabilize roll? (1 = yes, 0 = no)</param>
         <param index="3">stabilize pitch? (1 = yes, 0 = no)</param>
         <param index="4">stabilize yaw? (1 = yes, 0 = no)</param>
@@ -1117,7 +1131,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="205" name="MAV_CMD_DO_MOUNT_CONTROL">
+      <entry value="205" name="UXV_CMD_DO_MOUNT_CONTROL">
         <description>Mission command to control a camera or antenna mount</description>
         <param index="1">pitch (WIP: DEPRECATED: or lat in degrees) depending on mount mode.</param>
         <param index="2">roll (WIP: DEPRECATED: or lon in degrees) depending on mount mode.</param>
@@ -1125,9 +1139,9 @@
         <param index="4">WIP: alt in meters depending on mount mode.</param>
         <param index="5">WIP: latitude in degrees * 1E7, set if appropriate mount mode.</param>
         <param index="6">WIP: longitude in degrees * 1E7, set if appropriate mount mode.</param>
-        <param index="7">MAV_MOUNT_MODE enum value</param>
+        <param index="7">UXV_MOUNT_MODE enum value</param>
       </entry>
-      <entry value="206" name="MAV_CMD_DO_SET_CAM_TRIGG_DIST">
+      <entry value="206" name="UXV_CMD_DO_SET_CAM_TRIGG_DIST">
         <description>Mission command to set CAM_TRIGG_DIST for this flight</description>
         <param index="1">Camera trigger distance (meters)</param>
         <param index="2">Empty</param>
@@ -1137,7 +1151,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="207" name="MAV_CMD_DO_FENCE_ENABLE">
+      <entry value="207" name="UXV_CMD_DO_FENCE_ENABLE">
         <description>Mission command to enable the geofence</description>
         <param index="1">enable? (0=disable, 1=enable, 2=disable_floor_only)</param>
         <param index="2">Empty</param>
@@ -1147,7 +1161,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="208" name="MAV_CMD_DO_PARACHUTE">
+      <entry value="208" name="UXV_CMD_DO_PARACHUTE">
         <description>Mission command to trigger a parachute</description>
         <param index="1">action (0=disable, 1=enable, 2=release, for some systems see PARACHUTE_ACTION enum, not in general message set.)</param>
         <param index="2">Empty</param>
@@ -1157,7 +1171,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="209" name="MAV_CMD_DO_MOTOR_TEST">
+      <entry value="209" name="UXV_CMD_DO_MOTOR_TEST">
         <description>Mission command to perform motor test</description>
         <param index="1">motor sequence number (a number from 1 to max number of motors on the vehicle)</param>
         <param index="2">throttle type (0=throttle percentage, 1=PWM, 2=pilot throttle channel pass-through. See MOTOR_TEST_THROTTLE_TYPE enum)</param>
@@ -1167,7 +1181,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="210" name="MAV_CMD_DO_INVERTED_FLIGHT">
+      <entry value="210" name="UXV_CMD_DO_INVERTED_FLIGHT">
         <description>Change to/from inverted flight</description>
         <param index="1">inverted (0=normal, 1=inverted)</param>
         <param index="2">Empty</param>
@@ -1177,7 +1191,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="213" name="MAV_CMD_NAV_SET_YAW_SPEED">
+      <entry value="213" name="UXV_CMD_NAV_SET_YAW_SPEED">
         <description>Sets a desired vehicle turn angle and speed change</description>
         <param index="1">yaw angle to adjust steering by in centidegress</param>
         <param index="2">speed - normalized to 0 .. 1</param>
@@ -1187,7 +1201,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="220" name="MAV_CMD_DO_MOUNT_CONTROL_QUAT">
+      <entry value="220" name="UXV_CMD_DO_MOUNT_CONTROL_QUAT">
         <description>Mission command to control a camera or antenna mount, using a quaternion as reference.</description>
         <param index="1">q1 - quaternion param #1, w (1 in null-rotation)</param>
         <param index="2">q2 - quaternion param #2, x (0 in null-rotation)</param>
@@ -1197,7 +1211,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="221" name="MAV_CMD_DO_GUIDED_MASTER">
+      <entry value="221" name="UXV_CMD_DO_GUIDED_MASTER">
         <description>set id of master controller</description>
         <param index="1">System ID</param>
         <param index="2">Component ID</param>
@@ -1207,7 +1221,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="222" name="MAV_CMD_DO_GUIDED_LIMITS">
+      <entry value="222" name="UXV_CMD_DO_GUIDED_LIMITS">
         <description>set limits for external control</description>
         <param index="1">timeout - maximum time (in seconds) that external controller will be allowed to control vehicle. 0 means no timeout</param>
         <param index="2">absolute altitude min (in meters, AMSL) - if vehicle moves below this alt, the command will be aborted and the mission will continue.  0 means no lower altitude limit</param>
@@ -1217,7 +1231,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="223" name="MAV_CMD_DO_ENGINE_CONTROL">
+      <entry value="223" name="UXV_CMD_DO_ENGINE_CONTROL">
         <description>Control vehicle engine. This is interpreted by the vehicles engine controller to change the target engine state. It is intended for vehicles with internal combustion engines</description>
         <param index="1">0: Stop engine, 1:Start Engine</param>
         <param index="2">0: Warm start, 1:Cold start. Controls use of choke where applicable</param>
@@ -1228,7 +1242,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="240" name="MAV_CMD_DO_LAST">
+      <entry value="240" name="UXV_CMD_DO_LAST">
         <description>NOP - This command is only used to mark the upper limit of the DO commands in the enumeration</description>
         <param index="1">Empty</param>
         <param index="2">Empty</param>
@@ -1238,7 +1252,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="241" name="MAV_CMD_PREFLIGHT_CALIBRATION">
+      <entry value="241" name="UXV_CMD_PREFLIGHT_CALIBRATION">
         <description>Trigger calibration. This command will be only accepted if in pre-flight mode. Except for Temperature Calibration, only one sensor should be set in a single message and all others should be zero.</description>
         <param index="1">1: gyro calibration, 3: gyro temperature calibration</param>
         <param index="2">1: magnetometer calibration</param>
@@ -1248,7 +1262,7 @@
         <param index="6">1: APM: compass/motor interference calibration (PX4: airspeed calibration, deprecated), 2: airspeed calibration</param>
         <param index="7">1: ESC calibration, 3: barometer temperature calibration</param>
       </entry>
-      <entry value="242" name="MAV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS">
+      <entry value="242" name="UXV_CMD_PREFLIGHT_SET_SENSOR_OFFSETS">
         <description>Set sensor offsets. This command will be only accepted if in pre-flight mode.</description>
         <param index="1">Sensor to adjust the offsets for: 0: gyros, 1: accelerometer, 2: magnetometer, 3: barometer, 4: optical flow, 5: second magnetometer, 6: third magnetometer</param>
         <param index="2">X axis offset (or generic dimension 1), in the sensor's raw units</param>
@@ -1258,7 +1272,7 @@
         <param index="6">Generic dimension 5, in the sensor's raw units</param>
         <param index="7">Generic dimension 6, in the sensor's raw units</param>
       </entry>
-      <entry value="243" name="MAV_CMD_PREFLIGHT_UAVCAN">
+      <entry value="243" name="UXV_CMD_PREFLIGHT_UAVCAN">
         <description>Trigger UAVCAN config. This command will be only accepted if in pre-flight mode.</description>
         <param index="1">1: Trigger actuator ID assignment and direction mapping.</param>
         <param index="2">Reserved</param>
@@ -1268,7 +1282,7 @@
         <param index="6">Reserved</param>
         <param index="7">Reserved</param>
       </entry>
-      <entry value="245" name="MAV_CMD_PREFLIGHT_STORAGE">
+      <entry value="245" name="UXV_CMD_PREFLIGHT_STORAGE">
         <description>Request storage of different parameter values and logs. This command will be only accepted if in pre-flight mode.</description>
         <param index="1">Parameter storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM, 2: Reset to defaults</param>
         <param index="2">Mission storage: 0: READ FROM FLASH/EEPROM, 1: WRITE CURRENT TO FLASH/EEPROM, 2: Reset to defaults</param>
@@ -1278,7 +1292,7 @@
         <param index="6">Empty</param>
         <param index="7">Empty</param>
       </entry>
-      <entry value="246" name="MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN">
+      <entry value="246" name="UXV_CMD_PREFLIGHT_REBOOT_SHUTDOWN">
         <description>Request the reboot or shutdown of system components.</description>
         <param index="1">0: Do nothing for autopilot, 1: Reboot autopilot, 2: Shutdown autopilot, 3: Reboot autopilot and keep it in the bootloader until upgraded.</param>
         <param index="2">0: Do nothing for onboard computer, 1: Reboot onboard computer, 2: Shutdown onboard computer, 3: Reboot onboard computer and keep it in the bootloader until upgraded.</param>
@@ -1288,26 +1302,26 @@
         <param index="6">Reserved, send 0</param>
         <param index="7">WIP: ID (e.g. camera ID -1 for all IDs)</param>
       </entry>
-      <entry value="252" name="MAV_CMD_OVERRIDE_GOTO">
+      <entry value="252" name="UXV_CMD_OVERRIDE_GOTO">
         <description>Hold / continue the current action</description>
-        <param index="1">MAV_GOTO_DO_HOLD: hold MAV_GOTO_DO_CONTINUE: continue with next item in mission plan</param>
-        <param index="2">MAV_GOTO_HOLD_AT_CURRENT_POSITION: Hold at current position MAV_GOTO_HOLD_AT_SPECIFIED_POSITION: hold at specified position</param>
-        <param index="3">MAV_FRAME coordinate frame of hold point</param>
+        <param index="1">UXV_GOTO_DO_HOLD: hold UXV_GOTO_DO_CONTINUE: continue with next item in mission plan</param>
+        <param index="2">UXV_GOTO_HOLD_AT_CURRENT_POSITION: Hold at current position UXV_GOTO_HOLD_AT_SPECIFIED_POSITION: hold at specified position</param>
+        <param index="3">UXV_FRAME coordinate frame of hold point</param>
         <param index="4">Desired yaw angle in degrees</param>
         <param index="5">Latitude / X position</param>
         <param index="6">Longitude / Y position</param>
         <param index="7">Altitude / Z position</param>
       </entry>
-      <entry value="300" name="MAV_CMD_MISSION_START">
+      <entry value="300" name="UXV_CMD_MISSION_START">
         <description>start running a mission</description>
         <param index="1">first_item: the first mission item to run</param>
         <param index="2">last_item:  the last mission item to run (after this item is run, the mission ends)</param>
       </entry>
-      <entry value="400" name="MAV_CMD_COMPONENT_ARM_DISARM">
+      <entry value="400" name="UXV_CMD_COMPONENT_ARM_DISARM">
         <description>Arms / Disarms a component</description>
         <param index="1">1 to arm, 0 to disarm</param>
       </entry>
-      <entry value="410" name="MAV_CMD_GET_HOME_POSITION">
+      <entry value="410" name="UXV_CMD_GET_HOME_POSITION">
         <description>Request the home position from the vehicle.</description>
         <param index="1">Reserved</param>
         <param index="2">Reserved</param>
@@ -1317,38 +1331,38 @@
         <param index="6">Reserved</param>
         <param index="7">Reserved</param>
       </entry>
-      <entry value="500" name="MAV_CMD_START_RX_PAIR">
+      <entry value="500" name="UXV_CMD_START_RX_PAIR">
         <description>Starts receiver pairing</description>
         <param index="1">0:Spektrum</param>
         <param index="2">0:Spektrum DSM2, 1:Spektrum DSMX</param>
       </entry>
-      <entry value="510" name="MAV_CMD_GET_MESSAGE_INTERVAL">
+      <entry value="510" name="UXV_CMD_GET_MESSAGE_INTERVAL">
         <description>Request the interval between messages for a particular MAVLink message ID</description>
         <param index="1">The MAVLink message ID</param>
       </entry>
-      <entry value="511" name="MAV_CMD_SET_MESSAGE_INTERVAL">
+      <entry value="511" name="UXV_CMD_SET_MESSAGE_INTERVAL">
         <description>Request the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM</description>
         <param index="1">The MAVLink message ID</param>
         <param index="2">The interval between two messages, in microseconds. Set to -1 to disable and 0 to request default rate.</param>
       </entry>
-      <entry value="520" name="MAV_CMD_REQUEST_AUTOPILOT_CAPABILITIES">
+      <entry value="520" name="UXV_CMD_REQUEST_AUTOPILOT_CAPABILITIES">
         <description>Request autopilot capabilities</description>
         <param index="1">1: Request autopilot version</param>
         <param index="2">Reserved (all remaining params)</param>
       </entry>
-      <entry value="521" name="MAV_CMD_REQUEST_CAMERA_INFORMATION">
+      <entry value="521" name="UXV_CMD_REQUEST_CAMERA_INFORMATION">
         <description>WIP: Request camera information (CAMERA_INFORMATION)</description>
         <param index="1">1: Request camera capabilities</param>
         <param index="2">Camera ID</param>
         <param index="3">Reserved (all remaining params)</param>
       </entry>
-      <entry value="522" name="MAV_CMD_REQUEST_CAMERA_SETTINGS">
+      <entry value="522" name="UXV_CMD_REQUEST_CAMERA_SETTINGS">
         <description>WIP: Request camera settings (CAMERA_SETTINGS)</description>
         <param index="1">1: Request camera settings</param>
         <param index="2">Camera ID</param>
         <param index="3">Reserved (all remaining params)</param>
       </entry>
-      <entry value="523" name="MAV_CMD_SET_CAMERA_SETTINGS_1">
+      <entry value="523" name="UXV_CMD_SET_CAMERA_SETTINGS_1">
         <description>WIP: Set the camera settings part 1 (CAMERA_SETTINGS)</description>
         <param index="1">Camera ID</param>
         <param index="2">Aperture (1/value)</param>
@@ -1358,7 +1372,7 @@
         <param index="6">ISO sensitivity</param>
         <param index="7">ISO sensitivity locked (0: auto, 1: locked)</param>
       </entry>
-      <entry value="524" name="MAV_CMD_SET_CAMERA_SETTINGS_2">
+      <entry value="524" name="UXV_CMD_SET_CAMERA_SETTINGS_2">
         <description>WIP: Set the camera settings part 2 (CAMERA_SETTINGS)</description>
         <param index="1">Camera ID</param>
         <param index="2">White balance locked (0: auto, 1: locked)</param>
@@ -1368,30 +1382,30 @@
         <param index="6">Reserved for image format ID</param>
         <param index="7">Reserved</param>
       </entry>
-      <entry value="525" name="MAV_CMD_REQUEST_STORAGE_INFORMATION">
+      <entry value="525" name="UXV_CMD_REQUEST_STORAGE_INFORMATION">
         <description>WIP: Request storage information (STORAGE_INFORMATION)</description>
         <param index="1">1: Request storage information</param>
         <param index="2">Storage ID</param>
         <param index="3">Reserved (all remaining params)</param>
       </entry>
-      <entry value="526" name="MAV_CMD_STORAGE_FORMAT">
+      <entry value="526" name="UXV_CMD_STORAGE_FORMAT">
         <description>WIP: Format a storage medium</description>
         <param index="1">1: Format storage</param>
         <param index="2">Storage ID</param>
         <param index="3">Reserved (all remaining params)</param>
       </entry>
-      <entry value="527" name="MAV_CMD_REQUEST_CAMERA_CAPTURE_STATUS">
+      <entry value="527" name="UXV_CMD_REQUEST_CAMERA_CAPTURE_STATUS">
         <description>WIP: Request camera capture status (CAMERA_CAPTURE_STATUS)</description>
         <param index="1">1: Request camera capture status</param>
         <param index="2">Camera ID</param>
         <param index="3">Reserved (all remaining params)</param>
       </entry>
-      <entry value="528" name="MAV_CMD_REQUEST_FLIGHT_INFORMATION">
+      <entry value="528" name="UXV_CMD_REQUEST_FLIGHT_INFORMATION">
         <description>WIP: Request flight information (FLIGHT_INFORMATION)</description>
         <param index="1">1: Request flight information</param>
         <param index="2">Reserved (all remaining params)</param>
       </entry>
-      <entry value="2000" name="MAV_CMD_IMAGE_START_CAPTURE">
+      <entry value="2000" name="UXV_CMD_IMAGE_START_CAPTURE">
         <description>Start image capture sequence. Sends CAMERA_IMAGE_CAPTURED after each capture.</description>
         <param index="1">Duration between two consecutive pictures (in seconds)</param>
         <param index="2">Number of images to capture total - 0 for unlimited capture</param>
@@ -1400,18 +1414,18 @@
         <param index="5">WIP: Resolution horizontal in pixels</param>
         <param index="6">WIP: Camera ID</param>
       </entry>
-      <entry value="2001" name="MAV_CMD_IMAGE_STOP_CAPTURE">
+      <entry value="2001" name="UXV_CMD_IMAGE_STOP_CAPTURE">
         <description>Stop image capture sequence</description>
         <param index="1">Camera ID</param>
         <param index="2">Reserved</param>
       </entry>
-      <entry value="2003" name="MAV_CMD_DO_TRIGGER_CONTROL">
+      <entry value="2003" name="UXV_CMD_DO_TRIGGER_CONTROL">
         <description>Enable or disable on-board camera triggering system.</description>
         <param index="1">Trigger enable/disable (0 for disable, 1 for start)</param>
         <param index="2">Shutter integration time (in ms)</param>
         <param index="3">Reserved</param>
       </entry>
-      <entry value="2500" name="MAV_CMD_VIDEO_START_CAPTURE">
+      <entry value="2500" name="UXV_CMD_VIDEO_START_CAPTURE">
         <description>Starts video capture (recording)</description>
         <param index="1">Camera ID (0 for all cameras), 1 for first, 2 for second, etc.</param>
         <param index="2">Frames per second, set to -1 for highest framerate possible.</param>
@@ -1420,12 +1434,12 @@
         <param index="5">WIP: Resolution horizontal in pixels</param>
         <param index="6">WIP: Frequency CAMERA_CAPTURE_STATUS messages should be sent while recording (0 for no messages, otherwise time in Hz)</param>
       </entry>
-      <entry value="2501" name="MAV_CMD_VIDEO_STOP_CAPTURE">
+      <entry value="2501" name="UXV_CMD_VIDEO_STOP_CAPTURE">
         <description>Stop the current video capture (recording)</description>
         <param index="1">WIP: Camera ID</param>
         <param index="2">Reserved</param>
       </entry>
-      <entry value="2510" name="MAV_CMD_LOGGING_START">
+      <entry value="2510" name="UXV_CMD_LOGGING_START">
         <description>Request to start streaming logging data over MAVLink (see also LOGGING_DATA message)</description>
         <param index="1">Format: 0: ULog</param>
         <param index="2">Reserved (set to 0)</param>
@@ -1435,7 +1449,7 @@
         <param index="6">Reserved (set to 0)</param>
         <param index="7">Reserved (set to 0)</param>
       </entry>
-      <entry value="2511" name="MAV_CMD_LOGGING_STOP">
+      <entry value="2511" name="UXV_CMD_LOGGING_STOP">
         <description>Request to stop streaming log data over MAVLink</description>
         <param index="1">Reserved (set to 0)</param>
         <param index="2">Reserved (set to 0)</param>
@@ -1445,7 +1459,7 @@
         <param index="6">Reserved (set to 0)</param>
         <param index="7">Reserved (set to 0)</param>
       </entry>
-      <entry value="2520" name="MAV_CMD_AIRFRAME_CONFIGURATION">
+      <entry value="2520" name="UXV_CMD_AIRFRAME_CONFIGURATION">
         <description/>
         <param index="1">Landing gear ID (default: 0, -1 for all)</param>
         <param index="2">Landing gear position (Down: 0, Up: 1, NAN for no change)</param>
@@ -1455,22 +1469,22 @@
         <param index="6">Reserved, set to NAN</param>
         <param index="7">Reserved, set to NAN</param>
       </entry>
-      <entry value="2800" name="MAV_CMD_PANORAMA_CREATE">
+      <entry value="2800" name="UXV_CMD_PANORAMA_CREATE">
         <description>Create a panorama at the current position</description>
         <param index="1">Viewing angle horizontal of the panorama (in degrees, +- 0.5 the total angle)</param>
         <param index="2">Viewing angle vertical of panorama (in degrees)</param>
         <param index="3">Speed of the horizontal rotation (in degrees per second)</param>
         <param index="4">Speed of the vertical rotation (in degrees per second)</param>
       </entry>
-      <entry value="3000" name="MAV_CMD_DO_VTOL_TRANSITION">
+      <entry value="3000" name="UXV_CMD_DO_VTOL_TRANSITION">
         <description>Request VTOL transition</description>
-        <param index="1">The target VTOL state, as defined by ENUM MAV_VTOL_STATE. Only MAV_VTOL_STATE_MC and MAV_VTOL_STATE_FW can be used.</param>
+        <param index="1">The target VTOL state, as defined by ENUM UXV_VTOL_STATE. Only UXV_VTOL_STATE_MC and UXV_VTOL_STATE_FW can be used.</param>
       </entry>
-      <entry value="4000" name="MAV_CMD_SET_GUIDED_SUBMODE_STANDARD">
+      <entry value="4000" name="UXV_CMD_SET_GUIDED_SUBMODE_STANDARD">
         <description>This command sets the submode to standard guided when vehicle is in guided mode. The vehicle holds position and altitude and the user can input the desired velocites along all three axes.
                   </description>
       </entry>
-      <entry value="4001" name="MAV_CMD_SET_GUIDED_SUBMODE_CIRCLE">
+      <entry value="4001" name="UXV_CMD_SET_GUIDED_SUBMODE_CIRCLE">
         <description>This command sets submode circle when vehicle is in guided mode. Vehicle flies along a circle facing the center of the circle. The user can input the velocity along the circle and change the radius. If no input is given the vehicle will hold position.
                   </description>
         <param index="1">Radius of desired circle in CIRCLE_MODE</param>
@@ -1480,7 +1494,7 @@
         <param index="5">Unscaled target latitude of center of circle in CIRCLE_MODE</param>
         <param index="6">Unscaled target longitude of center of circle in CIRCLE_MODE</param>
       </entry>
-      <entry value="5000" name="MAV_CMD_NAV_FENCE_RETURN_POINT">
+      <entry value="5000" name="UXV_CMD_NAV_FENCE_RETURN_POINT">
         <description>Fence return point. There can only be one fence return point.
         </description>
         <param index="1">Reserved</param>
@@ -1491,7 +1505,7 @@
         <param index="6">Longitude</param>
         <param index="7">Altitude</param>
       </entry>
-      <entry value="5001" name="MAV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION">
+      <entry value="5001" name="UXV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION">
         <description>Fence vertex for an inclusion polygon. The vehicle must stay within this area. Minimum of 3 vertices required.
         </description>
         <param index="1">Polygon vertex count</param>
@@ -1502,7 +1516,7 @@
         <param index="6">Longitude</param>
         <param index="7">Reserved</param>
       </entry>
-      <entry value="5002" name="MAV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION">
+      <entry value="5002" name="UXV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION">
         <description>Fence vertex for an exclusion polygon. The vehicle must stay outside this area. Minimum of 3 vertices required.
         </description>
         <param index="1">Polygon vertex count</param>
@@ -1513,7 +1527,7 @@
         <param index="6">Longitude</param>
         <param index="7">Reserved</param>
       </entry>
-      <entry value="5100" name="MAV_CMD_NAV_RALLY_POINT">
+      <entry value="5100" name="UXV_CMD_NAV_RALLY_POINT">
         <description>Rally point. You can have multiple rally points defined.
         </description>
         <param index="1">Reserved</param>
@@ -1526,7 +1540,7 @@
       </entry>
       <!-- VALUES FROM 0-40000 are reserved for the common message set. Values from 40000 to UINT16_MAX are available for dialects -->
       <!-- BEGIN of payload range (30000 to 30999) -->
-      <entry value="30001" name="MAV_CMD_PAYLOAD_PREPARE_DEPLOY">
+      <entry value="30001" name="UXV_CMD_PAYLOAD_PREPARE_DEPLOY">
         <description>Deploy payload on a Lat / Lon / Alt position. This includes the navigation to reach the required release position and velocity.</description>
         <param index="1">Operation mode. 0: prepare single payload deploy (overwriting previous requests), but do not execute it. 1: execute payload deploy immediately (rejecting further deploy commands during execution, but allowing abort). 2: add payload deploy to existing deployment list.</param>
         <param index="2">Desired approach vector in degrees compass heading (0..360). A negative value indicates the system can define the approach vector at will.</param>
@@ -1536,7 +1550,7 @@
         <param index="6">Longitude unscaled for MISSION_ITEM or in 1e7 degrees for MISSION_ITEM_INT</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="30002" name="MAV_CMD_PAYLOAD_CONTROL_DEPLOY">
+      <entry value="30002" name="UXV_CMD_PAYLOAD_CONTROL_DEPLOY">
         <description>Control the payload deployment.</description>
         <param index="1">Operation mode. 0: Abort deployment, continue normal mission. 1: switch to payload deploment mode. 100: delete first payload deployment request. 101: delete all payload deployment requests.</param>
         <param index="2">Reserved</param>
@@ -1548,7 +1562,7 @@
       </entry>
       <!-- END of payload range (30000 to 30999) -->
       <!-- BEGIN user defined range (31000 to 31999) -->
-      <entry value="31000" name="MAV_CMD_WAYPOINT_USER_1">
+      <entry value="31000" name="UXV_CMD_WAYPOINT_USER_1">
         <description>User defined waypoint item. Ground Station will show the Vehicle as flying through this item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1558,7 +1572,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31001" name="MAV_CMD_WAYPOINT_USER_2">
+      <entry value="31001" name="UXV_CMD_WAYPOINT_USER_2">
         <description>User defined waypoint item. Ground Station will show the Vehicle as flying through this item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1568,7 +1582,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31002" name="MAV_CMD_WAYPOINT_USER_3">
+      <entry value="31002" name="UXV_CMD_WAYPOINT_USER_3">
         <description>User defined waypoint item. Ground Station will show the Vehicle as flying through this item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1578,7 +1592,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31003" name="MAV_CMD_WAYPOINT_USER_4">
+      <entry value="31003" name="UXV_CMD_WAYPOINT_USER_4">
         <description>User defined waypoint item. Ground Station will show the Vehicle as flying through this item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1588,7 +1602,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31004" name="MAV_CMD_WAYPOINT_USER_5">
+      <entry value="31004" name="UXV_CMD_WAYPOINT_USER_5">
         <description>User defined waypoint item. Ground Station will show the Vehicle as flying through this item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1598,7 +1612,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31005" name="MAV_CMD_SPATIAL_USER_1">
+      <entry value="31005" name="UXV_CMD_SPATIAL_USER_1">
         <description>User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1608,7 +1622,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31006" name="MAV_CMD_SPATIAL_USER_2">
+      <entry value="31006" name="UXV_CMD_SPATIAL_USER_2">
         <description>User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1618,7 +1632,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31007" name="MAV_CMD_SPATIAL_USER_3">
+      <entry value="31007" name="UXV_CMD_SPATIAL_USER_3">
         <description>User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1628,7 +1642,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31008" name="MAV_CMD_SPATIAL_USER_4">
+      <entry value="31008" name="UXV_CMD_SPATIAL_USER_4">
         <description>User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1638,7 +1652,7 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31009" name="MAV_CMD_SPATIAL_USER_5">
+      <entry value="31009" name="UXV_CMD_SPATIAL_USER_5">
         <description>User defined spatial item. Ground Station will not show the Vehicle as flying through this item. Example: ROI item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
@@ -1648,8 +1662,8 @@
         <param index="6">Longitude unscaled</param>
         <param index="7">Altitude, in meters AMSL</param>
       </entry>
-      <entry value="31010" name="MAV_CMD_USER_1">
-        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.</description>
+      <entry value="31010" name="UXV_CMD_USER_1">
+        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
         <param index="3">User defined</param>
@@ -1658,8 +1672,8 @@
         <param index="6">User defined</param>
         <param index="7">User defined</param>
       </entry>
-      <entry value="31011" name="MAV_CMD_USER_2">
-        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.</description>
+      <entry value="31011" name="UXV_CMD_USER_2">
+        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
         <param index="3">User defined</param>
@@ -1668,8 +1682,8 @@
         <param index="6">User defined</param>
         <param index="7">User defined</param>
       </entry>
-      <entry value="31012" name="MAV_CMD_USER_3">
-        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.</description>
+      <entry value="31012" name="UXV_CMD_USER_3">
+        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
         <param index="3">User defined</param>
@@ -1678,8 +1692,8 @@
         <param index="6">User defined</param>
         <param index="7">User defined</param>
       </entry>
-      <entry value="31013" name="MAV_CMD_USER_4">
-        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.</description>
+      <entry value="31013" name="UXV_CMD_USER_4">
+        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
         <param index="3">User defined</param>
@@ -1688,8 +1702,8 @@
         <param index="6">User defined</param>
         <param index="7">User defined</param>
       </entry>
-      <entry value="31014" name="MAV_CMD_USER_5">
-        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: MAV_CMD_DO_SET_PARAMETER item.</description>
+      <entry value="31014" name="UXV_CMD_USER_5">
+        <description>User defined command. Ground Station will not show the Vehicle as flying through this item. Example: UXV_CMD_DO_SET_PARAMETER item.</description>
         <param index="1">User defined</param>
         <param index="2">User defined</param>
         <param index="3">User defined</param>
@@ -1700,164 +1714,164 @@
       </entry>
       <!-- END of user range (31000 to 31999) -->
     </enum>
-    <enum name="MAV_DATA_STREAM">
+    <enum name="UXV_DATA_STREAM">
       <description>THIS INTERFACE IS DEPRECATED AS OF JULY 2015. Please use MESSAGE_INTERVAL instead. A data stream is not a fixed set of messages, but rather a
      recommendation to the autopilot software. Individual autopilots may or may not obey
      the recommended messages.</description>
-      <entry value="0" name="MAV_DATA_STREAM_ALL">
+      <entry value="0" name="UXV_DATA_STREAM_ALL">
         <description>Enable all data streams</description>
       </entry>
-      <entry value="1" name="MAV_DATA_STREAM_RAW_SENSORS">
+      <entry value="1" name="UXV_DATA_STREAM_RAW_SENSORS">
         <description>Enable IMU_RAW, GPS_RAW, GPS_STATUS packets.</description>
       </entry>
-      <entry value="2" name="MAV_DATA_STREAM_EXTENDED_STATUS">
+      <entry value="2" name="UXV_DATA_STREAM_EXTENDED_STATUS">
         <description>Enable GPS_STATUS, CONTROL_STATUS, AUX_STATUS</description>
       </entry>
-      <entry value="3" name="MAV_DATA_STREAM_RC_CHANNELS">
+      <entry value="3" name="UXV_DATA_STREAM_RC_CHANNELS">
         <description>Enable RC_CHANNELS_SCALED, RC_CHANNELS_RAW, SERVO_OUTPUT_RAW</description>
       </entry>
-      <entry value="4" name="MAV_DATA_STREAM_RAW_CONTROLLER">
+      <entry value="4" name="UXV_DATA_STREAM_RAW_CONTROLLER">
         <description>Enable ATTITUDE_CONTROLLER_OUTPUT, POSITION_CONTROLLER_OUTPUT, NAV_CONTROLLER_OUTPUT.</description>
       </entry>
-      <entry value="6" name="MAV_DATA_STREAM_POSITION">
+      <entry value="6" name="UXV_DATA_STREAM_POSITION">
         <description>Enable LOCAL_POSITION, GLOBAL_POSITION/GLOBAL_POSITION_INT messages.</description>
       </entry>
-      <entry value="10" name="MAV_DATA_STREAM_EXTRA1">
+      <entry value="10" name="UXV_DATA_STREAM_EXTRA1">
         <description>Dependent on the autopilot</description>
       </entry>
-      <entry value="11" name="MAV_DATA_STREAM_EXTRA2">
+      <entry value="11" name="UXV_DATA_STREAM_EXTRA2">
         <description>Dependent on the autopilot</description>
       </entry>
-      <entry value="12" name="MAV_DATA_STREAM_EXTRA3">
+      <entry value="12" name="UXV_DATA_STREAM_EXTRA3">
         <description>Dependent on the autopilot</description>
       </entry>
     </enum>
-    <enum name="MAV_CMD_ACK">
-      <description>ACK / NACK / ERROR values as a result of MAV_CMDs and for mission item transmission.</description>
-      <entry name="MAV_CMD_ACK_OK">
+    <enum name="UXV_CMD_ACK">
+      <description>ACK / NACK / ERROR values as a result of UXV_CMDs and for mission item transmission.</description>
+      <entry name="UXV_CMD_ACK_OK">
         <description>Command / mission item is ok.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_FAIL">
+      <entry name="UXV_CMD_ACK_ERR_FAIL">
         <description>Generic error message if none of the other reasons fails or if no detailed error reporting is implemented.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_ACCESS_DENIED">
+      <entry name="UXV_CMD_ACK_ERR_ACCESS_DENIED">
         <description>The system is refusing to accept this command from this source / communication partner.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_NOT_SUPPORTED">
+      <entry name="UXV_CMD_ACK_ERR_NOT_SUPPORTED">
         <description>Command or mission item is not supported, other commands would be accepted.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_COORDINATE_FRAME_NOT_SUPPORTED">
+      <entry name="UXV_CMD_ACK_ERR_COORDINATE_FRAME_NOT_SUPPORTED">
         <description>The coordinate frame of this command / mission item is not supported.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_COORDINATES_OUT_OF_RANGE">
+      <entry name="UXV_CMD_ACK_ERR_COORDINATES_OUT_OF_RANGE">
         <description>The coordinate frame of this command is ok, but he coordinate values exceed the safety limits of this system. This is a generic error, please use the more specific error messages below if possible.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_X_LAT_OUT_OF_RANGE">
+      <entry name="UXV_CMD_ACK_ERR_X_LAT_OUT_OF_RANGE">
         <description>The X or latitude value is out of range.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_Y_LON_OUT_OF_RANGE">
+      <entry name="UXV_CMD_ACK_ERR_Y_LON_OUT_OF_RANGE">
         <description>The Y or longitude value is out of range.</description>
       </entry>
-      <entry name="MAV_CMD_ACK_ERR_Z_ALT_OUT_OF_RANGE">
+      <entry name="UXV_CMD_ACK_ERR_Z_ALT_OUT_OF_RANGE">
         <description>The Z or altitude value is out of range.</description>
       </entry>
     </enum>
-    <enum name="MAV_PARAM_TYPE">
+    <enum name="UXV_PARAM_TYPE">
       <description>Specifies the datatype of a MAVLink parameter.</description>
-      <entry value="1" name="MAV_PARAM_TYPE_UINT8">
+      <entry value="1" name="UXV_PARAM_TYPE_UINT8">
         <description>8-bit unsigned integer</description>
       </entry>
-      <entry value="2" name="MAV_PARAM_TYPE_INT8">
+      <entry value="2" name="UXV_PARAM_TYPE_INT8">
         <description>8-bit signed integer</description>
       </entry>
-      <entry value="3" name="MAV_PARAM_TYPE_UINT16">
+      <entry value="3" name="UXV_PARAM_TYPE_UINT16">
         <description>16-bit unsigned integer</description>
       </entry>
-      <entry value="4" name="MAV_PARAM_TYPE_INT16">
+      <entry value="4" name="UXV_PARAM_TYPE_INT16">
         <description>16-bit signed integer</description>
       </entry>
-      <entry value="5" name="MAV_PARAM_TYPE_UINT32">
+      <entry value="5" name="UXV_PARAM_TYPE_UINT32">
         <description>32-bit unsigned integer</description>
       </entry>
-      <entry value="6" name="MAV_PARAM_TYPE_INT32">
+      <entry value="6" name="UXV_PARAM_TYPE_INT32">
         <description>32-bit signed integer</description>
       </entry>
-      <entry value="7" name="MAV_PARAM_TYPE_UINT64">
+      <entry value="7" name="UXV_PARAM_TYPE_UINT64">
         <description>64-bit unsigned integer</description>
       </entry>
-      <entry value="8" name="MAV_PARAM_TYPE_INT64">
+      <entry value="8" name="UXV_PARAM_TYPE_INT64">
         <description>64-bit signed integer</description>
       </entry>
-      <entry value="9" name="MAV_PARAM_TYPE_REAL32">
+      <entry value="9" name="UXV_PARAM_TYPE_REAL32">
         <description>32-bit floating-point</description>
       </entry>
-      <entry value="10" name="MAV_PARAM_TYPE_REAL64">
+      <entry value="10" name="UXV_PARAM_TYPE_REAL64">
         <description>64-bit floating-point</description>
       </entry>
     </enum>
-    <enum name="MAV_RESULT">
+    <enum name="UXV_RESULT">
       <description>result from a mavlink command</description>
-      <entry value="0" name="MAV_RESULT_ACCEPTED">
+      <entry value="0" name="UXV_RESULT_ACCEPTED">
         <description>Command ACCEPTED and EXECUTED</description>
       </entry>
-      <entry value="1" name="MAV_RESULT_TEMPORARILY_REJECTED">
+      <entry value="1" name="UXV_RESULT_TEMPORARILY_REJECTED">
         <description>Command TEMPORARY REJECTED/DENIED</description>
       </entry>
-      <entry value="2" name="MAV_RESULT_DENIED">
+      <entry value="2" name="UXV_RESULT_DENIED">
         <description>Command PERMANENTLY DENIED</description>
       </entry>
-      <entry value="3" name="MAV_RESULT_UNSUPPORTED">
+      <entry value="3" name="UXV_RESULT_UNSUPPORTED">
         <description>Command UNKNOWN/UNSUPPORTED</description>
       </entry>
-      <entry value="4" name="MAV_RESULT_FAILED">
+      <entry value="4" name="UXV_RESULT_FAILED">
         <description>Command executed, but failed</description>
       </entry>
     </enum>
-    <enum name="MAV_SEVERITY">
+    <enum name="UXV_SEVERITY">
       <description>Indicates the severity level, generally used for status messages to indicate their relative urgency. Based on RFC-5424 using expanded definitions at: http://www.kiwisyslog.com/kb/info:-syslog-message-levels/.</description>
-      <entry value="0" name="MAV_SEVERITY_EMERGENCY">
+      <entry value="0" name="UXV_SEVERITY_EMERGENCY">
         <description>System is unusable. This is a "panic" condition.</description>
       </entry>
-      <entry value="1" name="MAV_SEVERITY_ALERT">
+      <entry value="1" name="UXV_SEVERITY_ALERT">
         <description>Action should be taken immediately. Indicates error in non-critical systems.</description>
       </entry>
-      <entry value="2" name="MAV_SEVERITY_CRITICAL">
+      <entry value="2" name="UXV_SEVERITY_CRITICAL">
         <description>Action must be taken immediately. Indicates failure in a primary system.</description>
       </entry>
-      <entry value="3" name="MAV_SEVERITY_ERROR">
+      <entry value="3" name="UXV_SEVERITY_ERROR">
         <description>Indicates an error in secondary/redundant systems.</description>
       </entry>
-      <entry value="4" name="MAV_SEVERITY_WARNING">
+      <entry value="4" name="UXV_SEVERITY_WARNING">
         <description>Indicates about a possible future error if this is not resolved within a given timeframe. Example would be a low battery warning.</description>
       </entry>
-      <entry value="5" name="MAV_SEVERITY_NOTICE">
+      <entry value="5" name="UXV_SEVERITY_NOTICE">
         <description>An unusual event has occured, though not an error condition. This should be investigated for the root cause.</description>
       </entry>
-      <entry value="6" name="MAV_SEVERITY_INFO">
+      <entry value="6" name="UXV_SEVERITY_INFO">
         <description>Normal operational messages. Useful for logging. No action is required for these messages.</description>
       </entry>
-      <entry value="7" name="MAV_SEVERITY_DEBUG">
+      <entry value="7" name="UXV_SEVERITY_DEBUG">
         <description>Useful non-operational messages that can assist in debugging. These should not occur during normal operation.</description>
       </entry>
     </enum>
-    <enum name="MAV_POWER_STATUS">
+    <enum name="UXV_POWER_STATUS">
       <description>Power supply status flags (bitmask)</description>
-      <entry value="1" name="MAV_POWER_STATUS_BRICK_VALID">
+      <entry value="1" name="UXV_POWER_STATUS_BRICK_VALID">
         <description>main brick power supply valid</description>
       </entry>
-      <entry value="2" name="MAV_POWER_STATUS_SERVO_VALID">
+      <entry value="2" name="UXV_POWER_STATUS_SERVO_VALID">
         <description>main servo power supply valid for FMU</description>
       </entry>
-      <entry value="4" name="MAV_POWER_STATUS_USB_CONNECTED">
+      <entry value="4" name="UXV_POWER_STATUS_USB_CONNECTED">
         <description>USB power is connected</description>
       </entry>
-      <entry value="8" name="MAV_POWER_STATUS_PERIPH_OVERCURRENT">
+      <entry value="8" name="UXV_POWER_STATUS_PERIPH_OVERCURRENT">
         <description>peripheral supply is in over-current state</description>
       </entry>
-      <entry value="16" name="MAV_POWER_STATUS_PERIPH_HIPOWER_OVERCURRENT">
+      <entry value="16" name="UXV_POWER_STATUS_PERIPH_HIPOWER_OVERCURRENT">
         <description>hi-power peripheral supply is in over-current state</description>
       </entry>
-      <entry value="32" name="MAV_POWER_STATUS_CHANGED">
+      <entry value="32" name="UXV_POWER_STATUS_CHANGED">
         <description>Power status has changed since boot</description>
       </entry>
     </enum>
@@ -1897,276 +1911,276 @@
         <description>Send multiple replies until port is drained</description>
       </entry>
     </enum>
-    <enum name="MAV_DISTANCE_SENSOR">
+    <enum name="UXV_DISTANCE_SENSOR">
       <description>Enumeration of distance sensor types</description>
-      <entry value="0" name="MAV_DISTANCE_SENSOR_LASER">
+      <entry value="0" name="UXV_DISTANCE_SENSOR_LASER">
         <description>Laser rangefinder, e.g. LightWare SF02/F or PulsedLight units</description>
       </entry>
-      <entry value="1" name="MAV_DISTANCE_SENSOR_ULTRASOUND">
+      <entry value="1" name="UXV_DISTANCE_SENSOR_ULTRASOUND">
         <description>Ultrasound rangefinder, e.g. MaxBotix units</description>
       </entry>
-      <entry value="2" name="MAV_DISTANCE_SENSOR_INFRARED">
+      <entry value="2" name="UXV_DISTANCE_SENSOR_INFRARED">
         <description>Infrared rangefinder, e.g. Sharp units</description>
       </entry>
     </enum>
-    <enum name="MAV_SENSOR_ORIENTATION">
+    <enum name="UXV_SENSOR_ORIENTATION">
       <description>Enumeration of sensor orientation, according to its rotations</description>
-      <entry value="0" name="MAV_SENSOR_ROTATION_NONE">
+      <entry value="0" name="UXV_SENSOR_ROTATION_NONE">
         <description>Roll: 0, Pitch: 0, Yaw: 0</description>
       </entry>
-      <entry value="1" name="MAV_SENSOR_ROTATION_YAW_45">
+      <entry value="1" name="UXV_SENSOR_ROTATION_YAW_45">
         <description>Roll: 0, Pitch: 0, Yaw: 45</description>
       </entry>
-      <entry value="2" name="MAV_SENSOR_ROTATION_YAW_90">
+      <entry value="2" name="UXV_SENSOR_ROTATION_YAW_90">
         <description>Roll: 0, Pitch: 0, Yaw: 90</description>
       </entry>
-      <entry value="3" name="MAV_SENSOR_ROTATION_YAW_135">
+      <entry value="3" name="UXV_SENSOR_ROTATION_YAW_135">
         <description>Roll: 0, Pitch: 0, Yaw: 135</description>
       </entry>
-      <entry value="4" name="MAV_SENSOR_ROTATION_YAW_180">
+      <entry value="4" name="UXV_SENSOR_ROTATION_YAW_180">
         <description>Roll: 0, Pitch: 0, Yaw: 180</description>
       </entry>
-      <entry value="5" name="MAV_SENSOR_ROTATION_YAW_225">
+      <entry value="5" name="UXV_SENSOR_ROTATION_YAW_225">
         <description>Roll: 0, Pitch: 0, Yaw: 225</description>
       </entry>
-      <entry value="6" name="MAV_SENSOR_ROTATION_YAW_270">
+      <entry value="6" name="UXV_SENSOR_ROTATION_YAW_270">
         <description>Roll: 0, Pitch: 0, Yaw: 270</description>
       </entry>
-      <entry value="7" name="MAV_SENSOR_ROTATION_YAW_315">
+      <entry value="7" name="UXV_SENSOR_ROTATION_YAW_315">
         <description>Roll: 0, Pitch: 0, Yaw: 315</description>
       </entry>
-      <entry value="8" name="MAV_SENSOR_ROTATION_ROLL_180">
+      <entry value="8" name="UXV_SENSOR_ROTATION_ROLL_180">
         <description>Roll: 180, Pitch: 0, Yaw: 0</description>
       </entry>
-      <entry value="9" name="MAV_SENSOR_ROTATION_ROLL_180_YAW_45">
+      <entry value="9" name="UXV_SENSOR_ROTATION_ROLL_180_YAW_45">
         <description>Roll: 180, Pitch: 0, Yaw: 45</description>
       </entry>
-      <entry value="10" name="MAV_SENSOR_ROTATION_ROLL_180_YAW_90">
+      <entry value="10" name="UXV_SENSOR_ROTATION_ROLL_180_YAW_90">
         <description>Roll: 180, Pitch: 0, Yaw: 90</description>
       </entry>
-      <entry value="11" name="MAV_SENSOR_ROTATION_ROLL_180_YAW_135">
+      <entry value="11" name="UXV_SENSOR_ROTATION_ROLL_180_YAW_135">
         <description>Roll: 180, Pitch: 0, Yaw: 135</description>
       </entry>
-      <entry value="12" name="MAV_SENSOR_ROTATION_PITCH_180">
+      <entry value="12" name="UXV_SENSOR_ROTATION_PITCH_180">
         <description>Roll: 0, Pitch: 180, Yaw: 0</description>
       </entry>
-      <entry value="13" name="MAV_SENSOR_ROTATION_ROLL_180_YAW_225">
+      <entry value="13" name="UXV_SENSOR_ROTATION_ROLL_180_YAW_225">
         <description>Roll: 180, Pitch: 0, Yaw: 225</description>
       </entry>
-      <entry value="14" name="MAV_SENSOR_ROTATION_ROLL_180_YAW_270">
+      <entry value="14" name="UXV_SENSOR_ROTATION_ROLL_180_YAW_270">
         <description>Roll: 180, Pitch: 0, Yaw: 270</description>
       </entry>
-      <entry value="15" name="MAV_SENSOR_ROTATION_ROLL_180_YAW_315">
+      <entry value="15" name="UXV_SENSOR_ROTATION_ROLL_180_YAW_315">
         <description>Roll: 180, Pitch: 0, Yaw: 315</description>
       </entry>
-      <entry value="16" name="MAV_SENSOR_ROTATION_ROLL_90">
+      <entry value="16" name="UXV_SENSOR_ROTATION_ROLL_90">
         <description>Roll: 90, Pitch: 0, Yaw: 0</description>
       </entry>
-      <entry value="17" name="MAV_SENSOR_ROTATION_ROLL_90_YAW_45">
+      <entry value="17" name="UXV_SENSOR_ROTATION_ROLL_90_YAW_45">
         <description>Roll: 90, Pitch: 0, Yaw: 45</description>
       </entry>
-      <entry value="18" name="MAV_SENSOR_ROTATION_ROLL_90_YAW_90">
+      <entry value="18" name="UXV_SENSOR_ROTATION_ROLL_90_YAW_90">
         <description>Roll: 90, Pitch: 0, Yaw: 90</description>
       </entry>
-      <entry value="19" name="MAV_SENSOR_ROTATION_ROLL_90_YAW_135">
+      <entry value="19" name="UXV_SENSOR_ROTATION_ROLL_90_YAW_135">
         <description>Roll: 90, Pitch: 0, Yaw: 135</description>
       </entry>
-      <entry value="20" name="MAV_SENSOR_ROTATION_ROLL_270">
+      <entry value="20" name="UXV_SENSOR_ROTATION_ROLL_270">
         <description>Roll: 270, Pitch: 0, Yaw: 0</description>
       </entry>
-      <entry value="21" name="MAV_SENSOR_ROTATION_ROLL_270_YAW_45">
+      <entry value="21" name="UXV_SENSOR_ROTATION_ROLL_270_YAW_45">
         <description>Roll: 270, Pitch: 0, Yaw: 45</description>
       </entry>
-      <entry value="22" name="MAV_SENSOR_ROTATION_ROLL_270_YAW_90">
+      <entry value="22" name="UXV_SENSOR_ROTATION_ROLL_270_YAW_90">
         <description>Roll: 270, Pitch: 0, Yaw: 90</description>
       </entry>
-      <entry value="23" name="MAV_SENSOR_ROTATION_ROLL_270_YAW_135">
+      <entry value="23" name="UXV_SENSOR_ROTATION_ROLL_270_YAW_135">
         <description>Roll: 270, Pitch: 0, Yaw: 135</description>
       </entry>
-      <entry value="24" name="MAV_SENSOR_ROTATION_PITCH_90">
+      <entry value="24" name="UXV_SENSOR_ROTATION_PITCH_90">
         <description>Roll: 0, Pitch: 90, Yaw: 0</description>
       </entry>
-      <entry value="25" name="MAV_SENSOR_ROTATION_PITCH_270">
+      <entry value="25" name="UXV_SENSOR_ROTATION_PITCH_270">
         <description>Roll: 0, Pitch: 270, Yaw: 0</description>
       </entry>
-      <entry value="26" name="MAV_SENSOR_ROTATION_PITCH_180_YAW_90">
+      <entry value="26" name="UXV_SENSOR_ROTATION_PITCH_180_YAW_90">
         <description>Roll: 0, Pitch: 180, Yaw: 90</description>
       </entry>
-      <entry value="27" name="MAV_SENSOR_ROTATION_PITCH_180_YAW_270">
+      <entry value="27" name="UXV_SENSOR_ROTATION_PITCH_180_YAW_270">
         <description>Roll: 0, Pitch: 180, Yaw: 270</description>
       </entry>
-      <entry value="28" name="MAV_SENSOR_ROTATION_ROLL_90_PITCH_90">
+      <entry value="28" name="UXV_SENSOR_ROTATION_ROLL_90_PITCH_90">
         <description>Roll: 90, Pitch: 90, Yaw: 0</description>
       </entry>
-      <entry value="29" name="MAV_SENSOR_ROTATION_ROLL_180_PITCH_90">
+      <entry value="29" name="UXV_SENSOR_ROTATION_ROLL_180_PITCH_90">
         <description>Roll: 180, Pitch: 90, Yaw: 0</description>
       </entry>
-      <entry value="30" name="MAV_SENSOR_ROTATION_ROLL_270_PITCH_90">
+      <entry value="30" name="UXV_SENSOR_ROTATION_ROLL_270_PITCH_90">
         <description>Roll: 270, Pitch: 90, Yaw: 0</description>
       </entry>
-      <entry value="31" name="MAV_SENSOR_ROTATION_ROLL_90_PITCH_180">
+      <entry value="31" name="UXV_SENSOR_ROTATION_ROLL_90_PITCH_180">
         <description>Roll: 90, Pitch: 180, Yaw: 0</description>
       </entry>
-      <entry value="32" name="MAV_SENSOR_ROTATION_ROLL_270_PITCH_180">
+      <entry value="32" name="UXV_SENSOR_ROTATION_ROLL_270_PITCH_180">
         <description>Roll: 270, Pitch: 180, Yaw: 0</description>
       </entry>
-      <entry value="33" name="MAV_SENSOR_ROTATION_ROLL_90_PITCH_270">
+      <entry value="33" name="UXV_SENSOR_ROTATION_ROLL_90_PITCH_270">
         <description>Roll: 90, Pitch: 270, Yaw: 0</description>
       </entry>
-      <entry value="34" name="MAV_SENSOR_ROTATION_ROLL_180_PITCH_270">
+      <entry value="34" name="UXV_SENSOR_ROTATION_ROLL_180_PITCH_270">
         <description>Roll: 180, Pitch: 270, Yaw: 0</description>
       </entry>
-      <entry value="35" name="MAV_SENSOR_ROTATION_ROLL_270_PITCH_270">
+      <entry value="35" name="UXV_SENSOR_ROTATION_ROLL_270_PITCH_270">
         <description>Roll: 270, Pitch: 270, Yaw: 0</description>
       </entry>
-      <entry value="36" name="MAV_SENSOR_ROTATION_ROLL_90_PITCH_180_YAW_90">
+      <entry value="36" name="UXV_SENSOR_ROTATION_ROLL_90_PITCH_180_YAW_90">
         <description>Roll: 90, Pitch: 180, Yaw: 90</description>
       </entry>
-      <entry value="37" name="MAV_SENSOR_ROTATION_ROLL_90_YAW_270">
+      <entry value="37" name="UXV_SENSOR_ROTATION_ROLL_90_YAW_270">
         <description>Roll: 90, Pitch: 0, Yaw: 270</description>
       </entry>
-      <entry value="38" name="MAV_SENSOR_ROTATION_ROLL_315_PITCH_315_YAW_315">
+      <entry value="38" name="UXV_SENSOR_ROTATION_ROLL_315_PITCH_315_YAW_315">
         <description>Roll: 315, Pitch: 315, Yaw: 315</description>
       </entry>
     </enum>
-    <enum name="MAV_PROTOCOL_CAPABILITY">
+    <enum name="UXV_PROTOCOL_CAPABILITY">
       <description>Bitmask of (optional) autopilot capabilities (64 bit). If a bit is set, the autopilot supports this capability.</description>
-      <entry value="1" name="MAV_PROTOCOL_CAPABILITY_MISSION_FLOAT">
+      <entry value="1" name="UXV_PROTOCOL_CAPABILITY_MISSION_FLOAT">
         <description>Autopilot supports MISSION float message type.</description>
       </entry>
-      <entry value="2" name="MAV_PROTOCOL_CAPABILITY_PARAM_FLOAT">
+      <entry value="2" name="UXV_PROTOCOL_CAPABILITY_PARAM_FLOAT">
         <description>Autopilot supports the new param float message type.</description>
       </entry>
-      <entry value="4" name="MAV_PROTOCOL_CAPABILITY_MISSION_INT">
+      <entry value="4" name="UXV_PROTOCOL_CAPABILITY_MISSION_INT">
         <description>Autopilot supports MISSION_INT scaled integer message type.</description>
       </entry>
-      <entry value="8" name="MAV_PROTOCOL_CAPABILITY_COMMAND_INT">
+      <entry value="8" name="UXV_PROTOCOL_CAPABILITY_COMMAND_INT">
         <description>Autopilot supports COMMAND_INT scaled integer message type.</description>
       </entry>
-      <entry value="16" name="MAV_PROTOCOL_CAPABILITY_PARAM_UNION">
+      <entry value="16" name="UXV_PROTOCOL_CAPABILITY_PARAM_UNION">
         <description>Autopilot supports the new param union message type.</description>
       </entry>
-      <entry value="32" name="MAV_PROTOCOL_CAPABILITY_FTP">
+      <entry value="32" name="UXV_PROTOCOL_CAPABILITY_FTP">
         <description>Autopilot supports the new FILE_TRANSFER_PROTOCOL message type.</description>
       </entry>
-      <entry value="64" name="MAV_PROTOCOL_CAPABILITY_SET_ATTITUDE_TARGET">
+      <entry value="64" name="UXV_PROTOCOL_CAPABILITY_SET_ATTITUDE_TARGET">
         <description>Autopilot supports commanding attitude offboard.</description>
       </entry>
-      <entry value="128" name="MAV_PROTOCOL_CAPABILITY_SET_POSITION_TARGET_LOCAL_NED">
+      <entry value="128" name="UXV_PROTOCOL_CAPABILITY_SET_POSITION_TARGET_LOCAL_NED">
         <description>Autopilot supports commanding position and velocity targets in local NED frame.</description>
       </entry>
-      <entry value="256" name="MAV_PROTOCOL_CAPABILITY_SET_POSITION_TARGET_GLOBAL_INT">
+      <entry value="256" name="UXV_PROTOCOL_CAPABILITY_SET_POSITION_TARGET_GLOBAL_INT">
         <description>Autopilot supports commanding position and velocity targets in global scaled integers.</description>
       </entry>
-      <entry value="512" name="MAV_PROTOCOL_CAPABILITY_TERRAIN">
+      <entry value="512" name="UXV_PROTOCOL_CAPABILITY_TERRAIN">
         <description>Autopilot supports terrain protocol / data handling.</description>
       </entry>
-      <entry value="1024" name="MAV_PROTOCOL_CAPABILITY_SET_ACTUATOR_TARGET">
+      <entry value="1024" name="UXV_PROTOCOL_CAPABILITY_SET_ACTUATOR_TARGET">
         <description>Autopilot supports direct actuator control.</description>
       </entry>
-      <entry value="2048" name="MAV_PROTOCOL_CAPABILITY_FLIGHT_TERMINATION">
+      <entry value="2048" name="UXV_PROTOCOL_CAPABILITY_FLIGHT_TERMINATION">
         <description>Autopilot supports the flight termination command.</description>
       </entry>
-      <entry value="4096" name="MAV_PROTOCOL_CAPABILITY_COMPASS_CALIBRATION">
+      <entry value="4096" name="UXV_PROTOCOL_CAPABILITY_COMPASS_CALIBRATION">
         <description>Autopilot supports onboard compass calibration.</description>
       </entry>
-      <entry value="8192" name="MAV_PROTOCOL_CAPABILITY_MAVLINK2">
+      <entry value="8192" name="UXV_PROTOCOL_CAPABILITY_MAVLINK2">
         <description>Autopilot supports mavlink version 2.</description>
       </entry>
-      <entry value="16384" name="MAV_PROTOCOL_CAPABILITY_MISSION_FENCE">
+      <entry value="16384" name="UXV_PROTOCOL_CAPABILITY_MISSION_FENCE">
         <description>Autopilot supports mission fence protocol.</description>
       </entry>
-      <entry value="32768" name="MAV_PROTOCOL_CAPABILITY_MISSION_RALLY">
+      <entry value="32768" name="UXV_PROTOCOL_CAPABILITY_MISSION_RALLY">
         <description>Autopilot supports mission rally point protocol.</description>
       </entry>
     </enum>
-    <enum name="MAV_ESTIMATOR_TYPE">
+    <enum name="UXV_ESTIMATOR_TYPE">
       <description>Enumeration of estimator types</description>
-      <entry value="1" name="MAV_ESTIMATOR_TYPE_NAIVE">
+      <entry value="1" name="UXV_ESTIMATOR_TYPE_NAIVE">
         <description>This is a naive estimator without any real covariance feedback.</description>
       </entry>
-      <entry value="2" name="MAV_ESTIMATOR_TYPE_VISION">
+      <entry value="2" name="UXV_ESTIMATOR_TYPE_VISION">
         <description>Computer vision based estimate. Might be up to scale.</description>
       </entry>
-      <entry value="3" name="MAV_ESTIMATOR_TYPE_VIO">
+      <entry value="3" name="UXV_ESTIMATOR_TYPE_VIO">
         <description>Visual-inertial estimate.</description>
       </entry>
-      <entry value="4" name="MAV_ESTIMATOR_TYPE_GPS">
+      <entry value="4" name="UXV_ESTIMATOR_TYPE_GPS">
         <description>Plain GPS estimate.</description>
       </entry>
-      <entry value="5" name="MAV_ESTIMATOR_TYPE_GPS_INS">
+      <entry value="5" name="UXV_ESTIMATOR_TYPE_GPS_INS">
         <description>Estimator integrating GPS and inertial sensing.</description>
       </entry>
     </enum>
-    <enum name="MAV_BATTERY_TYPE">
+    <enum name="UXV_BATTERY_TYPE">
       <description>Enumeration of battery types</description>
-      <entry value="0" name="MAV_BATTERY_TYPE_UNKNOWN">
+      <entry value="0" name="UXV_BATTERY_TYPE_UNKNOWN">
         <description>Not specified.</description>
       </entry>
-      <entry value="1" name="MAV_BATTERY_TYPE_LIPO">
+      <entry value="1" name="UXV_BATTERY_TYPE_LIPO">
         <description>Lithium polymer battery</description>
       </entry>
-      <entry value="2" name="MAV_BATTERY_TYPE_LIFE">
+      <entry value="2" name="UXV_BATTERY_TYPE_LIFE">
         <description>Lithium-iron-phosphate battery</description>
       </entry>
-      <entry value="3" name="MAV_BATTERY_TYPE_LION">
+      <entry value="3" name="UXV_BATTERY_TYPE_LION">
         <description>Lithium-ION battery</description>
       </entry>
-      <entry value="4" name="MAV_BATTERY_TYPE_NIMH">
+      <entry value="4" name="UXV_BATTERY_TYPE_NIMH">
         <description>Nickel metal hydride battery</description>
       </entry>
     </enum>
-    <enum name="MAV_BATTERY_FUNCTION">
+    <enum name="UXV_BATTERY_FUNCTION">
       <description>Enumeration of battery functions</description>
-      <entry value="0" name="MAV_BATTERY_FUNCTION_UNKNOWN">
+      <entry value="0" name="UXV_BATTERY_FUNCTION_UNKNOWN">
         <description>Battery function is unknown</description>
       </entry>
-      <entry value="1" name="MAV_BATTERY_FUNCTION_ALL">
+      <entry value="1" name="UXV_BATTERY_FUNCTION_ALL">
         <description>Battery supports all flight systems</description>
       </entry>
-      <entry value="2" name="MAV_BATTERY_FUNCTION_PROPULSION">
+      <entry value="2" name="UXV_BATTERY_FUNCTION_PROPULSION">
         <description>Battery for the propulsion system</description>
       </entry>
-      <entry value="3" name="MAV_BATTERY_FUNCTION_AVIONICS">
+      <entry value="3" name="UXV_BATTERY_FUNCTION_AVIONICS">
         <description>Avionics battery</description>
       </entry>
-      <entry value="4" name="MAV_BATTERY_TYPE_PAYLOAD">
+      <entry value="4" name="UXV_BATTERY_TYPE_PAYLOAD">
         <description>Payload battery</description>
       </entry>
     </enum>
-    <enum name="MAV_VTOL_STATE">
+    <enum name="UXV_VTOL_STATE">
       <description>Enumeration of VTOL states</description>
-      <entry value="0" name="MAV_VTOL_STATE_UNDEFINED">
+      <entry value="0" name="UXV_VTOL_STATE_UNDEFINED">
         <description>MAV is not configured as VTOL</description>
       </entry>
-      <entry value="1" name="MAV_VTOL_STATE_TRANSITION_TO_FW">
+      <entry value="1" name="UXV_VTOL_STATE_TRANSITION_TO_FW">
         <description>VTOL is in transition from multicopter to fixed-wing</description>
       </entry>
-      <entry value="2" name="MAV_VTOL_STATE_TRANSITION_TO_MC">
+      <entry value="2" name="UXV_VTOL_STATE_TRANSITION_TO_MC">
         <description>VTOL is in transition from fixed-wing to multicopter</description>
       </entry>
-      <entry value="3" name="MAV_VTOL_STATE_MC">
+      <entry value="3" name="UXV_VTOL_STATE_MC">
         <description>VTOL is in multicopter state</description>
       </entry>
-      <entry value="4" name="MAV_VTOL_STATE_FW">
+      <entry value="4" name="UXV_VTOL_STATE_FW">
         <description>VTOL is in fixed-wing state</description>
       </entry>
     </enum>
-    <enum name="MAV_LANDED_STATE">
+    <enum name="UXV_LANDED_STATE">
       <description>Enumeration of landed detector states</description>
-      <entry value="0" name="MAV_LANDED_STATE_UNDEFINED">
+      <entry value="0" name="UXV_LANDED_STATE_UNDEFINED">
         <description>MAV landed state is unknown</description>
       </entry>
-      <entry value="1" name="MAV_LANDED_STATE_ON_GROUND">
+      <entry value="1" name="UXV_LANDED_STATE_ON_GROUND">
         <description>MAV is landed (on ground)</description>
       </entry>
-      <entry value="2" name="MAV_LANDED_STATE_IN_AIR">
+      <entry value="2" name="UXV_LANDED_STATE_IN_AIR">
         <description>MAV is in air</description>
       </entry>
-      <entry value="3" name="MAV_LANDED_STATE_TAKEOFF">
+      <entry value="3" name="UXV_LANDED_STATE_TAKEOFF">
         <description>MAV currently taking off</description>
       </entry>
-      <entry value="4" name="MAV_LANDED_STATE_LANDING">
+      <entry value="4" name="UXV_LANDED_STATE_LANDING">
         <description>MAV currently landing</description>
       </entry>
     </enum>
@@ -2212,9 +2226,9 @@
       <entry value="32" name="ADSB_FLAGS_VALID_SQUAWK"/>
       <entry value="64" name="ADSB_FLAGS_SIMULATED"/>
     </enum>
-    <enum name="MAV_DO_REPOSITION_FLAGS">
-      <description>Bitmask of options for the MAV_CMD_DO_REPOSITION</description>
-      <entry value="1" name="MAV_DO_REPOSITION_FLAGS_CHANGE_MODE">
+    <enum name="UXV_DO_REPOSITION_FLAGS">
+      <description>Bitmask of options for the UXV_CMD_DO_REPOSITION</description>
+      <entry value="1" name="UXV_DO_REPOSITION_FLAGS_CHANGE_MODE">
         <description>The aircraft should immediately transition into guided. This should not be set for follow me applications</description>
       </entry>
     </enum>
@@ -2294,48 +2308,48 @@
         <description>ignore vertical accuracy field</description>
       </entry>
     </enum>
-    <enum name="MAV_COLLISION_ACTION">
+    <enum name="UXV_COLLISION_ACTION">
       <description>Possible actions an aircraft can take to avoid a collision.</description>
-      <entry value="0" name="MAV_COLLISION_ACTION_NONE">
+      <entry value="0" name="UXV_COLLISION_ACTION_NONE">
         <description>Ignore any potential collisions</description>
       </entry>
-      <entry value="1" name="MAV_COLLISION_ACTION_REPORT">
+      <entry value="1" name="UXV_COLLISION_ACTION_REPORT">
         <description>Report potential collision</description>
       </entry>
-      <entry value="2" name="MAV_COLLISION_ACTION_ASCEND_OR_DESCEND">
+      <entry value="2" name="UXV_COLLISION_ACTION_ASCEND_OR_DESCEND">
         <description>Ascend or Descend to avoid threat</description>
       </entry>
-      <entry value="3" name="MAV_COLLISION_ACTION_MOVE_HORIZONTALLY">
+      <entry value="3" name="UXV_COLLISION_ACTION_MOVE_HORIZONTALLY">
         <description>Move horizontally to avoid threat</description>
       </entry>
-      <entry value="4" name="MAV_COLLISION_ACTION_MOVE_PERPENDICULAR">
+      <entry value="4" name="UXV_COLLISION_ACTION_MOVE_PERPENDICULAR">
         <description>Aircraft to move perpendicular to the collision's velocity vector</description>
       </entry>
-      <entry value="5" name="MAV_COLLISION_ACTION_RTL">
+      <entry value="5" name="UXV_COLLISION_ACTION_RTL">
         <description>Aircraft to fly directly back to its launch point</description>
       </entry>
-      <entry value="6" name="MAV_COLLISION_ACTION_HOVER">
+      <entry value="6" name="UXV_COLLISION_ACTION_HOVER">
         <description>Aircraft to stop in place</description>
       </entry>
     </enum>
-    <enum name="MAV_COLLISION_THREAT_LEVEL">
+    <enum name="UXV_COLLISION_THREAT_LEVEL">
       <description>Aircraft-rated danger from this threat.</description>
-      <entry value="0" name="MAV_COLLISION_THREAT_LEVEL_NONE">
+      <entry value="0" name="UXV_COLLISION_THREAT_LEVEL_NONE">
         <description>Not a threat</description>
       </entry>
-      <entry value="1" name="MAV_COLLISION_THREAT_LEVEL_LOW">
+      <entry value="1" name="UXV_COLLISION_THREAT_LEVEL_LOW">
         <description>Craft is mildly concerned about this threat</description>
       </entry>
-      <entry value="2" name="MAV_COLLISION_THREAT_LEVEL_HIGH">
+      <entry value="2" name="UXV_COLLISION_THREAT_LEVEL_HIGH">
         <description>Craft is panicing, and may take actions to avoid threat</description>
       </entry>
     </enum>
-    <enum name="MAV_COLLISION_SRC">
+    <enum name="UXV_COLLISION_SRC">
       <description>Source of information about this collision.</description>
-      <entry value="0" name="MAV_COLLISION_SRC_ADSB">
+      <entry value="0" name="UXV_COLLISION_SRC_ADSB">
         <description>ID field references ADSB_VEHICLE packets</description>
       </entry>
-      <entry value="1" name="MAV_COLLISION_SRC_MAVLINK_GPS_GLOBAL_INT">
+      <entry value="1" name="UXV_COLLISION_SRC_MAVLINK_GPS_GLOBAL_INT">
         <description>ID field references MAVLink SRC ID</description>
       </entry>
     </enum>
@@ -2371,9 +2385,9 @@
 
     <message id="0" name="HEARTBEAT">
       <description>The heartbeat message shows that a system is present and responding. The type of the MAV and Autopilot hardware allow the receiving system to treat further messages from this system appropriate (e.g. by laying out the user interface based on the autopilot).</description>
-      <field type="uint8_t" name="protocol" enum="MAV_TYPE">Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)</field>
-      <field type="uint8_t" name="type" enum="MAV_TYPE">Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)</field>
-      <field type="uint8_t" name="autopilot" enum="MAV_AUTOPILOT">Autopilot type / class. defined in MAV_AUTOPILOT ENUM</field>
+      <field type="uint8_t" name="protocol" enum="UXV_TYPE">Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)</field>
+      <field type="uint8_t" name="type" enum="UXV_TYPE">Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)</field>
+      <field type="uint8_t" name="autopilot" enum="UXV_AUTOPILOT">Autopilot type / class. defined in UXV_AUTOPILOT ENUM</field>
       <field type="uint8_t" name="mission_state">Defines the current state of the vehicle mission. Useful for determing the next state of the vehicle per mission state.</field>
       <field type="uint8_t" name="mace_companion" units="bool">Boolean describing whether(T=1) or not(F=0) the vehicle is MACE companion equipped.</field>
       <field type="uint8_t_mavlink_version" name="mavlink_version">MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version</field>
@@ -2391,8 +2405,8 @@
     <message id="3" name="BATTERY_STATUS">
       <description>Battery information</description>
       <field type="uint8_t" name="id">Battery ID</field>
-      <field type="uint8_t" name="battery_function" enum="MAV_BATTERY_FUNCTION">Function of the battery</field>
-      <field type="uint8_t" name="type" enum="MAV_BATTERY_TYPE">Type (chemistry) of the battery</field>
+      <field type="uint8_t" name="battery_function" enum="UXV_BATTERY_FUNCTION">Function of the battery</field>
+      <field type="uint8_t" name="type" enum="UXV_BATTERY_TYPE">Type (chemistry) of the battery</field>
       <field type="int16_t" name="temperature" units="cdegC">Temperature of the battery in centi-degrees celsius. INT16_MAX for unknown temperature.</field>
       <field type="uint16_t" name="voltage_battery" units="mV">Battery voltage, in millivolts (1 = 1 millivolt)</field>
       <field type="int16_t" name="current_battery" units="cA">Battery current, in 10*milliamperes (1 = 10 milliampere), -1: autopilot does not measure the current</field>
@@ -2444,17 +2458,17 @@
       <description>Emit the value of a onboard parameter. The inclusion of param_count and param_index in the message allows the recipient to keep track of received parameters and allows him to re-request missing parameters after a loss or timeout.</description>
       <field type="char[16]" name="param_id">Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
       <field type="float" name="param_value">Onboard parameter value</field>
-      <field type="uint8_t" name="param_type" enum="MAV_PARAM_TYPE">Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types.</field>
+      <field type="uint8_t" name="param_type" enum="UXV_PARAM_TYPE">Onboard parameter type: see the UXV_PARAM_TYPE enum for supported data types.</field>
       <field type="uint16_t" name="param_count">Total number of onboard parameters</field>
       <field type="uint16_t" name="param_index">Index of this onboard parameter</field>
     </message>
     <message id="12" name="PARAM_SET">
-      <description>Set a parameter value TEMPORARILY to RAM. It will be reset to default on system reboot. Send the ACTION MAV_ACTION_STORAGE_WRITE to PERMANENTLY write the RAM contents to EEPROM. IMPORTANT: The receiving component should acknowledge the new parameter value by sending a param_value message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message.</description>
+      <description>Set a parameter value TEMPORARILY to RAM. It will be reset to default on system reboot. Send the ACTION UXV_ACTION_STORAGE_WRITE to PERMANENTLY write the RAM contents to EEPROM. IMPORTANT: The receiving component should acknowledge the new parameter value by sending a param_value message to all communication partners. This will also ensure that multiple GCS all have an up-to-date list of all parameters. If the sending GCS did not receive a PARAM_VALUE message within its timeout time, it should re-send the PARAM_SET message.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
       <field type="char[16]" name="param_id">Onboard parameter id, terminated by NULL if the length is less than 16 human-readable chars and WITHOUT null termination (NULL) byte if the length is exactly 16 chars - applications have to provide 16+1 bytes storage if the ID is stored as string</field>
       <field type="float" name="param_value">Onboard parameter value</field>
-      <field type="uint8_t" name="param_type" enum="MAV_PARAM_TYPE">Onboard parameter type: see the MAV_PARAM_TYPE enum for supported data types.</field>
+      <field type="uint8_t" name="param_type" enum="UXV_PARAM_TYPE">Onboard parameter type: see the UXV_PARAM_TYPE enum for supported data types.</field>
     </message>
     <message id="13" name="GPS_RAW_INT">
       <description>The global position, as returned by the Global Positioning System (GPS). This is
@@ -2600,14 +2614,14 @@
       <description>Message encoding a command with parameters as scaled integers. Scaling depends on the actual command value.</description>
       <field type="uint8_t" name="target_system">System ID</field>
       <field type="uint8_t" name="target_component">Component ID</field>
-      <field type="uint8_t" name="frame" enum="MAV_FRAME">The coordinate system of the COMMAND. see MAV_FRAME in mavlink_types.h</field>
-      <field type="uint16_t" name="command" enum="MAV_CMD">The scheduled action for the mission item. see MAV_CMD in common.xml MAVLink specs</field>
+      <field type="uint8_t" name="frame" enum="UXV_FRAME">The coordinate system of the COMMAND. see UXV_FRAME in mavlink_types.h</field>
+      <field type="uint16_t" name="command" enum="UXV_CMD">The scheduled action for the mission item. see UXV_CMD in common.xml MAVLink specs</field>
       <field type="uint8_t" name="current">false:0, true:1</field>
       <field type="uint8_t" name="autocontinue">autocontinue to next wp</field>
-      <field type="float" name="param1">PARAM1, see MAV_CMD enum</field>
-      <field type="float" name="param2">PARAM2, see MAV_CMD enum</field>
-      <field type="float" name="param3">PARAM3, see MAV_CMD enum</field>
-      <field type="float" name="param4">PARAM4, see MAV_CMD enum</field>
+      <field type="float" name="param1">PARAM1, see UXV_CMD enum</field>
+      <field type="float" name="param2">PARAM2, see UXV_CMD enum</field>
+      <field type="float" name="param3">PARAM3, see UXV_CMD enum</field>
+      <field type="float" name="param4">PARAM4, see UXV_CMD enum</field>
       <field type="int32_t" name="x">PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7</field>
       <field type="int32_t" name="y">PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7</field>
       <field type="float" name="z">PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.</field>
@@ -2616,29 +2630,29 @@
       <description>Send a command with up to seven parameters to the MAV</description>
       <field type="uint8_t" name="target_system">System which should execute the command</field>
       <field type="uint8_t" name="target_component">Component which should execute the command, 0 for all components</field>
-      <field type="uint16_t" name="command" enum="MAV_CMD">Command ID, as defined by MAV_CMD enum.</field>
+      <field type="uint16_t" name="command" enum="UXV_CMD">Command ID, as defined by UXV_CMD enum.</field>
       <field type="uint8_t" name="confirmation">0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)</field>
-      <field type="float" name="param1">Parameter 1, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param2">Parameter 2, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param3">Parameter 3, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param4">Parameter 4, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param5">Parameter 5, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param6">Parameter 6, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param7">Parameter 7, as defined by MAV_CMD enum.</field>
+      <field type="float" name="param1">Parameter 1, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param2">Parameter 2, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param3">Parameter 3, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param4">Parameter 4, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param5">Parameter 5, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param6">Parameter 6, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param7">Parameter 7, as defined by UXV_CMD enum.</field>
     </message>
     <message id="31" name="COMMAND_SHORT">
       <description>A short command message for those messages only requiring one parameter. Th</description>
-      <field type="uint16_t" name="command" enum="MAV_CMD">Command ID, as defined by MAV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.</field>
+      <field type="uint16_t" name="command" enum="UXV_CMD">Command ID, as defined by UXV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.</field>
       <field type="uint8_t" name="target_system">System which should execute the command</field>
       <field type="uint8_t" name="target_component">Component which should execute the command, 0 for all components</field>
       <field type="uint8_t" name="confirmation">0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)</field>
-      <field type="float" name="param">Parameter as defined by MAV_CMD enum.</field>
+      <field type="float" name="param">Parameter as defined by UXV_CMD enum.</field>
     </message>
 
     <message id="32" name="COMMAND_ACK">
       <description>Report status of a command. Includes feedback wether the command was executed.</description>
-      <field type="uint16_t" name="command" enum="MAV_CMD">Command ID, as defined by MAV_CMD enum.</field>
-      <field type="uint8_t" name="result" enum="MAV_RESULT">See MAV_RESULT enum</field>
+      <field type="uint16_t" name="command" enum="UXV_CMD">Command ID, as defined by UXV_CMD enum.</field>
+      <field type="uint8_t" name="result" enum="UXV_RESULT">See UXV_RESULT enum</field>
     </message>
 
    <message id="33" name="COMMAND_SYSTEM_MODE">
@@ -2649,27 +2663,29 @@
 
     <message id="34" name="SYSTEM_MODE_ACK">
       <description>Acknowledgement of a system mode command.</description>
-      <field type="uint8_t" name="result" enum="MAV_RESULT">See MAV_RESULT enum</field>
+      <field type="uint8_t" name="result" enum="UXV_RESULT">See UXV_RESULT enum</field>
     </message>
 
-   <message id="35" name="COMMAND_GOTO">
+   <message id="35" name="EXECUTE_SPATIAL_ACTION">
       <description>Send a spatial command telling the vehicle to manuever based on the command type.</description>
       <field type="uint8_t" name="target_system">System which should execute the command</field>
       <field type="uint8_t" name="target_component">Component which should execute the command, 0 for all components</field>
-      <field type="uint16_t" name="action" enum="MAV_CMD">Command ID, as defined by MAV_CMD enum.</field>
-      <field type="uint8_t" name="frame" enum="MAV_FRAME">The coordinate system of the MISSION. see MAV_FRAME in mavlink_types.h</field>
-      <field type="float" name="param1">Parameter 1, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param2">Parameter 2, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param3">Parameter 3, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param4">Parameter 4, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param5">Parameter 5, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param6">Parameter 6, as defined by MAV_CMD enum.</field>
-      <field type="float" name="param7">Parameter 7, as defined by MAV_CMD enum.</field>
+      <field type="uint16_t" name="action" enum="UXV_CMD">Command ID, as defined by UXV_CMD enum.</field>
+      <field type="uint8_t" name="frame" enum="UXV_FRAME">The coordinate system of the MISSION. see UXV_FRAME in mavlink_types.h</field>
+      <field type="uint8_t" name="dimension">How many dimensions the position object truly is captured in.</field>
+      <field type="uint16_t" name="mask">Mask indicating the invalid dimensions of the position object. 1's indicate a dimesion is invalid.</field>
+      <field type="float" name="param1">Parameter 1, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param2">Parameter 2, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param3">Parameter 3, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param4">Parameter 4, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param5">Parameter 5, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param6">Parameter 6, as defined by UXV_CMD enum.</field>
+      <field type="float" name="param7">Parameter 7, as defined by UXV_CMD enum.</field>
     </message>
 
-    <message id="36" name="COMMAND_GOTO_ACK">
+    <message id="36" name="EXECUTE_SPATIAL_ACTION_ACK">
       <description>Acknowledgement of a goto command.</description>
-      <field type="uint8_t" name="result" enum="MAV_RESULT">See MAV_RESULT enum</field>
+      <field type="uint8_t" name="result" enum="UXV_RESULT">See UXV_RESULT enum</field>
     </message>
 
     <message id="200" name="RADIO_STATUS">
@@ -2691,16 +2707,16 @@
       <description>Power supply status</description>
       <field type="uint16_t" name="Vcc" units="mV">5V rail voltage in millivolts</field>
       <field type="uint16_t" name="Vservo" units="mV">servo rail voltage in millivolts</field>
-      <field type="uint16_t" name="flags" enum="MAV_POWER_STATUS" display="bitmask">power supply status flags (see MAV_POWER_STATUS enum)</field>
+      <field type="uint16_t" name="flags" enum="UXV_POWER_STATUS" display="bitmask">power supply status flags (see UXV_POWER_STATUS enum)</field>
     </message>
     <message id="203" name="DISTANCE_SENSOR">
       <field type="uint32_t" name="time_boot_ms" units="ms">Time since system boot</field>
       <field type="uint16_t" name="min_distance" units="cm">Minimum distance the sensor can measure in centimeters</field>
       <field type="uint16_t" name="max_distance" units="cm">Maximum distance the sensor can measure in centimeters</field>
       <field type="uint16_t" name="current_distance">Current distance reading</field>
-      <field type="uint8_t" name="type" enum="MAV_DISTANCE_SENSOR">Type from MAV_DISTANCE_SENSOR enum.</field>
+      <field type="uint8_t" name="type" enum="UXV_DISTANCE_SENSOR">Type from UXV_DISTANCE_SENSOR enum.</field>
       <field type="uint8_t" name="id">Onboard ID of the sensor</field>
-      <field type="uint8_t" name="orientation" enum="MAV_SENSOR_ORIENTATION">Direction the sensor faces from MAV_SENSOR_ORIENTATION enum.</field>
+      <field type="uint8_t" name="orientation" enum="UXV_SENSOR_ORIENTATION">Direction the sensor faces from UXV_SENSOR_ORIENTATION enum.</field>
       <field type="uint8_t" name="covariance" units="cm">Measurement covariance in centimeters, 0 for unknown / invalid readings</field>
     </message>
     <message id="204" name="ALTITUDE">
@@ -2720,8 +2736,8 @@
     </message>
     <message id="245" name="EXTENDED_SYS_STATE">
       <description>Provides state for additional features</description>
-      <field type="uint8_t" name="vtol_state" enum="MAV_VTOL_STATE">The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.</field>
-      <field type="uint8_t" name="landed_state" enum="MAV_LANDED_STATE">The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.</field>
+      <field type="uint8_t" name="vtol_state" enum="UXV_VTOL_STATE">The VTOL state if applicable. Is set to UXV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.</field>
+      <field type="uint8_t" name="landed_state" enum="UXV_LANDED_STATE">The landed state. Is set to UXV_LANDED_STATE_UNDEFINED if landed state is unknown.</field>
     </message>
     <message id="246" name="ADSB_VEHICLE">
       <description>The location and information of an ADSB vehicle</description>
@@ -2741,10 +2757,10 @@
     </message>
     <message id="247" name="COLLISION">
       <description>Information about a potential collision</description>
-      <field type="uint8_t" name="src" enum="MAV_COLLISION_SRC">Collision data source</field>
+      <field type="uint8_t" name="src" enum="UXV_COLLISION_SRC">Collision data source</field>
       <field type="uint32_t" name="id">Unique identifier, domain based on src field</field>
-      <field type="uint8_t" name="action" enum="MAV_COLLISION_ACTION">Action that is being taken to avoid this collision</field>
-      <field type="uint8_t" name="threat_level" enum="MAV_COLLISION_THREAT_LEVEL">How concerned the aircraft is about this collision</field>
+      <field type="uint8_t" name="action" enum="UXV_COLLISION_ACTION">Action that is being taken to avoid this collision</field>
+      <field type="uint8_t" name="threat_level" enum="UXV_COLLISION_THREAT_LEVEL">How concerned the aircraft is about this collision</field>
       <field type="float" name="time_to_minimum_delta" units="s">Estimated time until collision occurs (seconds)</field>
       <field type="float" name="altitude_minimum_delta" units="m">Closest vertical distance in meters between vehicle and object</field>
       <field type="float" name="horizontal_minimum_delta" units="m">Closest horizontal distance in meteres between vehicle and object</field>
@@ -2752,7 +2768,7 @@
 
     <message id="253" name="STATUSTEXT">
       <description>Status text message. These messages are printed in yellow in the COMM console of QGroundControl. WARNING: They consume quite some bandwidth, so use only for important status and error messages. If implemented wisely, these messages are buffered on the MCU and sent only at a limited rate (e.g. 10 Hz).</description>
-      <field type="uint8_t" name="severity" enum="MAV_SEVERITY">Severity of status. Relies on the definitions within RFC-5424. See enum MAV_SEVERITY.</field>
+      <field type="uint8_t" name="severity" enum="UXV_SEVERITY">Severity of status. Relies on the definitions within RFC-5424. See enum UXV_SEVERITY.</field>
       <field type="char[50]" name="text">Status text message, without null termination character</field>
     </message>
     <message id="259" name="CAMERA_INFORMATION">
@@ -2769,7 +2785,7 @@
       <field type="uint8_t" name="lense_id">Reserved for a lense ID</field>
     </message>
     <message id="260" name="CAMERA_SETTINGS">
-      <description>WIP: Settings of a camera, can be requested using MAV_CMD_REQUEST_CAMERA_SETTINGS and written using MAV_CMD_SET_CAMERA_SETTINGS</description>
+      <description>WIP: Settings of a camera, can be requested using UXV_CMD_REQUEST_CAMERA_SETTINGS and written using UXV_CMD_SET_CAMERA_SETTINGS</description>
       <field type="uint32_t" name="time_boot_ms" units="ms">Timestamp (milliseconds since system boot)</field>
       <field type="uint8_t" name="camera_id">Camera ID if there are multiple</field>
       <field type="float" name="aperture">Aperture is 1/value</field>

@@ -15,11 +15,11 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
 public:
-    MissionItemRequestTopic(const int &vehicleID, const int &missionItemIndex);
+    MissionItemRequestTopic(const unsigned int &vehicleID, const unsigned int &missionItemIndex);
 
 public:
-    int vehicleID;
-    int missionItemIndex;
+    unsigned int vehicleID;
+    unsigned int missionItemIndex;
 };
 
 }

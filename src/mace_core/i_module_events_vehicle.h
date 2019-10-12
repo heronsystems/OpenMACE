@@ -8,7 +8,7 @@
 namespace MaceCore
 {
 
-class IModuleEventsVehicle : public IModuleEventsGeneralVehicle ,public IModuleEventsGeneral
+class IModuleEventsVehicle : virtual public IModuleEventsGeneralVehicle, virtual public IModuleEventsGeneral
 {
 public:
     //A vehicle module can indicate something has happened

@@ -7,3 +7,6 @@
 [submodule "tools/libccd"]
 	path = tools/libccd
 	url = https://github.com/danfis/libccd.git
+[submodule "tools/boost"]
+	path = tools/boost
+	url = https://github.com/boostorg/boost.git

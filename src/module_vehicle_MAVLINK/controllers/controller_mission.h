@@ -1,9 +1,6 @@
 #ifndef MAVLINK_CONTROLLER_MISSION_H
 #define MAVLINK_CONTROLLER_MISSION_H
 
-#include "data_interface_MACE/COMMS_to_MACE/helper_mission_comms_to_mace.h"
-#include "data_interface_MACE/MACE_to_COMMS/helper_mission_mace_to_comms.h"
-
 #include "controllers/generic_controller.h"
 
 #include "controllers/actions/action_send.h"
@@ -23,10 +20,10 @@
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
 #include "module_vehicle_MAVLINK/controllers/common.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 /// Data that is to be downloaded from mission
-using MissionDownloadResult = std::tuple<CommandItem::SpatialHome, MissionList>;
+using MissionDownloadResult = std::tuple<command_item::SpatialHome, MissionItem::MissionList>;
 
 /**
  * Definition of the controller that will be used for the mission
@@ -221,7 +218,7 @@ protected:
         msg.target_component = 0;
         queue = 0;
 
-        m_MissionDownloading = std::make_shared<std::tuple<CommandItem::SpatialHome, MissionList>>();
+        m_MissionDownloading = std::make_shared<std::tuple<command_item::SpatialHome, MissionItem::MissionList>>();
     }
 
 
@@ -364,7 +361,7 @@ protected:
             data = *m_MissionDownloading;
 
             m_MissionDownloadCount = -1;
-            m_MissionDownloading = NULL;
+            m_MissionDownloading = nullptr;
 
             return true;
         }
@@ -390,7 +387,7 @@ protected:
 
     virtual bool BuildData_Send(const mavlink_mission_request_t &msg, const MavlinkEntityKey &sender, mavlink_mission_item_t &cmd, MavlinkEntityKey &vehicleObj, void* &receiveQueueObj, void* &respondQueueObj)
     {
-        if(m_MissionUploading != NULL)
+        if(m_MissionUploading != nullptr)
         {
             int index = msg.seq;
 
@@ -401,7 +398,7 @@ protected:
                 cmd.target_component = msg.target_component;
             }
             else{
-                std::shared_ptr<CommandItem::AbstractCommandItem> ptrItem = std::get<1>(*m_MissionUploading).getMissionItem(index - 1);
+                std::shared_ptr<command_item::AbstractCommandItem> ptrItem = std::get<1>(*m_MissionUploading).getMissionItem(index - 1);
                 DataMAVLINK::Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(ptrItem, index, cmd);
             }
 
@@ -419,7 +416,7 @@ protected:
 
     virtual bool Finish_Receive(const mavlink_mission_ack_t &msg, const MavlinkEntityKey &sender, uint8_t& ack, void* &queueObj)
     {
-        m_MissionUploading = NULL;
+        m_MissionUploading = nullptr;
 
         queueObj = 0;
 
@@ -451,7 +448,7 @@ public:
         MissionAction_RequestCurrentMission_Initiate::Request(vehicle, vehicle);
     }
 
-    void UploadMission(const MissionItem::MissionList &mission, const CommandItem::SpatialHome &home, const MavlinkEntityKey &vehicle)
+    void UploadMission(const MissionItem::MissionList &mission, const command_item::SpatialHome &home, const MavlinkEntityKey &vehicle)
     {
         MissionDownloadResult homeMissionPair = std::make_tuple(home, mission);
         MissionAction_Upload_Initiate::Send(homeMissionPair, vehicle, vehicle);
@@ -470,15 +467,21 @@ private:
     {
         if(msg.seq == 0)
         {
-            std::get<0>(*m_MissionDownloading).position->setX(msg.x);
-            std::get<0>(*m_MissionDownloading).position->setY(msg.y);
-            std::get<0>(*m_MissionDownloading).position->setZ(msg.z);
+            //Mission exchanges are always going to exist on a geodetic frame and eventually we should check this Ken
+            mace::pose::GeodeticPosition_3D homePosition;
+            homePosition.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
+            homePosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+            homePosition.setLatitude(static_cast<double>(msg.x));
+            homePosition.setLongitude(static_cast<double>(msg.y));
+            homePosition.setAltitude(static_cast<double>(msg.z));
+
+            std::get<0>(*m_MissionDownloading).setPosition(&homePosition);
             std::get<0>(*m_MissionDownloading).setOriginatingSystem(sender);
             std::get<0>(*m_MissionDownloading).setTargetSystem(sender);
         }
         else {
             int adjustedIndex = msg.seq - 1; //we decrement 1 only here because ardupilot references home as 0 and we 0 index in our mission queue
-            std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = DataMAVLINK::Helper_MissionMAVLINKtoMACE::Convert_MAVLINKTOMACE(sender, msg);
+            std::shared_ptr<command_item::AbstractCommandItem> newMissionItem = DataMAVLINK::Helper_MissionMAVLINKtoMACE::Convert_MAVLINKTOMACE(sender, msg);
             std::get<1>(*m_MissionDownloading).replaceMissionItemAtIndex(newMissionItem, adjustedIndex);
         }
     }

@@ -33,6 +33,7 @@ extern "C" {
 
 // ENUM DEFINITIONS
 
+namespace mace {
 
 /** @brief Type of boundary items being requested/sent in boundary protocol. */
 #ifndef HAVE_ENUM_BOUNDARY_TYPE
@@ -64,6 +65,7 @@ typedef enum BOUNDARY_RESULT
 } BOUNDARY_RESULT;
 #endif
 
+} //end of namespace mace
 // MACE VERSION
 
 #ifndef MACE_VERSION

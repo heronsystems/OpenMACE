@@ -14,6 +14,9 @@ TEMPLATE = lib
 DEFINES += DATA_GENERIC_COMMAND_ITEM_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -49,11 +52,21 @@ SOURCES += \
     mission_items/mission_key_change.cpp \
     boundary_items/boundary_key.cpp \
     boundary_items/boundary_list.cpp \
+    target_items/dynamic_target_kinematic.cpp \
     target_items/dynamic_target_list.cpp \
     target_items/dynamic_mission_queue.cpp \
-    target_items/dynamic_target.cpp \
-    target_items/dynamic_target_storage.cpp \
-    do_items/command_goto.cpp
+    target_items/dynamic_target_state.cpp \
+    spatial_items/abstract_spatial_action.cpp \
+    mission_items/abstract_mission_item.cpp \
+    interface_command_helper.cpp \
+    mission_items/mission_item_factory.cpp \
+    do_items/action_dynamic_target.cpp \
+    do_items/action_message_interval.cpp \
+    do_items/action_execute_spatial_item.cpp \
+    do_items/action_set_global_origin.cpp \
+    target_items/dynamic_target_orientation.cpp \
+    target_items/abstract_dynamic_target.cpp \
+    do_items/action_message_request.cpp
 HEADERS +=\
     do_items/action_arm.h \
     do_items/action_change_mode.h \
@@ -79,20 +92,30 @@ HEADERS +=\
     mission_items/mission_item_achieved.h \
     mission_items/mission_item_current.h \
     mission_items/mission_state.h \
-    mission_items/mission_type.h \
     mission_items/mission_key.h \
     mission_items/mission_key_change.h \
     command_item_type.h \
     boundary_items/boundary_key.h \
     boundary_items/boundary_type.h \
     boundary_items/boundary_list.h \
+    target_items/dynamic_target_kinematic.h \
     target_items/dynamic_target_list.h \
     target_items/dynamic_mission_queue.h \
-    target_items/dynamic_target.h \
-    target_items/dynamic_target_storage.h \
-    do_items/command_goto.h \
     spatial_items/abstract_spatial_action.h \
-    spatial_items/spatial_action_factory.h
+    spatial_items/spatial_action_factory.h \
+    mission_items/typedef_mission_types.h \
+    target_items/dynamic_target_state.h \
+    mission_items/mission_item_interface.h \
+    mission_items/abstract_mission_item.h \
+    interface_command_helper.h \
+    mission_items/mission_item_factory.h \
+    do_items/action_dynamic_target.h \
+    do_items/action_message_interval.h \
+    do_items/action_execute_spatial_item.h \
+    do_items/action_set_global_origin.h \
+    target_items/dynamic_target_orientation.h \
+    target_items/abstract_dynamic_target.h \
+    do_items/action_message_request.h
 
 # Unix lib Install
 unix:!symbian {
@@ -113,8 +136,9 @@ INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
 
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
@@ -127,10 +151,4 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../base/ -lbase
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
 else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/release/ -ldata_generic_state_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/debug/ -ldata_generic_state_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item/ -ldata_generic_state_item
-
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 

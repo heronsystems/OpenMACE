@@ -8,7 +8,7 @@
 namespace ExternalLink {
 
 
-class CommandLand : public Controller_GenericLongCommand<CommandItem::SpatialLand, (uint8_t)CommandItem::COMMANDITEM::CI_NAV_LAND>
+class CommandLand : public Controller_GenericLongCommand<command_item::SpatialLand, (uint8_t)command_item::COMMANDTYPE::CI_NAV_LAND>
 {
 public:
 
@@ -16,9 +16,9 @@ public:
 
 protected:
 
-    virtual void FillCommand(const CommandItem::SpatialLand &commandItem, mace_command_long_t &cmd) const;
+    virtual void FillCommand(const command_item::SpatialLand &commandItem, mace_command_long_t &cmd) const;
 
-    virtual void BuildCommand(const mace_command_long_t &message, CommandItem::SpatialLand &data) const;
+    virtual void BuildCommand(const mace_command_long_t &message, command_item::SpatialLand &data) const;
 };
 
 

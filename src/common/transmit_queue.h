@@ -92,7 +92,7 @@ public:
     //! \param execute [true] True if action is to be executed immediatly. If false action will not be performed until Execute is called.
     //! \return Number to identify the transmission, to be used to further reference the action.
     //!
-    int QueueTransmission(std::function<void(int transmitNumber)> transmitAction, const std::function<void(int transmitNumber)> onFailure = [](int transmitNumber){}, bool execute = true)
+    int QueueTransmission(std::function<void(int transmitNumber)> transmitAction, const std::function<void(int transmitNumber)> onFailure = [](int transmitNumber){UNUSED(transmitNumber);}, bool execute = true)
     {
         m_ActiveTransmitsMutex.lock();
         int num;

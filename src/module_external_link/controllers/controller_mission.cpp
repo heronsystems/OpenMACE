@@ -1,8 +1,5 @@
 #include "controller_mission.h"
 
-#include "data_interface_MACE/COMMS_to_MACE/helper_mission_comms_to_mace.h"
-#include "data_interface_MACE/MACE_to_COMMS/helper_mission_mace_to_comms.h"
-
 namespace ExternalLink {
 
 
@@ -15,11 +12,11 @@ namespace ExternalLink {
     {
         queueObj = data;
 
-        cmd.mission_creator = data.m_creatorID;
-        cmd.mission_id = data.m_missionID;
-        cmd.mission_system = data.m_systemID;
-        cmd.mission_type = (uint8_t)data.m_missionType;
-        cmd.mission_state = (uint8_t)data.m_missionState;
+        cmd.mission_creator = static_cast<uint8_t>(data.m_creatorID);
+        cmd.mission_id = static_cast<uint8_t>(data.m_missionID);
+        cmd.mission_system = static_cast<uint8_t>(data.m_systemID);
+        cmd.mission_type = static_cast<uint8_t>(data.m_missionType);
+        cmd.mission_state = static_cast<uint8_t>(data.m_missionState);
 
         if(m_MissionsBeingFetching.find(data) != m_MissionsBeingFetching.cend())
         {
@@ -82,11 +79,11 @@ namespace ExternalLink {
 
         rtn.count = m_MissionsUploading.at(sender).at(key).getQueueSize();
         rtn.target_system = m_MissionsUploading.at(sender).at(key).getVehicleID();
-        rtn.mission_system = key.m_systemID;
-        rtn.mission_creator = key.m_creatorID;
-        rtn.mission_id = key.m_missionID;
-        rtn.mission_type = static_cast<MAV_MISSION_TYPE>(key.m_missionType);
-        rtn.mission_state = static_cast<MAV_MISSION_STATE>(key.m_missionState);
+        rtn.mission_system =  static_cast<uint8_t>(key.m_systemID);
+        rtn.mission_creator =  static_cast<uint8_t>(key.m_creatorID);
+        rtn.mission_id =  static_cast<uint8_t>(key.m_missionID);
+        rtn.mission_type = static_cast<uint8_t>(key.m_missionType);
+        rtn.mission_state = static_cast<uint8_t>(key.m_missionState);
 
         std::cout << "Mission Controller: Sending Mission Count. " << "S_ID: " << (int)cmd.mission_system << " M_ID: " << (int)cmd.mission_id << std::endl;
 
@@ -154,7 +151,7 @@ namespace ExternalLink {
             return false;
         }
 
-        int index = missionRequest.seq;
+        unsigned int index = static_cast<unsigned int>(missionRequest.seq);
         if(index >= m_MissionsUploading.at(sender)[key].getQueueSize())
         {
             //this indicates that RX system requested something OOR
@@ -166,10 +163,10 @@ namespace ExternalLink {
         if(CONTROLLER_MISSION_TYPE::mLog)
             CONTROLLER_MISSION_TYPE::mLog->info("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + ".");
 
-        std::shared_ptr<CommandItem::AbstractCommandItem> ptrItem = this->m_MissionsUploading.at(sender)[key].getMissionItem(index);
+        std::shared_ptr<command_item::AbstractCommandItem> ptrItem = this->m_MissionsUploading.at(sender)[key].getMissionItem(index);
 
-        DataInterface_MACE::Helper_MissionMACEtoCOMMS::MACEMissionToCOMMSMission(ptrItem,index,missionItem);
-        DataInterface_MACE::Helper_MissionMACEtoCOMMS::updateMissionKey(key,missionItem);
+        MissionItem::MissionItemFactory::generateMACEMissionItem(ptrItem,index,missionItem);
+        MissionItem::MissionItemFactory::updateMissionKey(key, missionItem);
 
         std::cout << "Mission Controller: Sending Item " << index << " S_ID: " << (int)missionRequest.mission_system << " M_ID: " << (int)missionRequest.mission_id << std::endl;
 
@@ -204,7 +201,7 @@ namespace ExternalLink {
             return false;
         }
 
-        int seqReceived = missionItem.seq;
+        unsigned int seqReceived = missionItem.seq;
         if(seqReceived > (m_MissionsBeingFetching[key].mission.getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Mission download Error: received a mission item with an index greater than available in the queue" << std::endl;
@@ -220,7 +217,7 @@ namespace ExternalLink {
 
         moduleFor = this->GetHostKey();
 
-        std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = DataInterface_MACE::Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(missionItem, target);
+        command_item::AbstractCommandItemPtr newMissionItem = MissionItem::MissionItemFactory::generateAbstractCommandItem(missionItem, target.ModuleID, target.ModuleID);
         m_MissionsBeingFetching[key].mission.replaceMissionItemAtIndex(newMissionItem, seqReceived);
 
         MissionItem::MissionList::MissionListStatus status = m_MissionsBeingFetching[key].mission.getMissionListStatus();
@@ -232,13 +229,13 @@ namespace ExternalLink {
 
         int indexRequest = status.remainingItems.at(0);
 
-        request.target_system = target.ModuleID;
-        request.mission_creator = key.m_creatorID;
-        request.mission_id = key.m_missionID;
-        request.mission_system = key.m_systemID;
-        request.mission_type = (uint8_t)key.m_missionType;
-        request.mission_state = (uint8_t)key.m_missionState;
-        request.seq = indexRequest;
+        request.target_system = static_cast<uint8_t>(target.ModuleID);
+        request.mission_creator =  static_cast<uint8_t>(key.m_creatorID);
+        request.mission_id =  static_cast<uint8_t>(key.m_missionID);
+        request.mission_system =  static_cast<uint8_t>(key.m_systemID);
+        request.mission_type =  static_cast<uint8_t>(key.m_missionType);
+        request.mission_state =  static_cast<uint8_t>(key.m_missionState);
+        request.seq =  static_cast<uint16_t>(indexRequest);
 
         std::cout << "Mission Controller: Requesting Item " << indexRequest << " S_ID: " << (int)missionItem.mission_system << " M_ID: " << (int)missionItem.mission_id << std::endl;
 
@@ -287,7 +284,7 @@ namespace ExternalLink {
             return false;
         }
 
-        std::shared_ptr<CommandItem::AbstractCommandItem> newMissionItem = DataInterface_MACE::Helper_MissionCOMMStoMACE::Convert_COMMSTOMACE(missionItem, target);
+        command_item::AbstractCommandItemPtr newMissionItem = MissionItem::MissionItemFactory::generateAbstractCommandItem(missionItem, target.ModuleID, target.ModuleID);
         m_MissionsBeingFetching[key].mission.replaceMissionItemAtIndex(newMissionItem, seqReceived);
 
         MissionItem::MissionList::MissionListStatus status = m_MissionsBeingFetching[key].mission.getMissionListStatus();
@@ -303,11 +300,11 @@ namespace ExternalLink {
             CONTROLLER_MISSION_TYPE::mLog->info("Mission Controller has received the entire mission of " + std::to_string(m_MissionsBeingFetching[key].mission.getQueueSize()) + " for mission " + buffer.str() + ".");
         }
 
-        ackMission.mission_system = key.m_systemID;
-        ackMission.mission_creator = key.m_creatorID;
-        ackMission.mission_id = key.m_missionID;
-        ackMission.mission_type = (uint8_t)key.m_missionType;
-        ackMission.prev_mission_state = (uint8_t)key.m_missionState;
+        ackMission.mission_system = static_cast<uint8_t>(key.m_systemID);
+        ackMission.mission_creator = static_cast<uint8_t>(key.m_creatorID);
+        ackMission.mission_id = static_cast<uint8_t>(key.m_missionID);
+        ackMission.mission_type = static_cast<uint8_t>(key.m_missionType);
+        ackMission.prev_mission_state = static_cast<uint8_t>(key.m_missionState);
         ackMission.mission_result = MAV_MISSION_ACCEPTED;
 
         //KEN This is a hack but for now
@@ -358,8 +355,8 @@ namespace ExternalLink {
     {
         throw std::runtime_error("No Longer supported, need to pull the correct mission_system");
         UNUSED(sender);
-        msg.mission_system = target.ModuleID;
-        msg.mission_type = (uint8_t)MissionItem::MISSIONSTATE::CURRENT;
+        msg.mission_system = static_cast<uint8_t>(target.ModuleID);
+        msg.mission_type = static_cast<uint8_t>(MissionItem::MISSIONSTATE::CURRENT);
         msg.mission_state = 0;
 
         m_GenericRequester = sender;
@@ -417,11 +414,11 @@ namespace ExternalLink {
 
                 response.count = m_MissionsUploading.at(sender).at(key).getQueueSize();
                 response.target_system = m_MissionsUploading.at(sender).at(key).getVehicleID();
-                response.mission_system = key.m_systemID;
-                response.mission_creator = key.m_creatorID;
-                response.mission_id = key.m_missionID;
-                response.mission_type = static_cast<MAV_MISSION_TYPE>(key.m_missionType);
-                response.mission_state = static_cast<MAV_MISSION_STATE>(key.m_missionState);
+                response.mission_system = static_cast<uint8_t>(key.m_systemID);
+                response.mission_creator = static_cast<uint8_t>(key.m_creatorID);
+                response.mission_id = static_cast<uint8_t>(key.m_missionID);
+                response.mission_type = static_cast<uint8_t>(key.m_missionType);
+                response.mission_state = static_cast<uint8_t>(key.m_missionState);
 
                 std::cout << "Mission Controller: Sending Mission Count" << " S_ID: " << (int)key.m_systemID << " M_ID: " << (int)key.m_missionID << std::endl;
 
@@ -464,7 +461,7 @@ namespace ExternalLink {
             {
                 response.mission_system = msg.mission_system;
                 response.cur_mission_state = msg.mission_state;
-                response.mission_result = (uint8_t)MissionItem::MissionACK::MISSION_RESULT::MISSION_RESULT_DOES_NOT_EXIST;
+                response.mission_result = static_cast<uint8_t>(MissionItem::MissionACK::MISSION_RESULT::MISSION_RESULT_DOES_NOT_EXIST);
 
                 std::cout << "Mission Controller: Received request list, no missions so sending ack" << std::endl;
 
@@ -487,11 +484,11 @@ namespace ExternalLink {
     {
         queue = target;
 
-        msg.mission_creator = data.m_creatorID;
-        msg.mission_id = data.m_missionID;
-        msg.mission_type = (uint8_t)data.m_missionType;
-        msg.mission_system = data.m_systemID;
-        msg.mission_state = (uint8_t)data.m_missionState;
+        msg.mission_creator = static_cast<uint8_t>(data.m_creatorID);
+        msg.mission_id = static_cast<uint8_t>(data.m_missionID);
+        msg.mission_type = static_cast<uint8_t>(data.m_missionType);
+        msg.mission_system = static_cast<uint8_t>(data.m_systemID);
+        msg.mission_state = static_cast<uint8_t>(data.m_missionState);
 
         std::cout << "Mission Controller: Sending New Mission Notification" << " S_ID: " << (int)data.m_systemID << " M_ID: " << (int)data.m_missionID << std::endl;
 
@@ -509,11 +506,11 @@ namespace ExternalLink {
         data = key;
 
 
-        ack.mission_system = key.m_systemID;
-        ack.mission_creator = key.m_creatorID;
-        ack.mission_id = key.m_missionID;
-        ack.mission_type = (uint8_t)key.m_missionType;
-        ack.prev_mission_state = (uint8_t)key.m_missionState;
+        ack.mission_system = static_cast<uint8_t>(key.m_systemID);
+        ack.mission_creator = static_cast<uint8_t>(key.m_creatorID);
+        ack.mission_id = static_cast<uint8_t>(key.m_missionID);
+        ack.mission_type = static_cast<uint8_t>(key.m_missionType);
+        ack.prev_mission_state = static_cast<uint8_t>(key.m_missionState);
         ack.mission_result = MAV_MISSION_ACCEPTED;
 
         std::cout << "Mission Controller: Received New Mission Notification" << " S_ID: " << (int)key.m_systemID << " M_ID: " << (int)key.m_missionID << std::endl;

@@ -1,20 +1,15 @@
 #include "spatial_land.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialLand::getCommandType() const
+COMMANDTYPE SpatialLand::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_LAND;
+    return COMMANDTYPE::CI_NAV_LAND;
 }
 
 std::string SpatialLand::getDescription() const
 {
     return "This causes the vehicle to land either at the current location or prescribed location";
-}
-
-bool SpatialLand::hasSpatialInfluence() const
-{
-    return true;
 }
 
 std::shared_ptr<AbstractCommandItem> SpatialLand::getClone() const
@@ -39,17 +34,29 @@ SpatialLand::SpatialLand(const SpatialLand &obj):
     this->operator =(obj);
 }
 
-SpatialLand::SpatialLand(const int &systemOrigin,  const int &systemTarget):
+SpatialLand::SpatialLand(const unsigned int &systemOrigin,  const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
+}
+
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialLand::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
 }
 
 std::ostream& operator<<(std::ostream& os, const SpatialLand& t)
 {
     std::stringstream stream;
     stream.precision(6);
-    stream << std::fixed << "Spatial Land: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
+    //stream << std::fixed << "Spatial Land: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
     os << stream.str();
 
     return os;

@@ -28,21 +28,21 @@ public:
 
 public:
     MissionList();
-    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state);
-    MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size);
-    MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size);
+    MissionList(const unsigned int &targetID, const unsigned int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state);
+    MissionList(const unsigned int &targetID, const unsigned int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
+    MissionList(const unsigned int &targetID, const unsigned int &generatorID, const unsigned int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size);
     MissionList(const MissionList &rhs);
 
 public:
-    void initializeQueue(const int &size);
+    void initializeQueue(const size_t &size);
     void clearQueue();
-    void replaceMissionQueue(const std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> &newQueue);
-    void insertMissionItem(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem);
-    void replaceMissionItemAtIndex(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem, const int &index);
+    void replaceMissionQueue(const std::vector<std::shared_ptr<command_item::AbstractCommandItem>> &newQueue);
+    void insertMissionItem(const std::shared_ptr<command_item::AbstractCommandItem> missionItem);
+    void replaceMissionItemAtIndex(const std::shared_ptr<command_item::AbstractCommandItem> missionItem, const unsigned int &index);
 
-    std::shared_ptr<CommandItem::AbstractCommandItem> getMissionItem(const int &index) const;
+    std::shared_ptr<command_item::AbstractCommandItem> getMissionItem(const unsigned int &index) const;
 
-    int getQueueSize() const;
+    size_t getQueueSize() const;
     MissionListStatus getMissionListStatus() const;
 
 public:
@@ -55,19 +55,19 @@ public:
         this->missionKey = key;
     }
 
-    void setVehicleID(const int &vehicleID){
+    void setVehicleID(const unsigned int &vehicleID){
         this->missionKey.m_systemID = vehicleID;
     }
 
-    int getVehicleID() const{
+    unsigned int getVehicleID() const{
         return this->missionKey.m_systemID;
     }
 
-    void setCreatorID(const int &creatorID){
+    void setCreatorID(const unsigned int &creatorID){
         this->missionKey.m_creatorID = creatorID;
     }
 
-    int getCreatorID() const {
+    unsigned int getCreatorID() const {
         return this->missionKey.m_creatorID;
     }
 
@@ -104,11 +104,11 @@ public:
         return missionExeState;
     }
 
-    int getActiveIndex() const;
+    unsigned int getActiveIndex() const;
 
-    std::shared_ptr<CommandItem::AbstractCommandItem> getActiveMissionItem();
+    command_item::AbstractCommandItemPtr getActiveMissionItem();
 
-    void setActiveIndex(const int &activeIndex);
+    void setActiveIndex(const unsigned int &activeIndex);
 
 public:
     MissionList& operator = (const MissionList &rhs)
@@ -149,12 +149,12 @@ private:
     //!
     //! \brief activeMissionItem
     //!
-    int activeMissionItem;
+    unsigned int activeMissionItem;
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const MissionList& t);
 
-    std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> missionQueue;
+    std::vector<std::shared_ptr<command_item::AbstractCommandItem>> missionQueue;
 };
 
 } //end of namespace MissionItem

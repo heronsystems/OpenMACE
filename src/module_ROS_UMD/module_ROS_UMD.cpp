@@ -25,7 +25,8 @@
 #include <mace_matlab_msgs/UPDATE_CMD_STATUS.h>
 #include <mace_matlab_msgs/UPDATE_GPS.h>
 #include <mace_matlab_msgs/UPDATE_HEARTBEAT.h>
-#include <mace_matlab_msgs/UPDATE_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_GEODETIC_POSITION.h>
+#include <mace_matlab_msgs/UPDATE_LOCAL_POSITION.h>
 #include <mace_matlab_msgs/UPDATE_VEHICLE_TARGET.h>
 #endif
 
@@ -148,22 +149,22 @@ void ModuleROSUMD::NewTopicSpooled(const std::string &topicName, const MaceCore:
         {
             MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_VehicleDataTopic.Name(), sender);
             for(size_t i = 0 ; i < componentsUpdated.size() ; i++){
-                if(componentsUpdated.at(i) == DataStateTopic::StateAttitudeTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateAttitudeTopic> component = std::make_shared<DataStateTopic::StateAttitudeTopic>();
+                if(componentsUpdated.at(i) == mace::pose_topics::Topic_AgentOrientation::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> component = std::make_shared<mace::pose_topics::Topic_AgentOrientation>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write Attitude data to the GUI:
                     updateAttitudeData(vehicleID, component);
                 }
-                else if(componentsUpdated.at(i) == DataStateTopic::StateLocalPositionTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateLocalPositionTopic> component = std::make_shared<DataStateTopic::StateLocalPositionTopic>();
+                else if(componentsUpdated.at(i) == mace::pose_topics::Topic_CartesianPosition::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> component = std::make_shared<mace::pose_topics::Topic_CartesianPosition>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write Position data to the GUI:
                     updatePositionData(vehicleID, component);
                 }
-                else if(componentsUpdated.at(i) == DataStateTopic::StateGlobalPositionTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> component = std::make_shared<DataStateTopic::StateGlobalPositionTopic>();
+                else if(componentsUpdated.at(i) == mace::pose_topics::Topic_GeodeticPosition::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> component = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write Position data to the GUI:
@@ -270,24 +271,32 @@ void ModuleROSUMD::NewlyFoundPath(const std::vector<mace::state_space::StatePtr>
 //! \param vehicleID ID of the vehicle to update
 //! \param component Attitude
 //!
-void ModuleROSUMD::updateAttitudeData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateAttitudeTopic> &component)
+void ModuleROSUMD::updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component)
 {
-    double roll = component->roll;
-    double pitch = component->pitch;
-    double yaw = component->yaw;
+    mace::pose::Rotation_3D currentRotation;
+
+    if(component->getRotationObj()->getDOF() == 3)
+    {
+        mace::pose::Rotation_3D* castRotation = component->getRotationObj()->rotationAs<mace::pose::Rotation_3D>();
+        currentRotation = *castRotation;
+    }
+    else if(component->getRotationObj()->getDOF() == 2)
+    {
+        mace::pose::Rotation_2D* castRotation = component->getRotationObj()->rotationAs<mace::pose::Rotation_2D>();
+        currentRotation.updateYaw(castRotation->getPhi());
+    }
+
 
     if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
-        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple;
-        DataState::StateLocalPosition tmpPos = std::get<0>(m_vehicleMap[vehicleID]);
-        DataState::StateAttitude tmpAtt = DataState::StateAttitude();
-        tmpAtt.setAttitude(roll, pitch, yaw);
-        tmpTuple = std::make_tuple(tmpPos, tmpAtt);
+        std::tuple<mace::pose::CartesianPosition_3D, mace::pose::Rotation_3D> tmpTuple;
+        mace::pose::CartesianPosition_3D tmpPos = std::get<0>(m_vehicleMap[vehicleID]);
+        tmpTuple = std::make_tuple(tmpPos, currentRotation);
         m_vehicleMap[vehicleID] = tmpTuple;
     }
 
 #ifdef ROS_EXISTS
     // TODO: Publish vehicle Pose to MATLAB
-    publishVehicleAttitude(vehicleID);
+    //publishVehicleAttitude(vehicleID);
 #endif
 }
 
@@ -297,27 +306,30 @@ void ModuleROSUMD::updateAttitudeData(const int &vehicleID, const std::shared_pt
 //! \param vehicleID ID of the vehicle to update
 //! \param component Position (in the local frame)
 //!
-void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateLocalPositionTopic> &component)
+void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> &component)
 {
-    // TODO: Why does the local position topic report values way off? Altitude is right, but even in NED (i.e. straight from the vehicle),
-    //          we get discrepencies when reporting position relative to a DATUM
+#ifdef ROS_EXISTS
 
-//    double x = component->getX();
-//    double y = component->getY();
-//    double z = component->getZ();
+    mace_matlab_msgs::UPDATE_LOCAL_POSITION position;
+    position.vehicleID = vehicleID;
+    if(component->getPositionObj()->is2D())
+    {
+        mace::pose::CartesianPosition_2D* castPosition = component->getPositionObj()->positionAs<mace::pose::CartesianPosition_2D>();
+        position.northing = castPosition->getXPosition();
+        position.easting = castPosition->getYPosition();
+    }
 
-//    if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
-//        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple;
-//        DataState::StateLocalPosition tmpPos = DataState::StateLocalPosition(component->getCoordinateFrame(), x, y, z);
-//        DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
-//        tmpTuple = std::make_tuple(tmpPos, tmpAtt);
-//        m_vehicleMap[vehicleID] = tmpTuple;
-//    }
-
-//#ifdef ROS_EXISTS
-//    // TODO: Publish vehicle Pose to MATLAB
-//    publishVehiclePosition(vehicleID);
-//#endif
+    if(component->getPositionObj()->is3D())
+    {
+        mace::pose::CartesianPosition_3D* castPosition = component->getPositionObj()->positionAs<mace::pose::CartesianPosition_3D>();
+        position.northing = castPosition->getXPosition();
+        position.easting = castPosition->getYPosition();
+        position.altitude = -castPosition->getZPosition();
+    }
+    position.northSpeed = 0.0; // TODO
+    position.eastSpeed = 0.0; // TODO
+    m_vehicleLocalPosPub.publish(position);
+#endif
 }
 
 //!
@@ -325,33 +337,31 @@ void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_pt
 //! \param vehicleID ID of the vehicle to update
 //! \param component Position (in a global, Geodetic frame)
 //!
-void ModuleROSUMD::updateGlobalPositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> &component)
+void ModuleROSUMD::updateGlobalPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component)
 {
-    UNUSED(vehicleID);
+#ifdef ROS_EXISTS
+    mace_matlab_msgs::UPDATE_GEODETIC_POSITION position;
+    position.vehicleID = vehicleID;
     //the command here is based in a global cartesian space, we therefore need to transform it
-    CartesianPosition_3D cartesianPosition;
-    GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-    GeodeticPosition_3D currentPosition(component->getLatitude(),
-                                        component->getLongitude(),
-                                        component->getAltitude());
 
-    DynamicsAid::GlobalPositionToLocal(globalOrigin, currentPosition, cartesianPosition);
-
-    double northing = cartesianPosition.getYPosition();
-    double easting = cartesianPosition.getXPosition();
-    double altitude = cartesianPosition.getZPosition();
-
-    if(m_vehicleMap.find(vehicleID) != m_vehicleMap.end()) {
-        std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> tmpTuple;
-        DataState::StateLocalPosition tmpPos = DataState::StateLocalPosition(easting, northing, altitude);
-        DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
-        tmpTuple = std::make_tuple(tmpPos, tmpAtt);
-        m_vehicleMap[vehicleID] = tmpTuple;
+    if(component->getPositionObj()->is2D())
+    {
+        mace::pose::GeodeticPosition_2D* castPosition = component->getPositionObj()->positionAs<mace::pose::GeodeticPosition_2D>();
+        position.latitude = castPosition->getLatitude();
+        position.longitude = castPosition->getLongitude();
     }
 
-#ifdef ROS_EXISTS
+    if(component->getPositionObj()->is3D())
+    {
+        mace::pose::GeodeticPosition_3D* castPosition = component->getPositionObj()->positionAs<mace::pose::GeodeticPosition_3D>();
+        position.latitude = castPosition->getLatitude();
+        position.longitude = castPosition->getLongitude();
+        position.altitude = castPosition->getAltitude();
+    }
     // TODO: Publish vehicle Pose to MATLAB
-    publishVehiclePosition(vehicleID);
+    position.northSpeed = 0.0; // TODO
+    position.eastSpeed = 0.0; // TODO
+    m_vehicleGeodeticPosPub.publish(position);
 #endif
 }
 
@@ -364,16 +374,22 @@ void ModuleROSUMD::setupROS() {
     // *************************** //
     // ***** Setup services: ***** //
     // *************************** //
-    m_takeoffService = nh.advertiseService("command_takeoff", &MATLABListener::commandTakeoff, m_matlabListener.get());
-    m_landService = nh.advertiseService("command_land", &MATLABListener::commandLand, m_matlabListener.get());
     m_armService = nh.advertiseService("command_arm", &MATLABListener::commandArm, m_matlabListener.get());
     m_datumService = nh.advertiseService("command_datum", &MATLABListener::commandDatum, m_matlabListener.get());
+    m_dynamicTargetService_Kinematic = nh.advertiseService("command_dynamic_target_kinematic", &MATLABListener::commandDynamicTarget, m_matlabListener.get());
+    m_dynamicTargetService_OrientationEuler = nh.advertiseService("command_dynamic_target_euler", &MATLABListener::commandDynamicTarget_OrientationEuler, m_matlabListener.get());
+    m_dynamicTargetService_OrientationQuat = nh.advertiseService("command_dynamic_target_quat", &MATLABListener::commandDynamicTarget_OrientationQuat, m_matlabListener.get());
+
+    m_landService = nh.advertiseService("command_land", &MATLABListener::commandLand, m_matlabListener.get());
+    m_takeoffService = nh.advertiseService("command_takeoff", &MATLABListener::commandTakeoff, m_matlabListener.get());
     m_wptService = nh.advertiseService("command_waypoint", &MATLABListener::commandWaypoint, m_matlabListener.get());
 
     // *************************** //
     // **** Setup publishers: **** //
     // *************************** //
-    m_vehiclePosPub = nh.advertise<mace_matlab_msgs::UPDATE_POSITION> ("/MACE/UPDATE_POSITION", 1);
+    m_vehicleLocalPosPub = nh.advertise<mace_matlab_msgs::UPDATE_LOCAL_POSITION> ("/MACE/UPDATE_LOCAL_POSITION", 1);
+    m_vehicleGeodeticPosPub = nh.advertise<mace_matlab_msgs::UPDATE_GEODETIC_POSITION> ("/MACE/UPDATE_GEODETIC_POSITION", 1);
+
     m_vehicleAttPub = nh.advertise<mace_matlab_msgs::UPDATE_ATTITUDE> ("/MACE/UPDATE_ATTITUDE", 1);
     m_gpsPub = nh.advertise<mace_matlab_msgs::UPDATE_GPS> ("/MACE/UPDATE_GPS", 1);
     m_heartbeatPub = nh.advertise<mace_matlab_msgs::UPDATE_HEARTBEAT> ("/MACE/UPDATE_HEARTBEAT", 1);
@@ -385,48 +401,6 @@ void ModuleROSUMD::setupROS() {
     ros::spinOnce();
 }
 
-// TODO: Better workaround for transformations
-void ModuleROSUMD::convertToENU(DataState::StateLocalPosition& localPos) {
-
-    switch (localPos.getCoordinateFrame()) {
-    case Data::CoordinateFrameType::CF_GLOBAL:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_NED:
-        localPos.setZ(-localPos.getZ());
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_ENU:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_INT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT_INT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_LOCAL_OFFSET_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_BODY_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_BODY_OFFSET_NED:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT:
-        // TODO:
-        break;
-    case Data::CoordinateFrameType::CF_GLOBAL_TERRAIN_ALT_INT:
-        // TODO:
-        break;
-    default:
-        std::cout << "Unknown coordinate system seen when sending to ROS/Gazebo." << std::endl;
-    }
-}
-
 //!
 //! \brief publishVehiclePosition Publish the current position of the corresponding vehicle
 //! \param vehicleID ID of the vehicle to update
@@ -435,24 +409,7 @@ void ModuleROSUMD::convertToENU(DataState::StateLocalPosition& localPos) {
 bool ModuleROSUMD::publishVehiclePosition(const int &vehicleID)
 {
     // robot state
-    DataState::StateLocalPosition tmpLocalPos = std::get<0>(m_vehicleMap[vehicleID]);
 
-    // TODO: Better workaround for transformations
-    // Transform local position to ENU:
-    if(tmpLocalPos.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
-        tmpLocalPos.setZ(-tmpLocalPos.getZ());
-    }
-
-    mace_matlab_msgs::UPDATE_POSITION position;
-    position.vehicleID = vehicleID;
-    position.northing = tmpLocalPos.getPositionY();
-    position.easting = tmpLocalPos.getPositionX();
-    position.altitude = tmpLocalPos.getPositionZ();
-    position.northSpeed = 0.0; // TODO
-    position.eastSpeed = 0.0; // TODO
-    // TODO: Timestamp
-
-    m_vehiclePosPub.publish(position);
 }
 
 
@@ -465,16 +422,16 @@ bool ModuleROSUMD::publishVehicleAttitude(const int &vehicleID)
 {
 
     // robot state
-    DataState::StateAttitude tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
+    mace::pose::Rotation_3D tmpAtt = std::get<1>(m_vehicleMap[vehicleID]);
 
     mace_matlab_msgs::UPDATE_ATTITUDE attitude;
     attitude.vehicleID = vehicleID;
-    attitude.roll = tmpAtt.getMACEEuler().roll;
-    attitude.pitch = tmpAtt.getMACEEuler().pitch;
-    attitude.yaw = tmpAtt.getMACEEuler().yaw;
-    attitude.rollRate = tmpAtt.getMACEEulerRates().rollspeed;
-    attitude.pitchRate = tmpAtt.getMACEEulerRates().pitchspeed;
-    attitude.yawRate = tmpAtt.getMACEEulerRates().yawspeed;
+    attitude.roll = tmpAtt.getRoll();
+    attitude.pitch = tmpAtt.getPitch();
+    attitude.yaw = tmpAtt.getYaw();
+    attitude.rollRate = 0.0;
+    attitude.pitchRate = 0.0;
+    attitude.yawRate = 0.0;
     // TODO: Timestamp
 
     m_vehicleAttPub.publish(attitude);
@@ -537,32 +494,30 @@ bool ModuleROSUMD::publishVehicleHeartbeat(const int &vehicleID, const std::shar
 bool ModuleROSUMD::publishVehicleTargetInfo(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
 {
 
-    mace_matlab_msgs::UPDATE_VEHICLE_TARGET target;
-    target.vehicleID = vehicleID;
-    target.state = static_cast<uint8_t>(component->targetState);
-    target.distance = component->targetDistance;
+//    mace_matlab::UPDATE_VEHICLE_TARGET target;
+//    target.vehicleID = vehicleID;
+//    target.state = static_cast<uint8_t>(component->targetState);
+//    target.distance = component->targetDistance;
 
     //the command here is based in a global cartesian space, we therefore need to transform it
-    CartesianPosition_3D cartesianPosition;
-    GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-    GeodeticPosition_3D currentPosition(component->targetPosition.getX(),
-                                        component->targetPosition.getY(),
-                                        component->targetPosition.getZ());
+//    CartesianPosition_3D cartesianPosition;
+//    GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+//    GeodeticPosition_3D currentPosition;
 
-    DynamicsAid::GlobalPositionToLocal(globalOrigin, currentPosition, cartesianPosition);
+//    DynamicsAid::GlobalPositionToLocal(globalOrigin, currentPosition, cartesianPosition);
 
-    target.northing = cartesianPosition.getYPosition();
-    target.easting = cartesianPosition.getXPosition();
-    target.altitude = cartesianPosition.getZPosition();
+//    target.northing = cartesianPosition.getYPosition();
+//    target.easting = cartesianPosition.getXPosition();
+//    target.altitude = cartesianPosition.getZPosition();
 
     // TODO: Better conversion to ENU:
-    if(component->targetPosition.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
-        target.altitude = -target.altitude;
-    }
+//    if(component->targetPosition.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
+//        target.altitude = -target.altitude;
+//    }
 
     // TODO: Timestamp
 
-    m_vehicleTargetPub.publish(target);
+//    m_vehicleTargetPub.publish(target);
 }
 
 

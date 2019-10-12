@@ -5,17 +5,17 @@
 
 MACEPACKED(
 typedef struct __mace_command_int_t {
- float param1; /*< PARAM1, see MAV_CMD enum*/
- float param2; /*< PARAM2, see MAV_CMD enum*/
- float param3; /*< PARAM3, see MAV_CMD enum*/
- float param4; /*< PARAM4, see MAV_CMD enum*/
+ float param1; /*< PARAM1, see UXV_CMD enum*/
+ float param2; /*< PARAM2, see UXV_CMD enum*/
+ float param3; /*< PARAM3, see UXV_CMD enum*/
+ float param4; /*< PARAM4, see UXV_CMD enum*/
  int32_t x; /*< PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7*/
  int32_t y; /*< PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7*/
  float z; /*< PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.*/
- uint16_t command; /*< The scheduled action for the mission item. see MAV_CMD in common.xml MAVLink specs*/
+ uint16_t command; /*< The scheduled action for the mission item. see UXV_CMD in common.xml MAVLink specs*/
  uint8_t target_system; /*< System ID*/
  uint8_t target_component; /*< Component ID*/
- uint8_t frame; /*< The coordinate system of the COMMAND. see MAV_FRAME in mavlink_types.h*/
+ uint8_t frame; /*< The coordinate system of the COMMAND. see UXV_FRAME in mavlink_types.h*/
  uint8_t current; /*< false:0, true:1*/
  uint8_t autocontinue; /*< autocontinue to next wp*/
 }) mace_command_int_t;
@@ -79,14 +79,14 @@ typedef struct __mace_command_int_t {
  *
  * @param target_system System ID
  * @param target_component Component ID
- * @param frame The coordinate system of the COMMAND. see MAV_FRAME in mavlink_types.h
- * @param command The scheduled action for the mission item. see MAV_CMD in common.xml MAVLink specs
+ * @param frame The coordinate system of the COMMAND. see UXV_FRAME in mavlink_types.h
+ * @param command The scheduled action for the mission item. see UXV_CMD in common.xml MAVLink specs
  * @param current false:0, true:1
  * @param autocontinue autocontinue to next wp
- * @param param1 PARAM1, see MAV_CMD enum
- * @param param2 PARAM2, see MAV_CMD enum
- * @param param3 PARAM3, see MAV_CMD enum
- * @param param4 PARAM4, see MAV_CMD enum
+ * @param param1 PARAM1, see UXV_CMD enum
+ * @param param2 PARAM2, see UXV_CMD enum
+ * @param param3 PARAM3, see UXV_CMD enum
+ * @param param4 PARAM4, see UXV_CMD enum
  * @param x PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7
  * @param y PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7
  * @param z PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.
@@ -143,14 +143,14 @@ static inline uint16_t mace_msg_command_int_pack(uint8_t system_id, uint8_t comp
  * @param msg The MAVLink message to compress the data into
  * @param target_system System ID
  * @param target_component Component ID
- * @param frame The coordinate system of the COMMAND. see MAV_FRAME in mavlink_types.h
- * @param command The scheduled action for the mission item. see MAV_CMD in common.xml MAVLink specs
+ * @param frame The coordinate system of the COMMAND. see UXV_FRAME in mavlink_types.h
+ * @param command The scheduled action for the mission item. see UXV_CMD in common.xml MAVLink specs
  * @param current false:0, true:1
  * @param autocontinue autocontinue to next wp
- * @param param1 PARAM1, see MAV_CMD enum
- * @param param2 PARAM2, see MAV_CMD enum
- * @param param3 PARAM3, see MAV_CMD enum
- * @param param4 PARAM4, see MAV_CMD enum
+ * @param param1 PARAM1, see UXV_CMD enum
+ * @param param2 PARAM2, see UXV_CMD enum
+ * @param param3 PARAM3, see UXV_CMD enum
+ * @param param4 PARAM4, see UXV_CMD enum
  * @param x PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7
  * @param y PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7
  * @param z PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.
@@ -233,14 +233,14 @@ static inline uint16_t mace_msg_command_int_encode_chan(uint8_t system_id, uint8
  *
  * @param target_system System ID
  * @param target_component Component ID
- * @param frame The coordinate system of the COMMAND. see MAV_FRAME in mavlink_types.h
- * @param command The scheduled action for the mission item. see MAV_CMD in common.xml MAVLink specs
+ * @param frame The coordinate system of the COMMAND. see UXV_FRAME in mavlink_types.h
+ * @param command The scheduled action for the mission item. see UXV_CMD in common.xml MAVLink specs
  * @param current false:0, true:1
  * @param autocontinue autocontinue to next wp
- * @param param1 PARAM1, see MAV_CMD enum
- * @param param2 PARAM2, see MAV_CMD enum
- * @param param3 PARAM3, see MAV_CMD enum
- * @param param4 PARAM4, see MAV_CMD enum
+ * @param param1 PARAM1, see UXV_CMD enum
+ * @param param2 PARAM2, see UXV_CMD enum
+ * @param param3 PARAM3, see UXV_CMD enum
+ * @param param4 PARAM4, see UXV_CMD enum
  * @param x PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7
  * @param y PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7
  * @param z PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.
@@ -376,7 +376,7 @@ static inline uint8_t mace_msg_command_int_get_target_component(const mace_messa
 /**
  * @brief Get field frame from command_int message
  *
- * @return The coordinate system of the COMMAND. see MAV_FRAME in mavlink_types.h
+ * @return The coordinate system of the COMMAND. see UXV_FRAME in mavlink_types.h
  */
 static inline uint8_t mace_msg_command_int_get_frame(const mace_message_t* msg)
 {
@@ -386,7 +386,7 @@ static inline uint8_t mace_msg_command_int_get_frame(const mace_message_t* msg)
 /**
  * @brief Get field command from command_int message
  *
- * @return The scheduled action for the mission item. see MAV_CMD in common.xml MAVLink specs
+ * @return The scheduled action for the mission item. see UXV_CMD in common.xml MAVLink specs
  */
 static inline uint16_t mace_msg_command_int_get_command(const mace_message_t* msg)
 {
@@ -416,7 +416,7 @@ static inline uint8_t mace_msg_command_int_get_autocontinue(const mace_message_t
 /**
  * @brief Get field param1 from command_int message
  *
- * @return PARAM1, see MAV_CMD enum
+ * @return PARAM1, see UXV_CMD enum
  */
 static inline float mace_msg_command_int_get_param1(const mace_message_t* msg)
 {
@@ -426,7 +426,7 @@ static inline float mace_msg_command_int_get_param1(const mace_message_t* msg)
 /**
  * @brief Get field param2 from command_int message
  *
- * @return PARAM2, see MAV_CMD enum
+ * @return PARAM2, see UXV_CMD enum
  */
 static inline float mace_msg_command_int_get_param2(const mace_message_t* msg)
 {
@@ -436,7 +436,7 @@ static inline float mace_msg_command_int_get_param2(const mace_message_t* msg)
 /**
  * @brief Get field param3 from command_int message
  *
- * @return PARAM3, see MAV_CMD enum
+ * @return PARAM3, see UXV_CMD enum
  */
 static inline float mace_msg_command_int_get_param3(const mace_message_t* msg)
 {
@@ -446,7 +446,7 @@ static inline float mace_msg_command_int_get_param3(const mace_message_t* msg)
 /**
  * @brief Get field param4 from command_int message
  *
- * @return PARAM4, see MAV_CMD enum
+ * @return PARAM4, see UXV_CMD enum
  */
 static inline float mace_msg_command_int_get_param4(const mace_message_t* msg)
 {

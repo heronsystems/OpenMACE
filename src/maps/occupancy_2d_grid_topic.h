@@ -4,7 +4,7 @@
 #include "data/i_topic_component_data_object.h"
 
 #include "data_2d_grid.h"
-#include "octomap_wrapper.h"
+#include "occupancy_definition.h"
 
 using namespace mace::maps;
 

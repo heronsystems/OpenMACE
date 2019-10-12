@@ -18,9 +18,13 @@
 #include "data_generic_command_item/do_items/action_arm.h"
 #include "data_generic_command_item/do_items/action_change_mode.h"
 #include "data_generic_command_item/do_items/action_change_speed.h"
-#include "data_generic_command_item/do_items/command_goto.h"
+#include "data_generic_command_item/do_items/action_dynamic_target.h"
+#include "data_generic_command_item/do_items/action_message_interval.h"
+#include "data_generic_command_item/do_items/action_message_request.h"
+#include "data_generic_command_item/do_items/action_execute_spatial_item.h"
 #include "data_generic_command_item/do_items/action_mission_command.h"
 #include "data_generic_command_item/do_items/action_motor_test.h"
+#include "data_generic_command_item/do_items/action_set_global_origin.h"
 
 #include "data_generic_command_item/mission_items/mission_ack.h"
 #include "data_generic_command_item/mission_items/mission_item_achieved.h"
@@ -29,11 +33,12 @@
 #include "data_generic_command_item/mission_items/mission_key_change.h"
 #include "data_generic_command_item/mission_items/mission_list.h"
 #include "data_generic_command_item/mission_items/mission_state.h"
-#include "data_generic_command_item/mission_items/mission_type.h"
-
+#include "data_generic_command_item/mission_items/typedef_mission_types.h"
 
 #include "data_generic_command_item/target_items/dynamic_mission_queue.h"
+#include "data_generic_command_item/target_items/dynamic_target_kinematic.h"
 #include "data_generic_command_item/target_items/dynamic_target_list.h"
+#include "data_generic_command_item/target_items/dynamic_target_state.h"
 
 #include "command_item_type.h"
 

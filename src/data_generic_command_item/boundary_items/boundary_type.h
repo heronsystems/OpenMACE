@@ -1,13 +1,17 @@
 #ifndef BOUNDARY_TYPE_H
 #define BOUNDARY_TYPE_H
 
+#include <cassert>
+#include <stdexcept>
+#include <string>
+
 namespace BoundaryItem {
 
 enum class BOUNDARYTYPE : uint8_t
 {
     OPERATIONAL_FENCE = 0,
     RESOURCE_FENCE = 1,
-    GENERIC_POLYGON = 2,
+    GENERIC_POLYGON = 2
 };
 
 inline BOUNDARYTYPE BoundaryTypeFromString(const std::string &str) {
@@ -21,16 +25,24 @@ inline BOUNDARYTYPE BoundaryTypeFromString(const std::string &str) {
 }
 
 inline std::string BoundaryTypeToString(const BOUNDARYTYPE &type) {
+    assert(type == BOUNDARYTYPE::OPERATIONAL_FENCE ||
+           type == BOUNDARYTYPE::RESOURCE_FENCE ||
+           type == BOUNDARYTYPE::GENERIC_POLYGON);
+
+    std::string returnString = "";
+
     switch (type) {
     case BOUNDARYTYPE::OPERATIONAL_FENCE:
-        return "OPERATIONAL FENCE";
+        returnString = "OPERATIONAL FENCE";
+        break;
     case BOUNDARYTYPE::RESOURCE_FENCE:
-        return "RESOURCE FENCE";
+        returnString = "RESOURCE FENCE";
+        break;
     case BOUNDARYTYPE::GENERIC_POLYGON:
-        return "GENERIC POLYGON";
-    default:
-        throw std::runtime_error("Unknown boundary type seen");
+        returnString = "GENERIC POLYGON";
+        break;
     }
+    return returnString;
 }
 
 } //end of namespace MissionItem

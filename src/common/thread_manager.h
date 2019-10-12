@@ -5,7 +5,7 @@
 class Thread {
 public:
     Thread() :
-        mThread(NULL), mToExit(false)
+        mThread(nullptr), mToExit(false)
     {
 
     }
@@ -31,16 +31,14 @@ public:
             mToExit = true;
             mThread->join();
             delete mThread;
-            mThread = NULL;
+            mThread = nullptr;
         }
     }
 
     bool isThreadActive()
     {
-        if(mToExit == false)
-        {
+        if((mThread) && (mToExit == false))
             return true;
-        }
         return false;
     }
 protected:

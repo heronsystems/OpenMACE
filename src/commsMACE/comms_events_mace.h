@@ -1,8 +1,10 @@
 #ifndef COMMS_EVENTS_MACE_H
 #define COMMS_EVENTS_MACE_H
 
-#include "mace.h"
 #include <string>
+
+#include "mace.h"
+#include "common/common.h"
 
 namespace CommsMACE
 {

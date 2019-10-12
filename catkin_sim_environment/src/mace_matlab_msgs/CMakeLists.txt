@@ -4,7 +4,7 @@ project(mace_matlab_msgs)
 add_compile_options(-std=c++11)
 
 ## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS
+find_package(catkin REQUIRED COMPONENTS 
   roscpp
   rospy
   std_msgs
@@ -21,17 +21,22 @@ add_message_files(
   UPDATE_CMD_STATUS.msg
   UPDATE_GPS.msg
   UPDATE_HEARTBEAT.msg
-  UPDATE_POSITION.msg
+  UPDATE_GEODETIC_POSITION.msg
+  UPDATE_LOCAL_POSITION.msg
   UPDATE_VEHICLE_TARGET.msg
 )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  CMD_TAKEOFF.srv
-  CMD_LAND.srv
+
   CMD_ARM.srv
   CMD_DATUM.srv
+  CMD_DYNAMIC_ORIENTATION_EULER.srv
+  CMD_DYNAMIC_ORIENTATION_QUAT.srv
+  CMD_DYNAMIC_TARGET.srv
+  CMD_LAND.srv
+  CMD_TAKEOFF.srv
   CMD_WPT.srv
 )
 
@@ -43,13 +48,11 @@ generate_messages(
 
 ## Declare a catkin package
 catkin_package(
-  INCLUDE_DIRS ${catkin_INCLUDE_DIRS}
+  INCLUDE_DIRS include ${catkin_INCLUDE_DIRS}
   CATKIN_DEPENDS roscpp geometry_msgs sensor_msgs std_msgs message_runtime
   LIBRARIES mace_matlab_msgs
 )
 
-# include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_library(mace_matlab_msgs)
-set_target_properties(mace_matlab_msgs PROPERTIES LINKER_LANGUAGE CXX)
-add_dependencies(mace_matlab_msgs mace_matlab_msgs_generate_messages_cpp)
+add_library(mace_matlab_msgs src/matlab_listener.cpp src/mace_listener.cpp)

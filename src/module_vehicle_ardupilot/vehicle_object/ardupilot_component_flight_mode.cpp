@@ -7,7 +7,7 @@ ARDUPILOTComponent_FlightMode::ARDUPILOTComponent_FlightMode()
 
 int ARDUPILOTComponent_FlightMode::getFlightModeFromString(const std::string &modeString)
 {
-    std::map<int,std::string>::iterator it;
+    std::map<uint8_t,std::string>::iterator it;
     int vehicleModeID = 0;
     for (it=availableFM.begin(); it != availableFM.end(); it++)
     {

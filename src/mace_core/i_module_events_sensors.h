@@ -6,7 +6,7 @@
 namespace MaceCore
 {
 
-class IModuleEventsSensors : public IModuleEventsGeneral
+class IModuleEventsSensors : virtual public IModuleEventsGeneral
 {
 public:
     //virtual void Event_ArmVehicle(const void* sender, const MissionItem::ActionArm &arm) = 0;

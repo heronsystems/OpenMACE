@@ -1,20 +1,15 @@
 #include "spatial_takeoff.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialTakeoff::getCommandType() const
+COMMANDTYPE SpatialTakeoff::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_TAKEOFF;
+    return COMMANDTYPE::CI_NAV_TAKEOFF;
 }
 
 std::string SpatialTakeoff::getDescription() const
 {
     return "This causes the vehicle to perform a takeoff action";
-}
-
-bool SpatialTakeoff::hasSpatialInfluence() const
-{
-    return true;
 }
 
 std::shared_ptr<AbstractCommandItem> SpatialTakeoff::getClone() const
@@ -37,20 +32,31 @@ SpatialTakeoff::SpatialTakeoff():
 SpatialTakeoff::SpatialTakeoff(const SpatialTakeoff &obj):
     AbstractSpatialAction(obj)
 {
-    this->operator =(obj);
 }
 
-SpatialTakeoff::SpatialTakeoff(const int &systemOrigin, const int &systemTarget):
+SpatialTakeoff::SpatialTakeoff(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
+}
+
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialTakeoff::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
 }
 
 std::ostream& operator<<(std::ostream& os, const SpatialTakeoff& t)
 {
     std::stringstream stream;
     stream.precision(6);
-    stream << std::fixed << "Spatial Takeoff: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
+    stream << std::fixed << "Spatial Takeoff: " <<t.printSpatialCMDInfo()<<".";
     os << stream.str();
 
     return os;

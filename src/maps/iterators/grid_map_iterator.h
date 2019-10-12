@@ -15,6 +15,8 @@ public:
 
     GridMapIterator(const GridMapIterator* copy);
 
+    virtual ~GridMapIterator() = default;
+
 public:
     GridMapIterator begin() const;
 
@@ -32,7 +34,7 @@ public:
 
     bool operator !=(const GridMapIterator &rhs) const;
 
-    int operator *() const;
+    unsigned int operator *() const;
 
 private:
     size_t currentIndex;

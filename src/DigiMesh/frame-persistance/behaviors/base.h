@@ -1,6 +1,6 @@
 #ifndef BEHAVIOR_H
 #define BEHAVIOR_H
-
+#include <vector>
 #include <functional>
 #include <memory>
 
@@ -21,16 +21,17 @@ class FramePersistanceBehavior<>
 public:
 
     FramePersistanceBehavior() :
-        m_NewFrame(NULL),
-        m_SendFramesUp(NULL),
+        m_SendFramesUp(nullptr),
+        m_NewFrame(nullptr),
         m_DoneBehaviorSet(false)
     {
     }
 
+    virtual ~FramePersistanceBehavior() = default;
 
 
     bool HasCallback() const {
-        if(m_SendFramesUp == NULL) {
+        if(m_SendFramesUp == nullptr) {
             return false;
         }
         return true;
@@ -47,8 +48,8 @@ public:
             m_DoneBehavior();
         }
         (*m_SendFramesUp)();
-        m_SendFramesUp = NULL;
-        m_NewFrame = NULL;
+        m_SendFramesUp = nullptr;
+        m_NewFrame = nullptr;
     }
 
     template <typename T>

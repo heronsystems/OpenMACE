@@ -10,7 +10,7 @@
 namespace MaceCore
 {
 
-class IModuleEventsRTA  : public IModuleEventsBoundaryGenerator, public IModuleEventsGeneral
+class IModuleEventsRTA  : virtual public IModuleEventsBoundaryGenerator, virtual public IModuleEventsGeneral
 {
 public:
 

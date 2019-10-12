@@ -60,9 +60,11 @@ bool OctomapWrapper::updateProjectionProperties(const Octomap2DProjectionDefinit
 
 }
 
-void OctomapWrapper::updateFromPointCloud(octomap::Pointcloud *pc, const mace::pose::Position<pose::CartesianPosition_3D> &position)
+void OctomapWrapper::updateFromPointCloud(octomap::Pointcloud *pc, const pose::CartesianPosition_3D &position)
 {
-    octomap::point3d sensorOrigin(position.getXPosition(),position.getYPosition(),position.getZPosition());
+    octomap::point3d sensorOrigin(static_cast<float>(position.getXPosition()),
+                                  static_cast<float>(position.getYPosition()),
+                                  static_cast<float>(position.getZPosition()));
 
     m_Tree->insertPointCloud(*pc,sensorOrigin);
 
@@ -91,7 +93,7 @@ void OctomapWrapper::updateFromPointCloud(octomap::Pointcloud *pc, const mace::p
     }
 }
 
-void OctomapWrapper::updateFromPointCloud(octomap::Pointcloud *pc, const mace::pose::Position<pose::CartesianPosition_3D> &position, const pose::Orientation_3D &orientation)
+void OctomapWrapper::updateFromPointCloud(octomap::Pointcloud *pc, const pose::CartesianPosition_3D &position, const pose::Rotation_3D &orientation)
 {
     octomap::pose6d origin(position.getXPosition(),position.getYPosition(),position.getZPosition(),
                            orientation.getRoll(),orientation.getPitch(),orientation.getYaw());
@@ -126,7 +128,7 @@ void OctomapWrapper::updateFromPointCloud(octomap::Pointcloud *pc, const mace::p
     }
 }
 
-void OctomapWrapper::updateFromLaserScan(octomap::Pointcloud *pc, const mace::pose::Position<pose::CartesianPosition_3D> &position, const pose::Orientation_3D &orientation)
+void OctomapWrapper::updateFromLaserScan(octomap::Pointcloud *pc, const pose::CartesianPosition_3D &position, const pose::Rotation_3D &orientation)
 {
     //Update the depth of the tree
     treeDepth = m_Tree->getTreeDepth();
@@ -142,7 +144,7 @@ void OctomapWrapper::updateFromLaserScan(octomap::Pointcloud *pc, const mace::po
         scan.addNode(copy,origin);
         octomap::ScanGraph::iterator it;
         for (it = scan.begin(); it != scan.end(); it++) {
-          m_Tree->insertPointCloud(**it, m_sensorProperties->getMaxRange());
+            m_Tree->insertPointCloud(**it, m_sensorProperties->getMaxRange());
         }
 
         //The following function is already called when calling the insertPointCloud function, this would be inefficient
@@ -303,8 +305,8 @@ void OctomapWrapper::updateMapContinuity()
 
     //if (maxTreeDepth != treeDepth){
     //    std::cout<<"Was this true"<<std::endl;
-        //        m_gridmap.info.origin.position.x -= m_res/2.0;
-        //        m_gridmap.info.origin.position.y -= m_res/2.0;
+    //        m_gridmap.info.origin.position.x -= m_res/2.0;
+    //        m_gridmap.info.origin.position.y -= m_res/2.0;
     //}
 }
 

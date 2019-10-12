@@ -1,6 +1,8 @@
 #ifndef STATE_TAKEOFF_H
 #define STATE_TAKEOFF_H
 
+#include <mavlink.h>
+
 #include "abstract_root_state.h"
 
 #include "../ardupilot_target_progess.h"
