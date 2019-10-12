@@ -565,6 +565,10 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
         stateMachine = new hsm::StateMachine();
         stateMachine->Initialize<ardupilot::state::State_Unknown>(vehicleData.get());
 
+        //Since this is the first time, we also should request to see if the vehicle has already established an EKF origin
+        command_item::SpatialHome homeRequest(255,systemID);
+        homeRequest.setActionType(command_item::AbstractCommandItem::GET_COMMAND);
+        handleHomePositionController(homeRequest);
     }
 
     std::string currentFlightMode = vehicleData->ardupilotMode.parseMAVLINK(heartbeatMSG);
@@ -747,6 +751,96 @@ void ModuleVehicleArdupilot::TransformDynamicMissionQueue()
     //        transformedQueue.setDynamicTargetList(targetList);
     //        this->vehicleData->mission->currentDynamicQueue_LocalCartesian.set(transformedQueue);
     //    }
+}
+
+void ModuleVehicleArdupilot::handleHomePositionController(const command_item::SpatialHome &commandObj)
+{
+    if(vehicleData != nullptr) // this means that this module currently has a vehicle
+    {
+        command_item::AbstractCommandItem::getORset currentAction = commandObj.getActionType();
+        if(m_ControllersCollection.Exist("homePositionController"))
+        {
+            std::cout << "Shutting down the previous home controller that was already interacting with information we were working with." << std::endl;
+            if(currentAction == command_item::AbstractCommandItem::GET_COMMAND)
+            {
+                auto homePositionOld = static_cast<MAVLINKUXVControllers::Command_HomePositionGet*>(m_ControllersCollection.At("homePositionController"));
+                if(homePositionOld != nullptr)
+                {
+                    homePositionOld->Shutdown();
+
+                    // Need to wait for the old controller to be shutdown.
+                    std::unique_lock<std::mutex> controllerLock(m_mutex_HomePositionController);
+                    while (!m_oldHomePositionControllerShutdown)
+                        m_condition_HomePositionController.wait(controllerLock);
+                    m_oldHomePositionControllerShutdown = false;
+                    controllerLock.unlock();
+                }
+            }
+            else if(currentAction == command_item::AbstractCommandItem::SET_COMMAND)
+            {
+                auto homePositionOld = static_cast<MAVLINKUXVControllers::Command_HomePositionSet*>(m_ControllersCollection.At("homePositionController"));
+                if(homePositionOld != nullptr)
+                {
+                    homePositionOld->Shutdown();
+
+                    // Need to wait for the old controller to be shutdown.
+                    std::unique_lock<std::mutex> controllerLock(m_mutex_HomePositionController);
+                    while (!m_oldHomePositionControllerShutdown)
+                        m_condition_HomePositionController.wait(controllerLock);
+                    m_oldHomePositionControllerShutdown = false;
+                    controllerLock.unlock();
+                }
+            }
+        }
+
+        if(currentAction == command_item::AbstractCommandItem::GET_COMMAND)
+        {
+            auto homePositionController = new MAVLINKUXVControllers::Command_HomePositionGet(vehicleData.get(), m_TransmissionQueue, m_LinkChan);
+            //create "stateless" global origin controller that exists within the module itself
+            homePositionController->AddLambda_Finished(this, [this, homePositionController](const bool completed, const uint8_t finishCode){
+                homePositionController->Shutdown();
+                if(!completed)
+                    return;
+            });
+
+            homePositionController->setLambda_Shutdown([this]()
+            {
+                auto ptr = m_ControllersCollection.Remove("homePositionController");
+                delete ptr;
+            });
+            MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
+            MavlinkEntityKey sender = 255;
+            command_item::SpatialHome objCopy(commandObj);
+            objCopy.setTargetSystem(static_cast<uint8_t>(target));
+            objCopy.setOriginatingSystem(static_cast<uint8_t>(sender));
+            homePositionController->Send(objCopy, sender, target);
+            m_ControllersCollection.Insert("homePositionController", homePositionController);
+        }
+        else if(currentAction == command_item::AbstractCommandItem::SET_COMMAND)
+        {
+            auto homePositionController = new MAVLINKUXVControllers::Command_HomePositionSet(vehicleData.get(), m_TransmissionQueue, m_LinkChan);
+            //create "stateless" global origin controller that exists within the module itself
+            homePositionController->AddLambda_Finished(this, [this, homePositionController](const bool completed, const uint8_t finishCode){
+                homePositionController->Shutdown();
+                if(!completed)
+                    return;
+            });
+
+            homePositionController->setLambda_Shutdown([this]()
+            {
+                auto ptr = m_ControllersCollection.Remove("homePositionController");
+                delete ptr;
+            });
+            MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
+            MavlinkEntityKey sender = 255;
+            command_item::SpatialHome objCopy(commandObj);
+            objCopy.setTargetSystem(static_cast<uint8_t>(target));
+            objCopy.setOriginatingSystem(static_cast<uint8_t>(sender));
+            homePositionController->Send(objCopy, sender, target);
+            m_ControllersCollection.Insert("homePositionController", homePositionController);
+        }
+
+    }
 }
 
 void ModuleVehicleArdupilot::handleGlobalOriginController(const command_item::Action_SetGlobalOrigin &originObj)

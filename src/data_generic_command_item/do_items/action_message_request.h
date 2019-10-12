@@ -1,5 +1,5 @@
-#ifndef ACTION_MESSAGE_INTERVAL_H
-#define ACTION_MESSAGE_INTERVAL_H
+#ifndef ACTION_MESSAGE_REQUEST_H
+#define ACTION_MESSAGE_REQUEST_H
 
 #include <iostream>
 
@@ -9,7 +9,7 @@
 
 namespace command_item {
 
-class ActionMessageInterval : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>
+class ActionMessageRequest : public AbstractCommandItem, public Interface_CommandHelper<mace_command_short_t>
 {
 public:
     /**
@@ -45,9 +45,9 @@ public:
 
     /** Interface imposed via Interface_CommandItem<mace_command_short_t> */
 public:
-    void populateCommandItem(mace_command_long_t &obj) const override;
+    void populateCommandItem(mace_command_short_t &obj) const override;
 
-    void fromCommandItem(const mace_command_long_t &obj) override;
+    void fromCommandItem(const mace_command_short_t &obj) override;
 
     /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
@@ -64,29 +64,14 @@ public: //The logic behind this is that every command item can be used to genera
 /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
 
 public:
-    ActionMessageInterval();
-    ActionMessageInterval(const ActionMessageInterval &copy);
-    ActionMessageInterval(const unsigned int &systemOrigin, const unsigned int &targetSystem);
+    ActionMessageRequest();
+    ActionMessageRequest(const ActionMessageRequest &copy);
+    ActionMessageRequest(const unsigned int &systemOrigin, const unsigned int &targetSystem);
 
 public:
-    void updateMessageProperties(const unsigned int &msgID, const int &interval)
-    {
-        this->setMessageID(msgID);
-        this->setMessageInterval(interval);
-    }
-
-    void setMessageInterval(const int &interval)
-    {
-        this->interval_us = interval;
-    }
-
     void setMessageID(const unsigned int &msgID)
     {
         this->message_id = msgID;
-    }
-
-    int getMessageInterval() const{
-        return this->interval_us;
     }
 
     unsigned int getMessageID() const
@@ -95,19 +80,15 @@ public:
     }
 
 public:
-    void operator = (const ActionMessageInterval &rhs)
+    void operator = (const ActionMessageRequest &rhs)
     {
         AbstractCommandItem::operator =(rhs);
-        this->interval_us = rhs.interval_us;
         this->message_id = rhs.message_id;
     }
 
-    bool operator == (const ActionMessageInterval &rhs) {
+    bool operator == (const ActionMessageRequest &rhs) {
         if(!AbstractCommandItem::operator ==(rhs))
         {
-            return false;
-        }
-        if(this->interval_us != rhs.interval_us){
             return false;
         }
         if(this->message_id != rhs.message_id){
@@ -116,7 +97,7 @@ public:
         return true;
     }
 
-    bool operator != (const ActionMessageInterval &rhs) {
+    bool operator != (const ActionMessageRequest &rhs) {
         return !(*this == rhs);
     }
 
@@ -127,14 +108,13 @@ public:
     //!
     std::string printCommandInfo() const override;
 
-    friend std::ostream &operator<<(std::ostream &out, const ActionMessageInterval &obj)
+    friend std::ostream &operator<<(std::ostream &out, const ActionMessageRequest &obj)
     {
         UNUSED(obj);
         return out;
     }
 
 private:
-    int interval_us;
     unsigned int message_id;
 
 };
@@ -142,4 +122,4 @@ private:
 } //end of namespace command_item
 
 
-#endif // ACTION_MESSAGE_INTERVAL_H
+#endif // ACTION_MESSAGE_REQUEST_H

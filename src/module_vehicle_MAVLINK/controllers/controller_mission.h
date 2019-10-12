@@ -471,9 +471,9 @@ private:
             mace::pose::GeodeticPosition_3D homePosition;
             homePosition.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
             homePosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
-            homePosition.setLatitude(msg.x);
-            homePosition.setLongitude(msg.y);
-            homePosition.setAltitude(msg.z);
+            homePosition.setLatitude(static_cast<double>(msg.x));
+            homePosition.setLongitude(static_cast<double>(msg.y));
+            homePosition.setAltitude(static_cast<double>(msg.z));
 
             std::get<0>(*m_MissionDownloading).setPosition(&homePosition);
             std::get<0>(*m_MissionDownloading).setOriginatingSystem(sender);

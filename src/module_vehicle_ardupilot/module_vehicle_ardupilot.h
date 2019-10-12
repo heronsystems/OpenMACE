@@ -28,7 +28,8 @@
 //__________________
 #include "controllers/I_controller.h"
 #include "controllers/I_message_notifier.h"
-
+#include "module_vehicle_MAVLINK/controllers/commands/command_msg_request.h"
+#include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
 #include "module_vehicle_MAVLINK/controllers/controller_mission.h"
 #include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
 
@@ -346,8 +347,13 @@ public:
     }
 
 private:
-    void handleGlobalOriginController(const Action_SetGlobalOrigin &originObj);
+    void handleHomePositionController(const command_item::SpatialHome &commandObj);
+    std::mutex m_mutex_HomePositionController;
+    std::condition_variable m_condition_HomePositionController;
+    bool m_oldHomePositionControllerShutdown = false;
 
+private:
+    void handleGlobalOriginController(const Action_SetGlobalOrigin &originObj);
     std::mutex m_mutex_GlobalOriginController;
     std::condition_variable m_condition_GlobalOriginController;
     bool m_oldGlobalOriginControllerShutdown = false;

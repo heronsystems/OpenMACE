@@ -16,7 +16,6 @@ AbstractRootState::AbstractRootState(const AbstractRootState &copy):
 
 bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
@@ -46,6 +45,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 
     case COMMANDTYPE::CI_NAV_HOME:
     {
+        /*
         const command_item::SpatialHome* cmd = command->as<command_item::SpatialHome>();
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
         auto controllerSystemHome = new MAVLINKUXVControllers::Command_SetHomeInt(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
@@ -68,6 +68,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 
         controllerSystemHome->Send(*cmd,sender,target);
         collection->Insert("setHomeController",controllerSystemHome);
+        */
         break;
     }
     default:

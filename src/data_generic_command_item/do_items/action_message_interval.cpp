@@ -85,6 +85,7 @@ void ActionMessageInterval::fromMACECOMMS_MissionItem(const mace_mission_item_t 
 
 void ActionMessageInterval::generateMACEMSG_MissionItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
     mace_mission_item_t missionItem;
     AbstractCommandItem::populateMACECOMMS_MissionItem(missionItem);
     //mace_msg_mission_item_encode_chan();
@@ -92,6 +93,7 @@ void ActionMessageInterval::generateMACEMSG_MissionItem(mace_message_t &msg) con
 
 void ActionMessageInterval::generateMACEMSG_CommandItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
     mace_command_long_t longCommand;
     this->populateCommandItem(longCommand);
     //mace_msg_command_short_encode_chan();

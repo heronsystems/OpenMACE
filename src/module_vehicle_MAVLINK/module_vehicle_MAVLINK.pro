@@ -42,7 +42,6 @@ HEADERS += module_vehicle_mavlink.h\
     vehicle_object/state_data_mavlink.h \
     controllers/controller_mission.h \
     controllers/controller_guided_mission_item.h \
-    controllers/commands/command_set_home.h \
     vehicle_object/mission_data_mavlink.h \
     controllers/commands/generic_int_command.h \
     mavlink_entity_key.h \
@@ -52,7 +51,9 @@ HEADERS += module_vehicle_mavlink.h\
     controllers/commands/command_msg_interval.h \
     mavlink_coordinate_frames.h \
     controllers/controller_set_gps_global_origin.h \
-    controllers/controller_guided_target_item_attitude.h
+    controllers/controller_guided_target_item_attitude.h \
+    controllers/commands/command_msg_request.h \
+    controllers/commands/command_home_position.h
 
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega

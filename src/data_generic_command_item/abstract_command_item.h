@@ -6,6 +6,7 @@
 
 #include "mace.h"
 
+#include "common/common.h"
 #include "common/class_forward.h"
 
 #include "command_item_type.h"
@@ -22,6 +23,13 @@ MACE_CLASS_FORWARD(AbstractCommandItem);
 //!
 class AbstractCommandItem
 {
+public:
+    enum getORset
+    {
+        GET_COMMAND,
+        SET_COMMAND
+    };
+
 public:
     //!
     //! \brief AbstractCommandItem The default constructor used when this class is inherited. The default
@@ -42,6 +50,7 @@ public:
         this->originatingSystem = copy.originatingSystem;
         this->targetSystem = copy.targetSystem;
         this->targetComponent = copy.targetComponent;
+        this->actionType = copy.actionType;
     }
 
     //!
@@ -122,6 +131,17 @@ public:
         return originatingSystem;
     }
 
+public:
+    getORset getActionType() const
+    {
+        return this->actionType;
+    }
+
+    void setActionType(const getORset &action)
+    {
+        this->actionType = action;
+    }
+
 public: //The logic behind this is that every command item can be used to generate a mission item
     virtual void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
     {
@@ -180,6 +200,8 @@ public:
     {
         this->originatingSystem = rhs.originatingSystem;
         this->targetSystem = rhs.targetSystem;
+        this->targetComponent = rhs.targetComponent;
+        this->actionType = rhs.actionType;
         return *this;
     }
 
@@ -193,6 +215,12 @@ public:
             return false;
         }
         if(this->targetSystem != rhs.targetSystem){
+            return false;
+        }
+        if(this->targetComponent != rhs.targetComponent){
+            return false;
+        }
+        if(this->actionType != rhs.actionType){
             return false;
         }
         return true;
@@ -254,6 +282,13 @@ protected:
     //! the command item.
     //!
     unsigned int targetComponent;
+
+
+    //!
+    //! \brief actionType value letting know if the type of command is getting or setting information
+    //!
+    getORset actionType = getORset::SET_COMMAND;
+
 };
 
 }

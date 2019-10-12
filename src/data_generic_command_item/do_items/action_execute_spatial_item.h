@@ -122,6 +122,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, const Action_ExecuteSpatialItem &obj)
     {
+        UNUSED(obj);
         //        out<<"Command Change Mode( Mode: "<<obj.vehicleMode<<")";
         return out;
     }
