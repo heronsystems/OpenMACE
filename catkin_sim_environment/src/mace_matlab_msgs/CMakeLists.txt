@@ -56,3 +56,5 @@ catkin_package(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_library(mace_matlab_msgs src/matlab_listener.cpp src/mace_listener.cpp)
+set_target_properties(mace_matlab_msgs PROPERTIES LINKER_LANGUAGE CXX)
+add_dependencies(mace_matlab_msgs mace_matlab_msgs_generate_messages_cpp)
