@@ -39,7 +39,11 @@ SOURCES += \
     occupancy_2d_grid_topic.cpp \
     occupancy_map_2D_inflated.cpp \
     layered_map.cpp \
-    map_cell.cpp
+    map_cell.cpp \
+    costmaps/abstract_costmap_layer.cpp \
+    costmaps/costmap_2d.cpp \
+    costmaps/layers/costmap_base_layer.cpp \
+    costmaps/layers/costmap_inflation_layer.cpp
 
 HEADERS +=\
         maps_global.h \
@@ -61,7 +65,10 @@ HEADERS +=\
     occupancy_definition.h \
     layered_map.h \
     map_cell.h \
-    tests/maps_tests.h
+    tests/maps_tests.h \
+    costmaps/costmap_2d.h \
+    costmaps/layers/costmap_base_layer.h \
+    costmaps/layers/costmap_inflation_layer.h
 
 #Header file copy
 INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET

@@ -2,6 +2,7 @@
 #define BASE_GRID_MAP_H
 
 #include <cmath>
+#include <Eigen/Core>
 
 #include "common/class_forward.h"
 
@@ -315,6 +316,11 @@ protected:
                      const double &x_res = 0.5, const double &y_res = 0.5);
 
 public:
+    void mapToWorldCoordinates(const double &mapXCoord, const double &mapYCoord, double &worldXCoord, double &worldYCoord);
+
+    void worldToMapCoordinates(const double &worldXCoord, const double &worldYCoord, double &mapXCoord, double &mapYCoord);
+
+public:
 
     BaseGridMap& operator = (const BaseGridMap &rhs)
     {
@@ -376,16 +382,20 @@ protected:
 
 protected:
     pose::CartesianPosition_2D originPosition; //!< Position of the map relative to the grid frame
-
-    double xMin, yMin; //!< Description of members
-    double xMax, yMax; //!< Description of members
-    double xResolution, yResolution; //!< Description of members
-    size_t xSize, ySize; //!< Description of members
-
     //!
     //! \brief rotationAngleDegrees + is CCW, - is CW
     //!
     double rotationAngleDegrees;
+
+    Eigen::Transform<double, 2, Eigen::Affine> m_MapToWorld;
+    Eigen::Transform<double, 2, Eigen::Affine> m_WorldToMap;
+
+    double xMin, yMin; //!< The minimum size of the grid map in the default units as described by the developer
+    double xMax, yMax; //!< The maximum size of the grid map in the default units as described by the developer
+    double xResolution, yResolution; //!< Description of members
+    size_t xSize, ySize; //!< Description of members
+
+
 };
 
 } //end of namespace maps

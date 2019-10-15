@@ -21,7 +21,9 @@
 //#include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
 
 #include "base/unit_tests/unittests_position.h"
-
+#include "base/geometry/rotate_2d.h"
+#include "maps/data_2d_grid.h"
+#include "maps/occupancy_definition.h"
 /*
 #include "planners/fast_marching/console/console.h"
 
@@ -151,7 +153,28 @@ int main(int argc, char *argv[])
     double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
     correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
     Eigen::Vector3d test(distanceTranslateY, distanceTranslateX, altitudeDifference);
+
+    double rotatedX,rotatedY,originX =1.0,originY=1.0,angle =45.0;
+
+    Eigen::Transform<double,2,Eigen::Affine> worldToMap = Eigen::Transform<double, 2, Eigen::Affine>::Identity();;
+    worldToMap.translation() = Eigen::Vector2d(10,10);
+    worldToMap.rotate(0.785398);
+
+    mace::geometry::rotatePoint_2D(rotatedX, rotatedY, originX, originY, angle, 0.0, 0.0);
+
+    Eigen::Vector2d worldCoordinates(0.0,0.0);
+    Eigen::Vector2d mapCoordinates;
+    mapCoordinates = (worldToMap.rotation() * worldCoordinates) + worldToMap.translation();
+
+
+    mace::maps::OccupiedResult fillData = mace::maps::OccupiedResult::NOT_OCCUPIED;
+    mace::maps::Data2DGrid<mace::maps::OccupiedResult> staticMap(&fillData, -10,10,-10,10,0.5,0.5);
+
+    double x=0.0, y=0.0;
+    staticMap.getPositionFromIndex(0,x,y);
+
     std::cout<<"Waiting here."<<std::endl;
+
 //    m_swarmTOvehicleHome.translation() = m_vehicleHomeTOswarm.translation() * -1;
     /*
     Path2D path;

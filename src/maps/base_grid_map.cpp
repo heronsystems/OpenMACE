@@ -111,6 +111,16 @@ void BaseGridMap::updateOriginPosition(const pose::CartesianPosition_2D &positio
     this->originPosition = position;
 }
 
+void BaseGridMap::mapToWorldCoordinates(const double &mapXCoord, const double &mapYCoord, double &worldXCoord, double &worldYCoord)
+{
+
+}
+
+void BaseGridMap::worldToMapCoordinates(const double &worldXCoord, const double &worldYCoord, double &mapXCoord, double &mapYCoord)
+{
+
+}
+
 } //end of namespace maps
 } //end of namepsace mace
 
