@@ -8,7 +8,7 @@
 namespace ExternalLink {
 
 
-class CommandMissionItem : public Controller_GenericShortCommand<CommandItem::ActionMissionCommand, (uint8_t)CommandItem::COMMANDITEM::CI_ACT_MISSIONCOMMAND>
+class CommandMissionItem : public Controller_GenericShortCommand<command_item::ActionMissionCommand, (uint8_t)command_item::COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM>
 {
 public:
 
@@ -16,9 +16,9 @@ public:
 
 protected:
 
-    virtual void FillCommand(const CommandItem::ActionMissionCommand &commandItem, mace_command_short_t &cmd) const;
+    virtual void FillCommand(const command_item::ActionMissionCommand &commandItem, mace_command_short_t &cmd) const;
 
-    virtual void BuildCommand(const mace_command_short_t &message, CommandItem::ActionMissionCommand &data) const;
+    virtual void BuildCommand(const mace_command_short_t &message, command_item::ActionMissionCommand &data) const;
 };
 
 

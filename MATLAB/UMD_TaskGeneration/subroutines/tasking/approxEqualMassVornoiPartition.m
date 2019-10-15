@@ -32,7 +32,7 @@ function [voronoiVertices, voronoiCells, cellMass, cellCenterOfMass] = approxEqu
 % issues experienced when zz contains data points equal to zero (when
 % computing mass, centroid, etc. this may cause dividing by zero)
 % we fix this by adding a small constant
-zz = zz + 0.001;
+zz = zz + 0.00001;
 
 % world dimensions
 minX = min(min(xx));
@@ -60,8 +60,6 @@ end
 % iterate until maxIters is reached or threshold percent is reached
 i = 1;
 X = XI;
-
-maxOffsetSqPercentHist = [];
 while ( maxOffsetSqPercent > percentTol && i < maxIters )
     
     % reflect the N coordinates of the vehicles about each map boundary
@@ -80,17 +78,13 @@ while ( maxOffsetSqPercent > percentTol && i < maxIters )
     MX(3*N+1:4*N,:) = [X(:,1), 2*maxY-X(:,2)];
     % reflect along bottom edge
     MX(4*N+1:5*N,:) = [X(:,1), 2*minY-X(:,2)];
-  
-    % avoids the Warning: Duplicate data points have been detected.
-    % MX = unique(MX,'rows');
-    
-    % calculate the voronoi vertices and cells    
+
+    % calculate the voronoi vertices and cells
     [voronoiVertices,voronoiCells] = voronoin(MX);
     
     % calculate center of mass of each cell
     cellMass = zeros(N,1);
     cellCenterOfMass = zeros(N,2);
-    
     % go through each cell
     for j=1:N
         VC = voronoiVertices(voronoiCells{j},:);
@@ -110,22 +104,7 @@ while ( maxOffsetSqPercent > percentTol && i < maxIters )
     % calculate worst case deviation from mean
     meanM = mean(cellMass);
     maxOffsetSqPercent = max((cellMass - meanM).^2 / meanM^2)/N;
-    maxOffsetSqPercentHist = [maxOffsetSqPercentHist maxOffsetSqPercent];
     
-    if i >= 11 && all(abs(maxOffsetSqPercentHist(end-10:end)-maxOffsetSqPercent) <= 0.001)
-        % if the iteration goes beyond 11 and the latest ten
-        % maxOffsetSqPercentHist's are all 0.001 close to the current value
-        % of maxOffsetSqPercent, terminate the while loop
-        
-        %         abs(maxOffsetSqPercentHist(end-10:end)-maxOffsetSqPercent)
-        fprintf('maxOffsetSqPercent converges at iteration %d, terminate while loop \n',i);
-        break;        
-    end
-    % print to command window
-    %     fprintf('maxOffsetSqPercent is %2.3f vs percentol %2.3f  \n',maxOffsetSqPercent,percentTol);
-    %     fprintf('current iteration %d over max iteration %d \n',i,maxIters);
-
-
     % move each vehicle towards the center of mass
     % scale the velocity increment
     DX = -stepSizeGain*(X-cellCenterOfMass);
@@ -139,8 +118,6 @@ while ( maxOffsetSqPercent > percentTol && i < maxIters )
     % update index
     i = i + 1;
 end
-
-% cellCenterOfMass
 
 % if ( i >= maxIters )
 %    disp('approxEqualMassVornoiPartition: Warning, terminated due to max iterations.'); 

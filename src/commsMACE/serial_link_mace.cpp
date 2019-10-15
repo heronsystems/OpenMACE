@@ -17,7 +17,7 @@ class AppThread : public QThread
 public:
     AppThread(const size_t interval, std::function<void()> func)
     {
-        if(QCoreApplication::instance() == NULL)
+        if(QCoreApplication::instance() == nullptr)
         {
             int argc = 0;
             char * argv[] = {(char *)"sharedlib.app"};
@@ -50,7 +50,7 @@ SerialLink::SerialLink(const SerialConfiguration &config) :
     _config(config)
 {
     m_bytesRead = 0;
-    m_port     = NULL;
+    m_port     = nullptr;
     m_stopp    = false;
     m_reqReset = false;
 
@@ -64,7 +64,7 @@ SerialLink::~SerialLink()
 {
     Disconnect();
     if(m_port) delete m_port;
-    m_port = NULL;
+    m_port = nullptr;
 }
 
 
@@ -78,6 +78,8 @@ void SerialLink::RequestReset()
 
 void SerialLink::WriteBytes(const char *bytes, int length, const OptionalParameter<Resource> &target)
 {
+    UNUSED(target);
+
     QByteArray data(bytes, length);
     if(m_port && m_port->isOpen()) {
         //_logOutputDataRate(data.size(), QDateTime::currentMSecsSinceEpoch());
@@ -95,6 +97,8 @@ void SerialLink::AddResource(const Resource &resource)
 
 bool SerialLink::HasResource(const Resource &resource) const
 {
+    UNUSED(resource);
+
     return true;
 }
 
@@ -215,7 +219,7 @@ void SerialLink::Disconnect(void)
     if (m_port) {
         m_port->close();
         delete m_port;
-        m_port = NULL;
+        m_port = nullptr;
     }
 }
 
@@ -232,7 +236,7 @@ bool SerialLink::_hardwareConnect(QSerialPort::SerialPortError& error, QString& 
         m_port->close();
         std::this_thread::sleep_for(std::chrono::microseconds(50000));
         delete m_port;
-        m_port = NULL;
+        m_port = nullptr;
     }
 
     std::cout << "SerialLink: hardwareConnect to " << _config.portName() << std::endl;
@@ -281,7 +285,7 @@ bool SerialLink::_hardwareConnect(QSerialPort::SerialPortError& error, QString& 
         EmitEvent([&](const ILinkEvents *ptr){ptr->CommunicationUpdate(this, getPortName(), "Error opening port: " + errorString.toStdString());});
         m_port->close();
         delete m_port;
-        m_port = NULL;
+        m_port = nullptr;
         return false; // couldn't open serial port
     }
 

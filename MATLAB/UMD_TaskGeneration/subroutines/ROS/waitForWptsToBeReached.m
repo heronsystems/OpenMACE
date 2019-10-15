@@ -6,7 +6,7 @@ while( ~all(stationAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;
     % it appears that the LatestMessage circumvents the callback, so we
     % force it here:   
-    positionCallback( ROS_MACE, msg ); 
+    positionCallback( ROS_MACE.positionSub, msg ); 
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( stationAchieved(agentIndex) == 0 )

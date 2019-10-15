@@ -21,7 +21,7 @@ switch f3Workspace
         f3Width = 26;
         f3Length = 28;
         f3LowerLeftCornerX = 5;
-        f3LowerLeftCornerY = -10; % -11;
+        f3LowerLeftCornerY = -11;
 end
 
 % a temporary vector used to define node locations

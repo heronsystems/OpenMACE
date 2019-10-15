@@ -1,6 +1,7 @@
 #ifndef MISSION_ACK_H
 #define MISSION_ACK_H
 
+#include "mace.h"
 #include "mission_key.h"
 
 namespace MissionItem {
@@ -22,10 +23,10 @@ public:
     };
 
 public:
-    MissionACK(const int &systemID, const MISSION_RESULT &ack, const MissionKey &key, const MISSIONSTATE &newState);
+    MissionACK(const unsigned int &systemID, const MISSION_RESULT &ack, const MissionKey &key, const MISSIONSTATE &newState);
 
 public:
-    int getSystemID() const{
+    unsigned int getSystemID() const{
         return this->m_SystemID;
     }
 
@@ -78,7 +79,8 @@ public:
 
 
 private:
-    int m_SystemID;
+
+    unsigned int m_SystemID;
 
     MISSION_RESULT result;
 

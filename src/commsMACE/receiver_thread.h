@@ -29,7 +29,7 @@ public:
         m_func(func),
         m_defaultWait(defaultWait)
     {
-        if(QCoreApplication::instance() == NULL)
+        if(QCoreApplication::instance() == nullptr)
         {
             int argc = 0;
             char * argv[] = {(char *)"sharedlib.app"};

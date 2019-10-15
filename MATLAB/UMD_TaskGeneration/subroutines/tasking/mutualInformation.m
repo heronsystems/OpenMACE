@@ -4,8 +4,7 @@ gi = exp(-zi.^2/2);
 gi = gi ./ sum(gi); % normalize
 hi= exp(-(zi-m).^2/2);
 hi = hi ./ sum(hi); % normalize
-%H_C = cellStateEntropy(V,U,O);
-H_C = cellStateEntropyVectorized(V,U,O);
+H_C = cellStateEntropy(V,U,O);
 if (U < 0.001) % apply a tolerance
     term2 = 0;
 else

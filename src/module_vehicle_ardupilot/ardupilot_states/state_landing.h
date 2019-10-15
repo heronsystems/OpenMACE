@@ -1,6 +1,8 @@
 #ifndef STATE_LANDING_H
 #define STATE_LANDING_H
 
+#include <mavlink.h>
+
 #include "abstract_root_state.h"
 
 namespace ardupilot{

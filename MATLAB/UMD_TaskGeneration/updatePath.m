@@ -7,9 +7,6 @@ function updatePath(varargin)
 if ( length(varargin)==2 )
    cd(varargin{1}); 
 end
-
-%addpath('/home/wolek/Desktop/Research/Projects/UMD/Heron/OpenMACE/catkin_sim_environment/src/matlab_gen/msggen')
-
 addpath('./subroutines')
 addpath('./subroutines/tracking')
 addpath('./subroutines/tasking')
@@ -21,21 +18,22 @@ addpath('./subroutines/modules')
 addpath('./subroutines/geometry')
 addpath('./subroutines/F3')
 addpath('./subroutines/environment')
-addpath('./subroutines/shortcuts')
 addpath('./subroutines/dynamics')
 addpath('./subroutines/display')
 addpath('./subroutines/display/init')
 addpath('./subroutines/display/update')
+addpath('./subroutines/communication')
+addpath('./scenes')
 %
 addpath('./external/munkres')
+addpath('./external/xml2struct')
+addpath('./external/gaimc')
 addpath('./external/utm2deg')
 addpath('./external/deg2utm')
 addpath('./external/lat_lon_proportions')
 addpath('./external/plotmd')
 addpath('./external/openstreetmap')
 addpath('./external/geodetic299/geodetic')
-addpath('./external/xml2struct')
-addpath('./external/brewer')
 %
 addpath('./data')
 

@@ -14,9 +14,6 @@ for i = 1:1:size(cellsInView,1)
 %             U(by,bx) = 0;
 %             O(by,bx) = 0;
     %else
-        if (bx == 3)
-           1; 
-        end    
         if (nodeLR >= threshold)
             cellDetMat(by,bx) = 1;
             V(by,bx) = 0;
@@ -25,9 +22,6 @@ for i = 1:1:size(cellsInView,1)
             U(by,bx) = U(by,bx) / sum;
             O(by,bx) = O(by,bx) / sum;
             detectedCells = [detectedCells; bx by];
-            if ( (by==37) && (bx==3) )
-               1; 
-            end
         end
     end
 end

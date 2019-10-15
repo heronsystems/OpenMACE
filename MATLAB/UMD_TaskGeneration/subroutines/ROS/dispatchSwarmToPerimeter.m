@@ -38,7 +38,7 @@ stationAchieved = zeros(1,ROS_MACE.N);
 k = 1;
 while( ~all(stationAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;
-    positionCallback( ROS_MACE, msg );
+    positionCallback( ROS_MACE.positionSub, msg );
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( stationAchieved(agentIndex) == 0 )

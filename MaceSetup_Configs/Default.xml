@@ -7,41 +7,26 @@
       <Parameter Name="Version">V2</Parameter>
     </Parameter>
 	<Parameter Name="UDPParameters">
-      <Parameter Name="ListenAddress">192.168.1.28</Parameter>
-      <Parameter Name="ListenPortNumber">14551</Parameter>
+      <Parameter Name="ListenAddress">192.168.1.166</Parameter>
+      <Parameter Name="ListenPortNumber">14550</Parameter>
     </Parameter>
     <Parameter Name="ModuleParameters">
       <Parameter Name="AirborneInstance">false</Parameter>
     </Parameter>
-  </Module>
+  </Module> 
 
-  <Module Class="ExternalLink" Type="Ardupilot">
-    <Parameter Name="ProtocolParameters">
-      <Parameter Name="Name">Mavlink</Parameter>
-      <Parameter Name="Version">V1</Parameter>
-    </Parameter>
-    <Parameter Name="EthernetParameters">
-      <Parameter Name="PortNumber">16559</Parameter>
-    </Parameter>
-  </Module>  
-
-
-  <Module Class='ROS' Type='OFFSET_Auctioneer'>
+    <Module Class="GroundStation" Type="NASAPhase2">
+	<Parameter Name="MACEComms">
+		<Parameter Name="GUIHostAddress">192.168.1.166</Parameter>
+		<Parameter Name="ListenPort">5678</Parameter>
+		<Parameter Name="SendPort">1234</Parameter>
+	</Parameter>
+   </Module>
+   
+<Module Class='ROS' Type='OFFSET_Auctioneer'>
       <Parameter Name='ModuleParameters'>
         <Parameter Name='AirborneInstance'>false</Parameter>
       </Parameter>
   </Module> 
   
-
-  <Module Class="GroundStation" Type="NASAPhase2">
-	<Parameter Name="ID">1</Parameter>
-	<Parameter Name="MACEComms">
-		<!--<Parameter Name="GUIHostAddress">192.168.1.21</Parameter>-->
-		<Parameter Name="GUIHostAddress">127.0.0.1</Parameter>
-		<Parameter Name="ListenPort">5678</Parameter>
-		<Parameter Name="SendPort">1234</Parameter>
-	</Parameter>
-   </Module>
 </ModuleConfigurations>
-
-

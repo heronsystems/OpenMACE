@@ -10,7 +10,7 @@ example/example
 
 /build-src-Desktop_Qt_5_7_1_MinGW_32bit-Debug/*
 /build**
-
+tools/
 
 *.Debug
 *.Release
@@ -54,7 +54,6 @@ PrebuiltBinaries/*
 ElectronGUI/yarn-error.log
 ElectronGUI/build
 ElectronGUI/yarn.lock
-ElectronGUI/package.json
 
 /catkin_sim_environment/build/*
 /catkin_sim_environment/devel/*
@@ -67,10 +66,3 @@ ElectronGUI/package.json
 /catkin_sim_environment/src/matlab_gen/*
 
 /MaceSetup_Configs/TestConfigs/*
-/MaceSetup_Configs/Default_ROS.xml
-
-/tools/*
-
-GUIConfig.json
-
-

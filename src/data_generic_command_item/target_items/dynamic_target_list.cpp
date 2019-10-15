@@ -2,114 +2,113 @@
 
 #include <exception>
 
-namespace TargetItem {
+namespace command_target {
 
 DynamicTargetList::DynamicTargetList()
 {
+    this->m_TargetList.clear();
+
     this->activeTargetItem = 0;
-    this->targetList.clear();
 }
 
 DynamicTargetList::DynamicTargetList(const DynamicTargetList &rhs)
 {
-    this->activeTargetItem = rhs.activeTargetItem;
-    this->targetList = rhs.targetList;
-}
+    this->m_TargetList = rhs.m_TargetList;
 
-size_t DynamicTargetList::listSize() const
-{
-    return targetList.size();
+    this->activeTargetItem = rhs.activeTargetItem;
 }
 
 void DynamicTargetList::clearList()
 {
-    targetList.clear();
+    this->m_TargetList.clear();
+
+    this->activeTargetItem = 0;
 }
 
-void DynamicTargetList::appendDynamicTarget(const CartesianDynamicTarget &target, const DynamicTargetStorage::TargetCompletion &state)
+void DynamicTargetList::appendDynamicTarget(const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state)
 {
-    DynamicTargetStorage obj(target,state);
-    targetList.push_back(obj);
+    DynamicTargetState obj(target,state);
+    m_TargetList.push_back(obj);
 }
 
 void DynamicTargetList::removeTargetAtIndex(const unsigned int &index)
 {
-    std::list<DynamicTargetStorage>::iterator it = targetList.begin();
+    std::list<DynamicTargetState>::iterator it = m_TargetList.begin();
     std::advance(it,index);
-    targetList.erase(it);
+    m_TargetList.erase(it);
 }
 
-void DynamicTargetList::replaceTargetAtIndex(const unsigned int &index, const CartesianDynamicTarget &target, const DynamicTargetStorage::TargetCompletion &state)
+void DynamicTargetList::replaceTargetAtIndex(const unsigned int &index, const DynamicTarget_Kinematic &target, const DynamicTargetState::TARGETSTATE &state)
 {
-    DynamicTargetStorage obj(target,state);
-    std::list<DynamicTargetStorage>::iterator it = targetList.begin();
+    DynamicTargetState obj(target,state);
+    std::list<DynamicTargetState>::iterator it = m_TargetList.begin();
     std::advance(it,index);
-    targetList.insert(it,obj);
+    m_TargetList.insert(it,obj);
 }
 
-void DynamicTargetList::spliceTargetListAtIndex(const unsigned int &index, const std::list<DynamicTargetStorage> &list)
+void DynamicTargetList::spliceTargetListAtIndex(const unsigned int &index, const std::list<DynamicTargetState> &list)
 {
-    std::list<DynamicTargetStorage> listCopy = list;
-    std::list<DynamicTargetStorage>::iterator it = targetList.begin();
+    std::list<DynamicTargetState> listCopy = list;
+    std::list<DynamicTargetState>::iterator it = m_TargetList.begin();
     std::advance(it,index);
-    targetList.splice(it,listCopy);
+    m_TargetList.splice(it,listCopy);
 }
 
-bool DynamicTargetList::isCompleted() const
+bool DynamicTargetList::isListCompleted() const
 {
-    if(getNextIncomplete() != nullptr)
+    if(getNextIncompleteTarget() != nullptr)
         return false;
     return true;
 }
 
-unsigned int DynamicTargetList::getActiveTargetItem() const
+unsigned int DynamicTargetList::getActiveTargetIndex() const
 {
     return this->activeTargetItem;
 }
 
-const DynamicTargetStorage* DynamicTargetList::getTargetStorageAtIndex(const unsigned int &index) const
+const DynamicTargetState* DynamicTargetList::getDynamicTargetState(const unsigned int &index) const
 {
-    std::list<DynamicTargetStorage>::const_iterator it = targetList.begin();
+    std::list<DynamicTargetState>::const_iterator it = m_TargetList.begin();
     std::advance(it,index);
     return &(*it);
 }
 
-CartesianDynamicTarget DynamicTargetList::getTargetAtIndex(const unsigned int &index) const
+DynamicTarget_Kinematic DynamicTargetList::getDynamicTarget(const unsigned int &index) const
 {
-    std::list<DynamicTargetStorage>::const_iterator it = targetList.begin();
+    std::list<DynamicTargetState>::const_iterator it = m_TargetList.begin();
     std::advance(it,index);
-    return *(*it).getDynamicTarget();
+    return (*it);
 }
 
-const CartesianDynamicTarget* DynamicTargetList::getTargetPointerAtIndex(const unsigned int &index) const
+const DynamicTarget_Kinematic* DynamicTargetList::getDynamicTarget_Pointer(const unsigned int &index) const
 {
-    std::list<DynamicTargetStorage>::const_iterator it = targetList.begin();
+    std::list<DynamicTargetState>::const_iterator it = m_TargetList.begin();
     std::advance(it,index);
-    return (*it).getDynamicTarget();
+    return &(*it);
 }
 
-const CartesianDynamicTarget* DynamicTargetList::getNextIncomplete() const
+const DynamicTarget_Kinematic* DynamicTargetList::getNextIncompleteTarget() const
 {
-    std::list<DynamicTargetStorage>::const_iterator it = targetList.begin();
-    for (; it != targetList.end(); ++it)
+    std::list<DynamicTargetState>::const_iterator it = m_TargetList.begin();
+    for (; it != m_TargetList.end(); ++it)
     {
-        if((*it).getTargetState() == DynamicTargetStorage::TargetCompletion::INCOMPLETE)
-            return (*it).getDynamicTarget();
+        if((*it).getTargetState() == DynamicTargetState::TARGETSTATE::INCOMPLETE)
+            return &(*it);
     }
     return nullptr;
 }
 
 
-const CartesianDynamicTarget* DynamicTargetList::markCompletionState(const unsigned int &index, const DynamicTargetStorage::TargetCompletion &state)
+const DynamicTarget_Kinematic* DynamicTargetList::updateTargetState(const unsigned int &index, const DynamicTargetState::TARGETSTATE &state)
 {
-    std::list<DynamicTargetStorage>::iterator it = targetList.begin();
+    std::list<DynamicTargetState>::iterator it = m_TargetList.begin();
     std::advance(it,index);
     (*it).setTargetState(state);
 
-    for (; it != targetList.end(); ++it)
+    for (; it != m_TargetList.end(); ++it)
     {
-        if((*it).getTargetState() == DynamicTargetStorage::TargetCompletion::INCOMPLETE)
-            return (*it).getDynamicTarget();
+        if((*it).getTargetState() == DynamicTargetState::TARGETSTATE::INCOMPLETE)
+            return &(*it);
         activeTargetItem++;
     }
     return nullptr;

@@ -22,7 +22,7 @@ fprintf('Waiting for GPS...\n');
 gpsAvailable = zeros(1,ROS_MACE.N);
 while( ~all(gpsAvailable) )
     msg = ROS_MACE.positionSub.LatestMessage;
-    positionCallback( ROS_MACE, msg); 
+    positionCallback( ROS_MACE.positionSub, msg); 
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( gpsAvailable(agentIndex) == 0 )
@@ -34,14 +34,14 @@ while( ~all(gpsAvailable) )
                 case 'ENU'
                     swarmState.x0(4*i-3,1) = msg.Easting;
                     swarmState.x0(4*i-2,1) = msg.Northing;
-                    swarmState.x0(4*i-1,1) = 0; % unused for now
-                    swarmState.x0(4*i,1) = 0;
+                    swarmState.x0(4*i-1,1) = -1; % unused for now
+                    swarmState.x0(4*i,1) = -1;
                 case 'F3'
                     [xF3, yF3] = ENUtoF3(msg.Easting, msg.Northing);
                     swarmState.x0(4*i-3,1) = xF3;
                     swarmState.x0(4*i-2,1) = yF3;
-                    swarmState.x0(4*i-1,1) = 0; % unused for now
-                    swarmState.x0(4*i,1) = 0;
+                    swarmState.x0(4*i-1,1) = -1; % unused for now
+                    swarmState.x0(4*i,1) = -1;
             end
         end
     end

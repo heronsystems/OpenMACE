@@ -24,7 +24,7 @@ TcpConfiguration::~TcpConfiguration()
     if (m_socket) {
         m_socket->close();
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
     }
     */
 }
@@ -49,7 +49,7 @@ void TcpConfiguration::copyFrom(LinkConfiguration* source)
 {
     LinkConfiguration::copyFrom(source);
     TcpConfiguration* ssource = dynamic_cast<TcpConfiguration*>(source);
-    Q_ASSERT(ssource != NULL);
+    Q_ASSERT(ssource != nullptr);
     _listenAddress               = ssource->listenAddress();
     _listenPortNumber            = ssource->listenPortNumber();
     _senderAddress               = ssource->senderAddress();

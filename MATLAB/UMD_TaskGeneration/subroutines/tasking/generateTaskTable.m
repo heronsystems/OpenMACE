@@ -12,12 +12,17 @@ function taskTable = generateTaskTable(agentCurrentState,taskList,swarmModel,sim
 %   taskTable : (Nagent x Ntask) of cost for each agent to complete each
 %   task
 %
-% Notes: cost measured by agent's energy to reach target +
+% Notes: cost measured by agent's energy to reach target + 
 % penalty proportional to remaining distance between agent and target
 %
-%
+% 
 % Sheng Cheng, 2018
-Nagent = swarmModel.N;
+switch swarmModel.communicationTopology
+    case 'allToAll'
+        Nagent = 1;
+    case 'centralized'
+        Nagent = swarmModel.N;
+end
 
 Ntask = size(taskList,1);
 
@@ -29,7 +34,17 @@ agentCurrentState = reshape(agentCurrentState,[4,Nagent])';
 
 for k = 1:Nagent
     for j = 1:Ntask
-        % utility is computed by negating the information gain (so the task with largest information gain is chosen)
-        taskTable(k,j) = -computeInformationGain(agentCurrentState(k,:),taskList(j,:),swarmModel,simParams,swarmWorld.mutualInfoSurface,trueWorld);
+        switch swarmModel.utilityComputation
+            case 'computeEnergyAndPenalty'
+                % cost measured by agent's energy to reach target + 
+                % penalty proportional to remaining distance between agent and target
+                taskTable(k,j) = computeEnergyAndPenalty(agentCurrentState(k,:),taskList(j,:),swarmModel,simParams);
+            case 'computeInformationGain'
+                % utility is computed by negating the information gain (so the task with largest information gain is chosen)
+                taskTable(k,j) = -computeInformationGain(agentCurrentState(k,:),taskList(j,:),swarmModel,simParams,swarmWorld.mutualInfoSurface,trueWorld);
+            case 'computeInformationGainLinearPath'
+                % utility is computed by negating the information gain (so the task with largest information gain is chosen)
+                taskTable(k,j) = -computeInformationGain(agentCurrentState(k,:),taskList(j,:),swarmModel,simParams,swarmWorld.mutualInfoSurface,trueWorld);                
+        end
     end
 end

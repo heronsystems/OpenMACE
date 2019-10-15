@@ -41,7 +41,7 @@ protected:
     //! \param queueObj Key that is to be generated from message/sender which identifies what queued transmission needs to be removed
     //! \return True if message is to be consumed, false if ignored (and possibly consumed by another action)
     //!
-    virtual bool Finish_Receive(const MSG_TYPE &msg, const COMPONENT_KEY &sender, ACK_TYPE& ack, QUEUE_TYPE &queueObj) = 0;
+    virtual bool Finish_Receive(const MSG_TYPE &msg, const COMPONENT_KEY &sender, ACK_TYPE &ack, QUEUE_TYPE &queueObj) = 0;
 
 public:
 

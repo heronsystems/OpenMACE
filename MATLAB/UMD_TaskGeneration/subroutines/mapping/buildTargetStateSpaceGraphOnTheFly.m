@@ -5,12 +5,24 @@ N = neighbors(swarmWorld.exploredGraph,idNew);
 numStatesAdded = 0;
 
 % add rest-state
-[swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpaceNoisyMap(idNew, idNew, swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp, trueWorld.xcp, trueWorld.ycp);numStatesAdded = numStatesAdded + 1;
+switch swarmModel.mappingSensorType
+    case 'perfect'
+        [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpace(idNew, idNew, swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, trueWorld.G_env, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp);
+    case 'noisy'
+        [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpaceNoisyMap(idNew, idNew, swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp, trueWorld.xcp, trueWorld.ycp);
+end
+numStatesAdded = numStatesAdded + 1;
 
 % add outgoing/incoming states
 for i = 1:1:length(N)
-    [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpaceNoisyMap(idNew,N(i), swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp, trueWorld.xcp, trueWorld.ycp);
-    [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpaceNoisyMap(N(i),idNew, swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp, trueWorld.xcp, trueWorld.ycp);
+    switch swarmModel.mappingSensorType
+        case 'perfect'
+            [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpace(idNew,N(i), swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, trueWorld.G_env, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp);
+            [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpace(N(i),idNew, swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, trueWorld.G_env, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp);
+        case 'noisy'
+            [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpaceNoisyMap(idNew,N(i), swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp, trueWorld.xcp, trueWorld.ycp);
+            [swarmWorld.targetStateSpaceGraph,swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp] = addNodeToTargetStateSpaceNoisyMap(N(i),idNew, swarmWorld.targetStateSpaceGraph, swarmWorld.exploredGraph, swarmWorld.Mpc2s,swarmWorld.Mc,swarmWorld.Mp, trueWorld.xcp, trueWorld.ycp);
+    end
     numStatesAdded = numStatesAdded + 2;
 end
 
@@ -142,6 +154,7 @@ end
 
 % now we update swarmWorld.Q
 modifiedNodes = unique(modifiedNodes); % remove repeats
+Ns = numnodes(swarmWorld.targetStateSpaceGraph);
 swarmWorld.Q = swarmWorld.Q .* 1/(1-swarmModel.q_n_s); %  normalize temporarily
 for i = 1:1:length(modifiedNodes)
     si = modifiedNodes(i);
@@ -149,13 +162,13 @@ for i = 1:1:length(modifiedNodes)
 end
 
 % check that swarmWorld.Q is row stochastic
-% tol = 0.0001;
-% for i = 1:1:size(swarmWorld.Q,1)
-%     if ( abs(sum(swarmWorld.Q(i,:)) - 1)>tol)
-%         fprintf('Row %d sums to %3.3f \n',i, sum(swarmWorld.Q(i,:)));
-%         error('swarmWorld.Q is not row stochastic (temporarily)');
-%     end
-% end
+tol = 0.0001;
+for i = 1:1:size(swarmWorld.Q,1)
+    if ( abs(sum(swarmWorld.Q(i,:)) - 1)>tol)
+        fprintf('Row %d sums to %3.3f \n',i, sum(swarmWorld.Q(i,:)));
+        error('swarmWorld.Q is not row stochastic (temporarily)');
+    end
+end
 
 % each state transitions into the null state with probability:
 % swarmModel.q_n_s

@@ -5,8 +5,8 @@
 
 MACEPACKED(
 typedef struct __mace_extended_sys_state_t {
- uint8_t vtol_state; /*< The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.*/
- uint8_t landed_state; /*< The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.*/
+ uint8_t vtol_state; /*< The VTOL state if applicable. Is set to UXV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.*/
+ uint8_t landed_state; /*< The landed state. Is set to UXV_LANDED_STATE_UNDEFINED if landed state is unknown.*/
 }) mace_extended_sys_state_t;
 
 #define MACE_MSG_ID_EXTENDED_SYS_STATE_LEN 2
@@ -44,8 +44,8 @@ typedef struct __mace_extended_sys_state_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param vtol_state The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
- * @param landed_state The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
+ * @param vtol_state The VTOL state if applicable. Is set to UXV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
+ * @param landed_state The landed state. Is set to UXV_LANDED_STATE_UNDEFINED if landed state is unknown.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_extended_sys_state_pack(uint8_t system_id, uint8_t component_id, mace_message_t* msg,
@@ -75,8 +75,8 @@ static inline uint16_t mace_msg_extended_sys_state_pack(uint8_t system_id, uint8
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param vtol_state The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
- * @param landed_state The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
+ * @param vtol_state The VTOL state if applicable. Is set to UXV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
+ * @param landed_state The landed state. Is set to UXV_LANDED_STATE_UNDEFINED if landed state is unknown.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_extended_sys_state_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -132,8 +132,8 @@ static inline uint16_t mace_msg_extended_sys_state_encode_chan(uint8_t system_id
  * @brief Send a extended_sys_state message
  * @param chan MAVLink channel to send the message
  *
- * @param vtol_state The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
- * @param landed_state The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
+ * @param vtol_state The VTOL state if applicable. Is set to UXV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
+ * @param landed_state The landed state. Is set to UXV_LANDED_STATE_UNDEFINED if landed state is unknown.
  */
 #ifdef MACE_USE_CONVENIENCE_FUNCTIONS
 
@@ -202,7 +202,7 @@ static inline void mace_msg_extended_sys_state_send_buf(mace_message_t *msgbuf, 
 /**
  * @brief Get field vtol_state from extended_sys_state message
  *
- * @return The VTOL state if applicable. Is set to MAV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
+ * @return The VTOL state if applicable. Is set to UXV_VTOL_STATE_UNDEFINED if UAV is not in VTOL configuration.
  */
 static inline uint8_t mace_msg_extended_sys_state_get_vtol_state(const mace_message_t* msg)
 {
@@ -212,7 +212,7 @@ static inline uint8_t mace_msg_extended_sys_state_get_vtol_state(const mace_mess
 /**
  * @brief Get field landed_state from extended_sys_state message
  *
- * @return The landed state. Is set to MAV_LANDED_STATE_UNDEFINED if landed state is unknown.
+ * @return The landed state. Is set to UXV_LANDED_STATE_UNDEFINED if landed state is unknown.
  */
 static inline uint8_t mace_msg_extended_sys_state_get_landed_state(const mace_message_t* msg)
 {

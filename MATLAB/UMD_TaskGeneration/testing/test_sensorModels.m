@@ -5,7 +5,7 @@ clc; format compact;
 % Pfa: 0.1000
 
 m = 2;
-nz = 25;
+nz = 100;
 
 zi = linspace(-3,m+3,nz);
 gi = exp(-zi.^2/2);

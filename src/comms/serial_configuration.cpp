@@ -32,7 +32,7 @@ void SerialConfiguration::copyFrom(LinkConfiguration* source)
 {
     LinkConfiguration::copyFrom(source);
     SerialConfiguration* ssource = dynamic_cast<SerialConfiguration*>(source);
-    Q_ASSERT(ssource != NULL);
+    Q_ASSERT(ssource != nullptr);
     _baud               = ssource->baud();
     _flowControl        = ssource->flowControl();
     _parity             = ssource->parity();

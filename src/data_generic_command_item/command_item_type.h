@@ -4,10 +4,16 @@
 #include <string>
 #include <stdexcept>
 
-namespace CommandItem
+namespace command_item
 {
 
-enum class COMMANDITEM : uint8_t{
+enum class COMMANDLENGTH : uint8_t
+{
+    CMD_LONG,
+    CMD_SHORT
+};
+
+enum class COMMANDTYPE : uint8_t{
     CI_NAV_HOME = 0,
     CI_NAV_LAND=1, /* Land at location |Abort Alt| Empty| Empty| Desired yaw angle. NaN for unchanged.| Latitude| Longitude| Altitude|  */
     CI_NAV_LOITER_TIME=2, /* Loiter around this CISSION for X seconds |Seconds (decimal)| Empty| Radius around CISSION, in meters. If positive loiter clockwise, else counter-clockwise| Forward moving aircraft this sets exit xtrack location: 0 for center of loiter wp, 1 for exit location. Else, this is desired yaw angle| Latitude| Longitude| Altitude|  */
@@ -19,73 +25,82 @@ enum class COMMANDITEM : uint8_t{
     CI_ACT_ARM = 8,
     CI_ACT_CHANGEMODE = 9,
     CI_ACT_CHANGESPEED = 10,
-    CI_ACT_GOTO = 11,
-    CI_ACT_MISSIONCOMMAND = 12,
+    CI_ACT_EXECUTE_SPATIAL_ITEM = 11,
+    CI_ACT_MISSIONCMD = 12,
     CI_ACT_MOTORTEST = 13,
-    CI_UNKNOWN = 14,
-    COMMANDITEMEND = 15
+    CI_ACT_TARGET = 14,
+    CI_ACT_MSG_INTERVAL = 15,
+    CI_ACT_MSG_REQUEST = 16,
+    CI_ACT_SET_GLOBAL_ORIGIN = 17,
+    CI_ACT_HOME_POSITION = 18,
+    CI_UNKNOWN = 19,
+    COMMANDITEMEND = 20
 };
 
-inline std::string CommandItemToString(const COMMANDITEM &commandItemType) {
+inline std::string CommandItemToString(const COMMANDTYPE &commandItemType) {
     switch (commandItemType) {
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
         return "CI_NAV_LAND";
-    case COMMANDITEM::CI_NAV_LOITER_TIME:
+    case COMMANDTYPE::CI_NAV_LOITER_TIME:
         return "CI_NAV_LOITER_TIME";
-    case COMMANDITEM::CI_NAV_LOITER_TURNS:
+    case COMMANDTYPE::CI_NAV_LOITER_TURNS:
         return "CI_NAV_LOITER_TURNS";
-    case COMMANDITEM::CI_NAV_LOITER_UNLIM:
+    case COMMANDTYPE::CI_NAV_LOITER_UNLIM:
         return "CI_NAV_LOITER_UNLIM";
-    case COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH:
+    case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
         return "CI_NAV_RETURN_TO_LAUNCH";
-    case COMMANDITEM::CI_NAV_TAKEOFF:
+    case COMMANDTYPE::CI_NAV_TAKEOFF:
         return "CI_NAV_TAKEOFF";
-    case COMMANDITEM::CI_NAV_WAYPOINT:
+    case COMMANDTYPE::CI_NAV_WAYPOINT:
         return "CI_NAV_WAYPOINT";
-    case COMMANDITEM::CI_ACT_ARM:
+    case COMMANDTYPE::CI_ACT_ARM:
         return "CI_ACT_ARM";
-    case COMMANDITEM::CI_ACT_CHANGESPEED:
+    case COMMANDTYPE::CI_ACT_CHANGESPEED:
         return "CI_ACT_CHANGESPEED";
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
         return "CI_ACT_CHANGEMODE";
-    case COMMANDITEM::CI_ACT_MOTORTEST:
+    case COMMANDTYPE::CI_ACT_MOTORTEST:
         return "CI_ACT_MOTORTEST";
-    case COMMANDITEM::CI_ACT_MISSIONCOMMAND:
-        return "CI_ACT_MISSIONCOMMAND";
-    case COMMANDITEM::CI_UNKNOWN:
+    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+        return "CI_ACT_EXECUTE_SPATIAL_ITEM";
+    case COMMANDTYPE::CI_ACT_MISSIONCMD:
+        return "CI_ACT_MISSIONCMD";
+    case COMMANDTYPE::CI_UNKNOWN:
         return "CI_UNKNOWN";
     default:
         throw std::runtime_error("Unknown mission item enum seen");
     }
 }
 
-inline COMMANDITEM CommandItemFromString(const std::string &str) {
+inline COMMANDTYPE CommandItemFromString(const std::string &str) {
     if(str == "CI_NAV_LAND")
-        return COMMANDITEM::CI_NAV_LAND;
+        return COMMANDTYPE::CI_NAV_LAND;
     if(str == "CI_NAV_LOITER_TIME")
-        return COMMANDITEM::CI_NAV_LOITER_TIME;
+        return COMMANDTYPE::CI_NAV_LOITER_TIME;
     if(str == "CI_NAV_LOITER_TURNS")
-        return COMMANDITEM::CI_NAV_LOITER_TURNS;
+        return COMMANDTYPE::CI_NAV_LOITER_TURNS;
     if(str == "CI_NAV_LOITER_UNLIM")
-        return COMMANDITEM::CI_NAV_LOITER_UNLIM;
+        return COMMANDTYPE::CI_NAV_LOITER_UNLIM;
     if(str == "CI_NAV_RETURN_TO_LAUNCH")
-        return COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH;
+        return COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH;
     if(str == "CI_NAV_TAKEOFF")
-        return COMMANDITEM::CI_NAV_TAKEOFF;
+        return COMMANDTYPE::CI_NAV_TAKEOFF;
     if(str == "CI_NAV_WAYPOINT")
-        return COMMANDITEM::CI_NAV_WAYPOINT;
+        return COMMANDTYPE::CI_NAV_WAYPOINT;
     if(str == "CI_ACT_ARM")
-        return COMMANDITEM::CI_ACT_ARM;
+        return COMMANDTYPE::CI_ACT_ARM;
     if(str == "CI_ACT_CHANGESPEED")
-        return COMMANDITEM::CI_ACT_CHANGESPEED;
+        return COMMANDTYPE::CI_ACT_CHANGESPEED;
     if(str == "CI_ACT_CHANGEMODE")
-        return COMMANDITEM::CI_ACT_CHANGEMODE;
+        return COMMANDTYPE::CI_ACT_CHANGEMODE;
     if(str == "CI_ACT_MOTORTEST")
-        return COMMANDITEM::CI_ACT_MOTORTEST;
-    if(str == "CI_ACT_MISSIONCOMMAND")
-        return COMMANDITEM::CI_ACT_MISSIONCOMMAND;
+        return COMMANDTYPE::CI_ACT_MOTORTEST;
+    if(str == "CI_ACT_MISSIONCMD")
+        return COMMANDTYPE::CI_ACT_MISSIONCMD;
+    if(str == "CI_ACT_EXECUTE_SPATIAL_ITEM")
+        return COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM;
     if(str == "CI_UNKNOWN")
-        return COMMANDITEM::CI_UNKNOWN;
+        return COMMANDTYPE::CI_UNKNOWN;
     throw std::runtime_error("Unknown mission item string seen");
 }
 

@@ -47,7 +47,7 @@ public:
 
     //!
     //! \brief Determine what this RTA module is a specalization of.
-    //! \return Pointer to module this RTA is a specalization of. NULL if instance is global.
+    //! \return Pointer to module this RTA is a specalization of. nullptr if instance is global.
     //!
     int SpecalizationOf() const
     {

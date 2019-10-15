@@ -21,23 +21,23 @@ public:
 
     }
 
-    MissionHomeTopic(const CommandItem::SpatialHome &obj)
+    MissionHomeTopic(const command_item::SpatialHome &obj)
     {
         this->setHome(obj);
     }
 
 
-    void setHome(const CommandItem::SpatialHome &homeItem){
+    void setHome(const command_item::SpatialHome &homeItem){
         item = homeItem;
     }
 
-    CommandItem::SpatialHome getHome(){
+    command_item::SpatialHome getHome(){
         return item;
     }
 
 
 private:
-    CommandItem::SpatialHome item;
+    command_item::SpatialHome item;
 };
 
 } //end of namespace MissionTopic

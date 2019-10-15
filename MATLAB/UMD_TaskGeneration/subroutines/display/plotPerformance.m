@@ -23,15 +23,31 @@ for i = 1:1:length(swarmWorldHist)
     end
 end
 
-% % number of cells explored with time
-% figure;
-% plot(t, swarmWorldHist{end}.mapPercentage,'linewidth',2);
-% xlabel('Time (sec.)')
-% ylabel('Percent Coverage')
-% grid on;
-% set(gca,'FontSize',16)
-% 
+% number of cells explored with time
+figure;
+plot(t, swarmWorldHist{end}.mapPercentage,'linewidth',2);
+xlabel('Time (sec.)')
+ylabel('Percent Coverage')
+grid on;
+set(gca,'FontSize',16)
 
+% number of cells explored with time
+figure;
+imagesc(trueWorld.xcp,trueWorld.ycp, swarmWorldHist{end}.cellMsmtMat);
+set(gca,'YDir','Normal')
+set(gca,'FontSize',16)
+colorbar
+xlabel('X')
+ylabel('Y')
+title('Number of Cell Views')
+
+% number of cells explored with time
+figure;
+imagesc(trueWorld.xcp,trueWorld.ycp, log(samplingPriority( swarmWorldHist{end})) );
+set(gca,'YDir','Normal')
+set(gca,'FontSize',16)
+title('Log Likelihood')
+colorbar;
 
 
 % % node density
@@ -42,16 +58,16 @@ end
 % grid on;
 % set(gca,'FontSize',16)
 
-% % entropy 
-% maxEntropy = log2(3)*numRows*numCols/1000;
-% fprintf('Max Entropy For Map is %3.1f (kilobits) \n', maxEntropy );
-% figure;
-% plot(t, totalEntropy/1000,'linewidth',2);
-% ylim([0 maxEntropy/2])
-% xlabel('Time (sec.)')
-% ylabel('Total Entropy (kilobits)')
-% grid on;
-% set(gca,'FontSize',16)
+% entropy 
+maxEntropy = log2(3)*numRows*numCols/1000;
+fprintf('Max Entropy For Map is %3.1f (kilobits) \n', maxEntropy );
+figure;
+plot(t, totalEntropy/1000,'linewidth',2);
+ylim([0 maxEntropy/2])
+xlabel('Time (sec.)')
+ylabel('Total Entropy (kilobits)')
+grid on;
+set(gca,'FontSize',16)
 
 % plot path of agents
 figure;

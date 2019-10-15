@@ -9,9 +9,9 @@ namespace MaceCore
 {
 
 MaceCore::MaceCore() :
-    m_GroundStation(NULL),
-    m_PathPlanning(NULL),
-    m_GlobalRTA(NULL),
+    m_GroundStation(nullptr),
+    m_PathPlanning(nullptr),
+    m_GlobalRTA(nullptr),
     m_MaceInstanceIDSet(false)
 {
 }
@@ -145,13 +145,13 @@ void MaceCore::AddLocalModule_ExternalLink(const std::shared_ptr<IModuleCommandE
     m_ExternalLink.push_back(externalLink);
 
     //if there is a ground station, notify this new external link about the existance of GS
-    if(m_GroundStation != NULL)
+    if(m_GroundStation != nullptr)
     {
         externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_GroundStation->GetCharacteristic(), ModuleClasses::GROUND_STATION);
     }
 
     //if there is an RTA module, notify this new external link about the existance of the rta module
-    if(m_GlobalRTA != NULL)
+    if(m_GlobalRTA != nullptr)
     {
         externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_GlobalRTA->GetCharacteristic(), ModuleClasses::RTA);
     }
@@ -458,18 +458,7 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 //!
 void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 {
-    UNUSED(sender);
-    //    UNUSED(vehicleID);
 
-    //    try{
-    //        std::cout<<"Saw a request dummy function"<<std::endl;
-    //        m_VehicleIDToPort.at(vehicleID)->MarshalCommand(VehicleCommands::REQUEST_VEHICLE_HOME,vehicleID);
-    //    }catch(const std::out_of_range &oor){
-
-    //    }
-//    if(m_GlobalRTA) {
-//        m_GlobalRTA->MarshalCommand(RTACommands::TEST_FUNCTION, vehicleID);
-//    }
 }
 
 
@@ -500,10 +489,10 @@ void MaceCore::Event_NewModule(const ModuleBase* sender, const ModuleCharacteris
 //! \param sender
 //! \param gotTo
 //!
-void MaceCore::Event_IssueCommandGoTo(const ModuleBase* sender, const CommandItem::CommandGoTo &gotTo)
+void MaceCore::Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo)
 {
     int vehicleID = gotTo.getTargetSystem();
-    MarshalCommandToVehicle<CommandItem::CommandGoTo>(vehicleID, VehicleCommands::COMMAND_GOTO, ExternalLinkCommands::COMMAND_GOTO, gotTo, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::Action_ExecuteSpatialItem>(vehicleID, VehicleCommands::EXECUTE_ACTION_SPATIALITEM, ExternalLinkCommands::EXECUTE_ACTION_SPATIALITEM, gotTo, sender->GetCharacteristic());
 }
 
 //!
@@ -542,7 +531,7 @@ void MaceCore::Events_NewVehicle(const ModuleBase *sender, const uint8_t publicI
     if(m_ROS)
         m_ROS->MarshalCommand(ROSCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
 
-    if(m_GroundStation.get() != NULL)
+    if(m_GroundStation.get() != nullptr)
         m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
 
     //No mace_mavlink message exists to notify remote instances about the new vehicle. Relly on heartbeat instead.
@@ -564,11 +553,11 @@ void MaceCore::Event_ForceVehicleDataSync(const ModuleBase *sender, const int &t
 //! \param sender Sender module
 //! \param command Arm/Disarm action
 //!
-void MaceCore::Event_IssueCommandSystemArm(const ModuleBase* sender, const CommandItem::ActionArm &command)
+void MaceCore::Event_IssueCommandSystemArm(const ModuleBase* sender, const command_item::ActionArm &command)
 {
     UNUSED(sender);
     int vehicleID = command.getTargetSystem();
-    MarshalCommandToVehicle<CommandItem::ActionArm>(vehicleID, VehicleCommands::CHANGE_VEHICLE_ARM, ExternalLinkCommands::CHANGE_VEHICLE_ARM, command, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::ActionArm>(vehicleID, VehicleCommands::CHANGE_VEHICLE_ARM, ExternalLinkCommands::CHANGE_VEHICLE_ARM, command, sender->GetCharacteristic());
 }
 
 //!
@@ -576,11 +565,11 @@ void MaceCore::Event_IssueCommandSystemArm(const ModuleBase* sender, const Comma
 //! \param sender Sender module
 //! \param command Takeoff command
 //!
-void MaceCore::Event_IssueCommandTakeoff(const ModuleBase* sender, const CommandItem::SpatialTakeoff &command)
+void MaceCore::Event_IssueCommandTakeoff(const ModuleBase* sender, const command_item::SpatialTakeoff &command)
 {
     UNUSED(sender);
     int vehicleID = command.getTargetSystem();
-    MarshalCommandToVehicle<CommandItem::SpatialTakeoff>(vehicleID, VehicleCommands::REQUEST_VEHICLE_TAKEOFF, ExternalLinkCommands::REQUEST_VEHICLE_TAKEOFF, command, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::SpatialTakeoff>(vehicleID, VehicleCommands::REQUEST_VEHICLE_TAKEOFF, ExternalLinkCommands::REQUEST_VEHICLE_TAKEOFF, command, sender->GetCharacteristic());
 }
 
 //!
@@ -588,11 +577,11 @@ void MaceCore::Event_IssueCommandTakeoff(const ModuleBase* sender, const Command
 //! \param sender Sender module
 //! \param command Land command
 //!
-void MaceCore::Event_IssueCommandLand(const ModuleBase* sender, const CommandItem::SpatialLand &command)
+void MaceCore::Event_IssueCommandLand(const ModuleBase* sender, const command_item::SpatialLand &command)
 {
     UNUSED(sender);
     int vehicleID = command.getTargetSystem();
-    MarshalCommandToVehicle<CommandItem::SpatialLand>(vehicleID, VehicleCommands::REQUEST_VEHICLE_LAND, ExternalLinkCommands::REQUEST_VEHICLE_LAND, command, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::SpatialLand>(vehicleID, VehicleCommands::REQUEST_VEHICLE_LAND, ExternalLinkCommands::REQUEST_VEHICLE_LAND, command, sender->GetCharacteristic());
 }
 
 //!
@@ -600,11 +589,11 @@ void MaceCore::Event_IssueCommandLand(const ModuleBase* sender, const CommandIte
 //! \param sender Sender module
 //! \param command RTL command
 //!
-void MaceCore::Event_IssueCommandRTL(const ModuleBase* sender, const CommandItem::SpatialRTL &command)
+void MaceCore::Event_IssueCommandRTL(const ModuleBase* sender, const command_item::SpatialRTL &command)
 {
     UNUSED(sender);
     int vehicleID = command.getTargetSystem();
-    MarshalCommandToVehicle<CommandItem::SpatialRTL>(vehicleID, VehicleCommands::REQUEST_VEHICLE_RTL, ExternalLinkCommands::REQUEST_VEHICLE_RTL, command, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::SpatialRTL>(vehicleID, VehicleCommands::REQUEST_VEHICLE_RTL, ExternalLinkCommands::REQUEST_VEHICLE_RTL, command, sender->GetCharacteristic());
 }
 
 //!
@@ -612,11 +601,11 @@ void MaceCore::Event_IssueCommandRTL(const ModuleBase* sender, const CommandItem
 //! \param sender Sender module
 //! \param command Mission command
 //!
-void MaceCore::Event_IssueMissionCommand(const ModuleBase* sender, const CommandItem::ActionMissionCommand &command)
+void MaceCore::Event_IssueMissionCommand(const ModuleBase* sender, const command_item::ActionMissionCommand &command)
 {
     UNUSED(sender);
     int vehicleID = command.getTargetSystem();
-    MarshalCommandToVehicle<CommandItem::ActionMissionCommand>(vehicleID, VehicleCommands::SET_MISSION_STATE, ExternalLinkCommands::SET_MISSION_STATE, command, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::ActionMissionCommand>(vehicleID, VehicleCommands::SET_MISSION_STATE, ExternalLinkCommands::SET_MISSION_STATE, command, sender->GetCharacteristic());
 }
 
 //!
@@ -624,7 +613,7 @@ void MaceCore::Event_IssueMissionCommand(const ModuleBase* sender, const Command
 //! \param sender Sender module
 //! \param command Mode change command
 //!
-void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const CommandItem::ActionChangeMode &command)
+void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const command_item::ActionChangeMode &command)
 {
     UNUSED(sender);
     int vehicleID = command.getTargetSystem();
@@ -632,7 +621,7 @@ void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const CommandIte
     //Update the underalying data object
 //    m_DataFusion->updateVehicleFlightMode(command.getTargetSystem(), command.getRequestMode());
 
-    MarshalCommandToVehicle<CommandItem::ActionChangeMode>(vehicleID, VehicleCommands::CHANGE_VEHICLE_MODE, ExternalLinkCommands::CHANGE_VEHICLE_MODE, command, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::ActionChangeMode>(vehicleID, VehicleCommands::CHANGE_VEHICLE_MODE, ExternalLinkCommands::CHANGE_VEHICLE_MODE, command, sender->GetCharacteristic());
 }
 
 //!
@@ -640,33 +629,33 @@ void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const CommandIte
 //! \param sender Sender module
 //! \param command General command
 //!
-void MaceCore::Event_IssueGeneralCommand(const ModuleBase* sender, const CommandItem::AbstractCommandItem &command)
+void MaceCore::Event_IssueGeneralCommand(const ModuleBase* sender, const command_item::AbstractCommandItem &command)
 {
     switch(command.getCommandType())
     {
-    case CommandItem::COMMANDITEM::CI_ACT_ARM:
+    case command_item::COMMANDTYPE::CI_ACT_ARM:
     {
-        return Event_IssueCommandSystemArm(sender, (CommandItem::ActionArm const&)command);
+        return Event_IssueCommandSystemArm(sender, (command_item::ActionArm const&)command);
     }
-    case CommandItem::COMMANDITEM::CI_NAV_TAKEOFF:
+    case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
     {
-        return Event_IssueCommandTakeoff(sender, (CommandItem::SpatialTakeoff const&)command);
+        return Event_IssueCommandTakeoff(sender, (command_item::SpatialTakeoff const&)command);
     }
-    case CommandItem::COMMANDITEM::CI_NAV_LAND:
+    case command_item::COMMANDTYPE::CI_NAV_LAND:
     {
-        return Event_IssueCommandLand(sender, (CommandItem::SpatialLand const&)command);
+        return Event_IssueCommandLand(sender, (command_item::SpatialLand const&)command);
     }
-    case CommandItem::COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH:
+    case command_item::COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
     {
-        return Event_IssueCommandRTL(sender, (CommandItem::SpatialRTL const&)command);
+        return Event_IssueCommandRTL(sender, (command_item::SpatialRTL const&)command);
     }
-    case CommandItem::COMMANDITEM::CI_ACT_MISSIONCOMMAND:
+    case command_item::COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
     {
-        return Event_IssueMissionCommand(sender, (CommandItem::ActionMissionCommand const&)command);
+        return Event_IssueMissionCommand(sender, (command_item::ActionMissionCommand const&)command);
     }
-    case CommandItem::COMMANDITEM::CI_ACT_CHANGEMODE:
+    case command_item::COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
-        return Event_ChangeSystemMode(sender, (CommandItem::ActionChangeMode const&)command);
+        return Event_ChangeSystemMode(sender, (command_item::ActionChangeMode const&)command);
     }
     default:
     {
@@ -770,11 +759,11 @@ void MaceCore::Event_GetHomePosition(const void* sender, const int &vehicleID)
 //! \param sender Sender module
 //! \param vehicleHome New vehicle home position
 //!
-void MaceCore::Event_SetHomePosition(const ModuleBase *sender, const CommandItem::SpatialHome &vehicleHome)
+void MaceCore::Event_SetHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome)
 {
     UNUSED(sender);
     int vehicleID = vehicleHome.getTargetSystem();
-    MarshalCommandToVehicle<CommandItem::SpatialHome>(vehicleID, VehicleCommands::SET_VEHICLE_HOME, ExternalLinkCommands::SET_VEHICLE_HOME, vehicleHome, sender->GetCharacteristic());
+    MarshalCommandToVehicle<command_item::SpatialHome>(vehicleID, VehicleCommands::SET_VEHICLE_HOME, ExternalLinkCommands::SET_VEHICLE_HOME, vehicleHome, sender->GetCharacteristic());
 }
 
 //!
@@ -806,21 +795,32 @@ void MaceCore::Event_SetGridSpacing(const void *sender, const double &gridSpacin
 //! \param sender Sender module
 //! \param globalHome New global origin position
 //!
-void MaceCore::Event_SetGlobalOrigin(const void *sender, const GeodeticPosition_3D &position)
+void MaceCore::Event_SetGlobalOrigin(const ModuleBase* sender, const GeodeticPosition_3D &position)
 {
     m_DataFusion->UpdateGlobalOrigin(position);
 
+    command_item::Action_SetGlobalOrigin swarmOrigin;
+    swarmOrigin.setGlobalOrigin(&position);
+    MarshalCommandToVehicle<command_item::Action_SetGlobalOrigin>(swarmOrigin.getTargetSystem(), VehicleCommands::UPDATE_GLOBAL_ORIGIN, ExternalLinkCommands::UPDATE_GLOBAL_ORIGIN, swarmOrigin);
+
     if(m_PathPlanning && m_PathPlanning.get() != sender) {
-        m_PathPlanning->MarshalCommand(PathPlanningCommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_PathPlanning->MarshalCommand(PathPlanningCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_GroundStation && m_GroundStation.get() != sender) {
-        m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_GroundStation->MarshalCommand(GroundStationCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_GlobalRTA) {
-        m_GlobalRTA->MarshalCommand(RTACommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_GlobalRTA->MarshalCommand(RTACommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_Sensors) {
-        m_Sensors->MarshalCommand(SensorCommands::NEWLY_UPDATED_GLOBAL_ORIGIN, position);
+        m_Sensors->MarshalCommand(SensorCommands::UPDATE_GLOBAL_ORIGIN, position);
+    }
+}
+
+void MaceCore::Event_ProcessGoalState(const ModuleBase *sender, const mace::state_space::GoalState &state)
+{
+    if(m_PathPlanning && m_PathPlanning.get() != sender) {
+        m_PathPlanning->MarshalCommand(PathPlanningCommands::PROCESS_TARGET_STATE, state);
     }
 }
 
@@ -898,7 +898,7 @@ void MaceCore::EventVehicle_REJECTProposedMission(const void *sender, const Miss
 //! \param sender Sender module
 //! \param remoteID New remote ID
 //!
-void MaceCore::ExternalEvent_UpdateRemoteID(const void *sender, const int &remoteID)
+void MaceCore::ExternalEvent_UpdateRemoteID(const void *sender, const unsigned int &remoteID)
 {
     //KEN FIX THIS
     IModuleCommandExternalLink* externalLink = (IModuleCommandExternalLink*)sender;
@@ -916,7 +916,7 @@ void MaceCore::ExternalEvent_UpdateRemoteID(const void *sender, const int &remot
 //! \param sender Sender module
 //! \param vehicleHome New vehicle home
 //!
-void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const CommandItem::SpatialHome &vehicleHome)
+void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome)
 {    
     UNUSED(sender);
     //TODO FIX KEN: We should incorporate a method that shall exist to understand who wants to receive
@@ -1079,7 +1079,7 @@ void MaceCore::ExternalEvent_NewOnboardMission(const ModuleBase *sender, const M
     bool interest = false;
 
     //If we have an GS module, assume it is interested in downloading mission and request external link to download mission from aircraft
-    if(m_GroundStation != NULL)
+    if(m_GroundStation != nullptr)
     {
         interest = true;
     }
@@ -1170,7 +1170,7 @@ void MaceCore::ExternalEvent_NewBoundary(const ModuleBase *sender, const NewBoun
     }
 
     /*
-    if(m_RTA != NULL)
+    if(m_RTA != nullptr)
     {
         //TEMPORARY
         //pull from key, this should probably be the key to the RTA module. i.e. m_RTA->GetCharacterisic()
@@ -1349,6 +1349,13 @@ void MaceCore::GSEvent_UploadMission(const void *sender, const MissionItem::Miss
 /////////////////////////////////////////////////////////////////////////
 /// PATH PLANNING EVENTS
 /////////////////////////////////////////////////////////////////////////
+
+void MaceCore::EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj)
+{
+    std::cout<<"Mace core has been notified by a module of the path planning variety that there is a new dynamic target."<<std::endl;
+    MarshalCommandToVehicle<command_item::Action_DynamicTarget>(obj.getTargetSystem(), VehicleCommands::EXECUTE_DYNAMIC_TARGET, ExternalLinkCommands::EXECUTE_DYNAMIC_TARGET, obj, sender->GetCharacteristic());
+
+}
 
 //!
 //! \brief EventPP_LoadOccupancyEnvironment Load a new occupancy map
@@ -1539,7 +1546,7 @@ void MaceCore::EventPP_New2DOccupancyMap(const void* sender, const mace::maps::D
 //! \param sender Sender module
 //! \param queue New mission queue
 //!
-void MaceCore::EventPP_NewDynamicMissionQueue(const ModuleBase *sender, const TargetItem::DynamicMissionQueue &queue)
+void MaceCore::EventPP_NewDynamicMissionQueue(const ModuleBase *sender, const command_target::DynamicMissionQueue &queue)
 {
     UNUSED(sender);
 
@@ -1617,7 +1624,7 @@ void MaceCore::Sensors_UpdatedMapLayer(const string &layerName, mace::maps::Base
 //! \param obj Point cloud object
 //! \param position Position of sensor
 //!
-void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position)
+void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const CartesianPosition_3D &position)
 {
     octomap::Pointcloud copyObj = obj;
     m_DataFusion->insertGlobalObservation(copyObj, position);
@@ -1631,7 +1638,7 @@ void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose
 //! \param position Position of sensor
 //! \param orientation Orientation of sensor
 //!
-void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Orientation_3D &orientation)
+void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation)
 {
     octomap::Pointcloud copyObj = obj;
     m_DataFusion->insertObservation(copyObj, position, orientation);

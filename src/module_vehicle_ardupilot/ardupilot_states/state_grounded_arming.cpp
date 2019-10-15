@@ -34,16 +34,16 @@ hsm::Transition State_GroundedArming::GetTransition()
         switch (desiredStateEnum) {
         case ArdupilotFlightState::STATE_GROUNDED_IDLE:
         {
-            return hsm::SiblingTransition<State_GroundedIdle>();
+            rtn = hsm::SiblingTransition<State_GroundedIdle>();
             break;
         }
         case ArdupilotFlightState::STATE_GROUNDED_ARMED:
         {
-            return hsm::SiblingTransition<State_GroundedArmed>(currentCommand);
+            rtn = hsm::SiblingTransition<State_GroundedArmed>(currentCommand);
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_GROUNDED_ARMING."<<(int)desiredStateEnum<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from STATE_GROUNDED_ARMING."<<static_cast<int>(desiredStateEnum)<<std::endl;
             break;
         }
     }
@@ -80,14 +80,14 @@ void State_GroundedArming::OnEnter()
     //issue command to controller here, and then setup a callback to handle the result
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-    auto controllerArm = new MAVLINKVehicleControllers::CommandARM(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto controllerArm = new MAVLINKUXVControllers::CommandARM(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerArm->AddLambda_Finished(this, [this, controllerArm](const bool completed, const uint8_t finishCode){
         controllerArm->Shutdown();
         if(!completed || (finishCode != MAV_RESULT_ACCEPTED))
             desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     });
 
-    controllerArm->setLambda_Shutdown([this, collection]()
+    controllerArm->setLambda_Shutdown([collection]()
     {
         auto ptr = collection->Remove("armController");
         delete ptr;
@@ -96,7 +96,7 @@ void State_GroundedArming::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    CommandItem::ActionArm action(255, Owner().getMAVLINKID());
+    command_item::ActionArm action(255, Owner().getMAVLINKID());
     action.setVehicleArm(true);
     controllerArm->Send(action, sender, target);
     collection->Insert("armController", controllerArm);

@@ -2,7 +2,6 @@
 
 #include <algorithm>
 
-#include <data_generic_state_item/positional_aid.h>
 #include <polySplit/polysplit.h>
 
 #include <Eigen/Dense>
@@ -20,13 +19,13 @@ double rnd() {return double(rand())/RAND_MAX;}
  * @param verts Vector of vertices that make up the environment boundary
  * @param gridSpacing Spacing between grid points
  */
-Environment_Map::Environment_Map(const Polygon_2DC &boundingPolygon, const double &gridSpacing, const bool &globalInstance) :
+Environment_Map::Environment_Map(const Polygon_Cartesian &boundingPolygon, const double &gridSpacing, const bool &globalInstance) :
     m_boundary(boundingPolygon), m_globalInstance(globalInstance) {
 
-    // Only generated and insert nodes if the RTA instance is a local instance (i.e. onboard a vehicle that needs to generate nodes)
-    if(!globalInstance) {
-        m_dataGrid = new mace::maps::Bounded2DGrid(m_boundary, gridSpacing, gridSpacing);
-    }
+//    // Only generated and insert nodes if the RTA instance is a local instance (i.e. onboard a vehicle that needs to generate nodes)
+//    if(!globalInstance) {
+//        m_dataGrid = new mace::maps::Bounded2DGrid(m_boundary, gridSpacing, gridSpacing);
+//    }
 }
 
 /**
@@ -34,89 +33,89 @@ Environment_Map::Environment_Map(const Polygon_2DC &boundingPolygon, const doubl
  * @param vehicles Map of vehicles and their positions
  * @return Success or Failure
  */
-bool Environment_Map::computeBalancedVoronoi(const std::map<int, Position<CartesianPosition_2D> > &vehicles) {
+bool Environment_Map::computeBalancedVoronoi(const std::map<int, CartesianPosition_2D> &vehicles) {
     bool success = false;
-    if(m_boundary.getVector().size() > 2) {
-        // Step 1): Use the number of vehicles to create evenly spaced points in environment
-        int numVehicles = vehicles.size();
+//    if(m_boundary.getVector().size() > 2) {
+//        // Step 1): Use the number of vehicles to create evenly spaced points in environment
+//        int numVehicles = vehicles.size();
 
-        if(numVehicles > 1 && !m_globalInstance) {
-            //TODO Pat: Address issue of global and local instance
-            numVehicles = 1;
-            std::cout << "*_*_*_*_*_*_*_* TESTING: IN RTA - Local instance with multiple vehicles *_*_*_*_*_*_*_*" << std::endl;
-            // TODO: If this fires (i.e. local instances somehow have knowledge of multiple vehicles), then we need logic
-            //          to handle this. Basically, local instances should only have knowledge of their own position for RTA
-            //          positions. Local instances should only have knowledge of their operational boundary, so there's no
-            //          need to partition the received boundaries
-        }
+//        if(numVehicles > 1 && !m_globalInstance) {
+//            //TODO Pat: Address issue of global and local instance
+//            numVehicles = 1;
+//            std::cout << "*_*_*_*_*_*_*_* TESTING: IN RTA - Local instance with multiple vehicles *_*_*_*_*_*_*_*" << std::endl;
+//            // TODO: If this fires (i.e. local instances somehow have knowledge of multiple vehicles), then we need logic
+//            //          to handle this. Basically, local instances should only have knowledge of their own position for RTA
+//            //          positions. Local instances should only have knowledge of their operational boundary, so there's no
+//            //          need to partition the received boundaries
+//        }
 
-        PolySplit polygon;
-        polygon.initPolygon(m_boundary, numVehicles);
+//        PolySplit polygon;
+//        polygon.initPolygon(m_boundary, numVehicles);
 
-        std::vector<Position<CartesianPosition_2D> > centroids = polygon.getCentroids();
-        if(centroids.size() != numVehicles) {
-            std::cout << "Balanced Voronoi: Number of vehicles does not match number of available polygons." << std::endl;
-        }
-        else {
-            std::vector<Cell_2DC> cellsVec;
-            std::vector<Polygon_2DC> polygons = polygon.getPolygons();
-            for(auto polygon : polygons) {
-                std::vector<Position<CartesianPosition_2D> > coords;
-                std::vector<Position<CartesianPosition_2D> > vertices = polygon.getVector();
-                for(auto vertex : vertices) {
-                    Position<CartesianPosition_2D> tmp;
-                    tmp.setXPosition(vertex.getXPosition());
-                    tmp.setYPosition(vertex.getYPosition());
-                    coords.push_back(tmp);
-                }
+//        std::vector<Position<CartesianPosition_2D> > centroids = polygon.getCentroids();
+//        if(centroids.size() != numVehicles) {
+//            std::cout << "Balanced Voronoi: Number of vehicles does not match number of available polygons." << std::endl;
+//        }
+//        else {
+//            std::vector<Cell_2DC> cellsVec;
+//            std::vector<Polygon_Cartesian> polygons = polygon.getPolygons();
+//            for(auto polygon : polygons) {
+//                std::vector<Position<CartesianPosition_2D> > coords;
+//                std::vector<Position<CartesianPosition_2D> > vertices = polygon.getVector();
+//                for(auto vertex : vertices) {
+//                    Position<CartesianPosition_2D> tmp;
+//                    tmp.setXPosition(vertex.getXPosition());
+//                    tmp.setYPosition(vertex.getYPosition());
+//                    coords.push_back(tmp);
+//                }
 
-                // Create cell and add to list:
-                Cell_2DC cell(coords, "2D Cartesian Polygon");
-                // Sort the cell vertices:
-                sortCellVerticesCCW(cell); // TODO: Optimize
-                // Only generated and insert nodes if the RTA instance is a local instance (i.e. onboard a vehicle that needs to generate nodes)
-                if(!m_globalInstance) {
-                    std::list<mace::pose::Position<mace::pose::CartesianPosition_2D>*> nodeList = m_dataGrid->getBoundedDataList();
-                    cell.insertNodes(nodeList, true);
-                }
+//                // Create cell and add to list:
+//                Cell_2DC cell(coords, "2D Cartesian Polygon");
+//                // Sort the cell vertices:
+//                sortCellVerticesCCW(cell); // TODO: Optimize
+//                // Only generated and insert nodes if the RTA instance is a local instance (i.e. onboard a vehicle that needs to generate nodes)
+//                if(!m_globalInstance) {
+//                    std::list<mace::pose::Position<mace::pose::CartesianPosition_2D>*> nodeList = m_dataGrid->getBoundedDataList();
+//                    cell.insertNodes(nodeList, true);
+//                }
 
-                cellsVec.push_back(cell);
-            }
+//                cellsVec.push_back(cell);
+//            }
 
-            if(cellsVec.size() > 0) {
-                success = true;
-            }
+//            if(cellsVec.size() > 0) {
+//                success = true;
+//            }
 
-            // Step 3): Assign cells to vehicle IDs based on distance to vehicle/site
-            std::vector<int> usedCellIndices;
-            for(auto vehicle : vehicles) {
-                double dist = std::numeric_limits<double>::max();
-                Cell_2DC tmpCell;
-                int counter = 0;
-                int index = counter;
-                for(auto cell : cellsVec) {
-                    double tmpDist = cell.getCenter().distanceTo(vehicle.second);
-                    if(tmpDist < dist && std::find(usedCellIndices.begin(), usedCellIndices.end(), counter) == usedCellIndices.end()) {
-                        dist = tmpDist;
-                        tmpCell = cell;
-                        index = counter;
-                    }
+//            // Step 3): Assign cells to vehicle IDs based on distance to vehicle/site
+//            std::vector<int> usedCellIndices;
+//            for(auto vehicle : vehicles) {
+//                double dist = std::numeric_limits<double>::max();
+//                Cell_2DC tmpCell;
+//                int counter = 0;
+//                int index = counter;
+//                for(auto cell : cellsVec) {
+//                    double tmpDist = cell.getCenter().distanceTo(vehicle.second);
+//                    if(tmpDist < dist && std::find(usedCellIndices.begin(), usedCellIndices.end(), counter) == usedCellIndices.end()) {
+//                        dist = tmpDist;
+//                        tmpCell = cell;
+//                        index = counter;
+//                    }
 
-                    counter++;
-                }
-                usedCellIndices.push_back(index);
-                cells.insert(std::make_pair(vehicle.first, tmpCell));
+//                    counter++;
+//                }
+//                usedCellIndices.push_back(index);
+//                cells.insert(std::make_pair(vehicle.first, tmpCell));
 
 
-                //! MTB - Removing
-                //! @pnolan Issue 139
-                //!printCellInfo(cells.at(1));
-                //!printCellInfo(cells.at(1));
-                //!
+//                //! MTB - Removing
+//                //! @pnolan Issue 139
+//                //!printCellInfo(cells.at(1));
+//                //!printCellInfo(cells.at(1));
+//                //!
 
-            }
-        }
-    }
+//            }
+//        }
+//    }
 
 
     // Return success or failure:
@@ -129,7 +128,7 @@ bool Environment_Map::computeBalancedVoronoi(const std::map<int, Position<Cartes
  * @param sitePositions Positions of sites (in x,y coordinates)
  * @return Success or Failure
  */
-bool Environment_Map::computeVoronoi(std::vector<Cell_2DC> &cellVec, const std::vector<Position<CartesianPosition_2D> > &sitePositions) {
+bool Environment_Map::computeVoronoi(std::vector<Cell_2DC> &cellVec, const std::vector<CartesianPosition_2D> &sitePositions) {
 //    bool success = false;
 
 //    // Set up constants for the container geometry
@@ -255,7 +254,7 @@ void Environment_Map::sortCellVerticesCCW(Cell_2DC &cell) {
 
     //  1) Calculate angle between site and all vertices
     std::vector<double> angles;
-    std::vector<Position<CartesianPosition_2D> > sortedVerts;
+    std::vector<CartesianPosition_2D> sortedVerts;
     for(auto cellVert : cell.getVector()) {
         double angle = atan2(cellVert.getYPosition() - cell.getCenter().getYPosition(), cellVert.getXPosition() - cell.getCenter().getXPosition()) * (180/M_PI);
         angles.push_back(angle);
@@ -284,7 +283,7 @@ void Environment_Map::printCellInfo(const Cell_2DC &cell) {
 
     // Print boundary vertices:
     std::cout << "      **** Boundary vertices: " << std::endl;
-    std::vector<Position<CartesianPosition_2D> > boundaryVerts = cell.getVector();
+    std::vector<CartesianPosition_2D> boundaryVerts = cell.getVector();
     int tmpVertCounter = 0;
     for(auto vertex : boundaryVerts) {
         tmpVertCounter++;
@@ -294,7 +293,7 @@ void Environment_Map::printCellInfo(const Cell_2DC &cell) {
 
     // Print bounding rectangle:
     std::cout << "      **** Boundary rectangle vertices: " << std::endl;
-    std::vector<Position<CartesianPosition_2D> > boundingRect = cell.getBoundingRect().getVector();
+    std::vector<CartesianPosition_2D> boundingRect = cell.getBoundingRect().getVector();
     int tmpBoundingVertCounter = 0;
     for(auto vertex : boundingRect) {
         tmpBoundingVertCounter++;
@@ -304,12 +303,12 @@ void Environment_Map::printCellInfo(const Cell_2DC &cell) {
 
     // Print center:
     std::cout << "      **** Center: " << std::endl;
-    Position<CartesianPosition_2D> center = cell.getCenter();
+    CartesianPosition_2D center = cell.getCenter();
     std::cout << "Center: (" << center.getXPosition() << ", " << center.getYPosition() << ")" << std::endl;
 
     // Print node stats:
     std::cout << "      **** Node stats: " << std::endl;
-    std::vector<Position<CartesianPosition_2D>*> nodes = cell.getNodes();
+    std::vector<CartesianPosition_2D*> nodes = cell.getNodes();
     std::cout << "Num nodes: " << nodes.size() << std::endl;
 
     std::cout << " __________________ End Printing Cell __________________ " << std::endl;

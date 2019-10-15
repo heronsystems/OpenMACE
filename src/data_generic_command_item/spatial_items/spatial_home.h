@@ -9,14 +9,13 @@
 
 #include "abstract_spatial_action.h"
 
+#include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
-
-#include "base/pose/geodetic_position_3D.h"
-#include "data_generic_state_item/base_3d_position.h"
+#include "data_generic_command_item/interface_command_helper.h"
 
 using namespace mace;
 
-namespace CommandItem {
+namespace command_item {
 
 //!
 //! \brief The SpatialHome class
@@ -31,9 +30,13 @@ public:
     //!
     SpatialHome();
 
-    SpatialHome(const pose::GeodeticPosition_3D &position);
+    //!
+    //! \brief SpatialHome
+    //! \param homePosition
+    //!
+    SpatialHome(const mace::pose::Position* homePosition);
 
-    ~SpatialHome();
+    ~SpatialHome() override;
 
     //!
     //! \brief SpatialHome A default copy constructor of a SpatialHome commandItem object.
@@ -47,17 +50,14 @@ public:
     //! \param systemTarget The ID value of the system that is the intended recipient of the command item.
     //! A developer should be aware that this value defaults to 0 if no arguments are provided.
     //!
-    SpatialHome(const int &systemOrigin, const int &systemTarget = 0);
-
-    mace_home_position_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+    SpatialHome(const unsigned int &systemOrigin, const unsigned int &systemTarget = 0);
 
 public:
     //!
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    COMMANDITEM getCommandType() const override;
+    COMMANDTYPE getCommandType() const override;
 
     //!
     //! \brief getDescription
@@ -66,15 +66,6 @@ public:
     //! would happen when issuing such a command.
     //!
     std::string getDescription() const override;
-
-    //!
-    //! \brief hasSpatialInfluence returns a boolean reflecting whether or not the commandItem has
-    //! a direct influence over a vehicles position. This is useful for determining flight times,
-    //! position elements, or rendering objects on a GUI.
-    //! \return false if the command does not have an affect over the vehicles position directly.
-    //! For example, change speed has no influence over a vehicles position.
-    //!
-    bool hasSpatialInfluence() const override;
 
     //!
     //! \brief getClone
@@ -87,7 +78,6 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
-
 
 public:
     //!
@@ -122,9 +112,16 @@ public:
         return !(*this == rhs);
     }
 
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printSpatialCMDInfo() const override;
+
     friend std::ostream& operator<<(std::ostream& os, const SpatialHome& t);
 };
 
-} //end of namespace MissionItem
+} //end of namespace command_item
 
 #endif // SPATIAL_HOME_H

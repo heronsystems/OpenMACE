@@ -14,6 +14,9 @@ TEMPLATE = lib
 DEFINES += COMMSMACE_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -67,11 +70,9 @@ HEADERS +=\
     ethernet_configuration.h \
     receiver_thread.h
 
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
-INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
-LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
 
 # Unix lib Install
 unix:!symbian {
@@ -91,7 +92,9 @@ INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET
 INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
-
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/release/ -lMACEDigiMeshWrapper
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
+else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/ -lMACEDigiMeshWrapper
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

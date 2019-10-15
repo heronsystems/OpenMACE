@@ -17,7 +17,7 @@
 #include "command_marshler.h"
 #include "module_characteristics.h"
 
-#include "base/geometry/polygon_2DC.h"
+#include "base/geometry/polygon_cartesian.h"
 
 #include "i_module_command_generic_boundaries.h"
 
@@ -26,6 +26,7 @@ namespace MaceCore
 
 enum class ExternalLinkCommands
 {
+    BASE_MODULE_LISTENER_ENUMS,
     BASE_MODULE_VEHICLE_LISTENER_ENUMS,
     GENERIC_MODULE_BOUNDARY_LISTENER_ENUMS,
     REQUEST_REMOTE_BOUNDARY,
@@ -34,11 +35,6 @@ enum class ExternalLinkCommands
     NEWLY_AVAILABLE_HOME_POSITION,
     NEWLY_AVAILABLE_MODULE,
     RECEIVED_MISSION_ACK
-};
-
-template <class U>
-class Testing{
-
 };
 
 class MACE_CORESHARED_EXPORT IModuleCommandExternalLink :
@@ -65,7 +61,7 @@ public:
             NewlyAvailableMissionExeState(key);
         });
 
-        AddCommandLogic<CommandItem::SpatialHome>(ExternalLinkCommands::NEWLY_AVAILABLE_HOME_POSITION, [this](const CommandItem::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender){
+        AddCommandLogic<command_item::SpatialHome>(ExternalLinkCommands::NEWLY_AVAILABLE_HOME_POSITION, [this](const command_item::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender){
             NewlyAvailableHomePosition(home, sender);
         });
 
@@ -117,7 +113,7 @@ public:
     //! \param home New home position
     //! \param sender Sender module
     //!
-    virtual void NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
+    virtual void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
 
     //!

@@ -12,6 +12,10 @@ t3 = - O.*log2(O);
 t3(O==0) = 0;
 
 H = t1 + t2 + t3;
-H( imag(H)~=0 ) = 0;
 
+
+H( imag(H)~=0 ) = 0;
+% if ( ~isreal(H) )
+%     error('H is not real');
+% end
 end

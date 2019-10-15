@@ -29,17 +29,26 @@ plotHandles.p1.MarkerSize = 4;
 
 % plot sensing radius
 for i = 1:1:swarmModel.N
-    xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
+    switch swarmModel.communicationTopology
+        case 'centralized'
+            xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
+        case 'allToAll'
+            xk = [ swarmState{i}.x(1); swarmState{i}.x(2); swarmState{i}.x(3); swarmState{i}.x(4) ];
+    end
     xc = xcnom + xk(1);
     yc = ycnom + xk(2);
     plotHandles.figh_sensingRadius(i) = plot(xc,yc,'k-');
 end
-% plot target locations
-for i = 1:1:targetModel.M
-curNode = targetState.x(2*i-1);
-    targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
-    plotHandles.figh_targetLoc(i) = plot(targXY(1), targXY(2), 'r+','linewidth',2);
-end
+% % plot target locations
+% for i = 1:1:targetModel.M
+%     if ( strcmp(targetModel.type, 'varyingSpeedRandomWalk') )
+%         curNode = targetState.x(4*i-3);
+%     elseif ( strcmp(targetModel.type, 'constantSpeedRandomWalk') || strcmp(targetModel.type, 'constantSpeedRandomWalkGenerative'))
+%         curNode = targetState.x(2*i-1);
+%     end
+%     targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
+%     plotHandles.figh_targetLoc(i) = plot(targXY(1), targXY(2), 'r+','linewidth',2);
+% end
 % plot F3 boundary
 if ( runParams.movie.plotF3Obstacles )
     plot(runParams.movie.perimX, runParams.movie.perimY, 'k-','Linewidth',2);
@@ -65,7 +74,7 @@ if ( ~strcmp(trueWorld.type,'osmAtF3') )
     xlabel('X(m)')
 end
 ylabel('Y(m)')
-%title(['Ground Truth']);
+%title(['Ground Truth']); 
 % colorbar;
 % caxis([-30 30]);
 hold off;

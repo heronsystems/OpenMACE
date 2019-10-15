@@ -5,14 +5,14 @@
 
 #include "data_generic_command_item/command_item_ack.h"
 
-using namespace CommandItem;
+using namespace command_item;
 
 namespace CommandTopic {
 
 extern const char DataCommandItemTopicACK_name[];
 extern const MaceCore::TopicComponentStructure DataCommandItemTopicACK_structure;
 
-class CommandItemTopic_ACK : public CommandItem::CommandItemACK, public Data::NamedTopicComponentDataObject<DataCommandItemTopicACK_name, &DataCommandItemTopicACK_structure>
+class CommandItemTopic_ACK : public command_item::CommandItemACK, public Data::NamedTopicComponentDataObject<DataCommandItemTopicACK_name, &DataCommandItemTopicACK_structure>
 {
 public:
     virtual MaceCore::TopicDatagram GenerateDatagram() const;
@@ -20,7 +20,7 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
     CommandItemTopic_ACK();
-    CommandItemTopic_ACK(const CommandItem::CommandItemACK &copyObj);
+    CommandItemTopic_ACK(const command_item::CommandItemACK &copyObj);
 };
 
 } //end of namespace CommandTopic

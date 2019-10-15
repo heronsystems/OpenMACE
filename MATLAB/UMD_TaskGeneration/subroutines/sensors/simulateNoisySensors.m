@@ -1,4 +1,4 @@
-function [cellsInView, mapSignals, targSignals, cellStateMat, numViews ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, bin2NodeID, mG, nG, mZ, nZ, trueWorldGraph, numViews )
+function [cellsInView, mapSignals, targSignals, cellStateMat, cellMsmtMat ] = simulateNoisySensors( xcp, ycp, Rsense, x, N, targetState, targetModel, cellStateMat, cellMsmtMat, numNodesMat, communicationTopology, mG, nG, mZ, nZ, trueWorldGraph )
 % Input:
 
 % Output:
@@ -9,7 +9,18 @@ function [cellsInView, mapSignals, targSignals, cellStateMat, numViews ] = simul
 %       contains nodes
 %   cellStateMat: updated cellState matrix (1,2,0)
 
-% 
+% get targets xy
+for i = 1:1:targetModel.M
+    if ( strcmp(targetModel.type, 'varyingSpeedRandomWalk') )
+        curNode = targetState.x(4*i-3,1);
+    elseif( strcmp(targetModel.type, 'constantSpeedRandomWalk') || strcmp(targetModel.type,'constantSpeedRandomWalkGenerative') )
+        curNode = targetState.x(2*i-1,1);
+    end
+    %targNodes(i) = curNode; % on true graph
+    targXY(i,1) = trueWorldGraph.Nodes.x( curNode );
+    targXY(i,2) = trueWorldGraph.Nodes.y( curNode );    
+end
+
 numBinsX = length(xcp);
 numBinsY = length(ycp);
 dx = xcp(2) - xcp(1);
@@ -17,25 +28,18 @@ dy = ycp(2) - ycp(1);
 windowWidth = 3*ceil(Rsense/dx)+1;
 halfWidth = floor((windowWidth-1)/2);
 
-minX = xcp(1) - dx;
-minY = ycp(1) - dy;
-% get targets xy
-for i = 1:1:targetModel.M
-    curNode = targetState.x(2*i-1,1);
-    targXY(i,1) = trueWorldGraph.Nodes.x( curNode );
-    targXY(i,2) = trueWorldGraph.Nodes.y( curNode );
-    targetBinX(i) = max(ceil( (targXY(i,1) - minX ) /  dx ),1);
-    targetBinY(i) = max(ceil( (targXY(i,2) - minY ) /  dy ),1);
-    targetBinX(i) = min(targetBinX(i), numBinsX);
-    targetBinY(i) = min(targetBinY(i), numBinsY);
+cellsInView = [];
+switch communicationTopology
+    case 'allToAll'
+        % state of i-th agent
+        agents = [x(1) x(2)];
+    case 'centralized'
+        for i = 1:1:N
+            % state of i-th agent
+            agents(i,:) = [x(4*i-3) x(4*i-2)];
+        end
 end
 
-%
-cellsInView = [];
-for i = 1:1:N
-    % state of i-th agent
-    agents(i,:) = [x(4*i-3) x(4*i-2)];
-end
 k = 1;
 for i = 1:1:size(agents,1)
     agent = agents(i,:);
@@ -68,29 +72,23 @@ for i = 1:1:size(agents,1)
             % check if control point is within sensing range
             if ( norm(controlPt-agent) <= Rsense )
                 cellsInView = [ cellsInView; bx by];
+                cellMsmtMat(by,bx) = cellMsmtMat(by,bx) + 1;
                 
                 % grid sensor
                 % 1 - if it contains a node of the occupancy graph
                 % 0 - if it is an obstacle cell
-                cellStateMat(by,bx) = (bin2NodeID(by,bx)~= 0);  %
+                cellStateMat(by,bx) = (numNodesMat(by,bx)~= 0);  %
                 if ( cellStateMat(by,bx) == 1 ) % is a node
                     mapSignals(k) = quantizedSensor(mG, nG, 1);
                 else
                     mapSignals(k) = quantizedSensor(mG, nG, 0);
                 end
-                % target sensor                
-                for j = 1:1:targetModel.M                       
-                   if ( (bx == targetBinX(j)) && (by == targetBinY(j)) )
+                
+                % target sensor
+                for j = 1:1:targetModel.M    
+                   if ( norm(controlPt - targXY(j,:)) == 0 )
                        targSignals(k) = quantizedSensor(mZ, nZ, 1);
-                       fprintf('\n\n Target In View! Bin (bx,by) = (%d, %d), Pos (x,y) = (%3.3f,%3.3f)\n', bx, by, xcp(bx), ycp(by));
-                       numViews = numViews + 1;
-%                        figure;
-%                        plot(swarmWorld.exploredGraph,'XData',swarmWorld.exploredGraph.Nodes.nodeX,'YData',swarmWorld.exploredGraph.Nodes.nodeY)
-%                        hold on;
-%                        drawgrid(0, 40, 0, 40, 5);
-%                        plot(xcp(bx), ycp(by),'m+','MarkerSize',10);
                    else
-                       %fprintf('Target is in (%3.3f, %3.3f)\n',targXY(j,1),targXY(j,2));
                        targSignals(k) = quantizedSensor(mZ, nZ, 0);
                    end
                 end

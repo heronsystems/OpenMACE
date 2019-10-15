@@ -44,10 +44,14 @@ for i = 1:s:length(swarmWorldHist)
     swarmWorld = swarmWorldHist{i}'
     plot(trueWorld.nodeX, trueWorld.nodeY,'o', 'color', [0.8 0.8 0.8])
     if ( ~isempty(swarmWorld.exploredGraph.Nodes) )
-        xData = trueWorld.xcp( swarmWorld.exploredGraph.Nodes.bx );
-        yData = trueWorld.ycp( swarmWorld.exploredGraph.Nodes.by );
+        switch swarmModel.mappingSensorType
+            case 'noisy'
+                xData = trueWorld.xcp( swarmWorld.exploredGraph.Nodes.bx );
+                yData = trueWorld.ycp( swarmWorld.exploredGraph.Nodes.by );
+        end
         hold on;
         %plot(swarmWorld.exploredGraph,'XData',xData,'YData',yData,'NodeLabel',[],'MarkerSize',6);
+        
         plotHandles.p1 = plot(swarmWorld.exploredGraph,'XData',xData,'YData',yData,'NodeLabel',[],'NodeColor','b');
         plotHandles.p1.NodeCData = swarmWorld.log_likelihood_env;
         plotHandles.p1.MarkerSize = 6;
@@ -57,7 +61,11 @@ for i = 1:s:length(swarmWorldHist)
     % plot target locations
     targetState = targetStateHist{i};
     for j = 1:1:targetModel.M
-        curNode = targetState.x(2*j-1);
+        if ( strcmp(targetModel.type, 'varyingSpeedRandomWalk') )
+            curNode = targetState.x(4*j-3);
+        elseif ( strcmp(targetModel.type, 'constantSpeedRandomWalk') || strcmp(targetModel.type, 'constantSpeedRandomWalkGenerative'))
+            curNode = targetState.x(2*j-1);
+        end
         targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
         plotHandles.figh_targetLoc(j) = plot(targXY(1), targXY(2), 'rx','linewidth',1,'MarkerSize',8);
     end
@@ -146,19 +154,19 @@ for i = 1:s:length(swarmWorldHist)
     end
     plot(swarmWorld.cellCenterOfMass(:,1), swarmWorld.cellCenterOfMass(:,2),'+','Color',[1 1 1]*0.8,'linewidth',1);
     
-    % plot bundles
-    for k = 1:1:swarmModel.N
-        %set(plotHandles.figh_voronoiCenters,'XData',swarmWorld.cellCenterOfMass(:,1), 'YData',swarmWorld.cellCenterOfMass(:,2));
-        for j = 1:1:size(swarmState.wptList,2)
-            ind = swarmState.wptList(k,j);
-            bundleX(j) = swarmWorld.cellCenterOfMass(ind,1);
-            bundleY(j) = swarmWorld.cellCenterOfMass(ind,2);
+        % plot bundles
+        for k = 1:1:swarmModel.N
+            %set(plotHandles.figh_voronoiCenters,'XData',swarmWorld.cellCenterOfMass(:,1), 'YData',swarmWorld.cellCenterOfMass(:,2));
+            for j = 1:1:size(swarmState.wptList,2)
+                ind = swarmState.wptList(k,j);
+                bundleX(j) = swarmWorld.cellCenterOfMass(ind,1);
+                bundleY(j) = swarmWorld.cellCenterOfMass(ind,2);
+            end
+            % add agent current poosition
+            xk = [ swarmState.x(4*k-3); swarmState.x(4*k-2); swarmState.x(4*k-1); swarmState.x(4*k) ];
+            plot([xk(1) bundleX],[xk(2) bundleY],'mo-','linewidth',2,'MarkerFaceColor','m');
+    
         end
-        % add agent current poosition
-        xk = [ swarmState.x(4*k-3); swarmState.x(4*k-2); swarmState.x(4*k-1); swarmState.x(4*k) ];
-        plot([xk(1) bundleX],[xk(2) bundleY],'mo-','linewidth',2,'MarkerFaceColor','m');
-        
-    end
     
     % plot sensing radius
     for j = 1:1:swarmModel.N

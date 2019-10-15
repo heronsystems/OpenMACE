@@ -3,35 +3,45 @@
 namespace mace {
 namespace state_space {
 
-GoalState::GoalState(const StateSpacePtr &space, const double &value):
-    GoalSampler(space,value)
+GoalState::GoalState(const double &value):
+    GoalRegion (value), goalState(nullptr)
 {
-    this->setSampleFunction([this](State* sample)
-    {
-        sample = goalState;
-    });
+
 }
 
-void GoalState::setState(State* state)
+GoalState::GoalState(const GoalState &copy):
+    GoalRegion(copy)
 {
-    goalState = state;
+    if(copy.goalState != nullptr)
+        this->goalState = copy.goalState->getStateClone();
 }
 
-const State* GoalState::getState() const
+GoalState::~GoalState()
+{
+    if(goalState != nullptr)
+        delete goalState; goalState = nullptr;
+}
+
+void GoalState::setState(const State* state)
+{
+    goalState = state->getStateClone();
+}
+
+State* GoalState::getState() const
 {
     return goalState;
 }
 
-void GoalState::sampleGoal(State* sample)
-{
-    sampleFunction(sample);
-}
-
 bool GoalState::isGoalSatisfied(const State *current)
 {
-    double distance = stateSpace->distanceBetween(goalState,current);
-    if(distance < radialSatisfy)
+    double distance = std::numeric_limits<double>::max();
+
+    if(m_DistanceFunction != nullptr)
+        distance = m_DistanceFunction(current,goalState);
+
+    if(distance <= radialSatisfy)
         return true;
+
     return false;
 }
 

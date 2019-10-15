@@ -14,6 +14,9 @@ TEMPLATE = lib
 DEFINES += MODULE_EXTERNAL_LINK_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
@@ -31,7 +34,7 @@ SOURCES += module_external_link.cpp \
     controllers/commands/command_rtl.cpp \
     controllers/commands/command_takeoff.cpp \
     pair_module_boundary_identifier.cpp \
-    controllers/commands/controller_goto.cpp
+    controllers/commands/command_execute_spatial_action.cpp
 
 HEADERS += module_external_link.h\
         module_external_link_global.h \
@@ -49,7 +52,7 @@ HEADERS += module_external_link.h\
     controllers/commands/generic_short_command.h \
     pair_module_boundary_identifier.h \
     controllers/common.h \
-    controllers/commands/controller_goto.h
+    controllers/commands/command_execute_spatial_action.h
 
 
 # Unix lib Install
@@ -74,12 +77,20 @@ include(../headerinstall.pri)
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../speedLog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
-INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
-LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/release/ -lMACEDigiMeshWrapper
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
+else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/ -lMACEDigiMeshWrapper
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
+else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
+else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
@@ -89,13 +100,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base_topic/release/
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base_topic/debug/ -lbase_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../base_topic/ -lbase_topic
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
-else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
-else:unix: LIBS += -L$$OUT_PWD/../data/ -ldata
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/release/ -lcommsMACE
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/debug/ -lcommsMACE
@@ -117,14 +121,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_t
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/debug/ -ldata_generic_item_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item_topic/ -ldata_generic_item_topic
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/release/ -ldata_generic_state_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/debug/ -ldata_generic_state_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item/ -ldata_generic_state_item
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/release/ -ldata_generic_state_item_topic
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/debug/ -ldata_generic_state_item_topic
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/ -ldata_generic_state_item_topic
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/release/ -ldata_generic_command_item
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/debug/ -ldata_generic_command_item
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_command_item/ -ldata_generic_command_item
@@ -136,15 +132,6 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_command_item_topic/ -ldata_
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/release/ -ldata_generic_mission_item_topic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/debug/ -ldata_generic_mission_item_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/ -ldata_generic_mission_item_topic
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MACE/release/ -ldata_interface_MACE
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MACE/debug/ -ldata_interface_MACE
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_interface_MACE/ -ldata_interface_MACE
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_generic_MAVLINK/release/ -lmodule_generic_MAVLINK
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_generic_MAVLINK/debug/ -lmodule_generic_MAVLINK
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_generic_MAVLINK/ -lmodule_generic_MAVLINK
-
 
 unix {
     exists(/opt/ros/kinetic/lib/) {

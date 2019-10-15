@@ -26,8 +26,13 @@ import { ConnectedVehiclesContainer } from "../ConnectedVehicles/ConnectedVehicl
 import { DrawButtonsContainer } from "../DrawButtons/DrawButtonsContainer";
 import { VehicleCommandsContainer } from "../VehicleCommands/VehicleCommandsContainer";
 
-let injectTapEventPlugin = require("react-tap-event-plugin");
-injectTapEventPlugin();
+// let injectTapEventPlugin = require("react-tap-event-plugin");
+// injectTapEventPlugin();
+// declare module 'react' {
+//     interface DOMAttributes<T> {
+//         onClick?: React.EventHandler<React.TouchEvent<T>>;
+//     }
+// }
 
 import * as L from "leaflet";
 
@@ -288,6 +293,7 @@ export default class AppContainer extends React.Component<Props, State> {
         // Delete vehicle from DB:
         delete this.appHelper.maceCommsHelper.vehicleDB.vehicles[vehicleID];
     };
+
 
     render() {
         // const ToolbarRight = () => (

@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
         loggingPath = loggingDirectory.absolutePath().toStdString() + "/" + finalPath;
 
         std::cout << "The current MACE_ROOT path is: " << rootPath << std::endl;
-        filename = rootPath + kPathSeparator + "MaceSetup_Configs/Default.xml";
+        filename = rootPath + kPathSeparator + "MaceSetup_Configs" + kPathSeparator + "Default.xml";
     }else{
         filename = "MaceSetup_Configs/Default.xml";
     }

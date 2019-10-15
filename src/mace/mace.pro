@@ -7,6 +7,8 @@ QT -= gui
 
 TARGET = MACE
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += main.cpp \
@@ -28,8 +30,21 @@ HEADERS += \
 target.path = $$(MACE_ROOT)/bin
 INSTALLS += target
 
+INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/include
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../speedLog/
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
+INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
+else:unix:!macx: LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
+else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
@@ -45,20 +60,11 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../base_topic/ -lbase_topic
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../maps/release/ -lmaps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lmaps
-else:unix: LIBS += -L$$OUT_PWD/../base/ -lmaps
-
+else:unix:!macx: LIBS += -L$$OUT_PWD/../maps/ -lmaps
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../comms/release/ -lcomms
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../comms/debug/ -lcomms
 else:unix: LIBS += -L$$OUT_PWD/../comms/ -lcomms
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/release/ -lcommsMAVLINK
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/debug/ -lcommsMAVLINK
-else:unix: LIBS += -L$$OUT_PWD/../commsMAVLINK/ -lcommsMAVLINK
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsExample/release/ -lcommsExample
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsExample/debug/ -lcommsExample
-#else:unix: LIBS += -L$$OUT_PWD/../commsExample/ -lcommsExample
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/release/ -lcommsMACE
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMACE/debug/ -lcommsMACE
@@ -68,25 +74,13 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMACEHelper/rel
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMACEHelper/debug/ -lcommsMACEHelper
 else:unix:!macx: LIBS += -L$$OUT_PWD/../commsMACEHelper/ -lcommsMACEHelper
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../mace_core/release/ -lmace_core
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../mace_core/debug/ -lmace_core
-else:unix: LIBS += -L$$OUT_PWD/../mace_core/ -lmace_core
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/release/ -lcommsMAVLINK
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/debug/ -lcommsMAVLINK
+else:unix: LIBS += -L$$OUT_PWD/../commsMAVLINK/ -lcommsMAVLINK
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item/release/ -ldata_generic_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item/debug/ -ldata_generic_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item/ -ldata_generic_item
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/release/ -ldata_generic_item_topic
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/debug/ -ldata_generic_item_topic
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item_topic/ -ldata_generic_item_topic
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/release/ -ldata_generic_state_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/debug/ -ldata_generic_state_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item/ -ldata_generic_state_item
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/release/ -ldata_generic_state_item_topic
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/debug/ -ldata_generic_state_item_topic
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/ -ldata_generic_state_item_topic
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../controllers/release/ -lcontrollers
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../controllers/debug/ -lcontrollers
+else:unix:!macx: LIBS += -L$$OUT_PWD/../controllers/ -lcontrollers
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/release/ -ldata_generic_command_item
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/debug/ -ldata_generic_command_item
@@ -96,10 +90,41 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_comman
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item_topic/debug/ -ldata_generic_command_item_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_command_item_topic/ -ldata_generic_command_item_topic
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item/release/ -ldata_generic_item
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item/debug/ -ldata_generic_item
+else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item/ -ldata_generic_item
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/release/ -ldata_generic_item_topic
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/debug/ -ldata_generic_item_topic
+else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item_topic/ -ldata_generic_item_topic
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/release/ -ldata_generic_mission_item_topic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/debug/ -ldata_generic_mission_item_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/ -ldata_generic_mission_item_topic
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/release/ -ldata_interface_MAVLINK
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/debug/ -ldata_interface_MAVLINK
+else:unix:!macx: LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/ -ldata_interface_MAVLINK
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_sensors/release/ -ldata_vehicle_sensors
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_sensors/debug/ -ldata_vehicle_sensors
+else:unix:!macx: LIBS += -L$$OUT_PWD/../data_vehicle_sensors/ -ldata_vehicle_sensors
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../mace_core/release/ -lmace_core
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../mace_core/debug/ -lmace_core
+else:unix: LIBS += -L$$OUT_PWD/../mace_core/ -lmace_core
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_external_link/release/ -lmodule_external_link
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_external_link/debug/ -lmodule_external_link
+else:unix:!macx: LIBS += -L$$OUT_PWD/../module_external_link/ -lmodule_external_link
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ground_station/release/ -lmodule_ground_station
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ground_station/debug/ -lmodule_ground_station
+else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ground_station/ -lmodule_ground_station
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/release/ -lmodule_resource_task_allocation
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/debug/ -lmodule_resource_task_allocation
+else:unix:!macx: LIBS += -L$$OUT_PWD/../module_resource_task_allocation/ -lmodule_resource_task_allocation
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_path_planning_NASAPhase2/release/ -lmodule_path_planning_NASAPhase2
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_path_planning_NASAPhase2/debug/ -lmodule_path_planning_NASAPhase2
@@ -113,26 +138,9 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ROS_UMD/rele
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ROS_UMD/debug/ -lmodule_ROS_UMD
 else:unix: LIBS += -L$$OUT_PWD/../module_ROS_UMD/ -lmodule_ROS_UMD
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/release/ -lmodule_resource_task_allocation
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/debug/ -lmodule_resource_task_allocation
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_resource_task_allocation/ -lmodule_resource_task_allocation
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ground_station/release/ -lmodule_ground_station
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ground_station/debug/ -lmodule_ground_station
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ground_station/ -lmodule_ground_station
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_external_link/release/ -lmodule_external_link
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_external_link/debug/ -lmodule_external_link
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_external_link/ -lmodule_external_link
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_sensors/release/ -ldata_vehicle_sensors
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_sensors/debug/ -ldata_vehicle_sensors
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_vehicle_sensors/ -ldata_vehicle_sensors
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/release/ -lmodule_vehicle_sensors
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/debug/ -lmodule_vehicle_sensors
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_sensors/ -lmodule_vehicle_sensors
-
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/release/ -lmodule_vehicle_ardupilot
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/debug/ -lmodule_vehicle_ardupilot
+else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/ -lmodule_vehicle_ardupilot
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/release/ -lmodule_vehicle_generic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/debug/ -lmodule_vehicle_generic
@@ -142,43 +150,26 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_MAVL
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/debug/ -lmodule_vehicle_MAVLINK
 else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/ -lmodule_vehicle_MAVLINK
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/release/ -lmodule_vehicle_ardupilot
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/debug/ -lmodule_vehicle_ardupilot
-else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/ -lmodule_vehicle_ardupilot
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../example_vehicle_module/release/ -lexample_vehicle_module
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../example_vehicle_module/debug/ -lexample_vehicle_module
-#else:unix: LIBS += -L$$OUT_PWD/../example_vehicle_module/ -lexample_vehicle_module
-
-#win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../voropp/release/ -lvoropp
-#else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../voropp/debug/ -lvoropp
-#else:unix:!macx: LIBS += -L$$OUT_PWD/../voropp/ -lvoropp
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/release/ -ldata_interface_MAVLINK
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/debug/ -ldata_interface_MAVLINK
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/ -ldata_interface_MAVLINK
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MACE/release/ -ldata_interface_MACE
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MACE/debug/ -ldata_interface_MACE
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_interface_MACE/ -ldata_interface_MACE
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../maps/release/ -lmaps
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lmaps
-else:unix:!macx: LIBS += -L$$OUT_PWD/../maps/ -lmaps
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/release/ -lmodule_vehicle_sensors
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/debug/ -lmodule_vehicle_sensors
+else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_sensors/ -lmodule_vehicle_sensors
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../planners/release/ -lplanners
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../planners/debug/ -lplanners
 else:unix:!macx: LIBS += -L$$OUT_PWD/../planners/ -lplanners
 
-INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../speedLog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/release/ -lDigiMesh
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../DigiMesh/debug/ -lDigiMesh
+else:unix:!macx: LIBS += -L$$OUT_PWD/../DigiMesh/ -lDigiMesh
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/release/ -lMACEDigiMeshWrapper
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
+else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/ -lMACEDigiMeshWrapper
 
 win32: LIBS += -limagehlp
 
 unix: LIBS += -lboost_system
+unix: LIBS += -llz4
 
 unix {
     exists(/opt/ros/kinetic/lib/) {
@@ -209,7 +200,7 @@ unix {
         LIBS += -L/opt/ros/kinetic/lib -loctomap
         LIBS += -L/opt/ros/kinetic/lib -loctomath
 
-        LIBS += -L$$(MACE_ROOT)/catkin_sim_environment/devel/lib/ -lmace_matlab
+#        LIBS += -L$$(MACE_ROOT)/catkin_sim_environment/devel/lib/ -lmace_matlab_msgs
 
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
@@ -220,24 +211,7 @@ unix {
     }
 }
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-win32:INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-
-
-INCLUDEPATH += $$(MACE_DIGIMESH_WRAPPER)/include/
-LIBS += -L$$(MACE_DIGIMESH_WRAPPER)/lib -lMACEDigiMeshWrapper
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
-else:unix:!macx: LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
-
-INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-
-
-
 unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
-

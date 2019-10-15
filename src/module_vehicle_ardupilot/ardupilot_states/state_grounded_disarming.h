@@ -6,8 +6,8 @@
 namespace ardupilot{
 namespace state{
 
-class State_GroundedIdle;
 class State_GroundedArmed;
+class State_GroundedDisarmed;
 
 class State_GroundedDisarming : public AbstractStateArdupilot
 {

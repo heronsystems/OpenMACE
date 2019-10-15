@@ -14,6 +14,9 @@ TEMPLATE = lib
 DEFINES += DATA_GENERIC_COMMAND_ITEM_TOPIC_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -29,8 +32,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     command_item_topic.cpp \
     command_item_topic_ack.cpp \
-    command_topic_land.cpp \
-    command_item_topic_takeoff.cpp \
     command_item_topic_change_mode.cpp
 
 
@@ -39,9 +40,7 @@ HEADERS +=\
     command_item_topic.h \
     command_item_topic_components.h \
     command_item_topic_ack.h \
-    command_topic_takeoff.h \
-    command_topic_change_mode.h \
-    command_topic_land.h
+    command_topic_change_mode.h
 
 # Unix lib Install
 unix:!symbian {
@@ -61,32 +60,12 @@ INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET
 INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
-
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data/ -ldata
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/release/ -ldata_generic_state_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/debug/ -ldata_generic_state_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item/ -ldata_generic_state_item
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/release/ -ldata_generic_state_item_topic
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/debug/ -ldata_generic_state_item_topic
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/ -ldata_generic_state_item_topic
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/release/ -ldata_generic_command_item
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/debug/ -ldata_generic_command_item
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_command_item/ -ldata_generic_command_item
 
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/release/ -ldata_generic_state_item_topic
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/debug/ -ldata_generic_state_item_topic
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/ -ldata_generic_state_item_topic
-
-INCLUDEPATH += $$PWD/../data_generic_state_item_topic
-DEPENDPATH += $$PWD/../data_generic_state_item_topic

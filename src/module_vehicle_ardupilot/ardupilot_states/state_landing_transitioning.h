@@ -1,9 +1,12 @@
 #ifndef STATE_LANDING_TRANSITIONING_H
 #define STATE_LANDING_TRANSITIONING_H
 
+#include <mavlink.h>
+
 #include "abstract_state_ardupilot.h"
 
 #include "../ardupilot_target_progess.h"
+
 #include "module_vehicle_MAVLINK/controllers/controller_guided_mission_item.h"
 
 namespace ardupilot{

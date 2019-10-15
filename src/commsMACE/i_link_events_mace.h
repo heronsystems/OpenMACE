@@ -48,12 +48,12 @@ public:
     //!
     bool containsKey(const ResourceKey &rhs) const
     {
-        for(int i = 0 ; i < rhs.size() ; i++)
+        for(size_t i = 0 ; i < rhs.size() ; i++)
         {
             std::string nameInGivenKey = rhs.at(i);
 
             bool found = false;
-            for(int j = 0 ; j < this->size() ; j++)
+            for(size_t j = 0 ; j < this->size() ; j++)
             {
                 std::string nameInThis = this->at(j);
                 if(nameInThis == nameInGivenKey)
@@ -82,7 +82,7 @@ public:
         std::size_t h0 = 0;
         for(std::size_t i = 0 ; i < str.size() ; i++)
         {
-            h0 += str[i];
+            h0 += static_cast<size_t>(str[i]);
         }
         seed ^= h0 + 0x9e3779b9 + (seed << 6) + (seed >> 2);
       }
@@ -342,7 +342,7 @@ public:
     }
 
 
-    template<const char* ...N, typename ...I>
+    template<char* ...N, typename ...I>
     void Set(I... ids)
     {
         static_assert(sizeof...(N) == sizeof...(ids), "Name and Resource values length must be the same");
@@ -357,12 +357,12 @@ public:
         return m_IDs.size();
     }
 
-    std::string NameAt(int i) const
+    std::string NameAt(unsigned int i) const
     {
         return m_componentNames.at(i);
     }
 
-    int IDAt(int i) const
+    int IDAt(unsigned int i) const
     {
         return m_IDs.at(i);
     }
@@ -397,6 +397,8 @@ class ILink;
 
 class ILinkEvents
 {
+public:
+    virtual ~ILinkEvents() = default;
 public:
 
     virtual void AddedExternalResource(ILink *link_ptr, const Resource &resource) = 0;

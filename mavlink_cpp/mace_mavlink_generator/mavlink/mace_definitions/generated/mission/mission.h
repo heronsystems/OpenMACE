@@ -33,6 +33,7 @@ extern "C" {
 
 // ENUM DEFINITIONS
 
+namespace mace {
 
 /** @brief  The ROI (region of interest) for the vehicle. This can be
                 be used by the vehicle for camera/vehicle attitude alignment (see
@@ -104,6 +105,7 @@ typedef enum MAV_MISSION_STATE
 } MAV_MISSION_STATE;
 #endif
 
+} //end of namespace mace
 // MACE VERSION
 
 #ifndef MACE_VERSION

@@ -1,20 +1,15 @@
 #include "spatial_rtl.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialRTL::getCommandType() const
+COMMANDTYPE SpatialRTL::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH;
+    return COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH;
 }
 
 std::string SpatialRTL::getDescription() const
 {
     return "This causes the vehicle to return to the launch location";
-}
-
-bool SpatialRTL::hasSpatialInfluence() const
-{
-    return true;
 }
 
 std::shared_ptr<AbstractCommandItem> SpatialRTL::getClone() const
@@ -36,13 +31,26 @@ SpatialRTL::SpatialRTL():
 SpatialRTL::SpatialRTL(const SpatialRTL &obj):
     AbstractSpatialAction(obj)
 {
-    this->operator =(obj);
+
 }
 
-SpatialRTL::SpatialRTL(const int &systemOrigin, const int &systemTarget):
+SpatialRTL::SpatialRTL(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
 }
 
+
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialRTL::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
 }
+
+} //end of namespace CommandItem

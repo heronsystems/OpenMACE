@@ -31,7 +31,8 @@ for agentIndex = 1:ROS_MACE.N
         agentTargetHist{agentIndex} = [agentTargetHist{agentIndex} [toc(tStart); targetWpt(1); targetWpt(2);waypointRequest.Altitude]];
         fprintf('VehicleID %d Waypoint Command Sent = (%3.1f, %3.1f).\n',ROS_MACE.agentIDs(agentIndex),targetWpt(1),targetWpt(2));
         
-        subplot(ROS_MACE.taskAndLocation);
+%         figure(1);
+        subplot(2,1,2);
         plot(wptsDesired{agentIndex}(:,1),wptsDesired{agentIndex}(:,2),[colors(agentIndex+2) '-']);
         plot(targetWpt(1), targetWpt(2),[colors(agentIndex) '+'],'MarkerSize',4,'linewidth',2);
         drawnow;
@@ -47,7 +48,7 @@ while(~all(reaching_wpts_end))
     msg = ROS_MACE.positionSub.LatestMessage;
     % it appears that the LatestMessage circumvents the callback, so we
     % force it here:
-    positionCallback( ROS_MACE, msg );
+    positionCallback( ROS_MACE.positionSub, msg );
     % check distance =====
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
@@ -88,7 +89,8 @@ while(~all(reaching_wpts_end))
                     agentTargetHist{agentIndex} = [agentTargetHist{agentIndex} [toc(tStart); targetWpt(1); targetWpt(2);waypointRequest.Altitude]];
                     fprintf('VehicleID %d Waypoint Command Sent = (%3.1f, %3.1f).\n',ROS_MACE.agentIDs(agentIndex),targetWpt(1),targetWpt(2));
                     
-                    subplot(ROS_MACE.taskAndLocation);
+                    figure(1);
+                    subplot(2,1,2);
                     plot(targetWpt(1), targetWpt(2),[colors(agentIndex) '+'],'MarkerSize',4,'linewidth',2);
                     drawnow;
                 else

@@ -40,8 +40,8 @@ Error: listen EACCES 127.0.0.1:8080
 ```
 If this happens, re-build the GUI and relaunch with a different port number:
 ```
-yarn run build:prod --nasa_gui:port=<newport>
-yarn run launch --nasa_gui:port=<newport>
+yarn run build:prod --mace_gui:port=<newport>
+yarn run launch --mace_gui:port=<newport>
 ```
 (Replace `<newport>` with the desired port number)
 

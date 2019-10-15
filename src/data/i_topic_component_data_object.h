@@ -11,6 +11,9 @@ enum TopicType{
 };
 
 class ITopicComponentDataObject : public MaceCore::ITopicComponentPrototype {
+
+public:
+    virtual ~ITopicComponentDataObject() = default;
 public:
     const char* name;
 };
@@ -20,7 +23,8 @@ template<const char* CompName, const MaceCore::TopicComponentStructure *Structur
 class NamedTopicComponentDataObject : public ITopicComponentDataObject{
 
 public:
-    NamedTopicComponentDataObject()
+    NamedTopicComponentDataObject():
+        ITopicComponentDataObject()
     {
         name = CompName;
     }
@@ -29,7 +33,7 @@ public:
         return std::string(CompName);
     }
 
-    static MaceCore::TopicComponentStructure* TopicStructure() {
+    static const MaceCore::TopicComponentStructure* TopicStructure() {
         return Structure;
     }
 

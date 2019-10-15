@@ -1,6 +1,7 @@
 #ifndef STATE_TAKEOFF_TRANSITIONING_H
 #define STATE_TAKEOFF_TRANSITIONING_H
 
+#include <mavlink.h>
 
 #include "abstract_state_ardupilot.h"
 

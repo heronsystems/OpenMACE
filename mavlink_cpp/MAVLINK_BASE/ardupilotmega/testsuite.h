@@ -14,18 +14,21 @@ extern "C" {
 #define MAVLINK_TEST_ALL
 static void mavlink_test_common(uint8_t, uint8_t, mavlink_message_t *last_msg);
 static void mavlink_test_uAvionix(uint8_t, uint8_t, mavlink_message_t *last_msg);
+static void mavlink_test_icarous(uint8_t, uint8_t, mavlink_message_t *last_msg);
 static void mavlink_test_ardupilotmega(uint8_t, uint8_t, mavlink_message_t *last_msg);
 
 static void mavlink_test_all(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
     mavlink_test_common(system_id, component_id, last_msg);
     mavlink_test_uAvionix(system_id, component_id, last_msg);
+    mavlink_test_icarous(system_id, component_id, last_msg);
     mavlink_test_ardupilotmega(system_id, component_id, last_msg);
 }
 #endif
 
 #include "../common/testsuite.h"
 #include "../uAvionix/testsuite.h"
+#include "../icarous/testsuite.h"
 
 
 static void mavlink_test_sensor_offsets(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
@@ -681,63 +684,6 @@ static void mavlink_test_fence_fetch_point(uint8_t system_id, uint8_t component_
         memset(&packet2, 0, sizeof(packet2));
     mavlink_msg_fence_fetch_point_send(MAVLINK_COMM_1 , packet1.target_system , packet1.target_component , packet1.idx );
     mavlink_msg_fence_fetch_point_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-}
-
-static void mavlink_test_fence_status(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
-{
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
-        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_FENCE_STATUS >= 256) {
-            return;
-        }
-#endif
-    mavlink_message_t msg;
-        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
-        uint16_t i;
-    mavlink_fence_status_t packet_in = {
-        963497464,17443,151,218
-    };
-    mavlink_fence_status_t packet1, packet2;
-        memset(&packet1, 0, sizeof(packet1));
-        packet1.breach_time = packet_in.breach_time;
-        packet1.breach_count = packet_in.breach_count;
-        packet1.breach_status = packet_in.breach_status;
-        packet1.breach_type = packet_in.breach_type;
-        
-        
-#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
-        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
-           // cope with extensions
-           memset(MAVLINK_MSG_ID_FENCE_STATUS_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_FENCE_STATUS_MIN_LEN);
-        }
-#endif
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_fence_status_encode(system_id, component_id, &msg, &packet1);
-    mavlink_msg_fence_status_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_fence_status_pack(system_id, component_id, &msg , packet1.breach_status , packet1.breach_count , packet1.breach_type , packet1.breach_time );
-    mavlink_msg_fence_status_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_fence_status_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.breach_status , packet1.breach_count , packet1.breach_type , packet1.breach_time );
-    mavlink_msg_fence_status_decode(&msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-
-        memset(&packet2, 0, sizeof(packet2));
-        mavlink_msg_to_send_buffer(buffer, &msg);
-        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
-            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
-        }
-    mavlink_msg_fence_status_decode(last_msg, &packet2);
-        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
-        
-        memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_fence_status_send(MAVLINK_COMM_1 , packet1.breach_status , packet1.breach_count , packet1.breach_type , packet1.breach_time );
-    mavlink_msg_fence_status_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
@@ -1753,7 +1699,7 @@ static void mavlink_test_camera_feedback(uint8_t system_id, uint8_t component_id
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_camera_feedback_t packet_in = {
-        93372036854775807ULL,963497880,963498088,129.0,157.0,185.0,213.0,241.0,269.0,19315,3,70,137
+        93372036854775807ULL,963497880,963498088,129.0,157.0,185.0,213.0,241.0,269.0,19315,3,70,137,19575
     };
     mavlink_camera_feedback_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
@@ -1770,6 +1716,7 @@ static void mavlink_test_camera_feedback(uint8_t system_id, uint8_t component_id
         packet1.target_system = packet_in.target_system;
         packet1.cam_idx = packet_in.cam_idx;
         packet1.flags = packet_in.flags;
+        packet1.completed_captures = packet_in.completed_captures;
         
         
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
@@ -1784,12 +1731,12 @@ static void mavlink_test_camera_feedback(uint8_t system_id, uint8_t component_id
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_camera_feedback_pack(system_id, component_id, &msg , packet1.time_usec , packet1.target_system , packet1.cam_idx , packet1.img_idx , packet1.lat , packet1.lng , packet1.alt_msl , packet1.alt_rel , packet1.roll , packet1.pitch , packet1.yaw , packet1.foc_len , packet1.flags );
+    mavlink_msg_camera_feedback_pack(system_id, component_id, &msg , packet1.time_usec , packet1.target_system , packet1.cam_idx , packet1.img_idx , packet1.lat , packet1.lng , packet1.alt_msl , packet1.alt_rel , packet1.roll , packet1.pitch , packet1.yaw , packet1.foc_len , packet1.flags , packet1.completed_captures );
     mavlink_msg_camera_feedback_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_camera_feedback_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.time_usec , packet1.target_system , packet1.cam_idx , packet1.img_idx , packet1.lat , packet1.lng , packet1.alt_msl , packet1.alt_rel , packet1.roll , packet1.pitch , packet1.yaw , packet1.foc_len , packet1.flags );
+    mavlink_msg_camera_feedback_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.time_usec , packet1.target_system , packet1.cam_idx , packet1.img_idx , packet1.lat , packet1.lng , packet1.alt_msl , packet1.alt_rel , packet1.roll , packet1.pitch , packet1.yaw , packet1.foc_len , packet1.flags , packet1.completed_captures );
     mavlink_msg_camera_feedback_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
@@ -1802,7 +1749,7 @@ static void mavlink_test_camera_feedback(uint8_t system_id, uint8_t component_id
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_camera_feedback_send(MAVLINK_COMM_1 , packet1.time_usec , packet1.target_system , packet1.cam_idx , packet1.img_idx , packet1.lat , packet1.lng , packet1.alt_msl , packet1.alt_rel , packet1.roll , packet1.pitch , packet1.yaw , packet1.foc_len , packet1.flags );
+    mavlink_msg_camera_feedback_send(MAVLINK_COMM_1 , packet1.time_usec , packet1.target_system , packet1.cam_idx , packet1.img_idx , packet1.lat , packet1.lng , packet1.alt_msl , packet1.alt_rel , packet1.roll , packet1.pitch , packet1.yaw , packet1.foc_len , packet1.flags , packet1.completed_captures );
     mavlink_msg_camera_feedback_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
@@ -2227,7 +2174,7 @@ static void mavlink_test_mag_cal_report(uint8_t system_id, uint8_t component_id,
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_mag_cal_report_t packet_in = {
-        17.0,45.0,73.0,101.0,129.0,157.0,185.0,213.0,241.0,269.0,125,192,3,70
+        17.0,45.0,73.0,101.0,129.0,157.0,185.0,213.0,241.0,269.0,125,192,3,70,325.0,149,216
     };
     mavlink_mag_cal_report_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
@@ -2245,6 +2192,9 @@ static void mavlink_test_mag_cal_report(uint8_t system_id, uint8_t component_id,
         packet1.cal_mask = packet_in.cal_mask;
         packet1.cal_status = packet_in.cal_status;
         packet1.autosaved = packet_in.autosaved;
+        packet1.orientation_confidence = packet_in.orientation_confidence;
+        packet1.old_orientation = packet_in.old_orientation;
+        packet1.new_orientation = packet_in.new_orientation;
         
         
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
@@ -2259,12 +2209,12 @@ static void mavlink_test_mag_cal_report(uint8_t system_id, uint8_t component_id,
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_mag_cal_report_pack(system_id, component_id, &msg , packet1.compass_id , packet1.cal_mask , packet1.cal_status , packet1.autosaved , packet1.fitness , packet1.ofs_x , packet1.ofs_y , packet1.ofs_z , packet1.diag_x , packet1.diag_y , packet1.diag_z , packet1.offdiag_x , packet1.offdiag_y , packet1.offdiag_z );
+    mavlink_msg_mag_cal_report_pack(system_id, component_id, &msg , packet1.compass_id , packet1.cal_mask , packet1.cal_status , packet1.autosaved , packet1.fitness , packet1.ofs_x , packet1.ofs_y , packet1.ofs_z , packet1.diag_x , packet1.diag_y , packet1.diag_z , packet1.offdiag_x , packet1.offdiag_y , packet1.offdiag_z , packet1.orientation_confidence , packet1.old_orientation , packet1.new_orientation );
     mavlink_msg_mag_cal_report_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_mag_cal_report_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.compass_id , packet1.cal_mask , packet1.cal_status , packet1.autosaved , packet1.fitness , packet1.ofs_x , packet1.ofs_y , packet1.ofs_z , packet1.diag_x , packet1.diag_y , packet1.diag_z , packet1.offdiag_x , packet1.offdiag_y , packet1.offdiag_z );
+    mavlink_msg_mag_cal_report_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.compass_id , packet1.cal_mask , packet1.cal_status , packet1.autosaved , packet1.fitness , packet1.ofs_x , packet1.ofs_y , packet1.ofs_z , packet1.diag_x , packet1.diag_y , packet1.diag_z , packet1.offdiag_x , packet1.offdiag_y , packet1.offdiag_z , packet1.orientation_confidence , packet1.old_orientation , packet1.new_orientation );
     mavlink_msg_mag_cal_report_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
@@ -2277,7 +2227,7 @@ static void mavlink_test_mag_cal_report(uint8_t system_id, uint8_t component_id,
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_mag_cal_report_send(MAVLINK_COMM_1 , packet1.compass_id , packet1.cal_mask , packet1.cal_status , packet1.autosaved , packet1.fitness , packet1.ofs_x , packet1.ofs_y , packet1.ofs_z , packet1.diag_x , packet1.diag_y , packet1.diag_z , packet1.offdiag_x , packet1.offdiag_y , packet1.offdiag_z );
+    mavlink_msg_mag_cal_report_send(MAVLINK_COMM_1 , packet1.compass_id , packet1.cal_mask , packet1.cal_status , packet1.autosaved , packet1.fitness , packet1.ofs_x , packet1.ofs_y , packet1.ofs_z , packet1.diag_x , packet1.diag_y , packet1.diag_z , packet1.offdiag_x , packet1.offdiag_y , packet1.offdiag_z , packet1.orientation_confidence , packet1.old_orientation , packet1.new_orientation );
     mavlink_msg_mag_cal_report_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
@@ -2294,7 +2244,7 @@ static void mavlink_test_ekf_status_report(uint8_t system_id, uint8_t component_
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_ekf_status_report_t packet_in = {
-        17.0,45.0,73.0,101.0,129.0,18275
+        17.0,45.0,73.0,101.0,129.0,18275,171.0
     };
     mavlink_ekf_status_report_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
@@ -2304,6 +2254,7 @@ static void mavlink_test_ekf_status_report(uint8_t system_id, uint8_t component_
         packet1.compass_variance = packet_in.compass_variance;
         packet1.terrain_alt_variance = packet_in.terrain_alt_variance;
         packet1.flags = packet_in.flags;
+        packet1.airspeed_variance = packet_in.airspeed_variance;
         
         
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
@@ -2318,12 +2269,12 @@ static void mavlink_test_ekf_status_report(uint8_t system_id, uint8_t component_
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_ekf_status_report_pack(system_id, component_id, &msg , packet1.flags , packet1.velocity_variance , packet1.pos_horiz_variance , packet1.pos_vert_variance , packet1.compass_variance , packet1.terrain_alt_variance );
+    mavlink_msg_ekf_status_report_pack(system_id, component_id, &msg , packet1.flags , packet1.velocity_variance , packet1.pos_horiz_variance , packet1.pos_vert_variance , packet1.compass_variance , packet1.terrain_alt_variance , packet1.airspeed_variance );
     mavlink_msg_ekf_status_report_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_ekf_status_report_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.flags , packet1.velocity_variance , packet1.pos_horiz_variance , packet1.pos_vert_variance , packet1.compass_variance , packet1.terrain_alt_variance );
+    mavlink_msg_ekf_status_report_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.flags , packet1.velocity_variance , packet1.pos_horiz_variance , packet1.pos_vert_variance , packet1.compass_variance , packet1.terrain_alt_variance , packet1.airspeed_variance );
     mavlink_msg_ekf_status_report_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
@@ -2336,7 +2287,7 @@ static void mavlink_test_ekf_status_report(uint8_t system_id, uint8_t component_
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_ekf_status_report_send(MAVLINK_COMM_1 , packet1.flags , packet1.velocity_variance , packet1.pos_horiz_variance , packet1.pos_vert_variance , packet1.compass_variance , packet1.terrain_alt_variance );
+    mavlink_msg_ekf_status_report_send(MAVLINK_COMM_1 , packet1.flags , packet1.velocity_variance , packet1.pos_horiz_variance , packet1.pos_vert_variance , packet1.compass_variance , packet1.terrain_alt_variance , packet1.airspeed_variance );
     mavlink_msg_ekf_status_report_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
@@ -2398,6 +2349,69 @@ static void mavlink_test_pid_tuning(uint8_t system_id, uint8_t component_id, mav
         memset(&packet2, 0, sizeof(packet2));
     mavlink_msg_pid_tuning_send(MAVLINK_COMM_1 , packet1.axis , packet1.desired , packet1.achieved , packet1.FF , packet1.P , packet1.I , packet1.D );
     mavlink_msg_pid_tuning_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+}
+
+static void mavlink_test_deepstall(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+{
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
+        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_DEEPSTALL >= 256) {
+            return;
+        }
+#endif
+    mavlink_message_t msg;
+        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+        uint16_t i;
+    mavlink_deepstall_t packet_in = {
+        963497464,963497672,963497880,963498088,963498296,963498504,185.0,213.0,241.0,113
+    };
+    mavlink_deepstall_t packet1, packet2;
+        memset(&packet1, 0, sizeof(packet1));
+        packet1.landing_lat = packet_in.landing_lat;
+        packet1.landing_lon = packet_in.landing_lon;
+        packet1.path_lat = packet_in.path_lat;
+        packet1.path_lon = packet_in.path_lon;
+        packet1.arc_entry_lat = packet_in.arc_entry_lat;
+        packet1.arc_entry_lon = packet_in.arc_entry_lon;
+        packet1.altitude = packet_in.altitude;
+        packet1.expected_travel_distance = packet_in.expected_travel_distance;
+        packet1.cross_track_error = packet_in.cross_track_error;
+        packet1.stage = packet_in.stage;
+        
+        
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
+           // cope with extensions
+           memset(MAVLINK_MSG_ID_DEEPSTALL_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_DEEPSTALL_MIN_LEN);
+        }
+#endif
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_deepstall_encode(system_id, component_id, &msg, &packet1);
+    mavlink_msg_deepstall_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_deepstall_pack(system_id, component_id, &msg , packet1.landing_lat , packet1.landing_lon , packet1.path_lat , packet1.path_lon , packet1.arc_entry_lat , packet1.arc_entry_lon , packet1.altitude , packet1.expected_travel_distance , packet1.cross_track_error , packet1.stage );
+    mavlink_msg_deepstall_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_deepstall_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.landing_lat , packet1.landing_lon , packet1.path_lat , packet1.path_lon , packet1.arc_entry_lat , packet1.arc_entry_lon , packet1.altitude , packet1.expected_travel_distance , packet1.cross_track_error , packet1.stage );
+    mavlink_msg_deepstall_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+        mavlink_msg_to_send_buffer(buffer, &msg);
+        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
+            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
+        }
+    mavlink_msg_deepstall_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+        
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_deepstall_send(MAVLINK_COMM_1 , packet1.landing_lat , packet1.landing_lon , packet1.path_lat , packet1.path_lon , packet1.arc_entry_lat , packet1.arc_entry_lon , packet1.altitude , packet1.expected_travel_distance , packet1.cross_track_error , packet1.stage );
+    mavlink_msg_deepstall_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
@@ -3279,6 +3293,239 @@ static void mavlink_test_vision_position_delta(uint8_t system_id, uint8_t compon
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
+static void mavlink_test_aoa_ssa(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+{
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
+        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_AOA_SSA >= 256) {
+            return;
+        }
+#endif
+    mavlink_message_t msg;
+        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+        uint16_t i;
+    mavlink_aoa_ssa_t packet_in = {
+        93372036854775807ULL,73.0,101.0
+    };
+    mavlink_aoa_ssa_t packet1, packet2;
+        memset(&packet1, 0, sizeof(packet1));
+        packet1.time_usec = packet_in.time_usec;
+        packet1.AOA = packet_in.AOA;
+        packet1.SSA = packet_in.SSA;
+        
+        
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
+           // cope with extensions
+           memset(MAVLINK_MSG_ID_AOA_SSA_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_AOA_SSA_MIN_LEN);
+        }
+#endif
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_aoa_ssa_encode(system_id, component_id, &msg, &packet1);
+    mavlink_msg_aoa_ssa_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_aoa_ssa_pack(system_id, component_id, &msg , packet1.time_usec , packet1.AOA , packet1.SSA );
+    mavlink_msg_aoa_ssa_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_aoa_ssa_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.time_usec , packet1.AOA , packet1.SSA );
+    mavlink_msg_aoa_ssa_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+        mavlink_msg_to_send_buffer(buffer, &msg);
+        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
+            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
+        }
+    mavlink_msg_aoa_ssa_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+        
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_aoa_ssa_send(MAVLINK_COMM_1 , packet1.time_usec , packet1.AOA , packet1.SSA );
+    mavlink_msg_aoa_ssa_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+}
+
+static void mavlink_test_esc_telemetry_1_to_4(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+{
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
+        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_ESC_TELEMETRY_1_TO_4 >= 256) {
+            return;
+        }
+#endif
+    mavlink_message_t msg;
+        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+        uint16_t i;
+    mavlink_esc_telemetry_1_to_4_t packet_in = {
+        { 17235, 17236, 17237, 17238 },{ 17651, 17652, 17653, 17654 },{ 18067, 18068, 18069, 18070 },{ 18483, 18484, 18485, 18486 },{ 18899, 18900, 18901, 18902 },{ 125, 126, 127, 128 }
+    };
+    mavlink_esc_telemetry_1_to_4_t packet1, packet2;
+        memset(&packet1, 0, sizeof(packet1));
+        
+        mav_array_memcpy(packet1.voltage, packet_in.voltage, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.current, packet_in.current, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.totalcurrent, packet_in.totalcurrent, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.rpm, packet_in.rpm, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.count, packet_in.count, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.temperature, packet_in.temperature, sizeof(uint8_t)*4);
+        
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
+           // cope with extensions
+           memset(MAVLINK_MSG_ID_ESC_TELEMETRY_1_TO_4_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_ESC_TELEMETRY_1_TO_4_MIN_LEN);
+        }
+#endif
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_1_to_4_encode(system_id, component_id, &msg, &packet1);
+    mavlink_msg_esc_telemetry_1_to_4_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_1_to_4_pack(system_id, component_id, &msg , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_1_to_4_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_1_to_4_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_1_to_4_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+        mavlink_msg_to_send_buffer(buffer, &msg);
+        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
+            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
+        }
+    mavlink_msg_esc_telemetry_1_to_4_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+        
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_1_to_4_send(MAVLINK_COMM_1 , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_1_to_4_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+}
+
+static void mavlink_test_esc_telemetry_5_to_8(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+{
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
+        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_ESC_TELEMETRY_5_TO_8 >= 256) {
+            return;
+        }
+#endif
+    mavlink_message_t msg;
+        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+        uint16_t i;
+    mavlink_esc_telemetry_5_to_8_t packet_in = {
+        { 17235, 17236, 17237, 17238 },{ 17651, 17652, 17653, 17654 },{ 18067, 18068, 18069, 18070 },{ 18483, 18484, 18485, 18486 },{ 18899, 18900, 18901, 18902 },{ 125, 126, 127, 128 }
+    };
+    mavlink_esc_telemetry_5_to_8_t packet1, packet2;
+        memset(&packet1, 0, sizeof(packet1));
+        
+        mav_array_memcpy(packet1.voltage, packet_in.voltage, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.current, packet_in.current, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.totalcurrent, packet_in.totalcurrent, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.rpm, packet_in.rpm, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.count, packet_in.count, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.temperature, packet_in.temperature, sizeof(uint8_t)*4);
+        
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
+           // cope with extensions
+           memset(MAVLINK_MSG_ID_ESC_TELEMETRY_5_TO_8_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_ESC_TELEMETRY_5_TO_8_MIN_LEN);
+        }
+#endif
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_5_to_8_encode(system_id, component_id, &msg, &packet1);
+    mavlink_msg_esc_telemetry_5_to_8_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_5_to_8_pack(system_id, component_id, &msg , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_5_to_8_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_5_to_8_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_5_to_8_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+        mavlink_msg_to_send_buffer(buffer, &msg);
+        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
+            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
+        }
+    mavlink_msg_esc_telemetry_5_to_8_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+        
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_5_to_8_send(MAVLINK_COMM_1 , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_5_to_8_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+}
+
+static void mavlink_test_esc_telemetry_9_to_12(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+{
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
+        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_ESC_TELEMETRY_9_TO_12 >= 256) {
+            return;
+        }
+#endif
+    mavlink_message_t msg;
+        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+        uint16_t i;
+    mavlink_esc_telemetry_9_to_12_t packet_in = {
+        { 17235, 17236, 17237, 17238 },{ 17651, 17652, 17653, 17654 },{ 18067, 18068, 18069, 18070 },{ 18483, 18484, 18485, 18486 },{ 18899, 18900, 18901, 18902 },{ 125, 126, 127, 128 }
+    };
+    mavlink_esc_telemetry_9_to_12_t packet1, packet2;
+        memset(&packet1, 0, sizeof(packet1));
+        
+        mav_array_memcpy(packet1.voltage, packet_in.voltage, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.current, packet_in.current, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.totalcurrent, packet_in.totalcurrent, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.rpm, packet_in.rpm, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.count, packet_in.count, sizeof(uint16_t)*4);
+        mav_array_memcpy(packet1.temperature, packet_in.temperature, sizeof(uint8_t)*4);
+        
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
+           // cope with extensions
+           memset(MAVLINK_MSG_ID_ESC_TELEMETRY_9_TO_12_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_ESC_TELEMETRY_9_TO_12_MIN_LEN);
+        }
+#endif
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_9_to_12_encode(system_id, component_id, &msg, &packet1);
+    mavlink_msg_esc_telemetry_9_to_12_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_9_to_12_pack(system_id, component_id, &msg , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_9_to_12_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_9_to_12_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_9_to_12_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+        mavlink_msg_to_send_buffer(buffer, &msg);
+        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
+            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
+        }
+    mavlink_msg_esc_telemetry_9_to_12_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+        
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_esc_telemetry_9_to_12_send(MAVLINK_COMM_1 , packet1.temperature , packet1.voltage , packet1.current , packet1.totalcurrent , packet1.rpm , packet1.count );
+    mavlink_msg_esc_telemetry_9_to_12_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+}
+
 static void mavlink_test_ardupilotmega(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
     mavlink_test_sensor_offsets(system_id, component_id, last_msg);
@@ -3292,7 +3539,6 @@ static void mavlink_test_ardupilotmega(uint8_t system_id, uint8_t component_id, 
     mavlink_test_mount_status(system_id, component_id, last_msg);
     mavlink_test_fence_point(system_id, component_id, last_msg);
     mavlink_test_fence_fetch_point(system_id, component_id, last_msg);
-    mavlink_test_fence_status(system_id, component_id, last_msg);
     mavlink_test_ahrs(system_id, component_id, last_msg);
     mavlink_test_simstate(system_id, component_id, last_msg);
     mavlink_test_hwstatus(system_id, component_id, last_msg);
@@ -3321,6 +3567,7 @@ static void mavlink_test_ardupilotmega(uint8_t system_id, uint8_t component_id, 
     mavlink_test_mag_cal_report(system_id, component_id, last_msg);
     mavlink_test_ekf_status_report(system_id, component_id, last_msg);
     mavlink_test_pid_tuning(system_id, component_id, last_msg);
+    mavlink_test_deepstall(system_id, component_id, last_msg);
     mavlink_test_gimbal_report(system_id, component_id, last_msg);
     mavlink_test_gimbal_control(system_id, component_id, last_msg);
     mavlink_test_gimbal_torque_cmd_report(system_id, component_id, last_msg);
@@ -3336,6 +3583,10 @@ static void mavlink_test_ardupilotmega(uint8_t system_id, uint8_t component_id, 
     mavlink_test_device_op_write_reply(system_id, component_id, last_msg);
     mavlink_test_adap_tuning(system_id, component_id, last_msg);
     mavlink_test_vision_position_delta(system_id, component_id, last_msg);
+    mavlink_test_aoa_ssa(system_id, component_id, last_msg);
+    mavlink_test_esc_telemetry_1_to_4(system_id, component_id, last_msg);
+    mavlink_test_esc_telemetry_5_to_8(system_id, component_id, last_msg);
+    mavlink_test_esc_telemetry_9_to_12(system_id, component_id, last_msg);
 }
 
 #ifdef __cplusplus

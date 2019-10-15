@@ -22,17 +22,27 @@ else
 end
 %
 hold on;
+cellStateMat = swarmWorld.cellStateMat;
+%figh_subplot2 = surf(trueWorld.xx,trueWorld.yy,cellStateMat,'FaceAlpha',0.5,'EdgeColor','None'); %,abs(2-cellStateMat)./2,'EdgeColor','None');
+%view(2)
+% plotHandles.figh_coverageMap = imagesc(trueWorld.xcp,trueWorld.ycp,-30*ones(size(cellStateMat)),'AlphaData',abs(cellStateMat)./2);
+% set(gca,'YDir','Normal')
+% axis tight;
 
 % plot sensing radius
 for i = 1:1:swarmModel.N
     xk = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i) ];
     xc = xcnom + xk(1);
     yc = ycnom + xk(2);
-    plotHandles.figh_sensingRadius(i) = plot(xc,yc,'m-','LineWidth',2);
+    plotHandles.figh_sensingRadius(i) = plot(xc,yc,'k-');
 end
 % plot target locations
 for i = 1:1:targetModel.M
-curNode = targetState.x(2*i-1);
+    if ( strcmp(targetModel.type, 'varyingSpeedRandomWalk') )
+        curNode = targetState.x(4*i-3);
+    elseif ( strcmp(targetModel.type, 'constantSpeedRandomWalk') || strcmp(targetModel.type,'constantSpeedRandomWalkGenerative') )
+        curNode = targetState.x(2*i-1);
+    end
     targXY = [trueWorld.nodeX(curNode) trueWorld.nodeY(curNode)];
     plotHandles.figh_targetLoc(i) = plot(targXY(1), targXY(2), 'r+','linewidth',2);
 end
@@ -42,13 +52,19 @@ if ( ~strcmp(trueWorld.type,'osmAtF3') )
     xlabel('X(m)')
 end
 ylabel('Y(m)')
-title('Occupancy Graph')
+%title('Occupancy Graph')
 
 if ( ~isempty(swarmWorld.exploredGraph.Nodes) )
-    %xData = trueWorld.xcp( swarmWorld.exploredGraph.Nodes.bx );
-    %yData = trueWorld.ycp( swarmWorld.exploredGraph.Nodes.by );
+    switch swarmModel.mappingSensorType
+        case 'perfect'
+            xData = trueWorld.G_env.Nodes.x(swarmWorld.exploredGraph.Nodes.trueGraphIndex);
+            yData = trueWorld.G_env.Nodes.y(swarmWorld.exploredGraph.Nodes.trueGraphIndex);
+        case 'noisy'
+            xData = trueWorld.xcp( swarmWorld.exploredGraph.Nodes.bx );
+            yData = trueWorld.ycp( swarmWorld.exploredGraph.Nodes.by );
+    end
     hold on;
-    plot(swarmWorld.exploredGraph,'XData',swarmWorld.exploredGraph.Nodes.nodeX,'YData',swarmWorld.exploredGraph.Nodes.nodeY,'NodeLabel',[]);
+    plot(swarmWorld.exploredGraph,'XData',xData,'YData',yData,'NodeLabel',[]);
 end
 colormap(gca,'parula')
 colorbar;

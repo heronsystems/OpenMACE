@@ -1,0 +1,19 @@
+# CMD_DYNAMIC_ORIENTATION_QUAT
+# The vehicle will fly based on this dynamic target information. 
+
+time    timestamp
+uint8   vehicleID
+uint8   commandID
+uint16  bitmask
+
+float64 quaternion_w
+float64 quaternion_x
+float64 quaternion_y
+float64 quaternion_z
+
+float64 thrust
+
+---
+bool    success
+
+

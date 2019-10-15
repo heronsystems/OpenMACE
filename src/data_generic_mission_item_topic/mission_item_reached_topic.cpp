@@ -6,21 +6,21 @@ const char MissionItemReachedTopic_name[] = "MissionItemReached";
 const MaceCore::TopicComponentStructure MissionItemReachedTopic_structure = []{
     MaceCore::TopicComponentStructure structure;
     structure.AddTerminal<MissionItem::MissionKey>("key");
-    structure.AddTerminal<int>("index");
+    structure.AddTerminal<unsigned int>("index");
     return structure;
 }();
 
 MaceCore::TopicDatagram MissionItemReachedTopic::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
     datagram.AddTerminal<MissionItem::MissionKey>("key",key);
-    datagram.AddTerminal<int>("index",indexAchieved);
+    datagram.AddTerminal<unsigned int>("index",indexAchieved);
     return datagram;
 }
 
 void MissionItemReachedTopic::CreateFromDatagram(const MaceCore::TopicDatagram &datagram)
 {
     key = datagram.GetTerminal<MissionItem::MissionKey>("key");
-    indexAchieved = datagram.GetTerminal<int>("index");
+    indexAchieved = datagram.GetTerminal<unsigned int>("index");
 }
 
 MissionItemReachedTopic::MissionItemReachedTopic()

@@ -88,12 +88,12 @@ export class TakeoffDialog extends React.Component<Props, State> {
         {
             this.props.showSaveTakeoff
                 ? (actions = [
-                      <FlatButton label="Cancel" onTouchTap={this.props.handleClose} />,
-                      <FlatButton label="Save takeoff" labelStyle={styles.labelStyle} onTouchTap={this.handleSaveTakeoff} />
+                      <FlatButton label="Cancel" onClick={this.props.handleClose} />,
+                      <FlatButton label="Save takeoff" labelStyle={styles.labelStyle} onClick={this.handleSaveTakeoff} />
                   ])
                 : (actions = [
-                      <FlatButton label="Cancel" onTouchTap={this.props.handleClose} />,
-                      <FlatButton label="Takeoff" labelStyle={styles.labelStyle} onTouchTap={this.handleTakeoff} />
+                      <FlatButton label="Cancel" onClick={this.props.handleClose} />,
+                      <FlatButton label="Takeoff" labelStyle={styles.labelStyle} onClick={this.handleTakeoff} />
                   ]);
         }
 

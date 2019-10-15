@@ -1,7 +1,78 @@
 #include "cartesian_position_2D.h"
+#include "cartesian_position_3D.h"
 
 namespace mace{
 namespace pose{
+
+CartesianPosition_2D::CartesianPosition_2D():
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_UNKNOWN, ""), State(), data(0,0)
+{
+    this->dimension = 2;
+    this->setDimensionMask(ignoreAllPositions);
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const CartesianFrameTypes &frameType,
+                    const double &x, const double &y,
+                    const std::string &pointName):
+    Abstract_CartesianPosition(frameType, pointName), State(), data(0.0,0.0)
+{
+    this->dimension = 2;
+    this->setXPosition(x); this->setYPosition(y);
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const std::string &pointName,
+                    const double &x, const double &y):
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, pointName), State(), data(0.0,0.0)
+{
+    this->dimension = 2;
+    this->setXPosition(x); this->setYPosition(y);
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const double &x, const double &y):
+    Abstract_CartesianPosition(CartesianFrameTypes::CF_LOCAL_ENU, "Cartesian Point"), State(), data(0.0,0.0)
+{
+    this->dimension = 2;
+    this->updatePosition(x, y);
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_2D &copy):
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(0.0,0.0)
+{
+    this->dimension = 2;
+    this->updatePosition(copy.getXPosition(), copy.getYPosition());
+}
+
+CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(0.0,0.0)
+{
+    this->dimension = 2;
+    this->updatePosition(copy.getXPosition(), copy.getYPosition());
+}
+
+bool CartesianPosition_2D::hasXBeenSet() const
+{
+    if((this->dimensionMask&IGNORE_X_DIMENSION) == 0)
+        return true;
+    return false;
+}
+
+bool CartesianPosition_2D::hasYBeenSet() const
+{
+    if((this->dimensionMask&IGNORE_Y_DIMENSION) == 0)
+        return true;
+    return false;
+}
+
+bool CartesianPosition_2D::areEquivalentFrames(const CartesianPosition_2D &obj) const
+{
+    return this->getCartesianCoordinateFrame() == obj.getCartesianCoordinateFrame();
+}
+
+void CartesianPosition_2D::updateQJSONObject(QJsonObject &obj) const
+{
+    UNUSED(obj);
+    //PAT: Would this situation have ever occured
+}
 
 double CartesianPosition_2D::deltaX(const CartesianPosition_2D &that) const
 {
@@ -13,9 +84,28 @@ double CartesianPosition_2D::deltaY(const CartesianPosition_2D &that) const
     return this->getYPosition() - that.getYPosition();
 }
 
+void CartesianPosition_2D::applyTransformation(const Eigen::Transform<double, 2, Eigen::Affine> &t)
+{
+    this->data = t.linear() * data + t.translation();
+}
+
+void CartesianPosition_2D::applyTransformation(const Eigen::Transform<double, 3, Eigen::Affine> &t)
+{
+    //since this is only a 2D object we have to reconstruct
+    Eigen::Transform<double, 2, Eigen::Affine> currentTransform;
+    currentTransform.translation() = Eigen::Vector2d(t.translation().x(), t.translation().y());
+    currentTransform.linear() = Eigen::Matrix2d(t.rotation().block(0,0,2,2));
+    this->data = currentTransform.linear() * data + currentTransform.translation();
+}
+
 double CartesianPosition_2D::distanceFromOrigin() const
 {
-    return sqrt(pow(this->getXPosition(),2) + pow(this->getYPosition(),2));
+    return data.norm();
+}
+
+double CartesianPosition_2D::translationalDistanceFromOrigin() const
+{
+    return distanceFromOrigin();
 }
 
 double CartesianPosition_2D::polarBearingFromOrigin() const
@@ -23,15 +113,25 @@ double CartesianPosition_2D::polarBearingFromOrigin() const
     return atan2(this->getYPosition(),this->getXPosition());
 }
 
-double CartesianPosition_2D::distanceBetween2D(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::distanceBetween2D(const Abstract_CartesianPosition* pos) const
 {
-    double deltaX = this->data.getX() - pos.data.getX();
-    double deltaY = this->data.getY() - pos.data.getY();
-    double distance = sqrt(pow(deltaX,2) + pow(deltaY,2));
+    double distance = 0.0;
+
+    if(pos->isGreaterThan1D())
+    {
+        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
+        Eigen::Vector2d delta = this->data - tmpPos->data;
+        distance = delta.norm();
+    }
     return distance;
 }
 
-double CartesianPosition_2D::distanceTo(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::distanceBetween2D(const CartesianPosition_2D &pos) const
+{
+    return distanceBetween2D(&pos);
+}
+
+double CartesianPosition_2D::distanceTo(const Abstract_CartesianPosition* pos) const
 {
     return this->distanceBetween2D(pos);
 }
@@ -41,9 +141,16 @@ double CartesianPosition_2D::distanceTo(const CartesianPosition_2D &pos) const
 //! \param pos
 //! \return polar
 //!
-double CartesianPosition_2D::polarBearingTo(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::polarBearingTo(const Abstract_CartesianPosition* pos) const
 {
-    return atan2(deltaY(pos),deltaX(pos));
+    double polarBearing = 0.0;
+    if(pos->isGreaterThan1D())
+    {
+        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
+        polarBearing = atan2(deltaY(*tmpPos),deltaX(*tmpPos));
+    }
+
+    return polarBearing;
 }
 
 //!
@@ -51,9 +158,9 @@ double CartesianPosition_2D::polarBearingTo(const CartesianPosition_2D &pos) con
 //! \param pos
 //! \return polar
 //!
-double CartesianPosition_2D::compassBearingTo(const CartesianPosition_2D &pos) const
+double CartesianPosition_2D::compassBearingTo(const Abstract_CartesianPosition* pos) const
 {
-    return polarToCompassBearing(polarBearingTo(pos));
+    return math::polarToCompassBearing(polarBearingTo(pos));
 }
 
 //!
@@ -62,14 +169,14 @@ double CartesianPosition_2D::compassBearingTo(const CartesianPosition_2D &pos) c
 //! \param bearing
 //! \return
 //!
-CartesianPosition_2D CartesianPosition_2D::newPositionFromPolar(const double &distance, const double &bearing) const
+void CartesianPosition_2D::newPositionFromPolar(Abstract_CartesianPosition *newObject, const double &distance, const double &bearing) const
 {
-    CartesianPosition_2D newPos;
-
-    newPos.setXPosition(this->getXPosition() + cos(bearing) * distance);
-    newPos.setYPosition(this->getYPosition() + sin(bearing) * distance);
-
-    return newPos;
+    if(newObject->isGreaterThan1D())
+    {
+        CartesianPosition_2D* tmpPos = newObject->positionAs<CartesianPosition_2D>();
+        tmpPos->setXPosition(this->getXPosition() + std::cos(bearing) * distance);
+        tmpPos->setYPosition(this->getYPosition() + std::sin(bearing) * distance);
+    }
 }
 
 //!
@@ -78,47 +185,71 @@ CartesianPosition_2D CartesianPosition_2D::newPositionFromPolar(const double &di
 //! \param bearing
 //! \return
 //!
-CartesianPosition_2D CartesianPosition_2D::newPositionFromCompass(const double &distance, const double &bearing) const
+void CartesianPosition_2D::newPositionFromCompass(Abstract_CartesianPosition* newObject, const double &distance, const double &bearing) const
 {
-    return newPositionFromPolar(distance,compassToPolarBearing(bearing));
+    return newPositionFromPolar(newObject, distance, math::compassToPolarBearing(bearing));
 }
 
 void CartesianPosition_2D::applyPositionalShiftFromPolar(const double &distance, const double &bearing)
 {
-    double changeX = distance * cos(bearing);
-    double changeY = distance * sin(bearing);
+    double changeX = distance * std::cos(bearing);
+    double changeY = distance * std::sin(bearing);
     this->setXPosition(getXPosition() + changeX);
     this->setYPosition(getYPosition() + changeY);
 }
 
 void CartesianPosition_2D::applyPositionalShiftFromCompass(const double &distance, const double &bearing)
 {
-    double polarBearing = compassToPolarBearing(bearing);
+    double polarBearing = math::compassToPolarBearing(bearing);
     applyPositionalShiftFromPolar(distance,polarBearing);
 }
 
-void CartesianPosition_2D::normalize()
+mace_local_position_ned_t CartesianPosition_2D::getMACE_CartesianPositionInt() const
 {
-    double magnitude = sqrt(pow(getXPosition(),2) + pow(getYPosition(),2));
-    this->setXPosition(getXPosition()/magnitude);
-    this->setYPosition(getYPosition()/magnitude);
+    mace_local_position_ned_t posObj;
+    posObj.x = static_cast<int32_t>((this->getXPosition() * pow(10,7)));
+    posObj.y = static_cast<int32_t>((this->getYPosition() * pow(10,7)));
+    posObj.z = 0.0;
+    posObj.time_boot_ms = 0;
+    return posObj;
 }
 
-void CartesianPosition_2D::scale(const double &value)
+mace_message_t CartesianPosition_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    this->setXPosition(getXPosition()*value);
-    this->setYPosition(getYPosition()*value);
+    mace_message_t msg;
+    mace_local_position_ned_t positionObj = getMACE_CartesianPositionInt();
+    mace_msg_local_position_ned_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    return msg;
 }
 
-std::ostream& operator<<(std::ostream& os, const CartesianPosition_2D& t)
+CartesianPosition_2D operator+ (const CartesianPosition_2D &lhs, const CartesianPosition_2D &rhs)
 {
-    std::stringstream stream;
-    stream.precision(6);
-    stream << std::fixed << "Cartesian Position 2D: "<<
-              t.getXPosition() << ", "<< t.getYPosition() << ".";
-    os << stream.str();
 
-    return os;
+    if(lhs.areEquivalentFrames(rhs))
+    {
+        CartesianPosition_2D newPoint(lhs);
+        Eigen::Vector2d result = lhs.data + rhs.data;
+        newPoint.updatePosition(result(0), result(1));
+        return newPoint;
+    }
+    else
+        throw std::logic_error("Tried to perform a + operation between 2DCartesians of differnet coordinate frames.");
+}
+
+
+CartesianPosition_2D operator- (const CartesianPosition_2D &lhs, const CartesianPosition_2D &rhs)
+{
+
+    if(lhs.areEquivalentFrames(rhs))
+    {
+        CartesianPosition_2D newPoint(lhs);
+        Eigen::Vector2d result = lhs.data - rhs.data;
+        newPoint.updatePosition(result(0), result(1));
+        return newPoint;
+    }
+    else
+        throw std::logic_error("Tried to perform a - operation between 2DCartesians of differnet coordinate frames.");
+
 }
 
 

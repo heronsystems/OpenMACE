@@ -7,7 +7,9 @@ import { Card, CardActions, CardHeader, CardText } from "material-ui/Card";
 import FlatButton from "material-ui/FlatButton";
 import IconButton from "material-ui/IconButton";
 import IconMenu from "material-ui/IconMenu";
-import Menu from "material-ui/Menu";
+// import { Popover } from "material-ui/Popover";
+// import Menu from "material-ui/Menu";
+import SelectField from "material-ui/SelectField";
 import MenuItem from "material-ui/MenuItem";
 import * as React from "react";
 import { Colors } from "../../util/misc/Colors";
@@ -31,6 +33,8 @@ type State = {
     vehicleModeText?: string;
     openVehicleMode?: boolean;
     heartbeatSyncRequested?: boolean;
+    modeMenuOpen?: boolean;
+    popoverAnchorEl?: any;
 };
 
 export class VehicleHUD extends React.Component<Props, State> {
@@ -43,7 +47,8 @@ export class VehicleHUD extends React.Component<Props, State> {
             showHUDMessage: false,
             vehicleModeText: this.props.aircraft.vehicleMode,
             openVehicleMode: false,
-            heartbeatSyncRequested: false
+            heartbeatSyncRequested: false,
+            modeMenuOpen: false
         };
     }
 
@@ -71,7 +76,9 @@ export class VehicleHUD extends React.Component<Props, State> {
             }
         } else if (lastHeardSeconds > 30) {
             if (this.state.heartbeatSyncRequested === false) {
-                this.syncVehicle();
+                // TODO-PAT: Uncomment line below to force vehicle sync after not hearing for 30 seconds
+                // this.syncVehicle();
+
                 this.setState({ heartbeatSyncRequested: true });
             }
         }
@@ -110,7 +117,10 @@ export class VehicleHUD extends React.Component<Props, State> {
         // let modeText = this.props.aircraft.vehicleMode;
         console.log("Handle mode change: " + value);
         this.props.handleAircraftCommand(this.props.vehicleID, "SET_VEHICLE_MODE", value);
+        this.setState({modeMenuOpen: false});
     };
+
+
 
     render() {
         // TODO: Figure out how to move this style to a separate styles file. The conditional is hard:
@@ -177,18 +187,17 @@ export class VehicleHUD extends React.Component<Props, State> {
                         <span>ID: {this.props.vehicleID}</span>
                     </div>
                     <div className="col-xs-12" style={styles.col_flat}>
-                        <Menu desktop={true} style={styles.menuStyle}>
-                            <MenuItem
-                                style={styles.menuItem}
-                                primaryText={this.props.aircraft.vehicleMode}
-                                rightIcon={
-                                    <i style={styles.iconStyle} className="material-icons">
-                                        arrow_drop_down
-                                    </i>
-                                }
-                                menuItems={[modeMenuItems]}
-                            />
-                        </Menu>
+                            <SelectField
+                                    style={styles.selectField}
+                                    value={this.props.aircraft.vehicleMode}
+                                    autoWidth={true}
+                                    fullWidth={true}
+                                    underlineStyle={{display: "none"}}
+                                    underlineDisabledStyle={{display: "none"}}
+                                    underlineFocusStyle={{display: "none"}}
+                                >
+                                    {modeMenuItems}
+                            </SelectField>
                     </div>
                 </div>
                 <div className="col-xs-6" style={styles.col_thin}>

@@ -12,6 +12,7 @@ if dir == 1 % compute mean of each column, output row vector
                 dataClean = [dataClean datum];
             end
         end
+        dataClean
         stdev(1,i) = std(dataClean);
     end
 elseif dir == 2

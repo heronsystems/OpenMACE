@@ -224,7 +224,7 @@ public:
     //! \param command Arm/Disarm command
     //! \param sender Sender module
     //!
-    virtual void Command_GoTo(const CommandItem::CommandGoTo &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
+    virtual void Command_GoTo(const command_item::CommandGoTo &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
         UNUSED(command);
         UNUSED(sender);
     }
@@ -242,7 +242,7 @@ public:
     //! \param command ARM/DISARM command
     //! \param sender Generating system
     //!
-    virtual void Command_SystemArm(const CommandItem::ActionArm &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
+    virtual void Command_SystemArm(const command_item::ActionArm &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
         UNUSED(command);
         UNUSED(sender);
     }
@@ -252,7 +252,7 @@ public:
     //! \param command Takeoff altitude and location
     //! \param sender Generating system
     //!
-    virtual void Command_VehicleTakeoff(const CommandItem::SpatialTakeoff &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
+    virtual void Command_VehicleTakeoff(const command_item::SpatialTakeoff &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
         UNUSED(command);
         UNUSED(sender);
     }
@@ -262,7 +262,7 @@ public:
     //! \param command Land command
     //! \param sender Generating system
     //!
-    virtual void Command_Land(const CommandItem::SpatialLand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
+    virtual void Command_Land(const command_item::SpatialLand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
         UNUSED(command);
         UNUSED(sender);
     }
@@ -272,7 +272,7 @@ public:
     //! \param command RTL command
     //! \param sender Generating system
     //!
-    virtual void Command_ReturnToLaunch(const CommandItem::SpatialRTL &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
+    virtual void Command_ReturnToLaunch(const command_item::SpatialRTL &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
         UNUSED(command);
         UNUSED(sender);
     }
@@ -282,7 +282,7 @@ public:
     //! \param command Mission state request command
     //! \param sender Generating system
     //!
-    virtual void Command_MissionState(const CommandItem::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
+    virtual void Command_MissionState(const command_item::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
         UNUSED(command);
         UNUSED(sender);
     }
@@ -292,7 +292,7 @@ public:
     //! \param command Change mode command
     //! \param sender Generating system
     //!
-    virtual void Command_ChangeSystemMode(const CommandItem::ActionChangeMode &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
+    virtual void Command_ChangeSystemMode(const command_item::ActionChangeMode &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) {
         UNUSED(command);
         UNUSED(sender);
     }
@@ -301,7 +301,7 @@ public:
     //! \brief Command_IssueGeneralCommand Command a general command
     //! \param command General command
     //!
-    virtual void Command_IssueGeneralCommand(const std::shared_ptr<CommandItem::AbstractCommandItem> &command) {
+    virtual void Command_IssueGeneralCommand(const std::shared_ptr<command_item::AbstractCommandItem> &command) {
         UNUSED(command);
     }
 
@@ -431,7 +431,7 @@ public:
     //! \brief Command_SetHomePosition Set a vehicle's home position
     //! \param vehicleHome Vehicle home data
     //!
-    virtual void Command_SetHomePosition(const CommandItem::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic>& = OptionalParameter<MaceCore::ModuleCharacteristic>()) {
+    virtual void Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic>& = OptionalParameter<MaceCore::ModuleCharacteristic>()) {
         UNUSED(vehicleHome);
     }
 

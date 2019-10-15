@@ -9,9 +9,9 @@ typedef struct __mace_distance_sensor_t {
  uint16_t min_distance; /*< Minimum distance the sensor can measure in centimeters*/
  uint16_t max_distance; /*< Maximum distance the sensor can measure in centimeters*/
  uint16_t current_distance; /*< Current distance reading*/
- uint8_t type; /*< Type from MAV_DISTANCE_SENSOR enum.*/
+ uint8_t type; /*< Type from UXV_DISTANCE_SENSOR enum.*/
  uint8_t id; /*< Onboard ID of the sensor*/
- uint8_t orientation; /*< Direction the sensor faces from MAV_SENSOR_ORIENTATION enum.*/
+ uint8_t orientation; /*< Direction the sensor faces from UXV_SENSOR_ORIENTATION enum.*/
  uint8_t covariance; /*< Measurement covariance in centimeters, 0 for unknown / invalid readings*/
 }) mace_distance_sensor_t;
 
@@ -66,9 +66,9 @@ typedef struct __mace_distance_sensor_t {
  * @param min_distance Minimum distance the sensor can measure in centimeters
  * @param max_distance Maximum distance the sensor can measure in centimeters
  * @param current_distance Current distance reading
- * @param type Type from MAV_DISTANCE_SENSOR enum.
+ * @param type Type from UXV_DISTANCE_SENSOR enum.
  * @param id Onboard ID of the sensor
- * @param orientation Direction the sensor faces from MAV_SENSOR_ORIENTATION enum.
+ * @param orientation Direction the sensor faces from UXV_SENSOR_ORIENTATION enum.
  * @param covariance Measurement covariance in centimeters, 0 for unknown / invalid readings
  * @return length of the message in bytes (excluding serial stream start sign)
  */
@@ -115,9 +115,9 @@ static inline uint16_t mace_msg_distance_sensor_pack(uint8_t system_id, uint8_t 
  * @param min_distance Minimum distance the sensor can measure in centimeters
  * @param max_distance Maximum distance the sensor can measure in centimeters
  * @param current_distance Current distance reading
- * @param type Type from MAV_DISTANCE_SENSOR enum.
+ * @param type Type from UXV_DISTANCE_SENSOR enum.
  * @param id Onboard ID of the sensor
- * @param orientation Direction the sensor faces from MAV_SENSOR_ORIENTATION enum.
+ * @param orientation Direction the sensor faces from UXV_SENSOR_ORIENTATION enum.
  * @param covariance Measurement covariance in centimeters, 0 for unknown / invalid readings
  * @return length of the message in bytes (excluding serial stream start sign)
  */
@@ -190,9 +190,9 @@ static inline uint16_t mace_msg_distance_sensor_encode_chan(uint8_t system_id, u
  * @param min_distance Minimum distance the sensor can measure in centimeters
  * @param max_distance Maximum distance the sensor can measure in centimeters
  * @param current_distance Current distance reading
- * @param type Type from MAV_DISTANCE_SENSOR enum.
+ * @param type Type from UXV_DISTANCE_SENSOR enum.
  * @param id Onboard ID of the sensor
- * @param orientation Direction the sensor faces from MAV_SENSOR_ORIENTATION enum.
+ * @param orientation Direction the sensor faces from UXV_SENSOR_ORIENTATION enum.
  * @param covariance Measurement covariance in centimeters, 0 for unknown / invalid readings
  */
 #ifdef MACE_USE_CONVENIENCE_FUNCTIONS
@@ -326,7 +326,7 @@ static inline uint16_t mace_msg_distance_sensor_get_current_distance(const mace_
 /**
  * @brief Get field type from distance_sensor message
  *
- * @return Type from MAV_DISTANCE_SENSOR enum.
+ * @return Type from UXV_DISTANCE_SENSOR enum.
  */
 static inline uint8_t mace_msg_distance_sensor_get_type(const mace_message_t* msg)
 {
@@ -346,7 +346,7 @@ static inline uint8_t mace_msg_distance_sensor_get_id(const mace_message_t* msg)
 /**
  * @brief Get field orientation from distance_sensor message
  *
- * @return Direction the sensor faces from MAV_SENSOR_ORIENTATION enum.
+ * @return Direction the sensor faces from UXV_SENSOR_ORIENTATION enum.
  */
 static inline uint8_t mace_msg_distance_sensor_get_orientation(const mace_message_t* msg)
 {
