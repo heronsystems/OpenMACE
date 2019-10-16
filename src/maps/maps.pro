@@ -46,6 +46,7 @@ SOURCES += \
     costmaps/layers/costmap_inflation_layer.cpp
 
 HEADERS +=\
+    costmaps/cell_data.h \
         maps_global.h \
     dynamic_2D_grid.h \
     bounded_2D_grid.h \

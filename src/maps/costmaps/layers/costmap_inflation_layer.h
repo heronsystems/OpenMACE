@@ -3,6 +3,9 @@
 
 #include <cmath>
 #include <limits>
+#include <algorithm>
+
+#include "../cell_data.h"
 
 #include "costmap_base_layer.h"
 
@@ -12,13 +15,14 @@ namespace costmap{
 class Costmap_InflationLayer : public Costmap_BaseLayer
 {
 public:
-    Costmap_InflationLayer();
+    Costmap_InflationLayer(const std::string &layerName);
 
-    virtual ~Costmap_InflationLayer()
+    Costmap_InflationLayer(const std::string &layerName, const uint8_t &fill_value, const double &x_length = 10.0, const double &y_length = 10.0, const double &resolution = 0.5,
+                      const pose::CartesianPosition_2D &position = pose::CartesianPosition_2D(), const double &rotation = 0.0);
+
+    virtual ~Costmap_InflationLayer() override
     {
         deleteKernels();
-        if (dsrv_)
-            delete dsrv_;
         if (seen_)
             delete[] seen_;
     }
@@ -28,29 +32,34 @@ public:
     virtual void updateBounds(double robot_x, double robot_y, double robot_yaw, double* min_x, double* min_y,
                               double* max_x, double* max_y);
 
-    virtual void updateCosts(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i, int max_j);
+    void updateCosts(Costmap2D& master_grid, unsigned int minXIndex, unsigned int minYIndex, unsigned int maxXIndex, unsigned int maxYIndex) override;
 
     virtual bool isDiscretized()
     {
         return true;
     }
+
     virtual void matchSize();
 
     virtual void reset() { onInitialize(); }
 
-    virtual inline uint8_t computeCost(double distance) const
+    /** @brief  Given a distance, compute a cost.
+     * @param  distance The distance from an obstacle in cells
+     * @return A cost value for the distance */
+    virtual inline double computeCost(unsigned int distance) const
     {
+        double euclidean_distance = distance * getCellResolution();
         uint8_t cost = 0;
         if (std::fabs(distance) <= std::numeric_limits<double>::epsilon())
             cost = LETHAL_OBSTACLE;
-        else if (distance * resolution_ <= inscribed_radius_)
-            cost = INSCRIBED_INFLATED_OBSTACLE;
-        else
+        else if (euclidean_distance <= m_InscribedRadius)
+            cost = INSCRIBED_OCCUPANY;
+        else if (euclidean_distance <= m_CircumscribedRadius)
+            cost = CIRCUMSCRIBED_OCCUPANCY;
+        else // make sure cost falls off by Euclidean distance
         {
-            // make sure cost falls off by Euclidean distance
-            double euclidean_distance = distance * resolution_;
-            double factor = exp(-1.0 * weight_ * (euclidean_distance - inscribed_radius_));
-            cost = (unsigned char)((INSCRIBED_INFLATED_OBSTACLE - 1) * factor);
+            double factor = exp(-1.0 * weight_ * (euclidean_distance - m_CircumscribedRadius));
+            cost = static_cast<uint8_t>((CIRCUMSCRIBED_OCCUPANCY - 1) * factor);
         }
         return cost;
     }
@@ -64,13 +73,7 @@ public:
 
 protected:
     virtual void onFootprintChanged();
-    boost::recursive_mutex* inflation_access_;
-
-    double resolution_;
-    double inflation_radius_;
-    double inscribed_radius_;
-    double weight_;
-    bool inflate_unknown_;
+//    boost::recursive_mutex* inflation_access_;
 
 private:
     /**
@@ -81,10 +84,10 @@ private:
        * @param src_y The y coordinate of the source cell
        * @return
        */
-    inline double distanceLookup(int mx, int my, int src_x, int src_y)
+    inline double distanceLookup(unsigned int xIndex, unsigned int yIndex, unsigned int srcXIndex, unsigned int srcYIndex)
     {
-        unsigned int dx = abs(mx - src_x);
-        unsigned int dy = abs(my - src_y);
+        unsigned int dx = std::abs<unsigned int>(xIndex - srcXIndex);
+        unsigned int dy = std::abs<unsigned int>(yIndex - srcYIndex);
         return cached_distances_[dx][dy];
     }
 
@@ -96,38 +99,44 @@ private:
        * @param src_y The y coordinate of the source cell
        * @return
        */
-    inline unsigned char costLookup(int mx, int my, int src_x, int src_y)
+    inline unsigned char costLookup(unsigned int xIndex, unsigned int yIndex, unsigned int srcXIndex, unsigned int srcYIndex)
     {
-        unsigned int dx = abs(mx - src_x);
-        unsigned int dy = abs(my - src_y);
+        unsigned int dx = std::abs<unsigned int>(xIndex - srcXIndex);
+        unsigned int dy = std::abs<unsigned int>(yIndex - srcYIndex);
         return cached_costs_[dx][dy];
     }
 
     void computeCaches();
-    void deleteKernels();
-    void inflate_area(int min_i, int min_j, int max_i, int max_j, unsigned char* master_grid);
 
-    unsigned int cellDistance(double world_dist)
-    {
-        return layered_costmap_->getCostmap()->cellDistance(world_dist);
-    }
+    void deleteKernels();
 
     inline void enqueue(unsigned int index, unsigned int mx, unsigned int my,
                         unsigned int src_x, unsigned int src_y);
 
-    unsigned int cell_inflation_radius_;
-    unsigned int cached_cell_inflation_radius_;
+private:
+    /*
+    inflation_radius_(0)
+      , weight_(0)
+      , inflate_unknown_(false)
+      , cell_inflation_radius_(0)
+      , cached_cell_inflation_radius_(0)
+    */
+
+    size_t cell_inflation_radius_ = 0;
+    size_t cached_cell_inflation_radius_ = 0;
     std::map<double, std::vector<CellData> > inflation_cells_;
 
-    bool* seen_;
-    int seen_size_;
+    bool* seen_ = nullptr;
+    size_t seen_size_;
 
-    unsigned char** cached_costs_;
-    double** cached_distances_;
-    double last_min_x_, last_min_y_, last_max_x_, last_max_y_;
+    double inflation_radius_;
+    double weight_;
+    bool inflate_unknown_;
 
-    dynamic_reconfigure::Server<costmap_2d::InflationPluginConfig> *dsrv_;
-    void reconfigureCB(costmap_2d::InflationPluginConfig &config, uint32_t level);
+    unsigned char** cached_costs_ = nullptr;
+    double** cached_distances_ = nullptr;
+    double last_min_x_ = -std::numeric_limits<double>::max(), last_min_y_ = -std::numeric_limits<double>::max();
+    double last_max_x_ = std::numeric_limits<double>::max(), last_max_y_ = std::numeric_limits<double>::max();
 
     bool need_reinflation_;  ///< Indicates that the entire costmap should be reinflated next time around.
 };

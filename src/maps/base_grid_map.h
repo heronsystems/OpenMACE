@@ -83,6 +83,14 @@ public:
 
     }
 
+    bool getVectorIndex(size_t &index, const unsigned int xIndex, const unsigned int yIndex)
+    {
+        if((xIndex >= xSize) || (yIndex >= ySize))
+            return false;
+        index = xIndex + yIndex * xSize;
+        return true;
+    }
+
     void getMinPositionFromIndex(const unsigned int &index, double &x, double &y) const
     {
         getPositionFromIndex(index,x,y);

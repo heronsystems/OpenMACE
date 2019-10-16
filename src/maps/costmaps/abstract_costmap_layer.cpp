@@ -1,10 +1,5 @@
 #include ".h"
 
-Abstract_CostmapLayer::Abstract_CostmapLayer()
-{
-
-}
-
 namespace costmap
 {
 
@@ -46,102 +41,5 @@ void Abstract_CostmapLayer::useExtraBounds(double* min_x, double* min_y, double*
     extra_max_x_ = -1e6;
     extra_max_y_ = -1e6;
     has_extra_bounds_ = false;
-}
-
-void Abstract_CostmapLayer::updateWithMax(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i, int max_j)
-{
-  if (!enabled_)
-    return;
-
-  unsigned char* master_array = master_grid.getCharMap();
-  unsigned int span = master_grid.getSizeInCellsX();
-
-  for (int j = min_j; j < max_j; j++)
-  {
-    unsigned int it = j * span + min_i;
-    for (int i = min_i; i < max_i; i++)
-    {
-      if (costmap_[it] == NO_INFORMATION){
-        it++;
-        continue;
-      }
-
-      unsigned char old_cost = master_array[it];
-      if (old_cost == NO_INFORMATION || old_cost < costmap_[it])
-        master_array[it] = costmap_[it];
-      it++;
-    }
-  }
-}
-
-void Abstract_CostmapLayer::updateWithTrueOverwrite(costmap_2d::Costmap2D& master_grid, int min_i, int min_j,
-                                           int max_i, int max_j)
-{
-  if (!enabled_)
-    return;
-  unsigned char* master = master_grid.getCharMap();
-  unsigned int span = master_grid.getSizeInCellsX();
-
-  for (int j = min_j; j < max_j; j++)
-  {
-    unsigned int it = span*j+min_i;
-    for (int i = min_i; i < max_i; i++)
-    {
-      master[it] = costmap_[it];
-      it++;
-    }
-  }
-}
-
-void Abstract_CostmapLayer::updateWithOverwrite(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i, int max_j)
-{
-  if (!enabled_)
-    return;
-  unsigned char* master = master_grid.getCharMap();
-  unsigned int span = master_grid.getSizeInCellsX();
-
-  for (int j = min_j; j < max_j; j++)
-  {
-    unsigned int it = span*j+min_i;
-    for (int i = min_i; i < max_i; i++)
-    {
-      if (costmap_[it] != NO_INFORMATION)
-        master[it] = costmap_[it];
-      it++;
-    }
-  }
-}
-
-void Abstract_CostmapLayer::updateWithAddition(costmap_2d::Costmap2D& master_grid, int min_i, int min_j, int max_i, int max_j)
-{
-  if (!enabled_)
-    return;
-  unsigned char* master_array = master_grid.getCharMap();
-  unsigned int span = master_grid.getSizeInCellsX();
-
-  for (int j = min_j; j < max_j; j++)
-  {
-    unsigned int it = j * span + min_i;
-    for (int i = min_i; i < max_i; i++)
-    {
-      if (costmap_[it] == NO_INFORMATION){
-        it++;
-        continue;
-      }
-
-      unsigned char old_cost = master_array[it];
-      if (old_cost == NO_INFORMATION)
-        master_array[it] = costmap_[it];
-      else
-      {
-        int sum = old_cost + costmap_[it];
-        if (sum >= costmap_2d::INSCRIBED_INFLATED_OBSTACLE)
-            master_array[it] = costmap_2d::INSCRIBED_INFLATED_OBSTACLE - 1;
-        else
-            master_array[it] = sum;
-      }
-      it++;
-    }
-  }
 }
 }  // namespace costmap

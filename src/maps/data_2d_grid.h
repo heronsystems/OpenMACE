@@ -313,6 +313,14 @@ protected:
 
 public:
 
+    const T* operator [](const unsigned int &index)const
+    {
+        if (index > (this->getNodeCount() - 1))
+            return nullptr;
+        else
+            return &m_dataMap[index];
+    }
+
     Data2DGrid& operator = (const Data2DGrid &rhs)
     {
         BaseGridMap::operator ==(rhs);
