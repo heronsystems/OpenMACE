@@ -6,6 +6,9 @@
 #include <vector>
 #include <array>
 
+#include "maps/costmaps/layers/costmap_base_layer.h"
+#include "maps/costmaps/layers/costmap_inflation_layer.h"
+
 //#include "opencv2/opencv.hpp"
 //#include "opencv2/imgproc.hpp"
 //#include "opencv2/highgui.hpp"
@@ -174,6 +177,12 @@ int main(int argc, char *argv[])
     staticMap.getPositionFromIndex(0,x,y);
 
     std::cout<<"Waiting here."<<std::endl;
+
+
+    mace::costmap::Costmap_BaseLayer staticLayer("static_layer",mace::costmap::Costmap2D::FREE_SPACE);
+    mace::costmap::Costmap_InflationLayer inflationLayer("inflation_layer",mace::costmap::Costmap2D::FREE_SPACE);
+    inflationLayer.setInflationParameters(1.0,1.0);
+
 
 //    m_swarmTOvehicleHome.translation() = m_vehicleHomeTOswarm.translation() * -1;
     /*
