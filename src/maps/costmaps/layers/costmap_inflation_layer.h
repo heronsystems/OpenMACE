@@ -32,7 +32,7 @@ public:
     virtual void updateBounds(double robot_x, double robot_y, double robot_yaw, double* min_x, double* min_y,
                               double* max_x, double* max_y);
 
-    void updateCosts(Costmap2D& master_grid, unsigned int minXIndex, unsigned int minYIndex, unsigned int maxXIndex, unsigned int maxYIndex) override;
+    void updateCosts(Costmap2D& masterMap, unsigned int minXIndex, unsigned int minYIndex, unsigned int maxXIndex, unsigned int maxYIndex) override;
 
     virtual bool isDiscretized()
     {

@@ -32,6 +32,7 @@ void Costmap_InflationLayer::onInitialize()
 
 void Costmap_InflationLayer::matchSize()
 {
+    /*
     //  boost::unique_lock < boost::recursive_mutex > lock(*inflation_access_);
     costmap_2d::Costmap2D* costmap = layered_costmap_->getCostmap();
     resolution_ = costmap->getResolution();
@@ -43,6 +44,7 @@ void Costmap_InflationLayer::matchSize()
         delete[] seen_;
     seen_size_ = size_x * size_y;
     seen_ = new bool[seen_size_];
+    */
 }
 
 void Costmap_InflationLayer::updateBounds(double robot_x, double robot_y, double robot_yaw, double* min_x,
@@ -87,14 +89,13 @@ void Costmap_InflationLayer::onFootprintChanged()
     need_reinflation_ = true;
 }
 
-void Costmap_InflationLayer::updateCosts(Costmap2D& master_grid, unsigned int minXIndex, unsigned int minYIndex, unsigned int maxXIndex, unsigned int maxYIndex)
+void Costmap_InflationLayer::updateCosts(Costmap2D& masterMap, unsigned int minXIndex, unsigned int minYIndex, unsigned int maxXIndex, unsigned int maxYIndex)
 {
     //  boost::unique_lock < boost::recursive_mutex > lock(*inflation_access_);
     if (!isLayerEnabled() || (cell_inflation_radius_ == 0))
         return;
 
-    unsigned char* master_array = master_grid.getCharMap();
-    size_t size_x = master_grid.getSizeX(), size_y = master_grid.getSizeY();
+    size_t size_x = masterMap.getSizeX(), size_y = masterMap.getSizeY();
 
     if (seen_ == nullptr) {
         //    ROS_WARN("InflationLayer::updateCosts(): seen_ array is NULL");
@@ -134,9 +135,9 @@ void Costmap_InflationLayer::updateCosts(Costmap2D& master_grid, unsigned int mi
         for (size_t i = minXIndex; i < maxXIndex; i++)
         {
             size_t currentIndex = 0;
-            if(!master_grid.getVectorIndex(currentIndex,static_cast<unsigned int>(i),static_cast<unsigned int>(j)))
+            if(!masterMap.getVectorIndex(currentIndex,static_cast<unsigned int>(i),static_cast<unsigned int>(j)))
                 continue;
-            uint8_t cost = *master_grid[static_cast<unsigned int>(currentIndex)];
+            uint8_t cost = *masterMap[static_cast<unsigned int>(currentIndex)];
             if (cost == LETHAL_OBSTACLE)
                 obs_bin.push_back(CellData(0.0,static_cast<unsigned int>(currentIndex),
                                            static_cast<unsigned int>(i), static_cast<unsigned int>(j),
@@ -168,12 +169,12 @@ void Costmap_InflationLayer::updateCosts(Costmap2D& master_grid, unsigned int mi
 
             // assign the cost associated with the distance from an obstacle to the cell
             uint8_t cost = costLookup(mx, my, sx, sy);
-            uint8_t old_cost = master_array[index];
+            uint8_t* old_cost = masterMap[index];
 
-            if (old_cost == NO_INFORMATION && (inflate_unknown_ ? (cost > FREE_SPACE) : (cost >= INSCRIBED_OCCUPANY)))
-                master_array[index] = cost;
+            if (*old_cost == NO_INFORMATION && (inflate_unknown_ ? (cost > FREE_SPACE) : (cost >= INSCRIBED_OCCUPANY)))
+                *old_cost = cost;
             else
-                master_array[index] = std::max(old_cost, cost);
+                *old_cost = std::max(*old_cost, cost);
 
             // attempt to put the neighbors of the current cell onto the inflation list
             if (mx > 0)
@@ -279,12 +280,12 @@ void Costmap_InflationLayer::deleteKernels()
 
 void Costmap_InflationLayer::setInflationParameters(double inflation_radius, double cost_scaling_factor)
 {
-    if (weight_ != cost_scaling_factor || inflation_radius_ != inflation_radius)
+    if (weight_ != cost_scaling_factor ||
+            fabs(inflation_radius_ - inflation_radius) > std::numeric_limits<double>::epsilon())
     {
         // Lock here so that reconfiguring the inflation radius doesn't cause segfaults
         // when accessing the cached arrays
 //        boost::unique_lock < boost::recursive_mutex > lock(*inflation_access_);
-
         cell_inflation_radius_ = getEquivalentCellDistance(inflation_radius_);
         weight_ = cost_scaling_factor;
         need_reinflation_ = true;
