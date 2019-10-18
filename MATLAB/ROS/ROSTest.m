@@ -19,8 +19,10 @@ should_land = true;
 
 %% Initialize the MATLAB/ROS Environment
 % Initialize ROS:
-setenv('ROS_MASTER_URI','http://192.168.1.20:11311') % ROS Core location
-setenv('ROS_IP','192.168.1.166') % MATLAB location
+% setenv('ROS_MASTER_URI','http://192.168.1.20:11311') % ROS Core location
+% setenv('ROS_IP','192.168.1.166') % MATLAB location
+setenv('ROS_MASTER_URI','http://127.0.0.1:11311') % ROS Core location
+setenv('ROS_IP','127.0.0.1') % MATLAB location
 rosinit
 
 % List ROS topics:

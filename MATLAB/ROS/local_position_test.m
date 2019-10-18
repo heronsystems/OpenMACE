@@ -4,23 +4,23 @@ function [] = local_position_test()
 
 %{
 MAV_FRAME_LOCAL_NED = 11
-Positions are relative to the vehicle’s EKF Origin in NED frame
+Positions are relative to the vehicleï¿½s EKF Origin in NED frame
 
 I.e x=1,y=2,z=3 is 1m North, 2m East and 3m Down from the origin
 
-The EKF origin is the vehicle’s location when it first achieved a good position estimate
+The EKF origin is the vehicleï¿½s location when it first achieved a good position estimate
 
 Velocity are in NED frame
 
 MAV_FRAME_LOCAL_OFFSET_NED = 13
-Positions are relative to the vehicle’s current position
+Positions are relative to the vehicleï¿½s current position
 
 I.e. x=1,y=2,z=3 is 1m North, 2m East and 3m below the current position.
 
 Velocity are in NED frame.
 
 MAV_FRAME_BODY_OFFSET_NED = 17
-Positions are relative to the vehicle’s current position and heading
+Positions are relative to the vehicleï¿½s current position and heading
 
 I.e x=1,y=2,z=3 is 1m forward, 2m right and 3m Down from the current position
 
@@ -40,6 +40,7 @@ bit0:PosX, bit1:PosY, bit2:PosZ, bit3:VelX, bit4:VelY, bit5:VelZ, bit6:AccX, bit
 
 65528 is for position, 65479 is for velocity, 65472 is position and velocity
 %}
+dynamicTargetClient_Kinematic = rossvcclient('command_dynamic_target_kinematic');
 
 dynamicTargetRequest = rosmessage(dynamicTargetClient_Kinematic);
     dynamicTargetRequest.Timestamp = rostime('now');

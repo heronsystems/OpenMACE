@@ -18,6 +18,7 @@ bit0:PosX, bit1:PosY, bit2:PosZ, bit3:VelX, bit4:VelY, bit5:VelZ, bit6:AccX, bit
 
 65528 is for position, 65479 is for velocity, 65472 is position and velocity
 %}
+dynamicTargetClient_Kinematic = rossvcclient('command_dynamic_target_kinematic');
 
     dynamicTargetRequest = rosmessage(dynamicTargetClient_Kinematic);
     dynamicTargetRequest.Timestamp = rostime('now');

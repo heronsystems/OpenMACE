@@ -12,16 +12,24 @@ NUM_REAL_AGENTS=0
 # give USB ports here:
 REAL_AGENT_USB[1]=0
 REAL_AGENT_USB[2]=1
+REAL_AGENT_USB[3]=2
+REAL_AGENT_USB[4]=3
 # give vehicle ID here:
 REAL_AGENT_ID[1]=1
 REAL_AGENT_ID[2]=2
+REAL_AGENT_ID[3]=5
+REAL_AGENT_ID[4]=6
 
 
 # default values
-NUM_SIM_AGENTS=2
+NUM_SIM_AGENTS=4
 # give sim agent is
 SIM_AGENT_ID[1]=1
 SIM_AGENT_ID[2]=2
+SIM_AGENT_ID[3]=3
+SIM_AGENT_ID[4]=4
+SIM_AGENT_ID[5]=5
+SIM_AGENT_ID[6]=6
 
 
 #IP_ADDRESS=192.168.1.62 # Kim Lab
@@ -43,13 +51,15 @@ LONG=-76.921897
 #% Randall's Island NY
 #LAT=40.791450;
 #LONG=-73.918950;
-
+# ROSTest
+#LAT=-35.3631970
+#LONG=149.1653205
 
 LAUNCH_ROS=1
-GUI=0
+GUI=1
 OPEN_TERMINALS=1
 ARDUCOPTER_CMD_LIST="arduCopter.sh"
-ARDUCOPTER_CMD=1
+ARDUCOPTER_CMD=0 # 0 do not wati for aducopter
 
 while test $# -gt 0; do
         case "$1" in
@@ -247,7 +257,8 @@ echo "Launching MACE..."
 #  then
 #    MACE ./MaceSetup_Configs/$CONFIG_XML</dev/null &>/dev/null &
 #  else
-    gnome-terminal -e "bash -c \"MACE ./MaceSetup_Configs/$CONFIG_XML; exec /bin/bash\""
+    #gnome-terminal -e "bash -c \"MACE ./MaceSetup_Configs/$CONFIG_XML; exec /bin/bash\""
+    gnome-terminal -e "bash -c \"MACE MaceSetup_Configs/$CONFIG_XML; exec /bin/bash\""
 #fi
 sleep 5s
 
