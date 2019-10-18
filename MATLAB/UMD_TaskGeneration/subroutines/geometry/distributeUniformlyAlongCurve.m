@@ -25,9 +25,9 @@ for i = 2:1:length(ds)+1
 end
 sTotal = s(end);
 % compute uniformly distributed normalized arc-length
-sNorm = [0 : 1/N : (N-1)/N]; 
+sNorm = [0 : 1/N : 1]; 
 % shift by random amount 
-sNorm = mod(sNorm + rand(), 1);
+% sNorm = mod(sNorm + rand(), 1);
 
 ind = [1:1:length(x)];
 % allocate

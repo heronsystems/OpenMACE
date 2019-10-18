@@ -21,7 +21,7 @@ spArray(6) = subplot(rows,cols,6);
 %   'CellAge',
 %   'CellState',
 %   'KrigingInterp'
-spTypes = {'GroundTruth','CellDet','MutualInfo','PriorP','PriorR','Entropy'}; 
+spTypes = {'GroundTruth','CellDet','MutualInfoWpts','PriorP','PriorR','Entropy'}; 
 %spTypes = {'MutualInfo','LikelihoodOccupancyGraphExplored','Entropy','LogLRMap'}; 
 
 %

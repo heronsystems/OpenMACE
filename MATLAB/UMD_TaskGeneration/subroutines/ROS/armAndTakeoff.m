@@ -10,9 +10,9 @@ for i = 1:1:ROS_MACE.N
     armRequest.VehicleID = ROS_MACE.agentIDs(i); % Vehicle ID
     armResponse = call(ROS_MACE.armClient, armRequest, 'Timeout', 5);
     if ( armResponse.Success )
-        fprintf('VehicleID %d Arm Command Sent.\n',i);
+        fprintf('VehicleID %d Arm Command Sent.\n',ROS_MACE.agentIDs(i));
     else 
-        fprintf('VehicleID %d Arm Command Failed.\n',i);
+        fprintf('VehicleID %d Arm Command Failed.\n',ROS_MACE.agentIDs(i));
     end    
 end
 disp('Arm Complete. Begin Takeoff.')
@@ -30,21 +30,21 @@ for i = 1:1:ROS_MACE.N
     % If you don't set lat/lon (or set them to 0.0), it will takeoff in current position
     % takeoffRequest.LatitudeDeg = 0.0; % If 0.0, takeoff where you currently are
     % takeoffRequest.LongitudeDeg = 0.0; % If 0.0, takeoff where you currently are
-    takeoffResponse = call(ROS_MACE.takeoffClient, takeoffRequest, 'Timeout', 5);
+    takeoffRequest
+    takeoffResponse = call(ROS_MACE.takeoffClient, takeoffRequest, 'Timeout', 5)
     if ( takeoffResponse.Success )
-        fprintf('VehicleID %d Takeoff Command Sent.\n',i);
+        fprintf('VehicleID %d Takeoff Command Sent.\n',ROS_MACE.agentIDs(i));
     else 
-        fprintf('VehicleID %d Takeoff Command Failed.\n',i);
+        fprintf('VehicleID %d Takeoff Command Failed.\n',ROS_MACE.agentIDs(i));
     end    
 end
 disp('Waiting for takeoff to complete...')
 % Wait for each vehicle to achieve takeoff altitude
 takeoffAchieved = zeros(1,ROS_MACE.N);
-colors = ['rbk'];
 
 while( ~all(takeoffAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;   
-    positionCallback( ROS_MACE.positionSub, msg); 
+    positionCallback( ROS_MACE, msg); 
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( takeoffAchieved(agentIndex) == 0 )

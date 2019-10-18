@@ -1,10 +1,10 @@
 function wptManager( ROS_MACE, wpts, captureRadius)
 
 numWpts = size(wpts{1},1);
+wptIndex = ones(1,ROS_MACE.N);
 for curWpt = [1:1:numWpts]
     % plot
-    figure(1)
-    subplot(2,1,2)
+    subplot(ROS_MACE.taskAndLocation);
      wptsDesired = [];
     for i = 1:1:ROS_MACE.N
         wptsDesired = [ wptsDesired; wpts{i}(curWpt,:) ];
@@ -13,12 +13,13 @@ for curWpt = [1:1:numWpts]
     drawnow;
     
     % send
-    updateWpts( ROS_MACE, wptsDesired )
+    updateWpts( ROS_MACE, wptsDesired, wptIndex );
     % wait
-    waitForWptsToBeReached( ROS_MACE, wptsDesired, captureRadius )
+    waitForWptsToBeReached( ROS_MACE, wptsDesired, captureRadius)
     disp('**** WPTS ACHIEVED ****');
     disp('Keeping Station for 5 seconds...');
     countdownVerbose(5);
+    wptIndex = wptIndex + 1;
 end
 
 
