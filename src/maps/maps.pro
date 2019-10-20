@@ -32,6 +32,7 @@ SOURCES += \
     bounded_2D_grid.cpp \
     base_grid_map.cpp \
     iterators/grid_map_iterator.cpp \
+    iterators/line_map_iterator.cpp \
     iterators/polygon_map_iterator.cpp \
     iterators/circle_map_iterator.cpp \
     iterators/generic_map_iterator.cpp \
@@ -47,6 +48,7 @@ SOURCES += \
 
 HEADERS +=\
     costmaps/cell_data.h \
+    iterators/line_map_iterator.h \
         maps_global.h \
     dynamic_2D_grid.h \
     bounded_2D_grid.h \
