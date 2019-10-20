@@ -21,8 +21,15 @@ public:
     };
 
 public:
-    Costmap2D(const uint8_t &fill_value, const double &x_length = 10.0, const double &y_length = 10.0, const double &resolution = 0.5,
+    Costmap2D(const uint8_t &fill_value = NO_INFORMATION, const double &x_length = 10.0, const double &y_length = 10.0, const double &resolution = 0.5,
               const pose::CartesianPosition_2D &position = pose::CartesianPosition_2D(), const double &rotation = 0.0);
+
+    Costmap2D(const uint8_t &fill_value,
+               const double &x_min, const double &x_max,
+               const double &y_min, const double &y_max,
+               const double &resolution,
+               const pose::CartesianPosition_2D &position = pose::CartesianPosition_2D(),
+               const double &rotation = 0.0);
 
     Costmap2D(const Costmap2D &copy);
 
@@ -63,6 +70,18 @@ protected:
     bool m_LayerEnabled = true;
     bool m_LayerCurrent = false;
 
+public:
+    void setScribedRadii(const double inscribed, const double &circumscribed = 0.0);
+
+    double getInscribedRadius() const
+    {
+        return this->m_InscribedRadius;
+    }
+    double getCircumscribedRadius() const
+    {
+        return this->m_CircumscribedRadius;
+    }
+protected:
     double m_InscribedRadius = 0.0;
     double m_CircumscribedRadius = 0.0;
 };

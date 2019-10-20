@@ -15,6 +15,17 @@ Costmap_BaseLayer::Costmap_BaseLayer(const std::string &layerName, const uint8_t
 
 }
 
+Costmap_BaseLayer::Costmap_BaseLayer(const std::string &layerName, const uint8_t &fill_value,
+           const double &x_min, const double &x_max,
+           const double &y_min, const double &y_max,
+           const double &resolution,
+           const pose::CartesianPosition_2D &position,
+           const double &rotation):
+    Costmap2D(fill_value, x_min, x_max, y_min, y_max, resolution, position, rotation)
+{
+
+}
+
 void Costmap_BaseLayer::touch(double x, double y, double *min_x, double *min_y, double *max_x, double *max_y)
 {
     *min_x = std::min(x, *min_x);

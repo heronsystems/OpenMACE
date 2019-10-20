@@ -15,7 +15,7 @@ public:
 
     LineMapIterator(const LineMapIterator* copy);
 
-    virtual ~PolygonMapIterator()
+    virtual ~LineMapIterator()
     {
         if(it)
         {
@@ -38,7 +38,7 @@ public:
 
     virtual LineMapIterator operator ++(int);
 
-    LineMapIterator& operator =(const PolygonMapIterator &rhs);
+    LineMapIterator& operator =(const LineMapIterator &rhs);
 
     bool operator == (const LineMapIterator &rhs) const;
 

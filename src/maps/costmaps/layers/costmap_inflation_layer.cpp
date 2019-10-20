@@ -16,6 +16,18 @@ Costmap_InflationLayer::Costmap_InflationLayer(const std::string &layerName, con
 
 }
 
+
+Costmap_InflationLayer::Costmap_InflationLayer(const std::string &layerName, const uint8_t &fill_value,
+           const double &x_min, const double &x_max,
+           const double &y_min, const double &y_max,
+           const double &resolution,
+           const pose::CartesianPosition_2D &position,
+           const double &rotation):
+    Costmap_BaseLayer(layerName, fill_value, x_min, x_max, y_min, y_max, resolution, position, rotation)
+{
+
+}
+
 void Costmap_InflationLayer::onInitialize()
 {
     m_LayerCurrent = true;
@@ -94,6 +106,8 @@ void Costmap_InflationLayer::updateCosts(Costmap2D& masterMap, unsigned int minX
     //  boost::unique_lock < boost::recursive_mutex > lock(*inflation_access_);
     if (!isLayerEnabled() || (cell_inflation_radius_ == 0))
         return;
+    int minMapX = static_cast<int>(minXIndex), minMapY = static_cast<int>(minYIndex);
+    int maxMapX = static_cast<int>(maxXIndex), maxMapY = static_cast<int>(maxYIndex);
 
     size_t size_x = masterMap.getSizeX(), size_y = masterMap.getSizeY();
 
@@ -115,24 +129,24 @@ void Costmap_InflationLayer::updateCosts(Costmap2D& masterMap, unsigned int minX
     // box min_i...max_j, by the amount cell_inflation_radius_.  Cells
     // up to that distance outside the box can still influence the costs
     // stored in cells inside the box.
-    minXIndex -= cell_inflation_radius_;
-    minYIndex -= cell_inflation_radius_;
-    maxXIndex += cell_inflation_radius_;
-    maxYIndex += cell_inflation_radius_;
+    minMapX -= cell_inflation_radius_;
+    minMapY -= cell_inflation_radius_;
+    maxMapX += cell_inflation_radius_;
+    maxMapY += cell_inflation_radius_;
 
-    minXIndex = std::max<unsigned int>(0, minXIndex);
-    minYIndex = std::max<unsigned int>(0, minYIndex);
-    maxXIndex = std::min<unsigned int>(static_cast<unsigned int>(size_x), maxXIndex);
-    maxYIndex = std::min<unsigned int>(static_cast<unsigned int>(size_y), maxYIndex);
+    minMapX = std::max<int>(0, minMapX);
+    minMapY = std::max<int>(0, minMapY);
+    maxMapX = std::min<int>(static_cast<int>(size_x), maxMapX);
+    maxMapY = std::min<int>(static_cast<int>(size_y), maxMapY);
 
     // Inflation list; we append cells to visit in a list associated with its distance to the nearest obstacle
     // We use a map<distance, list> to emulate the priority queue used before, with a notable performance boost
 
     // Start with lethal obstacles: by definition distance is 0.0
     std::vector<CellData>& obs_bin = inflation_cells_[0.0];
-    for (size_t j = minYIndex; j < maxYIndex; j++)
+    for (size_t j = static_cast<unsigned int>(minMapY); j < static_cast<unsigned int>(maxMapY); j++)
     {
-        for (size_t i = minXIndex; i < maxXIndex; i++)
+        for (size_t i = static_cast<unsigned int>(minMapX); i < static_cast<unsigned int>(maxMapX); i++)
         {
             size_t currentIndex = 0;
             if(!masterMap.getVectorIndex(currentIndex,static_cast<unsigned int>(i),static_cast<unsigned int>(j)))
@@ -283,6 +297,7 @@ void Costmap_InflationLayer::setInflationParameters(double inflation_radius, dou
     if (weight_ != cost_scaling_factor ||
             fabs(inflation_radius_ - inflation_radius) > std::numeric_limits<double>::epsilon())
     {
+        inflation_radius_ = inflation_radius;
         // Lock here so that reconfiguring the inflation radius doesn't cause segfaults
         // when accessing the cached arrays
 //        boost::unique_lock < boost::recursive_mutex > lock(*inflation_access_);

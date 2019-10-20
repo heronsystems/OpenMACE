@@ -10,6 +10,17 @@ Costmap2D::Costmap2D(const uint8_t &fill_value, const double &x_length, const do
 
 }
 
+Costmap2D::Costmap2D(const uint8_t &fill_value,
+           const double &x_min, const double &x_max,
+           const double &y_min, const double &y_max,
+           const double &resolution,
+           const pose::CartesianPosition_2D &position,
+           const double &rotation):
+    maps::Data2DGrid<uint8_t>(&fill_value, x_min, x_max, y_min, y_max, resolution, resolution, position, rotation)
+{
+
+}
+
 Costmap2D::Costmap2D(const Costmap2D &copy):
     maps::Data2DGrid<uint8_t>(copy)
 {
@@ -20,6 +31,13 @@ Costmap2D::~Costmap2D()
 {
 
 }
+
+void Costmap2D::setScribedRadii(const double inscribed, const double &circumscribed)
+{
+    m_InscribedRadius = inscribed;
+    m_CircumscribedRadius = circumscribed;
+}
+
 size_t Costmap2D::getEquivalentCellDistance(const double &distance) const
 {
     double cells_dist = std::max(0.0, ceil(distance / getCellResolution())); //floating to the ceiling should get it over the next cell

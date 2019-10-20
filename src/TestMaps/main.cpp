@@ -8,10 +8,11 @@
 
 #include "maps/costmaps/layers/costmap_base_layer.h"
 #include "maps/costmaps/layers/costmap_inflation_layer.h"
+#include "maps/iterators/line_map_iterator.h"
 
-//#include "opencv2/opencv.hpp"
-//#include "opencv2/imgproc.hpp"
-//#include "opencv2/highgui.hpp"
+#include "opencv2/opencv.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/highgui.hpp"
 
 //#include "graphs/signed_distance_fields/collision_map.hpp"
 
@@ -173,16 +174,49 @@ int main(int argc, char *argv[])
     mace::maps::OccupiedResult fillData = mace::maps::OccupiedResult::NOT_OCCUPIED;
     mace::maps::Data2DGrid<mace::maps::OccupiedResult> staticMap(&fillData, -10,10,-10,10,0.5,0.5);
 
-    double x=0.0, y=0.0;
-    staticMap.getPositionFromIndex(0,x,y);
+    //double x=0.0, y=0.0;
+    //staticMap.getPositionFromIndex(0,x,y);
 
     std::cout<<"Waiting here."<<std::endl;
 
+    //    int **array = new int*[10]; // allocate an array of 10 int pointers — these are our rows
+    //    for (int count = 0; count < 10; ++count)
+    //        array[count] = new int[count+1]; // these are our columns
+    //    array[9][4] = 3;
 
-    mace::costmap::Costmap_BaseLayer staticLayer("static_layer",mace::costmap::Costmap2D::FREE_SPACE);
-    mace::costmap::Costmap_InflationLayer inflationLayer("inflation_layer",mace::costmap::Costmap2D::FREE_SPACE);
-    inflationLayer.setInflationParameters(1.0,1.0);
+    //    std:cout<<"The value at the index is: "<<std::to_string(array[9][4])<<std::endl;
 
+    mace::pose::CartesianPosition_2D start(1,1);
+    mace::pose::CartesianPosition_2D end(2,2);
+
+    mace::costmap::Costmap_BaseLayer staticLayer("static_layer",mace::costmap::Costmap2D::FREE_SPACE,0,5,0,5,0.5);
+    uint8_t* value;
+    mace::maps::LineMapIterator newIterator(&staticLayer,start,end);
+
+    for(;!newIterator.isPastEnd();++newIterator)
+    {
+        value = staticLayer[*newIterator];
+        *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
+    }
+
+//    value = staticLayer.getCellByPos(-30.0,0.0);
+//    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
+
+//    value = staticLayer.getCellByPos(0.0,0.0);
+//    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
+
+//    mace::costmap::Costmap_InflationLayer inflationLayer("inflation_layer",mace::costmap::Costmap2D::FREE_SPACE,-59,28,-13,13,0.5);
+//    inflationLayer.setScribedRadii(1.0,2.0);
+//    inflationLayer.setInflationParameters(2.5,2.0);
+//    inflationLayer.enableLayer(true);
+//    inflationLayer.updateCosts(staticLayer,0,0,staticLayer.getSizeX()-1, staticLayer.getSizeY()-1);
+
+
+    std::vector<uint8_t> data = staticLayer.getDataMap();
+    cv::Mat m = cv::Mat(staticLayer.getSizeY(),staticLayer.getSizeX(),CV_8UC1);
+    memcpy(m.data,data.data(),data.size()*sizeof(uint8_t));
+    cv::imshow("Result Map Image",m);
+    cv::waitKey(0);
 
 //    m_swarmTOvehicleHome.translation() = m_vehicleHomeTOswarm.translation() * -1;
     /*

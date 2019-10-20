@@ -28,9 +28,6 @@ MACE_CLASS_FORWARD(BaseGridMap);
 class BaseGridMap
 {
 public:
-  
-
-public:
 
     //!
     //! \brief BaseGridMap
@@ -83,7 +80,7 @@ public:
 
     }
 
-    bool getVectorIndex(size_t &index, const unsigned int xIndex, const unsigned int yIndex)
+    bool getVectorIndex(size_t &index, const unsigned int xIndex, const unsigned int yIndex) const
     {
         if((xIndex >= xSize) || (yIndex >= ySize))
             return false;

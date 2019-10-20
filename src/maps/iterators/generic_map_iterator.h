@@ -44,11 +44,11 @@ public:
 
 public:
 
-    size_t getCurrentIndex();
+    size_t getCurrentIndex() const;
 
-    size_t getStartIndex();
+    size_t getStartIndex() const;
 
-    size_t getEndIndex();
+    size_t getEndIndex() const;
 
     bool setCurrentIndex(size_t currentIndex);
 

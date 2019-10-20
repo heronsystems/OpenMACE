@@ -99,17 +99,17 @@ int GenericMapIterator::operator *() const
     return currentIndex;
 }
 
-size_t GenericMapIterator::getCurrentIndex()
+size_t GenericMapIterator::getCurrentIndex() const
 {
     return currentIndex;
 }
 
-size_t GenericMapIterator::getStartIndex()
+size_t GenericMapIterator::getStartIndex() const
 {
     return startIndex;
 }
 
-size_t GenericMapIterator::getEndIndex()
+size_t GenericMapIterator::getEndIndex() const
 {
     return endIndex;
 }

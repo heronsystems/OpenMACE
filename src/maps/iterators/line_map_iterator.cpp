@@ -10,6 +10,7 @@ LineMapIterator::LineMapIterator(const maps::BaseGridMap *map, const pose::Carte
     it->setStartIndex(map->indexFromPos(start.getXPosition(), start.getYPosition()));
     it->setEndIndex(map->indexFromPos(end.getXPosition(), end.getYPosition()));
     initializeIterationParameters();
+    it->setCurrentIndex(it->getStartIndex());
 }
 
 LineMapIterator::LineMapIterator(const LineMapIterator *copy)
@@ -30,13 +31,13 @@ void LineMapIterator::initializeIterationParameters()
 {
     m_CurrentCellCount = 0;
     //First find the index positions related to the row/column definitions of the vectorized buffer
-    int startIndexX, startIndexY;
-    int endIndexX, endIndexY;
+    unsigned int startIndexX, startIndexY;
+    unsigned int endIndexX, endIndexY;
 
     it->parentMap->getIndexDecomposed(it->getStartIndex(),startIndexX, startIndexY);
     it->parentMap->getIndexDecomposed(it->getEndIndex(),endIndexX, endIndexY);
-    unsigned int deltaX = std::abs<int>(endIndexX - startIndexX);
-    unsigned int deltaY = std::abs<int>(endIndexY - startIndexY); //in this case we are formulating our slope
+    unsigned int deltaX = static_cast<unsigned int>(std::abs<int>(static_cast<int>(endIndexX) - static_cast<int>(startIndexX)));
+    unsigned int deltaY = static_cast<unsigned int>(std::abs<int>(static_cast<int>(endIndexY) - static_cast<int>(startIndexY)));
 
     if(endIndexX >= startIndexX) //x is increasing in a positive fashion
     {
@@ -51,13 +52,13 @@ void LineMapIterator::initializeIterationParameters()
 
     if(endIndexY >= startIndexY) //y is increasing in a positive fashion
     {
-        m_Increment1(0) = 1;
-        m_Increment2(0) = 1;
+        m_Increment1(1) = 1;
+        m_Increment2(1) = 1;
     }
     else //y is decreasing in a negative fashion
     {
-        m_Increment1(0) = -1;
-        m_Increment2(0) = -1;
+        m_Increment1(1) = -1;
+        m_Increment2(1) = -1;
     }
 
     if (deltaX >= deltaY) {
@@ -66,8 +67,8 @@ void LineMapIterator::initializeIterationParameters()
       m_Increment2.y() = 0; // Do not change the y for every iteration.
       m_Denominator = deltaX;
       m_Numerator = deltaX / 2;
-      m_IterateNumerator = delta.y();
-      m_NumCells = deltaX + 1; // There are more x-values than y-values.
+      m_IterateNumerator = deltaY;
+      m_NumCells = deltaX+1; // There are more x-values than y-values.
     } else {
       // There is at least one y-value for every x-value
       m_Increment2.x() = 0; // Do not change the x for every iteration.
@@ -75,7 +76,7 @@ void LineMapIterator::initializeIterationParameters()
       m_Denominator = deltaY;
       m_Numerator = deltaY / 2;
       m_IterateNumerator = deltaX;
-      m_NumCells = deltaY + 1; // There are more y-values than x-values.
+      m_NumCells = deltaY+1; // There are more y-values than x-values.
     }
 }
 
@@ -95,7 +96,7 @@ LineMapIterator LineMapIterator::end() const
 
 bool LineMapIterator::isPastEnd() const
 {
-    return m_CurrentCellCount > m_NumCells;
+    return m_CurrentCellCount >= m_NumCells;
 }
 
 LineMapIterator& LineMapIterator::operator =(const LineMapIterator& rhs)
@@ -159,16 +160,18 @@ LineMapIterator& LineMapIterator::operator ++()
 {
     if(!it->isPastEnd()){
         m_Numerator += m_IterateNumerator;
-        int currentIndex, cuerrentIndexX, cuerrentIndexY;
+        unsigned int currentIndex = 0, cuerrentIndexX, cuerrentIndexY;
         if (m_Numerator >= m_Denominator) {
           m_Numerator -= m_Denominator;
           it->parentMap->getIndexDecomposed(it->getCurrentIndex(),cuerrentIndexX, cuerrentIndexY);
-          cuerrentIndexX += m_Increment1(0); cuerrentIndexY += m_Increment1(1);
+          cuerrentIndexX += static_cast<unsigned int>(m_Increment1(0)); cuerrentIndexY +=static_cast<unsigned int>(m_Increment1(1));
           it->parentMap->getVectorIndex(currentIndex, cuerrentIndexX, cuerrentIndexY);
           it->setCurrentIndex(currentIndex);
         }
         it->parentMap->getIndexDecomposed(it->getCurrentIndex(),cuerrentIndexX, cuerrentIndexY);
-        cuerrentIndexX += m_Increment2(0); cuerrentIndexY += m_Increment2(1);
+        cuerrentIndexX += static_cast<unsigned int>(m_Increment2(0)); cuerrentIndexY += static_cast<unsigned int>(m_Increment2(1));
+        it->parentMap->getVectorIndex(currentIndex, cuerrentIndexX, cuerrentIndexY);
+        it->setCurrentIndex(currentIndex);
         ++m_CurrentCellCount;
     }
 

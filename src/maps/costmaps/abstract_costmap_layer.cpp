@@ -1,5 +1,4 @@
-#include ".h"
-
+/*
 namespace costmap
 {
 
@@ -43,3 +42,4 @@ void Abstract_CostmapLayer::useExtraBounds(double* min_x, double* min_y, double*
     has_extra_bounds_ = false;
 }
 }  // namespace costmap
+*/
