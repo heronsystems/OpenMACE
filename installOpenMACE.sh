@@ -115,6 +115,16 @@ installMACE() {
     # ldconfig
 }
 
+installGUI() {
+    echo "************************************"
+    echo "Installing MACE GUI..."
+    echo "************************************"
+
+    cd $MACE_ROOT/ElectronGUI
+    yarn install
+    yarn run build:prod
+}
+
 
 #### MAIN
 # Set MACE_ROOT environment variable:
@@ -126,7 +136,7 @@ echo "MACE_ROOT is set to: ${MACE_ROOT}"
 USERNAME=$(logname)
 echo "Non-root username to install MACE: ${USERNAME}"
 
-installPrereqs=
+installGUI=
 installROS=
 installTools=
 cleanFirst=
@@ -134,6 +144,8 @@ cleanFirst=
 while [ "$1" != "" ]; do
     case $1 in
         -r | --ros )     installROS=1
+                         ;;
+        -g | --gui )     installGUI=1
                          ;;
         -t | --tools )   installTools=1
                          ;;
@@ -153,7 +165,15 @@ if [ "$installTools" = "1" ]; then
     installTools
 fi
 
+# If toggled, install GUI
+if [ "$installGUI" = "1" ]; then
+    installGUI
+fi
+
 # Install MACE
 installMACE
 
 cd $MACE_ROOT
+
+sudo ldconfig
+#printf "\n\nMACE installation finished. \n\n**Make sure to run 'sudo ldconfig' to install newly built libraries**\n\n"
