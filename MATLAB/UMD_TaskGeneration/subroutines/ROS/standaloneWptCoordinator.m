@@ -40,7 +40,7 @@ waypointClient = rossvcclient('command_waypoint');
 waypointRequest = rosmessage(waypointClient);
 
 % use rosmsg to get quad position
-positionSub = rossubscriber('/MACE/UPDATE_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
+positionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
 
 while 1
     pause(1);

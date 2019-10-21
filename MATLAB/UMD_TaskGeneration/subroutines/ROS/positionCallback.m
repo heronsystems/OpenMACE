@@ -1,14 +1,16 @@
 function [ outputArgument ] = positionCallback( ROS_MACE, msg)
 %   ROS UPDATE_POSITION message with properties:
 % 
-%     MessageType: 'mace_matlab/UPDATE_POSITION'
+%     MessageType: 'mace_matlab_msgs/UPDATE_LOCAL_POSITION'
 %       Timestamp: [1×1 Time]
 %       VehicleID: 0
+%           Frame: 0 (newly added, 2019 Oct.)
 %        Northing: 0
 %         Easting: 0
 %        Altitude: 0
 %      NorthSpeed: 0
 %       EastSpeed: 0
+
 
     global tStart;
 

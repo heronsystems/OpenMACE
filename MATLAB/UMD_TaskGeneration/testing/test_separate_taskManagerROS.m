@@ -3,7 +3,7 @@ clear all
 
 rosinit('NodeHost','127.0.0.1','NodeName','/TaksManager');
 
-positionSub = rossubscriber('/MACE/UPDATE_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
+positionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
 % client to update waypoint
 waypointClient = rossvcclient('command_waypoint');
 waypointRequest = rosmessage(waypointClient);
