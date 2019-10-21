@@ -187,10 +187,10 @@ int main(int argc, char *argv[])
 
     //    std:cout<<"The value at the index is: "<<std::to_string(array[9][4])<<std::endl;
 
-    mace::pose::CartesianPosition_2D vertex1(0,0);
-    mace::pose::CartesianPosition_2D vertex2(5,0);
-    mace::pose::CartesianPosition_2D vertex3(5,5);
-    mace::pose::CartesianPosition_2D vertex4(0,5);
+    mace::pose::CartesianPosition_2D vertex1(-59,-13);
+    mace::pose::CartesianPosition_2D vertex2(28,-13);
+    mace::pose::CartesianPosition_2D vertex3(28,13);
+    mace::pose::CartesianPosition_2D vertex4(-59,13);
 
     mace::geometry::Polygon_Cartesian boundingPolygon;
     boundingPolygon.appendVertex(vertex1);
@@ -198,29 +198,22 @@ int main(int argc, char *argv[])
     boundingPolygon.appendVertex(vertex3);
     boundingPolygon.appendVertex(vertex4);
 
-    mace::costmap::Costmap_BaseLayer staticLayer("static_layer",mace::costmap::Costmap2D::FREE_SPACE,0,5,0,5,0.5);
+    mace::costmap::Costmap_BaseLayer staticLayer("static_layer",mace::costmap::Costmap2D::FREE_SPACE,-59,28,-13,13,0.5);
     staticLayer.outlineBoundary(boundingPolygon,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
 
-//    uint8_t* value;
-//    mace::maps::LineMapIterator newIterator(&staticLayer,start,end);
+    uint8_t* value;
 
-//    for(;!newIterator.isPastEnd();++newIterator)
-//    {
-//        value = staticLayer[*newIterator];
-//        *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
-//    }
+    value = staticLayer.getCellByPos(-30.0,0.0);
+    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
 
-    //    value = staticLayer.getCellByPos(-30.0,0.0);
-    //    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
+    value = staticLayer.getCellByPos(0.0,0.0);
+    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
 
-    //    value = staticLayer.getCellByPos(0.0,0.0);
-    //    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
-
-    //    mace::costmap::Costmap_InflationLayer inflationLayer("inflation_layer",mace::costmap::Costmap2D::FREE_SPACE,-59,28,-13,13,0.5);
-    //    inflationLayer.setScribedRadii(1.0,2.0);
-    //    inflationLayer.setInflationParameters(2.5,2.0);
-    //    inflationLayer.enableLayer(true);
-    //    inflationLayer.updateCosts(staticLayer,0,0,staticLayer.getSizeX()-1, staticLayer.getSizeY()-1);
+    mace::costmap::Costmap_InflationLayer inflationLayer("inflation_layer",mace::costmap::Costmap2D::FREE_SPACE,-59,28,-13,13,0.5);
+    inflationLayer.setScribedRadii(1.0,2.0);
+    inflationLayer.setInflationParameters(2.5,2.0);
+    inflationLayer.enableLayer(true);
+    inflationLayer.updateCosts(staticLayer,0,0,staticLayer.getSizeX()-1, staticLayer.getSizeY()-1);
 
 
     std::vector<uint8_t> data = staticLayer.getDataMap();
