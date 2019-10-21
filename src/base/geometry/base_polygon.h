@@ -103,12 +103,12 @@ public:
     T getVertexAtIndex(const unsigned int &index) const
     {
         if(index < m_vertex.size())
-            return nullptr;
+            return nullptr; //KEN FIX THIS, THIS WILL NOT WORK
         else
             m_vertex.at(index);
     }
 
-    T at(const int &index) const
+    T at(const unsigned int &index) const
     {
         return m_vertex[index];
     }

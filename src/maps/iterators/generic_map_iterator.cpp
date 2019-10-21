@@ -116,7 +116,10 @@ size_t GenericMapIterator::getEndIndex() const
 
 bool GenericMapIterator::setCurrentIndex(size_t current)
 {
-    if(current <= endIndex && current >= startIndex)
+    unsigned int max = std::max(startIndex, endIndex);
+    unsigned int min = std::min(startIndex, endIndex);
+
+    if(current <= max && current >= min)
     {
         currentIndex = current;
         return true;
