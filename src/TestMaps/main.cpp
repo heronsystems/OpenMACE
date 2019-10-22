@@ -25,6 +25,7 @@
 #include "planners/fast_marching/fm2/fm2star.hpp"
 #include "planners/fast_marching/fm/fmm.hpp"
 #include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
+#include "graphs/signed_distance_fields/collision_map.hpp"
 
 #include "base/unit_tests/unittests_position.h"
 #include "base/geometry/rotate_2d.h"
@@ -230,7 +231,31 @@ int main(int argc, char *argv[])
     inflationLayer.enableLayer(true);
     inflationLayer.updateCosts(staticLayer,0,0,staticLayer.getSizeX()-1, staticLayer.getSizeY()-1);
 
+    //Construct a collision map
+    sdf_tools::CollisionMapGrid collisionGrid(0.5,staticLayer.getSizeX(),staticLayer.getSizeY(),1,mace::costmap::Costmap2D::FREE_SPACE,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
 
+    mace::maps::GridMapIterator gridMapItr(&inflationLayer);
+    const uint8_t* value;
+    std::array<unsigned int, 2> dimsize;
+    dimsize[0] = inflationLayer.getSizeX();
+    dimsize[1] = inflationLayer.getSizeY();
+    for(; !gridMapItr.isPastEnd(); ++gridMapItr)
+    {
+        double xPos, yPos;
+        inflationLayer.getPositionFromIndex(*gridMapItr,xPos,yPos);
+        value = inflationLayer[*gridMapItr];
+        if(*value > mace::costmap::Costmap2D::FREE_SPACE)
+            collisionGrid.SetValue(xPos,yPos,0.0,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
+    } //end of for loop iterator
+
+    auto EDT = collisionGrid.ExtractDistanceField(mace::costmap::Costmap2D::LETHAL_OBSTACLE);
+    mace::maps::GridMapIterator gridMapItr(&inflationLayer);
+    double velocity = 0.0;
+    for(; !gridMapItr.isPastEnd(); ++gridMapItr)
+    {
+        double distance = std::sqrt(EDT.GetImmutable(*gridMapItr).first.distance_square) * 0.5;
+        velocity = velMapping(distance,2.0);
+    } //end of for loop iterator
 //    std::vector<uint8_t> data = staticLayer.getDataMap();
 //    cv::Mat m = cv::Mat(staticLayer.getSizeY(),staticLayer.getSizeX(),CV_8UC1);
 //    memcpy(m.data,data.data(),data.size()*sizeof(uint8_t));
@@ -247,7 +272,7 @@ int main(int argc, char *argv[])
 //    loadMyMapFromImg(grid_fm2);
     loadPlanningMapFromCostmap(staticLayer, grid_fm2); // Loading from image
     std::vector<Solver<FMGrid2D>*> solvers;
-    solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Dist", DISTANCE));
+    //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Dist", DISTANCE));
     //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell> >("FM2*_SFMM_Time"));
 
     // Solvers declaration.
