@@ -83,6 +83,7 @@ void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacle
     dimsize[1] = obstacleLayer.getSizeY();
     grid.resize(dimsize);
     double velocity = 0.0;
+    auto EDT = collision_map.ExtractDistanceField(mace::costmap::Costmap2D::LETHAL_OBSTACLE);
 
     for(; !gridMapItr.isPastEnd(); ++gridMapItr)
     {
@@ -251,8 +252,6 @@ int main(int argc, char *argv[])
             collisionGrid.SetValue(xPos,yPos,0.0,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
     } //end of for loop iterator
 
-    sdf_tools::CollisionMapGrid EDT = collisionGrid.ExtractDistanceField(mace::costmap::Costmap2D::LETHAL_OBSTACLE);
-
 //    std::vector<uint8_t> data = staticLayer.getDataMap();
 //    cv::Mat m = cv::Mat(staticLayer.getSizeY(),staticLayer.getSizeX(),CV_8UC1);
 //    memcpy(m.data,data.data(),data.size()*sizeof(uint8_t));
@@ -267,7 +266,7 @@ int main(int argc, char *argv[])
     // Loading grid.
     FMGrid2D grid_fm2;
 //    loadMyMapFromImg(grid_fm2);
-    loadPlanningMapFromCostmap(staticLayer, EDT, grid_fm2); // Loading from image
+    loadPlanningMapFromCostmap(staticLayer, collisionGrid, grid_fm2); // Loading from image
     std::vector<Solver<FMGrid2D>*> solvers;
     //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Dist", DISTANCE));
     //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell> >("FM2*_SFMM_Time"));
@@ -294,7 +293,7 @@ int main(int argc, char *argv[])
         vector<double> path_vels;
         s->as<FM2<FMGrid2D>>()->computePath(&path, &path_vels);
         std::cout<<"The path has been computed as having: "<<std::endl;
-        plotMyArrivalTimesPath(grid_fm2,path);
+        //plotMyArrivalTimesPath(grid_fm2,path);
 
     }
     /*
