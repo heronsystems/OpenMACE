@@ -1,71 +1,15 @@
 #!/bin/bash
 
 usage() {
-    echo -n "./install_test_help.sh [OPTION]
+    echo -n "./installOpenMACE.sh [OPTION]
     This is an install script for OpenMACE. Pass in flags to choose which pieces to install.
 
     ${bold}Options:${reset}
-    -p, --prereqs       Toggle install OpenMACE prerequisits flag
     -r, --ros           Toggle install ROS flag
     -t, --tools         Toggle install OpenMACE tools flag (typically done for initial installs from scratch)
     -c, --clean         Toggle clean first before building OpenMACE
     -h, --help          Display this help and exit
 "
-}
-
-installPrereqs() {
-    echo "************************************"
-    echo "Installing OpenMACE prerequisites..."
-    echo "************************************"
-
-    apt-get update
-
-    # Install tools here, (recommended to use multiple lines so they don't have to all reinstall if you change one)
-    apt-get install -y cmake
-    apt-get install -y nano
-    apt-get install -y tmux
-    apt-get install -y git
-    apt-get update
-    apt-get install -y qt5-default
-    apt-get install -y libqt5serialport5-dev
-    apt-get install -y build-essential
-    apt-get install -y libboost-system-dev
-    apt-get install -y python-pip 
-    apt-get install -y python-dev
-    pip install --upgrade pip
-    pip install --upgrade virtualenv
-
-    # If we are installing ROS, these will be installed as dependencies of ROS packages
-    if [ "$installROS" != "1" ]; then
-        apt-get update
-        apt-get install -y pkg-config
-        apt-get install -y liblz4-dev
-    fi
-}
-
-installROS() {
-    echo "************************************"
-    echo "Installing ROS..."
-    echo "************************************"
-
-    # May not need this first apt-get update...
-    apt-get update
-    apt-get install -y lsb-release
-    sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-    apt-get update
-    apt-get install -y ros-kinetic-desktop-full
-    rosdep init
-    rosdep update
-    echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
-    source ~/.bashrc
-    apt-get install -y python-rosinstall
-    apt-get install -y python-rosinstall-generator
-    apt-get install -y python-wstool
-    apt-get install -y ros-kinetic-octomap*
-    apt-get install -y ros-kinetic-tf*
-    apt-get install -y python-rospkg
-    pip install rospkg
 }
 
 installTools() {
@@ -133,7 +77,7 @@ installMACE() {
         catkin_make
         catkin_make
         catkin_make
-        echo "source $(MACE_ROOT)/catkin_sim_environment/devel/setup.bash" >> ~/.bashrc
+        echo "source ${MACE_ROOT}/catkin_sim_environment/devel/setup.bash" >> ~/.bashrc
         source ~/.bashrc
     fi
 
@@ -167,7 +111,17 @@ installMACE() {
     qmake ../src/src.pro
     make
     make install
-    ldconfig
+    # ldconfig
+}
+
+installGUI() {
+    echo "************************************"
+    echo "Installing MACE GUI..."
+    echo "************************************"
+
+    cd $MACE_ROOT/ElectronGUI
+    yarn install
+    yarn run build:prod
 }
 
 
@@ -181,16 +135,16 @@ echo "MACE_ROOT is set to: ${MACE_ROOT}"
 USERNAME=$(logname)
 echo "Non-root username to install MACE: ${USERNAME}"
 
-installPrereqs=
+installGUI=
 installROS=
 installTools=
 cleanFirst=
 
 while [ "$1" != "" ]; do
     case $1 in
-        -p | --prereqs ) installPrereqs=1
-                         ;;
         -r | --ros )     installROS=1
+                         ;;
+        -g | --gui )     installGUI=1
                          ;;
         -t | --tools )   installTools=1
                          ;;
@@ -205,25 +159,20 @@ while [ "$1" != "" ]; do
     shift
 done
 
-# If toggled, install prerequisites 
-if [ "$installPrereqs" = "1" ]; then
-    installPrereqs
-fi
-
-# If toggled, install ROS kinetic
-if [ "$installROS" = "1" ]; then
-    installROS
-fi
-
 # If toggled, install Tools as non-root user
 if [ "$installTools" = "1" ]; then
-    # sudo -u $USERNAME installTools
     installTools
 fi
 
+# If toggled, install GUI
+if [ "$installGUI" = "1" ]; then
+    installGUI
+fi
 
-# Install MACE as non-root user
-# sudo -u $USERNAME installMACE
+# Install MACE
 installMACE
 
 cd $MACE_ROOT
+
+sudo ldconfig
+#printf "\n\nMACE installation finished. \n\n**Make sure to run 'sudo ldconfig' to install newly built libraries**\n\n"
