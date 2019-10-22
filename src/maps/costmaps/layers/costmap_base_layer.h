@@ -26,6 +26,8 @@ public:
                const pose::CartesianPosition_2D &position = pose::CartesianPosition_2D(),
                const double &rotation = 0.0);
 
+    Costmap_BaseLayer(const Costmap_BaseLayer &copy);
+
     virtual ~Costmap_BaseLayer() = default;
 
     void initialize(const std::string &layerName);

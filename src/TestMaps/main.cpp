@@ -9,35 +9,33 @@
 #include "maps/costmaps/layers/costmap_base_layer.h"
 #include "maps/costmaps/layers/costmap_inflation_layer.h"
 #include "maps/iterators/line_map_iterator.h"
+#include "maps/iterators/grid_map_iterator.h"
 #include "base/geometry/polygon_cartesian.h"
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
-//#include "graphs/signed_distance_fields/collision_map.hpp"
+#include "graphs/signed_distance_fields/collision_map.hpp"
 
-//#include "planners/fast_marching/ndgridmap/fmcell.h"
-//#include "planners/fast_marching/ndgridmap/ndgridmap.hpp"
-//#include "planners/fast_marching/fm2/fm2.hpp"
-//#include "planners/graph_planning_node.h"
-//#include "planners/fast_marching/fm2/fm2star.hpp"
-//#include "planners/fast_marching/fm/fmm.hpp"
-//#include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
+#include "planners/fast_marching/ndgridmap/fmcell.h"
+#include "planners/fast_marching/ndgridmap/ndgridmap.hpp"
+#include "planners/fast_marching/fm2/fm2.hpp"
+#include "planners/graph_planning_node.h"
+#include "planners/fast_marching/fm2/fm2star.hpp"
+#include "planners/fast_marching/fm/fmm.hpp"
+#include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
 
 #include "base/unit_tests/unittests_position.h"
 #include "base/geometry/rotate_2d.h"
 #include "maps/data_2d_grid.h"
 #include "maps/occupancy_definition.h"
-/*
+
+
 #include "planners/fast_marching/console/console.h"
 
 #include "planners/fast_marching/datastructures/fmfibheap.hpp"
 
-#include "planners/fast_marching/io/maploader.hpp"
-#include "planners/fast_marching/io/gridplotter.hpp"
-#include "planners/fast_marching/io/gridwriter.hpp"
-*/
 const char kPathSeperator =
         #ifdef _WIN32
         '\\';
@@ -46,16 +44,16 @@ const char kPathSeperator =
 #endif
 using namespace std;
 
-//typedef nDGridMap<FMCell, 2> FMGrid2D;
-//typedef std::vector<std::array<double, 2>> Path2D;
+typedef nDGridMap<FMCell, 2> FMGrid2D;
+typedef std::vector<std::array<double, 2>> Path2D;
 
-//typedef array<unsigned int, 3> Coord3D;
+typedef array<unsigned int, 3> Coord3D;
 
-//sdf_tools::COLLISION_CELL _free_cell(0.0);
-//sdf_tools::COLLISION_CELL _obst_cell(1.0);
-//sdf_tools::COLLISION_CELL _oob_cell(INFINITY);
+sdf_tools::COLLISION_CELL _free_cell(0.0);
+sdf_tools::COLLISION_CELL _obst_cell(1.0);
+sdf_tools::COLLISION_CELL _oob_cell(INFINITY);
 
-/*
+
 double velMapping(double d, double max_v)
 {
     double vel;
@@ -70,6 +68,34 @@ double velMapping(double d, double max_v)
         vel = 1.0;
 
     return vel * max_v;
+}
+
+void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacleLayer, nDGridMap<FMCell, 2>& grid)
+{
+    std::vector<unsigned int> obs;
+
+    mace::maps::GridMapIterator gridMapItr(&obstacleLayer);
+    const uint8_t* value;
+
+    std::array<unsigned int, 2> dimsize;
+    dimsize[0] = obstacleLayer.getSizeX();
+    dimsize[1] = obstacleLayer.getSizeY();
+    grid.resize(dimsize);
+
+    for(; !gridMapItr.isPastEnd(); ++gridMapItr)
+    {
+        value = obstacleLayer[*gridMapItr];
+        if(*value > mace::costmap::Costmap2D::FREE_SPACE)
+        {
+            grid[*gridMapItr].setOccupancy(0.0);
+            obs.push_back(*gridMapItr);
+        }
+        else
+            grid[*gridMapItr].setOccupancy(1.0);
+
+    } //end of for loop iterator
+    grid.setOccupiedCells(std::move(obs));
+
 }
 
 void loadMyMapFromImg(nDGridMap<FMCell, 2>& grid) {
@@ -103,7 +129,10 @@ void loadMyMapFromImg(nDGridMap<FMCell, 2>& grid) {
         unsigned int idx = width*r+c;
         grid[idx].setOccupancy(occupancy);
         if (grid[idx].isOccupied())
+        {
+            std::cout<<"The grid is occupied so: "<<std::to_string(occupancy)<<std::endl;
             obs.push_back(idx);
+        }
       }
 
     }
@@ -142,7 +171,7 @@ void plotMyArrivalTimesPath(nDGridMap<FMCell, 2>& grid, const Path2D& path, std:
     cv::imshow("Result Map Image",colorResult);
     cv::waitKey(0);
 }
-*/
+
 
 int main(int argc, char *argv[])
 {
@@ -171,21 +200,7 @@ int main(int argc, char *argv[])
     Eigen::Vector2d mapCoordinates;
     mapCoordinates = (worldToMap.rotation() * worldCoordinates) + worldToMap.translation();
 
-
-    mace::maps::OccupiedResult fillData = mace::maps::OccupiedResult::NOT_OCCUPIED;
-    mace::maps::Data2DGrid<mace::maps::OccupiedResult> staticMap(&fillData, -10,10,-10,10,0.5,0.5);
-
-    //double x=0.0, y=0.0;
-    //staticMap.getPositionFromIndex(0,x,y);
-
     std::cout<<"Waiting here."<<std::endl;
-
-    //    int **array = new int*[10]; // allocate an array of 10 int pointers — these are our rows
-    //    for (int count = 0; count < 10; ++count)
-    //        array[count] = new int[count+1]; // these are our columns
-    //    array[9][4] = 3;
-
-    //    std:cout<<"The value at the index is: "<<std::to_string(array[9][4])<<std::endl;
 
     mace::pose::CartesianPosition_2D vertex1(-59,-13);
     mace::pose::CartesianPosition_2D vertex2(28,-13);
@@ -216,14 +231,12 @@ int main(int argc, char *argv[])
     inflationLayer.updateCosts(staticLayer,0,0,staticLayer.getSizeX()-1, staticLayer.getSizeY()-1);
 
 
-    std::vector<uint8_t> data = staticLayer.getDataMap();
-    cv::Mat m = cv::Mat(staticLayer.getSizeY(),staticLayer.getSizeX(),CV_8UC1);
-    memcpy(m.data,data.data(),data.size()*sizeof(uint8_t));
-    cv::imshow("Result Map Image",m);
-    cv::waitKey(0);
+//    std::vector<uint8_t> data = staticLayer.getDataMap();
+//    cv::Mat m = cv::Mat(staticLayer.getSizeY(),staticLayer.getSizeX(),CV_8UC1);
+//    memcpy(m.data,data.data(),data.size()*sizeof(uint8_t));
+//    cv::imshow("Result Map Image",m);
+//    cv::waitKey(0);
 
-    //    m_swarmTOvehicleHome.translation() = m_vehicleHomeTOswarm.translation() * -1;
-    /*
     Path2D path;
 
     string filename = "map.jpg";
@@ -231,11 +244,11 @@ int main(int argc, char *argv[])
 
     // Loading grid.
     FMGrid2D grid_fm2;
-
-    loadMyMapFromImg(grid_fm2); // Loading from image
+//    loadMyMapFromImg(grid_fm2);
+    loadPlanningMapFromCostmap(staticLayer, grid_fm2); // Loading from image
     std::vector<Solver<FMGrid2D>*> solvers;
-    //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Dist", DISTANCE));
-    solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell> >("FM2*_SFMM_Time"));
+    solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Dist", DISTANCE));
+    //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell> >("FM2*_SFMM_Time"));
 
     // Solvers declaration.
 //    FM2<FMGrid2D>* solver = new FM2<FMGrid2D>("FM2_Dary");
@@ -251,7 +264,7 @@ int main(int argc, char *argv[])
     for (Solver<FMGrid2D>* s :solvers)
     {
         s->setEnvironment(&grid_fm2);
-        s->setInitialAndGoalPoints({315, 20}, {315, 650}); // Init and goal points directly set.
+        s->setInitialAndGoalPoints({6, 6}, {50, 18}); // Init and goal points directly set.
 
         s->compute();
         std::cout << "\tElapsed "<< s->getName() <<" time: " << s->getTime() << " ms" << '\n';
@@ -262,7 +275,6 @@ int main(int argc, char *argv[])
         plotMyArrivalTimesPath(grid_fm2,path);
 
     }
-
     /*
     unsigned int idx;
     double max_vel = 2;

@@ -26,6 +26,11 @@ Costmap_BaseLayer::Costmap_BaseLayer(const std::string &layerName, const uint8_t
 
 }
 
+Costmap_BaseLayer::Costmap_BaseLayer(const Costmap_BaseLayer &copy):
+    Costmap2D(copy)
+{
+
+}
 void Costmap_BaseLayer::touch(double x, double y, double *min_x, double *min_y, double *max_x, double *max_y)
 {
     *min_x = std::min(x, *min_x);

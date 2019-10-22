@@ -82,17 +82,12 @@ HEADERS += \
     fast_marching/fm2/fm2.hpp \
     fast_marching/fm2/fm2star.hpp \
     fast_marching/gradientdescent/gradientdescent.hpp \
-    fast_marching/io/gridplotter.hpp \
-    fast_marching/io/gridpoints.hpp \
-    fast_marching/io/gridwriter.hpp \
-    fast_marching/io/maploader.hpp \
     fast_marching/ndgridmap/cell.h \
     fast_marching/ndgridmap/fmcell.h \
     fast_marching/ndgridmap/ndgridmap.hpp \
     fast_marching/thirdparty/reference/queue.hpp \
     fast_marching/thirdparty/untidy_queue.hpp \
-    fast_marching/utils/utils.h \
-    fast_marching/io/CImg.h
+    fast_marching/utils/utils.h
 
 
 #Header file copy
