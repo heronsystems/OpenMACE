@@ -74,6 +74,7 @@ double velMapping(double d, double max_v)
 void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacleLayer,const sdf_tools::CollisionMapGrid &collision_map, nDGridMap<FMCell, 2>& grid)
 {
     std::vector<unsigned int> obs;
+    std::pair<double,bool> EDTResponse;
 
     mace::maps::GridMapIterator gridMapItr(&obstacleLayer);
     const uint8_t* value;
@@ -90,8 +91,10 @@ void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacle
         value = obstacleLayer[*gridMapItr];
         if(*value > mace::costmap::Costmap2D::FREE_SPACE)
         {
-            double distance = std::sqrt(EDT.GetImmutable(*gridMapItr).first.distance_square) * 0.5;
-            velocity = velMapping(distance,2.0);
+            double xPos,yPos;
+            obstacleLayer.getPositionFromIndex(*gridMapItr,xPos,yPos);
+            EDTResponse = std::sqrt(EDT.GetImmutable(xPos,yPos,0.0).first.distance_square) * 0.5;
+            velocity = velMapping(EDTResponse.first,2.0);
             grid[*gridMapItr].setOccupancy(velocity);
             obs.push_back(*gridMapItr);
         }
