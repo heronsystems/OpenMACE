@@ -71,7 +71,7 @@ double velMapping(double d, double max_v)
     return vel * max_v;
 }
 
-void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacleLayer, nDGridMap<FMCell, 2>& grid)
+void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacleLayer,const sdf_tools::CollisionMapGrid &collision_map, nDGridMap<FMCell, 2>& grid)
 {
     std::vector<unsigned int> obs;
 
@@ -82,17 +82,20 @@ void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacle
     dimsize[0] = obstacleLayer.getSizeX();
     dimsize[1] = obstacleLayer.getSizeY();
     grid.resize(dimsize);
+    double velocity = 0.0;
 
     for(; !gridMapItr.isPastEnd(); ++gridMapItr)
     {
         value = obstacleLayer[*gridMapItr];
         if(*value > mace::costmap::Costmap2D::FREE_SPACE)
         {
-            grid[*gridMapItr].setOccupancy(0.0);
+            double distance = std::sqrt(EDT.GetImmutable(*gridMapItr).first.distance_square) * 0.5;
+            velocity = velMapping(distance,2.0);
+            grid[*gridMapItr].setOccupancy(velocity);
             obs.push_back(*gridMapItr);
         }
         else
-            grid[*gridMapItr].setOccupancy(1.0);
+            grid[*gridMapItr].setOccupancy(velocity);
 
     } //end of for loop iterator
     grid.setOccupiedCells(std::move(obs));
@@ -248,14 +251,8 @@ int main(int argc, char *argv[])
             collisionGrid.SetValue(xPos,yPos,0.0,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
     } //end of for loop iterator
 
-    auto EDT = collisionGrid.ExtractDistanceField(mace::costmap::Costmap2D::LETHAL_OBSTACLE);
-    mace::maps::GridMapIterator gridMapItr(&inflationLayer);
-    double velocity = 0.0;
-    for(; !gridMapItr.isPastEnd(); ++gridMapItr)
-    {
-        double distance = std::sqrt(EDT.GetImmutable(*gridMapItr).first.distance_square) * 0.5;
-        velocity = velMapping(distance,2.0);
-    } //end of for loop iterator
+    sdf_tools::CollisionMapGrid EDT = collisionGrid.ExtractDistanceField(mace::costmap::Costmap2D::LETHAL_OBSTACLE);
+
 //    std::vector<uint8_t> data = staticLayer.getDataMap();
 //    cv::Mat m = cv::Mat(staticLayer.getSizeY(),staticLayer.getSizeX(),CV_8UC1);
 //    memcpy(m.data,data.data(),data.size()*sizeof(uint8_t));
@@ -270,7 +267,7 @@ int main(int argc, char *argv[])
     // Loading grid.
     FMGrid2D grid_fm2;
 //    loadMyMapFromImg(grid_fm2);
-    loadPlanningMapFromCostmap(staticLayer, grid_fm2); // Loading from image
+    loadPlanningMapFromCostmap(staticLayer, EDT, grid_fm2); // Loading from image
     std::vector<Solver<FMGrid2D>*> solvers;
     //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Dist", DISTANCE));
     //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell> >("FM2*_SFMM_Time"));
