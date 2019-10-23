@@ -74,7 +74,6 @@ double velMapping(double d, double max_v)
 void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacleLayer,const sdf_tools::CollisionMapGrid &collision_map, nDGridMap<FMCell, 2>& grid)
 {
     std::vector<unsigned int> obs;
-    std::pair<double,bool> EDTResponse;
 
     mace::maps::GridMapIterator gridMapItr(&obstacleLayer);
     const uint8_t* value;
@@ -88,14 +87,17 @@ void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacle
 
     for(; !gridMapItr.isPastEnd(); ++gridMapItr)
     {
+        double xPos,yPos;
+        obstacleLayer.getPositionFromIndex(*gridMapItr,xPos,yPos);
+        double distance = std::sqrt(EDT.GetImmutable(xPos,yPos,0.0).first.distance_square) * 0.5;
+        velocity = velMapping(distance,2.0);
+
         value = obstacleLayer[*gridMapItr];
+
         if(*value > mace::costmap::Costmap2D::FREE_SPACE)
         {
-            double xPos,yPos;
-            obstacleLayer.getPositionFromIndex(*gridMapItr,xPos,yPos);
-            EDTResponse = std::sqrt(EDT.GetImmutable(xPos,yPos,0.0).first.distance_square) * 0.5;
-            velocity = velMapping(EDTResponse.first,2.0);
-            grid[*gridMapItr].setOccupancy(velocity);
+
+            grid[*gridMapItr].setOccupancy(0.0);
             obs.push_back(*gridMapItr);
         }
         else
@@ -103,6 +105,7 @@ void loadPlanningMapFromCostmap(const mace::costmap::Costmap_BaseLayer &obstacle
 
     } //end of for loop iterator
     grid.setOccupiedCells(std::move(obs));
+    grid.setLeafSize(0.5);
 
 }
 
@@ -173,6 +176,7 @@ void plotMyArrivalTimesPath(nDGridMap<FMCell, 2>& grid, const Path2D& path, std:
 
     std::cout<<"The path has been computed as having 3: "<<std::endl;
 
+    cv::destroyAllWindows();
     cv::Mat colorResult;
     cv::applyColorMap(result, colorResult, cv::COLORMAP_JET);
 
@@ -242,53 +246,42 @@ int main(int argc, char *argv[])
     sdf_tools::CollisionMapGrid collisionGrid(0.5,staticLayer.getSizeX(),staticLayer.getSizeY(),1,mace::costmap::Costmap2D::FREE_SPACE,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
 
     mace::maps::GridMapIterator gridMapItr(&inflationLayer);
-    const uint8_t* value;
+
     std::array<unsigned int, 2> dimsize;
-    dimsize[0] = inflationLayer.getSizeX();
-    dimsize[1] = inflationLayer.getSizeY();
+    dimsize[0] = staticLayer.getSizeX();
+    dimsize[1] = staticLayer.getSizeY();
     for(; !gridMapItr.isPastEnd(); ++gridMapItr)
     {
         double xPos, yPos;
-        inflationLayer.getPositionFromIndex(*gridMapItr,xPos,yPos);
-        value = inflationLayer[*gridMapItr];
+        staticLayer.getPositionFromIndex(*gridMapItr,xPos,yPos);
+        value = staticLayer[*gridMapItr];
         if(*value > mace::costmap::Costmap2D::FREE_SPACE)
             collisionGrid.SetValue(xPos,yPos,0.0,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
     } //end of for loop iterator
 
-//    std::vector<uint8_t> data = staticLayer.getDataMap();
-//    cv::Mat m = cv::Mat(staticLayer.getSizeY(),staticLayer.getSizeX(),CV_8UC1);
-//    memcpy(m.data,data.data(),data.size()*sizeof(uint8_t));
-//    cv::imshow("Result Map Image",m);
-//    cv::waitKey(0);
 
     Path2D path;
-
-    string filename = "map.jpg";
-    mace::planners_graph::GraphNode graphNode;
 
     // Loading grid.
     FMGrid2D grid_fm2;
 //    loadMyMapFromImg(grid_fm2);
     loadPlanningMapFromCostmap(staticLayer, collisionGrid, grid_fm2); // Loading from image
     std::vector<Solver<FMGrid2D>*> solvers;
-    //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Dist", DISTANCE));
-    //solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell> >("FM2*_SFMM_Time"));
 
     // Solvers declaration.
-//    FM2<FMGrid2D>* solver = new FM2<FMGrid2D>("FM2_Dary");
-
+//    solvers.push_back(new FM2<FMGrid2D>("FM2_Dary"));
 //    FM2<FMGrid2D>* solver = new FM2<FMGrid2D, FMFibHeap<FMCell> >("FM2_Fib"));
 //    FM2<FMGrid2D>* solver = new FM2<FMGrid2D, FMPriorityQueue<FMCell> >("FM2_SFMM"));
-//    FM2<FMGrid2D>* solver = new FM2Star<FMGrid2D>("FM2*_Dary_Dist", DISTANCE));
-//    FM2<FMGrid2D>* solver = new FM2Star<FMGrid2D>("FM2*_Dary_Time"));
-//    FM2<FMGrid2D>* solver = new FM2Star<FMGrid2D, FMFibHeap<FMCell> >("FM2*_Fib_Time"));
-//    FM2<FMGrid2D>* solver = new FM2Star<FMGrid2D, FMFibHeap<FMCell> >("FM2*_Fib_Dist", DISTANCE));
-//    FM2<FMGrid2D>* solver = new FM2Star<FMGrid2D, FMPriorityQueue<FMCell> >("FM2*_SFMM_Time"));
+//    solvers.push_back(new FM2Star<FMGrid2D>("FM2*_Dary_Dist", DISTANCE));
+//    solvers.push_back(new FM2Star<FMGrid2D>("FM2*_Dary_Time"));
+//    solvers.push_back(new FM2Star<FMGrid2D, FMFibHeap<FMCell> >("FM2*_Fib_Time"));
+    solvers.push_back(new FM2Star<FMGrid2D, FMFibHeap<FMCell> >("FM2*_Fib_Dist", DISTANCE));
+//    solvers.push_back(new FM2Star<FMGrid2D, FMPriorityQueue<FMCell>>("FM2*_SFMM_Time",DISTANCE));
 
     for (Solver<FMGrid2D>* s :solvers)
     {
         s->setEnvironment(&grid_fm2);
-        s->setInitialAndGoalPoints({6, 6}, {50, 18}); // Init and goal points directly set.
+        s->setInitialAndGoalPoints({8, 8}, {160, 41}); // Init and goal points directly set.
 
         s->compute();
         std::cout << "\tElapsed "<< s->getName() <<" time: " << s->getTime() << " ms" << '\n';
@@ -296,97 +289,8 @@ int main(int argc, char *argv[])
         vector<double> path_vels;
         s->as<FM2<FMGrid2D>>()->computePath(&path, &path_vels);
         std::cout<<"The path has been computed as having: "<<std::endl;
-        //plotMyArrivalTimesPath(grid_fm2,path);
-
+        plotMyArrivalTimesPath(grid_fm2,path);
     }
-    /*
-    unsigned int idx;
-    double max_vel = 2;
-    vector<unsigned int> obs;
-    Eigen::Vector3d pt;
-    vector<int64_t> pt_idx;
-    double flow_vel;
-    double _resolution = 0.5;
-    Eigen::Vector3d _map_origin;
-    _map_origin<<0.0,0.0,0.0;
-
-    mace::maps::OccupiedResult fillData = mace::maps::OccupiedResult::NOT_OCCUPIED;
-    mace::maps::Data2DGrid<mace::maps::OccupiedResult> staticMap(&fillData, -10,10,-10,10,0.5,0.5);
-    mace::maps::OccupiedResult* value;
-
-    //establish boundary around pillar one
-    value = staticMap.getCellByPos(15,0);
-    *value = mace::maps::OccupiedResult::OCCUPIED;
-
-    //establish boundary around pillar two
-    value = staticMap.getCellByPos(-15,0);
-    *value = mace::maps::OccupiedResult::OCCUPIED;
-
-    //establish boundary around pillar two
-    value = staticMap.getCellByPos(-10,7);
-    *value = mace::maps::OccupiedResult::OCCUPIED;
-
-    //establish boundary around pillar two
-    value = staticMap.getCellByPos(10,7);
-    *value = mace::maps::OccupiedResult::OCCUPIED;
-
-    //establish boundary around pillar two
-    value = staticMap.getCellByPos(-2,9);
-    *value = mace::maps::OccupiedResult::OCCUPIED;
-
-    //establish boundary around pillar two
-    value = staticMap.getCellByPos(4,7);
-    *value = mace::maps::OccupiedResult::OCCUPIED;
-
-    unsigned int size_x = 4;
-    unsigned int size_y = 4;
-    unsigned int size_z = 4;
-
-    Coord3D dimsize {size_x, size_y, size_z};
-    FMGrid3D grid_fmm(dimsize,0.5);
-
-    sdf_tools::CollisionMapGrid* collision_map_local = new sdf_tools::CollisionMapGrid(_resolution, size_x, size_y, size_z, _free_cell,INFINITY);
-    Vector3d addPt(0.5, 0.5, 0.5);
-    collision_map_local->SetValue3d(addPt, _obst_cell);
-    sdf_generation::DistanceField EDT = collision_map_local->ExtractDistanceField(INFINITE);
-
-    for(unsigned int k = 0; k < size_z; k++)
-    {
-        for(unsigned int j = 0; j < size_y; j++)
-        {
-            for(unsigned int i = 0; i < size_x; i++)
-            {
-                idx = k * size_y * size_x + j * size_x + i;
-                pt << (i + 0.5) * _resolution + _map_origin(0),
-                        (j + 0.5) * _resolution + _map_origin(1),
-                        (k + 0.5) * _resolution + _map_origin(2);
-
-                VoxelGrid::GRID_INDEX index = collision_map_local->LocationToGridIndex((i + 0.5) * _resolution + _map_origin(0),
-                                                                          (j + 0.5) * _resolution + _map_origin(1),
-                                                                          (k + 0.5) * _resolution + _map_origin(2));
-
-                if(collision_map_local->IndexInBounds(index))
-                {
-                    double d = sqrt(EDT.GetImmutable(index).first.distance_square) * _resolution;
-                    flow_vel = velMapping(d, max_vel);
-                }
-                else
-                    flow_vel = max_vel;
-
-                if( k == 0 || k == (size_z - 1) || j == 0 || j == (size_y - 1) || i == 0 || i == (size_x - 1) )
-                    flow_vel = 0.0;
-
-
-                grid_fmm[idx].setOccupancy(flow_vel);
-                if (grid_fmm[idx].isOccupied())
-                    obs.push_back(idx);
-            }
-        }
-    }
-
-    grid_fmm.setOccupiedCells(std::move(obs));
-    grid_fmm.setLeafSize(_resolution);
-    */
 
     return 0;
 }
