@@ -105,11 +105,11 @@ tStart = tic;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Test: N Quads Takeoff, Wpt Mission, and Land
 
-ROS_MACE.N = 2;
+ROS_MACE.N = 1;
 %ROS_MACE.operationalAlt = [4 8]; % m
 %ROS_MACE.agentIDs = [1 2]; % m
-ROS_MACE.operationalAlt = [2 3 2 3]; % m
-ROS_MACE.agentIDs = [1 2 ]; % m
+ROS_MACE.operationalAlt = [2];% 3 2 3]; % m
+ROS_MACE.agentIDs = [1];% 2 ]; % m
 
 ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 ROS_MACE.wptCoordinator = 'integrated';
@@ -143,7 +143,7 @@ for k = 1:ROS_MACE.N
                    11+yLocation(k) yLocation(k)];
     end
 end
-% wpts{1} = [5 6;-15 6;10 6;]; % each vector is for a single agent
+wpts{1} = [5 6;-15 6;10 6;]; % each vector is for a single agent
 % wpts{2} = [5 -6;-15 -6;10 -6];
 
 

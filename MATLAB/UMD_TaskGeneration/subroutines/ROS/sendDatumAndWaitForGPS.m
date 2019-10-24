@@ -22,12 +22,17 @@ fprintf('Waiting for GPS...\n');
 gpsAvailable = zeros(1,ROS_MACE.N);
 while( ~all(gpsAvailable) )
     msg = ROS_MACE.positionSub.LatestMessage;
+    
+    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
     positionCallback( ROS_MACE, msg); 
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( gpsAvailable(agentIndex) == 0 )
             gpsAvailable(agentIndex) = 1;
             fprintf('VehicleID %d GPS Available.\n', msg.VehicleID);
+            
+            fprintf('Vehicle location before arm and takeoff easting = %3.1f, northing = %3.1f\n',msg.Easting , msg.Northing);
+            fprintf('Vehicle geo location before a and t lat = %f, long = %f\n',msgGeo.Latitude,msgGeo.Longitude);
             % each agent has states [x y xdot ydot]
             i = agentIndex;
             switch ROS_MACE.coordSys

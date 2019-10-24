@@ -22,7 +22,7 @@ REAL_AGENT_ID[4]=6
 
 
 # default values
-NUM_SIM_AGENTS=2
+NUM_SIM_AGENTS=1
 # give sim agent is
 SIM_AGENT_ID[1]=1
 SIM_AGENT_ID[2]=2
@@ -51,6 +51,8 @@ LONG=-76.921897
 #% Randall's Island NY
 #LAT=40.791450;
 #LONG=-73.918950;
+#LAT=-35.3631970
+#LONG=149.1653205
 
 
 LAUNCH_ROS=1

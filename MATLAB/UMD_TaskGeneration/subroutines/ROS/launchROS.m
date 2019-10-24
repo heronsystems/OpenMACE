@@ -38,6 +38,7 @@ end
 disp('Found MACE topics.')
 % Set up subscribers:
 ROS_MACE.positionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
+ROS_MACE.geopositionSub = rossubscriber('/MACE/UPDATE_GEODETIC_POSITION','BufferSize',10);
 %attitudeSub = rossubscriber('/MACE/UPDATE_ATTITUDE', @attitudeCallback, 'BufferSize', 10);
 %batterySub = rossubscriber('/MACE/UPDATE_BATTERY', @batteryCallback, 'BufferSize', 10);
 %gpsSub = rossubscriber('/MACE/UPDATE_GPS', @gpsCallback, 'BufferSize', 10);

@@ -4,6 +4,7 @@ stationAchieved = zeros(1,ROS_MACE.N);
 k = 1;
 while( ~all(stationAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;
+    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
     % it appears that the LatestMessage circumvents the callback, so we
     % force it here:   
     positionCallback( ROS_MACE, msg ); 
@@ -16,6 +17,8 @@ while( ~all(stationAchieved) )
                 case 'F3'
                     [xF3, yF3] = ENUtoF3( msg.Easting , msg.Northing );
                     pos = [xF3 yF3];
+                    fprintf('Vehicle %d easting = %3.1f, northing = %3.1f)\n',msg.VehicleID,msg.Easting , msg.Northing);
+                    fprintf('Vehicle geo location before a and t lat = %f, long = %f\n',msgGeo.Latitude,msgGeo.Longitude);
             end
             dist = norm(pos-[wpts(agentIndex,1) wpts(agentIndex,2)]);
             if ( dist <= captureRadius && stationAchieved(agentIndex) ~= 1 )
