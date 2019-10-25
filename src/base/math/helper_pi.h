@@ -75,7 +75,7 @@ inline T correctForAcuteAngle(const T &value)
     else if((value > M_PI) && (value <= (3 * M_PI / 2)))
         acuteAngle = value - M_PI;
     else
-        acuteAngle = M_2_PI - value;
+        acuteAngle = (2*M_PI) - value;
 
     return acuteAngle;
 }

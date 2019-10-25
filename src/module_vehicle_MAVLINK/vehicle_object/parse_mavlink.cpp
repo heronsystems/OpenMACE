@@ -345,7 +345,6 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     }
     case MAVLINK_MSG_ID_HOME_POSITION:
     {
-        std::cout<<"We have received a home position."<<std::endl;
         mavlink_home_position_t decodedMSG;
         mavlink_msg_home_position_decode(msg,&decodedMSG);
 
@@ -354,6 +353,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mace::pose::GeodeticPosition_3D currentHome(decodedMSG.latitude / power,
                                                     decodedMSG.longitude / power,
                                                     decodedMSG.altitude / 1000.0);
+        std::cout<<"The new vehicle home is: "<<currentHome<<std::endl;
 
         currentHome.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
         currentHome.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
@@ -410,7 +410,6 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     }
     case MAVLINK_MSG_ID_GPS_GLOBAL_ORIGIN:
     {
-        std::cout<<"I have received a new gps global origin."<<std::endl;
         //This position is what the ardupilot uses to reference all of the local commands and position elements
         mavlink_gps_global_origin_t decodedMSG;
         mavlink_msg_gps_global_origin_decode(msg,&decodedMSG);
@@ -419,7 +418,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mace::pose::GeodeticPosition_3D currentOrigin(decodedMSG.latitude / power,
                                                       decodedMSG.longitude / power,
                                                       decodedMSG.altitude / 1000.0);
-
+        std::cout<<"The new GPS global origin is: "<<currentOrigin<<std::endl;
         currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_INT);
         currentOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
         state->vehicleGlobalOrigin.set(currentOrigin);
