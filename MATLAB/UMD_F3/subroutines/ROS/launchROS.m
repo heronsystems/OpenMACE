@@ -52,6 +52,7 @@ ROS_MACE.takeoffClient = rossvcclient('command_takeoff');
 ROS_MACE.landClient = rossvcclient('command_land');
 ROS_MACE.datumClient = rossvcclient('command_datum');
 ROS_MACE.waypointClient = rossvcclient('command_waypoint');
+ROS_MACE.kinematicTargetClient = rossvcclient('command_dynamic_target_kinematic');
 
 % if using standalone wptCoordinator, then a service and a callback
 % function must be defined
