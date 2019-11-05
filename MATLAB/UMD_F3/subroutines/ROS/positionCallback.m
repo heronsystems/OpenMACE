@@ -1,4 +1,4 @@
-function [ outputArgument ] = positionCallback( ROS_MACE, msg)
+function [ outputArgument ] = positionCallback( ROS_MACE, msgGeo)
 %   ROS UPDATE_POSITION message with properties:
 % 
 %     MessageType: 'mace_matlab_msgs/UPDATE_LOCAL_POSITION'
@@ -17,9 +17,9 @@ function [ outputArgument ] = positionCallback( ROS_MACE, msg)
     colors=['rbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcy'];
     time = toc(tStart);
     %     if ( ~isempty(msg) && ~isempty(msgGeo))
-    if ( ~isempty(msg))
+    if ( ~isempty(msgGeo))
         subplot(ROS_MACE.altitude);
-        plot(time,msg.Altitude,[colors(msg.VehicleID) 'o']);
+        plot(time,msgGeo.Altitude,[colors(msgGeo.VehicleID) 'o']);
         hold on;
         if ( time > 30 )
             xlim([time-30 time])
@@ -27,9 +27,10 @@ function [ outputArgument ] = positionCallback( ROS_MACE, msg)
         drawnow;
         
         % plot position
-        [xf3, yf3] = ENUtoF3(msg.Easting, msg.Northing);
+        [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
+        [xf3, yf3] = ENUtoF3(Easting, Northing);
         subplot(ROS_MACE.taskAndLocation);
-        plot(xf3,yf3,[colors(msg.VehicleID) 'o']);
+        plot(xf3,yf3,[colors(msgGeo.VehicleID) 'o']);
         hold on;
         
         drawnow;

@@ -7,7 +7,7 @@ function APIpacket = ZigBeePacket(quadID,msg)
 % address on each quad
 % The address below is associated with XBee module 2
 ZigBeeAddress_64{1} = ['0013A200419B5B73'];
-ZigBeeAddress_16{1} = ['DF23']; % it seems this address changes every time. Maybe consider change it to FFFE (broadcasting)
+ZigBeeAddress_16{1} = ['FFFE']; % it seems this address changes every time. Maybe consider change it to FFFE (broadcasting)
 
 % turn the text msg to hex format
 temp = dec2hex(uint8(msg))';
