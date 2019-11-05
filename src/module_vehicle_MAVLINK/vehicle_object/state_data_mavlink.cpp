@@ -75,7 +75,7 @@ void StateData_MAVLINK::updatePositionalTransformations_Home()
         double distanceTranslateY = translationalDistance * sin(correctForAcuteAngle(bearingTo));
         correctSignFromPolar(distanceTranslateX, distanceTranslateY, bearingTo);
 
-        m_vehicleHomeTOswarm.translation() = Eigen::Vector3d(distanceTranslateY, distanceTranslateX, altitudeDifference); //This will store it in NED
+        m_vehicleHomeTOswarm.translation() = Eigen::Vector3d(distanceTranslateY, distanceTranslateX, -altitudeDifference); //This will store it in NED
         m_swarmTOvehicleHome.translation() = m_vehicleHomeTOswarm.translation() * -1;
     }
 }
