@@ -169,35 +169,10 @@ wpts{1} = [10 -5]; % reference to the waypoint mission that flies closer
 captureRadius = 1;% 1.2;
 wptManager( ROS_MACE, wpts, captureRadius);
 
-% == send ==
-%     updateWpts( ROS_MACE, wptsDesired, wptIndex );
-% Positions are relative to the vehicle�s EKF Origin in NED frame
-%
-% I.e x=1,y=2,z=3 is 1m North, 2m East and 3m Down from the origin
-%
-% The EKF origin is the vehicle�s location when it first achieved a good position estimate
-%
-% Velocity are in NED frame
-dynamicTargetRequest = rosmessage(ROS_MACE.kinematicTargetClient);
-dynamicTargetRequest.Timestamp = rostime('now');
-dynamicTargetRequest.VehicleID = ROS_MACE.agentIDs; % Vehicle ID
-dynamicTargetRequest.CoordinateFrame = 11;
-dynamicTargetRequest.XP = 0;
-dynamicTargetRequest.YP = 0;
-dynamicTargetRequest.ZP = 0;
 
-[NEU_E,NEU_N] = F3toENU(0.1, 0.3);
-
-dynamicTargetRequest.XV = 0;%NEU_N;
-dynamicTargetRequest.YV = 0;%NEU_E;
-dynamicTargetRequest.ZV = 0;
-dynamicTargetRequest.Yaw = pi/4; % in radian
-dynamicTargetRequest.YawRate = 0;
-dynamicTargetRequest.Bitmask = bin2dec('1111101111000111');%    65479; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-%                                            '1111101111000111'
-%waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
 fprintf('Pointing toward the circle center.\n');
-waypointResponse = call(ROS_MACE.kinematicTargetClient, dynamicTargetRequest, 'Timeout', 5);
+kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',pi/2,[]);
+
 
 for k =1:4
     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
@@ -205,26 +180,9 @@ for k =1:4
     pause(1);
 end
 
-dynamicTargetRequest = rosmessage(ROS_MACE.kinematicTargetClient);
-dynamicTargetRequest.Timestamp = rostime('now');
-dynamicTargetRequest.VehicleID = ROS_MACE.agentIDs; % Vehicle ID
-dynamicTargetRequest.CoordinateFrame = 17; % switch to MAV_FRAME_BODY_OFFSET
-dynamicTargetRequest.XP = 0;
-dynamicTargetRequest.YP = 0;
-dynamicTargetRequest.ZP = 0;
-
-[NEU_E,NEU_N] = F3toENU(0.1, 0.3);
-
-dynamicTargetRequest.XV = 0;%NEU_N;
-dynamicTargetRequest.YV = 1;%NEU_E;
-dynamicTargetRequest.ZV = 0;
-dynamicTargetRequest.Yaw = 0; % in radian
-dynamicTargetRequest.YawRate = -atan2(1,5);
-dynamicTargetRequest.Bitmask = bin2dec('1111011111000111');%    65479; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-%                                            '1111101111000111'
-%waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
 fprintf('start spinning.\n');
-waypointResponse = call(ROS_MACE.kinematicTargetClient, dynamicTargetRequest, 'Timeout', 5);
+kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',1,0,0,'RFU',[],atan2(1,5));
+
 
 for k =1:30
     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
@@ -232,26 +190,8 @@ for k =1:30
     pause(1);
 end
 
-
-dynamicTargetRequest = rosmessage(ROS_MACE.kinematicTargetClient);
-dynamicTargetRequest.Timestamp = rostime('now');
-dynamicTargetRequest.VehicleID = ROS_MACE.agentIDs; % Vehicle ID
-dynamicTargetRequest.CoordinateFrame = 17; % switch to MAV_FRAME_BODY_OFFSET
-dynamicTargetRequest.XP = 0;
-dynamicTargetRequest.YP = 0;
-dynamicTargetRequest.ZP = 0;
-
-dynamicTargetRequest.XV = 0;%NEU_N;
-dynamicTargetRequest.YV = 0;%NEU_E;
-dynamicTargetRequest.ZV = 0;
-dynamicTargetRequest.Yaw = 0; % in radian
-dynamicTargetRequest.YawRate = 0;
-dynamicTargetRequest.Bitmask = bin2dec('1111111111111000');%    65479; %65528 is for position, 65479 is for velocity, 65472 is position and velocity
-%                                            '1111101111000111'
-%waypointResponse = call(waypointClient, waypointRequest, 'Timeout', 5);
 fprintf('stop.\n');
-waypointResponse = call(ROS_MACE.kinematicTargetClient, dynamicTargetRequest, 'Timeout', 5);
-
+kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',[],0);
 
 disp('Press any key to land...')
 pause;
