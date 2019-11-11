@@ -37,10 +37,11 @@ disp('Waiting for vehicles to reach station...')
 stationAchieved = zeros(1,ROS_MACE.N);
 k = 1;
 while( ~all(stationAchieved) )
-    msg = ROS_MACE.positionSub.LatestMessage;
-    positionCallback( ROS_MACE, msg );
-    if ( ~isempty(msg) )
-        agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
+%     msg = ROS_MACE.positionSub.LatestMessage;
+    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    positionCallback( ROS_MACE, msgGeo );
+    if ( ~isempty(msgGeo) )
+        agentIndex = ROS_MACE.agentIDtoIndex( msgGeo.VehicleID );
         if ( stationAchieved(agentIndex) == 0 )
             switch ROS_MACE.coordSys
                 case 'ENU'
@@ -59,13 +60,14 @@ while( ~all(stationAchieved) )
 %                         k = k + 1;
 %                     end
                     %
-                    [xF3, yF3] = ENUtoF3( msg.Easting , msg.Northing );
+                    [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
+                    [xF3, yF3] = ENUtoF3(Easting , Northing );
                     pos = [xF3 yF3];
             end
             dist = norm(pos-[xv(agentIndex) yv(agentIndex)]);
             if ( dist <= 2.00 )
                 stationAchieved(agentIndex) = 1;
-                fprintf('VehicleID %d is on station. (+/- 2.00 m).\n', msg.VehicleID);
+                fprintf('VehicleID %d is on station. (+/- 2.00 m).\n', msgGeo.VehicleID);
             end
         end
     end

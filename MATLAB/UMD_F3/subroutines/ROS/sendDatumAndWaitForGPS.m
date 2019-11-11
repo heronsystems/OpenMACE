@@ -22,26 +22,28 @@ fprintf('Waiting for GPS...\n');
 % Wait for each vehicle to get GPS
 gpsAvailable = zeros(1,ROS_MACE.N);
 while( ~all(gpsAvailable) )
-    msg = ROS_MACE.positionSub.LatestMessage;
-%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-%     positionCallback( ROS_MACE, msg, msgGeo); 
-    positionCallback( ROS_MACE, msg); 
+%     msg = ROS_MACE.positionSub.LatestMessage;
+    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    positionCallback( ROS_MACE, msgGeo); 
+%     positionCallback( ROS_MACE, msg); 
 %     if ( ~isempty(msg) && ~isempty(msgGeo))
-    if ( ~isempty(msg) )
-        agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
+    if ( ~isempty(msgGeo) )
+        agentIndex = ROS_MACE.agentIDtoIndex( msgGeo.VehicleID );
         if ( gpsAvailable(agentIndex) == 0 )
             gpsAvailable(agentIndex) = 1;
-            fprintf('VehicleID %d GPS Available.\n', msg.VehicleID);
+            fprintf('VehicleID %d GPS Available.\n', msgGeo.VehicleID);
             % each agent has states [x y xdot ydot]
             i = agentIndex;
             switch ROS_MACE.coordSys
                 case 'ENU'
-                    swarmState.x0(4*i-3,1) = msg.Easting;
-                    swarmState.x0(4*i-2,1) = msg.Northing;
+                    [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
+                    swarmState.x0(4*i-3,1) = Easting;
+                    swarmState.x0(4*i-2,1) = Northing;
                     swarmState.x0(4*i-1,1) = 0; % unused for now
                     swarmState.x0(4*i,1) = 0;
                 case 'F3'
-                    [xF3, yF3] = ENUtoF3(msg.Easting, msg.Northing);
+                    [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
+                    [xF3, yF3] = ENUtoF3(Easting, Northing);
                     swarmState.x0(4*i-3,1) = xF3;
                     swarmState.x0(4*i-2,1) = yF3;
                     swarmState.x0(4*i-1,1) = 0; % unused for now

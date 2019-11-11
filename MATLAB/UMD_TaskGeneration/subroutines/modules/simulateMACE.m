@@ -53,10 +53,11 @@ while ( tNow <= runParams.T )
         % but if tSample has been passed, then grab one immediate position update and jump out of the while loop
         
         msg = ROS_MACE.positionSub.LatestMessage;
+        msgGeo = ROS_MACE.geopositionSub.LatestMessage;
         
         % store the msg from the corresponding agent
-        agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
-        msgCollection{agentIndex} = msg;
+        agentIndex = ROS_MACE.agentIDtoIndex( msgGeo.VehicleID );
+        msgCollection{agentIndex} = msgGeo;
         agentUpdated(agentIndex) = 1;
         
         switch ROS_MACE.coordSys
@@ -66,7 +67,8 @@ while ( tNow <= runParams.T )
                 swarmState.x(4*agentIndex-1,1) = 0; % unused for now
                 swarmState.x(4*agentIndex,1) = 0;
             case 'F3'
-                [xF3, yF3] = ENUtoF3(msg.Easting, msg.Northing);
+                [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
+                [xF3, yF3] = ENUtoF3(Easting, Northing);
                 swarmState.x(4*agentIndex-3,1) = xF3;
                 swarmState.x(4*agentIndex-2,1) = yF3;
                 swarmState.x(4*agentIndex-1,1) = 0; % unused for now

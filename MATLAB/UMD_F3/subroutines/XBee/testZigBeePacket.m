@@ -3,7 +3,7 @@
 % October, 2019. Sheng Cheng
 
 % Sample message
-msg = 'Hello World! - from CDCL';
+msg = 'Hello World from CDCL!';
 
 % generate the packet
 APIpacket = ZigBeePacket(1,msg);

@@ -22,7 +22,7 @@ REAL_AGENT_ID[4]=6
 
 
 # default values
-NUM_SIM_AGENTS=1
+NUM_SIM_AGENTS=2
 # give sim agent is
 SIM_AGENT_ID[1]=1
 SIM_AGENT_ID[2]=2
