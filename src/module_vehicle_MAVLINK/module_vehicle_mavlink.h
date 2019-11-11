@@ -96,6 +96,11 @@ public:
         std::shared_ptr<MaceCore::ModuleParameterStructure> moduleSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
         moduleSettings->AddTerminalParameters("AirborneInstance", MaceCore::ModuleParameterTerminalTypes::BOOLEAN, true);
         structure.AddNonTerminal("ModuleParameters", moduleSettings, true);
+
+        std::shared_ptr<MaceCore::ModuleParameterStructure> localPositionSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+        localPositionSettings->AddTerminalParameters("TransformAltitude", MaceCore::ModuleParameterTerminalTypes::BOOLEAN, true);
+        structure.AddNonTerminal("LocalPositionParameters", localPositionSettings, true);
+
         structure.AddTerminalParameters("ID", MaceCore::ModuleParameterTerminalTypes::INT, false);
 
         return std::make_shared<MaceCore::ModuleParameterStructure>(structure);
@@ -113,6 +118,12 @@ public:
         {
             std::shared_ptr<MaceCore::ModuleParameterValue> moduleSettings = params->GetNonTerminalValue("ModuleParameters");
             airborneInstance = moduleSettings->GetTerminalValue<bool>("AirborneInstance");
+        }
+
+        if(params->HasNonTerminal("LocalPositionParameters"))
+        {
+            std::shared_ptr<MaceCore::ModuleParameterValue> localPositionSettings = params->GetNonTerminalValue("LocalPositionParameters");
+            transformToSwarmAltitude = localPositionSettings->GetTerminalValue<bool>("TransformAltitude");
         }
 
         if(params->HasTerminal("ID"))
@@ -359,6 +370,8 @@ protected:
     //!
     bool airborneInstance = false;
 
+
+    bool transformToSwarmAltitude = true;
 
     //!
     //! \brief m_ControllersCollection

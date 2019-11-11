@@ -527,7 +527,7 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
 
         vehicleData->connectCallback(this);
         vehicleData->connectTargetCallback(ModuleVehicleArdupilot::staticCallbackFunction_VehicleTarget, this);
-
+        vehicleData->state->set_ShouldTransformLocalAltitude(transformToSwarmAltitude);
         //        this->vehicleData->mission->vehicleHomePosition.AddNotifier(this,[this]{
         //            TransformDynamicMissionQueue();
         //        });

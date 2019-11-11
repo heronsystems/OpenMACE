@@ -16,7 +16,11 @@ void State_FlightGuided_SpatialItem::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
-    dynamic_cast<MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Shutdown();
+
+    if(Owner().ControllersCollection()->Exist("goToController")){
+        MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->Remove("goToController"));
+        delete ptr;
+    }
 }
 
 AbstractStateArdupilot* State_FlightGuided_SpatialItem::getClone() const
@@ -120,13 +124,6 @@ void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractComma
         {
             this->commandAccepted = true;
         }
-    });
-
-    goToController->setLambda_Shutdown([this, collection]()
-    {
-        UNUSED(this);
-        auto ptr = collection->Remove("goToController");
-        delete ptr;
     });
 
     collection->Insert("goToController",goToController);

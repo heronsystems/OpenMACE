@@ -38,7 +38,12 @@ public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalOrigin;
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalHome;
 
+public:
+    void set_ShouldTransformLocalAltitude(const bool &transform);
+    bool shouldTransformLocalAltitude() const;
+
 private:
+
     void updatePositionalTransformations_Home();
     void updatePositionalTransformations_EKF();
 
@@ -80,6 +85,8 @@ private:
 
     Eigen::Transform<double,3,Eigen::Affine> m_swarmTOvehicleHome;
     Eigen::Transform<double,3,Eigen::Affine> m_swarmTOvehicleEKF;
+
+    bool transformToSwarmAltitude = true;
 };
 
 #endif // STATE_DATA_MAVLINK_H

@@ -144,6 +144,8 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         {
             //Before publishing the topic we need to transform it
             localPosition.applyTransformation(state->getTransform_VehicleHomeTOSwarm());
+            if(!state->shouldTransformLocalAltitude())
+                localPosition.setAltitude(decodedMSG.z);
 
             std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> ptrPosition = std::make_shared<mace::pose_topics::Topic_CartesianPosition>(&localPosition);
             if(this->m_CB)

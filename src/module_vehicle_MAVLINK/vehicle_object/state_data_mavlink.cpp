@@ -57,6 +57,15 @@ std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> StateData_MAVLINK:
     return rtnVector;
 }
 
+void StateData_MAVLINK::set_ShouldTransformLocalAltitude(const bool &transform)
+{
+    transformToSwarmAltitude = transform;
+}
+
+bool StateData_MAVLINK::shouldTransformLocalAltitude() const
+{
+    return transformToSwarmAltitude;
+}
 
 void StateData_MAVLINK::updatePositionalTransformations_Home()
 {

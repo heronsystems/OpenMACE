@@ -68,6 +68,7 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
                 mavlinkItem.y = static_cast<float>(castPosition->getYPosition()); bitArray = (bitArray & (~2));
             if(castPosition->hasZBeenSet())
                 mavlinkItem.z = static_cast<float>(castPosition->getAltitude());  bitArray = (bitArray & (~4));
+            std::cout<<"The target position is: "<<*castPosition<<std::endl;
         }
     }
 
