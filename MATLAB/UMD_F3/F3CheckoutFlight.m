@@ -5,7 +5,7 @@
 % 
 % S. Cheng, Oct. 2018
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear; close all; clc;
+clear all; close all; clc;
 rosshutdown; % in case there is a leftover instance
 
 % Assumes
@@ -31,7 +31,7 @@ tStart = tic;
 % ROS_MACE.N = 4;
 % %ROS_MACE.operationalAlt = [4 8]; % m
 % %ROS_MACE.agentIDs = [1 2]; % m
-% ROS_MACE.operationalAlt = [2 3 2 3]; % m
+% ROS_MACE.operationalAlt = [2 3 4 5]; % m
 % ROS_MACE.agentIDs = [3 4 5 6]; % SYSID_THISMAV on each quadrotor
 % 
 % ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
@@ -132,9 +132,9 @@ tStart = tic;
 %     
 %     % pausing for 10 seconds (total will be about 220 s)
 %     for j = 1:20
-%         msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+%         msg = ROS_MACE.positionSub.LatestMessage;
 %         pause(0.5);
-%         positionCallback(ROS_MACE,msgGeo);
+%         positionCallback(ROS_MACE,msg);
 %     end
 % end
 % 
@@ -142,7 +142,7 @@ tStart = tic;
 % pause;
 % land( ROS_MACE );
 
-% % ============= Test: 3 quad takeoff, kinematic command, and land =========
+% ============= Test: 3 quad takeoff, kinematic command, and land =========
 
 ROS_MACE.N = 1;
 %ROS_MACE.operationalAlt = [4 8]; % m
@@ -175,8 +175,9 @@ kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',pi/2
 
 
 for k =1:4
-    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-    positionCallback(ROS_MACE,msgGeo);
+%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    msg = ROS_MACE.positionSub.LatestMessage;
+    positionCallback(ROS_MACE,msg);
     pause(1);
 end
 
@@ -185,8 +186,9 @@ kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',1,0,0,'RFU',[],a
 
 
 for k =1:30
-    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-    positionCallback(ROS_MACE,msgGeo);
+%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    msg = ROS_MACE.positionSub.LatestMessage;
+    positionCallback(ROS_MACE,msg);
     pause(1);
 end
 

@@ -32,6 +32,8 @@ if ( strcmp(runParams.type, 'mace') )
     ROS_MACE.trails = 10; % length of visual trail, in no. samples
     
     ROS_MACE.wptCoordinator = 'standalone'; % options are 'integrated' and 'standalone'
+    
+%     ROS_MACE.LocalPositionParameters = 0; % 0 for setting altitude in local_position the same as the altitude in geodetic_position
 end
 
 % Display
