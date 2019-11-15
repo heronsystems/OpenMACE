@@ -8,7 +8,7 @@ package="launchMACE_AtF3"
 cwd=$(pwd)
 
 # default values
-NUM_REAL_AGENTS=1
+NUM_REAL_AGENTS=0
 # give USB ports here:
 REAL_AGENT_USB[1]=0
 REAL_AGENT_USB[2]=1
@@ -22,7 +22,7 @@ REAL_AGENT_ID[4]=6
 
 
 # default values
-NUM_SIM_AGENTS=0
+NUM_SIM_AGENTS=1
 # give sim agent is
 SIM_AGENT_ID[1]=3
 SIM_AGENT_ID[2]=4
@@ -110,8 +110,8 @@ while test $# -gt 0; do
                         ;;
                 -g|--gui*)
                         shift
-                        export GUI=1
-                        echo "Setting GUI launch flag"
+                        export GUI=0
+                        echo "Will *not* launch GUI"
                         ;;
                 -q|--quiet*)
                         shift

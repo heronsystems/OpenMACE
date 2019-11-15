@@ -16,7 +16,7 @@ for i = 1:1:ROS_MACE.N
     end    
 end
 disp('Arm Complete. Begin Takeoff.')
-countdownVerbose(3);
+countdownVerbose(2*ROS_MACE.N);
 
 
 % Setup Vehicle takeoff command:

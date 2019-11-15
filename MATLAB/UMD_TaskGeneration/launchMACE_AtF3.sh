@@ -51,8 +51,6 @@ LONG=-76.921897
 #% Randall's Island NY
 #LAT=40.791450;
 #LONG=-73.918950;
-#LAT=-35.3631970
-#LONG=149.1653205
 
 
 LAUNCH_ROS=1
@@ -112,8 +110,8 @@ while test $# -gt 0; do
                         ;;
                 -g|--gui*)
                         shift
-                        export GUI=1
-                        echo "Setting GUI launch flag"
+                        export GUI=0
+                        echo "Will *not* launch GUI"
                         ;;
                 -q|--quiet*)
                         shift
@@ -162,6 +160,9 @@ echo " <Module Class=\"VehicleComms\" Type=\"Ardupilot\">
     <Parameter Name=\"ModuleParameters\">
       <Parameter Name=\"AirborneInstance\">false</Parameter>
     </Parameter>
+    <Parameter Name=\"LocalPositionParameters\">
+      <Parameter Name=\"TransformAltitude\">false</Parameter>
+    </Parameter>
   </Module>  " >> $CONFIG_XML
 done
 for ((i=1; i<$((NUM_REAL_AGENTS + 1)); i++)); do   
@@ -180,6 +181,9 @@ echo "  <Module Class=\"VehicleComms\" Type=\"Ardupilot\">
    </Parameter>
     <Parameter Name=\"ModuleParameters\">
       <Parameter Name=\"AirborneInstance\">false</Parameter>
+    </Parameter>
+    <Parameter Name=\"LocalPositionParameters\">
+      <Parameter Name=\"TransformAltitude\">false</Parameter>
     </Parameter>
   </Module>  " >> $CONFIG_XML
 done

@@ -28,11 +28,11 @@ tStart = tic;
 
 
 % % ============= Test 1: N Quads Takeoff, Wpt Mission, and Land ==============
-% ROS_MACE.N = 4;
+% ROS_MACE.N = 2;
 % %ROS_MACE.operationalAlt = [4 8]; % m
 % %ROS_MACE.agentIDs = [1 2]; % m
-% ROS_MACE.operationalAlt = [2 3 4 5]; % m
-% ROS_MACE.agentIDs = [3 4 5 6]; % SYSID_THISMAV on each quadrotor
+% ROS_MACE.operationalAlt = [2 3]; % m
+% ROS_MACE.agentIDs = [3 4]; % SYSID_THISMAV on each quadrotor
 % 
 % ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 % ROS_MACE.wptCoordinator = 'integrated';
@@ -77,7 +77,7 @@ tStart = tic;
 % pause;
 % land( ROS_MACE );
 
-% % ============= Test 2: 1 Quads Takeoff, ascending waypoints, and Land ==============
+% % ============= Test 2: 1 Quad Takeoff, ascending waypoints, and Land ==============
 % ROS_MACE.N = 1;
 % %ROS_MACE.operationalAlt = [4 8]; % m
 % %ROS_MACE.agentIDs = [1 2]; % m
@@ -142,7 +142,64 @@ tStart = tic;
 % pause;
 % land( ROS_MACE );
 
-% ============= Test: 3 quad takeoff, kinematic command, and land =========
+% % ============= Test 3: quad takeoff, kinematic command, and land =========
+% 
+% ROS_MACE.N = 1;
+% %ROS_MACE.operationalAlt = [4 8]; % m
+% %ROS_MACE.agentIDs = [1 2]; % m
+% ROS_MACE.operationalAlt = [2]; % m
+% ROS_MACE.agentIDs = [3]; % SYSID_THISMAV on each quadrotor
+% % warning: only support one quad mission
+% 
+% ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+% ROS_MACE.wptCoordinator = 'integrated';
+% 
+% for i = 1:1:length(ROS_MACE.agentIDs)
+%     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
+% end
+% 
+% ROS_MACE = launchROS( ROS_MACE );
+% swarmState = sendDatumAndWaitForGPS( ROS_MACE );
+% armAndTakeoff( ROS_MACE );
+% disp('Press any key to launch the kinematic mission...')
+% pause;
+% 
+% wpts{1} = [10 -5]; % reference to the waypoint mission that flies closer 
+% 
+% captureRadius = 1;% 1.2;
+% wptManager( ROS_MACE, wpts, captureRadius);
+% 
+% 
+% fprintf('Pointing toward the circle center.\n');
+% kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',pi/2,[]);
+% 
+% 
+% for k =1:4
+% %     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+%     msg = ROS_MACE.positionSub.LatestMessage;
+%     positionCallback(ROS_MACE,msg);
+%     pause(1);
+% end
+% 
+% fprintf('start spinning.\n');
+% kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',1,0,0,'RFU',[],atan2(1,5));
+% 
+% 
+% for k =1:30
+% %     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+%     msg = ROS_MACE.positionSub.LatestMessage;
+%     positionCallback(ROS_MACE,msg);
+%     pause(1);
+% end
+% 
+% fprintf('stop.\n');
+% kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',[],0);
+% 
+% disp('Press any key to land...')
+% pause;
+% land( ROS_MACE );
+
+% ============= Test 4: 1 quad takeoff, follow spline trajectory by kinematic command, and land =========
 
 ROS_MACE.N = 1;
 %ROS_MACE.operationalAlt = [4 8]; % m
@@ -164,36 +221,116 @@ armAndTakeoff( ROS_MACE );
 disp('Press any key to launch the kinematic mission...')
 pause;
 
-wpts{1} = [10 -5]; % reference to the waypoint mission that flies closer 
+wpts{1} = [5 4]; % reference to the waypoint mission that flies closer 
 
 captureRadius = 1;% 1.2;
-wptManager( ROS_MACE, wpts, captureRadius);
+% wptManager(ROS_MACE, wpts, captureRadius);
 
 
-fprintf('Pointing toward the circle center.\n');
-kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',pi/2,[]);
+% ========= splines ================
+commandingTime = 0.5;
+
+% define the speed function
+v = @(t) 1;
+
+% circular trajectory
+tpx = [5 8 5 -2 -10 -13 -10 -2 5];
+tpy = [5 0 -5  -6 -5 0 5  6 5];
+
+% snake trajectory
+% tpx = [12 9 6 3 0 -3 -6 -9 -12 -12 12 12 12];
+% tpy = [-4 -8 -4 -8 -4 -8 -4 -8 -4 4 4 0 -4];
+
+% subplot(1,2,1);
+% plot(tpx,tpy,tpx,tpy,'o');axis equal;
+
+% anchor times
+% t = linspace(0,60,length(tpx));
+% query times
+% t_query = 0:1:max(t);
+
+% generate consistant trajectory as the function "distance2curve" does
+seglen = sqrt(sum(diff([tpx;tpy]',[],1).^2,2));
+t = [0;cumsum(seglen)/sum(seglen)];
+
+% x_query = spline(t,[tpx],t_query);
+% y_query = spline(t,[tpy],t_query);
+
+x_query = spline(t,[tpx],0:0.01:1);
+y_query = spline(t,[tpy],0:0.01:1);
 
 
-for k =1:4
-%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+% x_coef = spline(t,[tpx]);
+% y_coef = spline(t,[tpy]);
+
+% plot the reference trajectory
+plot(ROS_MACE.taskAndLocation, tpx,tpy,'s',x_query,y_query,':.');
+
+% start a new figure for the test
+figure(2);
+ROS_MACE.traj = axes;
+plot(ROS_MACE.traj,tpx,tpy,'s',x_query,y_query,':.');axis equal;hold on;
+axis([-15,10,-8,8]);
+
+px = wpts{1}(1);
+py = wpts{1}(2);
+
+v_tan_stor = [];
+v_norm_stor = [];
+
+for k = 1:100
     msg = ROS_MACE.positionSub.LatestMessage;
     positionCallback(ROS_MACE,msg);
-    pause(1);
+    
+    [xF3, yF3] = ENUtoF3( msg.Easting , msg.Northing );
+    
+    % compute the closet point on the spline, and its distance and fractional
+    % arc length
+    [xy,distance,t_a,coef,t_b] = distance2curve([tpx;tpy]',[xF3,yF3],'spline');
+    
+    px = [px xF3];
+    py = [py yF3];
+    
+    % x0 and y0 are the closed point to the vehicle current location on the desired trajectory
+    x0 = xy(1);
+    y0 = xy(2);
+    
+    % dist is the minimum distance
+    dist = distance;
+    
+    vx = 0;
+    vy = 0;
+    
+    for j = 1:size(coef,2)-1
+        vx = vx + coef(1,end-j)*j*(t_a-t_b)^j;
+        vy = vy + coef(2,end-j)*j*(t_a-t_b)^j;
+    end
+    
+    v_tan = [vx vy]/norm([vx vy])*v(k*commandingTime);
+    v_norm = 0.2*[x0-px(end) y0-py(end)]/commandingTime;
+    
+    v_tan_stor = [v_tan_stor;v_tan];
+    v_norm_stor = [v_norm_stor;v_norm];
+    
+    
+    kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',v_tan(1)+v_norm(1),v_tan(2)+v_norm(2),0,'ENU',[],[]);
+    
+    fprintf('Distance to given trajectory is %.2f m.\nNormal velocity is %.2f m/s.\n',dist,norm(v_norm));
+    
+    h_agent = plot(ROS_MACE.traj,px(end),py(end),'ro');
+    h_agent_vtan = quiver(ROS_MACE.traj,px(end),py(end),v_tan(1),v_tan(2),'Color','r');
+    h_agent_vnorm = quiver(ROS_MACE.traj,px(end),py(end),v_norm(1),v_norm(2),'Color','b');
+    
+    drawnow;
+    
+    pause(commandingTime);
+    set(h_agent,'Color','k');
+    set(h_agent_vtan,'visible','off');
+    set(h_agent_vnorm,'visible','off');
 end
 
-fprintf('start spinning.\n');
-kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',1,0,0,'RFU',[],atan2(1,5));
-
-
-for k =1:30
-%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-    msg = ROS_MACE.positionSub.LatestMessage;
-    positionCallback(ROS_MACE,msg);
-    pause(1);
-end
-
-fprintf('stop.\n');
-kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',[],0);
+fprintf('Stop the vehicle.\n');
+kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',[],[]);
 
 disp('Press any key to land...')
 pause;

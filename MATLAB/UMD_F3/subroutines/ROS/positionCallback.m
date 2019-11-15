@@ -18,19 +18,19 @@ function [ outputArgument ] = positionCallback( ROS_MACE, msg)
     time = toc(tStart);
     %     if ( ~isempty(msg) && ~isempty(msgGeo))
     if ( ~isempty(msg))
-        subplot(ROS_MACE.altitude);
-        plot(time,msg.Altitude,[colors(msg.VehicleID) 'o']);
+%         subplot(ROS_MACE.altitude);
+        plot(ROS_MACE.altitude,time,msg.Altitude,[colors(msg.VehicleID) 'o']);
         hold on;
         if ( time > 30 )
-            xlim([time-30 time])
+            xlim(ROS_MACE.altitude,[time-30 time])
         end
         drawnow;
         
         % plot position
 %         [Easting, Northing,~] = geodetic2enu(msg.Latitude,msg.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
         [xf3, yf3] = ENUtoF3(msg.Easting, msg.Northing);
-        subplot(ROS_MACE.taskAndLocation);
-        plot(xf3,yf3,[colors(msg.VehicleID) 'o']);
+%         subplot(ROS_MACE.taskAndLocation);
+        plot(ROS_MACE.taskAndLocation,xf3,yf3,[colors(msg.VehicleID) 'o']);
         hold on;
         
         drawnow;

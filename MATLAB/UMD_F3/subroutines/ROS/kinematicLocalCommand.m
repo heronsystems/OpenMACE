@@ -97,7 +97,7 @@ dynamicTargetRequest.Bitmask = bin2dec(bitmask);
 % %                                          `bit12: yaw rate
 
 % printout message about the message sent.
-fprintf('Kinematic command sent.\n');
+% fprintf('Kinematic command sent.\n');
 waypointResponse = call(ROS_MACE.kinematicTargetClient, dynamicTargetRequest, 'Timeout', 5);
 
 
