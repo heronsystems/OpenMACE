@@ -84,14 +84,14 @@ axis([-9,9,-7,7]);
 
 % compute the closet point on the spline, and its distance and fractional
 % arc length
-[xy,distance,t_a] = distance2curve([tpx;tpy]',[8,5],'spline');
+[xy,distance,t_a] = distance2curve_modified([tpx;tpy]',[8,5],'spline');
 
 v_tan_stor = [];
 v_norm_stor = [];
 
 for k = 1:100
     % x0 and y0 are the closed point to the vehicle current location on the desired trajectory
-    [xy,distance,t_a,coef,t_b] = distance2curve([tpx;tpy]',[px(end),py(end)],'spline');
+    [xy,distance,t_a,coef,t_b] = distance2curve_modified([tpx;tpy]',[px(end),py(end)],'spline');
     x0 = xy(1);
     y0 = xy(2);
     
