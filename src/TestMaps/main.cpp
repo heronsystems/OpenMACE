@@ -26,6 +26,7 @@
 #include "planners/fast_marching/fm/fmm.hpp"
 #include "planners/fast_marching/datastructures/fmpriorityqueue.hpp"
 #include "graphs/signed_distance_fields/collision_map.hpp"
+#include "base/pose/dynamics_aid.h"
 
 #include "base/unit_tests/unittests_position.h"
 #include "base/geometry/rotate_2d.h"
@@ -188,9 +189,11 @@ void plotMyArrivalTimesPath(nDGridMap<FMCell, 2>& grid, const Path2D& path, std:
 int main(int argc, char *argv[])
 {
     //runPositionTests();
-    mace::pose::GeodeticPosition_3D swarmOrigin(-35.3631970,149.1653205,584);
-    mace::pose::GeodeticPosition_3D vehicleOrigin(-35.363261,149.165230,583.83);
-
+    mace::pose::GeodeticPosition_3D swarmOrigin(38.973699,-76.921897,584);
+    mace::pose::GeodeticPosition_3D vehicleOrigin(38.9736801,-76.9217675,583.83);
+    mace::pose::CartesianPosition_3D localPosition;
+    mace::pose::DynamicsAid::GlobalPositionToLocal(&swarmOrigin,&vehicleOrigin,&localPosition);
+/*
     double bearingTo = swarmOrigin.polarBearingTo(&vehicleOrigin);
     double translationalDistance = swarmOrigin.distanceBetween2D(&vehicleOrigin);
     double altitudeDifference = swarmOrigin.deltaAltitude(&vehicleOrigin);
@@ -214,10 +217,10 @@ int main(int argc, char *argv[])
 
     std::cout<<"Waiting here."<<std::endl;
 
-    mace::pose::CartesianPosition_2D vertex1(-59,-13);
-    mace::pose::CartesianPosition_2D vertex2(28,-13);
-    mace::pose::CartesianPosition_2D vertex3(28,13);
-    mace::pose::CartesianPosition_2D vertex4(-59,13);
+    mace::pose::CartesianPosition_2D vertex1(0,0);
+    mace::pose::CartesianPosition_2D vertex2(10,0);
+    mace::pose::CartesianPosition_2D vertex3(10,10);
+    mace::pose::CartesianPosition_2D vertex4(0,10);
 
     mace::geometry::Polygon_Cartesian boundingPolygon;
     boundingPolygon.appendVertex(vertex1);
@@ -225,25 +228,25 @@ int main(int argc, char *argv[])
     boundingPolygon.appendVertex(vertex3);
     boundingPolygon.appendVertex(vertex4);
 
-    mace::costmap::Costmap_BaseLayer staticLayer("static_layer",mace::costmap::Costmap2D::FREE_SPACE,-59,28,-13,13,0.5);
+    mace::costmap::Costmap_BaseLayer staticLayer("static_layer",mace::costmap::Costmap2D::FREE_SPACE,0,10,0,10,1);
     staticLayer.outlineBoundary(boundingPolygon,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
 
     uint8_t* value;
 
-    value = staticLayer.getCellByPos(-30.0,0.0);
-    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
+//    value = staticLayer.getCellByPos(-30.0,0.0);
+//    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
 
     value = staticLayer.getCellByPos(0.0,0.0);
-    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
+//    *value = mace::costmap::Costmap2D::LETHAL_OBSTACLE;
 
-    mace::costmap::Costmap_InflationLayer inflationLayer("inflation_layer",mace::costmap::Costmap2D::FREE_SPACE,-59,28,-13,13,0.5);
+    mace::costmap::Costmap_InflationLayer inflationLayer("inflation_layer",mace::costmap::Costmap2D::FREE_SPACE,0,10,0,10,1);
     inflationLayer.setScribedRadii(1.0,2.0);
-    inflationLayer.setInflationParameters(2.5,2.0);
+    inflationLayer.setInflationParameters(1.0,2.0);
     inflationLayer.enableLayer(true);
     inflationLayer.updateCosts(staticLayer,0,0,staticLayer.getSizeX()-1, staticLayer.getSizeY()-1);
 
     //Construct a collision map
-    sdf_tools::CollisionMapGrid collisionGrid(0.5,staticLayer.getSizeX(),staticLayer.getSizeY(),1,mace::costmap::Costmap2D::FREE_SPACE,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
+    sdf_tools::CollisionMapGrid collisionGrid(1,staticLayer.getSizeX(),staticLayer.getSizeY(),1,mace::costmap::Costmap2D::FREE_SPACE,mace::costmap::Costmap2D::LETHAL_OBSTACLE);
 
     mace::maps::GridMapIterator gridMapItr(&inflationLayer);
 
@@ -260,7 +263,6 @@ int main(int argc, char *argv[])
     } //end of for loop iterator
 
 
-    Path2D path;
 
     // Loading grid.
     FMGrid2D grid_fm2;
@@ -281,16 +283,18 @@ int main(int argc, char *argv[])
     for (Solver<FMGrid2D>* s :solvers)
     {
         s->setEnvironment(&grid_fm2);
-        s->setInitialAndGoalPoints({8, 8}, {160, 41}); // Init and goal points directly set.
+        s->setInitialAndGoalPoints({3,3}, {7, 7}); // Init and goal points directly set.
 
         s->compute();
         std::cout << "\tElapsed "<< s->getName() <<" time: " << s->getTime() << " ms" << '\n';
 
+        Path2D path;
         vector<double> path_vels;
+
         s->as<FM2<FMGrid2D>>()->computePath(&path, &path_vels);
         std::cout<<"The path has been computed as having: "<<std::endl;
         plotMyArrivalTimesPath(grid_fm2,path);
     }
-
+    */
     return 0;
 }
