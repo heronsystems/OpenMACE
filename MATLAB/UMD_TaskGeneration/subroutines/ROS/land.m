@@ -19,14 +19,14 @@ disp('Waiting for landing to complete...')
 takeoffAchieved = zeros(1,ROS_MACE.N);
 while( ~all(takeoffAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;
-    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-    positionCallback( ROS_MACE, msgGeo); 
-    if ( ~isempty(msgGeo) )
-        agentIndex = ROS_MACE.agentIDtoIndex( msgGeo.VehicleID );
+%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    positionCallback( ROS_MACE, msg); 
+    if ( ~isempty(msg) )
+        agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( takeoffAchieved(agentIndex) == 0 )
-            if ( abs(abs(msgGeo.Altitude) ) <= 0.75 )
+            if ( abs(abs(msg.Altitude) ) <= 0.75 )
                 takeoffAchieved(agentIndex) = 1;
-                fprintf('VehicleID %d Reached Ground  (+/- 0.5 m).\n', msgGeo.VehicleID);
+                fprintf('VehicleID %d Reached Ground  (+/- 0.5 m).\n', msg.VehicleID);
             end
         end
     end

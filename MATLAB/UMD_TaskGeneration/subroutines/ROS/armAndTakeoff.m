@@ -31,7 +31,7 @@ for i = 1:1:ROS_MACE.N
     % takeoffRequest.LatitudeDeg = 0.0; % If 0.0, takeoff where you currently are
     % takeoffRequest.LongitudeDeg = 0.0; % If 0.0, takeoff where you currently are
     takeoffRequest
-    takeoffResponse = call(ROS_MACE.takeoffClient, takeoffRequest, 'Timeout', 5)
+    takeoffResponse = call(ROS_MACE.takeoffClient, takeoffRequest, 'Timeout', 5);
     if ( takeoffResponse.Success )
         fprintf('VehicleID %d Takeoff Command Sent.\n',ROS_MACE.agentIDs(i));
     else 
@@ -44,14 +44,14 @@ takeoffAchieved = zeros(1,ROS_MACE.N);
 
 while( ~all(takeoffAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;   
-    msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-    positionCallback( ROS_MACE, msgGeo); 
-    if ( ~isempty(msgGeo) )
-        agentIndex = ROS_MACE.agentIDtoIndex( msgGeo.VehicleID );
+%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    positionCallback( ROS_MACE, msg); 
+    if ( ~isempty(msg) )
+        agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( takeoffAchieved(agentIndex) == 0 )
-            if ( abs(abs(msgGeo.Altitude) - ROS_MACE.operationalAlt(agentIndex)) <= 0.20 )
+            if ( abs(abs(msg.Altitude) - ROS_MACE.operationalAlt(agentIndex)) <= 0.20 )
                 takeoffAchieved(agentIndex) = 1;
-                fprintf('VehicleID %d Reached Takeoff Altitude (+/- 0.20 m).\n', msgGeo.VehicleID);
+                fprintf('VehicleID %d Reached Takeoff Altitude (+/- 0.20 m).\n', msg.VehicleID);
             end
         end
     end
