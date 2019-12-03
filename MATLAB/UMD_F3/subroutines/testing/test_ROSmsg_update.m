@@ -1,4 +1,37 @@
-function ROS_MACE = launchROS( ROS_MACE )
+% Test script for alternative, loss-free ros msg receiving scheme.
+clear all; close all; clc;
+rosshutdown; % in case there is a leftover instance
+
+% Setup ROS_MACE
+[runParams, ROS_MACE] = loadParams_cityblocksAtF3();
+ROS_MACE = setupF3FlightTestPlot( runParams, ROS_MACE);
+
+% temporary fix to allow plotting with time on ROS message callback
+% will be replaced with MACE timestamp when available
+global tStart;
+tStart = tic;
+
+
+ROS_MACE.N = 4;
+%ROS_MACE.operationalAlt = [4 8]; % m
+%ROS_MACE.agentIDs = [1 2]; % m
+ROS_MACE.operationalAlt = [4 5 2 3]; % m
+ROS_MACE.agentIDs = [1 2 3 4]; % SYSID_THISMAV on each quadrotor
+% warning: only support one quad mission
+
+ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+ROS_MACE.wptCoordinator = 'integrated';
+
+for i = 1:1:length(ROS_MACE.agentIDs)
+    ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
+end
+
+global agentAngle 
+agentAngle = nan(ROS_MACE.N,1);
+
+
+
+% ------------------------Taken from launchROS.m ------------------------
 rosshutdown;
 %robotics.ros.Core;
 setenv('ROS_MASTER_URI',['http://' ROS_MACE.ip ':11311']) % ROS Core location
@@ -38,12 +71,9 @@ end
 disp('Found MACE topics.')
 % Set up subscribers:
 ROS_MACE.positionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
-ROS_MACE.positionSub.NewMessageFcn = {@ROSPositionCallback,ROS_MACE};
-
 ROS_MACE.geopositionSub = rossubscriber('/MACE/UPDATE_GEODETIC_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
-
 ROS_MACE.attitudeSub = rossubscriber('/MACE/UPDATE_ATTITUDE', 'BufferSize', 10);
-ROS_MACE.attitudeSub.NewMessageFcn = {@ROSAngleCallback,ROS_MACE.agentIDtoIndex};
+ROS_MACE.attitudeSub.NewMessageFcn = {@test_angleCallback,ROS_MACE.agentIDtoIndex};
 %batterySub = rossubscriber('/MACE/UPDATE_BATTERY', @batteryCallback, 'BufferSize', 10);
 %gpsSub = rossubscriber('/MACE/UPDATE_GPS', @gpsCallback, 'BufferSize', 10);
 %heartbeatSub = rossubscriber('/MACE/UPDATE_HEARTBEAT', @heartbeatCallback, 'BufferSize', 10);
@@ -77,11 +107,6 @@ if strcmp(ROS_MACE.wptCoordinator,'standalone')
     fprintf('/bundle_server initialized \n');
 end
 
-% Example workflow:
-%   1) Set datum
-%   2) Arm vehicle
-%   3) Takeoff vehicle
-%   4) Issue waypoint command after altitude achieved
-%   5) Land vehicle after waypoint achieved
+% --------------------------- end LaunchROS.m --------------------
 
-end
+land(ROS_MACE);

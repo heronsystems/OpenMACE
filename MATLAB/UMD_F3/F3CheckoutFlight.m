@@ -27,55 +27,55 @@ global tStart;
 tStart = tic;
 
 
-% ============= Test 1: N Quads Takeoff, Wpt Mission, and Land ==============
-ROS_MACE.N = 1;
-%ROS_MACE.operationalAlt = [4 8]; % m
-%ROS_MACE.agentIDs = [1 2]; % m
-ROS_MACE.operationalAlt = [2]; % m
-ROS_MACE.agentIDs = [5]; % SYSID_THISMAV on each quadrotor
-
-ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
-ROS_MACE.wptCoordinator = 'integrated';
-
-for i = 1:1:length(ROS_MACE.agentIDs)
-    ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
-end
-
-ROS_MACE = launchROS( ROS_MACE );
-swarmState = sendDatumAndWaitForGPS( ROS_MACE );
-armAndTakeoff( ROS_MACE );
-disp('Press any key to launch waypoint mission...')
-pause;
-
-% evenly distribute N quads between y from 1m to 11m and -11m to -1m
-temp = linspace(0,20,ROS_MACE.N+2);
-temp = temp(2:end-1);
-yLocation = temp(temp<10)-11;
-yLocation = [yLocation temp(temp>=10)-9];
-
-wpts = cell(1,ROS_MACE.N);
+% % ============= Test 1: N Quads Takeoff, Wpt Mission, and Land ==============
+% ROS_MACE.N = 1;
+% %ROS_MACE.operationalAlt = [4 8]; % m
+% %ROS_MACE.agentIDs = [1 2]; % m
+% ROS_MACE.operationalAlt = [2]; % m
+% ROS_MACE.agentIDs = [5]; % SYSID_THISMAV on each quadrotor
 % 
-% for k = 1:ROS_MACE.N
-%     if yLocation(k)>0
-%         wpts{k} = [11-yLocation(k) yLocation(k);...
-%                    1-yLocation(k) yLocation(k);...
-%                    11-yLocation(k) yLocation(k)];
-%     else
-%         wpts{k} = [11+yLocation(k) yLocation(k);...
-%                    1+yLocation(k) yLocation(k);...
-%                    11+yLocation(k) yLocation(k)];
-%     end
+% ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+% ROS_MACE.wptCoordinator = 'integrated';
+% 
+% for i = 1:1:length(ROS_MACE.agentIDs)
+%     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
 % end
-% wpts{1} = [5 6;-15 6;10 6;]; % each vector is for a single agent
-wpts{1} = [5 -6;-15 -6;10 -6];
-
-
-captureRadius = 1;% 1.2;
-wptManager( ROS_MACE, wpts, captureRadius);
-
-disp('Press any key to land...')
-pause;
-land( ROS_MACE );
+% 
+% ROS_MACE = launchROS( ROS_MACE );
+% swarmState = sendDatumAndWaitForGPS( ROS_MACE );
+% armAndTakeoff( ROS_MACE );
+% disp('Press any key to launch waypoint mission...')
+% pause;
+% 
+% % evenly distribute N quads between y from 1m to 11m and -11m to -1m
+% temp = linspace(0,20,ROS_MACE.N+2);
+% temp = temp(2:end-1);
+% yLocation = temp(temp<10)-11;
+% yLocation = [yLocation temp(temp>=10)-9];
+% 
+% wpts = cell(1,ROS_MACE.N);
+% % 
+% % for k = 1:ROS_MACE.N
+% %     if yLocation(k)>0
+% %         wpts{k} = [11-yLocation(k) yLocation(k);...
+% %                    1-yLocation(k) yLocation(k);...
+% %                    11-yLocation(k) yLocation(k)];
+% %     else
+% %         wpts{k} = [11+yLocation(k) yLocation(k);...
+% %                    1+yLocation(k) yLocation(k);...
+% %                    11+yLocation(k) yLocation(k)];
+% %     end
+% % end
+% % wpts{1} = [5 6;-15 6;10 6;]; % each vector is for a single agent
+% wpts{1} = [5 -6;-15 -6;10 -6];
+% 
+% 
+% captureRadius = 1;% 1.2;
+% wptManager( ROS_MACE, wpts, captureRadius);
+% 
+% disp('Press any key to land...')
+% pause;
+% land( ROS_MACE );
 
 % % ============= Test 2: 1 Quad Takeoff, ascending waypoints, and Land ==============
 % ROS_MACE.N = 1;
@@ -335,3 +335,114 @@ land( ROS_MACE );
 % disp('Press any key to land...')
 % pause;
 % land( ROS_MACE );
+
+% ============= Test 5: 4 quad takeoff, using Dr. Paley's controller for circular formation and land =========
+
+ROS_MACE.N = 4;
+ROS_MACE.operationalAlt = [4 5 2 3]; % m
+ROS_MACE.agentIDs = [1 2 3 4]; % SYSID_THISMAV on each quadrotor
+% warning: only support four-quadrotor mission
+
+ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+ROS_MACE.wptCoordinator = 'integrated';
+
+for i = 1:1:length(ROS_MACE.agentIDs)
+    ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
+end
+
+% global variable for getting the most updated agent yaw angle
+global agentYawAngle 
+agentYawAngle = nan(ROS_MACE.N,1); % This variable stores the most recent 
+% yaw angles of all agents. Each row stores the yaw angle of an agent 
+% in radian
+
+
+% global variable for getting the most updated agent position
+global agentPosition
+agentPosition = nan(ROS_MACE.N,3); % This variable stores the most recent 
+% position of all agents. 
+% First column: x 
+% Second column: y
+% Third column: z 
+% All in F3 coordinates. Each row stores the location for an agent in
+% meters.
+
+ROS_MACE = launchROS( ROS_MACE );
+swarmState = sendDatumAndWaitForGPS( ROS_MACE );
+armAndTakeoff( ROS_MACE );
+
+disp('Press any key to send agents to start locations...');
+pause;
+
+% Initial location of all agents
+wpts{1} = [10 5]; 
+wpts{2} = [20 5];
+wpts{3} = [20 -5];
+wpts{4} = [10 -5];
+captureRadius = 1;% 1.2;
+wptManager(ROS_MACE, wpts, captureRadius);
+
+% remind matlab who truely is the callback function
+ROS_MACE.positionSub.NewMessageFcn = {@ROSPositionCallback,ROS_MACE};
+
+% orient all agents towards an initial orientation
+for jj = 1:ROS_MACE.N
+    kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs(jj),[],[],[],'ENU',0,0,0,'ENU',-pi/2*jj+pi,[]);
+    pause(0.5);
+end
+disp('Commanding initial yaw angles...');
+
+disp('Press any key to launch the Dr. Paley mission...')
+pause;
+
+
+steps = 100;
+sampleTime = 0.5;
+
+for k = 1:steps    
+    tic;
+    
+    % compute the control (yaw rate) for all agents
+    % all agents have a unit velocity towards right (in the body frame)
+    uControl = controller37(agentPosition(:,1:2)',agentYawAngle',ROS_MACE.N,0.1,-0.2);
+    
+    % === plot migrated from positionCallback ===
+    colors=['rbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcy'];
+    time = toc(tStart);
+    % plot altitude
+    temp_h1 = plot(ROS_MACE.altitude,time,agentPosition(:,3), 'o');
+    set(temp_h1,{'MarkerEdgeColor'},{'r';'b';'k';'m'});
+    hold on;
+    if ( time > 30 )
+        xlim(ROS_MACE.altitude,[time-30 time])
+    end
+    drawnow;
+    
+    % plot position
+    for jj = 1:size(agentPosition,1)
+        plot(ROS_MACE.taskAndLocation,agentPosition(jj,1),agentPosition(jj,2)', 'o','MarkerEdgeColor', colors(jj));
+        hold on;
+    end
+    
+    drawnow;
+    % === ends plot ===
+    
+    % send the control command
+    for j = 1:ROS_MACE.N
+        kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs(j),[],[],[],'ENU',0,1,0,'RFU',[],uControl(j));
+    end
+
+    timeSpent = toc;
+    fprintf('Computation time: %f s.\n',timeSpent);  % loop time is unsteady unless we can use the call back function.
+    if timeSpent < sampleTime
+        pause(sampleTime-timeSpent);
+    end
+    fprintf('Loop time: %f s.\n',toc);
+end
+
+fprintf('Stop the vehicle.\n');
+loiter(ROS_MACE);
+
+disp('Press any key to land...')
+pause;
+land( ROS_MACE );

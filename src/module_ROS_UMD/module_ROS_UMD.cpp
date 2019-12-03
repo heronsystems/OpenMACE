@@ -296,7 +296,7 @@ void ModuleROSUMD::updateAttitudeData(const int &vehicleID, const std::shared_pt
 
 #ifdef ROS_EXISTS
     // TODO: Publish vehicle Pose to MATLAB
-    //publishVehicleAttitude(vehicleID);
+    publishVehicleAttitude(vehicleID);
 #endif
 }
 
