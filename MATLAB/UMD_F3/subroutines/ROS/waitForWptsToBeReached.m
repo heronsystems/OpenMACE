@@ -5,7 +5,8 @@ k = 1;
 while( ~all(stationAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;
 %     msgGeo = ROS_MACE.geopositionSub.LatestMessage;  
-    positionCallback( ROS_MACE, msg); 
+%     positionCallback( ROS_MACE, msg);
+    updatePlot(ROS_MACE);
     if ( ~isempty(msg))    
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( stationAchieved(agentIndex) == 0 )

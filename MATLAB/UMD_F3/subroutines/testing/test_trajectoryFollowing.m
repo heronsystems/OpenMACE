@@ -66,16 +66,19 @@ tpy = [5 0 -5  -6 -5 0 5  6 5];
 % subplot(1,2,1);
 % plot(tpx,tpy,tpx,tpy,'o');axis equal;
 
-% anchor times
-t = linspace(0,60,length(tpx));
-% query times
-t_query = 0:1:max(t);
+% generate consistant trajectory as the function "distance2curve_modified" does
+seglen = sqrt(sum(diff([tpx;tpy]',[],1).^2,2));
 
-x_query = spline(t,[tpx],t_query);
-y_query = spline(t,[tpy],t_query);
+% assign time interval that is 
+% proportional to the segment length between adjacent anchor points on the 
+% trajectory
+t = [0;cumsum(seglen)/sum(seglen)]; 
 
-x_coef = spline(t,[tpx]);
-y_coef = spline(t,[tpy]);
+x_query = spline(t,[tpx],0:0.01:1);
+y_query = spline(t,[tpy],0:0.01:1);
+
+% x_coef = spline(t,[tpx]);
+% y_coef = spline(t,[tpy]);
 
 figure;
 % subplot(1,2,2);

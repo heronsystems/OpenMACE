@@ -406,26 +406,8 @@ for k = 1:steps
     % all agents have a unit velocity towards right (in the body frame)
     uControl = controller37(agentPosition(:,1:2)',agentYawAngle',ROS_MACE.N,0.1,-0.2);
     
-    % === plot migrated from positionCallback ===
-    colors=['rbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcy'];
-    time = toc(tStart);
-    % plot altitude
-    temp_h1 = plot(ROS_MACE.altitude,time,agentPosition(:,3), 'o');
-    set(temp_h1,{'MarkerEdgeColor'},{'r';'b';'k';'m'});
-    hold on;
-    if ( time > 30 )
-        xlim(ROS_MACE.altitude,[time-30 time])
-    end
-    drawnow;
-    
-    % plot position
-    for jj = 1:size(agentPosition,1)
-        plot(ROS_MACE.taskAndLocation,agentPosition(jj,1),agentPosition(jj,2)', 'o','MarkerEdgeColor', colors(jj));
-        hold on;
-    end
-    
-    drawnow;
-    % === ends plot ===
+    % update plot
+    updatePlot(ROS_MACE);
     
     % send the control command
     for j = 1:ROS_MACE.N

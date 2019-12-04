@@ -24,7 +24,8 @@ gpsAvailable = zeros(1,ROS_MACE.N);
 while( ~all(gpsAvailable) )
     msg = ROS_MACE.positionSub.LatestMessage;
 %     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-    positionCallback( ROS_MACE, msg); 
+%     positionCallback( ROS_MACE, msg); 
+    updatePlot(ROS_MACE);
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( gpsAvailable(agentIndex) == 0 )
