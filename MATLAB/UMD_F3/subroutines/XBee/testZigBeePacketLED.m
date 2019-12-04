@@ -25,7 +25,7 @@ receiver = [];
 color = [test test RIGHT RIGHT test test LEFT LEFT test test LEFT LEFT test test RIGHT RIGHT];
 status = [0];
 
-msg = [receiver color status];
+msg = [color];
 % generate the packet
 APIpacket = ZigBeePacket(1,msg);
 
