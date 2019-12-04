@@ -26,13 +26,32 @@ ROS_MACE = setupF3FlightTestPlot( runParams, ROS_MACE);
 global tStart;
 tStart = tic;
 
+% global variable for getting the most updated agent yaw angle
+global agentYawAngle 
+% This variable stores the most recent 
+% yaw angles of all agents. Each row stores the yaw angle of an agent 
+% in radian
+
+% global variable for getting the most updated agent position
+global agentPosition
+% This variable stores the most recent
+% position of all agents. 
+% First column: x 
+% Second column: y
+% Third column: z 
+% All in F3 coordinates. Each row stores the location for an agent in
+% meters.
+
 
 % % ============= Test 1: N Quads Takeoff, Wpt Mission, and Land ==============
 % ROS_MACE.N = 1;
 % %ROS_MACE.operationalAlt = [4 8]; % m
 % %ROS_MACE.agentIDs = [1 2]; % m
 % ROS_MACE.operationalAlt = [2]; % m
-% ROS_MACE.agentIDs = [5]; % SYSID_THISMAV on each quadrotor
+% ROS_MACE.agentIDs = [1]; % SYSID_THISMAV on each quadrotor
+% 
+% agentYawAngle = nan(ROS_MACE.N,1); 
+% agentPosition = nan(ROS_MACE.N,3);
 % 
 % ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 % ROS_MACE.wptCoordinator = 'integrated';
@@ -82,7 +101,10 @@ tStart = tic;
 % %ROS_MACE.operationalAlt = [4 8]; % m
 % %ROS_MACE.agentIDs = [1 2]; % m
 % ROS_MACE.operationalAlt = [2]; % m
-% ROS_MACE.agentIDs = [3]; % SYSID_THISMAV on each quadrotor
+% ROS_MACE.agentIDs = [1]; % SYSID_THISMAV on each quadrotor
+% 
+% agentYawAngle = nan(ROS_MACE.N,1); 
+% agentPosition = nan(ROS_MACE.N,3);
 % 
 % ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 % ROS_MACE.wptCoordinator = 'integrated';
@@ -132,9 +154,8 @@ tStart = tic;
 %     
 %     % pausing for 10 seconds (total will be about 220 s)
 %     for j = 1:20
-%         msg = ROS_MACE.positionSub.LatestMessage;
+%         updatePlot(ROS_MACE);
 %         pause(0.5);
-%         positionCallback(ROS_MACE,msg);
 %     end
 % end
 % 
@@ -148,8 +169,11 @@ tStart = tic;
 % %ROS_MACE.operationalAlt = [4 8]; % m
 % %ROS_MACE.agentIDs = [1 2]; % m
 % ROS_MACE.operationalAlt = [2]; % m
-% ROS_MACE.agentIDs = [3]; % SYSID_THISMAV on each quadrotor
+% ROS_MACE.agentIDs = [1]; % SYSID_THISMAV on each quadrotor
 % % warning: only support one quad mission
+% 
+% agentYawAngle = nan(ROS_MACE.N,1); 
+% agentPosition = nan(ROS_MACE.N,3);
 % 
 % ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 % ROS_MACE.wptCoordinator = 'integrated';
@@ -175,9 +199,7 @@ tStart = tic;
 % 
 % 
 % for k =1:4
-% %     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-%     msg = ROS_MACE.positionSub.LatestMessage;
-%     positionCallback(ROS_MACE,msg);
+%     updatePlot(ROS_MACE);
 %     pause(1);
 % end
 % 
@@ -186,14 +208,11 @@ tStart = tic;
 % 
 % 
 % for k =1:30
-% %     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
-%     msg = ROS_MACE.positionSub.LatestMessage;
-%     positionCallback(ROS_MACE,msg);
+%     updatePlot(ROS_MACE);
 %     pause(1);
 % end
 % 
-% fprintf('stop.\n');
-% kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',[],0);
+% loiter(ROS_MACE);
 % 
 % disp('Press any key to land...')
 % pause;
@@ -207,6 +226,9 @@ tStart = tic;
 % ROS_MACE.operationalAlt = [3]; % m
 % ROS_MACE.agentIDs = [1]; % SYSID_THISMAV on each quadrotor
 % % warning: only support one quad mission
+% 
+% agentYawAngle = nan(ROS_MACE.N,1); 
+% agentPosition = nan(ROS_MACE.N,3);
 % 
 % ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 % ROS_MACE.wptCoordinator = 'integrated';
@@ -279,10 +301,10 @@ tStart = tic;
 % v_norm_stor = [];
 % 
 % for k = 1:100
-%     msg = ROS_MACE.positionSub.LatestMessage;
-%     positionCallback(ROS_MACE,msg);
+%     updatePlot(ROS_MACE);
 %     
-%     [xF3, yF3] = ENUtoF3( msg.Easting , msg.Northing );
+%     xF3 = agentPosition(1,1);
+%     yF3 = agentPosition(1,2);
 %     
 %     % compute the closet point on the spline, and its distance and fractional
 %     % arc length
@@ -330,18 +352,20 @@ tStart = tic;
 % end
 % 
 % fprintf('Stop the vehicle.\n');
-% kinematicLocalCommand(ROS_MACE,ROS_MACE.agentIDs,[],[],[],'ENU',0,0,0,'ENU',[],[]);
+% loiter(ROS_MACE);
 % 
 % disp('Press any key to land...')
 % pause;
 % land( ROS_MACE );
 
 % ============= Test 5: 4 quad takeoff, using Dr. Paley's controller for circular formation and land =========
-
 ROS_MACE.N = 4;
 ROS_MACE.operationalAlt = [4 5 2 3]; % m
 ROS_MACE.agentIDs = [1 2 3 4]; % SYSID_THISMAV on each quadrotor
 % warning: only support four-quadrotor mission
+
+agentYawAngle = nan(ROS_MACE.N,1); 
+agentPosition = nan(ROS_MACE.N,3);
 
 ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
 ROS_MACE.wptCoordinator = 'integrated';
@@ -349,23 +373,6 @@ ROS_MACE.wptCoordinator = 'integrated';
 for i = 1:1:length(ROS_MACE.agentIDs)
     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
 end
-
-% global variable for getting the most updated agent yaw angle
-global agentYawAngle 
-agentYawAngle = nan(ROS_MACE.N,1); % This variable stores the most recent 
-% yaw angles of all agents. Each row stores the yaw angle of an agent 
-% in radian
-
-
-% global variable for getting the most updated agent position
-global agentPosition
-agentPosition = nan(ROS_MACE.N,3); % This variable stores the most recent 
-% position of all agents. 
-% First column: x 
-% Second column: y
-% Third column: z 
-% All in F3 coordinates. Each row stores the location for an agent in
-% meters.
 
 ROS_MACE = launchROS( ROS_MACE );
 swarmState = sendDatumAndWaitForGPS( ROS_MACE );
