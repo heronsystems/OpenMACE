@@ -1,6 +1,6 @@
 function waitForWptsToBeReached( ROS_MACE, wpts, captureRadius )
 
-global agentYawAngle; 
+% global agentYawAngle; 
 global agentPosition;
 
 stationAchieved = zeros(1,ROS_MACE.N);
@@ -18,9 +18,9 @@ while( ~all(stationAchieved) )
             dist = norm(agentPosition(agentIndex,1:2)-[wpts(agentIndex,1) wpts(agentIndex,2)]);
             if ( dist <= captureRadius && stationAchieved(agentIndex) ~= 1 )
                 stationAchieved(agentIndex) = 1;
-                fprintf('VehicleID %d is on station. (+/- %3.1f m).\n', agentIndex, captureRadius);
+                fprintf('VehicleID %d is on station. (+/- %3.1f m).\n', ROS_MACE.agentIDs(agentIndex), captureRadius);
             elseif ( stationAchieved(agentIndex) ~= 1 )
-                fprintf('VehicleID %d is %3.1f m (< %3.1f m) away from station.\n', agentIndex, dist, captureRadius);
+                fprintf('VehicleID %d is %3.1f m (< %3.1f m) away from station.\n', ROS_MACE.agentIDs(agentIndex), dist, captureRadius);
 %                 kinematicLocalCommand()
                 kinematicLocalCommand(ROS_MACE,agentIndex,wpts(agentIndex,1),wpts(agentIndex,2),ROS_MACE.operationalAlt(agentIndex),'ENU',[],[],[],'ENU',[],[]);
                 pause(0.1);

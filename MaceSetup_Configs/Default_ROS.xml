@@ -7,10 +7,61 @@
     </Parameter>
 	<Parameter Name="UDPParameters">
       <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14551</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">false</Parameter>
+    </Parameter>
+  </Module>  
+ <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14552</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">false</Parameter>
+    </Parameter>
+  </Module>  
+ <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
       <Parameter Name="ListenPortNumber">14553</Parameter>
     </Parameter>
     <Parameter Name="ModuleParameters">
       <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">false</Parameter>
+    </Parameter>
+  </Module>  
+ <Module Class="VehicleComms" Type="Ardupilot">
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14554</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">false</Parameter>
     </Parameter>
   </Module>  
 <Module Class='ROS' Type='OFFSET_Auctioneer'>
