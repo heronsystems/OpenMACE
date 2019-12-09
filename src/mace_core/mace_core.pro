@@ -110,12 +110,12 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lma
 else:unix:!macx: LIBS += -L$$OUT_PWD/../maps/ -lmaps
 
 unix {
-    exists(/opt/ros/kinetic/lib/) {
+    exists(/opt/ros/melodic/lib/) {
         DEFINES += ROS_EXISTS
-        INCLUDEPATH += /opt/ros/kinetic/include
-        INCLUDEPATH += /opt/ros/kinetic/lib
-        LIBS += -L/opt/ros/kinetic/lib -loctomath
-        LIBS += -L/opt/ros/kinetic/lib -loctomap
+        INCLUDEPATH += /opt/ros/melodic/include
+        INCLUDEPATH += /opt/ros/melodic/lib
+        LIBS += -L/opt/ros/melodic/lib -loctomath
+        LIBS += -L/opt/ros/melodic/lib -loctomap
     } else {
         INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
         LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
