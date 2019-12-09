@@ -16,7 +16,7 @@ void AStarBase::retracePath(const GraphNode* start, const GraphNode* end, std::v
     path.clear();
     for(int i = backwardsPath.size() - 1; i >= 0; i--)
     {
-        path.push_back(backwardsPath.at(i)->getClone());
+        path.push_back(backwardsPath.at(i)->getStateClone());
         std::cout<<"The position here is: "<<backwardsPath.at(i)->printInfo()<<std::endl;
     }
 }
@@ -64,8 +64,8 @@ std::vector<state_space::State *> AStarBase::solve(maps::Data2DGrid<GraphNode> &
         }
 
         //get the appropriate neighbors
-        int currentNodeIndex = 0;
-        bool found = stateGridData.findIndex(currentNode,currentNodeIndex);
+        unsigned int currentNodeIndex = 0;
+        bool found = stateGridData.findIndex(currentNode, currentNodeIndex);
         std::vector<int> neighbors = stateGridData.getCellNeighbors(currentNodeIndex);
 
         for(size_t i = 0; i < neighbors.size(); i++)

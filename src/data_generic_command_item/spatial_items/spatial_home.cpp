@@ -1,20 +1,15 @@
 #include "spatial_home.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialHome::getCommandType() const
+COMMANDTYPE SpatialHome::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_HOME;
+    return COMMANDTYPE::CI_NAV_HOME;
 }
 
 std::string SpatialHome::getDescription() const
 {
     return "This stores the home location for a vehicle";
-}
-
-bool SpatialHome::hasSpatialInfluence() const
-{
-    return true;
 }
 
 std::shared_ptr<AbstractCommandItem> SpatialHome::getClone() const
@@ -33,12 +28,10 @@ SpatialHome::SpatialHome():
 
 }
 
-SpatialHome::SpatialHome(const pose::GeodeticPosition_3D &position):
+SpatialHome::SpatialHome(const mace::pose::Position* homePosition):
     AbstractSpatialAction(0,0)
 {
-    this->position->setX(position.getLatitude());
-    this->position->setY(position.getLongitude());
-    this->position->setZ(position.getAltitude());
+    this->setPosition(homePosition);
 }
 
 SpatialHome::~SpatialHome()
@@ -52,37 +45,33 @@ SpatialHome::SpatialHome(const SpatialHome &obj):
 
 }
 
-SpatialHome::SpatialHome(const int &systemOrigin, const int &systemTarget):
+SpatialHome::SpatialHome(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
 }
 
-mace_home_position_t SpatialHome::getMACECommsObject() const
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialHome::printSpatialCMDInfo() const
 {
-    mace_home_position_t homePosition;
-    homePosition.latitude = position->getX() * pow(10,7);
-    homePosition.longitude = position->getY() * pow(10,7);
-    homePosition.altitude = position->getZ() * pow(10,3);
-    return homePosition;
-}
-
-mace_message_t SpatialHome::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
-{
-    mace_message_t msg;
-    mace_home_position_t homePosition = getMACECommsObject();
-    mace_msg_home_position_encode_chan(systemID,compID,chan,&msg,&homePosition);
-    return msg;
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
 }
 
 std::ostream& operator<<(std::ostream& os, const SpatialHome& t)
 {
+
     std::stringstream stream;
     stream.precision(6);
-    stream << std::fixed << "Spatial Home: "<< t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
+    //stream << std::fixed << "Spatial Home: "<< t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";
     os << stream.str();
 
     return os;
 }
 
-} //end of namespace CommandItem
+} //end of namespace command_item

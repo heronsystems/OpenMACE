@@ -15,6 +15,9 @@ TEMPLATE = lib
 DEFINES += MODULE_VEHICLE_MAVLINK_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 SOURCES += module_vehicle_mavlink.cpp \
     vehicle_object/mavlink_vehicle_object.cpp \
@@ -23,7 +26,9 @@ SOURCES += module_vehicle_mavlink.cpp \
     controllers/controller_guided_mission_item.cpp \
     vehicle_object/mission_data_mavlink.cpp \
     controllers/controller_guided_target_item_local.cpp \
-    controllers/controller_guided_target_item_global.cpp
+    controllers/controller_guided_target_item_global.cpp \
+    controllers/controller_set_gps_global_origin.cpp \
+    controllers/controller_guided_target_item_attitude.cpp
 
 HEADERS += module_vehicle_mavlink.h\
         module_vehicle_mavlink_global.h \
@@ -37,13 +42,18 @@ HEADERS += module_vehicle_mavlink.h\
     vehicle_object/state_data_mavlink.h \
     controllers/controller_mission.h \
     controllers/controller_guided_mission_item.h \
-    controllers/commands/command_set_home.h \
     vehicle_object/mission_data_mavlink.h \
     controllers/commands/generic_int_command.h \
     mavlink_entity_key.h \
     controllers/controller_guided_target_item_local.h \
     controllers/controller_guided_target_item_global.h \
-    controllers/common.h
+    controllers/common.h \
+    controllers/commands/command_msg_interval.h \
+    mavlink_coordinate_frames.h \
+    controllers/controller_set_gps_global_origin.h \
+    controllers/controller_guided_target_item_attitude.h \
+    controllers/commands/command_msg_request.h \
+    controllers/commands/command_home_position.h
 
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega
@@ -91,8 +101,11 @@ headers_vehicle_object.files   += \
     vehicle_object/state_data_mavlink.h
 INSTALLS       += headers_vehicle_object
 
-INCLUDEPATH += $$PWD/../../mavlink_cpp/Stable/common/
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$PWD/../../speedLog/
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
@@ -130,15 +143,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_t
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/debug/ -ldata_generic_item_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item_topic/ -ldata_generic_item_topic
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/release/ -ldata_generic_state_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/debug/ -ldata_generic_state_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item/ -ldata_generic_state_item
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/release/ -ldata_generic_state_item_topic
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/debug/ -ldata_generic_state_item_topic
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/ -ldata_generic_state_item_topic
-
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/release/ -ldata_generic_command_item
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/debug/ -ldata_generic_command_item
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_command_item/ -ldata_generic_command_item
@@ -154,8 +158,6 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/ -ldata_
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/release/ -lmodule_vehicle_generic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/debug/ -lmodule_vehicle_generic
 else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_generic/ -lmodule_vehicle_generic
-
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
 unix {
     exists(/opt/ros/kinetic/lib/) {

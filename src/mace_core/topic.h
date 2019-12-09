@@ -178,7 +178,7 @@ public:
         std::shared_ptr<void> void_ptr = m_TerminalValues.at(str);
 
         const SingleParameterValue<T>* ptr = (const SingleParameterValue<T>*)void_ptr.get();
-        if(ptr == NULL){
+        if(ptr == nullptr){
             throw std::runtime_error("Given value type does not match expected type");
         }
 
@@ -556,33 +556,6 @@ public:
 
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

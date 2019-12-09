@@ -10,19 +10,19 @@ MissionList::MissionList() :
 
 }
 
-MissionList::MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state) :
+MissionList::MissionList(const unsigned int &targetID, const unsigned int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state) :
     missionKey(targetID,generatorID,0,missionType,state),missionExeState(Data::MissionExecutionState::MESTATE_UNEXECUTED),activeMissionItem(0)
 {
 
 }
 
-MissionList::MissionList(const int &targetID, const int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size) :
+MissionList::MissionList(const unsigned int &targetID, const unsigned int &generatorID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size) :
     missionKey(targetID,generatorID,0,missionType,state),missionExeState(Data::MissionExecutionState::MESTATE_UNEXECUTED),activeMissionItem(0)
 {
     initializeQueue(size);
 }
 
-MissionList::MissionList(const int &targetID, const int &generatorID, const int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const int &size) :
+MissionList::MissionList(const unsigned int &targetID, const unsigned int &generatorID, const unsigned int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &state, const size_t &size) :
     missionKey(targetID,generatorID,missionID,missionType,state),missionExeState(Data::MissionExecutionState::MESTATE_UNEXECUTED),activeMissionItem(0)
 {
     initializeQueue(size);
@@ -36,7 +36,7 @@ MissionList::MissionList(const MissionList &rhs)
     this->activeMissionItem = rhs.activeMissionItem;
 }
 
-void MissionList::initializeQueue(const int &size)
+void MissionList::initializeQueue(const size_t &size)
 {
     if(size <= 0){
         // TODO-Ken/Pat: Throw a message with exception
@@ -44,7 +44,7 @@ void MissionList::initializeQueue(const int &size)
         throw std::exception();
     }
     missionQueue.clear();
-    std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> tmpVector(size,NULL);
+    std::vector<std::shared_ptr<command_item::AbstractCommandItem>> tmpVector(size,nullptr);
     missionQueue = tmpVector;
 }
 
@@ -53,7 +53,7 @@ void MissionList::clearQueue()
     missionQueue.clear();
 }
 
-void MissionList::replaceMissionQueue(const std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>> &newQueue)
+void MissionList::replaceMissionQueue(const std::vector<std::shared_ptr<command_item::AbstractCommandItem>> &newQueue)
 {
     missionQueue.clear();
     missionQueue = newQueue;
@@ -65,7 +65,7 @@ MissionList::MissionListStatus MissionList::getMissionListStatus() const
     MissionListState missionState = MissionListState::COMPLETE;
 
     int index = 0;
-    for(std::vector<std::shared_ptr<CommandItem::AbstractCommandItem>>::const_iterator it = missionQueue.begin(); it != missionQueue.end(); ++it) {
+    for(std::vector<std::shared_ptr<command_item::AbstractCommandItem>>::const_iterator it = missionQueue.begin(); it != missionQueue.end(); ++it) {
         if(!*it)
         {
             //This should see that the value is null
@@ -82,37 +82,37 @@ MissionList::MissionListStatus MissionList::getMissionListStatus() const
     return missionStatus;
 }
 
-void MissionList::insertMissionItem(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem)
+void MissionList::insertMissionItem(const std::shared_ptr<command_item::AbstractCommandItem> missionItem)
 {
     missionQueue.push_back(missionItem);
 }
 
-void MissionList::replaceMissionItemAtIndex(const std::shared_ptr<CommandItem::AbstractCommandItem> missionItem, const int &index)
+void MissionList::replaceMissionItemAtIndex(const std::shared_ptr<command_item::AbstractCommandItem> missionItem, const unsigned int &index)
 {
     missionQueue[index] = missionItem;
 }
 
-std::shared_ptr<CommandItem::AbstractCommandItem> MissionList::getMissionItem(const int &index) const
+std::shared_ptr<command_item::AbstractCommandItem> MissionList::getMissionItem(const unsigned int &index) const
 {
     return missionQueue[index];
 }
 
-int MissionList::getQueueSize() const
+size_t MissionList::getQueueSize() const
 {
     return missionQueue.size();
 }
 
-int MissionList::getActiveIndex() const
+unsigned int MissionList::getActiveIndex() const
 {
     return activeMissionItem;
 }
 
-std::shared_ptr<CommandItem::AbstractCommandItem> MissionList::getActiveMissionItem()
+command_item::AbstractCommandItemPtr MissionList::getActiveMissionItem()
 {
     return (getMissionItem(getActiveIndex()));
 }
 
-void MissionList::setActiveIndex(const int &activeIndex)
+void MissionList::setActiveIndex(const unsigned int &activeIndex)
 {
     activeMissionItem = activeIndex;
 }

@@ -3,7 +3,7 @@
 
 #include "common/common.h"
 
-#include "base/geometry/polygon_2DC.h"
+#include "base/geometry/polygon_cartesian.h"
 #include "base/geometry/polygon_2DG.h"
 
 #include "boundary_key.h"
@@ -61,22 +61,25 @@ public:
     BoundaryList(const BoundaryList &rhs);
 
 public:
-    void initializeBoundary(const int &size);
+    void initializeBoundary(const unsigned int &size);
     void clearQueue();
-    void appendVertexItem(const Position<CartesianPosition_2D> &vertexItem);
-    void replaceVertexItemAtIndex(const Position<CartesianPosition_2D> &vertexItem, const int &index);
+    void appendVertexItem(const Abstract_CartesianPosition* vertexItem);
+    void replaceVertexItemAtIndex(const Abstract_CartesianPosition* vertexItem, const unsigned int &index);
+    //Ken fix this above, will memory leak
 
-    Position<CartesianPosition_2D> getBoundaryItemAtIndex(const int &index) const;
-    int getQueueSize() const;
+    CartesianPosition_2D getBoundaryItemAtIndex(const unsigned int &index) const;
+
+    size_t getQueueSize() const;
+
     BoundaryList::BoundaryListStatus getBoundaryListStatus() const;
 
 public:
 
-    mace::geometry::Polygon_2DC getBoundary() {
+    mace::geometry::Polygon_Cartesian getBoundary() {
         return boundingPolygon;
     }
 
-    void setBoundary(const mace::geometry::Polygon_2DC &boundary) {
+    void setBoundary(const mace::geometry::Polygon_Cartesian &boundary) {
         boundingPolygon = boundary;
     }
 
@@ -101,7 +104,7 @@ public:
 private:
 
 public:
-    mace::geometry::Polygon_2DC boundingPolygon;
+    mace::geometry::Polygon_Cartesian boundingPolygon;
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const BoundaryList& t);

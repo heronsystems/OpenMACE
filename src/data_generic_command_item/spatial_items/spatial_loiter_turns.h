@@ -13,9 +13,12 @@
 #include "abstract_spatial_action.h"
 
 #include "data/loiter_direction.h"
-#include "data_generic_command_item/command_item_type.h"
 
-namespace CommandItem {
+#include "data_generic_command_item/abstract_command_item.h"
+#include "data_generic_command_item/command_item_type.h"
+#include "data_generic_command_item/interface_command_helper.h"
+
+namespace command_item {
 
 MACE_CLASS_FORWARD(SpatialLoiter_Turns);
 
@@ -25,7 +28,7 @@ class SpatialLoiter_Turns : public AbstractSpatialAction
 public:
     SpatialLoiter_Turns();
     SpatialLoiter_Turns(const SpatialLoiter_Turns &obj);
-    SpatialLoiter_Turns(const int &originatingSystem, const int &systemTarget = 0);
+    SpatialLoiter_Turns(const unsigned int &originatingSystem, const unsigned int &systemTarget = 0);
 
 public:
 
@@ -33,7 +36,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    COMMANDITEM getCommandType() const override;
+    COMMANDTYPE getCommandType() const override;
 
     //!
     //! \brief getDescription
@@ -42,15 +45,6 @@ public:
     //! would happen when issuing such a command.
     //!
     std::string getDescription() const override;
-
-    //!
-    //! \brief hasSpatialInfluence returns a boolean reflecting whether or not the commandItem has
-    //! a direct influence over a vehicles position. This is useful for determining flight times,
-    //! position elements, or rendering objects on a GUI.
-    //! \return false if the command does not have an affect over the vehicles position directly.
-    //! For example, change speed has no influence over a vehicles position.
-    //!
-    bool hasSpatialInfluence() const override;
 
     //!
     //! \brief getClone
@@ -63,6 +57,16 @@ public:
      * @param state
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
+
+    /** Interface imposed via AbstractCommandItem */
+public:
+    void populateCommandItem(mace_command_long_t &obj) const override;
+
+    void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
+
+    void fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj) override;
+
+    /** End of interface imposed via AbstractCommandItem */
 
 public:
     void operator = (const SpatialLoiter_Turns &rhs)
@@ -82,7 +86,7 @@ public:
         {
             return false;
         }
-        if(this->radius != rhs.radius)
+        if(fabs(this->radius - rhs.radius) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
@@ -98,9 +102,16 @@ public:
     }
 
 public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printSpatialCMDInfo() const override;
+
+public:
     Data::LoiterDirection direction;
     double radius;
-    double turns;
+    unsigned int turns;
 };
 
 } //end of namespace MissionItem

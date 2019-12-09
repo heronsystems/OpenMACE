@@ -1,9 +1,12 @@
-[submodule "tools/octomap"]
-	path = tools/octomap
-	url = https://github.com/OctoMap/octomap.git
 [submodule "tools/flann"]
 	path = tools/flann
 	url = https://github.com/mariusmuja/flann.git
+[submodule "tools/octomap"]
+	path = tools/octomap
+	url = https://github.com/OctoMap/octomap.git
 [submodule "tools/libccd"]
 	path = tools/libccd
 	url = https://github.com/danfis/libccd.git
+[submodule "tools/boost"]
+	path = tools/boost
+	url = https://github.com/boostorg/boost.git

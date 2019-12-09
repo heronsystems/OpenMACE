@@ -8,14 +8,7 @@ spArray(3) = subplot(rows,cols,3);
 spArray(4) = subplot(rows,cols,4);
 spArray(5) = subplot(rows,cols,5);
 spArray(6) = subplot(rows,cols,6);
-% options
-%   'GroundTruth',
-%   'LikelihoodTargetStateExplored',
-%   'FrontierWpts',
-%   'LikelihoodOccupancyGraphExplored',
-%   'CellAge',
-%   'CellState',
-%   'KrigingInterp'
-spTypes = {'GroundTruth','CellExplored','Signals','CumlLR','MutualInfo','Entropy'};
+
+spTypes = {'GroundTruth','CellExplored','Signals','CumlLR','PriorP','Entropy'};
 playMovie(swarmWorldHist, swarmStateHist, targetStateHist, trueWorld, runParams, swarmModel, targetModel,spArray, spTypes);
 end

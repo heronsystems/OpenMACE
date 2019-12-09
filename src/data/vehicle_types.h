@@ -23,7 +23,7 @@ inline std::string VehicleTypesToString(const VehicleTypes &vehicleType) {
     case VehicleTypes::UNKNOWN:
         return "UNKNOWN";
     default:
-        throw std::runtime_error("Unknown operating mode seen");
+        throw std::runtime_error("Unknown operating mode seen in VehicleTypesToString method.");
     }
 }
 
@@ -34,7 +34,7 @@ inline VehicleTypes VehicleTypesFromString(const std::string &str) {
         return VehicleTypes::PLANE;
     if(str == "UNKNOWN")
         return VehicleTypes::UNKNOWN;
-    throw std::runtime_error("Unknown operating mode seen");
+    throw std::runtime_error("Unknown operating mode seen in VehicleTypesFromString method");
 }
 
 }

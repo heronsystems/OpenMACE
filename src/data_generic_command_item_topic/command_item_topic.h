@@ -4,7 +4,7 @@
 #include "data/i_topic_component_data_object.h"
 #include "data_generic_command_item/command_item_components.h"
 
-using namespace CommandItem;
+using namespace command_item;
 
 namespace CommandTopic{
 
@@ -18,17 +18,17 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
 public:
-    CommandItemTopic(const std::shared_ptr<CommandItem::AbstractCommandItem> &command)
+    CommandItemTopic(const std::shared_ptr<command_item::AbstractCommandItem> &command)
     {
         this->setCommandItem(command);
     }
 
-    void setCommandItem(const std::shared_ptr<CommandItem::AbstractCommandItem> &command)
+    void setCommandItem(const std::shared_ptr<command_item::AbstractCommandItem> &command)
     {
         this->commandItem = command;
     }
 
-    std::shared_ptr<CommandItem::AbstractCommandItem> getCommandItem() const
+    std::shared_ptr<command_item::AbstractCommandItem> getCommandItem() const
     {
         return commandItem;
     }
@@ -45,13 +45,13 @@ public:
     }
     */
 
-    COMMANDITEM getCommandType() const
+    COMMANDTYPE getCommandType() const
     {
         return commandItem->getCommandType();
     }
 
 private:
-    std::shared_ptr<CommandItem::AbstractCommandItem> commandItem;
+    std::shared_ptr<command_item::AbstractCommandItem> commandItem;
 };
 
 } //end of namespace CommandTopic

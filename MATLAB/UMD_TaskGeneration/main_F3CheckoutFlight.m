@@ -14,8 +14,8 @@ rosshutdown; % in case there is a leftover instance
 % (See README.txt for further details)
 
 % Setup ROS_MACE
-[runParams, ROS_MACE] = loadParams_testingF3();
-setupF3FlightTestPlot( runParams );
+[runParams, ROS_MACE] = loadParams_cityblocksAtF3();
+ROS_MACE = setupF3FlightTestPlot( runParams, ROS_MACE);
 
 % temporary fix to allow plotting with time on ROS message callback
 % will be replaced with MACE timestamp when available
@@ -71,21 +71,51 @@ tStart = tic;
 % pause;
 % land( ROS_MACE );
 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Test: Two Quad Takeoff, Wpt Mission, and Land
+% 
+% ROS_MACE.N = 1;
+% %ROS_MACE.operationalAlt = [4 8]; % m
+% %ROS_MACE.agentIDs = [1 2]; % m
+% ROS_MACE.operationalAlt = [3]; % m
+% ROS_MACE.agentIDs = [3]; % m
+% 
+% ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+% ROS_MACE.wptCoordinator = 'integrated';
+% 
+% for i = 1:1:length(ROS_MACE.agentIDs)
+%     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
+% end
+% 
+% ROS_MACE = launchROS( ROS_MACE );
+% swarmState = sendDatumAndWaitForGPS( ROS_MACE );
+% armAndTakeoff( ROS_MACE );
+% disp('Press any key to launch waypoint mission...')
+% pause;
+% wpts{1} = [5 6;-15 6;10 6;]; % each vector is for a single agent
+% wpts{2} = [5 -6;-15 -6;10 -6];
+% 
+% 
+% captureRadius = 1;% 1.2;
+% wptManager( ROS_MACE, wpts, captureRadius);
+% 
+% disp('Press any key to land...')
+% pause;
+% land( ROS_MACE );
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Test: Two Quad Takeoff, Wpt Mission, and Land
+% Test: N Quads Takeoff, Wpt Mission, and Land
 
-ROS_MACE.N = 2;
-ROS_MACE.operationalAlt = [4 8]; % m
-ROS_MACE.agentIDs = [1 2]; % m
+ROS_MACE.N = 1;
+%ROS_MACE.operationalAlt = [4 8]; % m
+%ROS_MACE.agentIDs = [1 2]; % m
+ROS_MACE.operationalAlt = [2];% 3 2 3]; % m
+ROS_MACE.agentIDs = [1];% 2 ]; % m
+
 ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
-
-global agentStateHist
-global agentTargetHist
+ROS_MACE.wptCoordinator = 'integrated';
 
 for i = 1:1:length(ROS_MACE.agentIDs)
     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
-    agentStateHist{i} = [];
-    agentTargetHist{i} = [];
 end
 
 ROS_MACE = launchROS( ROS_MACE );
@@ -93,57 +123,161 @@ swarmState = sendDatumAndWaitForGPS( ROS_MACE );
 armAndTakeoff( ROS_MACE );
 disp('Press any key to launch waypoint mission...')
 pause;
-% wpts{1} = [5 6;-15 6;10 6;]; % each vector is for a single agent
-% wpts{2} = [5 -6;-15 -6;10 -6];
 
-% two circles
-% wpts{1} = [10+3*cos(0:pi/4:2*pi);4+3*sin(0:pi/4:2*pi)]';
-% wpts{2} = [10-3*cos(0:pi/4:2*pi);-4-3*sin(0:pi/4:2*pi)]';
+% evenly distribute N quads between y from 1m to 11m and -11m to -1m
+temp = linspace(0,20,ROS_MACE.N+2);
+temp = temp(2:end-1);
+yLocation = temp(temp<10)-11;
+yLocation = [yLocation temp(temp>=10)-9];
 
-% random waypoints
-% m = 30;
-% for i = 1:ROS_MACE.N
-%     wpts{i} = 3*ones(m,2);
-%     for k = 1:m % generate random waypoints that resemble a bundle (within 1/3 of F3)
-%         if k == 1
-%             wpts{i}(k,:) = [14+2*(rand-0.5) (-1)^i*7+rand-0.5];
-%         else
-%             while(1)
-%                 saverand1 = 2*(rand-0.5)*pi/2+pi; % angle ranges from -90 to 90 deg with a 180 deg bias
-%                 saverand2 = 1.5*(rand+1); % distance ranges from 1.5 to 3 m
-%                 wpts{i}(k,:) = wpts{i}(k-1,:)+[saverand2*cos(saverand1) saverand2*sin(saverand1)];
-%                 if ~( wpts{i}(k,1)>=26.5 || wpts{i}(k,1)<=-57.5 || wpts{i}(k,2)>=11.5 || wpts{i}(k,2)<=-11.5)
-%                     break;
-%                 end
-%             end
-%         end
-%     end
-% end
+wpts = cell(1,ROS_MACE.N);
 
-% gradual distance and angle trajectory
-wpts{1} = [[5 -7];zeros(39,2)];
-wpts{2} = [[5 7];zeros(39,2)];
-for i = 1:ROS_MACE.N
-    % towards negative x direction
-    for k = 2:20
-        wpts{i}(k,1) = [ wpts{i}(k-1,1)+(1+k*0.1)*cos(pi + (-1)^k*4*k/90*pi/2)];
-        wpts{i}(k,2) = [ wpts{i}(k-1,2)+(1+k*0.1)*sin(pi + (-1)^k*4*k/90*pi/2)];
-    end
-    % towards positive x direction
-    for k = 21:40
-        wpts{i}(k,1) = [wpts{i}(k-1,1)+(1+(21-(k-20))*0.1)*cos((-1)^(k-20)*4*(k-20)/90*pi/2)];
-        wpts{i}(k,2) = [wpts{i}(k-1,2)+(1+(21-(k-20))*0.1)*sin((-1)^(k-20)*4*(k-20)/90*pi/2)];
+for k = 1:ROS_MACE.N
+    if yLocation(k)>0
+        wpts{k} = [11-yLocation(k) yLocation(k);...
+                   -9-yLocation(k) yLocation(k);...
+                   11-yLocation(k) yLocation(k)];
+    else
+        wpts{k} = [11+yLocation(k) yLocation(k);...
+                    -9+yLocation(k) yLocation(k);...
+                   11+yLocation(k) yLocation(k)];
     end
 end
+wpts{1} = [5 6;-15 6;10 6;]; % each vector is for a single agent
+% wpts{2} = [5 -6;-15 -6;10 -6];
+
 
 captureRadius = 1;% 1.2;
-% wptManager( ROS_MACE, wpts, captureRadius);
-bundleManager( ROS_MACE, wpts, captureRadius);
+wptManager( ROS_MACE, wpts, captureRadius);
+
 disp('Press any key to land...')
 pause;
 land( ROS_MACE );
 
-%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Test: Two Quad Takeoff, bundle of gradual varying length and angle waypoinys, and Land
+% 
+% ROS_MACE.N = 2;
+% ROS_MACE.operationalAlt = [4 8]; % m
+% ROS_MACE.agentIDs = [1 2]; % m
+% ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+% 
+% global agentStateHist
+% global agentTargetHist
+% 
+% for i = 1:1:length(ROS_MACE.agentIDs)
+%     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
+%     agentStateHist{i} = [];
+%     agentTargetHist{i} = [];
+% end
+% 
+% ROS_MACE = launchROS( ROS_MACE );
+% swarmState = sendDatumAndWaitForGPS( ROS_MACE );
+% armAndTakeoff( ROS_MACE );
+% disp('Press any key to launch waypoint mission...')
+% pause;
+% 
+% % two circles
+% % wpts{1} = [10+3*cos(0:pi/4:2*pi);4+3*sin(0:pi/4:2*pi)]';
+% % wpts{2} = [10-3*cos(0:pi/4:2*pi);-4-3*sin(0:pi/4:2*pi)]';
+% 
+% % random waypoints
+% % m = 30;
+% % for i = 1:ROS_MACE.N
+% %     wpts{i} = 3*ones(m,2);
+% %     for k = 1:m % generate random waypoints that resemble a bundle (within 1/3 of F3)
+% %         if k == 1
+% %             wpts{i}(k,:) = [14+2*(rand-0.5) (-1)^i*7+rand-0.5];
+% %         else
+% %             while(1)
+% %                 saverand1 = 2*(rand-0.5)*pi/2+pi; % angle ranges from -90 to 90 deg with a 180 deg bias
+% %                 saverand2 = 1.5*(rand+1); % distance ranges from 1.5 to 3 m
+% %                 wpts{i}(k,:) = wpts{i}(k-1,:)+[saverand2*cos(saverand1) saverand2*sin(saverand1)];
+% %                 if ~( wpts{i}(k,1)>=26.5 || wpts{i}(k,1)<=-57.5 || wpts{i}(k,2)>=11.5 || wpts{i}(k,2)<=-11.5)
+% %                     break;
+% %                 end
+% %             end
+% %         end
+% %     end
+% % end
+% 
+% % gradual distance and angle trajectory
+% wpts{1} = [[5 -7];zeros(39,2)];
+% wpts{2} = [[5 7];zeros(39,2)];
+% for i = 1:ROS_MACE.N
+%     % towards negative x direction
+%     for k = 2:20
+%         wpts{i}(k,1) = [ wpts{i}(k-1,1)+(1+k*0.1)*cos(pi + (-1)^k*4*k/90*pi/2)];
+%         wpts{i}(k,2) = [ wpts{i}(k-1,2)+(1+k*0.1)*sin(pi + (-1)^k*4*k/90*pi/2)];
+%     end
+%     % towards positive x direction
+%     for k = 21:40
+%         wpts{i}(k,1) = [wpts{i}(k-1,1)+(1+(21-(k-20))*0.1)*cos((-1)^(k-20)*4*(k-20)/90*pi/2)];
+%         wpts{i}(k,2) = [wpts{i}(k-1,2)+(1+(21-(k-20))*0.1)*sin((-1)^(k-20)*4*(k-20)/90*pi/2)];
+%     end
+% end
+% 
+% captureRadius = 1;% 1.2;
+% % wptManager( ROS_MACE, wpts, captureRadius);
+% bundleManager( ROS_MACE, wpts, captureRadius);
+% disp('Press any key to land...')
+% pause;
+% land( ROS_MACE );
+% 
+% matFileName = ['F3CheckoutFlight_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
+% save(matFileName,'-v7.3');
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % Test: Two Quad Takeoff, bundle of gradual varying length and angle waypoinys with carrot chasing navigation, and Land
+% 
+% ROS_MACE.N = 2;
+% ROS_MACE.operationalAlt = [4 8]; % m
+% ROS_MACE.agentIDs = [1 2]; % m
+% ROS_MACE.agentIDtoIndex = zeros(1,max(ROS_MACE.agentIDs));
+% 
+% global agentStateHist
+% global agentTargetHist
+% 
+% ROS_MACE.deltaAhead = 1.2; % the look-ahead distance, tunable
+% 
+% for i = 1:1:length(ROS_MACE.agentIDs)
+%     ROS_MACE.agentIDtoIndex( ROS_MACE.agentIDs(i) ) = i;
+%     agentStateHist{i} = [];
+%     agentTargetHist{i} = [];
+% end
+% 
+% ROS_MACE = launchROS( ROS_MACE );
+% swarmState = sendDatumAndWaitForGPS( ROS_MACE );
+% armAndTakeoff( ROS_MACE );
+% disp('Press any key to launch waypoint mission...')
+% pause;
+% 
+% % gradual distance and angle trajectory
+% wpts{1} = [[5 -7];zeros(39,2)];
+% wpts{2} = [[5 7];zeros(39,2)];
+% for i = 1:ROS_MACE.N
+%     % towards negative x direction
+%     for k = 2:20
+%         wpts{i}(k,1) = [ wpts{i}(k-1,1)+2*(1+k*0.1)*cos(pi + (-1)^k*4*k/90*pi/2)];
+%         wpts{i}(k,2) = [ wpts{i}(k-1,2)+2*(1+k*0.1)*sin(pi + (-1)^k*4*k/90*pi/2)];
+%     end
+%     % towards positive x direction
+%     for k = 21:40
+%         wpts{i}(k,1) = [wpts{i}(k-1,1)+2*(1+(21-(k-20))*0.1)*cos((-1)^(k-20)*4*(k-20)/90*pi/2)];
+%         wpts{i}(k,2) = [wpts{i}(k-1,2)+2*(1+(21-(k-20))*0.1)*sin((-1)^(k-20)*4*(k-20)/90*pi/2)];
+%     end
+% end
+% 
+% captureRadius = 1;% 1.2;
+% 
+% bundleManagerCarrotChasing( ROS_MACE, wpts, captureRadius);
+% disp('Press any key to land...')
+% pause;
+% land( ROS_MACE );
+% 
+% matFileName = ['F3CheckoutFlight_' datestr(now,'dd_mmm_yyyy_HHMMSS') '.mat']
+% save(matFileName,'-v7.3');
+
 % % % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % % % Test: Two Quad Takeoff, 'Follow the Leader' Wpt Mission, and Land
 % % % Test: Two Quad Takeoff, Wpt Mission, and Land

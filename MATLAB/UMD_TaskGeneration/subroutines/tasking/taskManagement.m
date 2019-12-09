@@ -2,11 +2,11 @@ function [swarmState] = taskManagement(swarmState, swarmModel, swarmWorld)
 
 % task management
 switch swarmModel.taskAllocation
-    case {'stepwiseHungarian','stepwiseHungarian_max','stepwiseHungarian_2ndOrder','stepwiseHungarian_unique'}
+    case {'stepwiseHungarian_unique'}
         for i = 1:1:swarmModel.N
             xi = [ swarmState.x(4*i-3); swarmState.x(4*i-2); swarmState.x(4*i-1); swarmState.x(4*i)];
             xd = [ swarmState.xd(i) swarmState.yd(i) ];
-            if ( norm([xi(1) xi(2)] - xd) <= swarmModel.Rsense/10 ) && (swarmState.wptIndex(i) < length(swarmState.wptList(i,:)))
+            if ( norm([xi(1) xi(2)] - xd) <= swarmModel.Rsense/3*2 ) && (swarmState.wptIndex(i) < length(swarmState.wptList(i,:)))
                 swarmState.wptIndex(i) = swarmState.wptIndex(i)+1;
                 swarmState.xd(i) = swarmWorld.cellCenterOfMass(swarmState.wptList(i,swarmState.wptIndex(i)),1);
                 swarmState.yd(i) = swarmWorld.cellCenterOfMass(swarmState.wptList(i,swarmState.wptIndex(i)),2);

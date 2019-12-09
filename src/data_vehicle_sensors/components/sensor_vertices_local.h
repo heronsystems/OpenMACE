@@ -6,7 +6,8 @@
 #include <cmath>
 
 #include "data/i_topic_component_data_object.h"
-#include "data_generic_state_item/state_local_position.h"
+
+#include "base/pose/cartesian_position_2D.h"
 
 namespace DataVehicleSensors
 {
@@ -24,13 +25,12 @@ public:
     SensorVertices_Local(const std::string &sensorName);
 
 public:
-    std::vector<DataState::StateLocalPosition> getSensorVertices() const;
-    void setSensorVertices(const std::vector<DataState::StateLocalPosition> &verticeVector);
+    std::vector<mace::pose::CartesianPosition_2D> getSensorVertices() const;
+    void setSensorVertices(const std::vector<mace::pose::CartesianPosition_2D> &verticeVector);
 
 private:
     std::string sensorName;
-    Data::CoordinateFrameType coordinateFrame;
-    std::vector<DataState::StateLocalPosition> verticeLocations;
+    std::vector<mace::pose::CartesianPosition_2D> verticeLocations;
 };
 
 } //end of namespace DataVehicleSensors

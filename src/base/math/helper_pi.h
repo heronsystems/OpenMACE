@@ -2,6 +2,7 @@
 #define HELPER_PI_H
 
 #define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <cstddef>
 
@@ -9,6 +10,10 @@ namespace mace
 {
 namespace math
 {
+
+template <typename T> int sgn(T val) {
+    return (T(0) < val) - (val < T(0));
+}
 
 /** Modifies the given angle to translate it into the [0,2pi[ range.
   * \note Take care of not instancing this template for integer numbers, since
@@ -57,6 +62,43 @@ inline T angDistance(T from, T to)
         else if (d < -M_PI)
                 d += 2. * M_PI;
         return d;
+}
+
+template<class T>
+inline T correctForAcuteAngle(const T &value)
+{
+    double acuteAngle = 0.0;
+    if(value <= M_PI_2)
+        acuteAngle = value;
+    else if((value > M_PI_2) && (value <= M_PI))
+        acuteAngle = M_PI - value;
+    else if((value > M_PI) && (value <= (3 * M_PI / 2)))
+        acuteAngle = value - M_PI;
+    else
+        acuteAngle = (2*M_PI) - value;
+
+    return acuteAngle;
+}
+
+template<class T>
+inline T correctSignFromPolar(T &xValue, T &yValue, const T &polarValue )
+{
+    if(polarValue <= M_PI_2)
+    {
+        xValue = 1.0 * xValue; yValue = 1.0 * yValue; //we dont have to change the signs as its in the 1st quadrant
+    }
+    else if((polarValue > M_PI_2) && (polarValue <= M_PI))
+    {
+        xValue = -1.0 * xValue; yValue = 1.0 * yValue; //we have to change the signs of the x component in the 2nd quadrant
+    }
+    else if((polarValue > M_PI) && (polarValue <= (3 * M_PI / 2)))
+    {
+        xValue = -1.0 * xValue; yValue = -1.0 * yValue; //we have to change the signs of the x and y components as its in the 3rd quadrant
+    }
+    else
+    {
+        xValue = 1.0 * xValue; yValue = -1.0 * yValue; //we have to change the signs of the y component as its in the 4th quadrant
+    }
 }
 
 template <class T>

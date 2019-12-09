@@ -1,6 +1,8 @@
 #ifndef STATE_FLIGHT_H
 #define STATE_FLIGHT_H
 
+#include <mavlink.h>
+
 #include "abstract_root_state.h"
 
 #include "module_vehicle_MAVLINK/controllers/commands/command_rtl.h"

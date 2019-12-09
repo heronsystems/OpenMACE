@@ -1,0 +1,18 @@
+# CMD_DYNAMIC_ORIENTATION_EULER
+# The vehicle will fly based on this dynamic target information. 
+
+time    timestamp
+uint8   vehicleID
+uint8   commandID
+uint16  bitmask
+
+float64 roll
+float64 pitch
+float64 yaw
+
+float64 thrust
+
+---
+bool    success
+
+

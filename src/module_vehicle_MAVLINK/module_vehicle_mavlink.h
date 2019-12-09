@@ -34,8 +34,6 @@
 #include "module_vehicle_MAVLINK/controllers/commands/command_rtl.h"
 #include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
 
-#include "base_topic/vehicle_topics.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 #include "vehicle_object/mavlink_vehicle_object.h"
@@ -98,6 +96,11 @@ public:
         std::shared_ptr<MaceCore::ModuleParameterStructure> moduleSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
         moduleSettings->AddTerminalParameters("AirborneInstance", MaceCore::ModuleParameterTerminalTypes::BOOLEAN, true);
         structure.AddNonTerminal("ModuleParameters", moduleSettings, true);
+
+        std::shared_ptr<MaceCore::ModuleParameterStructure> localPositionSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+        localPositionSettings->AddTerminalParameters("TransformAltitude", MaceCore::ModuleParameterTerminalTypes::BOOLEAN, true);
+        structure.AddNonTerminal("LocalPositionParameters", localPositionSettings, true);
+
         structure.AddTerminalParameters("ID", MaceCore::ModuleParameterTerminalTypes::INT, false);
 
         return std::make_shared<MaceCore::ModuleParameterStructure>(structure);
@@ -115,6 +118,12 @@ public:
         {
             std::shared_ptr<MaceCore::ModuleParameterValue> moduleSettings = params->GetNonTerminalValue("ModuleParameters");
             airborneInstance = moduleSettings->GetTerminalValue<bool>("AirborneInstance");
+        }
+
+        if(params->HasNonTerminal("LocalPositionParameters"))
+        {
+            std::shared_ptr<MaceCore::ModuleParameterValue> localPositionSettings = params->GetNonTerminalValue("LocalPositionParameters");
+            transformToSwarmAltitude = localPositionSettings->GetTerminalValue<bool>("TransformAltitude");
         }
 
         if(params->HasTerminal("ID"))
@@ -139,24 +148,6 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///              MACE COMMANDS
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //!
-    //! \brief Command_SystemArm Command an ARM/DISARM action
-    //! \param vehicleArm Arm action
-    //!
-    virtual void Command_SystemArm(const CommandItem::ActionArm &vehicleArm)
-    {
-        UNUSED(vehicleArm);
-    }
-
-    //!
-    //!= \brief Command_ChangeSystemMode Command a CHANGE MODE action
-    //! \param vehicleMode Mode to change to
-    //!
-    virtual void Command_ChangeSystemMode(const CommandItem::ActionChangeMode &vehicleMode)
-    {
-        UNUSED(vehicleMode);
-    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +217,7 @@ public:
         UNUSED(vehicleID);
     }
 
-    virtual void UpdateDynamicMissionQueue(const TargetItem::DynamicMissionQueue &queue)
+    virtual void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue)
     {
         UNUSED(queue);
     }
@@ -279,7 +270,7 @@ public:
     //! \param systemID Vehicle ID generating the vehicle home data
     //! \param home Vehicle home position data
     //!
-    virtual void cbi_VehicleHome(const int &systemID, const CommandItem::SpatialHome &home)
+    virtual void cbi_VehicleHome(const int &systemID, const command_item::SpatialHome &home)
     {
     //    std::stringstream buffer;
     //    buffer << home;
@@ -371,7 +362,7 @@ private:
 protected:
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_VehicleMissionTopic;
 
-    BaseTopic::VehicleTopics m_VehicleTopics;
+    //BaseTopic::VehicleTopics m_VehicleTopics;
 
 protected:
     //!
@@ -380,11 +371,12 @@ protected:
     bool airborneInstance = false;
 
 
+    bool transformToSwarmAltitude = true;
+
     //!
     //! \brief m_ControllersCollection
     //!
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> m_ControllersCollection;
-
 
 };
 

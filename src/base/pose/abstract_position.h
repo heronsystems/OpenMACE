@@ -1,285 +1,206 @@
 #ifndef ABSTRACT_POSITION_H
 #define ABSTRACT_POSITION_H
+#include <QJsonObject>
 
-#include "base/misc/abstract_data.h"
-#include "coordinate_frame.h"
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 
-using namespace mace::misc::details;
+#include <sstream>
+#include <iostream>
+#include <exception>
+
+#include "mace.h"
+
+#include "common/common.h"
+#include "common/class_forward.h"
+#include "base/math/math_components.h"
+
+#include "../misc/coordinate_frame_components.h"
+
 
 namespace mace{
 namespace pose{
 
-template <class T, class DIM>
-class AbstractPosition: public PositionTypeHelper<T,DIM>
+MACE_CLASS_FORWARD(Position);
+
+class Position : public Kinematic_BaseInterface
 {
 public:
-    enum class PositionType{
-        CARTESIAN = 0,
-        GEODETIC = 1,
-        UNKNOWN = 2
+    enum TYPEMASK_POSITION : uint16_t
+    {
+        POSITION_VALID = 0,
+        IGNORE_X_DIMENSION = 1,
+        IGNORE_Y_DIMENSION = 2,
+        IGNORE_Z_DIMENSION = 4
     };
 
 public:
-    virtual ~AbstractPosition() = default;
-
-    AbstractPosition(const PositionType &desiredType, const CoordinateFrame &desiredFrame)
-    {
-        this->type = desiredType;
-        this->frame = desiredFrame;
-    }
-
-    AbstractPosition(const AbstractPosition &copy)
-    {
-        this->type = copy.type;
-        this->frame = copy.frame;
-        this->data = copy.data;
-    }
-
-    AbstractPosition* getAbstractClone() const
-    {
-        return new AbstractPosition(*this);
-    }
-
-    AbstractPosition& operator = (const AbstractPosition &copy)
-    {
-        this->type = copy.type;
-        this->frame = copy.frame;
-        this->data = copy.data;
-        return *this;
-    }
+    static const uint16_t ignoreAllPositions = IGNORE_X_DIMENSION|IGNORE_Y_DIMENSION|IGNORE_Z_DIMENSION;
 
 public:
+    //!
+    //! \brief Position
+    //! \param posName
+    //!
+    Position(const std::string &posName = "Position Object");
 
     //!
-    //! \brief getCoordinateFrame
-    //! \return
+    //! \brief Position
+    //! \param copy
     //!
-    CoordinateFrame getCoordinateFrame() const
+    Position(const Position &copy);
+
+    virtual ~Position() override = default;
+
+    /** Interface imposed via Kinemnatic_BaseInterace */
+    KinematicTypes getKinematicType() const override
     {
-        return frame;
+        return KinematicTypes::POSITION;
     }
 
-    //!
-    //! \brief getPositionType
-    //! \return
-    //!
-    PositionType getPositionType() const
+    /** End of interface imposed via Kinemnatic_BaseInterace */
+
+    virtual void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) = 0;
+
+    virtual void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) = 0;
+
+public:
+    virtual Eigen::VectorXd getDataVector() const = 0;
+
+    bool isAnyPositionValid() const
     {
-        return type;
+        return (dimensionMask^ignoreAllPositions) > 0 ? true : false;
     }
 
-    //!
-    //! \brief is3D
-    //! \return
-    //!
-    bool is3D() const
+    virtual bool areAllPositionsValid() const
     {
-        if(mace::misc::details::PositionTypeHelper<T,DIM>::static_size > 2)
+        if(dimensionMask ==0)
             return true;
         return false;
     }
 
-    virtual bool hasBeenSet() const = 0;
-
-    //!
-    //! \brief distanceFromOrigin
-    //! \return
-    //!
-    virtual double distanceFromOrigin() const = 0;
-
-    //!
-    //! \brief polarBearingFromOrigin
-    //! \return
-    //!
-    virtual double polarBearingFromOrigin() const = 0;
-
-    //!
-    //! \brief elevationFromOrigin
-    //! \return
-    //!
-    virtual double elevationFromOrigin() const
+    virtual bool areTranslationalComponentsValid() const
     {
-        return 0.0;
+        bool validTranslation = false;
+        if((this->dimensionMask&IGNORE_X_DIMENSION) == 0)
+            validTranslation = true;
+        else if((this->dimensionMask&IGNORE_Y_DIMENSION) == 0)
+            validTranslation = true;
+        return validTranslation;
     }
 
-    //!
-    //! \brief distanceBetween2D
-    //! \param position
-    //! \return
-    //!
-    virtual double distanceBetween2D(const T &position) const = 0;
-
-    //!
-    //! \brief distanceTo
-    //! \param position
-    //! \return
-    //!
-    virtual double distanceTo(const T &position) const = 0;
-
-    //!
-    //! \brief bearingTo
-    //! \param position
-    //! \return
-    //!
-    virtual double polarBearingTo(const T &position) const = 0;
-
-    //!
-    //! \brief compassBearingTo
-    //! \param position
-    //! \return
-    //!
-    virtual double compassBearingTo(const T &position) const = 0;
-
-    //!
-    //! \brief newPosition
-    //! \param distance
-    //! \param bearing
-    //! \return
-    //!
-    virtual T newPositionFromPolar(const double &distance, const double &bearing) const = 0;
-
-    //!
-    //! \brief newPosition
-    //! \param distance
-    //! \param bearing
-    //! \return
-    //!
-    virtual T newPositionFromCompass(const double &distance, const double &bearing) const = 0;
-
-    virtual void applyPositionalShiftFromPolar(const double &distance, const double &bearing)  = 0;
-
-    virtual void applyPositionalShiftFromCompass(const double &distance, const double &bearing)  = 0;
-
-
-protected:
-    //!
-    //! \brief setCoordinateFrame
-    //! \param desiredFrame
-    //!
-    void setCoordinateFrame(const CoordinateFrame &desiredFrame)
-    {
-        this->frame = desiredFrame;
-    }
-
-    //!
-    //! \brief setPositionalType
-    //! \param desiredType
-    //!
-    void setPositionalType(const PositionType &desiredType)
-    {
-        this->type = desiredType;
-    }
-
-    /** Relational Operators */
 public:
+    virtual void updateQJSONObject(QJsonObject &obj) const = 0;
+
+public:
+    //!
+    //! \brief setName
+    //! \param nameString
+    //!
+    void setName(const std::string &nameString);
 
     //!
-    //! \brief operator <
-    //! \param rhs
+    //! \brief getName
     //! \return
     //!
-    bool operator < (const AbstractPosition &rhs) const
+    std::string getName() const;
+
+    //!
+    //! \brief getExplicitCoordinateFrame
+    //! \return
+    //!
+    virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
+
+    virtual mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const = 0;
+
+public:
+    /**
+     *
+     */
+    template <class T>
+    const T *positionAs() const
     {
-        if(this->data >= rhs.data)
+        //ensure that we are attempting to cast it to a type of state
+        return static_cast<const T *>(this);
+    }
+
+    /**
+     *
+     */
+    template <class T>
+    T *positionAs()
+    {
+        //ensure that we are attempting to cast it to a type of state
+        return static_cast<T *>(this);
+    }
+
+    /**
+     * @brief getClone
+     * @return
+     */
+    virtual Position* getPositionalClone() const = 0;
+
+    /**
+     * @brief getClone
+     * @param state
+     */
+    virtual void getPositionalClone(Position** position) const = 0;
+
+
+public:
+    Position& operator = (const Position &rhs)
+    {
+        this->name = rhs.name;
+        this->dimension = rhs.dimension;
+        this->dimensionMask = rhs.dimensionMask;
+        return *this;
+    }
+
+    bool operator == (const Position &rhs) const
+    {
+        if(this->dimension != rhs.dimension){
             return false;
+        }
+        if(this->name != rhs.name){
+            return false;
+        }
+        if(this->dimensionMask != rhs.dimensionMask){
+            return false;
+        }
         return true;
     }
 
-    //!
-    //! \brief operator >=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator >= (const AbstractPosition &rhs) const
+    bool operator !=(const Position &rhs) const
     {
-        return !(*this < rhs);
-    }
-
-    //!
-    //! \brief operator >
-    //! \param rhs
-    //! \return
-    //!
-    bool operator > (const AbstractPosition &rhs) const
-    {
-        if(this->data <= rhs.data)
-            return false;
-        return true;
-    }
-
-    //!
-    //! \brief operator <=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator <= (const AbstractPosition &rhs) const
-    {
-        return !(*this > rhs);
-    }
-
-    //!
-    //! \brief operator ==
-    //! \param rhs
-    //! \return
-    //!
-    bool operator == (const AbstractPosition &rhs) const
-    {
-        if(this->data != rhs.data){
-            return false;
-        }
-        if(this->frame != rhs.frame){
-            return false;
-        }
-        if(this->type != rhs.type){
-            return false;
-        }
-        return true;
-    }
-
-    //!
-    //! \brief operator !=
-    //! \param rhs
-    //! \return
-    //!
-    bool operator != (const AbstractPosition &rhs) const {
         return !(*this == rhs);
     }
 
-    /** Assignment Operators */
 public:
-
     //!
-    //! \brief operator +=
-    //! \param that
+    //! \brief printPositionalInfo
     //! \return
     //!
-    AbstractPosition& operator += (const AbstractPosition &rhs)
-    {
-        this->data += rhs.data;
-        return *this;
-    }
+    virtual std::string printPositionalInfo() const = 0;
 
     //!
-    //! \brief operator -=
-    //! \param that
-    //! \return
+    //! \brief printPositionLog
+    //! \param os
     //!
-    AbstractPosition& operator -= (const AbstractPosition &rhs)
+    virtual void printPositionLog(std::stringstream &stream) const
     {
-        this->data -= rhs.data;
-        return *this;
+        stream << "POS|" <<name<<"|"<<std::to_string(dimension)<<"|"<<CoordinateFrameToString(this->getExplicitCoordinateFrame())<<"|";
+        stream << printPositionalInfo();
     }
 
 protected:
-    CoordinateFrame frame = CoordinateFrame::CF_UNKNOWN;
-    PositionType type = PositionType::UNKNOWN;
-
-    DIM data;
+    std::string name;
 };
 
 
 
-} //end of namespace pose
-} //end of namespace mace
+
+
+} // end of namespace pose
+} // end of namespace mace
 
 #endif // ABSTRACT_POSITION_H

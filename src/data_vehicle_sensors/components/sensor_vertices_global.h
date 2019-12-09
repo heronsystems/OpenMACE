@@ -6,7 +6,8 @@
 #include <cmath>
 
 #include "data/i_topic_component_data_object.h"
-#include "data_generic_state_item/state_global_position.h"
+
+#include "base/pose/geodetic_position_2D.h"
 
 namespace DataVehicleSensors
 {
@@ -23,13 +24,12 @@ public:
     SensorVertices_Global(const std::string &sensorName);
 
 public:
-    std::vector<DataState::StateGlobalPosition> getSensorVertices() const;
-    void setSensorVertices(const std::vector<DataState::StateGlobalPosition> &verticeVector);
+    std::vector<mace::pose::GeodeticPosition_2D> getSensorVertices() const;
+    void setSensorVertices(const std::vector<mace::pose::GeodeticPosition_2D> &verticeVector);
 
 private:
     std::string sensorName;
-    Data::CoordinateFrameType coordinateFrame;
-    std::vector<DataState::StateGlobalPosition> verticeLocations;
+    std::vector<mace::pose::GeodeticPosition_2D> verticeLocations;
 };
 
 } //end of namespace DataVehicleSensors

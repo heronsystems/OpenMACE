@@ -31,7 +31,7 @@ double TSP_GreedyNearestNeighbor<T>::computeTourLength(const std::vector<T*> tou
     if(tourSize > 1){
         for(size_t i = 0; i < (tourSize - 1); i++)
         {
-            tourCost += tour[i]->distanceTo(*tour[i+1]);
+            tourCost += tour[i]->distanceTo(tour[i+1]);
         }
     }
     return tourCost;
@@ -62,7 +62,7 @@ double TSP_GreedyNearestNeighbor<T>::executeTSP(const T &start, std::vector<T> &
             //compute the cost to go from the current point to all the remaining points in the list
             //in this case the cost is just the euclidian distance as defined by the distance
             //function from the abstract position class.
-            double distanceCost = tour[baseIndex].distanceTo(*siteList[i]);
+            double distanceCost = tour[baseIndex].distanceTo(siteList[i]);
             if(distanceCost < currentMinCost)
             {
                 currentMinCost = distanceCost;
@@ -86,7 +86,7 @@ void TSP_GreedyNearestNeighbor<T>::logTour(const std::vector<T*> tour)
     for(unsigned int i = 0; i < size; i++)
     {
         std::stringstream buffer;
-        buffer << *tour[i];
+        buffer << tour[i];
         mLog->info(buffer.str());
     }
 }
@@ -124,7 +124,7 @@ std::vector<T*> TSP_GreedyNearestNeighbor<T>::copy_sites(std::vector<T> &tour)
 }
 
 
-template class TSP_GreedyNearestNeighbor<pose::Position<pose::CartesianPosition_2D>>;
+template class TSP_GreedyNearestNeighbor<pose::CartesianPosition_2D>;
 
 
 } //end of namespace planners

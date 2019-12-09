@@ -15,7 +15,7 @@ class Callback : public ICallback {
 public:
     Callback() {
         static_assert(std::is_base_of<ATData::IATData, T>::value, "T must be a descendant of ATDATA::IATDATA");
-        m_Func = NULL;
+        m_Func = nullptr;
     }
 
     Callback(const std::function<void(int, const T&)> &func) {
@@ -32,7 +32,7 @@ public:
     }
 
     virtual bool IsSet() const {
-        if(m_Func == NULL) {
+        if(m_Func == nullptr) {
             return false;
         }
         return true;

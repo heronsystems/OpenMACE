@@ -1,23 +1,23 @@
-function [ outputArgument ] = positionCallback( subscriber, msg )
+function [ outputArgument ] = positionCallback( ROS_MACE, msg)
 %   ROS UPDATE_POSITION message with properties:
 % 
-%     MessageType: 'mace_matlab/UPDATE_POSITION'
+%     MessageType: 'mace_matlab_msgs/UPDATE_LOCAL_POSITION'
 %       Timestamp: [1×1 Time]
 %       VehicleID: 0
+%           Frame: 0 (newly added, 2019 Oct.)
 %        Northing: 0
 %         Easting: 0
 %        Altitude: 0
 %      NorthSpeed: 0
 %       EastSpeed: 0
 
+
     global tStart;
-    global agentStateHist;
-    colors=['rbkmgcy'];
+
+    colors=['rbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcyrbkmgcy'];
     time = toc(tStart);
-    if ( ~isempty(msg) )
-    figure(1)
-    % plot altitude
-    subplot(2,1,1)    
+    if ( ~isempty(msg) )   
+    subplot(ROS_MACE.altitude);
     plot(time,msg.Altitude,[colors(msg.VehicleID) 'o']);
     hold on;
     if ( time > 30 )
@@ -26,14 +26,18 @@ function [ outputArgument ] = positionCallback( subscriber, msg )
     drawnow;
     
     % plot position
+%     [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
     [xf3, yf3] = ENUtoF3(msg.Easting, msg.Northing);
-    subplot(2,1,2)  
+    subplot(ROS_MACE.taskAndLocation);
     plot(xf3,yf3,[colors(msg.VehicleID) 'o']);
     hold on;
-    drawnow;
     
+    drawnow;
+       
     % store the new location along with time
-    agentStateHist{msg.VehicleID} = [agentStateHist{msg.VehicleID} [time;xf3;yf3;msg.Altitude]];
+    % uncomment the following line for checkout flight (Sheng)
+%     global agentStateHist;
+%     agentStateHist{msg.VehicleID} = [agentStateHist{msg.VehicleID} [time;xf3;yf3;msg.Altitude]];
     end
 end
     

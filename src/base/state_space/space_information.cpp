@@ -5,9 +5,9 @@ namespace state_space {
 
 //consider std::move of the shared pointer here
 SpaceInformation::SpaceInformation(const StateSpacePtr &space):
-    m_stateSpace(space), isSetup(false),
+    m_stateSpace(space),
     m_stateValidCheck(nullptr), m_motionValidCheck(nullptr),
-    m_stateSampler(nullptr)
+    m_stateSampler(nullptr), isSetup(false)
 {
 
 }
@@ -50,6 +50,8 @@ double SpaceInformation::distanceBetween(const State *lhs, const State *rhs) con
 
 double SpaceInformation::getTraversalCost(const State *begin, const State *end, const bool &neighbor) const
 {
+    UNUSED(neighbor);
+
     return m_stateSpace->traversalCost(begin,end);
 }
 

@@ -1,6 +1,8 @@
 #ifndef CONTROLLER_GUIDED_MISSION_ITEM_H
 #define CONTROLLER_GUIDED_MISSION_ITEM_H
 
+#include <mavlink.h>
+
 #include "common/common.h"
 
 #include "data_generic_command_item/spatial_items/spatial_waypoint.h"
@@ -8,12 +10,12 @@
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_finish.h"
 
-#include "mavlink.h"
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
 
 #include "module_vehicle_MAVLINK/controllers/common.h"
+#include "module_vehicle_MAVLINK/mavlink_coordinate_frames.h"
 
-namespace MAVLINKVehicleControllers {
+namespace MAVLINKUXVControllers {
 
 template <typename T>
 using GuidedMISend = Controllers::ActionSend<
@@ -73,15 +75,15 @@ protected:
     }
 
 protected:
-    void FillMissionItem(const CommandItem::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem);
+    void FillMissionItem(const command_item::SpatialWaypoint &commandItem, mavlink_mission_item_t &mavlinkItem);
 
     mavlink_mission_item_t initializeMAVLINKMissionItem()
     {
         mavlink_mission_item_t missionItem;
         missionItem.autocontinue = 1;
-        missionItem.command = 0;
+        missionItem.command = MAV_CMD_NAV_WAYPOINT;
         missionItem.current = 2;
-        missionItem.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        missionItem.frame = MAV_FRAME_GLOBAL;
         missionItem.param1 = 0.0;
         missionItem.param2 = 0.0;
         missionItem.param3 = 0.0;
@@ -92,7 +94,7 @@ protected:
         missionItem.x = 0.0;
         missionItem.y = 0.0;
         missionItem.z = 0.0;
-        //missionItem.mission_type = MAV_MISSION_TYPE_AUTO;
+        missionItem.mission_type = 0;
 
         return missionItem;
     }

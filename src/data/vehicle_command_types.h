@@ -22,7 +22,7 @@ inline std::string CommandTypeToString(const VehicleCommandTypes &cmdType) {
     case VehicleCommandTypes::MISSION:
         return "MISSION";
     default:
-        throw std::runtime_error("Unknown command type seen");
+        throw std::runtime_error("Unknown command type seen in CommandTypeToString method");
     }
 }
 
@@ -34,7 +34,7 @@ inline VehicleCommandTypes CommandTypeFromString(const std::string &str) {
     if(str == "MISSION")
         return VehicleCommandTypes::MISSION;
 
-    throw std::runtime_error("Unknown command type seen");
+    throw std::runtime_error("Unknown command type seen in CommandTypeToString method");
 }
 
 }

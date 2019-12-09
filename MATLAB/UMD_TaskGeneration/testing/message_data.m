@@ -17,7 +17,7 @@
 % mace_matlab/UPDATE_POSITION                                    
 % mace_matlab/UPDATE_VEHICLE_TARGET 
 
-positionSub = rossubscriber('/MACE/UPDATE_POSITION', @positionCallback, 'BufferSize', 10);
+positionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION', @positionCallback, 'BufferSize', 10);
 %     MessageType: 'mace_matlab/UPDATE_POSITION'
 %       Timestamp: [1×1 Time]
 %       VehicleID: 0

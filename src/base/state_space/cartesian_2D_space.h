@@ -138,8 +138,8 @@ public:
 
     State* copyState(const State* state) const override
     {
-        const pose::CartesianPosition_2D* castState = state->as<const pose::CartesianPosition_2D>();
-        state_space::State* newState = castState->getClone();
+        const pose::CartesianPosition_2D* castState = state->stateAs<const pose::CartesianPosition_2D>();
+        state_space::State* newState = castState->getStateClone();
         return newState;
     }
 

@@ -8,9 +8,11 @@
 #include <stdint.h>
 #include <chrono>
 #include <functional>
+#include <chrono>
+
+#include "mace.h"
 
 #include "spdlog/spdlog.h"
-#include "mace.h"
 
 #include "common/common.h"
 
@@ -26,9 +28,6 @@
 #include "data_generic_item/data_generic_item_components.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
 
-#include "data_generic_state_item/state_item_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
-
 #include "data_generic_command_item/command_item_components.h"
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
@@ -43,7 +42,7 @@
 #include "controllers/commands/command_mission_item.h"
 #include "controllers/commands/command_rtl.h"
 #include "controllers/commands/command_takeoff.h"
-#include "controllers/commands/controller_goto.h"
+#include "controllers/commands/command_execute_spatial_action.h"
 #include "controllers/controller_system_mode.h"
 #include "controllers/controller_home.h"
 #include "controllers/controller_mission.h"
@@ -58,11 +57,7 @@
 #include "data/topic_components/topic_component_void.h"
 #include "data/topic_components/topic_component_string.h"
 
-#include "base_topic/vehicle_topics.h"
-
-#include <chrono>
-
-
+#include "base_topic/base_topic_components.h"
 
 class MODULE_EXTERNAL_LINKSHARED_EXPORT ModuleExternalLink :
         public MaceCore::IModuleCommandExternalLink,
@@ -83,7 +78,7 @@ private:
     {
         if(vehicleID == 0)
         {
-            std::vector<int> vehicleIDs;
+            std::vector<unsigned int> vehicleIDs;
             this->getDataObject()->GetLocalVehicles(vehicleIDs);
             for(auto it = vehicleIDs.begin() ; it != vehicleIDs.end() ; ++it)
             {
@@ -140,7 +135,7 @@ public:
 
     void ExternalModuleRemoved(const CommsMACE::Resource &resource);
 
-    std::string createLog(const int &systemID);
+    std::string createLog(const unsigned int &systemID);
 
     virtual void TransmitMessage(const mace_message_t &msg, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) const;
 
@@ -161,8 +156,8 @@ public:
 
 
     void ReceivedHome(const MaceCore::ModuleCharacteristic &moduleAppliedTo, const SpatialHome &home);
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchKeyReturn FetchHomeFromKey(const OptionalParameter<MaceCore::ModuleCharacteristic> &key);
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>::FetchModuleReturn FetchAllHomeFromModule(const OptionalParameter<MaceCore::ModuleCharacteristic> &module);
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchKeyReturn FetchHomeFromKey(const OptionalParameter<MaceCore::ModuleCharacteristic> &key);
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>::FetchModuleReturn FetchAllHomeFromModule(const OptionalParameter<MaceCore::ModuleCharacteristic> &module);
 
     void ReceivedCommand(const MaceCore::ModuleCharacteristic &sender, const AbstractCommandItem &command);
     void ReceivedGoToCommand(const MaceCore::ModuleCharacteristic &moduleFor, const AbstractCommandItem &command);
@@ -237,67 +232,77 @@ public:
     /// acknowledgement or an event to take place when calling these items.
     ////////////////////////////////////////////////////////////////////////////
 
+    void Command_SetGlobalOrigin(const Action_SetGlobalOrigin &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+
     //!
     //! \brief Command_GoTo
     //! \param command
     //! \param sender
     //!
-    virtual void Command_GoTo(const CommandGoTo &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void Command_ExecuteSpatialItem(const Action_ExecuteSpatialItem &goTo, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Request_FullDataSync
     //! \param targetSystem
     //!
-    virtual void Request_FullDataSync(const int &targetSystem, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
+    void Request_FullDataSync(const int &targetSystem, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
     //!
     //! \brief Command_ChangeVehicleArm
     //! \param vehicleArm
     //!
-    virtual void Command_SystemArm(const CommandItem::ActionArm &systemArm, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void Command_SystemArm(const command_item::ActionArm &systemArm, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Command_ChangeVehicleOperationalMode
     //! \param vehicleMode
     //!
-    virtual void Command_ChangeSystemMode(const CommandItem::ActionChangeMode &vehicleMode, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void Command_ChangeSystemMode(const command_item::ActionChangeMode &vehicleMode, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Command_RequestVehicleTakeoff
     //! \param vehicleTakeoff
     //!
-    virtual void Command_VehicleTakeoff(const CommandItem::SpatialTakeoff &vehicleTakeoff, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void Command_VehicleTakeoff(const command_item::SpatialTakeoff &vehicleTakeoff, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Command_Land
     //! \param command
     //!
-    virtual void Command_Land(const CommandItem::SpatialLand &vehicleLand, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void Command_Land(const command_item::SpatialLand &vehicleLand, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Command_ReturnToLaunch
     //! \param command
     //!
-    virtual void Command_ReturnToLaunch(const CommandItem::SpatialRTL &vehicleRTL, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void Command_ReturnToLaunch(const command_item::SpatialRTL &vehicleRTL, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
 
     //!
     //! \brief Command_MissionState
     //! \param command
     //!
-    virtual void Command_MissionState(const CommandItem::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void Command_MissionState(const command_item::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief Command_IssueGeneralCommand
     //! \param command
     //!
-    virtual void Command_IssueGeneralCommand(const std::shared_ptr<CommandItem::AbstractCommandItem> &command);
+    void Command_IssueGeneralCommand(const std::shared_ptr<command_item::AbstractCommandItem> &command) override;
+
+    //!
+    //! \brief Command_ExecuteDynamicTarget
+    //! \param command
+    //! \param sender
+    //!
+    void Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+
 
     //!
     //! \brief Command_EmitHeartbeat
     //! \param heartbeat
     //!
-    virtual void Command_EmitHeartbeat(const CommandItem::SpatialTakeoff &heartbeat);
+    virtual void Command_EmitHeartbeat(const command_item::SpatialTakeoff &heartbeat);
 
     /////////////////////////////////////////////////////////////////////////
     /// GENERAL MISSION EVENTS: This is implying for auto mode of the vehicle.
@@ -376,14 +381,14 @@ public:
     //! \brief Command_SetHomePosition
     //! \param vehicleHome
     //!
-    virtual void Command_SetHomePosition(const CommandItem::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
+    virtual void Command_SetHomePosition(const command_item::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /// The following are public virtual functions imposed from IModuleCommandExternalLink.
     ///////////////////////////////////////////////////////////////////////////////////////
     void NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
     virtual void NewlyAvailableOnboardMission(const MissionItem::MissionKey &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
-    virtual void NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
     virtual void NewlyAvailableMissionExeState(const MissionItem::MissionKey &missionKey);
     virtual void NewlyAvailableModule(const MaceCore::ModuleCharacteristic &module, const MaceCore::ModuleClasses &type);
     virtual void ReceivedMissionACK(const MissionItem::MissionACK &ack);
@@ -425,7 +430,7 @@ private:
     //! \param sender
     //! \param systemID
     //!
-    void CheckAndAddVehicle(const MaceCore::ModuleCharacteristic &sender, int systemID);
+    void CheckAndAddVehicle(const MaceCore::ModuleCharacteristic &sender, unsigned int systemID);
 
     void RequestRemoteResources()
     {
@@ -459,15 +464,13 @@ private:
     //! over the internal mace network. Thus, outbound transmissions will be relevant to the request of the
     //! system to which to it attached. It will be defaulted to match the GCS ID.
     //!
-    int associatedSystemID;
-    std::map<int,int> systemIDMap;
+    unsigned int associatedSystemID;
+    std::map<unsigned int,unsigned int> systemIDMap;
 
     std::shared_ptr<spdlog::logger> mLog;
 
-    MaceCore::SpooledTopic<DATA_GENERIC_VEHICLE_ITEM_TOPICS, DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    MaceCore::SpooledTopic<BASE_POSE_TOPICS, DATA_GENERIC_VEHICLE_ITEM_TOPICS> m_VehicleDataTopic;
     MaceCore::SpooledTopic<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
-
-    BaseTopic::VehicleTopics m_VehicleTopics;
 
 
 protected:

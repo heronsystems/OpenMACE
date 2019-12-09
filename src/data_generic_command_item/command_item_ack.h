@@ -7,17 +7,17 @@
 
 #include "command_item_type.h"
 
-namespace CommandItem {
+namespace command_item {
 
 class CommandItemACK
 {
 public:
     CommandItemACK();
-    CommandItemACK(const COMMANDITEM &cmdType, const Data::CommandACKType &codeType);
-    CommandItemACK(const int &systemOrigin, const COMMANDITEM &cmdType, const Data::CommandACKType &codeType, const int &systemTarget = 0);
+    CommandItemACK(const COMMANDTYPE &cmdType, const Data::CommandACKType &codeType);
+    CommandItemACK(const int &systemOrigin, const COMMANDTYPE &cmdType, const Data::CommandACKType &codeType, const int &systemTarget = 0);
 
 public:
-    COMMANDITEM getCommandType() const
+    COMMANDTYPE getCommandType() const
     {
         return this->cmd;
     }
@@ -36,7 +36,7 @@ public:
     }
 
 public:
-    void setCommandType(const COMMANDITEM &cmdType)
+    void setCommandType(const COMMANDTYPE &cmdType)
     {
         this->cmd = cmdType;
     }
@@ -85,7 +85,7 @@ public:
 
 public:
     //KEN TODO: add and originating component in order to direct this information rather than broadcast
-    COMMANDITEM cmd;
+    COMMANDTYPE cmd;
     Data::CommandACKType code;
     int originatingSystem;
     int targetSystem;

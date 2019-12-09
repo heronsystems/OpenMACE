@@ -22,26 +22,32 @@ fprintf('Waiting for GPS...\n');
 gpsAvailable = zeros(1,ROS_MACE.N);
 while( ~all(gpsAvailable) )
     msg = ROS_MACE.positionSub.LatestMessage;
-    positionCallback( ROS_MACE.positionSub, msg); 
+%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    positionCallback( ROS_MACE, msg); 
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( gpsAvailable(agentIndex) == 0 )
             gpsAvailable(agentIndex) = 1;
             fprintf('VehicleID %d GPS Available.\n', msg.VehicleID);
+            
+%             [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
+            fprintf('Vehicle location before arm and takeoff easting = %3.1f, northing = %3.1f\n',msg.Easting , msg.Northing);
+%             fprintf('Vehicle geo location before a and t lat = %f, long = %f\n',msg.Latitude,msg.Longitude);
             % each agent has states [x y xdot ydot]
             i = agentIndex;
             switch ROS_MACE.coordSys
                 case 'ENU'
                     swarmState.x0(4*i-3,1) = msg.Easting;
                     swarmState.x0(4*i-2,1) = msg.Northing;
-                    swarmState.x0(4*i-1,1) = -1; % unused for now
-                    swarmState.x0(4*i,1) = -1;
+                    swarmState.x0(4*i-1,1) = 0; % unused for now
+                    swarmState.x0(4*i,1) = 0;
                 case 'F3'
+%                     [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
                     [xF3, yF3] = ENUtoF3(msg.Easting, msg.Northing);
                     swarmState.x0(4*i-3,1) = xF3;
                     swarmState.x0(4*i-2,1) = yF3;
-                    swarmState.x0(4*i-1,1) = -1; % unused for now
-                    swarmState.x0(4*i,1) = -1;
+                    swarmState.x0(4*i-1,1) = 0; % unused for now
+                    swarmState.x0(4*i,1) = 0;
             end
         end
     end

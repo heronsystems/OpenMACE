@@ -1,15 +1,20 @@
 #include "guitomace.h"
 
-GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const BaseTopic::VehicleTopics *ptr) :
-    m_VehicleTopics(ptr),
+GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
-    m_sendPort(1234)
+    m_sendPort(1234),
+    goalSpace(nullptr),
+    m_goalSampler(nullptr)
 {
     m_parent = ptrRef;
+    goalSpace = std::make_shared<mace::state_space::Cartesian2DSpace>();
+    mace::state_space::Cartesian2DSpaceBounds bounds(-20,20,-10,10);
+    goalSpace->setBounds(bounds);
+
+    m_goalSampler = std::make_shared<mace::state_space::Cartesian2DSpace_Sampler>(goalSpace);
 }
 
-GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const BaseTopic::VehicleTopics *ptr, const QHostAddress &sendAddress, const int &sendPort) :
-    m_VehicleTopics(ptr),
+GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
     m_sendPort(sendPort)
 {
@@ -40,7 +45,7 @@ void GUItoMACE::setSendPort(const int &sendPort) {
 //!
 void GUItoMACE::getEnvironmentBoundary() {
     std::shared_ptr<const MaceCore::MaceData> data = m_parent->getDataObject();
-    std::vector<DataState::StateGlobalPosition> environmentVertices = data->GetEnvironmentBoundary();
+    std::vector<mace::pose::GeodeticPosition_2D> environmentVertices = data->GetEnvironmentBoundary();
 
     QJsonObject json;
     json["dataType"] = "EnvironmentBoundary";
@@ -51,7 +56,7 @@ void GUItoMACE::getEnvironmentBoundary() {
         QJsonObject obj;
         obj["lat"] = vertex.getLatitude();
         obj["lng"] = vertex.getLongitude();
-        obj["alt"] = vertex.getAltitude();
+        obj["alt"] = 0.0;
 
         verticies.push_back(obj);
     }
@@ -96,12 +101,14 @@ void GUItoMACE::getGlobalOrigin()
 //!
 void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::SpatialHome tmpHome;
+    command_item::SpatialHome tmpHome;
     tmpHome.setTargetSystem(vehicleID);
     QJsonObject position = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-    tmpHome.position->setX(position.value("lat").toDouble());
-    tmpHome.position->setY(position.value("lng").toDouble());
-    tmpHome.position->setZ(position.value("alt").toDouble());
+
+    mace::pose::GeodeticPosition_3D homePosition(position.value("lat").toDouble(),
+                                                 position.value("lng").toDouble(),
+                                                 position.value("alt").toDouble());
+    tmpHome.setPosition(&homePosition);
 
     std::stringstream buffer;
     buffer << tmpHome;
@@ -127,7 +134,7 @@ void GUItoMACE::setGlobalOrigin(const QJsonObject &jsonObj)
     origin.setAltitude(position.value("alt").toDouble());
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr) {
-        ptr->Event_SetGlobalOrigin(this, origin);
+        ptr->Event_SetGlobalOrigin(m_parent, origin);
     });
 }
 
@@ -153,11 +160,11 @@ void GUItoMACE::setEnvironmentVertices(const QJsonObject &jsonObj)
         mace::pose::GeodeticPosition_3D vertexGlobal(tmpLat,tmpLon,tmpAlt);
         mace::pose::CartesianPosition_3D vertexLocal3D;
 
-        if(origin.hasBeenSet()) {
-            mace::pose::DynamicsAid::GlobalPositionToLocal(origin,vertexGlobal,vertexLocal3D);
+        if(origin.isAnyPositionValid()) {
+            mace::pose::DynamicsAid::GlobalPositionToLocal(&origin,&vertexGlobal,&vertexLocal3D);
             mace::pose::CartesianPosition_2D vertexLocal2D(vertexLocal3D.getXPosition(),vertexLocal3D.getYPosition());
 
-            operationalBoundary.appendVertexItem(vertexLocal2D);
+            operationalBoundary.appendVertexItem(&vertexLocal2D);
         }
     }
 
@@ -184,23 +191,19 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
     std::cout << "Go here command issued" << std::endl;
 
     //Ken Fix: Target system should propogate or not exist at the mission item level using action/command logic
-    CommandItem::CommandGoTo cmdGoTo;
+    command_item::Action_ExecuteSpatialItem cmdGoTo;
     cmdGoTo.setTargetSystem(vehicleID);
 
-    CommandItem::SpatialWaypointPtr spatialAction = std::make_shared<CommandItem::SpatialWaypoint>(vehicleID);
+    command_item::SpatialWaypointPtr spatialAction = std::make_shared<command_item::SpatialWaypoint>(vehicleID);
 //    spatialAction->getPosition().setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
 
     QJsonObject vehicleCommand = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
 
-    Base3DPosition pos;
-    pos.setPosition3D(vehicleCommand.value("lon").toDouble(), vehicleCommand.value("lat").toDouble(), 10);
-    pos.setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-    spatialAction->setPosition(pos);
-//    spatialAction->getPosition().setX(vehicleCommand.value("lat").toDouble());
-//    spatialAction->getPosition().setY(vehicleCommand.value("lon").toDouble());
-//    spatialAction->getPosition().setZ(10);
-
-    cmdGoTo.setSpatialCommand(spatialAction);
+    mace::pose::GeodeticPosition_3D goPosition(vehicleCommand.value("lat").toDouble(),
+                                               vehicleCommand.value("lon").toDouble(),
+                                               10.0);
+    spatialAction->setPosition(&goPosition);
+    cmdGoTo.setSpatialAction(spatialAction);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
         ptr->Event_IssueCommandGoTo(m_parent, cmdGoTo);
@@ -214,17 +217,19 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
 //!
 void GUItoMACE::takeoff(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::SpatialTakeoff newTakeoff;
+    command_item::SpatialTakeoff newTakeoff;
     QJsonObject vehicleCommand = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
     QJsonObject position = vehicleCommand["takeoffPosition"].toObject();
     bool latLonFlag = vehicleCommand["latLonFlag"].toBool();
 
+    mace::pose::GeodeticPosition_3D takeoffPosition;
 
     if(latLonFlag) {
-        newTakeoff.position->setX(position.value("lon").toDouble());
-        newTakeoff.position->setY(position.value("lat").toDouble());
+        takeoffPosition.setLatitude(position.value("lat").toDouble());
+        takeoffPosition.setLongitude(position.value("lon").toDouble());
     }
-    newTakeoff.position->setZ(position.value("alt").toDouble());
+    takeoffPosition.setAltitude(position.value("alt").toDouble());
+    newTakeoff.setPosition(&takeoffPosition);
     newTakeoff.setTargetSystem(vehicleID);
 
     std::stringstream buffer;
@@ -235,34 +240,6 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonObject &jsonObj)
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
         ptr->Event_IssueCommandTakeoff(m_parent, newTakeoff);
     });
-
-    /*
-    std::shared_ptr<Data::NamedTopicComponentDataObject> data;
-    if(latLonFlag) {
-        data = std::make_shared<Data::TopicComponents::PositionGlobal>(
-                    position.value("alt").toDouble(),
-                    Data::ReferenceAltitude::REF_ALT_MSL,
-                    position.value("lat").toDouble(),
-                    position.value("lng").toDouble(),
-                    Data::ReferenceGeoCoords::REF_GEO_DEG;
-                );
-    }
-    else {
-        data = std::make_shared<Data::TopicComponents::Altitude>(
-                    position.value("alt").toDouble(),
-                    Data::ReferenceAltitude::REF_ALT_MSL
-                );
-    }
-
-    MaceCore::TopicDatagram topicDatagram;
-    m_VehicleTopics->m_CommandTakeoff.SetComponent(data, topicDatagram);
-    MaceCore::ModuleCharacteristic target;
-    target.ID = vehicleID;
-    target.Class = MaceCore::ModuleClasses::VEHICLE_COMMS;
-    m_parent->NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
-        ptr->NewTopicDataValues(this, m_VehicleDataTopic.Name(), systemID, MaceCore::TIME(), topicDatagram);
-    });
-    */
 }
 
 //!
@@ -280,7 +257,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "RTL") {
 //        mLogs->debug("Module Ground Station issuing command RTL to system " + std::to_string(vehicleID) + ".");
-        CommandItem::SpatialRTL rtlCommand;
+        command_item::SpatialRTL rtlCommand;
         rtlCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
 
@@ -290,7 +267,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "LAND") {
 //        mLogs->debug("Module Ground Station issuing land command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::SpatialLand landCommand;
+        command_item::SpatialLand landCommand;
         landCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
 
@@ -300,7 +277,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "AUTO_START") {
 //        mLogs->debug("Module Ground Station issuing mission start command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::ActionMissionCommand missionCommand;
+        command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionStart();
         missionCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
@@ -311,7 +288,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "AUTO_PAUSE") {
 //        mLogs->debug("Module Ground Station issuing mission pause command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::ActionMissionCommand missionCommand;
+        command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionPause();
         missionCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
@@ -322,7 +299,7 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
     }
     else if(jsonObj["vehicleCommand"] == "AUTO_RESUME") {
 //        mLogs->debug("Module Ground Station issuing mission resume command to system " + std::to_string(vehicleID) + ".");
-        CommandItem::ActionMissionCommand missionCommand;
+        command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionResume();
         missionCommand.setTargetSystem(vehicleID);
         // TODO: Set generating system and coordinate frame
@@ -337,52 +314,57 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
 
 void GUItoMACE::testFunction1(const int &vehicleID)
 {
-//    mLogs->debug("Module Ground Station saw a request on test function 1.");
 
-    MissionItem::MissionList missionList;
-    missionList.setMissionTXState(MissionItem::MISSIONSTATE::PROPOSED);
-    missionList.setMissionType(MissionItem::MISSIONTYPE::GUIDED);
-    missionList.setCreatorID(254);
-    missionList.setVehicleID(vehicleID);
-    missionList.initializeQueue(2);
+    command_item::Action_DynamicTarget newCommand;
+    newCommand.setTargetSystem(vehicleID);
+    newCommand.setOriginatingSystem(255);
+    command_target::DynamicTarget_Kinematic newTarget;
+    mace::pose::CartesianPosition_3D currentPositionTarget;
+    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_OFFSET_NED);
+    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+    currentPositionTarget.updatePosition(10,0,0);
+    newTarget.setPosition(&currentPositionTarget);
+//    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+//    currentVelocityTarget.setXVelocity(5.0);
+//    currentVelocityTarget.setYVelocity(0.0);
+//    currentVelocityTarget.setZVelocity(0.0);
+//    newTarget.setVelocity(&currentVelocityTarget);
 
-    std::shared_ptr<CommandItem::SpatialWaypoint> newWP = std::make_shared<CommandItem::SpatialWaypoint>();
-    newWP->position->setPosition3D(14,7.5,20.0);
-    newWP->setTargetSystem(vehicleID);
-    newWP->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
+    mace::pose::Rotation_2D yaw;
+    yaw.setPhi(M_PI_4);
+    newTarget.setYaw(&yaw);
 
-    std::shared_ptr<CommandItem::SpatialWaypoint> newWP1 = std::make_shared<CommandItem::SpatialWaypoint>();
-    newWP1->position->setPosition3D(0,0,10.0);
-    newWP1->setTargetSystem(vehicleID);
-    newWP1->position->setCoordinateFrame(Data::CoordinateFrameType::CF_LOCAL_ENU);
-
-//    std::shared_ptr<CommandItem::SpatialWaypoint> newWP1 = std::make_shared<CommandItem::SpatialWaypoint>();
-//    newWP1->position->setPosition3D(37.8907477,-76.8152985,65.0);
-//    newWP1->setTargetSystem(vehicleID);
-
-//    std::shared_ptr<CommandItem::SpatialWaypoint> newWP2 = std::make_shared<CommandItem::SpatialWaypoint>();
-//    newWP2->position->setPosition3D(37.8904852,-76.8152341,75.0);
-//    newWP2->setTargetSystem(vehicleID);
-
-//    std::shared_ptr<CommandItem::SpatialWaypoint> newWP3 = std::make_shared<CommandItem::SpatialWaypoint>();
-//    newWP3->position->setPosition3D(37.8905170,-76.8144804,85.0);
-//    newWP3->setTargetSystem(vehicleID);
-
-    missionList.replaceMissionItemAtIndex(newWP,0);
-    missionList.replaceMissionItemAtIndex(newWP1,1);
-//    missionList.replaceMissionItemAtIndex(newWP2,2);
-//    missionList.replaceMissionItemAtIndex(newWP3,3);
-
+    newCommand.setDynamicTarget(&newTarget);
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->GSEvent_UploadMission(this, missionList);
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
     });
 
 }
 
 void GUItoMACE::testFunction2(const int &vehicleID)
 {
+    command_item::Action_DynamicTarget newCommand;
+    newCommand.setTargetSystem(vehicleID);
+    newCommand.setOriginatingSystem(255);
+    command_target::DynamicTarget_Kinematic newTarget;
+    mace::pose::CartesianPosition_3D currentPositionTarget;
+    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_BODY_OFFSET_NED);
+    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+    currentPositionTarget.updatePosition(10,0,0);
+    newTarget.setPosition(&currentPositionTarget);
+//    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+//    currentVelocityTarget.setXVelocity(5.0);
+//    currentVelocityTarget.setYVelocity(0.0);
+//    currentVelocityTarget.setZVelocity(0.0);
+//    newTarget.setVelocity(&currentVelocityTarget);
+
+    mace::pose::Rotation_2D yaw;
+    yaw.setPhi(M_PI_4);
+    newTarget.setYaw(&yaw);
+
+    newCommand.setDynamicTarget(&newTarget);
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->RequestDummyFunction(this, vehicleID);
+        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
     });
 }
 
@@ -395,7 +377,7 @@ void GUItoMACE::getConnectedVehicles()
 //    mLogs->debug("Module Ground Station saw a request for getting connected vehicles.");
 
     std::shared_ptr<const MaceCore::MaceData> data = m_parent->getDataObject();
-    std::vector<int> vehicleIDs;
+    std::vector<unsigned int> vehicleIDs;
     data->GetAvailableVehicles(vehicleIDs);           
 
     QJsonArray ids;
@@ -458,7 +440,7 @@ void GUItoMACE::getVehicleHome(const int &vehicleID)
 //!
 void GUItoMACE::setVehicleArm(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::ActionArm tmpArm;
+    command_item::ActionArm tmpArm;
     tmpArm.setTargetSystem(vehicleID); // the vehicle ID coordinates to the specific vehicle //vehicle 0 is reserved for all connected vehicles
 
     QJsonObject arm = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
@@ -481,7 +463,7 @@ void GUItoMACE::setVehicleArm(const int &vehicleID, const QJsonObject &jsonObj)
 //!
 void GUItoMACE::setVehicleMode(const int &vehicleID, const QJsonObject &jsonObj)
 {
-    CommandItem::ActionChangeMode tmpMode;
+    command_item::ActionChangeMode tmpMode;
     tmpMode.setTargetSystem(vehicleID); // the vehicle ID coordinates to the specific vehicle //vehicle 0 is reserved for all connected vehicles
     tmpMode.setRequestMode(jsonObj["vehicleCommand"].toString().toStdString()); //where the string here is the desired Flight Mode...available modes can be found in the appropriate topic
     std::cout<<"We are changing the vehicle mode as issued by the GUI: "<<tmpMode.getRequestMode()<<std::endl;

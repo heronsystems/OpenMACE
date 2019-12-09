@@ -2,38 +2,38 @@
 #define TOPIC_PROTOTYPES_POSITION_CARTESIAN_H
 
 
-#include "mace_core/topic.h"
+//#include "mace_core/topic.h"
 
-#include "../reference_cartesian.h"
+//#include "../reference_cartesian.h"
 
-namespace Data {
+//namespace Data {
 
-namespace TopicComponentPrototypes
-{
+//namespace TopicComponentPrototypes
+//{
 
-extern const MaceCore::TopicComponentStructure PositionCartesian3D_structure;
+//extern const MaceCore::TopicComponentStructure PositionCartesian3D_structure;
 
-class PositionCartesian3D
-{
-private:
+//class PositionCartesian3D
+//{
+//private:
 
-    double m_x;
-    double m_y;
-    double m_z;
-    ReferenceCartesian m_Reference;
+//    double m_x;
+//    double m_y;
+//    double m_z;
+//    ReferenceCartesian m_Reference;
 
-public:
-    virtual MaceCore::TopicDatagram GenerateDatagram() const;
-    virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
+//public:
+//    virtual MaceCore::TopicDatagram GenerateDatagram() const;
+//    virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
-    PositionCartesian3D(const double &x, const double &y, const double &z, const ReferenceCartesian &ref);
+//    PositionCartesian3D(const double &x, const double &y, const double &z, const ReferenceCartesian &ref);
 
-    PositionCartesian3D(const PositionCartesian3D &copyObj);
-};
+//    PositionCartesian3D(const PositionCartesian3D &copyObj);
+//};
 
 
-} // TopicComponents
+//} // TopicComponents
 
-} // Data
+//} // Data
 
 #endif // TOPIC_PROTOTYPES_POSITION_CARTESIAN_H

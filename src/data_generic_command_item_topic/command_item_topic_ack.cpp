@@ -5,7 +5,7 @@ namespace CommandTopic {
 const char DataCommandItemTopicACK_name[] = "Vehicle Command ACK";
 const MaceCore::TopicComponentStructure DataCommandItemTopicACK_structure = []{
     MaceCore::TopicComponentStructure structure;
-    structure.AddTerminal<CommandItem::COMMANDITEM>("command");
+    structure.AddTerminal<command_item::COMMANDTYPE>("command");
     structure.AddTerminal<Data::CommandACKType>("code");
     structure.AddTerminal<int>("origin");
     structure.AddTerminal<int>("target");
@@ -14,7 +14,7 @@ const MaceCore::TopicComponentStructure DataCommandItemTopicACK_structure = []{
 
 MaceCore::TopicDatagram CommandItemTopic_ACK::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
-    datagram.AddTerminal<COMMANDITEM>("command", cmd);
+    datagram.AddTerminal<COMMANDTYPE>("command", cmd);
     datagram.AddTerminal<Data::CommandACKType>("code", code);
     datagram.AddTerminal<int>("origin", originatingSystem);
     datagram.AddTerminal<int>("target", targetSystem);
@@ -22,20 +22,20 @@ MaceCore::TopicDatagram CommandItemTopic_ACK::GenerateDatagram() const {
 }
 
 void CommandItemTopic_ACK::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
-    cmd = datagram.GetTerminal<COMMANDITEM>("command");
+    cmd = datagram.GetTerminal<COMMANDTYPE>("command");
     code = datagram.GetTerminal<Data::CommandACKType>("code");
     originatingSystem = datagram.GetTerminal<int>("origin");
     targetSystem = datagram.GetTerminal<int>("target");
 }
 
 CommandItemTopic_ACK::CommandItemTopic_ACK():
-    CommandItem::CommandItemACK()
+    command_item::CommandItemACK()
 {
 
 }
 
-CommandItemTopic_ACK::CommandItemTopic_ACK(const CommandItem::CommandItemACK &copyObj):
-    CommandItem::CommandItemACK(copyObj)
+CommandItemTopic_ACK::CommandItemTopic_ACK(const command_item::CommandItemACK &copyObj):
+    command_item::CommandItemACK(copyObj)
 {
 
 }

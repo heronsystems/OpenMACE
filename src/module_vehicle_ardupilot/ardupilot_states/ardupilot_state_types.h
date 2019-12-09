@@ -15,27 +15,31 @@ enum class ArdupilotFlightState{
     STATE_GROUNDED_ARMING = 2, /**< */
     STATE_GROUNDED_ARMED = 3, /**< */
     STATE_GROUNDED_DISARMING = 4, /**< */
-    STATE_TAKEOFF = 5, /**< */
-    STATE_TAKEOFF_CLIMBING = 6, /**< */
-    STATE_TAKEOFF_TRANSITIONING = 7, /**< */
-    STATE_TAKEOFF_COMPLETE = 8, /**< */
-    STATE_FLIGHT = 9, /**< */
-    STATE_FLIGHT_LOITER = 10, /**< */
-    STATE_FLIGHT_MANUAL = 11, /**< */
-    STATE_FLIGHT_GUIDED = 12, /**< */
-    STATE_FLIGHT_GUIDED_IDLE = 13, /**< */
-    STATE_FLIGHT_GUIDED_GOTO = 14, /**< */
-    STATE_FLIGHT_GUIDED_QUEUE = 15, /**< */
-    STATE_FLIGHT_AUTO = 16, /**< */
-    STATE_FLIGHT_BRAKE= 17, /**< */
-    STATE_FLIGHT_RTL = 18, /**< */
-    STATE_FLIGHT_LAND = 19,
-    STATE_FLIGHT_UNKNOWN = 20,
-    STATE_LANDING= 21, /**< */
-    STATE_LANDING_TRANSITIONING = 22, /**< */
-    STATE_LANDING_DESCENDING = 23, /**< */
-    STATE_LANDING_COMPLETE = 24, /**< */
-    STATE_UNKNOWN = 25 /**< */
+    STATE_GROUNDED_DISARMED = 5, /**< */
+    STATE_TAKEOFF = 6, /**< */
+    STATE_TAKEOFF_CLIMBING = 7, /**< */
+    STATE_TAKEOFF_TRANSITIONING = 8, /**< */
+    STATE_TAKEOFF_COMPLETE = 9, /**< */
+    STATE_FLIGHT = 10, /**< */
+    STATE_FLIGHT_LOITER = 11, /**< */
+    STATE_FLIGHT_MANUAL = 12, /**< */
+    STATE_FLIGHT_GUIDED = 13, /**< */
+    STATE_FLIGHT_GUIDED_IDLE = 14, /**< */
+    STATE_FLIGHT_GUIDED_SPATIALITEM = 15, /**< */
+    STATE_FLIGHT_GUIDED_QUEUE = 16, /**< */
+    STATE_FLIGHT_GUIDED_ATTTARGET = 17, /**< */
+    STATE_FLIGHT_GUIDED_GEOTARGET = 18, /**< */
+    STATE_FLIGHT_GUIDED_CARTARGET = 19, /**< */
+    STATE_FLIGHT_AUTO = 20, /**< */
+    STATE_FLIGHT_BRAKE= 21, /**< */
+    STATE_FLIGHT_RTL = 22, /**< */
+    STATE_FLIGHT_LAND = 23,
+    STATE_FLIGHT_UNKNOWN = 24,
+    STATE_LANDING= 25, /**< */
+    STATE_LANDING_TRANSITIONING = 26, /**< */
+    STATE_LANDING_DESCENDING = 27, /**< */
+    STATE_LANDING_COMPLETE = 28, /**< */
+    STATE_UNKNOWN = 29 /**< */
 };
 
 //!
@@ -55,6 +59,8 @@ inline std::string ArdupilotStateToString(const ArdupilotFlightState &type) {
         return "Grounded Armed";
     case ArdupilotFlightState::STATE_GROUNDED_DISARMING:
         return "Grounded Disarming";
+    case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
+        return "Grounded Disarmed";
     case ArdupilotFlightState::STATE_FLIGHT:
         return "Flight";
     case ArdupilotFlightState::STATE_TAKEOFF:

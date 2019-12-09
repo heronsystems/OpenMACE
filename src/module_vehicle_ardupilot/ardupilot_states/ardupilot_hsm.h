@@ -565,7 +565,7 @@ struct State
 	Owner*& GetOwner() { return mOwner; }
 	Owner*const& GetOwner() const { return mOwner; }
 
-	// Searches for state on stack from outermost to innermost, returns NULL if not found
+	// Searches for state on stack from outermost to innermost, returns nullptr if not found
 	template <typename StateType>
 	StateType* GetState();
 
@@ -574,14 +574,14 @@ struct State
 
     State* GetImmediateOuterState();
 
-	// Searches for state on stack starting from immediate outer to outermost, returns NULL if not found
+	// Searches for state on stack starting from immediate outer to outermost, returns nullptr if not found
 	template <typename StateType>
 	StateType* GetOuterState();
 
 	template <typename StateType>
 	const StateType* GetOuterState() const;
 
-	// Searches for state on stack starting from immediate inner to innermost, returns NULL if not found
+	// Searches for state on stack starting from immediate inner to innermost, returns nullptr if not found
 	template <typename StateType>
 	StateType* GetInnerState();
 
@@ -897,7 +897,7 @@ public:
 	// work. Will invoke Update() on each state, from outermost to innermost.
 	void UpdateStates(HSM_STATE_UPDATE_ARGS);
 
-	// Owner accessors (may return NULL)
+	// Owner accessors (may return nullptr)
 	Owner* GetOwner() { return mOwner; }
 	const Owner* GetOwner() const { return mOwner; }
 
@@ -909,7 +909,7 @@ public:
 
 	// State stack query functions
 
-	// Returns NULL if state is not found on the stack
+	// Returns nullptr if state is not found on the stack
 	State* GetState(StateTypeId stateType);
 	const State* GetState(StateTypeId stateType) const { return const_cast<const State*>( const_cast<StateMachine*>(this)->GetState(stateType) ); }
 
@@ -958,7 +958,7 @@ private:
 
 	void CreateAndPushInitialState(const Transition& transition);
 
-	// Returns state at input depth, or NULL if depth is invalid
+	// Returns state at input depth, or nullptr if depth is invalid
 	State* GetStateAtDepth(size_t depth);
 
 	// Overload returns state at input depth if it matches input type

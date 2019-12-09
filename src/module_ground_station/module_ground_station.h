@@ -21,10 +21,9 @@
 #include "macetogui.h"
 #include "guitomace.h"
 
-#include "base_topic/vehicle_topics.h"
-
 #include "mace_core/i_module_command_ground_station.h"
 
+#include "base_topic/base_topic_components.h"
 
 using namespace std;
 
@@ -144,7 +143,7 @@ public:
     //! \brief NewlyAvailableHomePosition Subscriber to a new home position
     //! \param home New home position
     //!
-    void NewlyAvailableHomePosition(const CommandItem::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+    void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyAvailableGlobalOrigin Subscriber to a new global origin
@@ -180,17 +179,12 @@ private:
     //!
     //! \brief m_VehicleDataTopic Vehicle data topic collection
     //!
-    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, BASE_POSE_TOPICS, VEHICLE_MEASUREMENT_TOPICS> m_VehicleDataTopic;
 
     //!
     //! \brief m_MissionDataTopic Mission data topic collection
     //!
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
-
-    //!
-    //! \brief m_VehicleTopics Container for vehicle topics
-    //!
-    BaseTopic::VehicleTopics m_VehicleTopics;
 
     // ============================================================================= //
     // ================================== Loggers ================================== //

@@ -65,7 +65,7 @@ bool CircleMapIterator::operator == (const CircleMapIterator &rhs) const
     if(this->it != rhs.it){
         return false;
     }
-    if(this->radius != rhs.radius){
+    if(fabs(this->radius - rhs.radius) > std::numeric_limits<double>::epsilon()){
         return false;
     }
     if(this->origin != rhs.origin){

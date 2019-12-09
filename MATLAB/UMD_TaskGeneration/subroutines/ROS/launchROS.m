@@ -16,6 +16,11 @@ while( rosStarted == 0 )
     end
     pause(3);
 end
+
+% set rate of loop
+% r = robotics.Rate(30); % shall we make it to 5?
+% reset(r);
+
 % List ROS topics:
 disp('Waiting for MACE topics...')
 topiclist = rostopic('list');
@@ -32,7 +37,8 @@ while ( MACEreadyFlag == 0 )
 end
 disp('Found MACE topics.')
 % Set up subscribers:
-ROS_MACE.positionSub = rossubscriber('/MACE/UPDATE_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
+ROS_MACE.positionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION','BufferSize', 10);% @positionCallback, 'BufferSize', 10);
+ROS_MACE.geopositionSub = rossubscriber('/MACE/UPDATE_GEODETIC_POSITION','BufferSize',10);
 %attitudeSub = rossubscriber('/MACE/UPDATE_ATTITUDE', @attitudeCallback, 'BufferSize', 10);
 %batterySub = rossubscriber('/MACE/UPDATE_BATTERY', @batteryCallback, 'BufferSize', 10);
 %gpsSub = rossubscriber('/MACE/UPDATE_GPS', @gpsCallback, 'BufferSize', 10);
@@ -46,6 +52,25 @@ ROS_MACE.takeoffClient = rossvcclient('command_takeoff');
 ROS_MACE.landClient = rossvcclient('command_land');
 ROS_MACE.datumClient = rossvcclient('command_datum');
 ROS_MACE.waypointClient = rossvcclient('command_waypoint');
+
+% if using standalone wptCoordinator, then a service and a callback
+% function must be defined
+if strcmp(ROS_MACE.wptCoordinator,'standalone')
+    ROS_MACE.bundleServer = rossvcserver('/bundle_server','bundle_manager/BUNDLE_REQUEST',@ROSBundleServer);
+    servicelist = rosservice('list');
+    bundleServerReadyFlag = 0;
+    while ( bundleServerReadyFlag == 0 )
+        for i = 1:1:length(servicelist)
+            % check list
+            if ( ~isempty(strfind(servicelist{i}, 'bundle_server')) )
+                bundleServerReadyFlag = 1;
+            end
+            servicelist = rosservice('list');
+        end
+    end
+
+    fprintf('/bundle_server initialized \n');
+end
 
 % Example workflow:
 %   1) Set datum

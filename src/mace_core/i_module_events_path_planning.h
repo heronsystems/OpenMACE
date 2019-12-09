@@ -10,12 +10,20 @@
 #include "maps/octomap_sensor_definition.h"
 #include "maps/octomap_2d_projection_definition.h"
 
+#include "data_generic_command_item/do_items/action_dynamic_target.h"
 namespace MaceCore
 {
 
-class IModuleEventsPathPlanning  : public IModuleEventsBoundaryGenerator, public IModuleEventsGeneral
+class IModuleEventsPathPlanning  : virtual public IModuleEventsBoundaryGenerator, virtual public IModuleEventsGeneral
 {
 public:
+
+    //!
+    //! \brief EventPP_UpdateCurrentDynamicTarget
+    //! \param sender
+    //! \param obj
+    //!
+    virtual void EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj) = 0;
 
     //!
     //! \brief EventPP_LoadOccupancyEnvironment Load a new occupancy map
@@ -50,7 +58,7 @@ public:
     //! \param sender Sender module
     //! \param queue New mission queue
     //!
-    virtual void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const TargetItem::DynamicMissionQueue &queue) = 0;
+    virtual void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const command_target::DynamicMissionQueue &queue) = 0;
 
     //!
     //! \brief EventPP_NewPathFound New path found event

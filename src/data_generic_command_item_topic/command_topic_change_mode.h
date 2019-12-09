@@ -1,7 +1,6 @@
 #ifndef COMMAND_TOPIC_CHANGE_MODE_H
 #define COMMAND_TOPIC_CHANGE_MODE_H
 
-#include "data_generic_state_item/base_3d_position.h"
 #include "data/i_topic_component_data_object.h"
 
 namespace DataCommandTopic {

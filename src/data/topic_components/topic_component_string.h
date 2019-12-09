@@ -15,13 +15,12 @@ extern const MaceCore::TopicComponentStructure TopicComponts_String_structure;
 
 class String : public Data::NamedTopicComponentDataObject<TopicComponts_String_name, &TopicComponts_String_structure>
 {
-private:
-
-    std::string m_Str;
+public:
+    virtual ~String() = default;
 
 public:
-    virtual MaceCore::TopicDatagram GenerateDatagram() const;
-    virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
+    MaceCore::TopicDatagram GenerateDatagram() const override;
+    void CreateFromDatagram(const MaceCore::TopicDatagram &datagram) override;
 
     String();
 
@@ -31,6 +30,9 @@ public:
     {
         return m_Str;
     }
+
+private:
+    std::string m_Str;
 };
 
 

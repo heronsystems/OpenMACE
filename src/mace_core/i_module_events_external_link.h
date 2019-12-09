@@ -33,7 +33,7 @@ public:
     BoundaryItem::BoundaryCharacterisic Characteistic;
 };
 
-class IModuleEventsExternalLink : public IModuleEventsGeneral, public IModuleEventsGeneralVehicle, public IModuleEventsBoundaryGenerator
+class IModuleEventsExternalLink : virtual public IModuleEventsGeneral, virtual public IModuleEventsGeneralVehicle, virtual public IModuleEventsBoundaryGenerator
 {
 
 public:
@@ -44,7 +44,7 @@ public:
     //! \param sender
     //! \param remoteID
     //!
-    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const int &remoteID) = 0;
+    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const unsigned int &remoteID) = 0;
 
 
     //!

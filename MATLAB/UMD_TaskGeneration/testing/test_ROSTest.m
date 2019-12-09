@@ -11,7 +11,7 @@ rosinit
 rostopic list
 
 % Set up subscribers:
-positionSub = rossubscriber('/MACE/UPDATE_POSITION', @positionCallback, 'BufferSize', 10);
+positionSub = rossubscriber('/MACE/UPDATE_LOCAL_POSITION', @positionCallback, 'BufferSize', 10);
 %attitudeSub = rossubscriber('/MACE/UPDATE_ATTITUDE', @attitudeCallback, 'BufferSize', 10);
 %batterySub = rossubscriber('/MACE/UPDATE_BATTERY', @batteryCallback, 'BufferSize', 10);
 gpsSub = rossubscriber('/MACE/UPDATE_GPS', @gpsCallback, 'BufferSize', 10);

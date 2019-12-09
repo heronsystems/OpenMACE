@@ -5,9 +5,10 @@
 
 #include "controllers/generic_controller.h"
 
-#include "../controllers/commands/command_land.h"
-#include "../controllers/commands/command_takeoff.h"
 #include "../controllers/commands/command_arm.h"
+#include "../controllers/commands/command_land.h"
+#include "../controllers/commands/command_msg_interval.h"
+#include "../controllers/commands/command_takeoff.h"
 #include "../controllers/commands/command_rtl.h"
 #include "../controllers/controller_system_mode.h"
 #include "../controllers/controller_collection.h"
@@ -29,12 +30,15 @@ T* Helper_CreateAndSetUp(TT* obj, TransmitQueue *queue, uint8_t chan)
 class CallbackInterface_MAVLINKVehicleObject
 {
 public:
+    virtual ~CallbackInterface_MAVLINKVehicleObject() = default;
+
+public:
 //    virtuul void cbi_GPSData(const int &systemID, std::shared_ptr<> data) = 0;
     virtual void cbi_VehicleStateData(const int &systemID, std::shared_ptr<Data::ITopicComponentDataObject> data) = 0;
     virtual void cbi_VehicleMissionData(const int &systemID, std::shared_ptr<Data::ITopicComponentDataObject> data) const = 0;
 
     virtual void cbi_VehicleSystemTime(const int &systemID, std::shared_ptr<DataGenericItem::DataGenericItem_SystemTime> systemTime) = 0;
-    virtual void cbi_VehicleHome(const int &systemID, const CommandItem::SpatialHome &home) = 0;
+    virtual void cbi_VehicleHome(const int &systemID, const command_item::SpatialHome &home) = 0;
     virtual void cbi_VehicleMission(const int &systemID, const MissionItem::MissionList &missionList) = 0;
     virtual void cbi_VehicleMissionItemCurrent(const MissionItem::MissionItemCurrent &current) const = 0;
 };
@@ -44,7 +48,7 @@ class MavlinkVehicleObject : public Controllers::IMessageNotifier<mavlink_messag
 public:
     MavlinkVehicleObject(CommsMAVLINK *commsObj, const MaceCore::ModuleCharacteristic &module, const int &mavlinkID);
 
-    ~MavlinkVehicleObject();
+    virtual ~MavlinkVehicleObject();
 
     int getMAVLINKID() const;
 
@@ -105,6 +109,10 @@ public:
     }
 
     bool handleMAVLINKMessage(const mavlink_message_t &msg);
+
+private:
+    static const uint16_t IGNORE_POS_TYPE_MASK = POSITION_TARGET_TYPEMASK_X_IGNORE|POSITION_TARGET_TYPEMASK_Y_IGNORE|POSITION_TARGET_TYPEMASK_Z_IGNORE;
+    static const uint16_t IGNORE_VEL_TYPE_MASK = POSITION_TARGET_TYPEMASK_VX_IGNORE|POSITION_TARGET_TYPEMASK_VY_IGNORE|POSITION_TARGET_TYPEMASK_VZ_IGNORE;
 
 public:
     StateData_MAVLINK *state;

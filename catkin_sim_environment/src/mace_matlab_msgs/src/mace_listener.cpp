@@ -31,7 +31,7 @@ void MACEListener::heartbeatCallback(const mace_matlab_msgs::UPDATE_HEARTBEAT::C
     ROS_INFO("HEARTBEAT callback for vehicle ID: %d", msg->vehicleID);
 }
 
-void MACEListener::positionCallback(const mace_matlab_msgs::UPDATE_POSITION::ConstPtr &msg) {
+void MACEListener::positionCallback(const mace_matlab_msgs::UPDATE_LOCAL_POSITION::ConstPtr &msg) {
     ROS_INFO("POSITION callback for vehicle ID: %d", msg->vehicleID);
 }
 

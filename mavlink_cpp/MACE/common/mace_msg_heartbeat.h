@@ -5,9 +5,9 @@
 
 MACEPACKED(
 typedef struct __mace_heartbeat_t {
- uint8_t protocol; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)*/
- uint8_t type; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)*/
- uint8_t autopilot; /*< Autopilot type / class. defined in MAV_AUTOPILOT ENUM*/
+ uint8_t protocol; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)*/
+ uint8_t type; /*< Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)*/
+ uint8_t autopilot; /*< Autopilot type / class. defined in UXV_AUTOPILOT ENUM*/
  uint8_t mission_state; /*< Defines the current state of the vehicle mission. Useful for determing the next state of the vehicle per mission state.*/
  uint8_t mace_companion; /*< Boolean describing whether(T=1) or not(F=0) the vehicle is MACE companion equipped.*/
  uint8_t mavlink_version; /*< MAVLink version, not writable by user, gets added by protocol because of magic data type: uint8_t_mavlink_version*/
@@ -59,9 +59,9 @@ typedef struct __mace_heartbeat_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param protocol Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
- * @param type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
- * @param autopilot Autopilot type / class. defined in MAV_AUTOPILOT ENUM
+ * @param protocol Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
+ * @param type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
+ * @param autopilot Autopilot type / class. defined in UXV_AUTOPILOT ENUM
  * @param mission_state Defines the current state of the vehicle mission. Useful for determing the next state of the vehicle per mission state.
  * @param mace_companion Boolean describing whether(T=1) or not(F=0) the vehicle is MACE companion equipped.
  * @param mavlinkID 
@@ -104,9 +104,9 @@ static inline uint16_t mace_msg_heartbeat_pack(uint8_t system_id, uint8_t compon
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param protocol Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
- * @param type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
- * @param autopilot Autopilot type / class. defined in MAV_AUTOPILOT ENUM
+ * @param protocol Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
+ * @param type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
+ * @param autopilot Autopilot type / class. defined in UXV_AUTOPILOT ENUM
  * @param mission_state Defines the current state of the vehicle mission. Useful for determing the next state of the vehicle per mission state.
  * @param mace_companion Boolean describing whether(T=1) or not(F=0) the vehicle is MACE companion equipped.
  * @param mavlinkID 
@@ -175,9 +175,9 @@ static inline uint16_t mace_msg_heartbeat_encode_chan(uint8_t system_id, uint8_t
  * @brief Send a heartbeat message
  * @param chan MAVLink channel to send the message
  *
- * @param protocol Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
- * @param type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
- * @param autopilot Autopilot type / class. defined in MAV_AUTOPILOT ENUM
+ * @param protocol Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
+ * @param type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
+ * @param autopilot Autopilot type / class. defined in UXV_AUTOPILOT ENUM
  * @param mission_state Defines the current state of the vehicle mission. Useful for determing the next state of the vehicle per mission state.
  * @param mace_companion Boolean describing whether(T=1) or not(F=0) the vehicle is MACE companion equipped.
  * @param mavlinkID 
@@ -269,7 +269,7 @@ static inline void mace_msg_heartbeat_send_buf(mace_message_t *msgbuf, mace_chan
 /**
  * @brief Get field protocol from heartbeat message
  *
- * @return Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
+ * @return Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
  */
 static inline uint8_t mace_msg_heartbeat_get_protocol(const mace_message_t* msg)
 {
@@ -279,7 +279,7 @@ static inline uint8_t mace_msg_heartbeat_get_protocol(const mace_message_t* msg)
 /**
  * @brief Get field type from heartbeat message
  *
- * @return Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
+ * @return Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in UXV_TYPE ENUM)
  */
 static inline uint8_t mace_msg_heartbeat_get_type(const mace_message_t* msg)
 {
@@ -289,7 +289,7 @@ static inline uint8_t mace_msg_heartbeat_get_type(const mace_message_t* msg)
 /**
  * @brief Get field autopilot from heartbeat message
  *
- * @return Autopilot type / class. defined in MAV_AUTOPILOT ENUM
+ * @return Autopilot type / class. defined in UXV_AUTOPILOT ENUM
  */
 static inline uint8_t mace_msg_heartbeat_get_autopilot(const mace_message_t* msg)
 {

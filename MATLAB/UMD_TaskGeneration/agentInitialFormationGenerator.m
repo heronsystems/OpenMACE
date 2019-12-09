@@ -2,9 +2,10 @@ clear; close all; clc;
 format compact;
 updatePath;
 
+
 for k = 1:100
 
-[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_cityblocks();
+[runParams, ROS_MACE, trueWorld, swarmModel, targetModel] = loadParams_osm();
 
 [xv, yv, ~] = distributeUniformlyAlongCurve(swarmModel.N,trueWorld.xpoly,trueWorld.ypoly);
 

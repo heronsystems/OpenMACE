@@ -7,9 +7,8 @@
 #include "common/common.h"
 #include "common/class_forward.h"
 
-#include "base_grid_map.h"
 #include "iterators/grid_map_iterator.h"
-#include "base/geometry/rotate_2d.h"
+#include "base_grid_map.h"
 
 namespace mace {
 namespace maps {
@@ -163,7 +162,7 @@ public:
             *it = value;
     }
 
-    bool findIndex(const T* find, int &index)
+    bool findIndex(const T* find, unsigned int &index) const
     {
         for (size_t i = 0; i < getSize(); i++)
             if(find == &m_dataMap.at(i))
@@ -236,7 +235,7 @@ public:
     {
         // Rotate point about origin before grabbing data back:
         double rotatedX, rotatedY;
-        if(this->getOriginPosition().hasBeenSet()) {
+        if(this->originPosition.areAllPositionsValid()) {
             double originX = this->getOriginPosition().getXPosition();
             double originY = this->getOriginPosition().getYPosition();
             geometry::rotatePoint_2D(rotatedX, rotatedY, x, y, -this->getRotationAngleDegrees(), originX, originY);

@@ -22,7 +22,7 @@ public:
     {
 
     }
-    ~AStarBase() = default;
+    virtual ~AStarBase() = default;
 
 public:
     std::vector<state_space::State*> solve(maps::Data2DGrid<GraphNode> &stateGridData);

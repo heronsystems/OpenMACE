@@ -2,29 +2,29 @@
 #define POLYGON_2DG_H
 
 #include "base_polygon.h"
-#include "polygon_2DC.h"
+#include "polygon_cartesian.h"
 
 #include "list"
-#include "base/pose/geodetic_position_2D.h"
-#include "base/pose/dynamics_aid.h"
+#include "../pose/geodetic_position_2D.h"
+#include "../pose/dynamics_aid.h"
 
 namespace mace{
 namespace geometry {
 
 using namespace pose;
 
-class Polygon_2DG : public PolygonBase<Position<GeodeticPosition_2D>>
+class Polygon_2DG : public PolygonBase<CoordinateSystemTypes::GEODETIC, GeodeticPosition_2D>
 {
 public:
 
     Polygon_2DG(const std::string &descriptor = "2D Geodetic Polygon");
 
-    Polygon_2DG(const std::vector<Position<GeodeticPosition_2D>> &vector, const std::string &descriptor = "2D Geodetic Polygon");
+    Polygon_2DG(const std::vector<GeodeticPosition_2D> &vector, const std::string &descriptor = "2D Geodetic Polygon");
 
     Polygon_2DG(const Polygon_2DG &copy);
 
 
-    ~Polygon_2DG() = default;
+    ~Polygon_2DG() override = default;
 
     //!
     //! \brief getBoundingRect
@@ -41,7 +41,7 @@ public:
     //! \param onLineCheck
     //! \return
     //!
-    bool contains(const Position<GeodeticPosition_2D> &point, const bool &onLineCheck = false) const;
+    bool contains(const GeodeticPosition_2D &point, const bool &onLineCheck = false) const;
 
     //!
     //! \brief contains
@@ -58,39 +58,37 @@ public:
     //! \param onLineCheck
     //! \return
     //!
-    std::vector<bool> contains(std::vector<Position<GeodeticPosition_2D>> &checkVector, const bool &onLineCheck = false);
+    std::vector<bool> contains(std::vector<GeodeticPosition_2D> &checkVector, const bool &onLineCheck = false);
 
     //!
     //! \brief getCenter
     //! \return
     //!
-    Position<GeodeticPosition_2D> getCenter() const;
+    GeodeticPosition_2D getCenter() const;
 
     std::vector<int> findUndefinedVertices() const override
     {
         int index = 0;
         std::vector<int> nullItems;
-        for(std::vector<Position<GeodeticPosition_2D>>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
-            if(!it->hasLatitudeBeenSet() && !it->hasLongitudeBeenSet())
-            {
-                //This should see that the value is null
-                nullItems.push_back(index);
-            }
+        for(std::vector<GeodeticPosition_2D>::const_iterator it = m_vertex.begin(); it != m_vertex.end(); ++it) {
+//            if(!it->hasLatitudeBeenSet() && !it->hasLongitudeBeenSet())
+//            {
+//                //This should see that the value is null
+//                nullItems.push_back(index);
+//            }
             index++;
         }
         return nullItems;
     }
 
 public:
-    Position<GeodeticPosition_2D> getTopLeft() const override;
-    Position<GeodeticPosition_2D> getTopRight() const override;
+    GeodeticPosition_2D getTopLeft() const override;
+    GeodeticPosition_2D getTopRight() const override;
 
-    Position<GeodeticPosition_2D> getBottomLeft() const override;
-    Position<GeodeticPosition_2D> getBottomRight() const override;
+    GeodeticPosition_2D getBottomLeft() const override;
+    GeodeticPosition_2D getBottomRight() const override;
 
-    void getCorners(Position<GeodeticPosition_2D> &topLeft, Position<GeodeticPosition_2D> &bottomRight) const override;
-
-    mace::pose::CoordinateFrame getVertexCoordinateFrame() const override;
+    void getCorners(GeodeticPosition_2D &topLeft, GeodeticPosition_2D &bottomRight) const override;
 
     void applyCoordinateShift(const double &distance, const double &bearing);
 
@@ -143,23 +141,23 @@ public:
     //!
     bool operator == (const Polygon_2DG &rhs) const
     {
-        if(!PolygonBase<Position<GeodeticPosition_2D>>::operator ==(rhs))
+        if(!PolygonBase<CoordinateSystemTypes::GEODETIC, GeodeticPosition_2D>::operator ==(rhs))
         {
             return false;
         }
-        if(this->xMin != rhs.xMin)
+        if(fabs(this->xMin - rhs.xMin) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->xMax != rhs.xMax)
+        if(fabs(this->xMax - rhs.xMax) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->yMin != rhs.yMin)
+        if(fabs(this->yMin - rhs.yMin) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
-        if(this->yMax != rhs.yMax)
+        if(fabs(this->yMax - rhs.yMax) > std::numeric_limits<double>::epsilon())
         {
             return false;
         }
@@ -180,7 +178,7 @@ private:
     double yMin, yMax;
 
 private:
-    Polygon_2DC m_localPolygon;
+    Polygon_Cartesian m_localPolygon;
 };
 
 } //end of namespace geometry

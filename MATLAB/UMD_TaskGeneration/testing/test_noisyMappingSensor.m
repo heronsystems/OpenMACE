@@ -1,6 +1,6 @@
 clear; close all; clc;
 
-nz = 100;
+nz = 15;
 ng = nz;
 mzRange = [0.5 2 3.5];
 mgRange = [0.5 2 3.5];

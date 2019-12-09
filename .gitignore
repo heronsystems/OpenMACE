@@ -10,7 +10,7 @@ example/example
 
 /build-src-Desktop_Qt_5_7_1_MinGW_32bit-Debug/*
 /build**
-
+tools/*
 
 *.Debug
 *.Release
@@ -66,5 +66,3 @@ ElectronGUI/yarn.lock
 /catkin_sim_environment/src/matlab_gen/*
 
 /MaceSetup_Configs/TestConfigs/*
-
-/tools/*

@@ -93,13 +93,13 @@ hsm::Transition State_Flight::GetTransition()
 
 bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    COMMANDITEM commandType = command->getCommandType();
+    COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDITEM::CI_ACT_MISSIONCOMMAND:
+    case COMMANDTYPE::CI_ACT_MISSIONCMD:
     {
         int vehicleMode = 0;
         bool executeModeChange = false;
-        const CommandItem::ActionMissionCommand* cmd = command->as<CommandItem::ActionMissionCommand>();
+        const command_item::ActionMissionCommand* cmd = command->as<command_item::ActionMissionCommand>();
         if(cmd->getMissionCommandAction() == Data::MissionCommandAction::MISSIONCA_PAUSE)
         {
             executeModeChange = true;
@@ -123,13 +123,13 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         if(executeModeChange)
         {
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-            auto controllerSystemMode = new MAVLINKVehicleControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-            controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
+            auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            controllerSystemMode->AddLambda_Finished(this, [controllerSystemMode](const bool completed, const uint8_t finishCode){
 
                 controllerSystemMode->Shutdown();
             });
 
-            controllerSystemMode->setLambda_Shutdown([this, collection]()
+            controllerSystemMode->setLambda_Shutdown([collection]()
             {
                 auto ptr = collection->Remove("modeController");
                 delete ptr;
@@ -140,7 +140,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             MavlinkEntityKey target = Owner().getMAVLINKID();
             MavlinkEntityKey sender = 255;
 
-            MAVLINKVehicleControllers::MAVLINKModeStruct commandMode;
+            MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
             commandMode.targetID = Owner().getMAVLINKID();
             commandMode.vehicleMode = vehicleMode;
             controllerSystemMode->Send(commandMode,sender,target);
@@ -153,31 +153,31 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         }
         break;
     }
-    case COMMANDITEM::CI_NAV_HOME:
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_NAV_HOME:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
         AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
         currentCommand = command;
         desiredStateEnum = ArdupilotFlightState::STATE_LANDING;
         break;
     }
-    case COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH:
+    case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
     {
-        const CommandItem::SpatialRTL* cmd = command->as<CommandItem::SpatialRTL>();
+        const command_item::SpatialRTL* cmd = command->as<command_item::SpatialRTL>();
 
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerRTL = new MAVLINKVehicleControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        auto controllerRTL = new MAVLINKUXVControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerRTL->AddLambda_Finished(this, [this,controllerRTL](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
                 desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_RTL;
             controllerRTL->Shutdown();
         });
 
-        controllerRTL->setLambda_Shutdown([this, collection]()
+        controllerRTL->setLambda_Shutdown([collection]()
         {
             auto ptr = collection->Remove("RTLController");
             delete ptr;
@@ -188,6 +188,31 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
 
         controllerRTL->Send(*cmd,sender,target);
         collection->Insert("RTLController",controllerRTL);
+        break;
+    }
+    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    {
+        if(!this->IsInState<State_FlightGuided>())
+            std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
+        else
+        {
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            currentInnerState->handleCommand(command);
+        }
+
+        break;
+    }
+    case COMMANDTYPE::CI_ACT_TARGET:
+    {
+        if(!this->IsInState<State_FlightGuided>())
+            std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
+        else
+        {
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            currentInnerState->handleCommand(command);
+        }
+
+        break;
     }
     default:
     {

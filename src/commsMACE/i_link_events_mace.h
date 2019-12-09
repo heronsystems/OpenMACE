@@ -342,7 +342,7 @@ public:
     }
 
 
-    template<const char* ...N, typename ...I>
+    template<char* ...N, typename ...I>
     void Set(I... ids)
     {
         static_assert(sizeof...(N) == sizeof...(ids), "Name and Resource values length must be the same");
@@ -357,12 +357,12 @@ public:
         return m_IDs.size();
     }
 
-    std::string NameAt(int i) const
+    std::string NameAt(unsigned int i) const
     {
         return m_componentNames.at(i);
     }
 
-    int IDAt(int i) const
+    int IDAt(unsigned int i) const
     {
         return m_IDs.at(i);
     }
@@ -397,6 +397,8 @@ class ILink;
 
 class ILinkEvents
 {
+public:
+    virtual ~ILinkEvents() = default;
 public:
 
     virtual void AddedExternalResource(ILink *link_ptr, const Resource &resource) = 0;
