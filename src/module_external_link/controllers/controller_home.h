@@ -24,14 +24,14 @@ using CONTROLLER_HOME_TYPE = Controllers::GenericController<
     mace_message_t, MaceCore::ModuleCharacteristic,
     TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectIntTuple<MaceCore::ModuleCharacteristic>>,
     uint8_t,
-    Controllers::DataItem<MaceCore::ModuleCharacteristic, CommandItem::SpatialHome>
+    Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>
 >;
 
 //Broadcast a home position out, send and finish. (No waiting for response)
 using ControllerHome_Step_BroadcastHome = Controllers::ActionBroadcast<
     mace_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
-    CommandItem::SpatialHome,
+    command_item::SpatialHome,
     mace_home_position_t
 >;
 
@@ -40,7 +40,7 @@ using ControllerHome_Step_ReceiveBroadcastedHome = Controllers::ActionUnsolicite
     mace_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
-    CommandItem::SpatialHome,
+    command_item::SpatialHome,
     mace_home_position_t,
     MACE_MSG_ID_HOME_POSITION
 >;
@@ -72,7 +72,7 @@ using ControllerHome_Step_ReceiveHomePositionSendAck = Controllers::ActionFinalR
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
-    CommandItem::SpatialHome,
+    command_item::SpatialHome,
     mace_home_position_t,
     mace_home_position_ack_t,
     MACE_MSG_ID_HOME_POSITION
@@ -93,7 +93,7 @@ using ControllerHome_Step_SendHomePosition = Controllers::ActionSend<
     mace_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
-    CommandItem::SpatialHome,
+    command_item::SpatialHome,
     mace_set_home_position_t,
     MACE_MSG_ID_HOME_POSITION_ACK
 >;
@@ -104,7 +104,7 @@ using ControllerHome_Step_ReceiveSetHomeSendACK = Controllers::ActionFinalReceiv
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
-    CommandItem::SpatialHome,
+    command_item::SpatialHome,
     mace_set_home_position_t,
     mace_home_position_ack_t,
     MACE_MSG_ID_SET_HOME_POSITION
@@ -128,7 +128,7 @@ private:
         CONTROLLER_HOME_TYPE,
         MaceCore::ModuleCharacteristic,
         MaceCore::ModuleCharacteristic,
-        CommandItem::SpatialHome,
+        command_item::SpatialHome,
         mace_home_position_t,
         mace_home_position_ack_t,
         MACE_MSG_ID_HOME_POSITION
@@ -141,7 +141,7 @@ private:
         CONTROLLER_HOME_TYPE,
         MaceCore::ModuleCharacteristic,
         MaceCore::ModuleCharacteristic,
-        CommandItem::SpatialHome,
+        command_item::SpatialHome,
         mace_set_home_position_t,
         mace_home_position_ack_t,
         MACE_MSG_ID_SET_HOME_POSITION
@@ -154,7 +154,7 @@ private:
 protected:
 
 
-    virtual void Construct_Broadcast(const CommandItem::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &msg);
+    virtual void Construct_Broadcast(const command_item::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &msg);
 
 
     /**
@@ -162,7 +162,7 @@ protected:
      * @param vehicleObj
      * @return
      */
-    virtual bool Construct_FinalObject(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, MaceCore::ModuleCharacteristic &key, CommandItem::SpatialHome &data);
+    virtual bool Construct_FinalObject(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data);
 
 
     virtual void Request_Construct(const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_mission_request_home_t &msg, MaceCore::ModuleCharacteristic &queueObj);
@@ -170,15 +170,15 @@ protected:
 
     virtual bool BuildData_Send(const mace_mission_request_home_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &rsp, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &receiveQueueObj, MaceCore::ModuleCharacteristic &respondQueueObj);
 
-    virtual bool Construct_FinalObjectAndResponse(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &response, MaceCore::ModuleCharacteristic &key, CommandItem::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj);
+    virtual bool Construct_FinalObjectAndResponse(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &response, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj);
 
 
     virtual bool Finish_Receive(const mace_home_position_ack_t &ack, const MaceCore::ModuleCharacteristic &sender, uint8_t &ack_code, MaceCore::ModuleCharacteristic &queueObj);
 
 
-    virtual bool Construct_Send(const CommandItem::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_set_home_position_t &msg, MaceCore::ModuleCharacteristic &queueObj);
+    virtual bool Construct_Send(const command_item::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_set_home_position_t &msg, MaceCore::ModuleCharacteristic &queueObj);
 
-    virtual bool Construct_FinalObjectAndResponse(const mace_set_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &ack, MaceCore::ModuleCharacteristic &key, CommandItem::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj);
+    virtual bool Construct_FinalObjectAndResponse(const mace_set_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj);
 
 public:
 

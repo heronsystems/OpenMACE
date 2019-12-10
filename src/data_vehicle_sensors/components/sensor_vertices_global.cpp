@@ -7,8 +7,7 @@ const char SensorVerticesGlobal_Name[] = "SensorVerticesGlobal";
 const MaceCore::TopicComponentStructure SensorVerticesGlobal_Structure = []{
     MaceCore::TopicComponentStructure structure;
     structure.AddTerminal<std::string>("SensorName");
-    structure.AddTerminal<Data::CoordinateFrameType>("CoordinateFrame");
-    structure.AddTerminal<std::vector<DataState::StateGlobalPosition>>("SensorVertices");
+    structure.AddTerminal<std::vector<mace::pose::GeodeticPosition_2D>>("SensorVertices");
     return structure;
 }();
 
@@ -16,35 +15,31 @@ const MaceCore::TopicComponentStructure SensorVerticesGlobal_Structure = []{
 MaceCore::TopicDatagram SensorVertices_Global::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
     datagram.AddTerminal<std::string>("SensorName",sensorName);
-    datagram.AddTerminal<Data::CoordinateFrameType>("CoordinateFrame",coordinateFrame);
-    datagram.AddTerminal<std::vector<DataState::StateGlobalPosition>>("SensorVertices",verticeLocations);
+    datagram.AddTerminal<std::vector<mace::pose::GeodeticPosition_2D>>("SensorVertices",verticeLocations);
     return datagram;
 }
 
 void SensorVertices_Global::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
     sensorName = datagram.GetTerminal<std::string>("SensorName");
-    coordinateFrame = datagram.GetTerminal<Data::CoordinateFrameType>("CoordinateFrame");
-    verticeLocations = datagram.GetTerminal<std::vector<DataState::StateGlobalPosition>>("SensorVertices");
+    verticeLocations = datagram.GetTerminal<std::vector<mace::pose::GeodeticPosition_2D>>("SensorVertices");
 }
 
 SensorVertices_Global::SensorVertices_Global()
 {
-    this->coordinateFrame = Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT;
     this->sensorName = "";
 }
 
 SensorVertices_Global::SensorVertices_Global(const std::string &sensorName)
 {
-    this->coordinateFrame = Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT;
     this->sensorName = sensorName;
 }
 
-std::vector<DataState::StateGlobalPosition> SensorVertices_Global::getSensorVertices() const
+std::vector<mace::pose::GeodeticPosition_2D> SensorVertices_Global::getSensorVertices() const
 {
     return(verticeLocations);
 }
 
-void SensorVertices_Global::setSensorVertices(const std::vector<DataState::StateGlobalPosition> &verticeVector)
+void SensorVertices_Global::setSensorVertices(const std::vector<mace::pose::GeodeticPosition_2D> &verticeVector)
 {
     verticeLocations = verticeVector;
 }

@@ -1,7 +1,6 @@
 {
     "MACEComms": {
-
-		"ipAddress": "127.0.0.1",
+        "ipAddress": "127.0.0.1",
 		"listenPortNumber": 1234,
 		"sendPortNumber": 5678
     },

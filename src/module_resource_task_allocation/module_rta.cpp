@@ -12,8 +12,8 @@ ModuleRTA::ModuleRTA():
     m_SensorFootprintDataTopic("sensorFootprint"), gridSpacingSent(false), environmentBoundarySent(false),
     m_globalInstance(true), m_gridSpacing(1)
 {
-    std::vector<Position<CartesianPosition_2D> > localBoundaryVerts;
-    Polygon_2DC poly(localBoundaryVerts);
+    std::vector<CartesianPosition_2D> localBoundaryVerts;
+    Polygon_Cartesian poly(localBoundaryVerts);
 
     environment = std::make_shared<Environment_Map>(poly, m_gridSpacing, m_globalInstance);
 }
@@ -117,7 +117,7 @@ void ModuleRTA::ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterV
 //!
 void ModuleRTA::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName); UNUSED(sender); UNUSED(data); UNUSED(target);
 }
 
 
@@ -150,39 +150,36 @@ void ModuleRTA::NewTopicSpooled(const std::string &topicName, const MaceCore::Mo
             MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_VehicleDataTopic.Name(), sender);
             for(size_t i = 0 ; i < componentsUpdated.size() ; i++) {
 
-                if(componentsUpdated.at(i) == DataStateTopic::StateLocalPositionTopic::Name())
+                if(componentsUpdated.at(i) == mace::pose_topics::Topic_CartesianPosition::Name())
                 {
-                    std::shared_ptr<DataStateTopic::StateLocalPositionTopic> localPositionData = std::make_shared<DataStateTopic::StateLocalPositionTopic>();
+                    std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> localPositionData = std::make_shared<mace::pose_topics::Topic_CartesianPosition>();
                     m_VehicleDataTopic.GetComponent(localPositionData, read_topicDatagram);
-                    Position<CartesianPosition_2D> vehiclePosition;
-                    vehiclePosition.setXPosition(localPositionData.get()->getX());
-                    vehiclePosition.setYPosition(localPositionData.get()->getY());
-                    m_vehicles[senderID] = vehiclePosition;
+                    CartesianPosition_2D vehiclePosition;
+//                    vehiclePosition.setXPosition(localPositionData.get()->getX());
+//                    vehiclePosition.setYPosition(localPositionData.get()->getY());
+//                    m_vehicles[senderID] = vehiclePosition;
                 }
-                else if(componentsUpdated.at(i) == DataStateTopic::StateGlobalPositionTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> globalPositionData = std::make_shared<DataStateTopic::StateGlobalPositionTopic>();
+                else if(componentsUpdated.at(i) == mace::pose_topics::Topic_GeodeticPosition::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> globalPositionData = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>();
                     m_VehicleDataTopic.GetComponent(globalPositionData, read_topicDatagram);
 
-                    // Update vehicle position:
-                    Position<CartesianPosition_2D> tmpPos;
-                    DataState::StateLocalPosition localPositionData;
-                    DataState::StateGlobalPosition tmpGlobalOrigin;
-                    mace::pose::GeodeticPosition_3D origin = this->getDataObject()->GetGlobalOrigin();
-                    CommandItem::SpatialHome tmpSpatialHome(origin);
+//                    // Update vehicle position:
+//                    Position<CartesianPosition_2D> tmpPos;
+//                    DataState::StateLocalPosition localPositionData;
+//                    DataState::StateGlobalPosition tmpGlobalOrigin;
+//                    mace::pose::GeodeticPosition_3D origin = this->getDataObject()->GetGlobalOrigin();
+//                    command_item::SpatialHome tmpSpatialHome(origin);
 
-                    tmpGlobalOrigin.setLatitude(tmpSpatialHome.getPosition().getX());
-                    tmpGlobalOrigin.setLongitude(tmpSpatialHome.getPosition().getY());
-                    tmpGlobalOrigin.setAltitude(tmpSpatialHome.getPosition().getZ());
+//                    tmpGlobalOrigin.setLatitude(tmpSpatialHome.getPosition().getX());
+//                    tmpGlobalOrigin.setLongitude(tmpSpatialHome.getPosition().getY());
+//                    tmpGlobalOrigin.setAltitude(tmpSpatialHome.getPosition().getZ());
 
-                    DataState::PositionalAid::GlobalPositionToLocal(tmpGlobalOrigin, *globalPositionData, localPositionData);
-                    tmpPos.setXPosition(localPositionData.getX());
-                    tmpPos.setYPosition(localPositionData.getY());
-                    // Insert/update into map
-                    m_vehicles[senderID] = tmpPos;
+//                    DataState::PositionalAid::GlobalPositionToLocal(tmpGlobalOrigin, *globalPositionData, localPositionData);
+//                    tmpPos.setXPosition(localPositionData.getX());
+//                    tmpPos.setYPosition(localPositionData.getY());
+//                    // Insert/update into map
+//                    m_vehicles[senderID] = tmpPos;
 
-                }else if(componentsUpdated.at(i) == DataStateTopic::StateLocalPositionTopic::Name()) {
-                    std::shared_ptr<DataStateTopic::StateLocalPositionTopic> localPositionData = std::make_shared<DataStateTopic::StateLocalPositionTopic>();
-                    m_VehicleDataTopic.GetComponent(localPositionData, read_topicDatagram);
                 }
             }
         }
@@ -207,13 +204,14 @@ void ModuleRTA::updateEnvironment(const BoundaryItem::BoundaryList &boundary)
 {
     std::cout<<"Update environment (RTA)."<<std::endl;
 
-    Polygon_2DC poly = boundary.boundingPolygon;
+    Polygon_Cartesian poly = boundary.boundingPolygon;
 //    m_gridSpacing = this->getDataObject()->GetGridSpacing();
 
     environment = std::make_shared<Environment_Map>(poly, m_gridSpacing, m_globalInstance);
 
-    m_globalOrigin = std::make_shared<CommandItem::SpatialHome>(this->getDataObject()->GetGlobalOrigin());
-
+    m_globalOrigin = std::make_shared<command_item::SpatialHome>();
+    mace::pose::GeodeticPosition_3D currentOrigin = this->getDataObject()->GetGlobalOrigin();
+    m_globalOrigin->setPosition(&currentOrigin);
     //  2) Re-partition space
     environment->computeBalancedVoronoi(m_vehicles);
     m_vehicleCells.clear();
@@ -301,7 +299,7 @@ void ModuleRTA::NewlyAvailableBoundary(const uint8_t &key, const OptionalParamet
         for(auto vehicleCell : m_vehicleCells) {
             int vehicleID = vehicleCell.first;
             BoundaryItem::BoundaryList resourceFence;
-            mace::geometry::Polygon_2DC polyBoundary;
+            mace::geometry::Polygon_Cartesian polyBoundary;
             for(auto vertex : vehicleCell.second.getVector()) {
                 polyBoundary.appendVertex(vertex);
             }

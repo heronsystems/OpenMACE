@@ -1,6 +1,8 @@
 #ifndef ACTION_RESPONSE_INTERMEDIATE_H
 #define ACTION_RESPONSE_INTERMEDIATE_H
 
+#include <vector>
+
 #include "action_base.h"
 
 namespace Controllers {

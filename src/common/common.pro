@@ -13,6 +13,9 @@ TEMPLATE = lib
 DEFINES += COMMON_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 SOURCES +=
 
@@ -24,7 +27,6 @@ HEADERS += common.h\
     pointer_collection.h \
     transmit_queue.h \
     thread_manager.h \
-    chain inheritance.h \
     chain_inheritance.h \
     object_int_tuple.h \
     background_tasks.h \
@@ -42,3 +44,14 @@ include(../headerinstall.pri)
 
 INCLUDEPATH += $$(MACE_ROOT)/include
 
+# Unix lib Install
+unix:!symbian {
+    target.path = $$(MACE_ROOT)/lib
+    INSTALLS += target
+}
+
+# Windows lib install
+lib.path    = $$(MACE_ROOT)/lib
+win32:CONFIG(release, debug|release):       lib.files   += release/common.lib release/common.dll
+else:win32:CONFIG(debug, debug|release):    lib.files   += debug/common.lib debug/common.dll
+INSTALLS += lib

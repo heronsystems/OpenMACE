@@ -1,20 +1,15 @@
 #include "spatial_loiter_unlimited.h"
 
-namespace CommandItem {
+namespace command_item {
 
-COMMANDITEM SpatialLoiter_Unlimited::getCommandType() const
+COMMANDTYPE SpatialLoiter_Unlimited::getCommandType() const
 {
-    return COMMANDITEM::CI_NAV_LOITER_UNLIM;
+    return COMMANDTYPE::CI_NAV_LOITER_UNLIM;
 }
 
 std::string SpatialLoiter_Unlimited::getDescription() const
 {
     return "This causes the vehicle to loiter around this MISSION an unlimited amount of time";
-}
-
-bool SpatialLoiter_Unlimited::hasSpatialInfluence() const
-{
-    return true;
 }
 
 std::shared_ptr<AbstractCommandItem> SpatialLoiter_Unlimited::getClone() const
@@ -36,15 +31,57 @@ SpatialLoiter_Unlimited::SpatialLoiter_Unlimited():
 SpatialLoiter_Unlimited::SpatialLoiter_Unlimited(const SpatialLoiter_Unlimited &obj):
     AbstractSpatialAction(obj)
 {
-    this->operator =(obj);
+    this->radius = obj.radius;
+    this->direction = obj.direction;
 }
 
-SpatialLoiter_Unlimited::SpatialLoiter_Unlimited(const int &systemOrigin, const int &systemTarget):
+SpatialLoiter_Unlimited::SpatialLoiter_Unlimited(const unsigned int &systemOrigin, const unsigned int &systemTarget):
     AbstractSpatialAction(systemOrigin,systemTarget)
 {
 
 }
 
+/** Interface imposed via AbstractSpatialAction */
+
+void SpatialLoiter_Unlimited::populateCommandItem(mace_command_long_t &obj) const
+{
+    AbstractSpatialAction::populateCommandItem(obj);
+    obj.param3 = this->direction == Data::LoiterDirection::CW ? static_cast<float>(fabs(this->radius)) : static_cast<float>(-1 * fabs(this->radius));
+}
+
+void SpatialLoiter_Unlimited::fromMACECOMMS_MissionItem(const mace_mission_item_t &obj)
+{
+    AbstractSpatialAction::fromMACECOMMS_MissionItem(obj);
+    this->radius = fabs(obj.param3);
+    if(obj.param3 < 0)
+        this->direction = Data::LoiterDirection::CCW;
+    else
+        this->direction = Data::LoiterDirection::CW;
+}
+
+void SpatialLoiter_Unlimited::fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj)
+{
+    AbstractSpatialAction::fromMACECOMMS_ExecuteSpatialAction(obj);
+    this->radius = fabs(static_cast<double>(obj.param3));
+    if(obj.param3 < 0)
+        this->direction = Data::LoiterDirection::CCW;
+    else
+        this->direction = Data::LoiterDirection::CW;
+}
+
+/** End of interface imposed via AbstractSpatialAction */
+
+//!
+//! \brief printPositionalInfo
+//! \return
+//!
+std::string SpatialLoiter_Unlimited::printSpatialCMDInfo() const
+{
+    std::stringstream ss;
+    if(isPositionSet())
+        this->position->printPositionLog(ss);
+    return ss.str();
+}
 
 } //end of namespace CommandItem
 

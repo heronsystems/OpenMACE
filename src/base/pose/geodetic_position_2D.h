@@ -1,133 +1,184 @@
 #ifndef GEODETIC_POSITION_2D_H
 #define GEODETIC_POSITION_2D_H
 
-#include "base_position.h"
-#include "base/state_space/state.h"
-
-using namespace mace::math;
+#include "abstract_geodetic_position.h"
+#include "../state_space/state.h"
 
 namespace mace {
 namespace pose {
 
-class GeodeticPosition_2D : public AbstractPosition<GeodeticPosition_2D, misc::Data2D>, public GeodeticPosition,
-        public state_space::State
+class GeodeticPosition_2D : public Abstract_GeodeticPosition, public state_space::State
 {
+
 public:
-    GeodeticPosition_2D():
-        AbstractPosition(AbstractPosition::PositionType::GEODETIC, CoordinateFrame::CF_GLOBAL_RELATIVE_ALT)
-    {
 
-    }
+    //!
+    //! \brief GeodeticPosition_2D
+    //!
+    GeodeticPosition_2D();
 
-    GeodeticPosition_2D(const GeodeticPosition_2D &copy):
-        AbstractPosition(copy), state_space::State(copy)
-    {
+    //!
+    //! \brief GeodeticPosition_2D
+    //! \param pointName
+    //! \param latitude
+    //! \param longitude
+    //!
+    GeodeticPosition_2D(const GeodeticFrameTypes &frameType,
+                        const double &latitude, const double &longitude,
+                        const std::string &pointName);
 
-    }
+    GeodeticPosition_2D(const std::string &pointName,
+                        const double &latitude, const double &longitude);
 
-    GeodeticPosition_2D(const double latitude, const double &longitude):
-        AbstractPosition(AbstractPosition::PositionType::CARTESIAN, CoordinateFrame::CF_GLOBAL_RELATIVE_ALT)
-    {
-        this->data.setData(latitude,longitude);
-    }
+    GeodeticPosition_2D(const double &latitude, const double &longitude);
 
-    State* getClone() const override
+    //!
+    //! \brief GeodeticPosition_2D
+    //! \param copy
+    //!
+    GeodeticPosition_2D(const GeodeticPosition_2D &copy);
+
+    GeodeticPosition_2D(const GeodeticPosition_3D &copy);
+
+    ~GeodeticPosition_2D() override = default;
+
+
+    Abstract_GeodeticPosition* getGeodeticClone() const override
     {
         return (new GeodeticPosition_2D(*this));
     }
 
-    void getClone(State** state) const override
+    void getGeodeticClone(Abstract_GeodeticPosition** state) const override
+    {
+        *state = new GeodeticPosition_2D(*this);
+    }
+
+    bool areEquivalentFrames(const GeodeticPosition_2D &obj) const;
+
+    Eigen::VectorXd getDataVector() const override
+    {
+        return this->data;
+    }
+
+public:
+    void updateQJSONObject(QJsonObject &obj) const override;
+
+public:
+
+    //!
+    //! \brief updatePosition
+    //! \param latitude
+    //! \param longitude
+    //!
+    void updateTranslationalComponents(const double &latitude, const double &longitude)
+    {
+        this->setLongitude(longitude);
+        this->setLatitude(latitude);
+    }
+
+    //!
+    //! \brief setLatitude
+    //! \param latitude
+    //!
+    void setLatitude(const double &latitude) override
+    {
+        this->data(1) = latitude;
+        this->validateDimension(IGNORE_Y_DIMENSION);
+    }
+
+    //!
+    //! \brief setLongitude
+    //! \param longitude
+    //!
+    void setLongitude(const double &longitude) override
+    {
+        this->data(0) = longitude;
+        this->validateDimension(IGNORE_X_DIMENSION);
+    }
+
+    //!
+    //! \brief getLatitude
+    //! \return
+    //!
+    double getLatitude() const override
+    {
+        return  this->data(1);
+    }
+
+    //!
+    //! \brief getLongitude
+    //! \return
+    //!
+    double getLongitude() const override
+    {
+        return this->data(0);
+    }
+
+public:
+    bool hasLatitudeBeenSet() const;
+
+    bool hasLongitudeBeenSet() const;
+
+    /** Interface imposed via state_space::State */
+public:
+    //!
+    //! \brief getStateClone
+    //! \return
+    //!
+    State* getStateClone() const override
+    {
+        return (new GeodeticPosition_2D(*this));
+    }
+
+    //!
+    //! \brief getStateClone
+    //! \param state
+    //!
+    void getStateClone(State** state) const override
+    {
+        *state = new GeodeticPosition_2D(*this);
+    }
+
+
+    /** Interface imposed via Abstract_CartesianPosition */
+
+public:
+    //!
+    //! \brief getPositionalClone
+    //! \return
+    //!
+    Position* getPositionalClone() const override
+    {
+        return (new GeodeticPosition_2D(*this));
+    }
+
+    //!
+    //! \brief getPositionalClone
+    //! \param state
+    //!
+    void getPositionalClone(Position** state) const override
     {
         *state = new GeodeticPosition_2D(*this);
     }
 
 public:
-    void updatePosition(const double &latitude, const double &longitude)
-    {
-        this->data.setData(latitude,longitude);
-    }
-
-    void setLatitude(const double &latitude)
-    {
-        this->data.setX(latitude);
-    }
-
-    void setLongitude(const double &longitude)
-    {
-        this->data.setY(longitude);
-    }
-
-    double getLatitude() const
-    {
-        return this->data.getX();
-    }
-
-    double getLongitude() const
-    {
-        return this->data.getY();
-    }
-
-    Eigen::Vector2d getAsVector()
-    {
-        Eigen::Vector2d vec(this->data.getX(), this->data.getY());
-        return vec;
-    }
-
-    bool hasLatitudeBeenSet() const
-    {
-        return this->data.getDataXFlag();
-    }
-
-    bool hasLongitudeBeenSet() const
-    {
-        return this->data.getDataYFlag();
-    }
-public:
-    double deltaLatitude(const GeodeticPosition_2D &that) const;
-    double deltaLongitude(const GeodeticPosition_2D &that) const;
-public:
-    void setCoordinateFrame(const GlobalFrameType &desiredFrame)
-    {
-        this->frame = mace::pose::getCoordinateFrame(desiredFrame);
-    }
-
-    /** Arithmetic Operators */
-public:
 
     //!
-    //! \brief operator +
-    //! \param that
+    //! \brief distanceFromOrigin
     //! \return
     //!
-    GeodeticPosition_2D operator + (const GeodeticPosition_2D &that) const
-    {
-        GeodeticPosition_2D newPoint(*this);
-        newPoint.data = this->data + that.data;
-        return newPoint;
-    }
-
-    //!
-    //! \brief operator -
-    //! \param that
-    //! \return
-    //!
-    GeodeticPosition_2D operator - (const GeodeticPosition_2D &that) const
-    {
-        GeodeticPosition_2D newPoint(*this);
-        newPoint.data = this->data - that.data;
-        return newPoint;
-    }
-
-
-public:
-
-    bool hasBeenSet() const override
-    {
-        return hasLatitudeBeenSet() || hasLongitudeBeenSet();
-    }
-
     double distanceFromOrigin() const override;
 
+    //!
+    //! \brief translationalDistanceFromOrigin
+    //! \return
+    //!
+    double translationalDistanceFromOrigin() const override;
+
+    //!
+    //! \brief polarBearingFromOrigin
+    //! \return
+    //!
     double polarBearingFromOrigin() const override;
 
     //!
@@ -135,28 +186,28 @@ public:
     //! \param position
     //! \return
     //!
-    double distanceBetween2D(const GeodeticPosition_2D &position) const override;
+    double distanceBetween2D(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief distanceTo
     //! \param position
     //! \return
     //!
-    double distanceTo(const GeodeticPosition_2D &pos) const override;
+    double distanceTo(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief polarBearingTo
     //! \param position
     //! \return
     //!
-    double polarBearingTo(const GeodeticPosition_2D &pos) const override;
+    double polarBearingTo(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief polarBearingTo
     //! \param position
     //! \return
     //!
-    double compassBearingTo(const GeodeticPosition_2D &pos) const override;
+    double compassBearingTo(const Abstract_GeodeticPosition* pos) const override;
 
     //!
     //! \brief newPositionFromPolar
@@ -164,7 +215,7 @@ public:
     //! \param compassBearing
     //! \return
     //!
-    GeodeticPosition_2D newPositionFromPolar(const double &distance, const double &bearing) const override;
+    virtual void newPositionFromPolar(Abstract_GeodeticPosition* newObject, const double &distance, const double &bearing) const override;
 
     //!
     //! \brief newPositionFromPolar
@@ -172,7 +223,8 @@ public:
     //! \param compassBearing
     //! \return
     //!
-    GeodeticPosition_2D newPositionFromCompass(const double &distance, const double &bearing) const override;
+    virtual void newPositionFromCompass(Abstract_GeodeticPosition *newObject, const double &distance, const double &bearing) const override;
+
 
     //!
     //! \brief applyPositionalShiftFromPolar
@@ -187,7 +239,78 @@ public:
     //! \param bearing
     //!
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
+
+public:
+    mace_global_position_int_t getMACE_GlobalPositionInt() const;
+
+    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+
+    /** Assignment Operators */
+public:
+    GeodeticPosition_2D& operator = (const GeodeticPosition_2D &rhs)
+    {
+        Abstract_GeodeticPosition::operator =(rhs);
+        this->data = rhs.data;
+        return *this;
+    }
+
+    /** Relational Operators */
+public:
+    //!
+    //! \brief operator ==
+    //! \param rhs
+    //! \return
+    //!
+    bool operator == (const GeodeticPosition_2D &rhs) const
+    {
+        if(!Abstract_GeodeticPosition::operator ==(rhs))
+            return false;
+        if(!this->data.isApprox(rhs.data, std::numeric_limits<double>::epsilon()))
+            return false;
+        return true;
+    }
+
+    //!
+    //! \brief operator !=
+    //! \param rhs
+    //! \return
+    //!
+    bool operator != (const GeodeticPosition_2D &rhs) const {
+        return !(*this == rhs);
+    }
+
+public:
+    std::string printPositionalInfo() const override
+    {
+        std::stringstream stream;
+        stream.precision(6);
+        stream << std::fixed << "Geodetic Position 2D: Lat:" << this->getLatitude() << ", Lng:"<< this->getLongitude() << ".";
+        return stream.str();
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const GeodeticPosition_2D& t)
+    {
+        std::stringstream newStream;
+        t.printPositionLog(newStream);
+        os << newStream.str();
+        return os;
+    }
+
+public:
+    
+    Eigen::Vector2d data;
 };
+
+/*!
+ * @brief Overloaded plus operator for Vectors.
+ */
+BASESHARED_EXPORT GeodeticPosition_2D operator +(const GeodeticPosition_2D &a, const GeodeticPosition_2D &b ) = delete;
+
+
+/*!
+ * @brief Overloaded minus operator for Vectors.
+ */
+BASESHARED_EXPORT GeodeticPosition_2D operator -(const GeodeticPosition_2D &a, const GeodeticPosition_2D &b ) = delete;
 
 } //end of namespace pose
 } //end of namespace mace

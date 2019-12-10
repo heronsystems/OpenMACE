@@ -6,15 +6,15 @@ namespace maps {
 Bounded2DGrid::Bounded2DGrid(const double &x_min, const double &x_max,
                              const double &y_min, const double &y_max,
                              const double &x_res, const double &y_res,
-                             const Position<CartesianPosition_2D> *fill_value):
+                             const CartesianPosition_2D *fill_value):
     Dynamic2DGrid(x_min, x_max, y_min, y_max, x_res, y_res, fill_value)
 {
 
 }
 
-Bounded2DGrid::Bounded2DGrid(const geometry::Polygon_2DC &boundingPolygon,
+Bounded2DGrid::Bounded2DGrid(const geometry::Polygon_Cartesian &boundingPolygon,
                              const double &x_res, const double &y_res,
-                             const Position<CartesianPosition_2D> *fill_value):
+                             const CartesianPosition_2D* fill_value):
     Dynamic2DGrid(boundingPolygon.getXMin(),boundingPolygon.getXMax(),
                   boundingPolygon.getYMin(),boundingPolygon.getYMax(),
                   x_res,y_res,fill_value)
@@ -22,7 +22,7 @@ Bounded2DGrid::Bounded2DGrid(const geometry::Polygon_2DC &boundingPolygon,
     setBoundingPolygon(boundingPolygon);
 }
 
-std::vector<Position<CartesianPosition_2D> *> Bounded2DGrid::setBoundingPolygon(const geometry::Polygon_2DC &polygon)
+std::vector<CartesianPosition_2D*> Bounded2DGrid::setBoundingPolygon(const geometry::Polygon_Cartesian &polygon)
 {
     this->clearData();
 
@@ -42,14 +42,14 @@ std::vector<Position<CartesianPosition_2D> *> Bounded2DGrid::setBoundingPolygon(
     return m_constrainedData;
 }
 
-std::vector<Position<CartesianPosition_2D> *> Bounded2DGrid::getBoundedDataVector() const
+std::vector<CartesianPosition_2D*> Bounded2DGrid::getBoundedDataVector() const
 {
     return this->m_constrainedData;
 }
 
-std::list<Position<CartesianPosition_2D> *> Bounded2DGrid::getBoundedDataList() const
+std::list<CartesianPosition_2D*> Bounded2DGrid::getBoundedDataList() const
 {
-    std::list<Position<CartesianPosition_2D> *> returnList;
+    std::list<CartesianPosition_2D*> returnList;
     size_t size = m_constrainedData.size();
     for(size_t i = 0; i < size; i++)
     {

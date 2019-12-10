@@ -73,19 +73,19 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 
     switch(command->getCommandType())
     {
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
-    case COMMANDITEM::CI_NAV_HOME:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_NAV_HOME:
     {
         AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDITEM::CI_NAV_LAND:
+    case COMMANDTYPE::CI_NAV_LAND:
     {
         this->currentCommand = command->getClone();
         //check that the vehicle is truely armed and switch us into the guided mode
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-        auto controllerSystemMode = new MAVLINKVehicleControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
             controllerSystemMode->Shutdown();
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
@@ -96,6 +96,7 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 
         controllerSystemMode->setLambda_Shutdown([this, collection]()
         {
+            UNUSED(this);
             auto ptr = collection->Remove("modeController");
             delete ptr;
         });
@@ -103,9 +104,9 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
 
-        MAVLINKVehicleControllers::MAVLINKModeStruct commandMode;
-        commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString("GUIDED");
+        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+        commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
+        commandMode.vehicleMode = static_cast<uint8_t>(Owner().ardupilotMode.getFlightModeFromString("GUIDED"));
         controllerSystemMode->Send(commandMode,sender,target);
         collection->Insert("modeController",controllerSystemMode);
 
@@ -141,9 +142,12 @@ void State_Landing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
     if(command != nullptr)
     {
         switch (command->getCommandType()) {
-        case COMMANDITEM::CI_NAV_LAND:
-            if(command->as<CommandItem::SpatialLand>()->getPosition().has2DPositionSet())
+        case COMMANDTYPE::CI_NAV_LAND:
+            if((command->as<command_item::SpatialLand>()->getPosition() != nullptr)
+                    && (command->as<command_item::SpatialLand>()->getPosition()->areTranslationalComponentsValid()))
+            {
                 handleCommand(command);
+            }
             else
             {
                 currentCommand = command->getClone();

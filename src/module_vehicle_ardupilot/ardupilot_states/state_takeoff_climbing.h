@@ -1,6 +1,8 @@
 #ifndef STATE_TAKEOFF_CLIMBING_H
 #define STATE_TAKEOFF_CLIMBING_H
 
+#include <mavlink.h>
+
 #include "abstract_state_ardupilot.h"
 
 #include "../ardupilot_target_progess.h"

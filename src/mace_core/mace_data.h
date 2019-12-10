@@ -11,6 +11,8 @@
 #include <list>
 #include <vector>
 
+#include <Eigen/StdVector>
+
 #include "vehicle_data.h"
 
 #include "observation_history.h"
@@ -20,7 +22,6 @@
 #include "topic.h"
 
 #include "data_generic_item/data_generic_item_components.h"
-#include "data_generic_state_item/state_item_components.h"
 #include "data_generic_command_item/command_item_components.h"
 
 #include "data/system_description.h"
@@ -34,7 +35,7 @@
 #include "octomap/OcTree.h"
 
 #include "base/pose/cartesian_position_3D.h"
-#include "base/pose/orientation_3D.h"
+#include "base/pose/rotation_3D.h"
 #include "base/geometry/cell_2DC.h"
 
 #include "data_generic_command_item/boundary_items/boundary_type.h"
@@ -79,6 +80,8 @@ private:
 
 public:
 
+
+public:
     MaceData() :
         m_MSTOKEEP(DEFAULT_MS_RECORD_TO_KEEP), flagBoundaryVerts(false)
     {
@@ -93,7 +96,7 @@ public:
         m_LayeredMap_Local = std::make_shared<mace::maps::LayeredMap>();
     }
 
-    ~MaceData()
+    virtual ~MaceData()
     {
         //delete m_OctomapWrapper;
     }
@@ -141,7 +144,7 @@ public:
     //! \brief GetAvailableVehicles Get a list of vehicle IDs this instance has knowledge of
     //! \param vehicleIDs Vector of vehicle IDs
     //!
-    void GetAvailableVehicles(std::vector<int> &vehicleIDs) const
+    void GetAvailableVehicles(std::vector<unsigned int> &vehicleIDs) const
     {
         std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
         vehicleIDs = m_AvailableVehicles;        
@@ -174,20 +177,20 @@ public:
     //! \brief GetLocalVehicles Get a list of local vehicle IDs this instance has knowledge of
     //! \param vehicleIDs Vector of vehicle IDs
     //!
-    void GetLocalVehicles(std::vector<int> &vehicleIDs) const
+    void GetLocalVehicles(std::vector<unsigned int> &vehicleIDs) const
     {
         std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
         vehicleIDs = m_LocalVehicles;
     }
 
 
-    std::vector<int> GetLocalVehicles() const
+    std::vector<unsigned int> GetLocalVehicles() const
     {
         std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
         return m_LocalVehicles;
     }
 
-    bool HasMavlinkID(const int MAVLINKID) const
+    bool HasMavlinkID(const unsigned int MAVLINKID) const
     {
         if(m_MAVLINKIDtoModule.find(MAVLINKID) == m_MAVLINKIDtoModule.cend())
         {
@@ -201,7 +204,7 @@ public:
     //! \param MAVLINKID
     //! \return
     //!
-    ModuleCharacteristic GetVehicleFromMAVLINKID(const int MAVLINKID) const
+    ModuleCharacteristic GetVehicleFromMAVLINKID(const unsigned int MAVLINKID) const
     {
         return m_MAVLINKIDtoModule.at(MAVLINKID);
     }
@@ -245,10 +248,10 @@ public:
     //! \param vehicleID Vehicle ID
     //! \return Vehicle home position
     //!
-    CommandItem::SpatialHome GetVehicleHomePostion(const int &vehicleID) const
+    command_item::SpatialHome GetVehicleHomePostion(const unsigned int &vehicleID) const
     {
         std::lock_guard<std::mutex> guard(m_VehicleHomeMutex);
-        CommandItem::SpatialHome vehicleHome = m_VehicleHomeMap.at(vehicleID);
+        command_item::SpatialHome vehicleHome = m_VehicleHomeMap.at(vehicleID);
         return vehicleHome;
     }
 
@@ -278,10 +281,10 @@ public:
     //! \brief GetEnvironmentBoundary Get the environment boundary
     //! \return Vector of positions that make up the boundary
     //!
-    std::vector<DataState::StateGlobalPosition> GetEnvironmentBoundary() const
+    std::vector<mace::pose::GeodeticPosition_2D> GetEnvironmentBoundary() const
     {
         std::lock_guard<std::mutex> guard(m_EnvironmentalBoundaryMutex);
-        std::vector<DataState::StateGlobalPosition> boundaryVerts = m_BoundaryVerts;
+        std::vector<mace::pose::GeodeticPosition_2D> boundaryVerts = m_BoundaryVerts;
         return boundaryVerts;
     }
 
@@ -325,7 +328,7 @@ private:
     //! \brief UpdateVehicleHomePosition Update the vehicle home position
     //! \param vehicleHome New vehicle home
     //!
-    void UpdateVehicleHomePosition(const uint8_t vehicleID, const CommandItem::SpatialHome &vehicleHome)
+    void UpdateVehicleHomePosition(const uint8_t vehicleID, const command_item::SpatialHome &vehicleHome)
     {
         std::lock_guard<std::mutex> guard(m_VehicleHomeMutex);
         m_VehicleHomeMap[vehicleID] = vehicleHome;
@@ -338,8 +341,8 @@ private:
     void UpdateGlobalOrigin(const mace::pose::GeodeticPosition_3D &globalOrigin)
     {
         std::lock_guard<std::mutex> guard(m_VehicleHomeMutex);
-        double bearingTo = m_GlobalOrigin.polarBearingTo(globalOrigin);
-        double distanceTo = m_GlobalOrigin.distanceBetween2D(globalOrigin); //in this case we need the 2D value since we are going to update only 2D position of boundaries
+        double bearingTo = m_GlobalOrigin.polarBearingTo(&globalOrigin);
+        double distanceTo = m_GlobalOrigin.distanceBetween2D(&globalOrigin); //in this case we need the 2D value since we are going to update only 2D position of boundaries
         m_GlobalOrigin = globalOrigin;
         updateBoundariesNewOrigin(distanceTo, bearingTo);
     }
@@ -360,7 +363,7 @@ private:
     //! \brief UpdateEnvironmentVertices Update environment vertices from the GCS module
     //! \param boundaryVerts New boundary vertices vector
     //!
-    void UpdateEnvironmentVertices(const std::vector<DataState::StateGlobalPosition> &boundaryVerts) {
+    void UpdateEnvironmentVertices(const std::vector<mace::pose::GeodeticPosition_2D> &boundaryVerts) {
         std::lock_guard<std::mutex> guard(m_EnvironmentalBoundaryMutex);
         m_BoundaryVerts = boundaryVerts;
         flagBoundaryVerts = true;
@@ -411,20 +414,6 @@ private:
         std::lock_guard<std::mutex> guard(m_VehicleDataMutex);
 
         m_VehicleLifeHistory.at(rn).InsertObservation(time, life);
-    }
-
-    //!
-    //! \brief set the Target list of a specific vehicle
-    //!
-    //! The target is a macro-level list, a vehicle should not be flown based on targets.
-    //! \param vehicleID Id of Vehicle
-    //! \param targetPos List of targeted positions.
-    //!
-    void setVehicleTarget(const std::string vehicleID, std::vector<Eigen::Vector3d> targetPos)
-    {
-        std::lock_guard<std::mutex> guard(m_VehicleDataMutex);
-
-        m_VehicleTargetPositionList[vehicleID] = targetPos;
     }
 
     //!
@@ -559,26 +548,6 @@ public:
 
 
     //!
-    //! \brief get the list of targets that a specific vehicle is to move to
-    //!
-    //! The target is a macro-level list, of general positions a vehicle is to acheive.
-    //! Targets may not express the actual path a vehicle is to take, therefore a vehicle should not be flown based on targets.
-    //! Will return empty array if no targets are desired for vehicle
-    //! \param vehicleID Id of Vehicle
-    //! \return List of targeted positions.
-    //!
-    std::vector<Eigen::Vector3d> getVehicleTarget(const std::string vehicleID) const
-    {
-        std::lock_guard<std::mutex> guard(m_VehicleDataMutex);
-
-        if(m_VehicleTargetPositionList.find(vehicleID) == m_VehicleTargetPositionList.cend())
-            return {};
-
-        return m_VehicleTargetPositionList.at(vehicleID);
-    }
-
-
-    //!
     //! \brief get the command dynamics for a specific vehicle.
     //!
     //! Commands are micro-level list of positions/attitude the vehicle is to physically achieve to reach a target.
@@ -655,6 +624,7 @@ private:
     //!
     void OccupancyMap_ReplaceMatrix(const Eigen::MatrixXd &newOccupancyMap)
     {
+        UNUSED(newOccupancyMap);
         //m_OccupancyMap = newOccupancyMap;
     }
 
@@ -668,6 +638,7 @@ private:
     //!
     void OccupanyMap_ReplaceCells(const std::vector<MatrixCellData<double>> &cells)
     {
+        UNUSED(cells);
         //ReplaceCellsInMatrix(m_OccupancyMap, cells);
     }
 
@@ -772,7 +743,7 @@ public:
     //! \param obj Point cloud in the global/inertial frame
     //! \param position Position of the sensor taking the measurement
     //!
-    void insertGlobalObservation(octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position)
+    void insertGlobalObservation(octomap::Pointcloud& obj, const pose::CartesianPosition_3D &position)
     {
         std::lock_guard<std::mutex> guard(m_Mutex_OccupancyMaps);
         m_OctomapWrapper->updateFromPointCloud(&obj, position);
@@ -784,7 +755,7 @@ public:
     //! \param position Position of the sensor taking the measurement
     //! \param orientation Orientation of the sensor taking the measurement
     //!
-    void insertObservation(octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D> &position, const mace::pose::Orientation_3D &orientation)
+    void insertObservation(octomap::Pointcloud& obj, const pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation)
     {
         std::lock_guard<std::mutex> guard(m_Mutex_OccupancyMaps);
         m_OctomapWrapper->updateFromPointCloud(&obj, position, orientation);
@@ -805,7 +776,7 @@ public:
     //!
     bool checkForOccupancy()
     {
-
+        return false;
     }
 
     //!
@@ -814,6 +785,7 @@ public:
     //!
     void OccupancyMap_ReadCells(std::vector<MatrixCellData<double>> &cells)
     {
+        UNUSED(cells);
         //ReadCellsInMatrix(m_OccupancyMap, cells);
     }
 
@@ -827,6 +799,7 @@ public:
     //!
     void OccupancyMap_GenericConstOperation(std::function<void(const Eigen::MatrixXd &)> &func) const
     {
+        UNUSED(func);
         //func(m_OccupancyMap);
     }
 
@@ -922,20 +895,20 @@ private:
     std::unordered_map<std::string, std::unordered_map<ModuleCharacteristic, std::unordered_map<std::string, TIME>>> m_LatestTopicComponentUpdateTime;
 
     mutable std::mutex m_AvailableVehicleMutex;
-    std::vector<int> m_AvailableVehicles;
-    std::vector<int> m_LocalVehicles;
-    std::unordered_map<int, ModuleCharacteristic> m_MAVLINKIDtoModule;
+    std::vector<unsigned int> m_AvailableVehicles;
+    std::vector<unsigned int> m_LocalVehicles;
+    std::unordered_map<unsigned int, ModuleCharacteristic> m_MAVLINKIDtoModule;
 
     mutable std::mutex m_VehicleFlightModeMutex;
-    std::unordered_map<int, std::string> m_VehicleFlightModeMap;
+    std::unordered_map<unsigned int, std::string> m_VehicleFlightModeMap;
 
     mutable std::mutex m_VehicleHomeMutex;
-    std::map<int, CommandItem::SpatialHome> m_VehicleHomeMap;
+    std::map<unsigned int, command_item::SpatialHome> m_VehicleHomeMap;
     mace::pose::GeodeticPosition_3D m_GlobalOrigin;
     double m_GridSpacing = -1;
 
     mutable std::mutex m_VehicleBoundaryMutex;
-    std::vector<DataState::StateGlobalPosition> m_BoundaryVerts;
+    std::vector<mace::pose::GeodeticPosition_2D> m_BoundaryVerts;
     std::map<int, mace::geometry::Cell_2DC> m_vehicleCellMap;
     std::vector<BoundaryItem::BoundaryList> m_vehicleBoundaryList;
     bool flagBoundaryVerts;
@@ -943,7 +916,6 @@ private:
     std::map<std::string, ObservationHistory<TIME, VectorDynamics> > m_PositionDynamicsHistory;
     std::map<std::string, ObservationHistory<TIME, VectorDynamics> > m_AttitudeDynamicsHistory;
     std::map<std::string, ObservationHistory<TIME, VehicleLife> > m_VehicleLifeHistory;
-    std::map<std::string, std::vector<Eigen::Vector3d> > m_VehicleTargetPositionList;
     std::map<std::string, std::vector<FullVehicleDynamics> > m_VehicleCommandDynamicsList;
 
 

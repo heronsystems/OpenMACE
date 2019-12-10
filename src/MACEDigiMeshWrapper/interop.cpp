@@ -130,7 +130,7 @@ void Interop::on_message_received(const std::vector<uint8_t> &msg, uint64_t addr
             ResourceKey key;
             ResourceValue value;
 
-            int pos = 1;
+            size_t pos = 1;
 
             //iterate over message pulling every component/value
             while(pos < msg.size())
@@ -142,8 +142,8 @@ void Interop::on_message_received(const std::vector<uint8_t> &msg, uint64_t addr
                 }
                 int ID = 0;
                 pos++;
-                for(int i = 0 ; i < 4 ; i++) {
-                    ID |= (((uint64_t)msg[pos+i]) << (8*(3-i)));
+                for(size_t i = 0 ; i < 4 ; i++) {
+                    ID |= ((static_cast<uint64_t>(msg[pos+i])) << (8*(3-i)));
                 }
                 pos += 4;
 
@@ -157,7 +157,7 @@ void Interop::on_message_received(const std::vector<uint8_t> &msg, uint64_t addr
         case PacketTypes::CONTAINED_VECHILES_REQUEST:
         {
             ResourceKey key;
-            int pos = 1;
+            size_t pos = 1;
 
             //iterate over message pulling every component/value
             while(pos < msg.size())
@@ -184,7 +184,7 @@ void Interop::on_message_received(const std::vector<uint8_t> &msg, uint64_t addr
             ResourceKey key;
             ResourceValue value;
 
-            int pos = 1;
+            size_t pos = 1;
 
             //iterate over message pulling every component/value
             while(pos <= msg.size())
@@ -223,9 +223,9 @@ void Interop::send_item_present_message(const ResourceKey &key, const ResourceVa
 
 
     std::vector<uint8_t> packet;
-    packet.push_back((uint8_t)PacketTypes::COMPONENT_ITEM_PRESENT);
+    packet.push_back(static_cast<uint8_t>(PacketTypes::COMPONENT_ITEM_PRESENT));
 
-    for(int i = 0 ; i < key.size() ; i++) {
+    for(size_t i = 0 ; i < key.size() ; i++) {
 
         std::string componentName = key.at(i);
         int ID = resource.at(i);
@@ -258,7 +258,7 @@ void Interop::send_item_remove_message(const ResourceKey &key, const ResourceVal
         throw std::runtime_error("given resource key and resource value don't match in size!");
     }
 
-    for(int i = 0 ; i < key.size() ; i++) {
+    for(size_t i = 0 ; i < key.size() ; i++) {
 
         std::string componentName = key.at(i);
         int ID = resource.at(i);

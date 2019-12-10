@@ -38,7 +38,8 @@ stationAchieved = zeros(1,ROS_MACE.N);
 k = 1;
 while( ~all(stationAchieved) )
     msg = ROS_MACE.positionSub.LatestMessage;
-    positionCallback( ROS_MACE.positionSub, msg );
+%     msgGeo = ROS_MACE.geopositionSub.LatestMessage;
+    positionCallback( ROS_MACE, msg );
     if ( ~isempty(msg) )
         agentIndex = ROS_MACE.agentIDtoIndex( msg.VehicleID );
         if ( stationAchieved(agentIndex) == 0 )
@@ -59,7 +60,8 @@ while( ~all(stationAchieved) )
 %                         k = k + 1;
 %                     end
                     %
-                    [xF3, yF3] = ENUtoF3( msg.Easting , msg.Northing );
+%                     [Easting, Northing,~] = geodetic2enu(msgGeo.Latitude,msgGeo.Longitude,0,ROS_MACE.LatRef,ROS_MACE.LongRef,0,wgs84Ellipsoid,'degrees');
+                    [xF3, yF3] = ENUtoF3(msg.Easting , msg.Northing );
                     pos = [xF3 yF3];
             end
             dist = norm(pos-[xv(agentIndex) yv(agentIndex)]);

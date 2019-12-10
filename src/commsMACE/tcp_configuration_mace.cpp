@@ -34,7 +34,7 @@ void TcpConfiguration::copyFrom(LinkConfiguration* source)
 {
     LinkConfiguration::copyFrom(source);
     TcpConfiguration* ssource = dynamic_cast<TcpConfiguration*>(source);
-    Q_ASSERT(ssource != NULL);
+    Q_ASSERT(ssource != nullptr);
     _tcpServerAddress    = ssource->tcpServerAddress();
     _tcpServerPort       = ssource->tcpServerPort();
     _udpBroadcastPort    = ssource->udpBroadcastPort();

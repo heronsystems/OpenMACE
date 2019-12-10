@@ -13,6 +13,9 @@ TEMPLATE = lib
 DEFINES += BASE_TOPIC_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -26,16 +29,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    geometry/line_2DC_topic.cpp \
-    pose/cartesian_2D_topic.cpp \
-    vehicle_topics.cpp
+    pose/topic_geodetic_position.cpp \
+    pose/topic_cartesian_position.cpp \
+    pose/topic_cartesian_velocity.cpp \
+    pose/topic_altitude.cpp \
+    pose/topic_agent_orientation.cpp \
+    measurements/topic_airspeed.cpp \
+    measurements/topic_groundspeed.cpp
 
 HEADERS += \
     base_topic_global.h \
-    geometry/line_2DC_topic.h \
-    pose/cartesian_2D_topic.h \
     base_topic_components.h \
-    vehicle_topics.h
+    pose/topic_geodetic_position.h \
+    pose/topic_cartesian_position.h \
+    pose/topic_cartesian_velocity.h \
+    pose/topic_altitude.h \
+    pose/topic_agent_orientation.h \
+    measurements/topic_speed.h
 
 # Unix lib Install
 unix:!symbian {
@@ -57,6 +67,7 @@ include(../headerinstall.pri)
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

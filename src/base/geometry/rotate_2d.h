@@ -2,7 +2,7 @@
 #define ROTATE_2D_H
 
 #include <cmath>
-#include <base/math/helper_pi.h>
+#include "../math/helper_pi.h"
 
 namespace mace {
 namespace geometry {

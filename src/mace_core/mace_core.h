@@ -37,11 +37,7 @@
 #include "octomap/octomap.h"
 #include "octomap/OcTree.h"
 
-#include "data_generic_state_item/positional_aid.h"
 #include "data_generic_command_item/command_item_components.h"
-//#include "data_generic_command_item/boundary_items/boundary_key.h"
-//#include "data_generic_command_item/boundary_items/boundary_type.h"
-//#include "data_generic_command_item/boundary_items/boundary_list.h"
 
 #include <common/logging/macelog.h>
 
@@ -50,14 +46,14 @@ namespace MaceCore
 {
 
 class MACE_CORESHARED_EXPORT MaceCore :
-        public IModuleTopicEvents,
-        public IModuleEventsVehicle,
-        public IModuleEventsSensors,
-        public IModuleEventsRTA,
-        public IModuleEventsPathPlanning,
-        public IModuleEventsROS,
-        public IModuleEventsGroundStation,
-        public IModuleEventsExternalLink
+        virtual public IModuleTopicEvents,
+        virtual public IModuleEventsVehicle,
+        virtual public IModuleEventsSensors,
+        virtual public IModuleEventsRTA,
+        virtual public IModuleEventsPathPlanning,
+        virtual public IModuleEventsROS,
+        virtual public IModuleEventsGroundStation,
+        virtual public IModuleEventsExternalLink
 {
 
 
@@ -220,7 +216,7 @@ public:
     //! \param sender
     //! \param gotTo
     //!
-    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const CommandItem::CommandGoTo &gotTo);
+    virtual void Event_IssueCommandGoTo(const ModuleBase* sender, const command_item::Action_ExecuteSpatialItem &gotTo);
 
     //!
     //! \brief Event to signify that a new vehicle is available
@@ -242,49 +238,49 @@ public:
     //! \param sender Sender module
     //! \param command Arm/Disarm action
     //!
-    virtual void Event_IssueCommandSystemArm(const ModuleBase* sender, const CommandItem::ActionArm &command);
+    virtual void Event_IssueCommandSystemArm(const ModuleBase* sender, const command_item::ActionArm &command);
 
     //!
     //! \brief Event_IssueCommandTakeoff Event to trigger a TAKEOFF command
     //! \param sender Sender module
     //! \param command Takeoff command
     //!
-    virtual void Event_IssueCommandTakeoff(const ModuleBase* sender, const CommandItem::SpatialTakeoff &command);
+    virtual void Event_IssueCommandTakeoff(const ModuleBase* sender, const command_item::SpatialTakeoff &command);
 
     //!
     //! \brief Event_IssueCommandLand Event to trigger a LAND command
     //! \param sender Sender module
     //! \param command Land command
     //!
-    virtual void Event_IssueCommandLand(const ModuleBase* sender, const CommandItem::SpatialLand &command);
+    virtual void Event_IssueCommandLand(const ModuleBase* sender, const command_item::SpatialLand &command);
 
     //!
     //! \brief Event_IssueCommandRTL Event to trigger an RTL command
     //! \param sender Sender module
     //! \param command RTL command
     //!
-    virtual void Event_IssueCommandRTL(const ModuleBase* sender, const CommandItem::SpatialRTL &command);
+    virtual void Event_IssueCommandRTL(const ModuleBase* sender, const command_item::SpatialRTL &command);
 
     //!
     //! \brief Event_IssueMissionCommand Event to trigger a mission command
     //! \param sender Sender module
     //! \param command Mission command
     //!
-    virtual void Event_IssueMissionCommand(const ModuleBase* sender, const CommandItem::ActionMissionCommand &command);
+    virtual void Event_IssueMissionCommand(const ModuleBase* sender, const command_item::ActionMissionCommand &command);
 
     //!
     //! \brief Event_ChangeSystemMode Event to trigger a mode change
     //! \param sender Sender module
     //! \param command Mode change command
     //!
-    virtual void Event_ChangeSystemMode(const ModuleBase *sender, const CommandItem::ActionChangeMode &command);
+    virtual void Event_ChangeSystemMode(const ModuleBase *sender, const command_item::ActionChangeMode &command);
 
     //!
     //! \brief Event_IssueGeneralCommand Event to trigger a general command
     //! \param sender Sender module
     //! \param command General command
     //!
-    virtual void Event_IssueGeneralCommand(const ModuleBase* sender, const CommandItem::AbstractCommandItem &command);
+    virtual void Event_IssueGeneralCommand(const ModuleBase* sender, const command_item::AbstractCommandItem &command);
 
     //!
     //! \brief Event_GetMission Event to trigger a "get mission" action
@@ -334,7 +330,7 @@ public:
     //! \param sender Sender module
     //! \param vehicleHome New vehicle home position
     //!
-    virtual void Event_SetHomePosition(const ModuleBase *sender, const CommandItem::SpatialHome &vehicleHome);
+    virtual void Event_SetHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome);
 
     //!
     //! \brief Event_SetGridSpacing Event to set a new grid spacing
@@ -348,8 +344,10 @@ public:
     //! \param sender Sender module
     //! \param globalHome New global origin position
     //!
-    void Event_SetGlobalOrigin(const void* sender, const mace::pose::GeodeticPosition_3D &globalHome) override;
+    void Event_SetGlobalOrigin(const ModuleBase* sender, const mace::pose::GeodeticPosition_3D &globalHome) override;
 
+
+    void Event_ProcessGoalState(const ModuleBase* sender, const mace::state_space::GoalState &state) override;
 
 public:
     /////////////////////////////////////////////////////////////////////////
@@ -394,7 +392,7 @@ public:
     //! \param sender Sender module
     //! \param vehicleHome New vehicle home
     //!
-    virtual void GVEvents_NewHomePosition(const ModuleBase *sender, const CommandItem::SpatialHome &vehicleHome);
+    virtual void GVEvents_NewHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome);
 
     //!
     //! \brief GVEvents_MissionExeStateUpdated New mission EXE state event
@@ -448,7 +446,7 @@ public:
     //! \param sender Sender module
     //! \param remoteID New remote ID
     //!
-    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const int &remoteID);
+    virtual void ExternalEvent_UpdateRemoteID(const void *sender, const unsigned int &remoteID);
 
 
     //!
@@ -552,6 +550,8 @@ public:
     /// PATH PLANNING EVENTS
     /////////////////////////////////////////////////////////////////////////
 
+    void EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj) override;
+
     //!
     //! \brief EventPP_LoadOccupancyEnvironment Load a new occupancy map
     //! \param sender Sender module
@@ -585,7 +585,7 @@ public:
     //! \param sender Sender module
     //! \param queue New mission queue
     //!
-    void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const TargetItem::DynamicMissionQueue &queue) override;
+    void EventPP_NewDynamicMissionQueue(const ModuleBase* sender, const command_target::DynamicMissionQueue &queue) override;
 
     //!
     //! \brief EventPP_NewPathFound New path found event
@@ -661,7 +661,7 @@ public:
     //! \param obj Point cloud object
     //! \param position Position of sensor
     //!
-    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position) override;
+    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::CartesianPosition_3D &position) override;
 
     //!
     //! \brief ROS_NewLaserScan New laser scan from ROS/Gazebo
@@ -669,7 +669,7 @@ public:
     //! \param position Position of sensor
     //! \param orientation Orientation of sensor
     //!
-    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position, const mace::pose::Orientation_3D& orientation) override;
+    void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) override;
 public:
 
     /////////////////////////////////////////////////////////////////////////

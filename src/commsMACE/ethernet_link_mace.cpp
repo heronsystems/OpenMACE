@@ -29,7 +29,7 @@ const uint8_t DEFAULT_WAIT_ON_PROCESSING_THREADS_IN_MS = 10;
 
 EthernetLink::EthernetLink(const EthernetConfiguration &config) :
     _config(config),
-    m_UDPSocket(NULL)
+    m_UDPSocket(nullptr)
 {
 
     m_TCPProcessSocketsThread = new ReceiverThread([&](){
@@ -44,7 +44,7 @@ EthernetLink::EthernetLink(const EthernetConfiguration &config) :
 
 EthernetLink::~EthernetLink()
 {
-    if(m_UDPSocket != NULL)
+    if(m_UDPSocket != nullptr)
     {
         delete m_UDPSocket;
     }
@@ -148,7 +148,7 @@ bool EthernetLink::Connect()
     m_IncommingTCPConnectionListenThread = new ReceiverThread([&](){
         if(m_TCPConnectionServer->hasPendingConnections() == true) {
             QTcpSocket *connection = m_TCPConnectionServer->nextPendingConnection();
-            connection->setParent(NULL);
+            connection->setParent(nullptr);
             std::string addressPortPair = (connection->peerAddress().toString() + ":" + connection->peerPort()).toStdString();
             connection->moveToThread(m_TCPProcessSocketsThread);
             this->m_TCPSockets.insert({addressPortPair, connection});

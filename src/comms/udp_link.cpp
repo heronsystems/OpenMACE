@@ -15,7 +15,7 @@ public:
         m_func(func),
         m_Shutdown(false)
     {
-        if(QCoreApplication::instance() == NULL)
+        if(QCoreApplication::instance() == nullptr)
         {
             int argc = 0;
             char * argv[] = {(char *)"sharedlib.app"};
@@ -54,7 +54,7 @@ private:
 UdpLink::UdpLink(const UdpConfiguration &config) :
     _config(config)
 {
-    m_socket    = NULL;
+    m_socket    = nullptr;
     m_bytesRead = 0;
     m_stopp    = false;
     m_reqReset = false;
@@ -66,7 +66,7 @@ UdpLink::~UdpLink()
 {
     Disconnect();
     if(m_socket) delete m_socket;
-    m_socket = NULL;
+    m_socket = nullptr;
 }
 
 void UdpLink::RequestReset()
@@ -114,7 +114,7 @@ void UdpLink::Disconnect(void)
         m_socket->close();
 
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
     }
 }
 
@@ -130,7 +130,7 @@ bool UdpLink::_hardwareConnect(QAbstractSocket::SocketError &error, QString& err
         m_socket->close();
         std::this_thread::sleep_for(std::chrono::microseconds(50000));
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
     }
 
     std::cout << "UdpLink: hardwareConnect to " << _config.listenAddress() << ":" << _config.listenPortNumber() << std::endl;
@@ -157,7 +157,7 @@ bool UdpLink::_hardwareConnect(QAbstractSocket::SocketError &error, QString& err
         EmitEvent([&](const ILinkEvents *ptr){ptr->CommunicationUpdate(this, _config.listenAddress(), "Error opening port: " + errorString.toStdString());});
         m_socket->close();
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
         return false; // couldn't open udp port
     }
 

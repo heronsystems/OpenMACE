@@ -15,12 +15,13 @@ TEMPLATE = lib
 DEFINES += MODULE_VEHICLE_ARDUPILOT_LIBRARY
 
 QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
 
 SOURCES += module_vehicle_ardupilot.cpp \
+    ardupilot_states/state_grounded_disarmed.cpp \
     module_vehicle_ardupilot_mission_parser.cpp \
-    ardupilot_guided_controller.cpp \
-    ardupilot_takeoff_controller.cpp \
-    ardupilot_general_controller.cpp \
     ardupilot_states/abstract_state_ardupilot.cpp \
     ardupilot_states/state_takeoff_climbing.cpp \
     ardupilot_states/state_takeoff_transitioning.cpp \
@@ -49,15 +50,17 @@ SOURCES += module_vehicle_ardupilot.cpp \
     ardupilot_states/state_flight_loiter.cpp \
     ardupilot_states/state_unknown.cpp \
     ardupilot_states/abstract_root_state.cpp \
-    ardupilot_states/state_flight_guided_goto.cpp \
     ardupilot_states/state_flight_guided_queue.cpp \
-    ardupilot_states/state_flight_guided_idle.cpp
+    ardupilot_states/state_flight_guided_idle.cpp \
+    guided_timeout_controller.cpp \
+    ardupilot_states/state_flight_guided_target_geo.cpp \
+    ardupilot_states/state_flight_guided_target_car.cpp \
+    ardupilot_states/state_flight_guided_spatial_item.cpp \
+    ardupilot_states/state_flight_guided_target_att.cpp
 
 HEADERS += module_vehicle_ardupilot.h\
+    ardupilot_states/state_grounded_disarmed.h \
         module_vehicle_ardupilot_global.h \
-    ardupilot_guided_controller.h \
-    ardupilot_takeoff_controller.h \
-    ardupilot_general_controller.h \
     ardupilot_states/abstract_state_ardupilot.h \
     ardupilot_states/ardupilot_hsm.h \
     ardupilot_states/ardupilot_state_types.h \
@@ -89,9 +92,13 @@ HEADERS += module_vehicle_ardupilot.h\
     ardupilot_states/state_flight_loiter.h \
     ardupilot_states/state_unknown.h \
     ardupilot_states/abstract_root_state.h \
-    ardupilot_states/state_flight_guided_goto.h \
     ardupilot_states/state_flight_guided_queue.h \
-    ardupilot_states/state_flight_guided_idle.h
+    ardupilot_states/state_flight_guided_idle.h \
+    guided_timeout_controller.h \
+    ardupilot_states/state_flight_guided_target_geo.h \
+    ardupilot_states/state_flight_guided_target_car.h \
+    ardupilot_states/state_flight_guided_spatial_item.h \
+    ardupilot_states/state_flight_guided_target_att.h
 
 
 INCLUDEPATH += $$PWD/../
@@ -99,8 +106,6 @@ INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../speedLog/
 
 # Unix lib Install
 unix:!symbian {
@@ -151,15 +156,6 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item/ -ldata_generic_item
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/release/ -ldata_generic_item_topic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item_topic/debug/ -ldata_generic_item_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_item_topic/ -ldata_generic_item_topic
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/release/ -ldata_generic_state_item
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item/debug/ -ldata_generic_state_item
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item/ -ldata_generic_state_item
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/release/ -ldata_generic_state_item_topic
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/debug/ -ldata_generic_state_item_topic
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_state_item_topic/ -ldata_generic_state_item_topic
-
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/release/ -ldata_generic_command_item
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_command_item/debug/ -ldata_generic_command_item

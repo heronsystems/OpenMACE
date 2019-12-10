@@ -20,7 +20,7 @@ char EXTERNAL_LINK_STR[] = "ExternalLink";
 
 DigiMeshLink::DigiMeshLink(const DigiMeshConfiguration &config) :
     _config(config),
-    m_Link(NULL)
+    m_Link(nullptr)
 {
 #ifdef CAUSE_RANDOM_FAILURES
     std::srand(std::time(nullptr));
@@ -29,7 +29,7 @@ DigiMeshLink::DigiMeshLink(const DigiMeshConfiguration &config) :
 
 DigiMeshLink::~DigiMeshLink()
 {
-    if(m_Link != NULL)
+    if(m_Link != nullptr)
     {
         delete m_Link;
     }
@@ -120,7 +120,7 @@ void DigiMeshLink::RequestRemoteResources() const
 
 bool DigiMeshLink::isConnected() const
 {
-    if(m_Link == NULL)
+    if(m_Link == nullptr)
     {
         return false;
     }

@@ -23,7 +23,7 @@ public:
         m_func(func),
         m_Shutdown(false)
     {
-        if(QCoreApplication::instance() == NULL)
+        if(QCoreApplication::instance() == nullptr)
         {
             int argc = 0;
             char * argv[] = {(char *)"sharedlib.app"};
@@ -62,8 +62,8 @@ private:
 TcpLink::TcpLink(const TcpConfiguration &config) :
     _config(config)
 {
-    m_udpSocket    = NULL;
-    tcpClient    = NULL;
+    m_udpSocket    = nullptr;
+    tcpClient    = nullptr;
     m_bytesRead = 0;
     m_stopp    = false;
     m_reqReset = false;
@@ -72,14 +72,14 @@ TcpLink::TcpLink(const TcpConfiguration &config) :
 TcpLink::~TcpLink()
 {
     // Clean up threads:
-    if(serverThread != NULL)
+    if(serverThread != nullptr)
     {
         ((CustomThread*)serverThread)->shutdown();
         delete serverThread;
     }
 
     for(QThread* thread : clientThreads) {
-        if(thread != NULL) {
+        if(thread != nullptr) {
             ((CustomThread*)thread)->shutdown();
             delete thread;
         }
@@ -182,7 +182,7 @@ void TcpLink::Disconnect(void)
     }
 
     if (m_udpSocket) {
-        if(m_UDPListenThread != NULL) {
+        if(m_UDPListenThread != nullptr) {
             ((CustomThread*)m_UDPListenThread)->shutdown();
             delete m_UDPListenThread;
         }
@@ -190,7 +190,7 @@ void TcpLink::Disconnect(void)
         m_udpSocket->close();
 
         delete m_udpSocket;
-        m_udpSocket = NULL;
+        m_udpSocket = nullptr;
     }
 }
 
@@ -246,7 +246,7 @@ bool TcpLink::StartUDPListener() {
         m_udpSocket->close();
         std::this_thread::sleep_for(std::chrono::microseconds(50000));
         delete m_udpSocket;
-        m_udpSocket = NULL;
+        m_udpSocket = nullptr;
     }
 
     m_udpSocket = new QUdpSocket();
@@ -269,7 +269,7 @@ bool TcpLink::StartUDPListener() {
         std::cout << "Error opening port: " << m_udpSocket->errorString().toStdString() << std::endl;
         m_udpSocket->close();
         delete m_udpSocket;
-        m_udpSocket = NULL;
+        m_udpSocket = nullptr;
         return false; // couldn't open udp port
     }
 

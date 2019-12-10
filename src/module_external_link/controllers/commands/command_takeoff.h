@@ -7,7 +7,7 @@
 
 namespace ExternalLink {
 
-class CommandTakeoff : public Controller_GenericLongCommand<CommandItem::SpatialTakeoff, (uint8_t)CommandItem::COMMANDITEM::CI_NAV_TAKEOFF>
+class CommandTakeoff : public Controller_GenericLongCommand<command_item::SpatialTakeoff, (uint8_t)command_item::COMMANDTYPE::CI_NAV_TAKEOFF>
 {
 public:
 
@@ -15,9 +15,9 @@ public:
 
 protected:
 
-    virtual void FillCommand(const CommandItem::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const;
+    virtual void FillCommand(const command_item::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const;
 
-    virtual void BuildCommand(const mace_command_long_t &message, CommandItem::SpatialTakeoff &data) const;
+    virtual void BuildCommand(const mace_command_long_t &message, command_item::SpatialTakeoff &data) const;
 
 };
 

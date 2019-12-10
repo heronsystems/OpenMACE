@@ -1,10 +1,13 @@
 #ifndef DYNAMIC_MISSION_QUEUE_H
 #define DYNAMIC_MISSION_QUEUE_H
 
-#include "../mission_items/mission_list.h"
+#include "../mission_items/mission_key.h"
+
 #include "dynamic_target_list.h"
 
-namespace TargetItem {
+namespace command_target {
+
+MACE_CLASS_FORWARD(DynamicMissionQueue);
 
 class DynamicMissionQueue
 {
@@ -19,53 +22,53 @@ public:
 
     void setMissionKey(const MissionItem::MissionKey &key)
     {
-        this->missionKey = key;
+        this->m_missionKey = key;
     }
 
-    void setDynamicTargetList(const TargetItem::DynamicTargetList &list)
+    void setDynamicTargetList(const DynamicTargetList &list)
     {
         this->m_TargetList = list;
     }
 
-    const TargetItem::DynamicTargetList* getDynamicTargetList() const
+    const DynamicTargetList* getDynamicTargetList() const
     {
         return &this->m_TargetList;
     }
 
-    TargetItem::DynamicTargetList* getDynamicTargetList()
+    DynamicTargetList* getDynamicTargetList()
     {
         return &this->m_TargetList;
     }
 
     MissionItem::MissionKey getAssociatedMissionKey() const
     {
-        return this->missionKey;
+        return this->m_missionKey;
     }
 
     void setAssociatedMissionItem(const unsigned int &itemIndex)
     {
-        this->describingMissionItem = itemIndex;
+        this->associatedMissionItem = itemIndex;
     }
 
     unsigned int getAssociatedMissionItem() const
     {
-        return this->describingMissionItem;
+        return this->associatedMissionItem;
     }
 
 public:
     DynamicMissionQueue& operator = (const DynamicMissionQueue &rhs)
     {
-        this->missionKey = rhs.missionKey;
-        this->describingMissionItem = rhs.describingMissionItem;
+        this->m_missionKey = rhs.m_missionKey;
+        this->associatedMissionItem = rhs.associatedMissionItem;
         this->m_TargetList = rhs.m_TargetList;
         return *this;
     }
 
     bool operator == (const DynamicMissionQueue &rhs) const{
-        if(this->missionKey != rhs.missionKey){
+        if(this->m_missionKey != rhs.m_missionKey){
             return false;
         }
-        if(this->describingMissionItem != rhs.describingMissionItem){
+        if(this->associatedMissionItem != rhs.associatedMissionItem){
             return false;
         }
         if(this->m_TargetList != rhs.m_TargetList){
@@ -79,11 +82,12 @@ public:
     }
 
 private:
-    MissionItem::MissionKey missionKey;
-    unsigned int describingMissionItem = 0;
+    MissionItem::MissionKey m_missionKey;
+    unsigned int associatedMissionItem = 0;
 
-    TargetItem::DynamicTargetList m_TargetList;
+    DynamicTargetList m_TargetList;
 };
 
-} //end of namespace DynamicMissionQueue
+} //end of namespace command_target
+
 #endif // DYNAMIC_MISSION_QUEUE_H

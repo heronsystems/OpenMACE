@@ -12,7 +12,7 @@ static const int TIME_INTERVAL_BETWEEN_CONSECUTIVE_REMOTE_RESOURCE_REQUEST_IN_MS
 
 CommsMarshaler::CommsMarshaler() :
     m_MavlinkChannelsUsedBitMask(1),
-    m_ExpectedResourceWatchdog(NULL)
+    m_ExpectedResourceWatchdog(nullptr)
 {
 
 }
@@ -395,10 +395,10 @@ void CommsMarshaler::AddedExternalResource(ILink *link_ptr, const Resource &reso
         /// if no longer expecting any responses quit the watchdog and delete it.
         if(m_ExpectedResource.at(link_ptr).size() == 0)
         {
-            if(m_ExpectedResourceWatchdog != NULL)
+            if(m_ExpectedResourceWatchdog != nullptr)
             {
                 delete m_ExpectedResourceWatchdog;
-                m_ExpectedResourceWatchdog = NULL;
+                m_ExpectedResourceWatchdog = nullptr;
             }
         }
     }

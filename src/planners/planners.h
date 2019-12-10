@@ -15,6 +15,9 @@ namespace planners {
 class Planner_Interface
 {
 public:
+    virtual ~Planner_Interface() = default;
+
+public:
     virtual void cbiPlanner_SampledState(const state_space::State* sampleState) = 0;
     virtual void cbiPlanner_NewConnection(const state_space::State* beginState, const state_space::State* secondState) = 0;
 };
@@ -24,6 +27,8 @@ class PLANNERSSHARED_EXPORT Planners
 
 public:
     Planners(const state_space::SpaceInformationPtr &spaceInfo = nullptr);
+
+    virtual ~Planners() = default;
 
     virtual std::vector<state_space::State*> solve() = 0;
 

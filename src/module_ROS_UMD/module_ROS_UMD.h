@@ -16,9 +16,6 @@
 #include "data/topic_data_object_collection.h"
 #include "base_topic/base_topic_components.h"
 
-#include "data_generic_state_item/state_item_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
-
 #include "data_generic_item/data_generic_item_components.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
 
@@ -26,7 +23,7 @@
 
 #include "maps/map_topic_components.h"
 
-#include "base/pose/orientation_3D.h"
+#include "base/pose/rotation_3D.h"
 
 #include <memory>
 
@@ -52,12 +49,12 @@ public:
     //!
     ModuleROSUMD();
 
-    ~ModuleROSUMD();
+    ~ModuleROSUMD() override;
 
     //!
     //! \brief start Start ROS loop
     //!
-    void start();
+    void start() override;
 
     // ============================================================================= //
     // ================= Default methods for module configuration ================== //
@@ -68,7 +65,7 @@ public:
     //! \brief This module as been attached as a module
     //! \param ptr pointer to object that attached this instance to itself
     //!
-    virtual void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
+    void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr) override
     {
         ptr->Subscribe(this, m_VehicleDataTopic.Name());
         ptr->Subscribe(this, m_VehicleMissionTopic.Name());
@@ -78,14 +75,14 @@ public:
     //! \brief Describes the strucure of the parameters for this module
     //! \return Strucure
     //!
-    virtual std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const;
+    std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const override;
 
 
     //!
     //! \brief Provides object contains parameters values to configure module with
     //! \param params Parameters to configure
     //!
-    virtual void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params);
+    void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params) override;
 
     //!
     //! \brief New non-spooled topic given
@@ -135,7 +132,7 @@ public:
     //! \brief NewlyAvailableVehicle Subscriber to a newly available vehicle topic
     //! \param vehicleID Vehilce ID of the newly available vehicle
     //!
-    virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyUpdated3DOccupancyMap Subscriber to a newly available 3D occupancy map
@@ -166,24 +163,21 @@ public:
     //! \param vehicleID ID of the vehicle to update
     //! \param component Position (in the local frame)
     //!
-    void updatePositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateLocalPositionTopic> &component);
+    void updatePositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> &component);
 
     //!
     //! \brief updateGlobalPositionData Update the position of the corresponding vehicle and convert to a local position (from Geodetic 3D)
     //! \param vehicleID ID of the vehicle to update
     //! \param component Position (in a global, Geodetic frame)
     //!
-    void updateGlobalPositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> &component);
+    void updateGlobalPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component);
 
     //!
     //! \brief updateAttitudeData Update the attitude of the corresponding Gazebo model based on attitude of MACE vehicle
     //! \param vehicleID ID of the vehicle to update
     //! \param component Attitude
     //!
-    void updateAttitudeData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateAttitudeTopic> &component);
-
-    // TODO: Better workaround for transformations
-    void convertToENU(DataState::StateLocalPosition& localPos);
+    void updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component);
 
     // ============================================================================= //
     // ========================  ROS Specific functions:  ========================== //
@@ -264,7 +258,7 @@ private:
     //!
     //! \brief m_vehicleMap Container for map of vehicle IDs and corresponding most recent Position and Attitude data
     //!
-    std::map<int, std::tuple<DataState::StateLocalPosition, DataState::StateAttitude> > m_vehicleMap;
+    std::map<int, std::tuple<mace::pose::CartesianPosition_3D, mace::pose::Rotation_3D>> m_vehicleMap;
 
     //!
     //! \brief m_timer Timer that triggers a ROS spin event to cycle through any queued ROS messages
@@ -297,16 +291,6 @@ private:
     std::shared_ptr<MATLABListener> m_matlabListener;
 
     //!
-    //! \brief m_client Service client for takeoff commands issued from MATLAB
-    //!
-    ros::ServiceServer m_takeoffService;
-
-    //!
-    //! \brief m_client Service client for land commands issued from MATLAB
-    //!
-    ros::ServiceServer m_landService;
-
-    //!
     //! \brief m_client Service client for arm commands issued from MATLAB
     //!
     ros::ServiceServer m_armService;
@@ -317,6 +301,31 @@ private:
     ros::ServiceServer m_datumService;
 
     //!
+    //! \brief m_client Service client for dynamic kinematic commands issued from MATLAB
+    //!
+    ros::ServiceServer m_dynamicTargetService_Kinematic;
+
+    //!
+    //! \brief m_client Service client for dynamic orientation based on Euler commands issued from MATLAB
+    //!
+    ros::ServiceServer m_dynamicTargetService_OrientationEuler;
+
+    //!
+    //! \brief m_client Service client for dynamic orientation based on Euler commands issued from MATLAB
+    //!
+    ros::ServiceServer m_dynamicTargetService_OrientationQuat;
+
+    //!
+    //! \brief m_client Service client for land commands issued from MATLAB
+    //!
+    ros::ServiceServer m_landService;
+
+    //!
+    //! \brief m_client Service client for takeoff commands issued from MATLAB
+    //!
+    ros::ServiceServer m_takeoffService;
+
+    //!
     //! \brief m_client Service client for waypoint commands issued from MATLAB
     //!
     ros::ServiceServer m_wptService;
@@ -324,7 +333,8 @@ private:
     //!
     //! \brief m_vehiclePosPub Publisher for vehicle position
     //!
-    ros::Publisher m_vehiclePosPub;
+    ros::Publisher m_vehicleLocalPosPub;
+    ros::Publisher m_vehicleGeodeticPosPub;
 
     //!
     //! \brief m_vehicleAttPub Publisher for vehicle attitude
@@ -362,7 +372,7 @@ private:
 private:
 
     //Subscribing to generic vehicle state data that is published throughout the MACE network
-    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, DATA_STATE_GENERIC_TOPICS> m_VehicleDataTopic;
+    Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, BASE_POSE_TOPICS> m_VehicleDataTopic;
 
     //Subscribing to generic mission topics published throughout the MACE network
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_VehicleMissionTopic;

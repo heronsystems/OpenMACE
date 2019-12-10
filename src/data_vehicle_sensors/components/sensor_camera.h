@@ -2,8 +2,10 @@
 #define SENSOR_CAMERA_H
 
 #include <string>
-#include "data/i_topic_component_data_object.h"
 #include <cmath>
+#include <limits>
+
+#include "data/i_topic_component_data_object.h"
 
 namespace DataVehicleSensors
 {
@@ -57,18 +59,18 @@ public:
     }
 
 
-    void setImageWidth(const int &imageWidth){
+    void setImageWidth(const unsigned int &imageWidth){
         this->imageWidth = imageWidth;
     }
-    int getImageWidth() const{
+    unsigned int getImageWidth() const{
         return(imageWidth);
     }
 
 
-    void setImageHeight(const int &imageHeight){
+    void setImageHeight(const unsigned int &imageHeight){
         this->imageHeight = imageHeight;
     }
-    int getImageHeight() const{
+    unsigned int getImageHeight() const{
         return(imageHeight);
     }
 
@@ -106,13 +108,13 @@ public:
         if(this->stabilized != rhs.stabilized){
             return false;
         }
-        if(this->HFOVA != rhs.HFOVA){
+        if(fabs(this->HFOVA - rhs.HFOVA) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->VFOVA != rhs.VFOVA){
+        if(fabs(this->VFOVA - rhs.VFOVA) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->focalLength != rhs.focalLength){
+        if(fabs(this->focalLength - rhs.focalLength) > std::numeric_limits<double>::epsilon()){
             return false;
         }
         if(this->imageWidth != rhs.imageWidth){
@@ -121,15 +123,16 @@ public:
         if(this->imageHeight != rhs.imageHeight){
             return false;
         }
-        if(this->sensorWidth != rhs.sensorWidth){
+        if(fabs(this->sensorWidth - rhs.sensorWidth) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->sensorHeight != rhs.sensorHeight){
+        if(fabs(this->sensorHeight - rhs.sensorHeight) > std::numeric_limits<double>::epsilon()){
             return false;
         }
-        if(this->imageRate != rhs.imageRate){
+        if(fabs(this->imageRate - rhs.imageRate) > std::numeric_limits<double>::epsilon()){
             return false;
         }
+        return true;
     }
 
     bool operator != (const SensorCamera &rhs) {
@@ -142,8 +145,8 @@ protected:
     double HFOVA; //value in radians
     double VFOVA; //value in radians
     double focalLength; //value in mm
-    int imageWidth; //value in pixels
-    int imageHeight; //value in pixels
+    unsigned int imageWidth; //value in pixels
+    unsigned int imageHeight; //value in pixels
     double sensorWidth; //value in mm
     double sensorHeight; //value in mm
     double imageRate; //value in hz

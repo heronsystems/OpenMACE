@@ -13,7 +13,7 @@
 
 class ARDUPILOTComponent_FlightMode
 {
-    enum class Arducopter_FM {
+    enum class Arducopter_FM : uint8_t {
         ACFM_STABILIZE =     0,  // manual airframe angle with manual throttle
         ACFM_ACRO =          1,  // manual body-frame angular rate with manual throttle
         ACFM_ALT_HOLD =      2,  // manual airframe angle with automatic throttle
@@ -36,7 +36,7 @@ class ARDUPILOTComponent_FlightMode
         ACFM_NR = 22
     };
 
-    enum class Arduplane_FM {
+    enum class Arduplane_FM : uint8_t{
         APFM_MANUAL        = 0,
         APFM_CIRCLE        = 1,
         APFM_STABILIZE     = 2,
@@ -73,49 +73,49 @@ public:
     void getAvailableFlightModes(const Data::VehicleTypes &vehicleType, std::map<int, std::string> &availableFM);
 
 private:
-    std::map<int, std::string> arducopterFM = {{(int)Arducopter_FM::ACFM_STABILIZE,"STABILIZE"},
-                                               {(int)Arducopter_FM::ACFM_ACRO,"ACRO"},
-                                               {(int)Arducopter_FM::ACFM_ALT_HOLD,"ALT HOLD"},
-                                               {(int)Arducopter_FM::ACFM_AUTO,"AUTO"},
-                                               {(int)Arducopter_FM::ACFM_GUIDED,"GUIDED"},
-                                               {(int)Arducopter_FM::ACFM_LOITER,"LOITER"},
-                                               {(int)Arducopter_FM::ACFM_RTL,"RTL"},
-                                               {(int)Arducopter_FM::ACFM_CIRCLE,"CIRCLE"},
-                                               {(int)Arducopter_FM::ACFM_LAND,"LAND"},
-                                               {(int)Arducopter_FM::ACFM_DRIFT,"DRIFT"},
-                                               {(int)Arducopter_FM::ACFM_SPORT,"SPORT"},
-                                               {(int)Arducopter_FM::ACFM_FLIP,"FLIP"},
-                                               {(int)Arducopter_FM::ACFM_AUTOTUNE,"AUTOTUNE"},
-                                               {(int)Arducopter_FM::ACFM_POSHOLD,"POSHOLD"},
-                                               {(int)Arducopter_FM::ACFM_BRAKE,"BRAKE"},
-                                               {(int)Arducopter_FM::ACFM_THROW,"THROW"},
-                                               {(int)Arducopter_FM::ACFM_AVOID_ADSB,"AVOID ADSB"},
-                                               {(int)Arducopter_FM::ACFM_GUIDED_NOGPS,"GUIDED NO GPS"},
-                                               {(int)Arducopter_FM::ACFM_UNKNOWN,"UNKNOWN"}};
+    std::map<uint8_t, std::string> arducopterFM = {{static_cast<uint8_t>(Arducopter_FM::ACFM_STABILIZE),"STABILIZE"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_ACRO),"ACRO"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_ALT_HOLD),"ALT HOLD"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_AUTO),"AUTO"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_GUIDED),"GUIDED"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_LOITER),"LOITER"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_RTL),"RTL"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_CIRCLE),"CIRCLE"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_LAND),"LAND"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_DRIFT),"DRIFT"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_SPORT),"SPORT"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_FLIP),"FLIP"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_AUTOTUNE),"AUTOTUNE"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_POSHOLD),"POSHOLD"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_BRAKE),"BRAKE"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_THROW),"THROW"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_AVOID_ADSB),"AVOID ADSB"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_GUIDED_NOGPS),"GUIDED NO GPS"},
+                                               {static_cast<uint8_t>(Arducopter_FM::ACFM_UNKNOWN),"UNKNOWN"}};
 
-    std::map<int, std::string> arduplaneFM = {{(int)Arduplane_FM::APFM_MANUAL,"MANUAL"},
-                                               {(int)Arduplane_FM::APFM_CIRCLE,"CIRCLE"},
-                                               {(int)Arduplane_FM::APFM_STABILIZE,"STABILIZE"},
-                                               {(int)Arduplane_FM::APFM_TRAINING,"TRAINING"},
-                                               {(int)Arduplane_FM::APFM_ACRO,"ACRO"},
-                                               {(int)Arduplane_FM::APFM_FLY_BY_WIRE_A,"FBWA"},
-                                               {(int)Arduplane_FM::APFM_FLY_BY_WIRE_B,"FBWB"},
-                                               {(int)Arduplane_FM::APFM_CRUISE,"CRUISE"},
-                                               {(int)Arduplane_FM::APFM_AUTOTUNE,"AUTOTUNE"},
-                                               {(int)Arduplane_FM::APFM_AUTO,"AUTO"},
-                                               {(int)Arduplane_FM::APFM_RTL,"RTL"},
-                                               {(int)Arduplane_FM::APFM_LOITER,"LOITER"},
-                                               {(int)Arduplane_FM::APFM_AVOID_ADSB,"AVOID ADSB"},
-                                               {(int)Arduplane_FM::APFM_GUIDED,"GUIDED"},
-                                               {(int)Arduplane_FM::APFM_INITIALISING,"INITIALIZING"},
-                                               {(int)Arduplane_FM::APFM_QSTABILIZE,"QSTABILIZE"},
-                                               {(int)Arduplane_FM::APFM_QHOVER,"QHOVER"},
-                                               {(int)Arduplane_FM::APFM_QLOITER,"QLOITER"},
-                                               {(int)Arduplane_FM::APFM_QLAND,"QLAND"},
-                                               {(int)Arduplane_FM::APFM_QRTL,"QRTL"},
-                                               {(int)Arduplane_FM::APFM_UNKNOWN,"UNKNOWN"}};
+    std::map<uint8_t, std::string> arduplaneFM = {{static_cast<uint8_t>(Arduplane_FM::APFM_MANUAL),"MANUAL"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_CIRCLE),"CIRCLE"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_STABILIZE),"STABILIZE"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_TRAINING),"TRAINING"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_ACRO),"ACRO"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_FLY_BY_WIRE_A),"FBWA"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_FLY_BY_WIRE_B),"FBWB"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_CRUISE),"CRUISE"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_AUTOTUNE),"AUTOTUNE"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_AUTO),"AUTO"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_RTL),"RTL"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_LOITER),"LOITER"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_AVOID_ADSB),"AVOID ADSB"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_GUIDED),"GUIDED"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_INITIALISING),"INITIALIZING"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_QSTABILIZE),"QSTABILIZE"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_QHOVER),"QHOVER"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_QLOITER),"QLOITER"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_QLAND),"QLAND"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_QRTL),"QRTL"},
+                                               {static_cast<uint8_t>(Arduplane_FM::APFM_UNKNOWN),"UNKNOWN"}};
 private:
-    std::map<int,std::string> availableFM;
+    std::map<uint8_t,std::string> availableFM;
     int currentFM;
 };
 

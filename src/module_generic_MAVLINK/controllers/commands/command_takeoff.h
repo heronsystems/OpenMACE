@@ -8,18 +8,18 @@
 namespace Controllers {
 
 template <typename MESSAGETYPE>
-class CommandTakeoff : public Controller_GenericLongCommand<MESSAGETYPE, CommandItem::SpatialTakeoff, (uint8_t)CommandItem::COMMANDITEM::CI_NAV_TAKEOFF>
+class CommandTakeoff : public Controller_GenericLongCommand<MESSAGETYPE, command_item::SpatialTakeoff, (uint8_t)command_item::COMMANDITEM::CI_NAV_TAKEOFF>
 {
 public:
     CommandTakeoff(const IMessageNotifier<MESSAGETYPE> *cb, MessageModuleTransmissionQueue<MESSAGETYPE> *queue, int linkChan) :
-        Controller_GenericLongCommand<MESSAGETYPE, CommandItem::SpatialTakeoff, (uint8_t)CommandItem::COMMANDITEM::CI_NAV_TAKEOFF>(cb, queue, linkChan)
+        Controller_GenericLongCommand<MESSAGETYPE, command_item::SpatialTakeoff, (uint8_t)command_item::COMMANDITEM::CI_NAV_TAKEOFF>(cb, queue, linkChan)
     {
 
     }
 
 protected:
 
-    virtual void FillCommand(const CommandItem::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const
+    virtual void FillCommand(const command_item::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const
     {
         if(commandItem.position->has2DPositionSet())
         {
@@ -30,7 +30,7 @@ protected:
         cmd.param7 = commandItem.position->getZ();
     }
 
-    virtual void BuildCommand(const mace_command_long_t &message, CommandItem::SpatialTakeoff &data) const
+    virtual void BuildCommand(const mace_command_long_t &message, command_item::SpatialTakeoff &data) const
     {
         if(message.param1 > 0.0)
         {

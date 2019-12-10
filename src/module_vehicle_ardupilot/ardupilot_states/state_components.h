@@ -1,6 +1,8 @@
 #ifndef STATE_COMPONENTS_H
 #define STATE_COMPONENTS_H
 
+#include <mavlink.h>
+
 #include "module_vehicle_ardupilot/ardupilot_states/abstract_state_ardupilot.h"
 
 #include "module_vehicle_ardupilot/ardupilot_states/state_flight.h"

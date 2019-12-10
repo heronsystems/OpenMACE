@@ -24,11 +24,11 @@ public:
     void setMissionList(const MissionItem::MissionList missionListA);
     MissionItem::MissionList getMissionList();
 
-    int getVehicleID() const{
+    unsigned int getVehicleID() const{
         return vehicleID;
     }
 
-    int getCreatorID() const{
+    unsigned int getCreatorID() const{
         return missionList.getCreatorID();
     }
 
@@ -45,7 +45,7 @@ public:
     }
 
 private:
-    int vehicleID;
+    unsigned int vehicleID;
     MissionItem::MissionList missionList;
 };
 

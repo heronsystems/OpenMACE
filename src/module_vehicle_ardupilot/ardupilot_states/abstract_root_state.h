@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <thread>
+#include <mavlink.h>
 
 #include "abstract_state_ardupilot.h"
 
@@ -10,7 +11,7 @@
 #include "data_generic_command_item/command_item_type.h"
 
 #include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_set_home.h"
+#include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
 
 namespace ardupilot{
 namespace state{

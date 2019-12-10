@@ -24,7 +24,7 @@ UdpConfiguration::~UdpConfiguration()
     if (m_socket) {
         m_socket->close();
         delete m_socket;
-        m_socket = NULL;
+        m_socket = nullptr;
     }
     */
 }
@@ -49,7 +49,7 @@ void UdpConfiguration::copyFrom(LinkConfiguration* source)
 {
     LinkConfiguration::copyFrom(source);
     UdpConfiguration* ssource = dynamic_cast<UdpConfiguration*>(source);
-    Q_ASSERT(ssource != NULL);
+    Q_ASSERT(ssource != nullptr);
     _listenAddress               = ssource->listenAddress();
     _listenPortNumber            = ssource->listenPortNumber();
     _senderAddress               = ssource->senderAddress();
@@ -107,7 +107,7 @@ void UdpConfiguration::listenForPort(const int &listenPortNumber)
                 m_socket->close();
 //                m_socket->waitForDisconnected();
                 delete m_socket;
-                m_socket = NULL;
+                m_socket = nullptr;
             }
 
             break;

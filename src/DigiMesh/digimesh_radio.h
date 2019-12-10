@@ -291,7 +291,7 @@ private:
 
     void find_and_invokve_frame(int frame_id, const std::vector<uint8_t> &data)
     {
-        if(this->m_CurrentFrames[frame_id].inUse == true && this->m_CurrentFrames[frame_id].framePersistance != NULL && this->m_CurrentFrames[frame_id].framePersistance->HasCallback() == true) {
+        if(this->m_CurrentFrames[frame_id].inUse == true && this->m_CurrentFrames[frame_id].framePersistance != nullptr && this->m_CurrentFrames[frame_id].framePersistance->HasCallback() == true) {
             this->m_CurrentFrames[frame_id].framePersistance->AddFrameReturn(frame_id, data);
         }
     }

@@ -51,6 +51,11 @@ hsm::Transition State_Grounded::GetTransition()
             return hsm::InnerEntryTransition<State_GroundedDisarming>();
             break;
         }
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
+        {
+            return hsm::InnerEntryTransition<State_GroundedDisarmed>();
+            break;
+        }
         case ArdupilotFlightState::STATE_TAKEOFF:
         case ArdupilotFlightState::STATE_TAKEOFF_CLIMBING:
         case ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING:
@@ -69,10 +74,10 @@ hsm::Transition State_Grounded::GetTransition()
 
 bool State_Grounded::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    COMMANDITEM commandType = command->getCommandType();
+    COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDITEM::CI_ACT_CHANGEMODE:
-    case COMMANDITEM::CI_NAV_HOME:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_NAV_HOME:
     {
         AbstractRootState::handleCommand(command);
         break;
@@ -93,9 +98,16 @@ void State_Grounded::Update()
 
 void State_Grounded::OnEnter()
 {
+    StateData_MAVLINK* vehicleData = Owner().state;
+
     if(Owner().state->vehicleArm.get().getSystemArm())
     {
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
+    }
+    else if((Owner().state->vehicleArm.hasBeenSet()) && (!Owner().state->vehicleArm.get().getSystemArm())
+            && (vehicleData->vehicleMode.get().getFlightModeString() != "STABILIZE"))
+    {
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
     }
     else
     {
@@ -114,6 +126,7 @@ void State_Grounded::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 #include "ardupilot_states/state_grounded_armed.h"
 #include "ardupilot_states/state_grounded_arming.h"
 #include "ardupilot_states/state_grounded_disarming.h"
+#include "ardupilot_states/state_grounded_disarmed.h"
 #include "ardupilot_states/state_grounded_idle.h"
 
 #include "ardupilot_states/state_takeoff.h"

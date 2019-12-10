@@ -33,8 +33,10 @@ extern "C" {
 
 // ENUM DEFINITIONS
 
+namespace mace {
 
 
+} //end of namespace mace
 // MACE VERSION
 
 #ifndef MACE_VERSION

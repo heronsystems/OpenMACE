@@ -75,7 +75,7 @@ title('Open Street Map Data Transformed')
 %% plot occupancy graph
 % clip
 
-[nodesXY] = osmToNodes(fileName, refX, refY, boxlength, boxwidth, angle, dx, buffer);
+[nodesXY] = loadOpenStreetMapNodes(fileName, refX, refY, boxlength, boxwidth, angle, dx, buffer);
 
 figure;
 % plot grid

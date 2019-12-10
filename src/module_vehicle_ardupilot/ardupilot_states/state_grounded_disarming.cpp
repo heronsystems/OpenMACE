@@ -31,9 +31,9 @@ hsm::Transition State_GroundedDisarming::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArdupilotFlightState::STATE_GROUNDED_IDLE:
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
         {
-            return hsm::SiblingTransition<State_GroundedIdle>();
+            rtn = hsm::SiblingTransition<State_GroundedDisarmed>();
             break;
         }
         default:
@@ -46,9 +46,11 @@ hsm::Transition State_GroundedDisarming::GetTransition()
 
 bool State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-    COMMANDITEM type = command->getCommandType();
+    bool handledCommand = false;
+
+    COMMANDTYPE type = command->getCommandType();
     switch (type) {
-    case COMMANDITEM::CI_ACT_ARM:
+    case COMMANDTYPE::CI_ACT_ARM:
     {
         break;
     }
@@ -57,13 +59,15 @@ bool State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractComman
         currentCommand = command->getClone();
         break;
     }
+
+    return handledCommand;
 }
 
 void State_GroundedDisarming::Update()
 {
     if(Owner().state->vehicleArm.get().getSystemArm() == false)
     {
-        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
     }
 }
 
@@ -73,7 +77,7 @@ void State_GroundedDisarming::OnEnter()
     //first let us send this relevant command
     //issue command to controller here, and then setup a callback to handle the result
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    auto controllerArm = new MAVLINKVehicleControllers::CommandARM(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto controllerArm = new MAVLINKUXVControllers::CommandARM(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerArm->AddLambda_Finished(this, [this,controllerArm](const bool completed, const uint8_t finishCode){
         controllerArm->Shutdown();
         if(!completed || (finishCode != MAV_RESULT_ACCEPTED))
@@ -82,6 +86,7 @@ void State_GroundedDisarming::OnEnter()
 
     controllerArm->setLambda_Shutdown([this, collection]()
     {
+        UNUSED(this);
         auto ptr = collection->Remove("disarmController");
         delete ptr;
     });
@@ -89,7 +94,7 @@ void State_GroundedDisarming::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    CommandItem::ActionArm action(255, Owner().getMAVLINKID());
+    command_item::ActionArm action(255, Owner().getMAVLINKID());
     action.setVehicleArm(false);
     controllerArm->Send(action,sender,target);
     printf("Adding disarmController %x\n", controllerArm);
@@ -106,7 +111,7 @@ void State_GroundedDisarming::OnEnter(const std::shared_ptr<AbstractCommandItem>
 }
 
 } //end of namespace ardupilot
-} //end of namespace state
+} //end of namespace
 
-#include "ardupilot_states/state_grounded_idle.h"
 #include "ardupilot_states/state_grounded_armed.h"
+#include "ardupilot_states/state_grounded_disarmed.h"

@@ -8,7 +8,7 @@
 namespace ExternalLink {
 
 
-class CommandRTL : public Controller_GenericShortCommand<CommandItem::SpatialRTL, (uint8_t)CommandItem::COMMANDITEM::CI_NAV_RETURN_TO_LAUNCH>
+class CommandRTL : public Controller_GenericShortCommand<command_item::SpatialRTL, (uint8_t)command_item::COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH>
 {
 public:
 
@@ -16,7 +16,7 @@ public:
 
 protected:
 
-    virtual void FillCommand(const CommandItem::SpatialRTL &commandItem, mace_command_short_t &cmd) const;
+    virtual void FillCommand(const command_item::SpatialRTL &commandItem, mace_command_short_t &cmd) const;
 
     virtual void BuildCommand(const mace_command_short_t &message, SpatialRTL &data) const;
 };

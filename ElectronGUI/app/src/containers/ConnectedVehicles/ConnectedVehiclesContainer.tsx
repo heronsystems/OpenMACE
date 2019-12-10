@@ -138,6 +138,16 @@ export class ConnectedVehiclesContainer extends React.Component<Props, State> {
                                             <MenuItem value={"3"} primaryText={"3"} label={"3"} />
                                             <MenuItem value={"4"} primaryText={"4"} label={"4"} />
                                             <MenuItem value={"5"} primaryText={"5"} label={"5"} />
+                                            <MenuItem value={"6"} primaryText={"6"} label={"6"} />
+                                            <MenuItem value={"7"} primaryText={"7"} label={"7"} />
+                                            <MenuItem value={"8"} primaryText={"8"} label={"8"} />
+                                            <MenuItem value={"9"} primaryText={"9"} label={"9"} />
+                                            <MenuItem value={"10"} primaryText={"10"} label={"10"} />
+                                            <MenuItem value={"11"} primaryText={"11"} label={"11"} />
+                                            <MenuItem value={"12"} primaryText={"12"} label={"12"} />
+                                            <MenuItem value={"13"} primaryText={"13"} label={"13"} />
+                                            <MenuItem value={"14"} primaryText={"14"} label={"14"} />
+                                            <MenuItem value={"15"} primaryText={"15"} label={"15"} />
                                     </SelectField>
                                 {/* } */}
 

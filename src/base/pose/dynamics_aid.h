@@ -15,9 +15,6 @@ namespace pose {
 class DynamicsAid
 {
 public:
-    DynamicsAid() = default;
-
-    ~DynamicsAid() = default;
 
     //!
     //! \brief GlobalPositionToLocal
@@ -25,7 +22,7 @@ public:
     //! \param position
     //! \param local
     //!
-    static void GlobalPositionToLocal(const GeodeticPosition_3D &origin, const GeodeticPosition_3D &position, CartesianPosition_3D &local);
+    static void GlobalPositionToLocal(const Abstract_GeodeticPosition* origin, const Abstract_GeodeticPosition* refPosition, Abstract_CartesianPosition* targetPosition);
 
     //!
     //! \brief LocalPositionToGlobal
@@ -33,7 +30,7 @@ public:
     //! \param position
     //! \param global
     //!
-    static void LocalPositionToGlobal(const GeodeticPosition_3D &origin, const CartesianPosition_3D &position, GeodeticPosition_3D&global);
+    static void LocalPositionToGlobal(const Abstract_GeodeticPosition* origin, const Abstract_CartesianPosition* refPosition, Abstract_GeodeticPosition* targetPosition);
 };
 
 } //end of namespace pose

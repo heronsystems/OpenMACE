@@ -6,7 +6,7 @@
 
 
 DigiMeshRadio::DigiMeshRadio(const std::string &commPort, const DigiMeshBaudRates &baudRate) :
-    m_Link(NULL)
+    m_Link(nullptr)
 {
     m_CurrentFrames = new Frame[CALLBACK_QUEUE_SIZE];
     for(int i = 0 ; i < CALLBACK_QUEUE_SIZE ; i++) {
@@ -31,7 +31,7 @@ DigiMeshRadio::DigiMeshRadio(const std::string &commPort, const DigiMeshBaudRate
 DigiMeshRadio::~DigiMeshRadio() {
     delete[] m_CurrentFrames;
 
-    if(m_Link != NULL) {
+    if(m_Link != nullptr) {
         delete m_Link;
     }
 }
@@ -237,7 +237,7 @@ void DigiMeshRadio::handle_receive_packet(const std::vector<uint8_t> &data, cons
 {
     ATData::Message msg(data, explicitFrame);
 
-    for(int i = 0 ; i < m_MessageHandlers.size() ; i++) {
+    for(size_t i = 0 ; i < m_MessageHandlers.size() ; i++) {
         m_MessageHandlers.at(i)(msg);
     }
 }

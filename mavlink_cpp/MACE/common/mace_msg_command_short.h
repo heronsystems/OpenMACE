@@ -5,8 +5,8 @@
 
 MACEPACKED(
 typedef struct __mace_command_short_t {
- float param; /*< Parameter as defined by MAV_CMD enum.*/
- uint16_t command; /*< Command ID, as defined by MAV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.*/
+ float param; /*< Parameter as defined by UXV_CMD enum.*/
+ uint16_t command; /*< Command ID, as defined by UXV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.*/
  uint8_t target_system; /*< System which should execute the command*/
  uint8_t target_component; /*< Component which should execute the command, 0 for all components*/
  uint8_t confirmation; /*< 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)*/
@@ -53,11 +53,11 @@ typedef struct __mace_command_short_t {
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param command Command ID, as defined by MAV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
+ * @param command Command ID, as defined by UXV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
  * @param target_system System which should execute the command
  * @param target_component Component which should execute the command, 0 for all components
  * @param confirmation 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
- * @param param Parameter as defined by MAV_CMD enum.
+ * @param param Parameter as defined by UXV_CMD enum.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_command_short_pack(uint8_t system_id, uint8_t component_id, mace_message_t* msg,
@@ -93,11 +93,11 @@ static inline uint16_t mace_msg_command_short_pack(uint8_t system_id, uint8_t co
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param command Command ID, as defined by MAV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
+ * @param command Command ID, as defined by UXV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
  * @param target_system System which should execute the command
  * @param target_component Component which should execute the command, 0 for all components
  * @param confirmation 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
- * @param param Parameter as defined by MAV_CMD enum.
+ * @param param Parameter as defined by UXV_CMD enum.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mace_msg_command_short_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -159,11 +159,11 @@ static inline uint16_t mace_msg_command_short_encode_chan(uint8_t system_id, uin
  * @brief Send a command_short message
  * @param chan MAVLink channel to send the message
  *
- * @param command Command ID, as defined by MAV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
+ * @param command Command ID, as defined by UXV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
  * @param target_system System which should execute the command
  * @param target_component Component which should execute the command, 0 for all components
  * @param confirmation 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
- * @param param Parameter as defined by MAV_CMD enum.
+ * @param param Parameter as defined by UXV_CMD enum.
  */
 #ifdef MACE_USE_CONVENIENCE_FUNCTIONS
 
@@ -244,7 +244,7 @@ static inline void mace_msg_command_short_send_buf(mace_message_t *msgbuf, mace_
 /**
  * @brief Get field command from command_short message
  *
- * @return Command ID, as defined by MAV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
+ * @return Command ID, as defined by UXV_CMD enum.is was established to reduce the bandwidth required of messages not requiring as much parameterized data.
  */
 static inline uint16_t mace_msg_command_short_get_command(const mace_message_t* msg)
 {
@@ -284,7 +284,7 @@ static inline uint8_t mace_msg_command_short_get_confirmation(const mace_message
 /**
  * @brief Get field param from command_short message
  *
- * @return Parameter as defined by MAV_CMD enum.
+ * @return Parameter as defined by UXV_CMD enum.
  */
 static inline float mace_msg_command_short_get_param(const mace_message_t* msg)
 {

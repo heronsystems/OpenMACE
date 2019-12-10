@@ -4,7 +4,7 @@ namespace state {
 
 RealVector::RealVector(unsigned int dim)
 {
-
+    UNUSED(dim);
 }
 
 } //end of namespace state

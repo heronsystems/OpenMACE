@@ -18,16 +18,15 @@
 #include "data_generic_item/data_generic_item_components.h"
 #include "data_generic_item_topic/data_generic_item_topic_components.h"
 
-#include "data_generic_state_item/state_item_components.h"
-#include "data_generic_state_item_topic/state_topic_components.h"
-
 #include "data_generic_command_item/command_item_components.h"
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
 #include "data_vehicle_sensors/components.h"
-#include "data_generic_state_item/positional_aid.h"
 
+#include "base_topic/pose/topic_geodetic_position.h"
+#include "base_topic/pose/topic_agent_orientation.h"
+#include "base_topic/measurements/topic_speed.h"
 
 class MACEtoGUI
 {
@@ -120,14 +119,14 @@ public:
     //! \param vehicleID Vehicle ID with new position update
     //! \param component Global position component
     //!
-    void sendPositionData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateGlobalPositionTopic> &component);
+    void sendPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component);
 
     //!
     //! \brief sendAttitudeData Send vehicle attitude data to the MACE GUI
     //! \param vehicleID Vehicle ID with new attitude update
     //! \param component Vehicle attitude component
     //!
-    void sendAttitudeData(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateAttitudeTopic> &component);
+    void sendAttitudeData(const int &vehicleID, const std::shared_ptr<pose_topics::Topic_AgentOrientation> &component);
 
     //!
     //! \brief sendVehicleFuel Send vehicle fuel data to the MACE GUI
@@ -162,13 +161,13 @@ public:
     //! \param vehicleID Vehicle ID with the new vehicle home available
     //! \param home New vehicle home
     //!
-    void sendVehicleHome(const int &vehicleID, const CommandItem::SpatialHome &home);
+    void sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home);
 
     //!
     //! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
     //! \param origin New global origin
     //!
-    void sendGlobalOrigin(const CommandItem::SpatialHome &origin);
+    void sendGlobalOrigin(const command_item::SpatialHome &origin);
 
     //!
     //! \brief sendSensorFootprint Send vehicle sensor footprint to the MACE GUI
@@ -223,7 +222,7 @@ public:
     //! \param vehicleID Vehicle ID with the new airspeed
     //! \param component Vehicle airspeed component
     //!
-    void sendVehicleAirspeed(const int &vehicleID, const std::shared_ptr<DataStateTopic::StateAirspeedTopic> &component);
+    void sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component);
 
     //!
     //! \brief sendMissionState Send vehicle mission state to the MACE GUI
@@ -237,7 +236,7 @@ public:
     //! \param vehicleID Vehicle ID with the new vehicle target
     //! \param component Vehicle target component
     //!
-    void sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component);
+    void sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition);
 
     // ============================================================================= //
     // ================================== Helpers ================================== //

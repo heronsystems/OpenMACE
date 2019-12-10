@@ -2,14 +2,15 @@
 #define I_MODULE_EVENTS_ROS_H
 
 #include "i_module_events_general.h"
+#include "i_module_events_path_planning.h"
 
-#include "base/pose/orientation_3D.h"
+#include "base/pose/rotation_3D.h"
 #include "base/pose/cartesian_position_3D.h"
 
 namespace MaceCore
 {
 
-class IModuleEventsROS  : public IModuleEventsGeneral
+class IModuleEventsROS  : virtual public IModuleEventsPathPlanning
 {
 
 public:
@@ -18,7 +19,7 @@ public:
     //! \param obj Point cloud object
     //! \param position Position of sensor
     //!
-    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position) = 0;
+    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::CartesianPosition_3D &position) = 0;
 
     //!
     //! \brief ROS_NewLaserScan New laser scan from ROS/Gazebo
@@ -26,7 +27,7 @@ public:
     //! \param position Position of sensor
     //! \param orientation Orientation of sensor
     //!
-    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::Position<mace::pose::CartesianPosition_3D>& position, const mace::pose::Orientation_3D& orientation) = 0;
+    virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) = 0;
 
 };
 
