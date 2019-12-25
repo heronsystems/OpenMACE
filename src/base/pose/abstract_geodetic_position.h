@@ -32,6 +32,15 @@ public:
 
     bool areEquivalentGeodeticFrames(const Abstract_GeodeticPosition &obj) const;
 
+    /** Interface imposed via Position*/
+public:
+    PositionTypes getPositionalType() const
+    {
+        return PositionTypes::TRANSLATIONAL;
+    }
+
+    /** End of interface imposed via Position */
+
 public:
 
 //    virtual Eigen::VectorXd getDataVector() const = 0; //This function remains virtual from the base class of position since this class is Abstract

@@ -1352,7 +1352,6 @@ void MaceCore::GSEvent_UploadMission(const void *sender, const MissionItem::Miss
 
 void MaceCore::EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj)
 {
-    std::cout<<"Mace core has been notified by a module of the path planning variety that there is a new dynamic target."<<std::endl;
     MarshalCommandToVehicle<command_item::Action_DynamicTarget>(obj.getTargetSystem(), VehicleCommands::EXECUTE_DYNAMIC_TARGET, ExternalLinkCommands::EXECUTE_DYNAMIC_TARGET, obj, sender->GetCharacteristic());
 
 }

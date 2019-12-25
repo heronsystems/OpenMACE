@@ -24,6 +24,12 @@ void ControllerGuidedTargetItem_Attitude::FillTargetItem(const command_target::D
         mavlinkItem.thrust = static_cast<float>(command.getTargetThrust());
     }
 
+    if(fabs(command.getTargetYawRate() - 0.0) > std::numeric_limits<double>::epsilon())
+    {
+        bitArray = (bitArray & (~4));
+        mavlinkItem.body_yaw_rate = static_cast<float>(command.getTargetYawRate());
+    }
+
     mavlinkItem.type_mask = bitArray;
 }
 

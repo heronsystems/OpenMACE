@@ -8,6 +8,7 @@
 MATLABListener::MATLABListener(const MaceCore::IModuleCommandROS* ptrRef)
 {
     m_parent = ptrRef;
+    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, previousTime);
 }
 
 
@@ -172,7 +173,7 @@ bool MATLABListener::commandDynamicTarget(mace_matlab_msgs::CMD_DYNAMIC_TARGET::
     {
         if((currentType == CoordinateSystemTypes::CARTESIAN) || (currentType == CoordinateSystemTypes::GEODETIC))
         {
-            mace::pose::Cartesian_Velocity3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
+            mace::pose::Velocity_Cartesian3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
             if(currentType == CoordinateSystemTypes::CARTESIAN)
                 newVelocity.setExplicitCoordinateFrame(mace::getCartesianCoordinateFrame(static_cast<CoordinateFrameTypes>(req.coordinateFrame)));
             newVelocity.setXVelocity(req.xV);
@@ -207,12 +208,17 @@ bool MATLABListener::commandDynamicTarget(mace_matlab_msgs::CMD_DYNAMIC_TARGET::
 bool MATLABListener::commandDynamicTarget_OrientationEuler(mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_EULER::Request &req,
                                                            mace_matlab_msgs::CMD_DYNAMIC_ORIENTATION_EULER::Response &res)
 {
+
+    Data::EnvironmentTime currentTime;
+    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+    uint64_t elapsedTime = currentTime - previousTime;
+    std::cout<<"ROS Module: Elapsed Time:"<<elapsedTime<<std::endl;
+    previousTime = currentTime;
+
     res.success = true;
 
     command_item::Action_DynamicTarget dynamicTarget;
     command_target::DynamicTarget_Orientation currentTarget;
-
-    printf("Command Orientation Euler vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
 
     if((req.bitmask&128) == 0)
     {
@@ -226,6 +232,10 @@ bool MATLABListener::commandDynamicTarget_OrientationEuler(mace_matlab_msgs::CMD
         currentTarget.setTargetThrust(req.thrust);
     }
 
+    if((req.bitmask&4) == 0)
+    {
+        currentTarget.setTargetYawRate(req.yawRate);
+    }
 
     dynamicTarget.setDynamicTarget(&currentTarget);
     dynamicTarget.setTargetSystem(req.vehicleID);

@@ -51,12 +51,13 @@ public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalPosition;
     Data::DataGetSetNotifier<mace::pose::CartesianPosition_3D> vehicleLocalPosition;
 
-    Data::DataGetSetNotifier<mace::pose::Cartesian_Velocity3D> vehicleLocalVelocity;
+    Data::DataGetSetNotifier<mace::pose::Velocity_Cartesian3D> vehicleLocalVelocity;
 
     Data::DataGetSetNotifier<mace::pose::Rotation_3D> vehicleAttitude;
+    Data::DataGetSetNotifier<mace::pose::Velocity_Rotation3D> vehicleRotationalVelocity;
+
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleAirspeed;
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleGroundSpeed;
-
 
 public:
     Eigen::Transform<double,3,Eigen::Affine> getTransform_VehicleHomeTOSwarm() const

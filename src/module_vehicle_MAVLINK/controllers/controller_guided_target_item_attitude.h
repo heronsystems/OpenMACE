@@ -17,6 +17,7 @@
 #include "data_generic_command_item/do_items/action_dynamic_target.h"
 
 #include "data_generic_command_item/target_items/dynamic_target_orientation.h"
+#include "base/pose/rotation_3D.h"
 
 namespace MAVLINKUXVControllers {
 

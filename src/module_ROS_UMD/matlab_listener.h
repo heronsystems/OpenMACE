@@ -86,7 +86,7 @@ private:
     //! \brief m_parent Reference to parent object
     //!
     const MaceCore::IModuleCommandROS* m_parent;
-
+    Data::EnvironmentTime previousTime;
 };
 
 #endif // MATLAB_LISTENER_H

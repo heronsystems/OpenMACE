@@ -1,8 +1,9 @@
 #ifndef POSE_H
 #define POSE_H
 
-#include "abstract_position.h"
-#include "abstract_rotation.h"
+#include "data/environment_time.h"
+#include "cartesian_position_3D.h"
+#include "rotation_3D.h"
 
 namespace mace{
 namespace pose{
@@ -15,9 +16,13 @@ class Pose
 public:
     Pose();
 
+    void setTimeNow();
+
 public:
-    Position* m_Position;
-    AbstractRotation* m_Rotation;
+    Data::EnvironmentTime m_UpdateTime;
+
+    CartesianPosition_3D m_Position;
+    Rotation_3D m_Rotation;
 };
 
 } //end of namespace pose

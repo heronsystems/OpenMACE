@@ -117,7 +117,6 @@ private:
 public:
     StateData_MAVLINK *state;
     MissionData_MAVLINK *mission;
-
 protected:
     int mavlinkID;
     MaceCore::ModuleCharacteristic m_module;

@@ -12,6 +12,8 @@ float64 yaw
 
 float64 thrust
 
+float64 yawRate
+
 ---
 bool    success
 

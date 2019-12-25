@@ -73,9 +73,9 @@ public:
 
     void setPosition(const mace::pose::Position* pos)
     {
-        if(position != nullptr) //first delete and clear the current position
+        if(position != nullptr){ //first delete and clear the current position
             delete position; position = nullptr;
-
+        }
         position = pos->getPositionalClone();
     }
 
@@ -132,8 +132,9 @@ public:
 
         AbstractCommandItem::operator =(rhs);
 
-        if(this->position != nullptr)
+        if(this->position != nullptr){
             delete position; position = nullptr;
+        }
 
         if(rhs.position != nullptr)
         {

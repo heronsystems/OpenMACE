@@ -4,24 +4,32 @@ namespace ardupilot{
 namespace state{
 
 State_FlightGuided_AttTarget::State_FlightGuided_AttTarget():
-    AbstractStateArdupilot(), m_TimeoutController(500)
+    AbstractStateArdupilot(), m_TimeoutController(10)
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_ATTTARGET"<<std::endl;
     currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
 
     m_TimeoutController.connectTargetCallback(State_FlightGuided_AttTarget::retransmitGuidedCommand, this);
+    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, previousTime);
+
 }
 
 void State_FlightGuided_AttTarget::OnExit()
 {
+    std::cout<<"Exiting the attitude target state"<<std::endl;
+    m_TimeoutController.stop();
+
     AbstractStateArdupilot::OnExit();
+    std::cout<<"Exiting the attitude target state 2"<<std::endl;
+
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
     if(Owner().ControllersCollection()->Exist("AttitudeTargetController")){
         MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Attitude*>(Owner().ControllersCollection()->Remove("AttitudeTargetController"));
         delete ptr;
     }
 
+    std::cout<<"Exiting the attitude target state 3"<<std::endl;
 }
 
 AbstractStateArdupilot* State_FlightGuided_AttTarget::getClone() const
@@ -67,6 +75,17 @@ bool State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<AbstractC
 
         //The command is a target, we therefore have to figure out what type of target it is
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
+
+        command_target::DynamicTarget* currentTarget = cmd->getDynamicTarget();
+        if(currentTarget->getTargetType() == command_target::DynamicTarget::TargetTypes::ORIENTATION)
+        {
+            const mace::pose::AbstractRotation* currentRotation = currentTarget->targetAs<command_target::DynamicTarget_Orientation>()->getTargetOrientation();
+            const mace::pose::Rotation_3D* rotation3D = currentRotation->rotationAs<mace::pose::Rotation_3D>();
+            Data::EnvironmentTime currentTime;
+            Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+            uint64_t elapsedTime = currentTime - previousTime;
+            count++;
+        }
 
         constructAndSendTarget(*cmd);
 

@@ -9,3 +9,4 @@ float64 easting
 float64 altitude
 float64 northSpeed
 float64 eastSpeed
+float64 altSpeed
