@@ -20,6 +20,7 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += module_vehicle_mavlink.cpp \
+    controllers/commands/command_msg_interval.cpp \
     vehicle_object/mavlink_vehicle_object.cpp \
     vehicle_object/state_data_mavlink.cpp \
     vehicle_object/parse_mavlink.cpp \

@@ -131,6 +131,10 @@ protected:
     TransmitQueue *controllerQueue;
 
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> m_ControllersCollection;
+
+    Data::EnvironmentTime prevAttitude;
+    Data::EnvironmentTime prevPosition;
+
 };
 
 #endif // MAVLINK_VEHICLE_OBJECT_H

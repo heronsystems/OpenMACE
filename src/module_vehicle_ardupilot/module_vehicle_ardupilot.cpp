@@ -572,7 +572,8 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
 
         MAVLINKUXVControllers::CommandMSGInterval* requestMessageController = new MAVLINKUXVControllers::CommandMSGInterval(vehicleData.get(), m_TransmissionQueue, m_LinkChan);
         requestMessageController->AddLambda_Finished(this, [this,requestMessageController](const bool completed, const uint8_t finishCode){
-            requestMessageController->Shutdown();
+            if(!requestMessageController->removeCurrentAndTransmitNext())
+                requestMessageController->Shutdown(); //This implies there is nothing left to do with this controller
         });
 
         requestMessageController->setLambda_Shutdown([this]() mutable
@@ -588,9 +589,15 @@ void ModuleVehicleArdupilot::VehicleHeartbeatInfo(const std::string &linkName, c
         messageRequest.setTargetSystem(target);
         messageRequest.setOriginatingSystem(sender);
         messageRequest.setMessageID(32); //message 32 is local position NED, 30 is attitude, 31 is attitude quaternion
-        messageRequest.setMessageInterval(50000);
-        requestMessageController->Send(messageRequest, sender, target);
+        messageRequest.setMessageInterval(25000);
+        requestMessageController->addIntervalRequest(messageRequest);
+
+        messageRequest.setMessageID(30);
+        requestMessageController->addIntervalRequest(messageRequest);
+        //requestMessageController->Send(messageRequest, sender, target);
         m_ControllersCollection.Insert("messaageRequestController", requestMessageController);
+
+        requestMessageController->transmitNextRequest();
     }
 
     std::string currentFlightMode = vehicleData->ardupilotMode.parseMAVLINK(heartbeatMSG);

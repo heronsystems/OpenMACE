@@ -9,6 +9,10 @@ MavlinkVehicleObject::MavlinkVehicleObject(CommsMAVLINK *commsObj, const MaceCor
     controllerQueue = new TransmitQueue(2000, 3);
     state = new StateData_MAVLINK();
     mission = new MissionData_MAVLINK();
+
+    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, prevAttitude);
+    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, prevPosition);
+
 }
 
 MavlinkVehicleObject::~MavlinkVehicleObject()

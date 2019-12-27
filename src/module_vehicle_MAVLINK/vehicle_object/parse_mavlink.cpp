@@ -116,6 +116,11 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                    static_cast<double>(decodedMSG.pitchspeed),
                                                    static_cast<double>(decodedMSG.yawspeed));
 
+        Data::EnvironmentTime currentTime;
+        Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+        std::cout<<"The difference between the two in us: "<<currentTime - prevAttitude<<std::endl;
+        prevAttitude = currentTime;
+
         if(state->vehicleAttitude.set(agentAttitude))
         {
             std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> ptrAttitude = std::make_shared<mace::pose_topics::Topic_AgentOrientation>(&agentAttitude);
@@ -151,6 +156,11 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         localVelocity.setXVelocity(static_cast<double>(decodedMSG.vx));
         localVelocity.setYVelocity(static_cast<double>(decodedMSG.vy));
         localVelocity.setZVelocity(static_cast<double>(decodedMSG.vz));
+
+        Data::EnvironmentTime currentTime;
+        Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+        std::cout<<"The difference between the two in us: "<<currentTime - prevPosition<<std::endl;
+        prevPosition = currentTime;
 
         if(state->vehicleLocalPosition.set(localPosition))
         {
