@@ -1,6 +1,7 @@
+![MACE_Logo](https://github.com/heronsystems/OpenMACE/blob/master/docs/images/MACE_Logo.png) 
 # OpenMACE
 Open source version of the MACE architecture.
-=======
+
 ## Table of Contents
 - [Description](#description)
 - [Quick Start](#quick-start)
