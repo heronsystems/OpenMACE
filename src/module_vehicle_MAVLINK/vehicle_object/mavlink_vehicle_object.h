@@ -121,8 +121,7 @@ protected:
     int mavlinkID;
     MaceCore::ModuleCharacteristic m_module;
 
-    PointerCollection<
-    > m_Controllers;
+    PointerCollection<> m_Controllers;
 
     CommsMAVLINK *commsLink;
 

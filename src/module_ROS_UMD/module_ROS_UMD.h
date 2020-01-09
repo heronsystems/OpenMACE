@@ -388,6 +388,8 @@ private:
 
     ros::Publisher m_posePub;
 
+    double count = 0.0;
+
 #endif
 
 private:

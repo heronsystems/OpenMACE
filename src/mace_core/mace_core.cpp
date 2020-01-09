@@ -1659,6 +1659,20 @@ void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const CartesianP
 
 }
 
+void MaceCore::ROS_NewVisionPoseEstimate(const unsigned int &vehicleID, const mace::pose::Pose &pose)
+{
+    try
+    {
+        m_VehicleIDToPtr.at(std::to_string(vehicleID))->MarshalCommand(VehicleCommands::TRANSMIT_VISION_POSE_ESTIMATE,pose);
+    }
+    catch(const std::out_of_range &oor)
+    {
+        std::cout<<"The vehicle ID is not contained within this MACE instances vehicle map.";
+    }
+
+}
+
+
 /////////////////////////////////////////////////////////////////////////
 /// MACE COMMS EVENTS
 /////////////////////////////////////////////////////////////////////////

@@ -6,8 +6,8 @@
       <Parameter Name="Name">Mavlink</Parameter>
       <Parameter Name="Version">V2</Parameter>
     </Parameter>
-	<Parameter Name="UDPParameters">
-      <Parameter Name="ListenAddress">192.168.1.20</Parameter>
+    <Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">192.168.1.166</Parameter>
       <Parameter Name="ListenPortNumber">14550</Parameter>
     </Parameter>
     <Parameter Name="ModuleParameters">
@@ -16,5 +16,17 @@
     <Parameter Name="LocalPositionParameters">
       <Parameter Name="TransformAltitude">false</Parameter>
     </Parameter>
-  </Module>   
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">true</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+<Module Class='ROS' Type='OFFSET_Auctioneer'>
+          <Parameter Name='ModuleParameters'>
+            <Parameter Name='AirborneInstance'>false</Parameter>
+          </Parameter>
+      </Module>    
 </ModuleConfigurations>

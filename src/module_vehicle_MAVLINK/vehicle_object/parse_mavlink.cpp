@@ -118,7 +118,6 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         Data::EnvironmentTime currentTime;
         Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
-        std::cout<<"The difference between the two in us: "<<currentTime - prevAttitude<<std::endl;
         prevAttitude = currentTime;
 
         if(state->vehicleAttitude.set(agentAttitude))
@@ -159,7 +158,6 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         Data::EnvironmentTime currentTime;
         Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
-        std::cout<<"The difference between the two in us: "<<currentTime - prevPosition<<std::endl;
         prevPosition = currentTime;
 
         if(state->vehicleLocalPosition.set(localPosition))
@@ -442,8 +440,8 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mace::pose::GeodeticPosition_3D currentOrigin(decodedMSG.latitude / power,
                                                       decodedMSG.longitude / power,
                                                       decodedMSG.altitude / 1000.0);
-        std::cout<<"The new GPS global origin is: "<<currentOrigin<<std::endl;
-        currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_INT);
+
+        currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
         currentOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
         state->vehicleGlobalOrigin.set(currentOrigin);
 

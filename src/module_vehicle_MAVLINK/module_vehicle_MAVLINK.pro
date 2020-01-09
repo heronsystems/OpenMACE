@@ -19,8 +19,9 @@ DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
-SOURCES += module_vehicle_mavlink.cpp \
+SOURCES += \
     controllers/commands/command_msg_interval.cpp \
+    module_vehicle_mavlink.cpp \
     vehicle_object/mavlink_vehicle_object.cpp \
     vehicle_object/state_data_mavlink.cpp \
     vehicle_object/parse_mavlink.cpp \
@@ -32,6 +33,7 @@ SOURCES += module_vehicle_mavlink.cpp \
     controllers/controller_guided_target_item_attitude.cpp
 
 HEADERS += module_vehicle_mavlink.h\
+  controllers/controller_vision_position_estimate.h \
         module_vehicle_mavlink_global.h \
     controllers/controller_system_mode.h \
     controllers/commands/command_arm.h \

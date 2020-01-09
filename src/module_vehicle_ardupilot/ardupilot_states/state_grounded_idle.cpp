@@ -36,6 +36,11 @@ hsm::Transition State_GroundedIdle::GetTransition()
             return hsm::SiblingTransition<State_GroundedArming>(currentCommand);
             break;
         }
+        case ArdupilotFlightState::STATE_GROUNDED_ARMED:
+        {
+            return hsm::SiblingTransition<State_GroundedArmed>();
+            break;
+        }
         default:
             std::cout<<"I dont know how we eneded up in this transition state from State_GroundedIdle."<<std::endl;
             break;
@@ -69,7 +74,8 @@ bool State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem
 
 void State_GroundedIdle::Update()
 {
-
+    if(Owner().state->vehicleArm.get().getSystemArm())
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
 }
 
 void State_GroundedIdle::OnEnter()
@@ -100,3 +106,4 @@ void State_GroundedIdle::OnEnter(const std::shared_ptr<AbstractCommandItem> comm
 } //end of namespace state
 
 #include "ardupilot_states/state_grounded_arming.h"
+#include "ardupilot_states/state_grounded_armed.h"

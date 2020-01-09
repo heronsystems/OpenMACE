@@ -68,10 +68,20 @@ void ModuleROSUMD::start() {
     {
         // Spin ROS
         ros::spinOnce();
+
+//        mace::pose::Pose currentPose;
+//        currentPose.setTimeNow();
+//        currentPose.m_Position.setXPosition(count);
+//        currentPose.m_Position.setYPosition(count);
+//        count = count + 0.03;
+//        this->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr){
+//            ptr->ROS_NewVisionPoseEstimate(1, currentPose);
+//        });
+
     });
 
     m_timer->setSingleShot(false);
-    m_timer->setInterval(ROSTimer::Interval(10));
+    m_timer->setInterval(ROSTimer::Interval(33));
     m_timer->start(true);
 #endif
 

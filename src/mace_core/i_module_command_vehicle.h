@@ -8,6 +8,7 @@
 #include "i_module_events_vehicle.h"
 
 #include "data_generic_command_item/command_item_components.h"
+#include "base/pose/pose.h"
 
 namespace MaceCore
 {
@@ -18,7 +19,8 @@ enum class VehicleCommands
     BASE_MODULE_VEHICLE_LISTENER_ENUMS,
     REQUEST_DUMMY_FUNCTION,
     UPDATE_MISSION_KEY,
-    UPDATED_DYNAMIC_MISSION_QUEUE
+    UPDATED_DYNAMIC_MISSION_QUEUE,
+    TRANSMIT_VISION_POSE_ESTIMATE
 };
 
 
@@ -50,6 +52,10 @@ public:
             UpdateDynamicMissionQueue(queue);
         });
 
+        this->template AddCommandLogic<mace::pose::Pose>(VehicleCommands::TRANSMIT_VISION_POSE_ESTIMATE, [this](const mace::pose::Pose &pose, const OptionalParameter<ModuleCharacteristic> &sender){
+            UNUSED(sender);
+            TransmitVisionPoseEstimate(pose);
+        });
 
     }
 
@@ -77,6 +83,12 @@ public:
     //! \param queue Mission queue
     //!
     virtual void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue) = 0;
+
+    //!
+    //! \brief TransmitVisionPoseEstimate
+    //! \param pose
+    //!
+    virtual void TransmitVisionPoseEstimate(const mace::pose::Pose &pose) = 0;
 
 };
 
