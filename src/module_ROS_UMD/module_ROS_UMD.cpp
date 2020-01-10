@@ -30,6 +30,7 @@
 #include <mace_matlab_msgs/UPDATE_VEHICLE_TARGET.h>
 
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/PoseStamped.h>
 
 #endif
 
@@ -68,16 +69,6 @@ void ModuleROSUMD::start() {
     {
         // Spin ROS
         ros::spinOnce();
-
-//        mace::pose::Pose currentPose;
-//        currentPose.setTimeNow();
-//        currentPose.m_Position.setXPosition(count);
-//        currentPose.m_Position.setYPosition(count);
-//        count = count + 0.03;
-//        this->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr){
-//            ptr->ROS_NewVisionPoseEstimate(1, currentPose);
-//        });
-
     });
 
     m_timer->setSingleShot(false);
@@ -517,8 +508,37 @@ void ModuleROSUMD::setupROS() {
     // Don't think this is needed, as services request a response at send time:
     m_cmdStatusPub = nh.advertise<mace_matlab_msgs::UPDATE_CMD_STATUS> ("/MACE/UPDATE_CMD_STATUS", 1);
     m_posePub = nh.advertise<nav_msgs::Odometry> ("/MACE/UPDATE_ODOMETRY", 1);
+
+    // *************************** //
+    // **** Setup subscribers: **** //
+    // *************************** //
+    m_subscriber_VisionPoseEstimate = nh.subscribe("/t265_process/vision_pose", 1, &ModuleROSUMD::ROSCallback_VisionPoseEstimate, this);
     ros::spinOnce();
 }
+
+void ModuleROSUMD::ROSCallback_VisionPoseEstimate(const geometry_msgs::PoseStamped::ConstPtr &msg)
+{
+    mace::pose::Pose currentPose;
+    currentPose.setTimeNow();
+    currentPose.m_Position.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_NED);
+    currentPose.m_Position.setXPosition(msg->pose.position.x);
+    currentPose.m_Position.setYPosition(msg->pose.position.y);
+    currentPose.m_Position.setZPosition(msg->pose.position.z);
+
+    geometry_msgs::Quaternion msgRotation = msg->pose.orientation;
+    Eigen::Quaterniond currentRotation;
+    currentRotation.x() = msgRotation.x;
+    currentRotation.y() = msgRotation.y;
+    currentRotation.z() = msgRotation.z;
+    currentRotation.w() = msgRotation.w;
+    currentPose.m_Rotation.setQuaternion(currentRotation);
+
+    this->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr){
+        ptr->ROS_NewVisionPoseEstimate(1, currentPose);
+    });
+
+}
+
 
 //!
 //! \brief publishVehiclePosition Publish the current position of the corresponding vehicle

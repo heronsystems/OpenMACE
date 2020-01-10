@@ -30,7 +30,10 @@
 #ifdef ROS_EXISTS
 #include <ros/ros.h>
 #include <module_ROS_UMD/matlab_listener.h>
+
+#include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Quaternion.h>
 
 #endif
 
@@ -260,6 +263,10 @@ public:
 
     void publicVehicleOdometry(const int &vehicleID);
 
+public:
+    void ROSCallback_VisionPoseEstimate(const geometry_msgs::PoseStamped::ConstPtr &msg);
+
+
 #endif
 
     // ============================================================================= //
@@ -387,6 +394,9 @@ private:
     ros::Publisher m_cmdStatusPub;
 
     ros::Publisher m_posePub;
+
+
+    ros::Subscriber m_subscriber_VisionPoseEstimate;
 
     double count = 0.0;
 
