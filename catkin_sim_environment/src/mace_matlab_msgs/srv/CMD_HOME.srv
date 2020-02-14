@@ -1,0 +1,11 @@
+# CMD_HOME
+# Specify a reference latitude and longitude datum at the beginning of a mission so that all subsequent commands/updates will use local coordinates (Nothing, Easting). The main motivation for this is so that when we are debugging (e.g., "rostopic echo") the position values of each drone are human understandable and do not require conversion
+
+time    timestamp
+uint8   vehicleID
+bool    setToCurrent
+float64 latitudeDeg
+float64 longitudeDeg
+float64 altitudeMsl
+---
+bool    success

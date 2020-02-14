@@ -87,6 +87,7 @@ public:
     SpatialHome& operator = (const SpatialHome &rhs)
     {
         AbstractSpatialAction::operator =(rhs);
+        this->setPosToCurrent = rhs.setPosToCurrent;
         return *this;
     }
 
@@ -97,6 +98,10 @@ public:
     //!
     bool operator == (const SpatialHome &rhs) {
         if(!AbstractSpatialAction::operator ==(rhs))
+        {
+            return false;
+        }
+        if(this->setPosToCurrent != rhs.setPosToCurrent)
         {
             return false;
         }
@@ -120,6 +125,20 @@ public:
     std::string printSpatialCMDInfo() const override;
 
     friend std::ostream& operator<<(std::ostream& os, const SpatialHome& t);
+
+public:
+    bool shouldSetToCurrent() const
+    {
+        return this->setPosToCurrent;
+    }
+
+    void setToCurrent(const bool &value)
+    {
+        this->setPosToCurrent = value;
+    }
+
+private:
+    bool setPosToCurrent = false;
 };
 
 } //end of namespace command_item

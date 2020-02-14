@@ -91,8 +91,8 @@ bool MATLABListener::commandWaypoint(mace_matlab_msgs::CMD_WPT::Request  &req,
     DynamicsAid::LocalPositionToGlobal(&globalOrigin,&localPosition,&tgtImmediate);
 
     mace::pose::GeodeticPosition_3D targetPosition(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT,
-                                  tgtImmediate.getLatitude(), tgtImmediate.getLongitude(),
-                                  AltitudeReferenceTypes::REF_ALT_RELATIVE, req.altitude, "");
+                                                   tgtImmediate.getLatitude(), tgtImmediate.getLongitude(),
+                                                   AltitudeReferenceTypes::REF_ALT_RELATIVE, req.altitude, "");
 
     command_item::Action_ExecuteSpatialItem goToCommand;
     goToCommand.setTargetSystem(req.vehicleID);
@@ -127,6 +127,34 @@ bool MATLABListener::commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
         ptr->Event_SetGlobalOrigin(m_parent, origin);
+    });
+
+    return true;
+}
+
+
+bool MATLABListener::commandHome(mace_matlab_msgs::CMD_HOME::Request  &req,
+                                 mace_matlab_msgs::CMD_HOME::Response &res)
+{
+    res.success = true;
+
+    printf("Command Home vehicle ID: %d || sending back response: [%d]\n", req.vehicleID, res.success);
+
+    command_item::SpatialHome home;
+
+    mace::pose::GeodeticPosition_3D homePosition;
+    homePosition.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
+    homePosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+    homePosition.setLatitude(req.latitudeDeg);
+    homePosition.setLongitude(req.longitudeDeg);
+    homePosition.setAltitude(req.altitudeMsl);
+
+    home.setTargetSystem(req.vehicleID);
+    home.setPosition(&homePosition);
+    home.setToCurrent(req.setToCurrent);
+
+    m_parent->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr) {
+        ptr->Event_SetHomePosition(m_parent, home);
     });
 
     return true;

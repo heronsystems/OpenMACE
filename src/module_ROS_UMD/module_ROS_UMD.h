@@ -327,6 +327,11 @@ private:
     ros::ServiceServer m_datumService;
 
     //!
+    //! \brief m_client Service client for home commands issued from MATLAB
+    //!
+    ros::ServiceServer m_homeService;
+
+    //!
     //! \brief m_client Service client for dynamic kinematic commands issued from MATLAB
     //!
     ros::ServiceServer m_dynamicTargetService_Kinematic;

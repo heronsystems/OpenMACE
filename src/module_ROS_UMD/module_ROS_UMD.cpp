@@ -318,6 +318,7 @@ void ModuleROSUMD::updateAttitudeData(const int &vehicleID, const std::shared_pt
         currentObject->pose.pose.orientation.y = currentQuaternion.y();
         currentObject->pose.pose.orientation.z = currentQuaternion.z();
         currentObject->pose.pose.orientation.w = currentQuaternion.w();
+        publicVehicleOdometry(vehicleID);
     }
 
 #endif
@@ -373,7 +374,6 @@ void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_pt
     position.northSpeed = 0.0; // TODO
     position.eastSpeed = 0.0; // TODO
     m_vehicleLocalPosPub.publish(position);
-    publicVehicleOdometry(vehicleID);
 
 #endif
 }
@@ -442,8 +442,6 @@ void ModuleROSUMD::updateTranslationalVelocity(const int &vehicleID, const std::
             currentObject->twist.twist.linear.z = castVelocity->getZVelocity();
         }
     }
-    publicVehicleOdometry(vehicleID);
-
 #endif
 }
 
@@ -470,9 +468,6 @@ void ModuleROSUMD::updateRotationalVelocity(const int &vehicleID, const std::sha
         currentObject->twist.twist.angular.y = castVelocity.data.y();
         currentObject->twist.twist.angular.z = castVelocity.data.z();
     }
-
-    publicVehicleOdometry(vehicleID);
-
 #endif
 }
 
@@ -486,6 +481,7 @@ void ModuleROSUMD::setupROS() {
     // *************************** //
     m_armService = nh.advertiseService("command_arm", &MATLABListener::commandArm, m_matlabListener.get());
     m_datumService = nh.advertiseService("command_datum", &MATLABListener::commandDatum, m_matlabListener.get());
+    m_homeService = nh.advertiseService("command_home", &MATLABListener::commandHome, m_matlabListener.get());
     m_dynamicTargetService_Kinematic = nh.advertiseService("command_dynamic_target_kinematic", &MATLABListener::commandDynamicTarget, m_matlabListener.get());
     m_dynamicTargetService_OrientationEuler = nh.advertiseService("command_dynamic_target_euler", &MATLABListener::commandDynamicTarget_OrientationEuler, m_matlabListener.get());
     m_dynamicTargetService_OrientationQuat = nh.advertiseService("command_dynamic_target_quat", &MATLABListener::commandDynamicTarget_OrientationQuat, m_matlabListener.get());
@@ -574,7 +570,6 @@ bool ModuleROSUMD::publishVehicleAttitude(const int &vehicleID)
     // TODO: Timestamp
 
     m_vehicleAttPub.publish(attitude);
-    publicVehicleOdometry(vehicleID);
 }
 
 

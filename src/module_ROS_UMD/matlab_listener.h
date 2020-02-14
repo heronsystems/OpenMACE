@@ -6,6 +6,7 @@
 
 #include <mace_matlab_msgs/CMD_ARM.h>
 #include <mace_matlab_msgs/CMD_DATUM.h>
+#include <mace_matlab_msgs/CMD_HOME.h>
 #include <mace_matlab_msgs/CMD_LAND.h>
 #include <mace_matlab_msgs/CMD_TAKEOFF.h>
 #include <mace_matlab_msgs/CMD_DYNAMIC_TARGET.h>
@@ -70,6 +71,9 @@ public:
 
     bool commandDatum(mace_matlab_msgs::CMD_DATUM::Request  &req,
                       mace_matlab_msgs::CMD_DATUM::Response &res);
+
+    bool commandHome(mace_matlab_msgs::CMD_HOME::Request  &req,
+                      mace_matlab_msgs::CMD_HOME::Response &res);
 
     bool commandDynamicTarget(mace_matlab_msgs::CMD_DYNAMIC_TARGET::Request &req,
                               mace_matlab_msgs::CMD_DYNAMIC_TARGET::Response &res);

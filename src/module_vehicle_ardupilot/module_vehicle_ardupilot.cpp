@@ -285,12 +285,13 @@ void ModuleVehicleArdupilot::Command_GetHomePosition(const int &vehicleID, const
 void ModuleVehicleArdupilot::Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
+    /*
     std::stringstream buffer;
     buffer << vehicleHome;
 
     mLogs->debug("Receieved a command to home position.");
     mLogs->info(buffer.str());
-
+    */
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(vehicleHome.getClone());
     ProgressStateMachineStates();

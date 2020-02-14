@@ -545,7 +545,7 @@ void MaceCore::Events_NewVehicle(const ModuleBase *sender, const uint8_t publicI
 //!
 void MaceCore::Event_ForceVehicleDataSync(const ModuleBase *sender, const int &targetSystemID)
 {
-    MarshalCommandToVehicle<int>(targetSystemID, VehicleCommands::REQUEST_DATA_SYNC, ExternalLinkCommands::REQUEST_DATA_SYNC, targetSystemID, sender->GetCharacteristic());
+    //MarshalCommandToVehicle<int>(targetSystemID, VehicleCommands::REQUEST_DATA_SYNC, ExternalLinkCommands::REQUEST_DATA_SYNC, targetSystemID, sender->GetCharacteristic());
 }
 
 //!
