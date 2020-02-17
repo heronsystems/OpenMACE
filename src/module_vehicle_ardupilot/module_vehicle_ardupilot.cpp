@@ -56,15 +56,6 @@ void ModuleVehicleArdupilot::ConfigureModule(const std::shared_ptr<MaceCore::Mod
 void ModuleVehicleArdupilot::createLog(const int &systemID)
 {
     std::string logname = this->loggingPath + "/VehicleModule_" + std::to_string(systemID) + ".txt";
-    std::string loggerName = "VehicleModule_" + std::to_string(systemID);
-    char logNameArray[loggerName.size()+1];//as 1 char space for null is also required
-    strcpy(logNameArray, loggerName.c_str());
-
-    //initiate the logs
-    size_t q_size = 8192; //queue size must be power of 2
-    spdlog::set_async_mode(q_size,spdlog::async_overflow_policy::discard_log_msg,nullptr,std::chrono::seconds(2));
-    this->mLogs = spdlog::basic_logger_mt(logNameArray, logname);
-    mLogs->set_level(spdlog::level::debug);
 }
 
 //!

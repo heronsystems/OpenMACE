@@ -6,8 +6,6 @@
 #include <map>
 #include <condition_variable>
 
-#include "spdlog/spdlog.h"
-
 #include "data/mission_command.h"
 
 #include "module_vehicle_ardupilot_global.h"
@@ -344,9 +342,6 @@ private:
     void TransformDynamicMissionQueue();
 
     unsigned int count = 0;
-
-private:
-    std::shared_ptr<spdlog::logger> mLogs;
 
 private:
     std::mutex m_Mutex_VehicleData;

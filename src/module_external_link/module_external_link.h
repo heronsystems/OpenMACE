@@ -12,8 +12,6 @@
 
 #include "mace.h"
 
-#include "spdlog/spdlog.h"
-
 #include "common/common.h"
 
 #include "commsMACEHelper/comms_mace_helper.h"
@@ -466,8 +464,6 @@ private:
     //!
     unsigned int associatedSystemID;
     std::map<unsigned int,unsigned int> systemIDMap;
-
-    std::shared_ptr<spdlog::logger> mLog;
 
     MaceCore::SpooledTopic<BASE_POSE_TOPICS, DATA_GENERIC_VEHICLE_ITEM_TOPICS> m_VehicleDataTopic;
     MaceCore::SpooledTopic<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
