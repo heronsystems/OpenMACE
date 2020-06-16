@@ -6,5 +6,6 @@ uint8   vehicleID
 uint8   commandID
 float64 latitudeDeg
 float64 longitudeDeg
+float64 altitudeMsl
 ---
 bool    success

@@ -114,6 +114,33 @@ exists(/opt/ros/kinetic/lib/) {
         LIBS += -L/opt/ros/kinetic/lib -loctomap_ros
         LIBS += -L/opt/ros/kinetic/lib -loctomap
         LIBS += -L/opt/ros/kinetic/lib -loctomath
+} else:exists(/opt/ros/melodic/lib/) {
+    DEFINES += ROS_EXISTS
+    INCLUDEPATH += /opt/ros/melodic/include
+    INCLUDEPATH += /opt/ros/melodic/lib
+
+        LIBS += -L/opt/ros/melodic/lib -lroscpp
+        LIBS += -L/opt/ros/melodic/lib -lroscpp_serialization
+        LIBS += -L/opt/ros/melodic/lib -lrostime
+        LIBS += -L/opt/ros/melodic/lib -lxmlrpcpp
+        LIBS += -L/opt/ros/melodic/lib -lcpp_common
+        LIBS += -L/opt/ros/melodic/lib -lrosconsole_log4cxx
+        LIBS += -L/opt/ros/melodic/lib -lrosconsole_backend_interface
+        LIBS += -L/opt/ros/melodic/lib -lroslib
+        LIBS += -L/opt/ros/melodic/lib -lrospack
+        LIBS += -L/opt/ros/melodic/lib -lmessage_filters
+        LIBS += -L/opt/ros/melodic/lib -lclass_loader
+        LIBS += -L/opt/ros/melodic/lib -lconsole_bridge
+        LIBS += -L/opt/ros/melodic/lib -lrosconsole
+        LIBS += -L/opt/ros/melodic/lib -limage_transport
+        LIBS += -L/opt/ros/melodic/lib -lcv_bridge
+        LIBS += -L/opt/ros/melodic/lib -ltf
+        LIBS += -L/opt/ros/melodic/lib -ltf2
+        LIBS += -L/opt/ros/melodic/lib -ltf2_ros
+        LIBS += -L/opt/ros/melodic/lib -lactionlib
+        LIBS += -L/opt/ros/melodic/lib -loctomap_ros
+        LIBS += -L/opt/ros/melodic/lib -loctomap
+        LIBS += -L/opt/ros/melodic/lib -loctomath
 }
 }
 

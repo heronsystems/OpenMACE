@@ -21,6 +21,11 @@ INCLUDE_DIRECTORIES ( "$ENV{MACE_ROOT}/Eigen/include/eigen3" )
 
 ## Find gazebo
 find_package(gazebo REQUIRED)
+if(gazebo_VERSION_MAJOR GREATER 8)
+  ign_import_target(UUID)
+  message(STATUS "Applying patch to ${PROJECT_NAME} to avoid error with GZ9: Target UUID::UUID not found.")
+endif()
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 include_directories(${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
