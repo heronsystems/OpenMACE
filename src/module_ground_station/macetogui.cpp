@@ -169,8 +169,36 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehiclePosition";
-    json["vehicleID"] = vehicleID;
+//    json["dataType"] = "VehiclePosition";
+//    json["vehicleID"] = vehicleID;
+
+    json["message_type"] = "vehicle_heartbeat";
+    json["should_display"] = true;
+
+    json["agentID"] = "Test";
+    json["lastUpdate"] = 0.0;
+
+    json["type"] = "fast";
+    json["fidelity"] = "virtual";
+    json["comms"] = "transmitting";
+
+    json["vehicle_state"] = "test_vehicle_state";
+    json["behavior_state"] = "test_behavior_state";
+    json["planning_state"] = "test_planning_state";
+    json["remediation_state"] = false;
+
+    QJsonObject rpyObj;
+    rpyObj["roll"] = 0.0;
+    rpyObj["pitch"] = 1.0;
+    rpyObj["yaw"] = 2.0;
+    json["orientation"] = rpyObj;
+
+    QJsonObject locationObj;
+    locationObj["lat"] = 3.0;
+    locationObj["lng"] = 4.0;
+    locationObj["alt"] = 5.0;
+    json["location"] = locationObj;
+
 
     if(component->getPositionObj()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {

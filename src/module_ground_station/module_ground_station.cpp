@@ -360,14 +360,14 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write Attitude data to the GUI:
-                    m_toGUIHandler->sendAttitudeData(vehicleID, component);
+//                    m_toGUIHandler->sendAttitudeData(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_FlightMode::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_FlightMode> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_FlightMode>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write mode change to the GUI"
-                    m_toGUIHandler->sendVehicleMode(vehicleID, component);
+//                    m_toGUIHandler->sendVehicleMode(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == mace::pose_topics::Topic_GeodeticPosition::Name()) {
                     std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> component = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>();
@@ -381,28 +381,28 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write Airspeed data to the GUI:
-                    m_toGUIHandler->sendVehicleAirspeed(vehicleID, component);
+//                    m_toGUIHandler->sendVehicleAirspeed(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_Battery::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Battery>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write fueld data to the GUI:
-                    m_toGUIHandler->sendVehicleFuel(vehicleID, component);
+//                    m_toGUIHandler->sendVehicleFuel(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_GPS::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_GPS>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write GPS fix to the GUI:
-                    m_toGUIHandler->sendVehicleGPS(vehicleID, component);
+//                    m_toGUIHandler->sendVehicleGPS(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_Text::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Text>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write text data to the GUI:
-                    m_toGUIHandler->sendVehicleText(vehicleID, component);
+//                    m_toGUIHandler->sendVehicleText(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_SystemArm::Name()){
                     // TODO:
@@ -410,14 +410,14 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write vehicle arm to the GUI:
-                    m_toGUIHandler->sendVehicleArm(vehicleID, component);
+//                    m_toGUIHandler->sendVehicleArm(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_Heartbeat::Name()){
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Heartbeat> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Heartbeat>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write heartbeat data to the GUI:
-                    m_toGUIHandler->sendVehicleHeartbeat(vehicleID, component);
+//                    m_toGUIHandler->sendVehicleHeartbeat(vehicleID, component);
                 }
     //            else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_SystemTime::Name()) {
     //                std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemTime> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_SystemTime>();
@@ -439,28 +439,28 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write mission items to the GUI:
-                    m_toGUIHandler->sendVehicleMission(vehicleID, component->getMissionList());
+//                    m_toGUIHandler->sendVehicleMission(vehicleID, component->getMissionList());
                 }
                 else if(componentsUpdated.at(i) == MissionTopic::MissionHomeTopic::Name()) {
                     std::shared_ptr<MissionTopic::MissionHomeTopic> component = std::make_shared<MissionTopic::MissionHomeTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
                     command_item::SpatialHome castHome = component->getHome();
                     // Write mission items to the GUI:
-                    m_toGUIHandler->sendVehicleHome(vehicleID, castHome);
+//                    m_toGUIHandler->sendVehicleHome(vehicleID, castHome);
                 }
                 else if(componentsUpdated.at(i) == MissionTopic::MissionItemReachedTopic::Name()) {
                     std::shared_ptr<MissionTopic::MissionItemReachedTopic> component = std::make_shared<MissionTopic::MissionItemReachedTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Send mission item reached to the GUI:
-                    m_toGUIHandler->sendMissionItemReached(vehicleID, component);
+//                    m_toGUIHandler->sendMissionItemReached(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == MissionTopic::MissionItemCurrentTopic::Name()) {
                     std::shared_ptr<MissionTopic::MissionItemCurrentTopic> component = std::make_shared<MissionTopic::MissionItemCurrentTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write current mission item to the GUI:
-                    m_toGUIHandler->sendCurrentMissionItem(vehicleID, component);
+//                    m_toGUIHandler->sendCurrentMissionItem(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == MissionTopic::VehicleTargetTopic::Name()) {
                     std::shared_ptr<MissionTopic::VehicleTargetTopic> component = std::make_shared<MissionTopic::VehicleTargetTopic>();
@@ -471,7 +471,7 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     {
                         // Write vehicle target to the GUI:
 
-                        m_toGUIHandler->sendVehicleTarget(vehicleID, dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition));
+//                        m_toGUIHandler->sendVehicleTarget(vehicleID, dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition));
                         break;
                     }
                     case CoordinateSystemTypes::CARTESIAN:
@@ -504,7 +504,7 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     m_SensorFootprintDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write sensor footprint verticies to the GUI:
-                    m_toGUIHandler->sendSensorFootprint(vehicleID, component);
+//                    m_toGUIHandler->sendSensorFootprint(vehicleID, component);
                 }
             }
         }
