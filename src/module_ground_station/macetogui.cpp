@@ -81,12 +81,7 @@ void MACEtoGUI::setModeTimeout(const bool &flag) {
 void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemCurrentTopic> &component) {
     UNUSED(vehicleID);
 
-    QJsonObject json;
-    json["dataType"] = "CurrentMissionItem";
-    json["vehicleID"] = static_cast<int>(component->getMissionKey().m_systemID);
-    json["missionItemIndex"] = static_cast<int>(component->getMissionCurrentIndex());
-
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(static_cast<int>(component->getMissionKey().m_systemID),"CurrentMissionItem"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -100,13 +95,8 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
 //! \param component Vehicle target component
 //!
 void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition) {
-    QJsonObject json;
-    json["dataType"] = "CurrentVehicleTarget";
-    json["vehicleID"] = vehicleID;
-    json["distanceToTarget"] = 0.0;
-    targetPosition->updateQJSONObject(json);
-
-    QJsonDocument doc(json);
+    
+    QJsonDocument doc(targetPosition->toJSON(vehicleID, "CurrentVehicleTarget"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -121,14 +111,9 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticP
 //!
 void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleHome";
-    json["vehicleID"] = vehicleID;
     if(home.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        home.getPosition()->updateQJSONObject(json);
-
-        QJsonDocument doc(json);
+        QJsonDocument doc(home.toJSON(vehicleID,"VehicleHome"));
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
@@ -144,15 +129,10 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 //!
 void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 {
-    QJsonObject json;
-    json["dataType"] = "GlobalOrigin";
-    json["vehicleID"] = 0;
-
+    
     if(origin.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        origin.getPosition()->updateQJSONObject(json);
-
-        QJsonDocument doc(json);
+        QJsonDocument doc(origin.toJSON(0,"GlobalOrigin"));
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){

@@ -171,7 +171,7 @@ if [ "$installGUI" = "1" ]; then
 fi
 
 # Install MACE
-installMACE
+#installMACE
 
 cd $MACE_ROOT
 

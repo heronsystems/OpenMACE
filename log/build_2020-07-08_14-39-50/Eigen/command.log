@@ -1,0 +1,1 @@
+Invoking command in '/home/aaron/Software/OpenMACE/build/Eigen': /usr/bin/cmake /home/aaron/Software/OpenMACE/Eigen/include/eigen3/Eigen -DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/Eigen

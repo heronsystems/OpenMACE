@@ -39,3 +39,10 @@ mace::CoordinateFrameTypes Abstract_GeodeticPosition::getExplicitCoordinateFrame
     return getCoordinateFrame(geodeticFrameType);
 }
 
+QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID,dataType);
+    json["distanceToTarget"] = 0.0;
+    updateQJSONObject(json);
+    return json;
+}

@@ -1,0 +1,31 @@
+[0.047s] Invoking command in '/home/aaron/Software/OpenMACE/build/Eigen_Unsupported': /usr/bin/cmake /home/aaron/Software/OpenMACE/Eigen/include/eigen3/Eigen_Unsupported -DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/Eigen_Unsupported
+[0.366s] -- The C compiler identification is GNU 7.5.0
+[0.366s] -- The CXX compiler identification is GNU 7.5.0
+[0.366s] -- Check for working C compiler: /usr/bin/cc
+[0.366s] -- Check for working C compiler: /usr/bin/cc -- works
+[0.367s] -- Detecting C compiler ABI info
+[0.367s] -- Detecting C compiler ABI info - done
+[0.368s] -- Detecting C compile features
+[0.616s] -- Detecting C compile features - done
+[0.621s] -- Check for working CXX compiler: /usr/bin/c++
+[0.715s] -- Check for working CXX compiler: /usr/bin/c++ -- works
+[0.716s] -- Detecting CXX compiler ABI info
+[0.814s] -- Detecting CXX compiler ABI info - done
+[0.822s] -- Detecting CXX compile features
+[1.216s] -- Detecting CXX compile features - done
+[1.216s] CMake Error at CMakeLists.txt:32 (add_subdirectory):
+[1.217s]   add_subdirectory given source "CXX11" which is not an existing directory.
+[1.217s] 
+[1.217s] 
+[1.217s] CMake Warning (dev) in CMakeLists.txt:
+[1.217s]   No cmake_minimum_required command is present.  A line of code such as
+[1.217s] 
+[1.217s]     cmake_minimum_required(VERSION 3.10)
+[1.217s] 
+[1.217s]   should be added at the top of the file.  The version specified may be lower
+[1.217s]   if you wish to support older CMake versions for this project.  For more
+[1.217s]   information run "cmake --help-policy CMP0000".
+[1.217s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[1.217s] 
+[1.217s] -- Configuring incomplete, errors occurred!
+[1.217s] See also "/home/aaron/Software/OpenMACE/build/Eigen_Unsupported/CMakeFiles/CMakeOutput.log".

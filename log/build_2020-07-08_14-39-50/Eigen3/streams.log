@@ -1,0 +1,189 @@
+[0.052s] Invoking command in '/home/aaron/Software/OpenMACE/build/Eigen3': /usr/bin/cmake /home/aaron/Software/OpenMACE/Eigen/EigenFull -DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/Eigen3
+[0.381s] -- The C compiler identification is GNU 7.5.0
+[0.381s] -- The CXX compiler identification is GNU 7.5.0
+[0.381s] -- Check for working C compiler: /usr/bin/cc
+[0.381s] -- Check for working C compiler: /usr/bin/cc -- works
+[0.381s] -- Detecting C compiler ABI info
+[0.381s] -- Detecting C compiler ABI info - done
+[0.381s] -- Detecting C compile features
+[0.612s] -- Detecting C compile features - done
+[0.616s] -- Check for working CXX compiler: /usr/bin/c++
+[0.716s] -- Check for working CXX compiler: /usr/bin/c++ -- works
+[0.717s] -- Detecting CXX compiler ABI info
+[0.817s] -- Detecting CXX compiler ABI info - done
+[0.825s] -- Detecting CXX compile features
+[1.235s] -- Detecting CXX compile features - done
+[1.252s] -- Performing Test standard_math_library_linked_to_automatically
+[1.343s] -- Performing Test standard_math_library_linked_to_automatically - Success
+[1.344s] -- Standard libraries to link to explicitly: none
+[1.347s] -- Performing Test COMPILER_SUPPORT_WERROR
+[1.409s] -- Performing Test COMPILER_SUPPORT_WERROR - Success
+[1.413s] -- Performing Test COMPILER_SUPPORT_pedantic
+[1.475s] -- Performing Test COMPILER_SUPPORT_pedantic - Success
+[1.479s] -- Performing Test COMPILER_SUPPORT_Wall
+[1.541s] -- Performing Test COMPILER_SUPPORT_Wall - Success
+[1.545s] -- Performing Test COMPILER_SUPPORT_Wextra
+[1.609s] -- Performing Test COMPILER_SUPPORT_Wextra - Success
+[1.613s] -- Performing Test COMPILER_SUPPORT_Wundef
+[1.684s] -- Performing Test COMPILER_SUPPORT_Wundef - Success
+[1.687s] -- Performing Test COMPILER_SUPPORT_Wcastalign
+[1.750s] -- Performing Test COMPILER_SUPPORT_Wcastalign - Success
+[1.754s] -- Performing Test COMPILER_SUPPORT_Wcharsubscripts
+[1.819s] -- Performing Test COMPILER_SUPPORT_Wcharsubscripts - Success
+[1.823s] -- Performing Test COMPILER_SUPPORT_Wnonvirtualdtor
+[1.887s] -- Performing Test COMPILER_SUPPORT_Wnonvirtualdtor - Success
+[1.891s] -- Performing Test COMPILER_SUPPORT_Wunusedlocaltypedefs
+[1.955s] -- Performing Test COMPILER_SUPPORT_Wunusedlocaltypedefs - Success
+[1.958s] -- Performing Test COMPILER_SUPPORT_Wpointerarith
+[2.022s] -- Performing Test COMPILER_SUPPORT_Wpointerarith - Success
+[2.026s] -- Performing Test COMPILER_SUPPORT_Wwritestrings
+[2.090s] -- Performing Test COMPILER_SUPPORT_Wwritestrings - Success
+[2.095s] -- Performing Test COMPILER_SUPPORT_Wformatsecurity
+[2.162s] -- Performing Test COMPILER_SUPPORT_Wformatsecurity - Success
+[2.166s] -- Performing Test COMPILER_SUPPORT_Wshorten64to32
+[2.186s] -- Performing Test COMPILER_SUPPORT_Wshorten64to32 - Failed
+[2.190s] -- Performing Test COMPILER_SUPPORT_Wlogicalop
+[2.256s] -- Performing Test COMPILER_SUPPORT_Wlogicalop - Success
+[2.259s] -- Performing Test COMPILER_SUPPORT_Wenumconversion
+[2.280s] -- Performing Test COMPILER_SUPPORT_Wenumconversion - Failed
+[2.284s] -- Performing Test COMPILER_SUPPORT_Wcpp11extensions
+[2.303s] -- Performing Test COMPILER_SUPPORT_Wcpp11extensions - Failed
+[2.306s] -- Performing Test COMPILER_SUPPORT_Wdoublepromotion
+[2.371s] -- Performing Test COMPILER_SUPPORT_Wdoublepromotion - Success
+[2.375s] -- Performing Test COMPILER_SUPPORT_Wnopsabi
+[2.440s] -- Performing Test COMPILER_SUPPORT_Wnopsabi - Success
+[2.443s] -- Performing Test COMPILER_SUPPORT_Wnovariadicmacros
+[2.508s] -- Performing Test COMPILER_SUPPORT_Wnovariadicmacros - Success
+[2.511s] -- Performing Test COMPILER_SUPPORT_Wnolonglong
+[2.575s] -- Performing Test COMPILER_SUPPORT_Wnolonglong - Success
+[2.578s] -- Performing Test COMPILER_SUPPORT_fnochecknew
+[2.641s] -- Performing Test COMPILER_SUPPORT_fnochecknew - Success
+[2.645s] -- Performing Test COMPILER_SUPPORT_fnocommon
+[2.709s] -- Performing Test COMPILER_SUPPORT_fnocommon - Success
+[2.713s] -- Performing Test COMPILER_SUPPORT_fstrictaliasing
+[2.778s] -- Performing Test COMPILER_SUPPORT_fstrictaliasing - Success
+[2.782s] -- Performing Test COMPILER_SUPPORT_wd981
+[2.799s] -- Performing Test COMPILER_SUPPORT_wd981 - Failed
+[2.803s] -- Performing Test COMPILER_SUPPORT_wd2304
+[2.822s] -- Performing Test COMPILER_SUPPORT_wd2304 - Failed
+[2.826s] -- Performing Test COMPILER_SUPPORT_STRICTANSI
+[2.844s] -- Performing Test COMPILER_SUPPORT_STRICTANSI - Failed
+[2.848s] -- Performing Test COMPILER_SUPPORT_Qunusedarguments
+[2.868s] -- Performing Test COMPILER_SUPPORT_Qunusedarguments - Failed
+[2.871s] -- Performing Test COMPILER_SUPPORT_ansi
+[2.935s] -- Performing Test COMPILER_SUPPORT_ansi - Success
+[2.939s] -- Performing Test COMPILER_SUPPORT_OPENMP
+[3.003s] -- Performing Test COMPILER_SUPPORT_OPENMP - Success
+[3.027s] -- Performing Test EIGEN_COMPILER_SUPPORT_CPP11
+[3.092s] -- Performing Test EIGEN_COMPILER_SUPPORT_CPP11 - Success
+[3.097s] qmake: could not find a Qt installation of ''
+[3.099s] -- Found unsuitable Qt version "" from NOTFOUND
+[3.198s] -- Performing Test EIGEN_COMPILER_SUPPORT_CXX11
+[3.260s] -- Performing Test EIGEN_COMPILER_SUPPORT_CXX11 - Success
+[3.490s] -- The Fortran compiler identification is unknown
+[3.511s] -- Looking for sgemm_
+[3.584s] -- Looking for sgemm_ - found
+[3.584s] -- A library with BLAS API found.
+[3.596s] -- Looking for cheev_
+[3.669s] -- Looking for cheev_ - found
+[3.669s] -- A library with LAPACK API found.
+[3.674s] -- Found CHOLMOD: /usr/include/suitesparse  
+[3.678s] -- Found UMFPACK: /usr/include/suitesparse  
+[3.684s] -- Performing Test SUPERLU_HAS_GLOBAL_MEM_USAGE_T
+[3.758s] -- Performing Test SUPERLU_HAS_GLOBAL_MEM_USAGE_T - Success
+[3.758s] -- Performing Test SUPERLU_HAS_CLEAN_ENUMS
+[3.824s] -- Performing Test SUPERLU_HAS_CLEAN_ENUMS - Success
+[3.825s] -- Performing Test SUPERLU_HAS_GLOBALLU_T
+[3.902s] -- Performing Test SUPERLU_HAS_GLOBALLU_T - Success
+[3.903s] -- Found SUPERLU: /usr/include/superlu (found version "5.0") 
+[3.905s] -- Could NOT find PASTIX (missing: PASTIX_INCLUDES PASTIX_LIBRARIES) 
+[3.906s] -- Could NOT find SCOTCH (missing: SCOTCH_INCLUDES SCOTCH_LIBRARIES) 
+[3.908s] -- Could NOT find METIS (missing: METIS_INCLUDES METIS_LIBRARIES) 
+[3.910s] -- Found SPQR: /usr/include/suitesparse  
+[3.914s] qmake: could not find a Qt installation of ''
+[3.916s] -- Found unsuitable Qt version "" from NOTFOUND
+[4.157s] -- Performing Test COMPILER_SUPPORT_FASTMATH
+[4.220s] -- Performing Test COMPILER_SUPPORT_FASTMATH - Success
+[4.262s] -- Boost version: 1.65.1
+[4.346s] -- Looking for pthread.h
+[4.400s] -- Looking for pthread.h - found
+[4.402s] -- Looking for pthread_create
+[4.466s] -- Looking for pthread_create - not found
+[4.466s] -- Looking for pthread_create in pthreads
+[4.521s] -- Looking for pthread_create in pthreads - not found
+[4.521s] -- Looking for pthread_create in pthread
+[4.609s] -- Looking for pthread_create in pthread - found
+[4.611s] -- Found Threads: TRUE  
+[4.614s] -- Could NOT find GOOGLEHASH (missing: GOOGLEHASH_INCLUDES GOOGLEHASH_COMPILE) 
+[4.617s] -- Could NOT find ADOLC (missing: ADOLC_INCLUDES ADOLC_LIBRARIES) 
+[4.650s] -- Could NOT find MPFR (missing: MPFR_INCLUDES MPFR_LIBRARIES MPFR_VERSION_OK) (Required is at least version "2.3.0")
+[4.651s] -- Could NOT find GMP (missing: GMP_INCLUDES GMP_LIBRARIES) 
+[4.658s] -- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.1") 
+[4.664s] -- Could NOT find FFTW (missing: FFTW_INCLUDES FFTW_LIBRARIES) 
+[4.669s] -- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so   
+[4.672s] -- Found GLUT: /usr/lib/x86_64-linux-gnu/libglut.so  
+[4.711s] -- Found CUDA: /usr/local/cuda (found suitable version "10.2", minimum required is "7.0") 
+[4.717s] qmake: could not find a Qt installation of ''
+[4.719s] -- Found unsuitable Qt version "" from NOTFOUND
+[4.719s] -- Qt4 not found, so disabling the mandelbrot and opengl demos
+[4.726s] -- Could NOT find PASTIX (missing: PASTIX_INCLUDES PASTIX_LIBRARIES) 
+[4.728s] -- Could NOT find SCOTCH (missing: SCOTCH_INCLUDES SCOTCH_LIBRARIES) 
+[4.729s] -- Could NOT find METIS (missing: METIS_INCLUDES METIS_LIBRARIES) 
+[4.730s] -- ************************************************************
+[4.731s] -- ***    Eigen's unit tests configuration summary          ***
+[4.731s] -- ************************************************************
+[4.731s] -- 
+[4.731s] -- Build type:        Release
+[4.731s] -- Build site:        aramis
+[4.731s] -- Build string:      linux-4.15.0-109-generic-_-7.5.0-sse2-64bit
+[4.731s] -- Enabled backends:  Cholmod,  UmfPack,  SuperLU,  SPQR,  Boost.Multiprecision, 
+[4.731s] -- Disabled backends: PaStiX,  METIS,  Qt4 support,  GoogleHash,  Adolc,  MPFR C++,  fftw,  OpenGL, 
+[4.731s] -- Default order:     Column-major
+[4.731s] -- Maximal matrix/vector size: 320
+[4.731s] -- SSE2:              Using architecture defaults
+[4.731s] -- SSE3:              Using architecture defaults
+[4.731s] -- SSSE3:             Using architecture defaults
+[4.731s] -- SSE4.1:            Using architecture defaults
+[4.731s] -- SSE4.2:            Using architecture defaults
+[4.732s] -- AVX:               Using architecture defaults
+[4.732s] -- FMA:               Using architecture defaults
+[4.732s] -- AVX512:            Using architecture defaults
+[4.732s] -- Altivec:           Using architecture defaults
+[4.732s] -- VSX:               Using architecture defaults
+[4.732s] -- ARM NEON:          Using architecture defaults
+[4.732s] -- ARMv8 NEON:        Using architecture defaults
+[4.732s] -- S390X ZVECTOR:     Using architecture defaults
+[4.732s] -- C++11:             OFF
+[4.732s] -- SYCL:              OFF
+[4.732s] -- CUDA:              OFF
+[4.732s] -- 
+[4.732s] CXX:               /usr/bin/c++
+[4.732s]  CXX_VERSION:       c++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+[4.732s]  CXX_FLAGS:          -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi
+[4.732s]  Sparse lib flags:   ;/usr/lib/x86_64-linux-gnu/libcholmod.so;/usr/lib/x86_64-linux-gnu/libamd.so;/usr/lib/x86_64-linux-gnu/libcolamd.so;/usr/lib/x86_64-linux-gnu/libcamd.so;/usr/lib/x86_64-linux-gnu/libccolamd.so;eigen_blas;eigen_lapack;/usr/lib/x86_64-linux-gnu/libumfpack.so;/usr/lib/x86_64-linux-gnu/libcolamd.so;/usr/lib/x86_64-linux-gnu/libamd.so;/usr/lib/x86_64-linux-gnu/libcholmod.so;eigen_blas;/usr/lib/x86_64-linux-gnu/libsuperlu.so;eigen_blas;/usr/lib/x86_64-linux-gnu/libspqr.so;/usr/lib/x86_64-linux-gnu/libcholmod.so;/usr/lib/x86_64-linux-gnu/libcholmod.so;/usr/lib/x86_64-linux-gnu/libamd.so;/usr/lib/x86_64-linux-gnu/libcolamd.so;/usr/lib/x86_64-linux-gnu/libcamd.so;/usr/lib/x86_64-linux-gnu/libccolamd.so;eigen_lapack;eigen_blas;/usr/lib/x86_64-linux-gnu/liblapack.so
+[4.732s] 
+[4.733s] -- ************************************************************
+[4.733s] -- 
+[4.733s] -- Configured Eigen 3.3.3
+[4.733s] -- 
+[4.733s] -- Some things you can do now:
+[4.733s] -- --------------+--------------------------------------------------------------
+[4.733s] -- Command       |   Description
+[4.733s] -- --------------+--------------------------------------------------------------
+[4.733s] -- make install  | Install Eigen. Headers will be installed to:
+[4.733s] --               |     <CMAKE_INSTALL_PREFIX>/<INCLUDE_INSTALL_DIR>
+[4.733s] --               |   Using the following values:
+[4.733s] --               |     CMAKE_INSTALL_PREFIX: /home/aaron/Software/OpenMACE/install/Eigen3
+[4.733s] --               |     INCLUDE_INSTALL_DIR:  include/eigen3
+[4.733s] --               |   Change the install location of Eigen headers using:
+[4.733s] --               |     cmake . -DCMAKE_INSTALL_PREFIX=yourprefix
+[4.733s] --               |   Or:
+[4.733s] --               |     cmake . -DINCLUDE_INSTALL_DIR=yourdir
+[4.734s] -- make doc      | Generate the API documentation, requires Doxygen & LaTeX
+[4.734s] -- make check    | Build and run the unit-tests. Read this page:
+[4.734s] --               |   http://eigen.tuxfamily.org/index.php?title=Tests
+[4.734s] -- make blas     | Build BLAS library (not the same thing as Eigen)
+[4.734s] -- make uninstall| Removes files installed by make install
+[4.734s] -- --------------+--------------------------------------------------------------
+[4.734s] -- 
+[4.741s] -- Configuring done

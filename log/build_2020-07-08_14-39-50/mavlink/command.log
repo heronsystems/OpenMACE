@@ -1,0 +1,1 @@
+Invoking command in '/home/aaron/Software/OpenMACE/build/mavlink': /usr/bin/cmake /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink -DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/mavlink

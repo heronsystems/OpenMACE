@@ -23,6 +23,12 @@ void MissionItemCurrentTopic::CreateFromDatagram(const MaceCore::TopicDatagram &
     indexCurrent = datagram.GetTerminal<int>("currentIndex");
 }
 
+QJsonObject MissionItemCurrentTopic::toJSON(const int &vehicleID, const std::string &dataType) const {
+    QJsonObject json = toJSON_base(vehicleID,dataType);
+    json["missionItemIndex"] = static_cast<int>(getMissionCurrentIndex());
+    return json;
+}
+
 MissionItemCurrentTopic::MissionItemCurrentTopic()
 {
 

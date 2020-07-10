@@ -9,6 +9,7 @@
 
 #include "abstract_position.h"
 #include "position_interface.h"
+#include "data/jsonconverter.h"
 
 namespace mace {
 namespace pose {
@@ -35,7 +36,7 @@ public:
 public:
 
 //    virtual Eigen::VectorXd getDataVector() const = 0; //This function remains virtual from the base class of position since this class is Abstract
-
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
     //!
     //! \brief setLatitude
     //! \param latitude
