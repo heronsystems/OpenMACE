@@ -149,40 +149,40 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component)
 {
     QJsonObject json;
-//    json["dataType"] = "VehiclePosition";
-//    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_position";
+    json["agentID"] = std::to_string(vehicleID).c_str();
 
-    json["message_type"] = "vehicle_heartbeat";
-    json["should_display"] = true;
+//    json["message_type"] = "vehicle_heartbeat";
+//    json["should_display"] = true;
 
-    json["agentID"] = "Test";
-    json["lastUpdate"] = 0.0;
+//    json["agentID"] = "Test";
+//    json["lastUpdate"] = 0.0;
 
-    json["type"] = "fast";
-    json["fidelity"] = "virtual";
-    json["comms"] = "transmitting";
+//    json["type"] = "fast";
+//    json["fidelity"] = "virtual";
+//    json["comms"] = "transmitting";
 
-    json["vehicle_state"] = "test_vehicle_state";
-    json["behavior_state"] = "test_behavior_state";
-    json["planning_state"] = "test_planning_state";
-    json["remediation_state"] = false;
+//    json["vehicle_state"] = "test_vehicle_state";
+//    json["behavior_state"] = "test_behavior_state";
+//    json["planning_state"] = "test_planning_state";
+//    json["remediation_state"] = false;
 
-    QJsonObject rpyObj;
-    rpyObj["roll"] = 0.0;
-    rpyObj["pitch"] = 1.0;
-    rpyObj["yaw"] = 2.0;
-    json["orientation"] = rpyObj;
-
-    QJsonObject locationObj;
-    locationObj["lat"] = 3.0;
-    locationObj["lng"] = 4.0;
-    locationObj["alt"] = 5.0;
-    json["location"] = locationObj;
+//    QJsonObject rpyObj;
+//    rpyObj["roll"] = 0.0;
+//    rpyObj["pitch"] = 1.0;
+//    rpyObj["yaw"] = 2.0;
+//    json["orientation"] = rpyObj;
 
 
     if(component->getPositionObj()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        component->getPositionObj()->updateQJSONObject(json);
+//        QJsonObject locationObj;
+//        component->getPositionObj()->updateQJSONObject(locationObj);
+//        json["location"] = locationObj;
+        json["lat"] = component->getPositionObj()->getLatitude();
+        json["lng"] = component->getPositionObj()->getLongitude();
+//        json["alt"] = component->getPositionObj()->getAltitude();
+        json["alt"] = 0.0;
 
         QJsonDocument doc(json);
         if(m_positionTimeoutOccured)
@@ -207,8 +207,8 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
 void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleAttitude";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_attitude";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     uint8_t rotDOF = component->getRotationObj()->getDOF();
 
     if(rotDOF == 3)
@@ -246,8 +246,8 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
 void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component)
 {
         QJsonObject json;
-        json["dataType"] = "VehicleAirspeed";
-        json["vehicleID"] = vehicleID;
+        json["message_type"] = "vehicle_airspeed";
+        json["agentID"] = std::to_string(vehicleID).c_str();
         json["airspeed"] = component->getSpeedObj().getSpeed();
 
         QJsonDocument doc(json);
@@ -266,8 +266,8 @@ void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measuremen
 void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleFuel";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_fuel";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["batteryRemaining"] = component->getBatteryRemaining();
     json["batteryCurrent"] = component->getBatteryCurrent();
     json["batteryVoltage"] = component->getBatteryVoltage();
@@ -294,8 +294,8 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
 void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_FlightMode> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleMode";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_mode";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["vehicleMode"] = QString::fromStdString(component->getFlightModeString());
 
     QJsonDocument doc(json);
@@ -320,8 +320,8 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
 void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleText";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_text";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(component->getSeverity()));
     json["text"] = QString::fromStdString(component->getText());
     QJsonDocument doc(json);
@@ -340,8 +340,8 @@ void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<Data
 void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleGPS";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_gps";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["visibleSats"] = component->getSatVisible();
     json["gpsFix"] = QString::fromStdString(DataGenericItem::DataGenericItem_GPS::GPSFixTypeToString(component->getGPSFix()));
     json["hdop"] = component->getHDOP();
@@ -362,8 +362,8 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
 void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemArm> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleArm";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_arm";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["armed"] = component->getSystemArm();
 
     QJsonDocument doc(json);
@@ -382,8 +382,8 @@ void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataG
 void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemReachedTopic> &component)
 {
     QJsonObject json;
-    json["dataType"] = "MissionItemReached";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "MissionItemReached";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["itemIndex"] = static_cast<int>(component->getMissionAchievedIndex());
 
     QJsonDocument doc(json);
@@ -402,8 +402,8 @@ void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_p
 void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr<DataGenericItem::DataGenericItem_Heartbeat> &component)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleHeartbeat";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "vehicle_heartbeat";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["autopilot"] = QString::fromStdString(Data::AutopilotTypeToString(component->getAutopilot()));
     json["aircraftType"] = QString::fromStdString(Data::SystemTypeToString(component->getType()));
     json["companion"] = component->getCompanion();
@@ -425,8 +425,8 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
 void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::MissionList &missionList)
 {
     QJsonObject json;
-    json["dataType"] = "VehicleMission";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "VehicleMission";
+    json["agentID"] = std::to_string(vehicleID).c_str();
     json["creatorID"] = static_cast<int>(missionList.getCreatorID());
     json["missionID"] = static_cast<int>(missionList.getMissionID());
 
@@ -452,8 +452,8 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
 //!
 void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<DataVehicleSensors::SensorVertices_Global> &component) {
     QJsonObject json;
-    json["dataType"] = "SensorFootprint";
-    json["vehicleID"] = vehicleID;
+    json["message_type"] = "SensorFootprint";
+    json["agentID"] = std::to_string(vehicleID).c_str();
 
     std::vector<mace::pose::GeodeticPosition_2D> sensorFootprint = component->getSensorVertices();
 
@@ -484,8 +484,8 @@ void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<
 void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPosition_3D> &component) {
 
     QJsonObject json;
-    json["dataType"] = "EnvironmentBoundary";
-    json["vehicleID"] = 0;
+    json["message_type"] = "EnvironmentBoundary";
+    json["agentID"] = 0;
 
     QJsonArray verticies;
     for(auto&& vertex : component) {
