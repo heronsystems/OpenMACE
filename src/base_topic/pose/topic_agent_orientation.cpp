@@ -60,7 +60,7 @@ Topic_AgentOrientation::Topic_AgentOrientation(const Topic_AgentOrientation &cop
     this->m_RotationObj = copy.m_RotationObj->getRotationalClone();
 }
 
-QJsonObject Topic_AgentOrientation::toJSON(const int &vehicleID, const std::string &dataType) 
+QJsonObject Topic_AgentOrientation::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
 

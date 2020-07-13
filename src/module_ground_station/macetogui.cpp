@@ -327,7 +327,11 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
 //!
 void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::MissionList &missionList)
 {
-    QJsonDocument doc(missionList.toJSON(vehicleID,"VehicleMission"));
+    QJsonObject json = missionList.toJSON(vehicleID,"VehicleMission");
+    QJsonArray missionItems;
+    missionListToJSON(missionList,missionItems);
+    json["missionItems"] = missionItems;
+    QJsonDocument doc(json);
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -377,6 +381,126 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
 
     if(!bytesWritten){
         std::cout << "Write environment boundary failed..." << std::endl;
+    }
+}
+
+void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems)
+{
+    for(size_t i = 0; i < list.getQueueSize(); i++)
+    {
+        //TODO-PAT: Look into unique_ptr or auto_ptr?? Not sure I like this...
+        std::shared_ptr<command_item::AbstractCommandItem> missionItem = list.getMissionItem(i);
+
+        QJsonObject obj;
+        obj["description"] = QString::fromStdString(missionItem->getDescription());
+        obj["type"] = QString::fromStdString(command_item::CommandItemToString(missionItem->getCommandType()));
+
+        switch (missionItem->getCommandType()) {
+        case command_item::COMMANDTYPE::CI_ACT_ARM:
+        {
+            std::shared_ptr<command_item::ActionArm> castItem = std::dynamic_pointer_cast<command_item::ActionArm>(missionItem);
+            obj["positionalFrame"] = "global";
+            UNUSED(castItem);
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_ACT_CHANGEMODE:
+        {
+            std::shared_ptr<command_item::ActionChangeMode> castItem = std::dynamic_pointer_cast<command_item::ActionChangeMode>(missionItem);
+            obj["positionalFrame"] = "global";
+            UNUSED(castItem);
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_NAV_LAND:
+        {
+            std::shared_ptr<command_item::SpatialLand> castItem = std::dynamic_pointer_cast<command_item::SpatialLand>(missionItem);
+            obj["positionalFrame"] = "global";
+            UNUSED(castItem);
+
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
+        {
+            std::shared_ptr<command_item::SpatialRTL> castItem = std::dynamic_pointer_cast<command_item::SpatialRTL>(missionItem);
+            obj["positionalFrame"] = "global";
+            UNUSED(castItem);
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
+        {
+            std::shared_ptr<command_item::SpatialTakeoff> castItem = std::dynamic_pointer_cast<command_item::SpatialTakeoff>(missionItem);
+            if(castItem->position->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
+            {
+                obj["positionalFrame"] = "global";
+                if(castItem->position->is3D())
+                {
+                    const mace::pose::GeodeticPosition_3D* castPosition = castItem->position->positionAs<mace::pose::GeodeticPosition_3D>();
+                    obj["lat"] = castPosition->getLatitude();
+                    obj["lng"] = castPosition->getLongitude();
+                    obj["alt"] = castPosition->getAltitude();
+                }
+            }
+
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_NAV_WAYPOINT:
+        {
+            std::shared_ptr<command_item::SpatialWaypoint> castItem = std::dynamic_pointer_cast<command_item::SpatialWaypoint>(missionItem);
+            obj["positionalFrame"] = "global";
+            castItem->getPosition()->updateQJSONObject(obj);
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_NAV_LOITER_TIME:
+        {
+            std::shared_ptr<command_item::SpatialLoiter_Time> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Time>(missionItem);
+            obj["positionalFrame"] = "global";
+            //            obj["lat"] = castItem->position->getX();
+            //            obj["lng"] = castItem->position->getY();
+            //            obj["alt"] = castItem->position->getZ();
+            obj["duration"] = castItem->duration;
+            if(castItem->direction == Data::LoiterDirection::CW)
+            {
+                obj["radius"] = castItem->radius;
+            }else{
+                obj["radius"] = 0-castItem->radius;
+            }
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_NAV_LOITER_TURNS:
+        {
+            std::shared_ptr<command_item::SpatialLoiter_Turns> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Turns>(missionItem);
+            obj["positionalFrame"] = "global";
+            //            obj["lat"] = castItem->position->getX();
+            //            obj["lng"] = castItem->position->getY();
+            //            obj["alt"] = castItem->position->getZ();
+            obj["turns"] = static_cast<int>(castItem->turns);
+            if(castItem->direction == Data::LoiterDirection::CW)
+            {
+                obj["radius"] = castItem->radius;
+            }else{
+                obj["radius"] = 0-castItem->radius;
+            }
+            break;
+        }
+        case command_item::COMMANDTYPE::CI_NAV_LOITER_UNLIM:
+        {
+            std::shared_ptr<command_item::SpatialLoiter_Unlimited> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Unlimited>(missionItem);
+            obj["positionalFrame"] = "global";
+            //            obj["lat"] = castItem->position->getX();
+            //            obj["lng"] = castItem->position->getY();
+            //            obj["alt"] = castItem->position->getZ();
+            if(castItem->direction == Data::LoiterDirection::CW)
+            {
+                obj["radius"] = castItem->radius;
+            }else{
+                obj["radius"] = 0-castItem->radius;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
+        missionItems.push_back(obj);
     }
 }
 

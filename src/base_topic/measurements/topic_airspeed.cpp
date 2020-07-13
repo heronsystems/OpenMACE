@@ -27,7 +27,7 @@ void Topic_AirSpeed::CreateFromDatagram(const MaceCore::TopicDatagram &datagram)
 QJsonObject Topic_AirSpeed::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
-    json["airspeed"] = component->getSpeedObj().getSpeed();
+    json["airspeed"] = getSpeedObj().getSpeed();
     return json;
 }
 

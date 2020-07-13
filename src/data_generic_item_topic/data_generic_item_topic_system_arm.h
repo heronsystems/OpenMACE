@@ -3,7 +3,7 @@
 
 #include "data_generic_item/data_generic_item_system_arm.h"
 #include "data/i_topic_component_data_object.h"
-#include "data/jsonconverter.h\"
+#include "data/jsonconverter.h"
 
 namespace DataGenericItemTopic {
 

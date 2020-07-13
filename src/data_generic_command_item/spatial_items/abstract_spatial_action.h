@@ -66,9 +66,7 @@ public:
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const
     {
         QJsonObject json = toJSON_base(vehicleID,dataType);
-        json["lat"] = getPosition()->getLatitude();
-        json["lng"] = getPosition()->getLongitude();
-        json["alt"] = getPosition()->getAltitude();
+        getPosition()->updateQJSONObject(json);
         return json;
     }
 

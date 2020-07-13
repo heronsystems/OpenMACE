@@ -238,6 +238,17 @@ public:
     //!
     void sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition);
 
+    // ============================================================================= //
+    // ================================== Helpers ================================== //
+    // ============================================================================= //
+private:
+
+    //!
+    //! \brief missionListToJSON Convert a mission list to a JSON array
+    //! \param list Mission list to convert to a JSON array
+    //! \param missionItems JSON Container for converted mission items
+    //!
+    void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems);
 
 private:
     //!

@@ -44,7 +44,7 @@ void SensorVertices_Global::setSensorVertices(const std::vector<mace::pose::Geod
     verticeLocations = verticeVector;
 }
 
-QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::string &dataType) const
+QJsonObject SensorVertices_Global::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
     QJsonArray verticies;
@@ -58,7 +58,7 @@ QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::s
     }
 
     json["sensorFootprint"] = verticies;
-    
+
     return json;
 }
 

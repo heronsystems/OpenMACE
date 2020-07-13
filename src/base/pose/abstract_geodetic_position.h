@@ -18,7 +18,7 @@ MACE_CLASS_FORWARD(Abstract_GeodeticPosition);
 MACE_CLASS_FORWARD(GeodeticPosition_2D);
 MACE_CLASS_FORWARD(GeodeticPosition_3D);
 
-class Abstract_GeodeticPosition : public Position, public PositionInterface<Abstract_GeodeticPosition>
+class Abstract_GeodeticPosition : public JSONConverter, public Position, public PositionInterface<Abstract_GeodeticPosition>
 {
 public:
     Abstract_GeodeticPosition(const GeodeticFrameTypes &explicitFrame, const std::string &posName = "Position Object");
@@ -60,7 +60,7 @@ public:
     //! \return
     //!
     virtual double getLongitude() const = 0;
-    virtual double getAltitude() const = 0;
+
     //!
     //! \brief deltaLatitude
     //! \param that

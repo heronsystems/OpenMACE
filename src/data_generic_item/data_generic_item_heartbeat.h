@@ -12,9 +12,11 @@
 #include "data/system_type.h"
 #include "data/mission_execution_state.h"
 
+#include "data/jsonconverter.h"
+
 namespace DataGenericItem {
 
-class DataGenericItem_Heartbeat
+class DataGenericItem_Heartbeat : JSONConverter
 {
 public:
     DataGenericItem_Heartbeat();
@@ -79,7 +81,7 @@ public:
 
     mace_heartbeat_t getMACECommsObject() const;
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
-
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
 public:
     void operator = (const DataGenericItem_Heartbeat &rhs)
     {

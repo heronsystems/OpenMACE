@@ -145,10 +145,6 @@ public:
         return !(*this == rhs);
     }
 
-private:
-
-    QJsonArray MissionList::missionListToJSON();
-
 private: 
     MissionKey missionKey;
 
