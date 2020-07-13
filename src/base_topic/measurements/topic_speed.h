@@ -5,6 +5,8 @@
 
 #include "data/i_topic_component_data_object.h"
 
+#include "data/jsonconverter.h"
+
 #include "base/measurements/base_speed.h"
 
 namespace mace {
@@ -15,7 +17,7 @@ extern const MaceCore::TopicComponentStructure Structure_Airspeed;
 
 MACE_CLASS_FORWARD(Topic_AirSpeed);
 
-class Topic_AirSpeed : public Data::NamedTopicComponentDataObject<TopicName_Airspeed, &Structure_Airspeed>
+class Topic_AirSpeed : public Data::NamedTopicComponentDataObject<TopicName_Airspeed, &Structure_Airspeed>, public JSONConverter
 {
 public:
 
@@ -36,6 +38,8 @@ public:
 
     void setSpeedObj(const mace::measurements::Speed &speedObj);
 
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
+    
 private:
     mace::measurements::Speed m_SpeedObj;
 };

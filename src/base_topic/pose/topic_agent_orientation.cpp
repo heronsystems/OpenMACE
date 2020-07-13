@@ -60,10 +60,32 @@ Topic_AgentOrientation::Topic_AgentOrientation(const Topic_AgentOrientation &cop
     this->m_RotationObj = copy.m_RotationObj->getRotationalClone();
 }
 
+QJsonObject Topic_AgentOrientation::toJSON(const int &vehicleID, const std::string &dataType) 
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+
+    uint8_t rotDOF = getRotationObj()->getDOF();
+
+    if(rotDOF == 3)
+    {
+        mace::pose::Rotation_3D* castRotation = getRotationObj()->rotationAs<mace::pose::Rotation_3D>();
+        json["roll"] = castRotation->getRoll() * (180/M_PI);
+        json["pitch"] = castRotation->getPitch() * (180/M_PI);
+        json["yaw"] = (castRotation->getYaw() * (180/M_PI) < 0) ? (castRotation->getYaw() * (180/M_PI) + 360) : (castRotation->getYaw() * (180/M_PI));
+    }
+    else if(rotDOF == 2)
+    {
+
+    }
+    return json;
+}
+
 mace::pose::AbstractRotation* Topic_AgentOrientation::getRotationObj() const
 {
     return this->m_RotationObj;
 }
+
+
 
 } //end of namespace BaseTopic
 } //end of namespace pose

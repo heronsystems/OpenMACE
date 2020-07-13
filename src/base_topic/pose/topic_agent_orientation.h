@@ -2,6 +2,7 @@
 #define TOPIC_AGENTORIENTATION_H
 
 #include "data/i_topic_component_data_object.h"
+#include "data/jsonconverter.h"
 
 #include "base/pose/rotation_2D.h"
 #include "base/pose/rotation_3D.h"
@@ -15,7 +16,7 @@ extern const MaceCore::TopicComponentStructure Structure_AgentOrientation;
 
 MACE_CLASS_FORWARD(Topic_AgentOrientation);
 
-class Topic_AgentOrientation : public Data::NamedTopicComponentDataObject<TopicName_AgentOrientation, &Structure_AgentOrientation>
+class Topic_AgentOrientation : public Data::NamedTopicComponentDataObject<TopicName_AgentOrientation, &Structure_AgentOrientation>, public JSONConverter
 {
 
 public:
@@ -36,6 +37,8 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 
     mace::pose::AbstractRotation* getRotationObj() const;
+
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
 
 private:
     mace::pose::AbstractRotation* m_RotationObj;

@@ -60,7 +60,7 @@ public:
     //! \return
     //!
     virtual double getLongitude() const = 0;
-
+    virtual double getAltitude() const = 0;
     //!
     //! \brief deltaLatitude
     //! \param that

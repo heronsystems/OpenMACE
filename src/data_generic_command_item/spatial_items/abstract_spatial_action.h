@@ -21,11 +21,13 @@
 
 #include "../abstract_command_item.h"
 
+#include "data/jsonconverter.h"
+
 namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractSpatialAction);
 
-class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>
+class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>, public JSONConverter
 {
 public:
     AbstractSpatialAction():
@@ -59,6 +61,15 @@ public:
             //copy the contents
             position = copy.position->getPositionalClone();
         }
+    }
+
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const
+    {
+        QJsonObject json = toJSON_base(vehicleID,dataType);
+        json["lat"] = getPosition()->getLatitude();
+        json["lng"] = getPosition()->getLongitude();
+        json["alt"] = getPosition()->getAltitude();
+        return json;
     }
 
     virtual bool hasSpatialInfluence() const override

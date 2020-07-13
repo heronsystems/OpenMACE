@@ -63,9 +63,35 @@ void Topic_GeodeticPosition::CreateFromDatagram(const MaceCore::TopicDatagram &d
 Topic_GeodeticPosition::Topic_GeodeticPosition():
     m_PositionObject(nullptr)
 {
-
 }
+QJsonObject Topic_GeodeticPosition::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["lat"] = getPositionObj()->getLatitude();
+    json["lng"] = getPositionObj()->getLongitude();
+    json["alt"] = 0.0;
+    //    json["message_type"] = "vehicle_heartbeat";
+    //    json["should_display"] = true;
 
+    //    json["agentID"] = "Test";
+    //    json["lastUpdate"] = 0.0;
+
+    //    json["type"] = "fast";
+    //    json["fidelity"] = "virtual";
+    //    json["comms"] = "transmitting";
+
+    //    json["vehicle_state"] = "test_vehicle_state";
+    //    json["behavior_state"] = "test_behavior_state";
+    //    json["planning_state"] = "test_planning_state";
+    //    json["remediation_state"] = false;
+
+    //    QJsonObject rpyObj;
+    //    rpyObj["roll"] = 0.0;
+    //    rpyObj["pitch"] = 1.0;
+    //    rpyObj["yaw"] = 2.0;
+    //    json["orientation"] = rpyObj;
+    return json;
+}
 Topic_GeodeticPosition::Topic_GeodeticPosition(const mace::pose::Abstract_GeodeticPosition *posObj)
 {
     //copy the contents of that point to the current pointer object

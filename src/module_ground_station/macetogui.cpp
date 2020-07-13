@@ -148,43 +148,10 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 //!
 void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_position";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-
-//    json["message_type"] = "vehicle_heartbeat";
-//    json["should_display"] = true;
-
-//    json["agentID"] = "Test";
-//    json["lastUpdate"] = 0.0;
-
-//    json["type"] = "fast";
-//    json["fidelity"] = "virtual";
-//    json["comms"] = "transmitting";
-
-//    json["vehicle_state"] = "test_vehicle_state";
-//    json["behavior_state"] = "test_behavior_state";
-//    json["planning_state"] = "test_planning_state";
-//    json["remediation_state"] = false;
-
-//    QJsonObject rpyObj;
-//    rpyObj["roll"] = 0.0;
-//    rpyObj["pitch"] = 1.0;
-//    rpyObj["yaw"] = 2.0;
-//    json["orientation"] = rpyObj;
-
-
     if(component->getPositionObj()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-//        QJsonObject locationObj;
-//        component->getPositionObj()->updateQJSONObject(locationObj);
-//        json["location"] = locationObj;
-        json["lat"] = component->getPositionObj()->getLatitude();
-        json["lng"] = component->getPositionObj()->getLongitude();
-//        json["alt"] = component->getPositionObj()->getAltitude();
-        json["alt"] = 0.0;
 
-        QJsonDocument doc(json);
+        QJsonDocument doc(component->toJSON(vehicleID,"vehicle_position"));
         if(m_positionTimeoutOccured)
         {
             bool bytesWritten = writeTCPData(doc.toJson());
@@ -206,25 +173,7 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
 //!
 void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_attitude";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    uint8_t rotDOF = component->getRotationObj()->getDOF();
-
-    if(rotDOF == 3)
-    {
-        mace::pose::Rotation_3D* castRotation = component->getRotationObj()->rotationAs<mace::pose::Rotation_3D>();
-        json["roll"] = castRotation->getRoll() * (180/M_PI);
-        json["pitch"] = castRotation->getPitch() * (180/M_PI);
-        json["yaw"] = (castRotation->getYaw() * (180/M_PI) < 0) ? (castRotation->getYaw() * (180/M_PI) + 360) : (castRotation->getYaw() * (180/M_PI));
-    }
-    else if(rotDOF == 2)
-    {
-
-    }
-
-
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_attitude"));
     if(m_attitudeTimeoutOccured)
     {
         bool bytesWritten = writeTCPData(doc.toJson());
@@ -245,12 +194,7 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
 //!
 void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component)
 {
-        QJsonObject json;
-        json["message_type"] = "vehicle_airspeed";
-        json["agentID"] = std::to_string(vehicleID).c_str();
-        json["airspeed"] = component->getSpeedObj().getSpeed();
-
-        QJsonDocument doc(json);
+        QJsonDocument doc(component->toJSON(vehicleID,"vehicle_airspeed"));
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
@@ -265,14 +209,8 @@ void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measuremen
 //!
 void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_fuel";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["batteryRemaining"] = component->getBatteryRemaining();
-    json["batteryCurrent"] = component->getBatteryCurrent();
-    json["batteryVoltage"] = component->getBatteryVoltage();
 
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_fuel"));
     if(m_fuelTimeoutOccured)
     {
         bool bytesWritten = writeTCPData(doc.toJson());
@@ -293,12 +231,7 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_FlightMode> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_mode";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["vehicleMode"] = QString::fromStdString(component->getFlightModeString());
-
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_mode"));
     if(m_modeTimeoutOccured)
     {
         bool bytesWritten = writeTCPData(doc.toJson());
@@ -319,12 +252,7 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_text";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(component->getSeverity()));
-    json["text"] = QString::fromStdString(component->getText());
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_text"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -339,14 +267,7 @@ void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_gps";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["visibleSats"] = component->getSatVisible();
-    json["gpsFix"] = QString::fromStdString(DataGenericItem::DataGenericItem_GPS::GPSFixTypeToString(component->getGPSFix()));
-    json["hdop"] = component->getHDOP();
-    json["vdop"] = component->getVDOP();
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_gps"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -361,12 +282,7 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
 //!
 void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemArm> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_arm";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["armed"] = component->getSystemArm();
-
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_arm"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -381,12 +297,7 @@ void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataG
 //!
 void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemReachedTopic> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "MissionItemReached";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["itemIndex"] = static_cast<int>(component->getMissionAchievedIndex());
-
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"MissionItemReached"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -401,15 +312,7 @@ void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_p
 //!
 void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr<DataGenericItem::DataGenericItem_Heartbeat> &component)
 {
-    QJsonObject json;
-    json["message_type"] = "vehicle_heartbeat";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["autopilot"] = QString::fromStdString(Data::AutopilotTypeToString(component->getAutopilot()));
-    json["aircraftType"] = QString::fromStdString(Data::SystemTypeToString(component->getType()));
-    json["companion"] = component->getCompanion();
-    json["protocol"] = QString::fromStdString(Data::CommsProtocolToString(component->getProtocol()));
-
-    QJsonDocument doc(json);
+    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_heartbeat"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -424,20 +327,7 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
 //!
 void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::MissionList &missionList)
 {
-    QJsonObject json;
-    json["message_type"] = "VehicleMission";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-    json["creatorID"] = static_cast<int>(missionList.getCreatorID());
-    json["missionID"] = static_cast<int>(missionList.getMissionID());
-
-    Data::MissionExecutionState missionState = missionList.getMissionExeState();
-    json["missionState"] = QString::fromStdString(Data::MissionExecutionStateToString(missionState));
-    json["missionType"] = QString::fromStdString(MissionItem::MissionTypeToString(missionList.getMissionType()));
-    QJsonArray missionItems;
-    missionListToJSON(missionList,missionItems);
-    json["missionItems"] = missionItems;
-
-    QJsonDocument doc(json);
+    QJsonDocument doc(missionList.toJSON(vehicleID,"VehicleMission"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -451,25 +341,8 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
 //! \param component Vehicle sensor footprint component
 //!
 void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<DataVehicleSensors::SensorVertices_Global> &component) {
-    QJsonObject json;
-    json["message_type"] = "SensorFootprint";
-    json["agentID"] = std::to_string(vehicleID).c_str();
-
-    std::vector<mace::pose::GeodeticPosition_2D> sensorFootprint = component->getSensorVertices();
-
-    QJsonArray verticies;
-    for(auto&& vertex : sensorFootprint) {
-        QJsonObject obj;
-        obj["lat"] = vertex.getLatitude();
-        obj["lng"] = vertex.getLongitude();
-        obj["alt"] = 0.0;
-
-        verticies.push_back(obj);
-    }
-
-    json["sensorFootprint"] = verticies;
-
-    QJsonDocument doc(json);
+   
+    QJsonDocument doc(component->toJSON(vehicleID,"SensorFootprint"));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -504,131 +377,6 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
 
     if(!bytesWritten){
         std::cout << "Write environment boundary failed..." << std::endl;
-    }
-}
-
-//!
-//! \brief missionListToJSON Convert a mission list to a JSON array
-//! \param list Mission list to convert to a JSON array
-//! \param missionItems JSON Container for converted mission items
-//!
-void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems)
-{
-    for(size_t i = 0; i < list.getQueueSize(); i++)
-    {
-        //TODO-PAT: Look into unique_ptr or auto_ptr?? Not sure I like this...
-        std::shared_ptr<command_item::AbstractCommandItem> missionItem = list.getMissionItem(i);
-
-        QJsonObject obj;
-        obj["description"] = QString::fromStdString(missionItem->getDescription());
-        obj["type"] = QString::fromStdString(command_item::CommandItemToString(missionItem->getCommandType()));
-
-        switch (missionItem->getCommandType()) {
-        case command_item::COMMANDTYPE::CI_ACT_ARM:
-        {
-            std::shared_ptr<command_item::ActionArm> castItem = std::dynamic_pointer_cast<command_item::ActionArm>(missionItem);
-            obj["positionalFrame"] = "global";
-            UNUSED(castItem);
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_ACT_CHANGEMODE:
-        {
-            std::shared_ptr<command_item::ActionChangeMode> castItem = std::dynamic_pointer_cast<command_item::ActionChangeMode>(missionItem);
-            obj["positionalFrame"] = "global";
-            UNUSED(castItem);
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_NAV_LAND:
-        {
-            std::shared_ptr<command_item::SpatialLand> castItem = std::dynamic_pointer_cast<command_item::SpatialLand>(missionItem);
-            obj["positionalFrame"] = "global";
-            UNUSED(castItem);
-
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
-        {
-            std::shared_ptr<command_item::SpatialRTL> castItem = std::dynamic_pointer_cast<command_item::SpatialRTL>(missionItem);
-            obj["positionalFrame"] = "global";
-            UNUSED(castItem);
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
-        {
-            std::shared_ptr<command_item::SpatialTakeoff> castItem = std::dynamic_pointer_cast<command_item::SpatialTakeoff>(missionItem);
-            if(castItem->position->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
-            {
-                obj["positionalFrame"] = "global";
-                if(castItem->position->is3D())
-                {
-                    const mace::pose::GeodeticPosition_3D* castPosition = castItem->position->positionAs<mace::pose::GeodeticPosition_3D>();
-                    obj["lat"] = castPosition->getLatitude();
-                    obj["lng"] = castPosition->getLongitude();
-                    obj["alt"] = castPosition->getAltitude();
-                }
-            }
-
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_NAV_WAYPOINT:
-        {
-            std::shared_ptr<command_item::SpatialWaypoint> castItem = std::dynamic_pointer_cast<command_item::SpatialWaypoint>(missionItem);
-            obj["positionalFrame"] = "global";
-            castItem->getPosition()->updateQJSONObject(obj);
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_NAV_LOITER_TIME:
-        {
-            std::shared_ptr<command_item::SpatialLoiter_Time> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Time>(missionItem);
-            obj["positionalFrame"] = "global";
-            //            obj["lat"] = castItem->position->getX();
-            //            obj["lng"] = castItem->position->getY();
-            //            obj["alt"] = castItem->position->getZ();
-            obj["duration"] = castItem->duration;
-            if(castItem->direction == Data::LoiterDirection::CW)
-            {
-                obj["radius"] = castItem->radius;
-            }else{
-                obj["radius"] = 0-castItem->radius;
-            }
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_NAV_LOITER_TURNS:
-        {
-            std::shared_ptr<command_item::SpatialLoiter_Turns> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Turns>(missionItem);
-            obj["positionalFrame"] = "global";
-            //            obj["lat"] = castItem->position->getX();
-            //            obj["lng"] = castItem->position->getY();
-            //            obj["alt"] = castItem->position->getZ();
-            obj["turns"] = static_cast<int>(castItem->turns);
-            if(castItem->direction == Data::LoiterDirection::CW)
-            {
-                obj["radius"] = castItem->radius;
-            }else{
-                obj["radius"] = 0-castItem->radius;
-            }
-            break;
-        }
-        case command_item::COMMANDTYPE::CI_NAV_LOITER_UNLIM:
-        {
-            std::shared_ptr<command_item::SpatialLoiter_Unlimited> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Unlimited>(missionItem);
-            obj["positionalFrame"] = "global";
-            //            obj["lat"] = castItem->position->getX();
-            //            obj["lng"] = castItem->position->getY();
-            //            obj["alt"] = castItem->position->getZ();
-            if(castItem->direction == Data::LoiterDirection::CW)
-            {
-                obj["radius"] = castItem->radius;
-            }else{
-                obj["radius"] = 0-castItem->radius;
-            }
-            break;
-        }
-        default:
-            break;
-        }
-
-        missionItems.push_back(obj);
     }
 }
 

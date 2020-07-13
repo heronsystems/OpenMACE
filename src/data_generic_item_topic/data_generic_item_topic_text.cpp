@@ -22,6 +22,14 @@ void DataGenericItemTopic_Text::CreateFromDatagram(const MaceCore::TopicDatagram
     dataString = datagram.GetTerminal<std::string>("text");
 }
 
+QJsonObject DataGenericItemTopic_Text::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(getSeverity()));
+    json["text"] = QString::fromStdString(getText());
+    return json;
+}
+
 DataGenericItemTopic_Text::DataGenericItemTopic_Text()
     :DataGenericItem::DataGenericItem_Text()
 {

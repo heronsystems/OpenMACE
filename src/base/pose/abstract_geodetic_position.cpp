@@ -43,6 +43,8 @@ QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID,dataType);
     json["distanceToTarget"] = 0.0;
-    updateQJSONObject(json);
+    json["lat"] = getLatitude();
+    json["lng"] = getLongitude();
+    json["alt"] = getAltitude();
     return json;
 }

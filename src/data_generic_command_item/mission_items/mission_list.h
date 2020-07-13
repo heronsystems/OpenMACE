@@ -11,9 +11,11 @@
 
 #include "data/mission_execution_state.h"
 
+#include "data/jsonconverter.h"
+
 namespace MissionItem {
 
-class MissionList
+class MissionList : public JSONConverter
 {
 public:
     enum MissionListState{
@@ -44,6 +46,9 @@ public:
 
     size_t getQueueSize() const;
     MissionListStatus getMissionListStatus() const;
+
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
+
 
 public:
 
@@ -142,6 +147,9 @@ public:
 
 private:
 
+    QJsonArray MissionList::missionListToJSON();
+
+private: 
     MissionKey missionKey;
 
     Data::MissionExecutionState missionExeState;

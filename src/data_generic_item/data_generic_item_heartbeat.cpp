@@ -41,4 +41,14 @@ mace_message_t DataGenericItem_Heartbeat::getMACEMsg(const uint8_t systemID, con
     return msg;
 }
 
+QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["autopilot"] = QString::fromStdString(Data::AutopilotTypeToString(getAutopilot()));
+    json["aircraftType"] = QString::fromStdString(Data::SystemTypeToString(getType()));
+    json["companion"] = getCompanion();
+    json["protocol"] = QString::fromStdString(Data::CommsProtocolToString(getProtocol()));
+    return json;
+}
+
 } //end of namespace DataGenericItem
