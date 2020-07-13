@@ -497,6 +497,27 @@ void GUItoMACE::setVehicleMode(const int &vehicleID, const QJsonObject &jsonObj)
 //!
 void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 {
+    // TODO-AARON: Modify this method (and maybe subsequent methods?) to handle new incoming command structure.
+    //  Example structure for TAKEOFF command below.
+    //      - "command" is the string for the command being issued. Need to check the incoming command to figure out what to do (similar to what is already here)
+    //      - "aircraft" is the list/array of aircraft IDs that the command should go to.
+    //      - "data" is an array of accompanying data for that command. For now, unused.
+
+    //  ** My thought is that if any data needs to come along with the command (e.g. takeoff location), it can be stored in the "data" field. Not sure if that will scale, though
+
+    /*
+     * {
+     *    command: "TAKEOFF",
+     *    aircraft: ["1", "2", ...]
+     *    data: []
+     * }
+     */
+
+    // This prints the incoming object:
+    qDebug() << jsonObj;
+
+
+
     QString command = jsonObj["tcpCommand"].toString();
     int vehicleID = jsonObj["vehicleID"].toInt();
 
