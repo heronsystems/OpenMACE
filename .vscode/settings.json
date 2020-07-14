@@ -68,6 +68,7 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "alignedvector3": "cpp"
     }
 }
