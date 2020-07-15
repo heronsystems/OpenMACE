@@ -34,9 +34,9 @@ DataGenericItemTopic_Battery::DataGenericItemTopic_Battery()
 QJsonObject DataGenericItemTopic_Battery::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
-    json["batteryRemaining"] = getBatteryRemaining();
-    json["batteryCurrent"] = getBatteryCurrent();
-    json["batteryVoltage"] = getBatteryVoltage();    
+    json["battery_remaining"] = getBatteryRemaining();
+    json["battery_current"] = getBatteryCurrent();
+    json["battery_voltage"] = getBatteryVoltage();
     return json;
 }
 

@@ -23,7 +23,7 @@ void DataGenericItemTopic_FlightMode::CreateFromDatagram(const MaceCore::TopicDa
 QJsonObject DataGenericItemTopic_FlightMode::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
-    json["vehicleMode"] = QString::fromStdString(getFlightModeString());   
+    json["mode"] = QString::fromStdString(getFlightModeString());
     return json;
 }
 
