@@ -51,54 +51,54 @@ public:
     //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
     //! \param jsonObj JSON data containing the command to be issued
     //!
-    bool issuedCommand(const std::string &command, const int &vehicleID, const QJsonArray &data);
+    bool issuedCommand(const std::string &command, const int &vehicleID, const QJsonDocument &data);
 
     //!
     //! \brief setVehicleMode GUI command initiating a vehicle mode change
     //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
     //! \param jsonObj JSON data containing the new vehicle mode
     //!
-    void setVehicleMode(const int &vehicleID, const QJsonArray &data);
+    void setVehicleMode(const int &vehicleID, const QJsonDocument &data);
 
     //!
     //! \brief setVehicleArm GUI command initiating a vehicle arm status change
     //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
     //! \param jsonObj JSON data containing the new vehicle arm status
     //!
-    void setVehicleArm(const int &vehicleID, const QJsonArray &data);
+    void setVehicleArm(const int &vehicleID, const QJsonDocument &data);
 
     //!
     //! \brief setVehicleHome GUI command to set a new vehicle home position
     //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
     //! \param jsonObj JSON data containing the new vehicle home data
     //!
-    void setVehicleHome(const int &vehicleID, const QJsonArray &data);
+    void setVehicleHome(const int &vehicleID, const QJsonDocument &data);
 
     //!
     //! \brief setGlobalOrigin GUI command to set a new global origin position
     //! \param jsonObj JSON data containing the new global origin data
     //!
-    void setGlobalOrigin(const QJsonArray &data);
+    void setGlobalOrigin(const QJsonDocument &data);
 
     //!
     //! \brief setEnvironmentVertices GUI command to set new environment boundary vertices
     //! \param jsonObj JSON data containing the new environment vertices
     //!
-    void setEnvironmentVertices(const QJsonArray &data);
+    void setEnvironmentVertices(const QJsonDocument &data);
 
     //!
     //! \brief setGoHere GUI command to set a new "go here" lat/lon/alt position
     //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
     //! \param jsonObj JSON data containing the "go here" position
     //!
-    void setGoHere(const int &vehicleID, const QJsonArray &data);
+    void setGoHere(const int &vehicleID, const QJsonDocument &data);
 
     //!
     //! \brief takeoff GUI command initiating a takeoff
     //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
     //! \param jsonObj JSON data containing the takeoff position and altitude
     //!
-    void takeoff(const int &vehicleID, const QJsonArray &data);
+    void takeoff(const int &vehicleID, const QJsonDocument &data);
 
     //!
     //! \brief getVehicleMission GUI command that grabs a vehicle mission from MACE
