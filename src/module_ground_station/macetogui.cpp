@@ -81,7 +81,7 @@ void MACEtoGUI::setModeTimeout(const bool &flag) {
 void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemCurrentTopic> &component) {
     UNUSED(vehicleID);
 
-    QJsonDocument doc(component->toJSON(static_cast<int>(component->getMissionKey().m_systemID),"CurrentMissionItem"));
+    QJsonDocument doc(component->toJSON(static_cast<int>(component->getMissionKey().m_systemID),guiMessageString(GuiMessageTypes::CURRENT_MISSION_ITEM)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -96,7 +96,7 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
 //!
 void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition) {
     
-    QJsonDocument doc(targetPosition->toJSON(vehicleID, "CurrentVehicleTarget"));
+    QJsonDocument doc(targetPosition->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -113,7 +113,7 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 {
     if(home.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        QJsonDocument doc(home.toJSON(vehicleID,"VehicleHome"));
+        QJsonDocument doc(home.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_HOME)));
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
@@ -132,7 +132,7 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
     
     if(origin.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        QJsonDocument doc(origin.toJSON(0,"GlobalOrigin"));
+        QJsonDocument doc(origin.toJSON(0,guiMessageString(GuiMessageTypes::GLOBAL_ORIGIN)));
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
@@ -151,7 +151,7 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
     if(component->getPositionObj()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
 
-        QJsonDocument doc(component->toJSON(vehicleID,"vehicle_position"));
+        QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_POSITION)));
         if(m_positionTimeoutOccured)
         {
             bool bytesWritten = writeTCPData(doc.toJson());
@@ -173,7 +173,7 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
 //!
 void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_attitude"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_ATTITUDE)));
     if(m_attitudeTimeoutOccured)
     {
         bool bytesWritten = writeTCPData(doc.toJson());
@@ -194,7 +194,7 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
 //!
 void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component)
 {
-        QJsonDocument doc(component->toJSON(vehicleID,"vehicle_airspeed"));
+        QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_AIRSPEED)));
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
@@ -210,7 +210,7 @@ void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measuremen
 void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> &component)
 {
 
-    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_fuel"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_FUEL)));
     if(m_fuelTimeoutOccured)
     {
         bool bytesWritten = writeTCPData(doc.toJson());
@@ -231,7 +231,7 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_FlightMode> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_mode"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_MODE)));
     if(m_modeTimeoutOccured)
     {
         bool bytesWritten = writeTCPData(doc.toJson());
@@ -252,7 +252,7 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_text"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_TEXT)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -267,7 +267,7 @@ void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_gps"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_GPS)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -282,7 +282,7 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
 //!
 void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemArm> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_arm"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_ARM)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -297,7 +297,7 @@ void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataG
 //!
 void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemReachedTopic> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,"MissionItemReached"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::MISSION_ITEM_REACHED)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -312,7 +312,7 @@ void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_p
 //!
 void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr<DataGenericItem::DataGenericItem_Heartbeat> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,"vehicle_heartbeat"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_HEARTBEAT)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -327,7 +327,7 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
 //!
 void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::MissionList &missionList)
 {
-    QJsonObject json = missionList.toJSON(vehicleID,"VehicleMission");
+    QJsonObject json = missionList.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_MISSION));
     QJsonArray missionItems;
     missionListToJSON(missionList,missionItems);
     json["missionItems"] = missionItems;
@@ -346,7 +346,7 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
 //!
 void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<DataVehicleSensors::SensorVertices_Global> &component) {
    
-    QJsonDocument doc(component->toJSON(vehicleID,"SensorFootprint"));
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::SENSOR_FOOTPRINT)));
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
@@ -361,7 +361,7 @@ void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<
 void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPosition_3D> &component) {
 
     QJsonObject json;
-    json["message_type"] = "EnvironmentBoundary";
+    json["message_type"] = QString::fromStdString(guiMessageString(GuiMessageTypes::ENVIRONMENT_BOUNDARY));
     json["agentID"] = 0;
 
     QJsonArray verticies;
