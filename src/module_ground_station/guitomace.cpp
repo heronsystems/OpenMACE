@@ -129,6 +129,7 @@ void GUItoMACE::setGlobalOrigin(const QJsonDocument &data)
     origin.setLatitude(data["lat"].toDouble());
     origin.setLongitude(data["lng"].toDouble());
     origin.setAltitude(data["alt"].toDouble());
+    origin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr) {
         ptr->Event_SetGlobalOrigin(m_parent, origin);
@@ -141,6 +142,7 @@ void GUItoMACE::setGlobalOrigin(const QJsonDocument &data)
 //!
 void GUItoMACE::setEnvironmentVertices(const QJsonDocument &data)
 {
+    UNUSED(data);
 //    BoundaryItem::BoundaryList operationalBoundary;
 
 //    mace::pose::GeodeticPosition_3D origin = m_parent->getDataObject()->GetGlobalOrigin();

@@ -140,14 +140,14 @@ namespace ExternalLink {
 
         if(m_MissionsUploading.find(sender) == m_MissionsUploading.cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
             return false;
         }
         if(m_MissionsUploading.at(sender).find(key) == m_MissionsUploading.at(sender).cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
             return false;
         }
 
@@ -155,13 +155,13 @@ namespace ExternalLink {
         if(index >= m_MissionsUploading.at(sender)[key].getQueueSize())
         {
             //this indicates that RX system requested something OOR
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + " which is greater than the size of the list contained.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + " which is greater than the size of the list contained.");
             return false;
         }
 
-        if(CONTROLLER_MISSION_TYPE::mLog)
-            CONTROLLER_MISSION_TYPE::mLog->info("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + ".");
+//        if(CONTROLLER_MISSION_TYPE::mLog)
+//            CONTROLLER_MISSION_TYPE::mLog->info("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + ".");
 
         std::shared_ptr<command_item::AbstractCommandItem> ptrItem = this->m_MissionsUploading.at(sender)[key].getMissionItem(index);
 
@@ -196,8 +196,8 @@ namespace ExternalLink {
         //check if mission item received is part of a mission we are activly downloading
         if(this->m_MissionsBeingFetching.find(key) == m_MissionsBeingFetching.cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
             return false;
         }
 
@@ -205,8 +205,8 @@ namespace ExternalLink {
         if(seqReceived > (m_MissionsBeingFetching[key].mission.getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Mission download Error: received a mission item with an index greater than available in the queue" << std::endl;
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
             return false;
         }
         //execution will only continue if not last item
@@ -262,9 +262,9 @@ namespace ExternalLink {
         //check if mission item received is part of a mission we are activly downloading
         if(this->m_MissionsBeingFetching.find(key) == m_MissionsBeingFetching.cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog) {
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
-            }
+//            if(CONTROLLER_MISSION_TYPE::mLog) {
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
+//            }
             return false;
         }
 
@@ -272,9 +272,9 @@ namespace ExternalLink {
         if(seqReceived > (m_MissionsBeingFetching[key].mission.getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Mission download Error: received a mission item with an index greater than available in the queue" << std::endl;
-            if(CONTROLLER_MISSION_TYPE::mLog) {
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
-            }
+//            if(CONTROLLER_MISSION_TYPE::mLog) {
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
+//            }
             return false;
         }
 
@@ -293,12 +293,12 @@ namespace ExternalLink {
             throw std::runtime_error("Reached end of request but missions are not completed");
         }
 
-        if(CONTROLLER_MISSION_TYPE::mLog)
-        {
-            std::stringstream buffer;
-            buffer << key;
-            CONTROLLER_MISSION_TYPE::mLog->info("Mission Controller has received the entire mission of " + std::to_string(m_MissionsBeingFetching[key].mission.getQueueSize()) + " for mission " + buffer.str() + ".");
-        }
+//        if(CONTROLLER_MISSION_TYPE::mLog)
+//        {
+//            std::stringstream buffer;
+//            buffer << key;
+//            CONTROLLER_MISSION_TYPE::mLog->info("Mission Controller has received the entire mission of " + std::to_string(m_MissionsBeingFetching[key].mission.getQueueSize()) + " for mission " + buffer.str() + ".");
+//        }
 
         ackMission.mission_system = static_cast<uint8_t>(key.m_systemID);
         ackMission.mission_creator = static_cast<uint8_t>(key.m_creatorID);

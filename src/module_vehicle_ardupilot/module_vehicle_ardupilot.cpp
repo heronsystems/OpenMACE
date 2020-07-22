@@ -118,8 +118,8 @@ void ModuleVehicleArdupilot::Command_SystemArm(const command_item::ActionArm &co
     std::stringstream buffer;
     buffer << commandWithTarget;
 
-    mLogs->debug("Receieved a command system arm.");
-    mLogs->info(buffer.str());
+//    mLogs->debug("Receieved a command system arm.");
+//    mLogs->info(buffer.str());
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(command.getClone());
 
@@ -140,8 +140,8 @@ void ModuleVehicleArdupilot::Command_VehicleTakeoff(const command_item::SpatialT
     std::stringstream buffer;
     buffer << commandWithTarget;
 
-    mLogs->debug("Receieved a command takeoff.");
-    mLogs->info(buffer.str());
+//    mLogs->debug("Receieved a command takeoff.");
+//    mLogs->info(buffer.str());
 
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());
@@ -162,8 +162,8 @@ void ModuleVehicleArdupilot::Command_Land(const command_item::SpatialLand &comma
     std::stringstream buffer;
     buffer << commandWithTarget;
 
-    mLogs->debug("Receieved a command to land.");
-    mLogs->info(buffer.str());
+//    mLogs->debug("Receieved a command to land.");
+//    mLogs->info(buffer.str());
 
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());
@@ -181,7 +181,7 @@ void ModuleVehicleArdupilot::Command_ReturnToLaunch(const command_item::SpatialR
     //Temporary solution to solve boadcasting until rework of commands can be done
     command_item::SpatialRTL commandWithTarget = CopyCommandAndInsertTarget<command_item::SpatialRTL>(command, this->GetAttachedMavlinkEntity());
 
-    mLogs->debug("Receieved a command RTL.");
+//    mLogs->debug("Receieved a command RTL.");
 
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());
@@ -225,8 +225,8 @@ void ModuleVehicleArdupilot::Command_ChangeSystemMode(const command_item::Action
     std::stringstream buffer;
     buffer << commandWithTarget;
 
-    mLogs->debug("Receieved a command to change the mode.");
-    mLogs->info(buffer.str());
+//    mLogs->debug("Receieved a command to change the mode.");
+//    mLogs->info(buffer.str());
 
     ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     outerState->handleCommand(commandWithTarget.getClone());
@@ -319,8 +319,8 @@ void ModuleVehicleArdupilot::Command_UploadMission(const MissionItem::MissionLis
     std::stringstream buffer;
     buffer << missionList;
 
-    mLogs->info("Vehicle module has been told to upload a mission.");
-    mLogs->info(buffer.str());
+//    mLogs->info("Vehicle module has been told to upload a mission.");
+//    mLogs->info(buffer.str());
 
     switch(missionList.getMissionType())
     {
