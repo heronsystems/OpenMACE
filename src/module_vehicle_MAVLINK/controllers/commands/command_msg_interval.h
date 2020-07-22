@@ -1,6 +1,7 @@
 #ifndef COMMAND_MSG_INTERVAL_H
 #define COMMAND_MSG_INTERVAL_H
 
+#include <unordered_map>
 #include "generic_long_command.h"
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
@@ -18,6 +19,17 @@ public:
 
     virtual ~CommandMSGInterval() = default;
 
+    void addIntervalRequest(const command_item::ActionMessageInterval &request);
+
+    void removeIntervalRequest(const unsigned int &messageID);
+
+    bool removeCurrentAndTransmitNext();
+
+    bool transmitNextRequest();
+
+    unsigned int getCurrentRequestID();
+
+
 protected:
 
     virtual void FillCommand(const command_item::ActionMessageInterval &command, mavlink_command_long_t &cmd) const
@@ -31,6 +43,12 @@ protected:
         UNUSED(message);
         UNUSED(data);
     }
+
+private:
+    unsigned int m_CurrentRequestID = 0;
+
+    std::map<unsigned int, command_item::ActionMessageInterval> m_MapIntervalRequest;
+
 };
 
 } //end of namespace MAVLINKVehicleControllers

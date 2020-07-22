@@ -670,6 +670,14 @@ public:
     //! \param orientation Orientation of sensor
     //!
     void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) override;
+
+
+    //!
+    //! \brief ROS_NewVisionPoseEstimate
+    //! \param pose
+    //!
+    void ROS_NewVisionPoseEstimate(const unsigned int &vehicleID, const mace::pose::Pose &pose) override;
+
 public:
 
     /////////////////////////////////////////////////////////////////////////
@@ -701,14 +709,7 @@ private:
                 {
                     continue;
                 }
-                /*
-                T *Copy = new T(data);
-                if(((CommandItem::std::shared_ptr<AbstractCommandItem>)Copy)->getTargetSystem() == 0)
-                {
-                    int ID = it->second->GetCharacteristic().ID;
-                    ((CommandItem::std::shared_ptr<AbstractCommandItem>)Copy)->setTargetSystem(ID);
-                }
-                */
+
                 it->second->MarshalCommand(vehicleCommand, data, sender);
             }
 

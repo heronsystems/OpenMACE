@@ -9,19 +9,21 @@ DynamicTarget_Orientation::DynamicTarget_Orientation():
 }
 
 DynamicTarget_Orientation::DynamicTarget_Orientation(const AbstractRotation* orientation, const AbstractRotation* orientationRate, const double &thrust):
-    m_Rotation(nullptr), m_Thrust(0.0)
+    m_Rotation(nullptr), m_Thrust(0.0), m_YawRate(0.0)
 {
     this->setTargetOrientation(orientation);
-    //    this->setTargetOrientationRate(orientationRate);
+
     this->setTargetThrust(thrust);
 }
 
 DynamicTarget_Orientation::DynamicTarget_Orientation(const DynamicTarget_Orientation &copy):
-    m_Rotation(nullptr), m_Thrust(0.0)
+    m_Rotation(nullptr), m_Thrust(0.0), m_YawRate(0.0)
 {
     this->setTargetOrientation(copy.getTargetOrientation());
-    //    this->setTargetOrientationRate(copy.getTargetOrientationRate());
+
     this->setTargetThrust(copy.getTargetThrust());
+
+    this->setTargetYawRate(copy.getTargetYawRate());
 }
 
 DynamicTarget_Orientation::~DynamicTarget_Orientation()
@@ -63,6 +65,11 @@ void DynamicTarget_Orientation::setTargetThrust(const double &thrust)
     m_Thrust = thrust;
 }
 
+void DynamicTarget_Orientation::setTargetYawRate(const double &yawRate)
+{
+    m_YawRate = yawRate;
+}
+
 const AbstractRotation* DynamicTarget_Orientation::getTargetOrientation() const
 {
     return this->m_Rotation;
@@ -92,6 +99,11 @@ double DynamicTarget_Orientation::getTargetThrust() const
     return this->m_Thrust;
 }
 
+double DynamicTarget_Orientation::getTargetYawRate() const
+{
+    return this->m_YawRate;
+}
+
 bool DynamicTarget_Orientation::isCurrentTargetValid() const
 {
     if(getCurrentTargetMask() != std::numeric_limits<uint16_t>::max())
@@ -106,6 +118,9 @@ uint8_t DynamicTarget_Orientation::getCurrentTargetMask() const
         currentMask = currentMask|128;
     if(fabs(m_Thrust - -1000) > std::numeric_limits<double>::epsilon())
         currentMask = currentMask|64;
+    if(fabs(m_YawRate - 0.0) > std::numeric_limits<double>::epsilon())
+        currentMask = currentMask|4;
+
     return currentMask;
 }
 

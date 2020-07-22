@@ -50,7 +50,7 @@ void ControllerGuidedTargetItem_Global::FillTargetItem(const command_target::Dyn
     {
         if(currentTarget.getVelocity()->is2D())
         {
-            mace::pose::Cartesian_Velocity2D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Cartesian_Velocity2D>();
+            mace::pose::Velocity_Cartesian2D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Velocity_Cartesian2D>();
             if(castVelocity->hasXBeenSet())
                 mavlinkItem.vx = static_cast<float>(castVelocity->getXVelocity()); bitArray = (bitArray & (~8));
             if(castVelocity->hasYBeenSet())
@@ -58,7 +58,7 @@ void ControllerGuidedTargetItem_Global::FillTargetItem(const command_target::Dyn
         }
         else if(currentTarget.getVelocity()->is3D())
         {
-            mace::pose::Cartesian_Velocity3D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Cartesian_Velocity3D>();
+            mace::pose::Velocity_Cartesian3D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Velocity_Cartesian3D>();
             if(castVelocity->hasXBeenSet())
                 mavlinkItem.vx = static_cast<float>(castVelocity->getXVelocity()); bitArray = (bitArray & (~8));
             if(castVelocity->hasYBeenSet())

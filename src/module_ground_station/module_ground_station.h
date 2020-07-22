@@ -3,8 +3,6 @@
 
 #include "module_ground_station_global.h"
 
-#include "spdlog/spdlog.h"
-
 #include <string>
 #include <memory>
 
@@ -186,15 +184,6 @@ private:
     //!
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
 
-    // ============================================================================= //
-    // ================================== Loggers ================================== //
-    // ============================================================================= //
-private:
-
-    //!
-    //! \brief mLogs Ground station logs
-    //!
-    std::shared_ptr<spdlog::logger> mLogs;
 
     // ============================================================================= //
     // ============================== Member Variables ============================= //

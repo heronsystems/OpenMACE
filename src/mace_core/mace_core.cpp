@@ -545,7 +545,7 @@ void MaceCore::Events_NewVehicle(const ModuleBase *sender, const uint8_t publicI
 //!
 void MaceCore::Event_ForceVehicleDataSync(const ModuleBase *sender, const int &targetSystemID)
 {
-    MarshalCommandToVehicle<int>(targetSystemID, VehicleCommands::REQUEST_DATA_SYNC, ExternalLinkCommands::REQUEST_DATA_SYNC, targetSystemID, sender->GetCharacteristic());
+    //MarshalCommandToVehicle<int>(targetSystemID, VehicleCommands::REQUEST_DATA_SYNC, ExternalLinkCommands::REQUEST_DATA_SYNC, targetSystemID, sender->GetCharacteristic());
 }
 
 //!
@@ -1352,7 +1352,6 @@ void MaceCore::GSEvent_UploadMission(const void *sender, const MissionItem::Miss
 
 void MaceCore::EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj)
 {
-    std::cout<<"Mace core has been notified by a module of the path planning variety that there is a new dynamic target."<<std::endl;
     MarshalCommandToVehicle<command_item::Action_DynamicTarget>(obj.getTargetSystem(), VehicleCommands::EXECUTE_DYNAMIC_TARGET, ExternalLinkCommands::EXECUTE_DYNAMIC_TARGET, obj, sender->GetCharacteristic());
 
 }
@@ -1659,6 +1658,20 @@ void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const CartesianP
         m_ROS->MarshalCommand(ROSCommands::NEWLY_UPDATED_3D_OCCUPANCY_MAP, 0); // TODO: Parse for vehicle ID
 
 }
+
+void MaceCore::ROS_NewVisionPoseEstimate(const unsigned int &vehicleID, const mace::pose::Pose &pose)
+{
+    try
+    {
+        m_VehicleIDToPtr.at(std::to_string(vehicleID))->MarshalCommand(VehicleCommands::TRANSMIT_VISION_POSE_ESTIMATE,pose);
+    }
+    catch(const std::out_of_range &oor)
+    {
+        std::cout<<"The vehicle ID is not contained within this MACE instances vehicle map.";
+    }
+
+}
+
 
 /////////////////////////////////////////////////////////////////////////
 /// MACE COMMS EVENTS

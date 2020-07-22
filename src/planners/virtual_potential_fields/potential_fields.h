@@ -103,7 +103,7 @@ public:
     VPF_ResultingForce computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose,const mace::pose::Rotation_2D &agentRotation,
                                                  const mace::pose::CartesianPosition_2D targetPosition);
 
-    VPF_ResultingForce computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition, const mace::pose::Cartesian_Velocity2D* agentVelocity,
+    VPF_ResultingForce computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition, const mace::pose::Velocity_Cartesian2D* agentVelocity,
                                                     const mace::pose::Abstract_CartesianPosition* targetPosition, double &vResponse);
 
     void computeVirtualPotentialField();

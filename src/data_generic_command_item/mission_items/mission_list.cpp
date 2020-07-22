@@ -38,14 +38,12 @@ MissionList::MissionList(const MissionList &rhs)
 
 void MissionList::initializeQueue(const size_t &size)
 {
-    if(size <= 0){
-        // TODO-Ken/Pat: Throw a message with exception
-        std::cout << "Cannot initialize queue of 0" << std::endl;
-        throw std::exception();
-    }
     missionQueue.clear();
-    std::vector<std::shared_ptr<command_item::AbstractCommandItem>> tmpVector(size,nullptr);
-    missionQueue = tmpVector;
+
+    if(size > 0){
+        std::vector<std::shared_ptr<command_item::AbstractCommandItem>> tmpVector(size,nullptr);
+        missionQueue = tmpVector;
+    }
 }
 
 void MissionList::clearQueue()

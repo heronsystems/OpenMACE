@@ -117,13 +117,11 @@ private:
 public:
     StateData_MAVLINK *state;
     MissionData_MAVLINK *mission;
-
 protected:
     int mavlinkID;
     MaceCore::ModuleCharacteristic m_module;
 
-    PointerCollection<
-    > m_Controllers;
+    PointerCollection<> m_Controllers;
 
     CommsMAVLINK *commsLink;
 
@@ -132,6 +130,10 @@ protected:
     TransmitQueue *controllerQueue;
 
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> m_ControllersCollection;
+
+    Data::EnvironmentTime prevAttitude;
+    Data::EnvironmentTime prevPosition;
+
 };
 
 #endif // MAVLINK_VEHICLE_OBJECT_H

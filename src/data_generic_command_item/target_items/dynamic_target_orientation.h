@@ -50,6 +50,9 @@ public:
 
     void setTargetThrust(const double &thrust);
 
+    void setTargetYawRate(const double &yawRate);
+
+
 public:
     const AbstractRotation* getTargetOrientation() const;
 
@@ -61,6 +64,7 @@ public:
 
     double getTargetThrust() const;
 
+    double getTargetYawRate() const;
 
 public:
     uint8_t getCurrentTargetMask() const;
@@ -77,11 +81,18 @@ public:
 
         this->m_Thrust = rhs.m_Thrust;
 
+        this->m_YawRate = rhs.m_YawRate;
         return *this;
     }
 
     bool operator == (const DynamicTarget_Orientation &rhs) const{
         if(this->m_Rotation != rhs.m_Rotation){
+            return false;
+        }
+        if(this->m_Thrust != rhs.m_Thrust){
+            return false;
+        }
+        if(this->m_YawRate != rhs.m_YawRate){
             return false;
         }
         return true;
@@ -119,6 +130,8 @@ protected:
     AbstractRotation* m_Rotation;
 
     double m_Thrust = -1000; //this is set to a value it shouldn't be acceptable values are in the range of -1 to 1 or 0 to 1 depending upon if throttle capable of inversion
+
+    double m_YawRate = 0.0;
 };
 
 } //end of namespace command_target

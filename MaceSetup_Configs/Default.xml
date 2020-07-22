@@ -45,4 +45,13 @@
 	</Parameter>
    </Module>
     
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">true</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+      
 </ModuleConfigurations>

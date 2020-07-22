@@ -45,10 +45,12 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 
     case COMMANDTYPE::CI_NAV_HOME:
     {
-        /*
-        const command_item::SpatialHome* cmd = command->as<command_item::SpatialHome>();
+        command_item::SpatialHome* cmd = new command_item::SpatialHome(*command->as<command_item::SpatialHome>());
+
+        cmd->setTargetSystem(Owner().getMAVLINKID());
+
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerSystemHome = new MAVLINKUXVControllers::Command_SetHomeInt(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        auto controllerSystemHome = new MAVLINKUXVControllers::Command_HomePositionSet(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerSystemHome->AddLambda_Finished(this, [this,controllerSystemHome,cmd](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
             {
@@ -65,10 +67,8 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
-
         controllerSystemHome->Send(*cmd,sender,target);
         collection->Insert("setHomeController",controllerSystemHome);
-        */
         break;
     }
     default:

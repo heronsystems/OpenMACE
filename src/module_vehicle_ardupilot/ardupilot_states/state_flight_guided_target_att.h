@@ -58,6 +58,9 @@ private:
 
 private:
     ardupilot_vehicle::GuidedTimeoutController m_TimeoutController;
+    int count = 0;
+    Data::EnvironmentTime previousTime;
+
 };
 
 } //end of namespace state

@@ -28,6 +28,10 @@
 #include <mace_matlab_msgs/UPDATE_GEODETIC_POSITION.h>
 #include <mace_matlab_msgs/UPDATE_LOCAL_POSITION.h>
 #include <mace_matlab_msgs/UPDATE_VEHICLE_TARGET.h>
+
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/PoseStamped.h>
+
 #endif
 
 //!
@@ -68,7 +72,7 @@ void ModuleROSUMD::start() {
     });
 
     m_timer->setSingleShot(false);
-    m_timer->setInterval(ROSTimer::Interval(50));
+    m_timer->setInterval(ROSTimer::Interval(33));
     m_timer->start(true);
 #endif
 
@@ -152,50 +156,48 @@ void ModuleROSUMD::NewTopicSpooled(const std::string &topicName, const MaceCore:
                 if(componentsUpdated.at(i) == mace::pose_topics::Topic_AgentOrientation::Name()) {
                     std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> component = std::make_shared<mace::pose_topics::Topic_AgentOrientation>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
-
-                    // Write Attitude data to the GUI:
                     updateAttitudeData(vehicleID, component);
+                }
+                else if(componentsUpdated.at(i) == mace::pose_topics::Topic_RotationalVelocity::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_RotationalVelocity> component = std::make_shared<mace::pose_topics::Topic_RotationalVelocity>();
+                    m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
+                    updateRotationalVelocity(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == mace::pose_topics::Topic_CartesianPosition::Name()) {
                     std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> component = std::make_shared<mace::pose_topics::Topic_CartesianPosition>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
-
-                    // Write Position data to the GUI:
                     updatePositionData(vehicleID, component);
+                }
+                else if(componentsUpdated.at(i) == mace::pose_topics::Topic_CartesianVelocity::Name()) {
+                    std::shared_ptr<mace::pose_topics::Topic_CartesianVelocity> component = std::make_shared<mace::pose_topics::Topic_CartesianVelocity>();
+                    m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
+                    updateTranslationalVelocity(vehicleID,component);
                 }
                 else if(componentsUpdated.at(i) == mace::pose_topics::Topic_GeodeticPosition::Name()) {
                     std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> component = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
-
-                    // Write Position data to the GUI:
                     updateGlobalPositionData(vehicleID, component);
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_Battery::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Battery>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
-
-                    // Write fueld data to the GUI:
-    #ifdef ROS_EXISTS
+#ifdef ROS_EXISTS
                     publishVehicleBattery(vehicleID, component);
-    #endif
+#endif
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_GPS::Name()) {
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_GPS>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
-
-                    // Write GPS fix to the GUI:
-    #ifdef ROS_EXISTS
+#ifdef ROS_EXISTS
                     publishVehicleGPS(vehicleID, component);
-    #endif
+#endif
                 }
                 else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_Heartbeat::Name()){
                     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Heartbeat> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Heartbeat>();
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
-
-                    // Write heartbeat data to the GUI:
-    #ifdef ROS_EXISTS
+#ifdef ROS_EXISTS
                     publishVehicleHeartbeat(vehicleID, component);
-    #endif
+#endif
                 }
             }
         }
@@ -213,9 +215,9 @@ void ModuleROSUMD::NewTopicSpooled(const std::string &topicName, const MaceCore:
                 else if(componentsUpdated.at(i) == MissionTopic::VehicleTargetTopic::Name()) {
                     std::shared_ptr<MissionTopic::VehicleTargetTopic> component = std::make_shared<MissionTopic::VehicleTargetTopic>();
                     m_VehicleMissionTopic.GetComponent(component, read_topicDatagram);
-    #ifdef ROS_EXISTS
+#ifdef ROS_EXISTS
                     publishVehicleTargetInfo(vehicleID, component);
-    #endif
+#endif
                 }
             }
         }
@@ -228,6 +230,13 @@ void ModuleROSUMD::NewTopicSpooled(const std::string &topicName, const MaceCore:
 //!
 void ModuleROSUMD::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    nav_msgs::Odometry* defaultOdom = new nav_msgs::Odometry();
+    defaultOdom->child_frame_id = "odom";
+    geometry_msgs::Quaternion defaultQuaternion;
+    defaultQuaternion.x = 0.0; defaultQuaternion.y = 0.0; defaultQuaternion.z = 0.0; defaultQuaternion.w = 1.0;
+    defaultOdom->pose.pose.orientation = defaultQuaternion;
+
+    this->m_vehiclePoseMap.insert(std::pair<int,nav_msgs::Odometry*>(vehicleID,defaultOdom));
 }
 
 //!
@@ -297,6 +306,21 @@ void ModuleROSUMD::updateAttitudeData(const int &vehicleID, const std::shared_pt
 #ifdef ROS_EXISTS
     // TODO: Publish vehicle Pose to MATLAB
     publishVehicleAttitude(vehicleID);
+
+    std::map<int,nav_msgs::Odometry*>::iterator it;
+    nav_msgs::Odometry* currentObject = nullptr;
+    it = m_vehiclePoseMap.find(vehicleID);
+    if(it != m_vehiclePoseMap.end())
+    {
+        currentObject = it->second;
+        Eigen::Quaterniond currentQuaternion = currentRotation.getQuaternion();
+        currentObject->pose.pose.orientation.x = currentQuaternion.x();
+        currentObject->pose.pose.orientation.y = currentQuaternion.y();
+        currentObject->pose.pose.orientation.z = currentQuaternion.z();
+        currentObject->pose.pose.orientation.w = currentQuaternion.w();
+        publicVehicleOdometry(vehicleID);
+    }
+
 #endif
 }
 
@@ -309,14 +333,26 @@ void ModuleROSUMD::updateAttitudeData(const int &vehicleID, const std::shared_pt
 void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> &component)
 {
 #ifdef ROS_EXISTS
-
     mace_matlab_msgs::UPDATE_LOCAL_POSITION position;
     position.vehicleID = vehicleID;
+
+    std::map<int,nav_msgs::Odometry*>::iterator it;
+    nav_msgs::Odometry* currentObject = nullptr;
+    it = m_vehiclePoseMap.find(vehicleID);
+    if(it != m_vehiclePoseMap.end())
+        currentObject = it->second;
+
     if(component->getPositionObj()->is2D())
     {
         mace::pose::CartesianPosition_2D* castPosition = component->getPositionObj()->positionAs<mace::pose::CartesianPosition_2D>();
         position.northing = castPosition->getXPosition();
         position.easting = castPosition->getYPosition();
+        if(currentObject != nullptr)
+        {
+            currentObject->header.stamp = ros::Time::now();
+            currentObject->pose.pose.position.x = castPosition->getXPosition();
+            currentObject->pose.pose.position.y = castPosition->getXPosition();
+        }
     }
 
     if(component->getPositionObj()->is3D())
@@ -325,10 +361,20 @@ void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_pt
         position.northing = castPosition->getXPosition();
         position.easting = castPosition->getYPosition();
         position.altitude = -castPosition->getZPosition();
+
+        if(currentObject != nullptr)
+        {
+            currentObject->header.stamp = ros::Time::now();
+            currentObject->pose.pose.position.x = castPosition->getXPosition();
+            currentObject->pose.pose.position.y = castPosition->getYPosition();
+            currentObject->pose.pose.position.z = castPosition->getZPosition();
+        }
+
     }
     position.northSpeed = 0.0; // TODO
     position.eastSpeed = 0.0; // TODO
     m_vehicleLocalPosPub.publish(position);
+
 #endif
 }
 
@@ -366,6 +412,65 @@ void ModuleROSUMD::updateGlobalPositionData(const int &vehicleID, const std::sha
 }
 
 
+//!
+//! \brief updateTranslationalVelocity
+//! \param vehicleID
+//! \param component
+//!
+void ModuleROSUMD::updateTranslationalVelocity(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_CartesianVelocity> &component)
+{
+#ifdef ROS_EXISTS
+    std::map<int,nav_msgs::Odometry*>::iterator it;
+    nav_msgs::Odometry* currentObject = nullptr;
+    it = m_vehiclePoseMap.find(vehicleID);
+    if(it != m_vehiclePoseMap.end())
+        currentObject = it->second;
+
+    if(component->getVelocityObj()->is2D())
+    {
+
+    }
+
+    else if(component->getVelocityObj()->is3D())
+    {
+        mace::pose::Velocity_Cartesian3D* castVelocity = component->getVelocityObj()->velocityAs<mace::pose::Velocity_Cartesian3D>();
+        if(currentObject != nullptr)
+        {
+            currentObject->header.stamp = ros::Time::now();
+            currentObject->twist.twist.linear.x = castVelocity->getXVelocity();
+            currentObject->twist.twist.linear.y = castVelocity->getYVelocity();
+            currentObject->twist.twist.linear.z = castVelocity->getZVelocity();
+        }
+    }
+#endif
+}
+
+
+//!
+//! \brief updateRotationalVelocity
+//! \param vehicleID
+//! \param component
+//!
+void ModuleROSUMD::updateRotationalVelocity(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_RotationalVelocity> &component)
+{
+#ifdef ROS_EXISTS
+    std::map<int,nav_msgs::Odometry*>::iterator it;
+    nav_msgs::Odometry* currentObject = nullptr;
+    it = m_vehiclePoseMap.find(vehicleID);
+    if(it != m_vehiclePoseMap.end())
+        currentObject = it->second;
+
+    mace::pose::Velocity_Rotation3D castVelocity = component->getVelocityObj();
+    if(currentObject != nullptr)
+    {
+        currentObject->header.stamp = ros::Time::now();
+        currentObject->twist.twist.angular.x = castVelocity.data.x();
+        currentObject->twist.twist.angular.y = castVelocity.data.y();
+        currentObject->twist.twist.angular.z = castVelocity.data.z();
+    }
+#endif
+}
+
 #ifdef ROS_EXISTS
 //!
 //! \brief setupROS Setup ROS subscribers, publishers, and node handler
@@ -376,6 +481,7 @@ void ModuleROSUMD::setupROS() {
     // *************************** //
     m_armService = nh.advertiseService("command_arm", &MATLABListener::commandArm, m_matlabListener.get());
     m_datumService = nh.advertiseService("command_datum", &MATLABListener::commandDatum, m_matlabListener.get());
+    m_homeService = nh.advertiseService("command_home", &MATLABListener::commandHome, m_matlabListener.get());
     m_dynamicTargetService_Kinematic = nh.advertiseService("command_dynamic_target_kinematic", &MATLABListener::commandDynamicTarget, m_matlabListener.get());
     m_dynamicTargetService_OrientationEuler = nh.advertiseService("command_dynamic_target_euler", &MATLABListener::commandDynamicTarget_OrientationEuler, m_matlabListener.get());
     m_dynamicTargetService_OrientationQuat = nh.advertiseService("command_dynamic_target_quat", &MATLABListener::commandDynamicTarget_OrientationQuat, m_matlabListener.get());
@@ -395,11 +501,40 @@ void ModuleROSUMD::setupROS() {
     m_heartbeatPub = nh.advertise<mace_matlab_msgs::UPDATE_HEARTBEAT> ("/MACE/UPDATE_HEARTBEAT", 1);
     m_batteryPub = nh.advertise<mace_matlab_msgs::UPDATE_BATTERY> ("/MACE/UPDATE_BATTERY", 1);
     m_vehicleTargetPub = nh.advertise<mace_matlab_msgs::UPDATE_VEHICLE_TARGET>("/MACE/TARGET_STATUS",1);
-// Don't think this is needed, as services request a response at send time:
+    // Don't think this is needed, as services request a response at send time:
     m_cmdStatusPub = nh.advertise<mace_matlab_msgs::UPDATE_CMD_STATUS> ("/MACE/UPDATE_CMD_STATUS", 1);
+    m_posePub = nh.advertise<nav_msgs::Odometry> ("/MACE/UPDATE_ODOMETRY", 1);
 
+    // *************************** //
+    // **** Setup subscribers: **** //
+    // *************************** //
+    m_subscriber_VisionPoseEstimate = nh.subscribe("/t265_process/vision_pose", 1, &ModuleROSUMD::ROSCallback_VisionPoseEstimate, this);
     ros::spinOnce();
 }
+
+void ModuleROSUMD::ROSCallback_VisionPoseEstimate(const geometry_msgs::PoseStamped::ConstPtr &msg)
+{
+    mace::pose::Pose currentPose;
+    currentPose.setTimeNow();
+    currentPose.m_Position.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_NED);
+    currentPose.m_Position.setXPosition(msg->pose.position.x);
+    currentPose.m_Position.setYPosition(msg->pose.position.y);
+    currentPose.m_Position.setZPosition(msg->pose.position.z);
+
+    geometry_msgs::Quaternion msgRotation = msg->pose.orientation;
+    Eigen::Quaterniond currentRotation;
+    currentRotation.x() = msgRotation.x;
+    currentRotation.y() = msgRotation.y;
+    currentRotation.z() = msgRotation.z;
+    currentRotation.w() = msgRotation.w;
+    currentPose.m_Rotation.setQuaternion(currentRotation);
+
+    this->NotifyListeners([&](MaceCore::IModuleEventsROS* ptr){
+        ptr->ROS_NewVisionPoseEstimate(1, currentPose);
+    });
+
+}
+
 
 //!
 //! \brief publishVehiclePosition Publish the current position of the corresponding vehicle
@@ -494,30 +629,30 @@ bool ModuleROSUMD::publishVehicleHeartbeat(const int &vehicleID, const std::shar
 bool ModuleROSUMD::publishVehicleTargetInfo(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
 {
 
-//    mace_matlab::UPDATE_VEHICLE_TARGET target;
-//    target.vehicleID = vehicleID;
-//    target.state = static_cast<uint8_t>(component->targetState);
-//    target.distance = component->targetDistance;
+    //    mace_matlab::UPDATE_VEHICLE_TARGET target;
+    //    target.vehicleID = vehicleID;
+    //    target.state = static_cast<uint8_t>(component->targetState);
+    //    target.distance = component->targetDistance;
 
     //the command here is based in a global cartesian space, we therefore need to transform it
-//    CartesianPosition_3D cartesianPosition;
-//    GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-//    GeodeticPosition_3D currentPosition;
+    //    CartesianPosition_3D cartesianPosition;
+    //    GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+    //    GeodeticPosition_3D currentPosition;
 
-//    DynamicsAid::GlobalPositionToLocal(globalOrigin, currentPosition, cartesianPosition);
+    //    DynamicsAid::GlobalPositionToLocal(globalOrigin, currentPosition, cartesianPosition);
 
-//    target.northing = cartesianPosition.getYPosition();
-//    target.easting = cartesianPosition.getXPosition();
-//    target.altitude = cartesianPosition.getZPosition();
+    //    target.northing = cartesianPosition.getYPosition();
+    //    target.easting = cartesianPosition.getXPosition();
+    //    target.altitude = cartesianPosition.getZPosition();
 
     // TODO: Better conversion to ENU:
-//    if(component->targetPosition.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
-//        target.altitude = -target.altitude;
-//    }
+    //    if(component->targetPosition.getCoordinateFrame() != Data::CoordinateFrameType::CF_LOCAL_ENU) {
+    //        target.altitude = -target.altitude;
+    //    }
 
     // TODO: Timestamp
 
-//    m_vehicleTargetPub.publish(target);
+    //    m_vehicleTargetPub.publish(target);
 }
 
 
@@ -529,6 +664,17 @@ bool ModuleROSUMD::publishVehicleTargetInfo(const int &vehicleID, const std::sha
 //!
 bool ModuleROSUMD::publishCmdStatus(const int &vehicleID) {
     // Not needed?
+}
+
+void ModuleROSUMD::publicVehicleOdometry(const int &vehicleID)
+{
+    std::map<int,nav_msgs::Odometry*>::iterator it;
+    nav_msgs::Odometry* currentObject = nullptr;
+    it = m_vehiclePoseMap.find(vehicleID);
+    if(it != m_vehiclePoseMap.end())
+        currentObject = it->second;
+
+    m_posePub.publish(*currentObject);
 }
 
 

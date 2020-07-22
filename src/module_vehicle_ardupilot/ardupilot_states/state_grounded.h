@@ -14,6 +14,8 @@ class State_GroundedDisarmed;
 
 class State_Takeoff;
 
+class State_Flight;
+
 class State_Grounded : public AbstractRootState
 {
 public:

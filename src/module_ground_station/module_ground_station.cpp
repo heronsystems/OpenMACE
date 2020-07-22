@@ -128,13 +128,6 @@ std::vector<MaceCore::TopicCharacteristic> ModuleGroundStation::GetEmittedTopics
 void ModuleGroundStation::initiateLogs()
 {
 
-    std::string logname = this->loggingPath + "/MACE_Module_GCS.txt";
-    //initiate the logs
-    size_t q_size = 8192; //queue size must be power of 2
-    spdlog::set_async_mode(q_size,spdlog::async_overflow_policy::discard_log_msg,nullptr,std::chrono::seconds(2));
-
-//    mLogs = spdlog::basic_logger_mt("MACE_Module_GCS", logname);
-//    mLogs->set_level(spdlog::level::debug);
 }
 
 //!

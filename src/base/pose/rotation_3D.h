@@ -216,7 +216,7 @@ public:
     //! \param rhs
     //! \return
     //!
-    bool operator != (const Rotation_3D &rhs) {
+    bool operator != (const Rotation_3D &rhs) const {
         return !(*this == rhs);
     }
 
