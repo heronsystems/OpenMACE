@@ -497,97 +497,94 @@ void GUItoMACE::setVehicleMode(const int &vehicleID, const QJsonDocument &data)
 //!
 void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 {
-    // TODO-AARON: Modify this method (and maybe subsequent methods?) to handle new incoming command structure.
-    //  Example structure for TAKEOFF command below.
-    //      - "command" is the string for the command being issued. Need to check the incoming command to figure out what to do (similar to what is already here)
-    //      - "aircraft" is the list/array of aircraft IDs that the command should go to.
-    //      - "data" is an array of accompanying data for that command. For now, unused.
-
-    //  ** My thought is that if any data needs to come along with the command (e.g. takeoff location), it can be stored in the "data" field. Not sure if that will scale, though
-
-    /*
-     * {
-     *    command: "TAKEOFF",
-     *    aircraft: ["1", "2", ...]
-     *    data: []
-     * }
-     */
-
-    // This prints the incoming object:
-
     qDebug() << jsonObj;
 
     std::string command = jsonObj["command"].toString().toStdString();
     QJsonArray aircraft = jsonObj["aircraft"].toArray();
     QJsonArray data = jsonObj["data"].toArray();
 
-    int vehicleID = -1;
+
+    int vehicleID = 0;
+    bool isVehicleCommand = false;
+    // Handle "global" (or non-vehicle specific) commands:
+    QJsonDocument tmpDoc = QJsonDocument::fromJson(data[0].toString().toUtf8());
+    if (command == "SET_GLOBAL_ORIGIN")
+    {
+        setGlobalOrigin(tmpDoc);
+    }
+    else if (command == "SET_ENVIRONMENT_VERTICES")
+    {
+        setEnvironmentVertices(tmpDoc);
+    }
+    else if (command == "GET_CONNECTED_VEHICLES")
+    {
+        getConnectedVehicles();
+    }
+    else if (command == "TEST_FUNCTION1")
+    {
+        testFunction1(vehicleID);
+    }
+    else if (command == "TEST_FUNCTION2")
+    {
+        testFunction2(vehicleID);
+    }
+    else if (command == "GET_ENVIRONMENT_BOUNDARY")
+    {
+        getEnvironmentBoundary();
+    }
+    else if (command == "GET_GLOBAL_ORIGIN")
+    {
+        getGlobalOrigin();
+    }
+    else {
+        isVehicleCommand = true;
+    }
+
     int counter = 0;
+    // Handle vehicle-specific commands:
     foreach (const QJsonValue &agent, aircraft)
     {
         vehicleID = agent.toString().toInt();
 
-        qDebug() << data;
-        qDebug() << data[counter];
         QJsonDocument tmpDoc = QJsonDocument::fromJson(data[counter].toString().toUtf8());
+        qDebug() << "Agent: " << vehicleID;
         qDebug() << tmpDoc;
-        qDebug() << tmpDoc["takeoffPosition"];
 
-        if(issuedCommand(command, vehicleID, tmpDoc)){}
+        if(issuedCommand(command, vehicleID, tmpDoc))
+        {
+            isVehicleCommand = true;
+        }
         else if (command == "SET_VEHICLE_MODE")
         {
             setVehicleMode(vehicleID, tmpDoc);
+            isVehicleCommand = true;
         }
         else if (command == "SET_VEHICLE_HOME")
         {
             setVehicleHome(vehicleID, tmpDoc);
-        }
-        else if (command == "SET_GLOBAL_ORIGIN")
-        {
-            setGlobalOrigin(tmpDoc);
-        }
-        else if (command == "SET_ENVIRONMENT_VERTICES")
-        {
-            setEnvironmentVertices(tmpDoc);
+            isVehicleCommand = true;
         }
         else if (command == "SET_VEHICLE_ARM")
         {
             setVehicleArm(vehicleID, tmpDoc);
+            isVehicleCommand = true;
         }
         else if (command == "SET_GO_HERE")
         {
             setGoHere(vehicleID, tmpDoc);
+            isVehicleCommand = true;
         }
         else if (command == "GET_VEHICLE_MISSION")
         {
             getVehicleMission(vehicleID);
-        }
-        else if (command == "GET_CONNECTED_VEHICLES")
-        {
-            getConnectedVehicles();
+            isVehicleCommand = true;
         }
         else if (command == "GET_VEHICLE_HOME")
         {
             getVehicleHome(vehicleID);
+            isVehicleCommand = true;
         }
-        else if (command == "TEST_FUNCTION1")
-        {
-            testFunction1(vehicleID);
-        }
-        else if (command == "TEST_FUNCTION2")
-        {
-            testFunction2(vehicleID);
-        }
-        else if (command == "GET_ENVIRONMENT_BOUNDARY")
-        {
-            getEnvironmentBoundary();
-        }
-        else if (command == "GET_GLOBAL_ORIGIN")
-        {
-            getGlobalOrigin();
-        }
-        else
-        {
+        else {
             std::cout << "Command " << command << " not recognized." << std::endl;
             return;
         }

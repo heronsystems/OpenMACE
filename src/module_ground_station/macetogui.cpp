@@ -113,7 +113,7 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 {
     if(home.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        QJsonDocument doc(home.toJSON(vehicleID,"VehicleHome"));
+        QJsonDocument doc(home.toJSON(vehicleID, "vehicle_home"));
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
@@ -129,10 +129,13 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 //!
 void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 {
-    
+    qDebug() << "TEST ORIGIN SENT";
     if(origin.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        QJsonDocument doc(origin.toJSON(0,"GlobalOrigin"));
+        QJsonObject obj = origin.toJSON(0, "environment_icon");
+        obj["type"] = "origin";
+        obj["name"] = "global_origin";
+        QJsonDocument doc(obj);
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
