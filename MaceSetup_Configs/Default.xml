@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ModuleConfigurations MaceInstance="0">
+<ModuleConfigurations MaceInstance="0" EKFOrigin="{lat: }">
+
+<GlobalParams>
+
+</GlobalParams>
+
   <Module Class="VehicleComms" Type="Ardupilot">
     <Parameter Name="ID">1</Parameter>
     <Parameter Name="ProtocolParameters">
@@ -16,7 +21,14 @@
     <Parameter Name="LocalPositionParameters">
       <Parameter Name="TransformAltitude">false</Parameter>
     </Parameter>
-  </Module>   
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
 
   <Module Class="VehicleComms" Type="Ardupilot">
     <Parameter Name="ID">2</Parameter>
@@ -34,7 +46,14 @@
     <Parameter Name="LocalPositionParameters">
       <Parameter Name="TransformAltitude">false</Parameter>
     </Parameter>
-  </Module>   
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
 
   <Module Class="GroundStation" Type="NASAPhase2">
 	<Parameter Name="ID">1</Parameter>
@@ -45,13 +64,7 @@
 	</Parameter>
    </Module>
     
-    <Parameter Name="EKFOrigin">
-      <Parameter Name="SetEKFOrigin">true</Parameter>
-      <Parameter Name="DuplicateToHome">true</Parameter>
-      <Parameter Name="Latitude">35.6212140</Parameter>
-      <Parameter Name="Longitude">-78.7992165</Parameter>
-      <Parameter Name="Altitude">0.0</Parameter>
-    </Parameter>
-  </Module>
-      
+   
+    
+
 </ModuleConfigurations>
