@@ -51,7 +51,7 @@ inline std::string guiMessageString(const GuiMessageTypes &type) {
     case GuiMessageTypes::VEHICLE_MISSION:
         return "vehicle_mission";
     case GuiMessageTypes::GLOBAL_ORIGIN:
-        return "global_origin";
+        return "environment_icon";
     case GuiMessageTypes::CURRENT_MISSION_ITEM:
         return "current_mission_item";
     case GuiMessageTypes::MISSION_ITEM_REACHED:

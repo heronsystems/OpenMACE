@@ -100,7 +100,7 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticP
     bool bytesWritten = writeTCPData(doc.toJson());
 
     if(!bytesWritten){
-        std::cout << "Write global origin failed..." << std::endl;
+        std::cout << "Write vehicle target failed..." << std::endl;
     }
 }
 
@@ -129,10 +129,12 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 //!
 void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 {
-    qDebug() << "TEST ORIGIN SENT";
     if(origin.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        QJsonDocument doc(origin.toJSON(0, guiMessageString(GuiMessageTypes::GLOBAL_ORIGIN)));
+        QJsonObject obj = origin.toJSON(0, guiMessageString(GuiMessageTypes::GLOBAL_ORIGIN));
+        obj["name"] = "Swarm origin";
+        obj["type"] = "origin";
+        QJsonDocument doc(obj);
         bool bytesWritten = writeTCPData(doc.toJson());
 
         if(!bytesWritten){
