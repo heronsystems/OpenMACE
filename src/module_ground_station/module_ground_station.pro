@@ -23,6 +23,7 @@ SOURCES += module_ground_station.cpp \
     guitomace.cpp
 
 HEADERS += module_ground_station.h \
+    guimessagetypes.h \
         module_ground_station_global.h \
     guitimer.h \
     macetogui.h \
