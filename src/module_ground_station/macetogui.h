@@ -28,6 +28,8 @@
 #include "base_topic/pose/topic_agent_orientation.h"
 #include "base_topic/measurements/topic_speed.h"
 
+#include "messagetypes.h"
+
 class MACEtoGUI
 {
 public:
