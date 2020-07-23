@@ -28,6 +28,14 @@ public:
 
     virtual void getCartesianClone(Abstract_CartesianPosition** state) const = 0;
 
+    /** Interface imposed via Position*/
+    PositionTypes getPositionalType() const
+    {
+        return PositionTypes::TRANSLATIONAL;
+    }
+
+    /** End of interface imposed via Position */
+
 public:
     CoordinateSystemTypes getCoordinateSystemType() const override;
 

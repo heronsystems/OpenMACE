@@ -42,7 +42,7 @@ SpatialHome::~SpatialHome()
 SpatialHome::SpatialHome(const SpatialHome &obj):
     AbstractSpatialAction(obj)
 {
-
+    this->setPosToCurrent = obj.setPosToCurrent;
 }
 
 SpatialHome::SpatialHome(const unsigned int &systemOrigin, const unsigned int &systemTarget):

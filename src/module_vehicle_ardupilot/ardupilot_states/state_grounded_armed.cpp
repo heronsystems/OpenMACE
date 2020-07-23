@@ -86,7 +86,8 @@ void State_GroundedArmed::Update()
 
 void State_GroundedArmed::OnEnter()
 {
-
+    //the command was obviously to arm however, we do not know what the user intent was next
+    GetImmediateOuterState()->setDesiredStateEnum(ardupilot::state::ArdupilotFlightState::STATE_FLIGHT);
 }
 
 void State_GroundedArmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)

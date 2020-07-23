@@ -35,6 +35,7 @@ double Altitude::getAltitude() const
 
 void Altitude::applyTransformation(const Eigen::Transform<double, 2, Eigen::Affine> &t)
 {
+    UNUSED(t);
     //it does not make sense to apply a transformation here, and therefore will ignore.
 }
 

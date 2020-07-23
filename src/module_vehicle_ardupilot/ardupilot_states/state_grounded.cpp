@@ -64,8 +64,13 @@ hsm::Transition State_Grounded::GetTransition()
             return hsm::SiblingTransition<State_Takeoff>(currentCommand);
             break;
         }
+        case ArdupilotFlightState::STATE_FLIGHT:
+        {
+            std::cout<<"We are transitioning immediately from grounded to flight state."<<std::endl;
+            return hsm::SiblingTransition<State_Flight>();
+        }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from STATE_GROUNDED."<<std::endl;
             break;
         }
     }
@@ -130,3 +135,5 @@ void State_Grounded::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 #include "ardupilot_states/state_grounded_idle.h"
 
 #include "ardupilot_states/state_takeoff.h"
+
+#include "ardupilot_states/state_flight.h"

@@ -9,8 +9,6 @@
 #include "I_controller.h"
 #include "common/pointer_collection.h"
 
-#include <spdlog/spdlog.h>
-
 #include <tuple>
 #include <functional>
 
@@ -59,8 +57,6 @@ private:
     const IMessageNotifier<MESSAGETYPE, COMPONENT_KEY>* m_CB;
 
 protected:
-
-    std::shared_ptr<spdlog::logger> mLog;
 
     std::vector<std::tuple<
         std::function<bool(COMPONENT_KEY, const MESSAGETYPE*)>,

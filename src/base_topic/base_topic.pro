@@ -35,7 +35,8 @@ SOURCES += \
     pose/topic_altitude.cpp \
     pose/topic_agent_orientation.cpp \
     measurements/topic_airspeed.cpp \
-    measurements/topic_groundspeed.cpp
+    measurements/topic_groundspeed.cpp \
+    pose/topic_rotational_velocity.cpp
 
 HEADERS += \
     base_topic_global.h \
@@ -45,7 +46,8 @@ HEADERS += \
     pose/topic_cartesian_velocity.h \
     pose/topic_altitude.h \
     pose/topic_agent_orientation.h \
-    measurements/topic_speed.h
+    measurements/topic_speed.h \
+    pose/topic_rotational_velocity.h
 
 # Unix lib Install
 unix:!symbian {

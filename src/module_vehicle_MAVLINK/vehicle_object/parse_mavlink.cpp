@@ -111,7 +111,14 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                               static_cast<double>(decodedMSG.pitch),
                                               static_cast<double>(decodedMSG.yaw));
 
-        //attitude.setAttitudeRates(decodedMSG.rollspeed,decodedMSG.pitchspeed,decodedMSG.yawspeed);
+        mace::pose::Velocity_Rotation3D agentRotationalRate;
+        agentRotationalRate.data = Eigen::Vector3d(static_cast<double>(decodedMSG.rollspeed),
+                                                   static_cast<double>(decodedMSG.pitchspeed),
+                                                   static_cast<double>(decodedMSG.yawspeed));
+
+        Data::EnvironmentTime currentTime;
+        Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+        prevAttitude = currentTime;
 
         if(state->vehicleAttitude.set(agentAttitude))
         {
@@ -119,6 +126,15 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
             if(this->m_CB)
                 this->m_CB->cbi_VehicleStateData(systemID,ptrAttitude);
         }
+
+        if(state->vehicleRotationalVelocity.set(agentRotationalRate))
+        {
+            std::shared_ptr<mace::pose_topics::Topic_RotationalVelocity> ptrAttitudeRate = std::make_shared<mace::pose_topics::Topic_RotationalVelocity>(agentRotationalRate);
+            if(this->m_CB)
+                this->m_CB->cbi_VehicleStateData(systemID,ptrAttitudeRate);
+        }
+
+
         break;
     }
     case MAVLINK_MSG_ID_LOCAL_POSITION_NED:
@@ -135,10 +151,14 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                        AltitudeReferenceTypes::REF_ALT_RELATIVE,
                                                        static_cast<double>(decodedMSG.z));
 
-        mace::pose::Cartesian_Velocity3D localVelocity(CartesianFrameTypes::CF_BODY_NED);
+        mace::pose::Velocity_Cartesian3D localVelocity(CartesianFrameTypes::CF_BODY_NED);
         localVelocity.setXVelocity(static_cast<double>(decodedMSG.vx));
         localVelocity.setYVelocity(static_cast<double>(decodedMSG.vy));
         localVelocity.setZVelocity(static_cast<double>(decodedMSG.vz));
+
+        Data::EnvironmentTime currentTime;
+        Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+        prevPosition = currentTime;
 
         if(state->vehicleLocalPosition.set(localPosition))
         {
@@ -420,8 +440,8 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mace::pose::GeodeticPosition_3D currentOrigin(decodedMSG.latitude / power,
                                                       decodedMSG.longitude / power,
                                                       decodedMSG.altitude / 1000.0);
-        std::cout<<"The new GPS global origin is: "<<currentOrigin<<std::endl;
-        currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_INT);
+
+        currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
         currentOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
         state->vehicleGlobalOrigin.set(currentOrigin);
 
@@ -434,10 +454,15 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         std::cout<<"This is an interesting one."<<std::endl;
         break;
     }
+
+    case MAVLINK_MSG_ID_CONTROL_SYSTEM_STATE:
+    {
+        std::cout<<"I have seen a new control system state."<<std::endl;
+        break;
+    }
     default:
     {
         consumed = false;
-        //std::cout<<"I received an unknown supported message with the ID "<<(int)msg->msgid<<std::endl;
     }
     } //end of switch statement
     return consumed;

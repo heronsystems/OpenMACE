@@ -31,7 +31,7 @@ void Topic_CartesianVelocity::CreateFromDatagram(const MaceCore::TopicDatagram &
     uint8_t dimension = datagram.GetTerminal<uint8_t>("Dimension");
     if(dimension == 2)
     {
-        mace::pose::Cartesian_Velocity2D* tmpObj = new mace::pose::Cartesian_Velocity2D(mace::CartesianFrameTypes::CF_LOCAL_NED);
+        mace::pose::Velocity_Cartesian2D* tmpObj = new mace::pose::Velocity_Cartesian2D(mace::CartesianFrameTypes::CF_LOCAL_NED);
         tmpObj->updateVelocityName(datagram.GetTerminal<std::string>("Object Name"));
         Eigen::VectorXd data = datagram.GetTerminal<Eigen::VectorXd>("Data");
         tmpObj->updateDataVector(data);
@@ -40,7 +40,7 @@ void Topic_CartesianVelocity::CreateFromDatagram(const MaceCore::TopicDatagram &
     }
     else if(dimension == 3)
     {
-        mace::pose::Cartesian_Velocity3D* tmpObj = new mace::pose::Cartesian_Velocity3D(mace::CartesianFrameTypes::CF_LOCAL_NED);
+        mace::pose::Velocity_Cartesian3D* tmpObj = new mace::pose::Velocity_Cartesian3D(mace::CartesianFrameTypes::CF_LOCAL_NED);
         tmpObj->updateVelocityName(datagram.GetTerminal<std::string>("Object Name"));
         Eigen::VectorXd data = datagram.GetTerminal<Eigen::VectorXd>("Data");
         tmpObj->updateDataVector(data);

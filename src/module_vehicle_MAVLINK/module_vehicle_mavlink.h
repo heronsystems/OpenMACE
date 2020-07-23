@@ -33,12 +33,20 @@
 #include "module_vehicle_MAVLINK/controllers/commands/command_arm.h"
 #include "module_vehicle_MAVLINK/controllers/commands/command_rtl.h"
 #include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
+#include "module_vehicle_MAVLINK/controllers/commands/command_msg_request.h"
+#include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
+#include "module_vehicle_MAVLINK/controllers/controller_mission.h"
+#include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
+#include "module_vehicle_MAVLINK/controllers/controller_vision_position_estimate.h"
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 #include "vehicle_object/mavlink_vehicle_object.h"
 
 #include "mavlink_entity_key.h"
+
+#include "controllers/I_controller.h"
+#include "controllers/I_message_notifier.h"
 
 /*
  *
@@ -78,7 +86,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ModuleVehicleMAVLINK():
         ModuleVehicleGeneric<VehicleTopicAdditionalComponents..., DataMAVLINK::EmptyMAVLINK>(),
-        airborneInstance(false), m_VehicleMissionTopic("vehicleMission"), m_IsAttachedMavlinkEntitySet(false)
+        airborneInstance(false), m_VehicleMissionTopic("vehicleMission"), m_IsAttachedMavlinkEntitySet(false), m_SystemData(nullptr)
     {
 
     }
@@ -100,6 +108,14 @@ public:
         std::shared_ptr<MaceCore::ModuleParameterStructure> localPositionSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
         localPositionSettings->AddTerminalParameters("TransformAltitude", MaceCore::ModuleParameterTerminalTypes::BOOLEAN, true);
         structure.AddNonTerminal("LocalPositionParameters", localPositionSettings, true);
+
+        std::shared_ptr<MaceCore::ModuleParameterStructure> originSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+        originSettings->AddTerminalParameters("SetEKFOrigin", MaceCore::ModuleParameterTerminalTypes::BOOLEAN, true);
+        originSettings->AddTerminalParameters("DuplicateToHome", MaceCore::ModuleParameterTerminalTypes::BOOLEAN, true);
+        originSettings->AddTerminalParameters("Latitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+        originSettings->AddTerminalParameters("Longitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+        originSettings->AddTerminalParameters("Altitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+        structure.AddNonTerminal("EKFOrigin", originSettings, true);
 
         structure.AddTerminalParameters("ID", MaceCore::ModuleParameterTerminalTypes::INT, false);
 
@@ -130,6 +146,22 @@ public:
         {
             this->SetID(params->GetTerminalValue<int>("ID"));
         }
+
+        if(params->HasNonTerminal("EKFOrigin"))
+        {
+            std::shared_ptr<MaceCore::ModuleParameterValue> EKFOriginSettings = params->GetNonTerminalValue("EKFOrigin");
+            this->setEKFOrigin = EKFOriginSettings->GetTerminalValue<bool>("SetEKFOrigin");
+            this->setEKFasHOME = EKFOriginSettings->GetTerminalValue<bool>("DuplicateToHome");
+            double latitude = 0.0, longitude = 0.0, altitude = 0.0;
+            latitude = EKFOriginSettings->GetTerminalValue<double>("Latitude");
+            longitude = EKFOriginSettings->GetTerminalValue<double>("Longitude");
+            altitude = EKFOriginSettings->GetTerminalValue<double>("Altitude");
+            desiredEKFPosition.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
+            desiredEKFPosition.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+            desiredEKFPosition.updateTranslationalComponents(latitude,longitude);
+            desiredEKFPosition.setAltitude(altitude);
+        }
+
     }
 
     virtual void start()
@@ -336,7 +368,6 @@ public:
         cbi_VehicleMissionData(current.getMissionKey().m_systemID, ptrMissionTopic);
     }
 
-
 public:
 
     void SetAttachedMavlinkEntity(const MavlinkEntityKey &key)
@@ -354,7 +385,32 @@ public:
         return m_AttachedMavlinkEntity;
     }
 
-private:
+protected:
+    std::unordered_map<std::string, Controllers::IController<mavlink_message_t, int>*> m_TopicToControllers;
+    TransmitQueue *m_TransmissionQueue;
+
+protected:
+    void handleHomePositionController(const command_item::SpatialHome &commandObj);
+    std::mutex m_mutex_HomePositionController;
+    std::condition_variable m_condition_HomePositionController;
+    bool m_oldHomePositionControllerShutdown = false;
+
+protected:
+    void handleGlobalOriginController(const Action_SetGlobalOrigin &originObj);
+    std::mutex m_mutex_GlobalOriginController;
+    std::condition_variable m_condition_GlobalOriginController;
+    bool m_oldGlobalOriginControllerShutdown = false;
+
+protected:
+    void prepareMissionController();
+    std::mutex m_mutex_MissionController;
+    std::condition_variable m_condition_MissionController;
+    bool m_oldMissionControllerShutdown = false;
+
+protected:
+    virtual void handleFirstConnectionSetup();
+
+protected:
 
     MavlinkEntityKey m_AttachedMavlinkEntity;
     bool m_IsAttachedMavlinkEntitySet;
@@ -362,7 +418,7 @@ private:
 protected:
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_VehicleMissionTopic;
 
-    //BaseTopic::VehicleTopics m_VehicleTopics;
+    MavlinkVehicleObject* m_SystemData;
 
 protected:
     //!
@@ -373,11 +429,18 @@ protected:
 
     bool transformToSwarmAltitude = true;
 
+
+    bool setEKFOrigin = false;
+    bool setEKFasHOME = false;
+    mace::pose::GeodeticPosition_3D desiredEKFPosition;
+
     //!
     //! \brief m_ControllersCollection
     //!
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> m_ControllersCollection;
 
 };
+
+#include "module_vehicle_mavlink.cpp"
 
 #endif // MODULE_VEHICLE_MAVLINK_H

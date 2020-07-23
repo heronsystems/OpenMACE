@@ -57,8 +57,9 @@ public:
     {
         return KinematicTypes::POSITION;
     }
-
     /** End of interface imposed via Kinemnatic_BaseInterace */
+
+    virtual PositionTypes getPositionalType() const = 0;
 
     virtual void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) = 0;
 

@@ -151,7 +151,7 @@ private:
 private:
     mace::pose::Rotation_3D m_AgentRotation;
     mace::pose::CartesianPosition_3D m_AgentPosition;
-    mace::pose::Cartesian_Velocity3D m_AgentVelocity;
+    mace::pose::Velocity_Cartesian3D m_AgentVelocity;
 
 private:
     //!

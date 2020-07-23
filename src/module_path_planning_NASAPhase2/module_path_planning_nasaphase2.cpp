@@ -164,7 +164,7 @@ void ModulePathPlanningNASAPhase2::NewTopicSpooled(const std::string &topicName,
                 std::shared_ptr<mace::pose_topics::Topic_CartesianVelocity> localVelocityData = std::make_shared<mace::pose_topics::Topic_CartesianVelocity>();
                 m_VehicleDataTopic.GetComponent(localVelocityData, read_topicDatagram);
                 mace::pose::Velocity* currentVelocity = localVelocityData->getVelocityObj();
-                m_AgentVelocity = *currentVelocity->velocityAs<mace::pose::Cartesian_Velocity3D>();
+                m_AgentVelocity = *currentVelocity->velocityAs<mace::pose::Velocity_Cartesian3D>();
                 this->updateAgentAction();
             }
             else if(componentsUpdated.at(i) == mace::pose_topics::Topic_AgentOrientation::Name())
@@ -263,7 +263,7 @@ void ModulePathPlanningNASAPhase2::updateAgentAction()
     rotationRate.setPhi(attractionGain * deltaBearing * (exp(-c1 * distance) + c2));
     newTarget.setYawRate(&rotationRate);
 
-    mace::pose::Cartesian_Velocity3D currentVelocity;
+    mace::pose::Velocity_Cartesian3D currentVelocity;
     currentVelocity.setExplicitCoordinateFrame(CartesianFrameTypes::CF_BODY_NED);
     if(distance > 4)
         currentVelocity.setXVelocity(2.0);
@@ -289,7 +289,7 @@ VPF_ResultingForce ModulePathPlanningNASAPhase2::computeVirtualForce(double &vRe
     transformedPosition.setXPosition(m_AgentPosition.getYPosition());
     transformedPosition.setYPosition(m_AgentPosition.getXPosition());
 
-    mace::pose::Cartesian_Velocity2D transformedVelocity;
+    mace::pose::Velocity_Cartesian2D transformedVelocity;
     transformedVelocity.setExplicitCoordinateFrame(CartesianFrameTypes::CF_LOCAL_ENU);
     transformedVelocity.setXVelocity(m_AgentVelocity.getYVelocity());
     transformedVelocity.setYVelocity(m_AgentVelocity.getXVelocity());
@@ -318,7 +318,7 @@ command_target::DynamicTarget_Kinematic ModulePathPlanningNASAPhase2::computeDyn
     }
 
     command_target::DynamicTarget_Kinematic newTarget;
-    mace::pose::Cartesian_Velocity3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
+    mace::pose::Velocity_Cartesian3D newVelocity(CartesianFrameTypes::CF_LOCAL_NED);
     newVelocity.setXVelocity(speedY);
     newVelocity.setYVelocity(speedX);
     newVelocity.setZVelocity(0.0);

@@ -80,14 +80,14 @@ double TSP_GreedyNearestNeighbor<T>::executeTSP(const T &start, std::vector<T> &
 template <class T>
 void TSP_GreedyNearestNeighbor<T>::logTour(const std::vector<T*> tour)
 {
-    mLog->debug("Logging the tour");
+//    mLog->debug("Logging the tour");
 
     size_t size = tour.size();
     for(unsigned int i = 0; i < size; i++)
     {
         std::stringstream buffer;
         buffer << tour[i];
-        mLog->info(buffer.str());
+//        mLog->info(buffer.str());
     }
 }
 
