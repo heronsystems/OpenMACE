@@ -126,10 +126,12 @@ void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonDocument &data)
 void GUItoMACE::setGlobalOrigin(const QJsonDocument &data)
 {
     mace::pose::GeodeticPosition_3D origin;
+    origin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
+    origin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+
     origin.setLatitude(data["lat"].toDouble());
     origin.setLongitude(data["lng"].toDouble());
     origin.setAltitude(data["alt"].toDouble());
-    origin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr) {
         ptr->Event_SetGlobalOrigin(m_parent, origin);

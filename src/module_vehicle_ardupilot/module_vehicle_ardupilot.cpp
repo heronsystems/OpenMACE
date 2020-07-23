@@ -79,7 +79,7 @@ void ModuleVehicleArdupilot::Command_SetGlobalOrigin(const Action_SetGlobalOrigi
     mace::pose::GeodeticPosition_3D* originPosition = command.getGlobalOrigin()->positionAs<mace::pose::GeodeticPosition_3D>();
     m_SystemData->state->swarmGlobalOrigin.set(*originPosition);
 
-    handleGlobalOriginController(command);
+//    handleGlobalOriginController(command);
 }
 
 void ModuleVehicleArdupilot::Command_ExecuteSpatialItem(const Action_ExecuteSpatialItem &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)

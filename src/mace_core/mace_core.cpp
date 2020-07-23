@@ -806,7 +806,7 @@ void MaceCore::Event_SetGlobalOrigin(const ModuleBase* sender, const GeodeticPos
     if(m_PathPlanning && m_PathPlanning.get() != sender) {
         m_PathPlanning->MarshalCommand(PathPlanningCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
-    if(m_GroundStation && m_GroundStation.get() != sender) {
+    if(m_GroundStation /*&& m_GroundStation.get() != sender*/) {
         m_GroundStation->MarshalCommand(GroundStationCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_GlobalRTA) {
