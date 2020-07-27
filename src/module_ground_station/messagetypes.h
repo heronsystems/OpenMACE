@@ -29,7 +29,7 @@ inline std::string guiMessageString(const GuiMessageTypes &type) {
     case GuiMessageTypes::VEHICLE_TARGET:
         return "vehicle_target";
     case GuiMessageTypes::VEHICLE_HOME:
-        return "vehicle_home";
+        return "environment_icon";
     case GuiMessageTypes::VEHICLE_POSITION:
         return "vehicle_position";
     case GuiMessageTypes::VEHICLE_ATTITUDE:
