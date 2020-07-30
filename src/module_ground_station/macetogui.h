@@ -250,7 +250,7 @@ private:
     //! \param list Mission list to convert to a JSON array
     //! \param missionItems JSON Container for converted mission items
     //!
-    void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems);
+    void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems, QJsonArray &path);
 
 private:
     //!

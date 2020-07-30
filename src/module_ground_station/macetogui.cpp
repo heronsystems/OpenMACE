@@ -166,7 +166,7 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
             }
 
             // Reset timeout:
-            m_positionTimeoutOccured = false;
+//            m_positionTimeoutOccured = false;
         }
     }
 }
@@ -188,7 +188,7 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
         }
 
         // Reset timeout:
-        m_attitudeTimeoutOccured = false;
+//        m_attitudeTimeoutOccured = false;
     }
 }
 
@@ -225,7 +225,7 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
         }
 
         // Reset timeout:
-        m_fuelTimeoutOccured = false;
+//        m_fuelTimeoutOccured = false;
     }
 }
 
@@ -246,7 +246,7 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
         }
 
         // Reset timeout:
-        m_modeTimeoutOccured = false;
+//        m_modeTimeoutOccured = false;
     }
 }
 
@@ -332,15 +332,25 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
 //!
 void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::MissionList &missionList)
 {
-    QJsonObject json = missionList.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_MISSION));
+    QJsonObject jsonMission = missionList.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_MISSION));
+    QJsonObject jsonPath = missionList.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_PATH));
     QJsonArray missionItems;
-    missionListToJSON(missionList,missionItems);
-    json["missionItems"] = missionItems;
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonArray path;
+    missionListToJSON(missionList,missionItems,path);
+    jsonMission["missionItems"] = missionItems;
+    jsonPath["vertices"] = path;
+    QJsonDocument docMission(jsonMission);
+    QJsonDocument docPath(jsonPath);
+    bool bytesWritten = writeTCPData(docMission.toJson());
 
     if(!bytesWritten){
         std::cout << "Write Vehicle Mission Data failed..." << std::endl;
+    }
+
+    bytesWritten = writeTCPData(docPath.toJson());
+
+    if(!bytesWritten){
+        std::cout << "Write Vehicle Path Data failed..." << std::endl;
     }
 }
 
@@ -389,7 +399,7 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
     }
 }
 
-void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems)
+void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems,QJsonArray &path)
 {
     for(size_t i = 0; i < list.getQueueSize(); i++)
     {
@@ -452,6 +462,10 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             std::shared_ptr<command_item::SpatialWaypoint> castItem = std::dynamic_pointer_cast<command_item::SpatialWaypoint>(missionItem);
             obj["positionalFrame"] = "global";
             castItem->getPosition()->updateQJSONObject(obj);
+
+            QJsonObject waypoint;
+            castItem->getPosition()->updateQJSONObject(waypoint);
+            path.push_back(waypoint);
             break;
         }
         case command_item::COMMANDTYPE::CI_NAV_LOITER_TIME:
