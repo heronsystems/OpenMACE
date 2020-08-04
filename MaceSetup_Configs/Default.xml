@@ -64,7 +64,7 @@
 	</Parameter>
    </Module>
     
-   
+   <Module Class="Adept" Type="ACE"> </Module>
     
 
 </ModuleConfigurations>

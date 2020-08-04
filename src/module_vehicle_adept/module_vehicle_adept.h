@@ -4,13 +4,15 @@
 #include <iostream>
 #include <cmath>
 
+#include "module_vehicle_adept_global.h"
+
+
 #include "mace_core/i_module_topic_events.h"
 
 
 #include "data/i_topic_component_data_object.h"
 #include "data/topic_data_object_collection.h"
 
-#include "module_vehicle_adept_global.h"
 #include "mace_core/i_module_command_adept.h"
 
 
@@ -78,8 +80,6 @@ public:
     void createLog();
 
 private:
-
-    Data::TopicDataObjectCollection<BASE_POSE_TOPICS> m_VehicleDataTopic;
 
 
 };

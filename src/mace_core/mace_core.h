@@ -21,6 +21,7 @@
 #include "i_module_command_RTA.h"
 #include "i_module_command_sensors.h"
 #include "i_module_command_vehicle.h"
+#include "i_module_command_adept.h"
 
 #include "i_module_events_external_link.h"
 #include "i_module_events_ground_station.h"
@@ -28,6 +29,7 @@
 #include "i_module_events_ROS.h"
 #include "i_module_events_rta.h"
 #include "i_module_events_sensors.h"
+#include "i_module_events_adept.h"
 #include "i_module_events_vehicle.h"
 
 #include "i_module_topic_events.h"
@@ -49,6 +51,7 @@ class MACE_CORESHARED_EXPORT MaceCore :
         virtual public IModuleTopicEvents,
         virtual public IModuleEventsVehicle,
         virtual public IModuleEventsSensors,
+        virtual public IModuleEventsAdept,
         virtual public IModuleEventsRTA,
         virtual public IModuleEventsPathPlanning,
         virtual public IModuleEventsROS,
@@ -158,6 +161,11 @@ public: //The following functions add specific modules to connect to mace core
     //!
     void AddSensorsModule(const std::shared_ptr<IModuleCommandSensors> &sensors);
 
+    //!
+    //! \brief AddAdeptModule Add adept module
+    //! \param adept Adept module setup
+    //!
+    void AddAdeptModule(const std::shared_ptr<IModuleCommandAdept> &adept);
 
 public:
 
@@ -795,6 +803,7 @@ private:
     std::shared_ptr<IModuleCommandPathPlanning> m_PathPlanning;
     std::shared_ptr<IModuleCommandROS> m_ROS;
     std::shared_ptr<IModuleCommandSensors> m_Sensors;
+    std::shared_ptr<IModuleCommandAdept> m_Adept;
     std::shared_ptr<IModuleCommandRTA> m_GlobalRTA;
     std::vector<std::shared_ptr<IModuleCommandRTA>> m_SpecailizedRTA;
 

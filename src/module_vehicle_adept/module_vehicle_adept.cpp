@@ -1,7 +1,6 @@
 #include "module_vehicle_adept.h"
 
-ModuleVehicleAdept::ModuleVehicleAdept():
-    m_VehicleDataTopic("vehicleData")
+ModuleVehicleAdept::ModuleVehicleAdept()
 {
 }
 
@@ -11,7 +10,7 @@ ModuleVehicleAdept::ModuleVehicleAdept():
 //!
 void ModuleVehicleAdept::AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
 {
-    ptr->Subscribe(this, m_VehicleDataTopic.Name());
+    UNUSED(ptr);
 }
 
 //!
@@ -65,3 +64,21 @@ void ModuleVehicleAdept::NewTopicSpooled(const std::string &topicName, const Mac
     UNUSED(topicName); UNUSED(sender); UNUSED(componentsUpdated); UNUSED(target);
 }
 
+void ModuleVehicleAdept::receiveFrame()
+{
+
+}
+
+void ModuleVehicleAdept::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(vehicleID); UNUSED(sender);
+}
+void ModuleVehicleAdept::NewlyAvailableFrame(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(key); UNUSED(sender);
+}
+
+void ModuleVehicleAdept::createLog()
+{
+
+}

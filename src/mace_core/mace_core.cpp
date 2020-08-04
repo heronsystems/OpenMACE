@@ -303,6 +303,19 @@ void MaceCore::AddSensorsModule(const std::shared_ptr<IModuleCommandSensors> &se
     AddLocalModule(sensors);
 }
 
+//!
+//! \brief AddAdeptModule Add Adept module
+//! \param adept Adept module setup
+//!
+void MaceCore::AddAdeptModule(const std::shared_ptr<IModuleCommandAdept> &adept)
+{
+    adept->addListener(this);
+    adept->addTopicListener(this);
+    m_Adept = adept;
+
+    AddLocalModule(adept);
+}
+
 //This ends the functions adding appropriate modules
 
 //!

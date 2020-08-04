@@ -33,11 +33,6 @@ class MACE_CORESHARED_EXPORT IModuleCommandAdept :
         AbstractModule_EventListeners()
     {
         IModuleGenericVehicleListener::SetUp<Metadata_Adept, IModuleEventsAdept, AdeptCommands>(this);
-        
-        AddCommandLogic<int>(AdeptCommands::NEWLY_AVAILABLE_VEHICLE, [this](const int &vehicleID, const OptionalParameter<ModuleCharacteristic> &sender){
-            UNUSED(sender);
-            NewlyAvailableVehicle(vehicleID);
-        });
 
     }
 
@@ -49,11 +44,6 @@ class MACE_CORESHARED_EXPORT IModuleCommandAdept :
 public:
 
 
-
-    //!
-    //! \brief NewlyUpdatedGlobalOrigin New global origin subscriber
-    //! \param position New global origin position
-    //!
 
 
 };

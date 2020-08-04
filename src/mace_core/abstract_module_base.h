@@ -52,6 +52,8 @@ public:
             return "Sensors";
         case ModuleClasses::VEHICLE_COMMS:
             return "VehicleComms";
+        case ModuleClasses::ADEPT:
+            return "Adept";
         default:
             throw std::runtime_error("Unknown module type");
         }
@@ -76,6 +78,8 @@ public:
             return ModuleClasses::RTA;
         if(string == "Sensors")
             return ModuleClasses::SENSORS;
+        if(string == "Adept")
+            return ModuleClasses::ADEPT;
         if(string == "VehicleComms")
             return ModuleClasses::VEHICLE_COMMS;
         throw std::runtime_error("Unknown module type");

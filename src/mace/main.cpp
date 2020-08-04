@@ -102,6 +102,7 @@ int main(int argc, char *argv[])
     bool addedROS = false;
     bool addedGlobalRTA = false;
     bool addedSensors = false;
+    bool addedAdept = false;
     int numVehicles = 1;
 
     // If a static address is given in config then distribute out
@@ -210,6 +211,17 @@ int main(int argc, char *argv[])
             }
             core.AddSensorsModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandSensors>(module));
             addedSensors = true;
+            break;
+        }
+        case MaceCore::ModuleClasses::ADEPT:
+        {
+            if(addedAdept == true)
+            {
+                std::cerr << "Only one adept module can be added" << std::endl;
+                return 1;
+            }
+            core.AddAdeptModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandAdept>(module));
+            addedAdept = true;
             break;
         }
         case MaceCore::ModuleClasses::PATH_PLANNING:

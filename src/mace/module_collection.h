@@ -11,6 +11,7 @@
 
 #include "module_vehicle_sensors/module_vehicle_sensors.h"
 #include "module_vehicle_ardupilot/module_vehicle_ardupilot.h"
+#include "module_vehicle_adept/module_vehicle_adept.h"
 
 #include "mace_core/module_factory.h"
 
@@ -29,6 +30,7 @@ public:
         Register<ModuleROSUMD>(factory, "OFFSET_Auctioneer");
         Register<ModuleRTA>(factory, "NASAPhase2");
         Register<ModuleVehicleSensors>(factory, "NASAPhase2");
+        Register<ModuleVehicleAdept>(factory,"ACE");
         Register<ModuleVehicleArdupilot>(factory, "Ardupilot");
 
         return factory;

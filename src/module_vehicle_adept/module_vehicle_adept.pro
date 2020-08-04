@@ -1,30 +1,37 @@
-QT -= gui
+#-------------------------------------------------
+#
+# Project created by QtCreator 2020
+#-------------------------------------------------
 
-CONFIG += c++11 console
-CONFIG -= app_bundle
+QT      += core
+QT      -= gui
+
+TARGET = module_vehicle_adept
+TEMPLATE = lib
+
+DEFINES += MODULE_VEHICLE_ADEPT_LIBRARY
+
+QMAKE_CXXFLAGS += -std=c++11
+DEFINES += EIGEN_DONT_VECTORIZE
+DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+
+
 
 # The following define makes your compiler emit warnings if you use
-# any Qt feature that has been marked deprecated (the exact warnings
+# any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
-# You can also make your code fail to compile if it uses deprecated APIs.
+# You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += \
-    module_vehicle_adept.cpp
+SOURCES += module_vehicle_adept.cpp
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
-HEADERS += \
-    module_vehicle_adept.h \
-    module_vehicle_adept_global.h
+HEADERS += module_vehicle_adept.h\
+        module_vehicle_adept_global.h
 
 # Unix lib Install
 unix:!symbian {
@@ -95,16 +102,10 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_missio
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/debug/ -ldata_generic_mission_item_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_generic_mission_item_topic/ -ldata_generic_mission_item_topic
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_adept/release/ -ldata_vehicle_adept
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_adept/debug/ -ldata_vehicle_adept
-else:unix:!macx: LIBS += -L$$OUT_PWD/../data_vehicle_adept/ -ldata_vehicle_adept
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_sensors/release/ -ldata_vehicle_sensors
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_vehicle_sensors/debug/ -ldata_vehicle_sensors
+else:unix:!macx: LIBS += -L$$OUT_PWD/../data_vehicle_sensors/ -ldata_vehicle_sensors
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../maps/release/ -lmaps
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lmaps
-else:unix:!macx: LIBS += -L$$OUT_PWD/../maps/ -lmaps
-
-INCLUDEPATH += $$PWD/../maps
-DEPENDPATH += $$PWD/../maps
 
 
 #unix {
