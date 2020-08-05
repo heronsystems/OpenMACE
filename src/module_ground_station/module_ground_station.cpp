@@ -65,19 +65,6 @@ ModuleGroundStation::ModuleGroundStation() :
     // Start timer:
     m_timer = std::make_shared<GUITimer>([=]()
     {
-        if(!m_toGUIHandler->getPositionTimeout()) {
-            m_toGUIHandler->setPositionTimeout(true);
-        }
-        if(!m_toGUIHandler->getAttitudeTimeout()) {
-            m_toGUIHandler->setAttitudeTimeout(true);
-        }
-        if(!m_toGUIHandler->getModeTimeout()) {
-            m_toGUIHandler->setModeTimeout(true);
-        }
-        if(!m_toGUIHandler->getFuelTimeout()) {
-            m_toGUIHandler->setFuelTimeout(true);
-        }
-
         if(m_TcpServer) {
             if(!m_TcpServer->isListening()) {
                 std::cout << "Server status: Disconnected" << std::endl;

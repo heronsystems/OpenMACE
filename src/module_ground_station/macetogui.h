@@ -53,58 +53,6 @@ public:
     //!
     void setSendPort(const int &sendPort);
 
-    //!
-    //! \brief setPositionTimeout Set position timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
-    //!
-    void setPositionTimeout(const bool &flag);
-
-    //!
-    //! \brief setAttitudeTimeout Set attitude timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
-    //!
-    void setAttitudeTimeout(const bool &flag);
-
-    //!
-    //! \brief setFuelTimeout Set fuel timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
-    //!
-    void setFuelTimeout(const bool &flag);
-
-    //!
-    //! \brief setModeTimeout Set mode timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
-    //!
-    void setModeTimeout(const bool &flag);
-
-    // ============================================================================= //
-    // ================================= Getters =================================== //
-    // ============================================================================= //
-
-    //!
-    //! \brief getPositionTimeout Get the current position timeout flag value
-    //! \return Position timeout flag
-    //!
-    bool getPositionTimeout() { return m_positionTimeoutOccured; }
-
-    //!
-    //! \brief getAttitudeTimeout Get the current attitude timeout flag value
-    //! \return Attitude timeout flag
-    //!
-    bool getAttitudeTimeout() { return m_attitudeTimeoutOccured; }
-
-    //!
-    //! \brief getFuelTimeout Get the current fuel timeout flag value
-    //! \return Fuel timeout flag
-    //!
-    bool getFuelTimeout() { return m_fuelTimeoutOccured; }
-
-    //!
-    //! \brief getModeTimeout Get the current mode timeout flag value
-    //! \return Mode timeout flag
-    //!
-    bool getModeTimeout() { return m_modeTimeoutOccured; }
-
 
     // ============================================================================= //
     // ======================== Send data to the MACE GUI ========================== //
@@ -262,26 +210,6 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
-
-    //!
-    //! \brief m_positionTimeoutOccured Timeout flag to check if new position data should be sent to the MACE GUI
-    //!
-    bool m_positionTimeoutOccured;
-
-    //!
-    //! \brief m_attitudeTimeoutOccured Timeout flag to check if new attitude data should be sent to the MACE GUI
-    //!
-    bool m_attitudeTimeoutOccured;
-
-    //!
-    //! \brief m_modeTimeoutOccured Timeout flag to check if new mode data should be sent to the MACE GUI
-    //!
-    bool m_modeTimeoutOccured;
-
-    //!
-    //! \brief m_fuelTimeoutOccured Timeout flag to check if new fuel data should be sent to the MACE GUI
-    //!
-    bool m_fuelTimeoutOccured;
 
 };
 
