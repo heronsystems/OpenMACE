@@ -9,7 +9,6 @@ SUBDIRS += \
     data \
     graphs \
     maps \
-    module_vehicle_adept \
     planners \
     comms \
     commsMACE \
