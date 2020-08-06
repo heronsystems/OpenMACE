@@ -101,8 +101,22 @@ void ModuleVehicleArdupilot::Request_FullDataSync(const int &targetSystem, const
     UNUSED(sender);
     std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> objectData = m_SystemData->state->GetTopicData();
     this->PublishVehicleData(targetSystem,objectData);
-    //vehicleData->m_MissionController->requestMission();
-}
+    this->prepareMissionController();
+    MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
+    if(missionController)
+    {
+        missionController->AddLambda_Finished(this, [missionController](const bool completed, const uint8_t code){
+            UNUSED(code);
+            if (completed)
+                printf("Mission Download Completed\n");
+            else
+                printf("Mission Download Failed\n");
+
+            missionController->Shutdown();
+        });
+
+        missionController->GetMissions(m_SystemData->getMAVLINKID());
+    }}
 
 //!
 //! \brief Command_SystemArm Command an ARM/DISARM action
