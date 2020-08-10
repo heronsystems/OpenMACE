@@ -138,9 +138,13 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ROS_UMD/rele
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ROS_UMD/debug/ -lmodule_ROS_UMD
 else:unix: LIBS += -L$$OUT_PWD/../module_ROS_UMD/ -lmodule_ROS_UMD
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/release/ -lmodule_vehicle_ardupilot
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/debug/ -lmodule_vehicle_ardupilot
-else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/ -lmodule_vehicle_ardupilot
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arducopter/release/ -lmodule_vehicle_arducopter
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arducopter/debug/ -lmodule_vehicle_arducopter
+else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_arducopter/ -lmodule_vehicle_arducopter
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arduplane/release/ -lmodule_vehicle_arduplane
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arduplane/debug/ -lmodule_vehicle_arduplane
+else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_arduplane/ -lmodule_vehicle_arduplane
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/release/ -lmodule_vehicle_generic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/debug/ -lmodule_vehicle_generic

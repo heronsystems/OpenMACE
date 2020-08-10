@@ -32,14 +32,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     MACE_to_MAVLINK/helper_mission_mace_to_mavlink.cpp \
     MAVLINK_to_MACE/helper_mission_mavlink_to_mace.cpp \
-    components/ardupilot_component_flight_mode.cpp \
     components/empty_mavlink.cpp
 
 HEADERS +=\
         data_interface_mavlink_global.h \
     MACE_to_MAVLINK/helper_mission_mace_to_mavlink.h \
     MAVLINK_to_MACE/helper_mission_mavlink_to_mace.h \
-    components/ardupilot_component_flight_mode.h \
     components/data_interface_mavlink_components.h \
     components/empty_mavlink.h
 
