@@ -30,7 +30,10 @@ void MaceCore::AddDataFusion(const std::shared_ptr<MaceData> dataFusion)
     m_DataFusion = dataFusion;
 }
 
-
+void MaceCore::setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams)
+{
+    UNUSED(globalParams);
+}
 void MaceCore::AddLocalModule(const std::shared_ptr<ModuleBase> &module)
 {
     uint8_t moduleID = 1;

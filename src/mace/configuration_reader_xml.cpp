@@ -222,6 +222,8 @@ ConfigurationParseResult ConfigurationReader_XML::Parse(const std::string &filen
         m_MaceInstanceIDSet = true;
     }
 
+    pugi::xml_node globalParamModule = moduleConfigurationsNode.child("GlobalParams");
+    m_globalParameters = ParseParameters(globalParamModule, GetGlobalParamStructure(), parseProgress);
 
     for (pugi::xml_node module = moduleConfigurationsNode.child("Module"); module; module = module.next_sibling("Module"))
     {
@@ -296,6 +298,7 @@ uint32_t ConfigurationReader_XML::GetStaticMaceInstanceID() const
 }
 
 
+
 //!
 //! \brief Get modules created after parsing
 //! \return List of created modules.
@@ -321,3 +324,35 @@ std::shared_ptr<MaceCore::ModuleParameterValue> ConfigurationReader_XML::GetModu
 {
     return m_Parameters.at(module);
 }
+
+//!
+//! \brief Get the global configuration parameters after parse
+//!
+//! Must be called after Parse is called and returns with a value of true
+//! \param module Pointer to module to get configuration of
+//! \return Global Configuration
+//!
+std::shared_ptr<MaceCore::ModuleParameterValue> ConfigurationReader_XML::GetGlobalConfiguration()
+{
+    return m_globalParameters;
+}
+
+std::shared_ptr<MaceCore::ModuleParameterStructure> ConfigurationReader_XML::GetGlobalParamStructure()
+{
+    MaceCore::ModuleParameterStructure globalStructure;
+    std::shared_ptr<MaceCore::ModuleParameterStructure> originSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+    originSettings->AddTerminalParameters("Latitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    originSettings->AddTerminalParameters("Longitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    originSettings->AddTerminalParameters("Altitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    globalStructure.AddNonTerminal("GlobalOrigin", originSettings, true);
+
+    std::shared_ptr<MaceCore::ModuleParameterStructure> homeSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+    homeSettings->AddTerminalParameters("Latitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    homeSettings->AddTerminalParameters("Longitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    homeSettings->AddTerminalParameters("Altitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    globalStructure.AddNonTerminal("Home", homeSettings, true);
+
+    globalStructure.AddTerminalParameters("maceID", MaceCore::ModuleParameterTerminalTypes::INT, false);
+    return std::make_shared<MaceCore::ModuleParameterStructure>(globalStructure);
+}
+

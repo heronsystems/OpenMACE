@@ -65,6 +65,8 @@ public:
     //! \return Configuration for module
     //!
     std::shared_ptr<MaceCore::ModuleParameterValue> GetModuleConfiguration(const std::shared_ptr<MaceCore::ModuleBase> &module);
+    std::shared_ptr<MaceCore::ModuleParameterValue> GetGlobalConfiguration();
+
 
 private:
 
@@ -77,6 +79,9 @@ private:
 
     std::map<std::shared_ptr<MaceCore::ModuleBase>, std::string> m_ModuleTypes;
     std::map<std::shared_ptr<MaceCore::ModuleBase>, std::shared_ptr<MaceCore::ModuleParameterValue> > m_Parameters;
+    std::shared_ptr<MaceCore::ModuleParameterValue> m_globalParameters;
+
+    std::shared_ptr<MaceCore::ModuleParameterStructure> GetGlobalParamStructure();
 };
 
 #endif // CONFIGURATIONREADER_XML_H
