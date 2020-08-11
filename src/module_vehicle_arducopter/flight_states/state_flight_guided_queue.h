@@ -10,7 +10,7 @@
 
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
 
-#include "../arducopter_target_progess.h"
+#include "module_vehicle_ardupilot/ardupilot_target_progess.h"
 
 #include "data_generic_command_item/command_item_components.h"
 
@@ -46,7 +46,7 @@ public:
 
 private:
 
-    ArducopterTargetProgess guidedProgress;
+    ArdupilotTargetProgess guidedProgress;
 };
 
 } //end of namespace state

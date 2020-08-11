@@ -6,7 +6,7 @@ namespace state{
 State_TakeoffTransitioning::State_TakeoffTransitioning():
     AbstractStateArdupilot()
 {
-    guidedProgress = ArducopterTargetProgess(1,10,10);
+    guidedProgress = ArdupilotTargetProgess(1,10,10);
     std::cout<<"We are in the constructor of STATE_TAKEOFF_TRANSITIONING"<<std::endl;
     currentStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;
     desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;

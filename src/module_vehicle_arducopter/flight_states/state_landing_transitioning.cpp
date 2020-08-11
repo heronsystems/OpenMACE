@@ -6,7 +6,7 @@ namespace state{
 State_LandingTransitioning::State_LandingTransitioning():
     AbstractStateArdupilot()
 {
-    guidedProgress = ArducopterTargetProgess(1,10,10);
+    guidedProgress = ArdupilotTargetProgess(1,10,10);
     std::cout<<"We are in the constructor of STATE_LANDING_TRANSITIONING"<<std::endl;
     currentStateEnum = ArdupilotFlightState::STATE_LANDING_TRANSITIONING;
     desiredStateEnum = ArdupilotFlightState::STATE_LANDING_TRANSITIONING;

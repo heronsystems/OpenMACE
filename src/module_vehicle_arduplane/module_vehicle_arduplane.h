@@ -17,9 +17,10 @@
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
+#include "module_vehicle_ardupilot/vehicle_object/ardupilot_vehicle_object.h"
 #include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+
 #include "flight_states/arduplane_state_components.h"
-#include "vehicle_object/arduplane_vehicle_object.h"
 
 #include "mace_core/abstract_module_base.h"
 
@@ -336,7 +337,7 @@ private:
 
 private:
     std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<ArduplaneVehicleObject> vehicleData;
+    std::shared_ptr<ArdupilotVehicleObject> vehicleData;
 
 private:
     std::mutex m_Mutex_StateMachine;

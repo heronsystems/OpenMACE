@@ -9,7 +9,7 @@
 
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
 
-#include "../arducopter_target_progess.h"
+#include "module_vehicle_ardupilot/ardupilot_target_progess.h"
 
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
@@ -54,7 +54,7 @@ private:
 
 private:
     bool commandAccepted = false;
-    ArducopterTargetProgess guidedProgress;
+    ArdupilotTargetProgess guidedProgress;
 };
 
 } //end of namespace state

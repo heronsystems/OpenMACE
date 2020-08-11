@@ -5,7 +5,7 @@
 
 #include "module_vehicle_ardupilot/flight_states/abstract_root_state.h"
 
-#include "../arducopter_target_progess.h"
+#include "module_vehicle_ardupilot/ardupilot_target_progess.h"
 
 
 namespace ardupilot {

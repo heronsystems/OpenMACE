@@ -36,9 +36,6 @@ SOURCES += module_vehicle_arducopter.cpp \
     flight_states/state_flight_manual.cpp \
     flight_states/state_flight_auto.cpp \
     flight_states/state_flight_brake.cpp \
-    vehicle_object/arducopter_vehicle_object.cpp \
-    vehicle_object/arducopter_component_flight_mode.cpp \
-    arducopter_target_progess.cpp \
     flight_states/state_takeoff_complete.cpp \
     flight_states/state_flight.cpp \
     flight_states/state_landing_complete.cpp \
@@ -73,9 +70,6 @@ HEADERS += module_vehicle_arducopter.h\
     flight_states/state_flight_manual.h \
     flight_states/state_flight_auto.h \
     flight_states/state_flight_brake.h \
-    vehicle_object/arducopter_vehicle_object.h \
-    vehicle_object/arducopter_component_flight_mode.h \
-    arducopter_target_progess.h \
     flight_states/state_takeoff_complete.h \
     flight_states/state_flight.h \
     flight_states/state_landing_complete.h \

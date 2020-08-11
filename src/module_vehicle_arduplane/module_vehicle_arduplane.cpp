@@ -45,7 +45,7 @@ ModuleVehicleArduplane::~ModuleVehicleArduplane()
 //!
 void ModuleVehicleArduplane::ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params)
 {
-    ModuleVehicleMAVLINK::ConfigureModule(params);
+    ModuleVehicleArdupilot::ConfigureModule(params);
 }
 
 //!

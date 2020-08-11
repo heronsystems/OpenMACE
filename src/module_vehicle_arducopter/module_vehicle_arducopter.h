@@ -18,8 +18,8 @@
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
 #include "flight_states/arducopter_state_components.h"
-#include "vehicle_object/arducopter_vehicle_object.h"
 
+#include "module_vehicle_ardupilot/vehicle_object/ardupilot_vehicle_object.h"
 #include "module_vehicle_ardupilot/module_vehicle_ardupilot.h"
 #include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
 
@@ -312,7 +312,7 @@ public:
     //!
     virtual void RequestDummyFunction(const int &vehicleID) override
     {
-
+        UNUSED(vehicleID);
     }
 
 private:
@@ -338,7 +338,7 @@ private:
 
 private:
     std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<ArducopterVehicleObject> vehicleData;
+    std::shared_ptr<ArdupilotVehicleObject> vehicleData;
 
 private:
     std::mutex m_Mutex_StateMachine;

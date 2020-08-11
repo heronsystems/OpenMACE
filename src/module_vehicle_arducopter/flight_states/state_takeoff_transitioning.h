@@ -6,7 +6,7 @@
 
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
 
-#include "../arducopter_target_progess.h"
+#include "module_vehicle_ardupilot/ardupilot_target_progess.h"
 
 #include "module_vehicle_MAVLINK/controllers/controller_guided_mission_item.h"
 
@@ -40,7 +40,7 @@ public:
     void OnExit() override;
 
 private:
-    ArducopterTargetProgess guidedProgress;
+    ArdupilotTargetProgess guidedProgress;
 };
 
 } //end of namespace ardupilot

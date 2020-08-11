@@ -7,7 +7,7 @@ State_FlightGuided_SpatialItem::State_FlightGuided_SpatialItem():
     AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_SPATIALITEM"<<std::endl;
-    guidedProgress = ArducopterTargetProgess(1,10,10);
+    guidedProgress = ArdupilotTargetProgess(1,10,10);
     currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
     desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
 }

@@ -19,18 +19,11 @@ DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
-SOURCES += module_vehicle_arduplane.cpp \
-    vehicle_object/arduplane_vehicle_object.cpp \
-    vehicle_object/arduplane_component_flight_mode.cpp \
-    arduplane_target_progess.cpp     
+SOURCES += module_vehicle_arduplane.cpp
 
 HEADERS += module_vehicle_arduplane.h\
         module_vehicle_arduplane_global.h \
-    vehicle_object/arduplane_vehicle_object.h \
-    vehicle_object/arduplane_component_flight_mode.h \
-    arduplane_target_progess.h \
-    flight_states/arduplane_state_components.h \
-    flight_states/arduplane_state_types.h
+    flight_states/arduplane_state_components.h
 
 
 INCLUDEPATH += $$PWD/../

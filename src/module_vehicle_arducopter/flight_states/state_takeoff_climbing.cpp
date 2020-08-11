@@ -7,7 +7,7 @@ State_TakeoffClimbing::State_TakeoffClimbing():
     AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_TAKEOFF_CLIMBING"<<std::endl;
-    guidedProgress = ArducopterTargetProgess(1,10,10);
+    guidedProgress = ArdupilotTargetProgess(1,10,10);
     currentStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
     desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
 }
