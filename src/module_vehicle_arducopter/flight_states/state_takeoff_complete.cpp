@@ -1,22 +1,22 @@
 #include "state_takeoff_complete.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_TakeoffComplete::State_TakeoffComplete():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_TAKEOFF_COMPLETE"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_TAKEOFF_COMPLETE;
-    desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_COMPLETE;
+    currentStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
+    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
 }
 
-AbstractStateArducopter* State_TakeoffComplete::getClone() const
+AbstractStateArdupilot* State_TakeoffComplete::getClone() const
 {
     return (new State_TakeoffComplete(*this));
 }
 
-void State_TakeoffComplete::getClone(AbstractStateArducopter** state) const
+void State_TakeoffComplete::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_TakeoffComplete(*this);
 }
@@ -55,6 +55,6 @@ void State_TakeoffComplete::OnEnter(const std::shared_ptr<AbstractCommandItem> c
 
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 

@@ -1,15 +1,16 @@
 #ifndef STATE_GROUNDED_ARMING_H
 #define STATE_GROUNDED_ARMING_H
 
-#include "abstract_state_arducopter.h"
 
-namespace arducopter{
+#include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
+
+namespace ardupilot {
 namespace state{
 
 class State_GroundedIdle;
 class State_GroundedArmed;
 
-class State_GroundedArming : public AbstractStateArducopter
+class State_GroundedArming : public AbstractStateArdupilot
 {
 public:
     State_GroundedArming();
@@ -17,9 +18,9 @@ public:
     virtual ~State_GroundedArming() = default;
 
 public:
-    AbstractStateArducopter* getClone() const override;
+    AbstractStateArdupilot* getClone() const override;
 
-    void getClone(AbstractStateArducopter** state) const override;
+    void getClone(AbstractStateArdupilot** state) const override;
 
 public:
     hsm::Transition GetTransition() override;
@@ -37,7 +38,7 @@ private:
     bool armingCheck;
 };
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #endif // STATE_GROUNDED_ARMING_H

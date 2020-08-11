@@ -3,12 +3,12 @@
 
 #include <mavlink.h>
 
-#include "abstract_root_state.h"
+#include "module_vehicle_ardupilot/flight_states/abstract_root_state.h"
 
 #include "../arducopter_target_progess.h"
 
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 class State_Grounded;
@@ -23,9 +23,9 @@ public:
     State_Takeoff();
 
 public:
-    AbstractStateArducopter* getClone() const override;
+    AbstractStateArdupilot* getClone() const override;
 
-    void getClone(AbstractStateArducopter** state) const override;
+    void getClone(AbstractStateArdupilot** state) const override;
 
 public:
     hsm::Transition GetTransition() override;
@@ -43,7 +43,7 @@ private:
 
 };
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #endif // STATE_TAKEOFF_H

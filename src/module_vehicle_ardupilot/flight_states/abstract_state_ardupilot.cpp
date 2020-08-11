@@ -1,16 +1,16 @@
-#include "abstract_state_arducopter.h"
+#include "abstract_state_ardupilot.h"
 
-namespace arducopter{
+namespace ardupilot{
 namespace state{
 
-AbstractStateArducopter::AbstractStateArducopter() :
+AbstractStateArdupilot::AbstractStateArdupilot() :
     currentCommand(nullptr),
     currentCommandSet(false)
 
 {
 }
 
-AbstractStateArducopter::AbstractStateArducopter(const AbstractStateArducopter &copy)
+AbstractStateArdupilot::AbstractStateArdupilot(const AbstractStateArdupilot &copy)
 {
 
     if(copy.currentCommandSet == true)
@@ -26,12 +26,12 @@ AbstractStateArducopter::AbstractStateArducopter(const AbstractStateArducopter &
     desiredStateEnum = copy.desiredStateEnum;
 }
 
-AbstractStateArducopter::~AbstractStateArducopter()
+AbstractStateArdupilot::~AbstractStateArdupilot()
 {
     clearCommand();
 }
 
-void AbstractStateArducopter::OnExit()
+void AbstractStateArdupilot::OnExit()
 {
     Owner().ControllersCollection()->ForAll([this](Controllers::IController<mavlink_message_t, int>* controller){
         controller->RemoveHost(this);
@@ -40,18 +40,18 @@ void AbstractStateArducopter::OnExit()
     clearCommand();
 }
 
-void AbstractStateArducopter::clearCommand()
+void AbstractStateArdupilot::clearCommand()
 {
     currentCommandSet = false;
 }
 
-void AbstractStateArducopter::setCurrentCommand(const std::shared_ptr<AbstractCommandItem> command)
+void AbstractStateArdupilot::setCurrentCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     clearCommand();
     this->currentCommand = command;
 }
 
-bool AbstractStateArducopter::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
@@ -74,7 +74,7 @@ bool AbstractStateArducopter::handleCommand(const std::shared_ptr<AbstractComman
 
         MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().arducopterMode.getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
+        commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
         controllerSystemMode->Send(commandMode, sender, target);
 
         collection->Insert("modeController", controllerSystemMode);
@@ -86,7 +86,7 @@ bool AbstractStateArducopter::handleCommand(const std::shared_ptr<AbstractComman
     }
 }
 
-bool AbstractStateArducopter::handleMAVLINKMessage(const mavlink_message_t &msg)
+bool AbstractStateArdupilot::handleMAVLINKMessage(const mavlink_message_t &msg)
 {
     throw std::runtime_error("States should not longer handle mavlink messages");
 
@@ -120,7 +120,7 @@ bool AbstractStateArducopter::handleMAVLINKMessage(const mavlink_message_t &msg)
 
         if(innerState != nullptr)
         {
-            arducopter::state::AbstractStateArducopter* castChild = static_cast<arducopter::state::AbstractStateArducopter*>(innerState);
+            ardupilot::state::AbstractStateArdupilot* castChild = static_cast<ardupilot::state::AbstractStateArdupilot*>(innerState);
             consumed = castChild->handleMAVLINKMessage(msg);
         }
 
@@ -131,4 +131,4 @@ bool AbstractStateArducopter::handleMAVLINKMessage(const mavlink_message_t &msg)
 }
 
 } //end of namespace state
-} //end of namespace arducopter
+} //end of namespace ardupilot

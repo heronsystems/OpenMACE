@@ -1,22 +1,22 @@
 #include "state_grounded_armed.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_GroundedArmed::State_GroundedArmed():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_GROUNDED_ARMED"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_GROUNDED_ARMED;
-    desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_ARMED;
+    currentStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
+    desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
 }
 
-AbstractStateArducopter* State_GroundedArmed::getClone() const
+AbstractStateArdupilot* State_GroundedArmed::getClone() const
 {
     return (new State_GroundedArmed(*this));
 }
 
-void State_GroundedArmed::getClone(AbstractStateArducopter** state) const
+void State_GroundedArmed::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_GroundedArmed(*this);
 }
@@ -31,19 +31,19 @@ hsm::Transition State_GroundedArmed::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_GROUNDED_DISARMING:
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMING:
         {
             return hsm::SiblingTransition<State_GroundedDisarming>();
             break;
         }
-        case ArducopterFlightState::STATE_GROUNDED_IDLE:
+        case ArdupilotFlightState::STATE_GROUNDED_IDLE:
         {
             return hsm::SiblingTransition<State_GroundedIdle>();
             break;
         }
-        case ArducopterFlightState::STATE_TAKEOFF:
-        case ArducopterFlightState::STATE_TAKEOFF_CLIMBING:
-        case ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING:
+        case ArdupilotFlightState::STATE_TAKEOFF:
+        case ArdupilotFlightState::STATE_TAKEOFF_CLIMBING:
+        case ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING:
         {
             //The takeoff cases are handled as a sibling state transition by the parent state of STATE_GROUNDED
             break;
@@ -58,36 +58,43 @@ hsm::Transition State_GroundedArmed::GetTransition()
 
 bool State_GroundedArmed::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     this->clearCommand();
     switch (command->getCommandType()) {
     case command_item::COMMANDTYPE::CI_ACT_ARM:
     {
         if(command->as<command_item::ActionArm>()->getRequestArm() == false)
-            desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_DISARMING;
+        {
+            desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMING;
+            success = true;
+        }
         break;
     }
     case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
     {
-        desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF;
+        desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF;
         GetImmediateOuterState()->setDesiredStateEnum(desiredStateEnum);
-        static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateOuterState())->setCurrentCommand(command);
+        static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setCurrentCommand(command);
+        success = true;
         break;
     }
     default:
         break;
     }
+
+    return success;
 }
 
 void State_GroundedArmed::Update()
 {
     if(!Owner().state->vehicleArm.get().getSystemArm())
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
 }
 
 void State_GroundedArmed::OnEnter()
 {
     //the command was obviously to arm however, we do not know what the user intent was next
-    GetImmediateOuterState()->setDesiredStateEnum(arducopter::state::ArducopterFlightState::STATE_FLIGHT);
+    GetImmediateOuterState()->setDesiredStateEnum(ardupilot::state::ArdupilotFlightState::STATE_FLIGHT);
 }
 
 void State_GroundedArmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
@@ -97,7 +104,7 @@ void State_GroundedArmed::OnEnter(const std::shared_ptr<AbstractCommandItem> com
         handleCommand(command);
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_grounded_idle.h"

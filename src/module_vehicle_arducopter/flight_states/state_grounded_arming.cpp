@@ -1,23 +1,23 @@
 #include "state_grounded_arming.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_GroundedArming::State_GroundedArming():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_GROUNDED_ARMING"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_GROUNDED_ARMING;
-    desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_ARMING;
+    currentStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMING;
+    desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMING;
     armingCheck = false;
 }
 
-AbstractStateArducopter* State_GroundedArming::getClone() const
+AbstractStateArdupilot* State_GroundedArming::getClone() const
 {
     return (new State_GroundedArming(*this));
 }
 
-void State_GroundedArming::getClone(AbstractStateArducopter** state) const
+void State_GroundedArming::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_GroundedArming(*this);
 }
@@ -32,12 +32,12 @@ hsm::Transition State_GroundedArming::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_GROUNDED_IDLE:
+        case ArdupilotFlightState::STATE_GROUNDED_IDLE:
         {
             rtn = hsm::SiblingTransition<State_GroundedIdle>();
             break;
         }
-        case ArducopterFlightState::STATE_GROUNDED_ARMED:
+        case ArdupilotFlightState::STATE_GROUNDED_ARMED:
         {
             rtn = hsm::SiblingTransition<State_GroundedArmed>(currentCommand);
             break;
@@ -69,7 +69,7 @@ void State_GroundedArming::Update()
 
     if(Owner().state->vehicleArm.get().getSystemArm())
     {
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_ARMED;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
     }
 }
 
@@ -84,7 +84,7 @@ void State_GroundedArming::OnEnter()
     controllerArm->AddLambda_Finished(this, [this, controllerArm](const bool completed, const uint8_t finishCode){
         controllerArm->Shutdown();
         if(!completed || (finishCode != MAV_RESULT_ACCEPTED))
-            desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_IDLE;
+            desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     });
 
     controllerArm->setLambda_Shutdown([collection]()
@@ -111,7 +111,7 @@ void State_GroundedArming::OnEnter(const std::shared_ptr<AbstractCommandItem> co
 }
 
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_grounded_idle.h"

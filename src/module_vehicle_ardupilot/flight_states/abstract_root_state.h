@@ -5,7 +5,7 @@
 #include <thread>
 #include <mavlink.h>
 
-#include "abstract_state_arducopter.h"
+#include "abstract_state_ardupilot.h"
 
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
@@ -13,10 +13,10 @@
 #include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
 #include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
 
-namespace arducopter{
+namespace ardupilot{
 namespace state{
 
-class AbstractRootState : public AbstractStateArducopter
+class AbstractRootState : public AbstractStateArdupilot
 {
 public:
     AbstractRootState();
@@ -54,7 +54,7 @@ public:
 
 };
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #endif // ABSTRACTPARENTSTATE_H

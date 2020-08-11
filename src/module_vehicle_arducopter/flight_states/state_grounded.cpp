@@ -1,22 +1,22 @@
 #include "state_grounded.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_Grounded::State_Grounded():
     AbstractRootState()
 {
     std::cout<<"We are in the constructor of STATE_GROUNDED"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_GROUNDED;
-    desiredStateEnum = ArducopterFlightState::STATE_GROUNDED;
+    currentStateEnum = ArdupilotFlightState::STATE_GROUNDED;
+    desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED;
 }
 
-AbstractStateArducopter* State_Grounded::getClone() const
+AbstractStateArdupilot* State_Grounded::getClone() const
 {
     return (new State_Grounded(*this));
 }
 
-void State_Grounded::getClone(AbstractStateArducopter** state) const
+void State_Grounded::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_Grounded(*this);
 }
@@ -31,40 +31,40 @@ hsm::Transition State_Grounded::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_GROUNDED_IDLE:
+        case ArdupilotFlightState::STATE_GROUNDED_IDLE:
         {
             return hsm::InnerEntryTransition<State_GroundedIdle>();
             break;
         }
-        case ArducopterFlightState::STATE_GROUNDED_ARMING:
+        case ArdupilotFlightState::STATE_GROUNDED_ARMING:
         {
             return hsm::InnerEntryTransition<State_GroundedArming>();
             break;
         }
-        case ArducopterFlightState::STATE_GROUNDED_ARMED:
+        case ArdupilotFlightState::STATE_GROUNDED_ARMED:
         {
             return hsm::InnerEntryTransition<State_GroundedArmed>();
             break;
         }
-        case ArducopterFlightState::STATE_GROUNDED_DISARMING:
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMING:
         {
             return hsm::InnerEntryTransition<State_GroundedDisarming>();
             break;
         }
-        case ArducopterFlightState::STATE_GROUNDED_DISARMED:
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
         {
             return hsm::InnerEntryTransition<State_GroundedDisarmed>();
             break;
         }
-        case ArducopterFlightState::STATE_TAKEOFF:
-        case ArducopterFlightState::STATE_TAKEOFF_CLIMBING:
-        case ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING:
+        case ArdupilotFlightState::STATE_TAKEOFF:
+        case ArdupilotFlightState::STATE_TAKEOFF_CLIMBING:
+        case ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING:
         {
             std::cout<<"We should transition to the takeoff state!"<<std::endl;
             return hsm::SiblingTransition<State_Takeoff>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT:
+        case ArdupilotFlightState::STATE_FLIGHT:
         {
             std::cout<<"We are transitioning immediately from grounded to flight state."<<std::endl;
             return hsm::SiblingTransition<State_Flight>();
@@ -79,21 +79,24 @@ hsm::Transition State_Grounded::GetTransition()
 
 bool State_Grounded::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     case COMMANDTYPE::CI_NAV_HOME:
     {
-        AbstractRootState::handleCommand(command);
+        success = AbstractRootState::handleCommand(command);
         break;
     }
     default:
     {
-        arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
-        currentInnerState->handleCommand(command);
+        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+        success = currentInnerState->handleCommand(command);
         break;
     }
     } //end of switch statement
+
+    return success;
 }
 
 void State_Grounded::Update()
@@ -107,25 +110,26 @@ void State_Grounded::OnEnter()
 
     if(Owner().state->vehicleArm.get().getSystemArm())
     {
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_ARMED;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
     }
     else if((Owner().state->vehicleArm.hasBeenSet()) && (!Owner().state->vehicleArm.get().getSystemArm())
             && (vehicleData->vehicleMode.get().getFlightModeString() != "STABILIZE"))
     {
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_DISARMED;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
     }
     else
     {
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     }
 }
 
 void State_Grounded::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     this->OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_grounded_armed.h"

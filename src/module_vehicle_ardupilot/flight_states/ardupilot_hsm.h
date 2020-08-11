@@ -6,7 +6,7 @@
 // (See accompanying file LICENSE.txt or copy at
 // http://opensource.org/licenses/MIT)
 
-//Modified for Arducopter State Machine Kenneth Kroeger
+//Modified for Ardupilot State Machine Kenneth Kroeger
 
 /// \file hsm.h
 /// \brief Single header for HSM library
@@ -16,7 +16,7 @@
 #include <functional>
 #include <memory>
 
-#include "arducopter_state_types.h" //This could be templated out but we don't have the time for that
+#include "ardupilot_state_types.h" //This could be templated out but we don't have the time for that
 
 #include <unordered_map>
 #include <mutex>
@@ -533,8 +533,8 @@ struct State
 		, mStackDepth(0)
 		, mStateValueResetters(0)
         , mStateDebugName(0)
-        , currentStateEnum(arducopter::state::ArducopterFlightState::STATE_GROUNDED)
-        , desiredStateEnum(arducopter::state::ArducopterFlightState::STATE_GROUNDED)
+        , currentStateEnum(ardupilot::state::ArdupilotFlightState::STATE_GROUNDED)
+        , desiredStateEnum(ardupilot::state::ArdupilotFlightState::STATE_GROUNDED)
 	{
 	}
 
@@ -544,12 +544,12 @@ struct State
 		ResetStateValues();
 	}
 
-    arducopter::state::ArducopterFlightState getCurrentStateEnum() const
+    ardupilot::state::ArdupilotFlightState getCurrentStateEnum() const
     {
         return currentStateEnum;
     }
 
-    arducopter::state::ArducopterFlightState getDesiredStateEnum() const
+    ardupilot::state::ArdupilotFlightState getDesiredStateEnum() const
     {
         return desiredStateEnum;
     }
@@ -665,18 +665,18 @@ struct State
 	StateOverride<SourceState> GetStateOverride();
 
 public:
-    void setDesiredStateEnum(const arducopter::state::ArducopterFlightState &state)
+    void setDesiredStateEnum(const ardupilot::state::ArdupilotFlightState &state)
     {
         desiredStateEnum = state;
     }
 
-    void setCurrentStateEnum(const arducopter::state::ArducopterFlightState &state)
+    void setCurrentStateEnum(const ardupilot::state::ArdupilotFlightState &state)
     {
         currentStateEnum = state;
     }
 protected:
-    arducopter::state::ArducopterFlightState currentStateEnum;
-    arducopter::state::ArducopterFlightState desiredStateEnum;
+    ardupilot::state::ArdupilotFlightState currentStateEnum;
+    ardupilot::state::ArdupilotFlightState desiredStateEnum;
 
 private:
 	friend void detail::InitState(State* state, StateMachine* ownerStateMachine, size_t stackDepth, const StateFactory& stateFactory);

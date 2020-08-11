@@ -1,15 +1,15 @@
 #include "abstract_root_state.h"
 
-namespace arducopter {
+namespace ardupilot {
 namespace state {
 AbstractRootState::AbstractRootState():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
 
 }
 
 AbstractRootState::AbstractRootState(const AbstractRootState &copy):
-    AbstractStateArducopter(copy)
+    AbstractStateArdupilot(copy)
 {
 
 }
@@ -37,7 +37,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 
         MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().arducopterMode.getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
+        commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
         controllerSystemMode->Send(commandMode,sender,target);
         collection->Insert("modeController",controllerSystemMode);
         break;
@@ -77,4 +77,4 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 }
 
 } //end of namespace state
-} //end of namespace arducopter
+} //end of namespace ardupilot

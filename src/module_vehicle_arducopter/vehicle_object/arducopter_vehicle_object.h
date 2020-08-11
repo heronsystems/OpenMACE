@@ -4,7 +4,7 @@
 #include "module_vehicle_MAVLINK/vehicle_object/mavlink_vehicle_object.h"
 
 #include "arducopter_component_flight_mode.h"
-#include "../flight_states/arducopter_state_types.h"
+#include "module_vehicle_ardupilot/flight_states/ardupilot_state_types.h"
 
 #include "data_generic_mission_item_topic/vehicle_target_topic.h"
 

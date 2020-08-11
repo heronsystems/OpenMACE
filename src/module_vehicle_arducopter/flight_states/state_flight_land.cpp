@@ -1,22 +1,22 @@
 #include "state_flight_land.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_FlightLand::State_FlightLand():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_LAND"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT_LAND;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_LAND;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_LAND;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_LAND;
 }
 
-AbstractStateArducopter* State_FlightLand::getClone() const
+AbstractStateArdupilot* State_FlightLand::getClone() const
 {
     return (new State_FlightLand(*this));
 }
 
-void State_FlightLand::getClone(AbstractStateArducopter** state) const
+void State_FlightLand::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_FlightLand(*this);
 }
@@ -59,5 +59,5 @@ void State_FlightLand::OnEnter(const std::shared_ptr<AbstractCommandItem> comman
     this->OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state

@@ -1,29 +1,29 @@
 #include "state_takeoff_transitioning.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_TakeoffTransitioning::State_TakeoffTransitioning():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     guidedProgress = ArducopterTargetProgess(1,10,10);
     std::cout<<"We are in the constructor of STATE_TAKEOFF_TRANSITIONING"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING;
-    desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING;
+    currentStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;
+    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;
 }
 
 void State_TakeoffTransitioning::OnExit()
 {
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 }
 
-AbstractStateArducopter* State_TakeoffTransitioning::getClone() const
+AbstractStateArdupilot* State_TakeoffTransitioning::getClone() const
 {
     return (new State_TakeoffTransitioning(*this));
 }
 
-void State_TakeoffTransitioning::getClone(AbstractStateArducopter** state) const
+void State_TakeoffTransitioning::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_TakeoffTransitioning(*this);
 }
@@ -38,7 +38,7 @@ hsm::Transition State_TakeoffTransitioning::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_TAKEOFF_COMPLETE:
+        case ArdupilotFlightState::STATE_TAKEOFF_COMPLETE:
         {
             rtn = hsm::SiblingTransition<State_TakeoffComplete>(currentCommand);
             break;
@@ -72,7 +72,7 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 //                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
-                    desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_COMPLETE;
+                    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
             });
         }
         else if(cmd->getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
@@ -88,7 +88,7 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 //                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
-                    desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_COMPLETE;
+                    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
             });
         }
 
@@ -144,7 +144,7 @@ void State_TakeoffTransitioning::OnEnter(const std::shared_ptr<AbstractCommandIt
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_takeoff_complete.h"

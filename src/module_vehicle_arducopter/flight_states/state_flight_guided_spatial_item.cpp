@@ -1,20 +1,20 @@
 #include "state_flight_guided_spatial_item.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_FlightGuided_SpatialItem::State_FlightGuided_SpatialItem():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_SPATIALITEM"<<std::endl;
     guidedProgress = ArducopterTargetProgess(1,10,10);
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
 }
 
 void State_FlightGuided_SpatialItem::OnExit()
 {
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 
     if(Owner().ControllersCollection()->Exist("goToController")){
@@ -23,12 +23,12 @@ void State_FlightGuided_SpatialItem::OnExit()
     }
 }
 
-AbstractStateArducopter* State_FlightGuided_SpatialItem::getClone() const
+AbstractStateArdupilot* State_FlightGuided_SpatialItem::getClone() const
 {
     return (new State_FlightGuided_SpatialItem(*this));
 }
 
-void State_FlightGuided_SpatialItem::getClone(AbstractStateArducopter** state) const
+void State_FlightGuided_SpatialItem::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_FlightGuided_SpatialItem(*this);
 }
@@ -43,7 +43,7 @@ hsm::Transition State_FlightGuided_SpatialItem::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE:
         {
             rtn = hsm::SiblingTransition<State_FlightGuided_Idle>();
             break;
@@ -114,11 +114,11 @@ void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractComma
         {
             //for some reason a timeout has occured, should we handle this differently
             std::cout<<"A timeout has occured when trying to send a goto command."<<std::endl;
-            desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE;
+            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
         }else if(finishCode != MAV_MISSION_ACCEPTED)
         {
             std::cout<<"The autocopter says there is an error with the goTo command."<<std::endl;
-            desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE;
+            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
         }
         else if(completed && (finishCode == MAV_MISSION_ACCEPTED))
         {
@@ -160,7 +160,8 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
                 mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
                 double distance = fabs(currentPosition.distanceTo(cmdPosition));
 
-                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+//                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+                guidedProgress.updateTargetState(distance);
             }
         });
         break;
@@ -176,14 +177,15 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
                 mace::pose::CartesianPosition_3D currentPosition = Owner().state->vehicleLocalPosition.get();
                 double distance = fabs(currentPosition.distanceTo(cmdPosition));
 
-                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+//                Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
+                guidedProgress.updateTargetState(distance);
             }
         });
         break;
     }
     case CoordinateSystemTypes::UNKNOWN:
     case CoordinateSystemTypes::NOT_IMPLIED:
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
         return;
     }
 
@@ -194,7 +196,7 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
     dynamic_cast<MAVLINKUXVControllers::ControllerGuidedMissionItem<command_item::SpatialWaypoint>*>(Owner().ControllersCollection()->At("goToController"))->Send(waypoint, sender, target);
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "state_flight_guided_idle.h"

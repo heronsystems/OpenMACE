@@ -33,7 +33,6 @@ public:
         Register<ModuleVehicleArducopter>(factory, "Arducopter");
         Register<ModuleVehicleArduplane>(factory, "Arduplane");
 
-
         return factory;
     }
 

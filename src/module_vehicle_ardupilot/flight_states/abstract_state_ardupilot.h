@@ -7,29 +7,29 @@
 #include "common/class_forward.h"
 #include "data_generic_command_item/abstract_command_item.h"
 
-#include "arducopter_hsm.h"
-#include "arducopter_state_types.h"
+#include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+#include "ardupilot_state_types.h"
 
-#include "../vehicle_object/arducopter_vehicle_object.h"
+#include "../vehicle_object/ardupilot_vehicle_object.h"
 
 #include "common/logging/macelog.h"
 
 //forward declaration of the class
 
-namespace arducopter{
+namespace ardupilot{
 namespace state{
 
 
-class AbstractStateArducopter : public hsm::StateWithOwner<ArducopterVehicleObject>
+class AbstractStateArdupilot : public hsm::StateWithOwner<ArdupilotVehicleObject>
 {
 public:
-    AbstractStateArducopter();
+    AbstractStateArdupilot();
 
-    AbstractStateArducopter(const AbstractStateArducopter &copy);
+    AbstractStateArdupilot(const AbstractStateArdupilot &copy);
 
     /**
       */
-    virtual ~AbstractStateArducopter();
+    virtual ~AbstractStateArdupilot();
 
 public:
     /**
@@ -56,13 +56,13 @@ public:
      * @brief getClone
      * @return
      */
-    virtual AbstractStateArducopter* getClone() const = 0;
+    virtual AbstractStateArdupilot* getClone() const = 0;
 
     /**
      * @brief getClone
      * @param state
      */
-    virtual void getClone(AbstractStateArducopter** state) const = 0;
+    virtual void getClone(AbstractStateArdupilot** state) const = 0;
 
 public:
 
@@ -88,7 +88,7 @@ protected:
 
 };
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #endif // ABSTRACT_STATE_ARDUCOPTER_H

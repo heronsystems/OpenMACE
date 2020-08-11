@@ -1,14 +1,14 @@
 #include "state_flight_guided_idle.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_FlightGuided_Idle::State_FlightGuided_Idle():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_IDLE"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
 void State_FlightGuided_Idle::OnExit()
@@ -16,12 +16,12 @@ void State_FlightGuided_Idle::OnExit()
 
 }
 
-AbstractStateArducopter* State_FlightGuided_Idle::getClone() const
+AbstractStateArdupilot* State_FlightGuided_Idle::getClone() const
 {
     return (new State_FlightGuided_Idle(*this));
 }
 
-void State_FlightGuided_Idle::getClone(AbstractStateArducopter** state) const
+void State_FlightGuided_Idle::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_FlightGuided_Idle(*this);
 }
@@ -69,7 +69,7 @@ void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem>
     this->OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_flight_guided_spatial_item.h"

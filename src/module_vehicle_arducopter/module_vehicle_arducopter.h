@@ -17,15 +17,17 @@
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
-#include "flight_states/arducopter_hsm.h"
-#include "flight_states/state_components.h"
+#include "flight_states/arducopter_state_components.h"
 #include "vehicle_object/arducopter_vehicle_object.h"
+
+#include "module_vehicle_ardupilot/module_vehicle_ardupilot.h"
+#include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
 
 #include "mace_core/abstract_module_base.h"
 
 using namespace std::placeholders;
 
-class MODULE_VEHICLE_ARDUCOPTERSHARED_EXPORT ModuleVehicleArducopter : public ModuleVehicleMAVLINK<>
+class MODULE_VEHICLE_ARDUCOPTERSHARED_EXPORT ModuleVehicleArducopter : public ModuleVehicleArdupilot
 {
 public:
     ModuleVehicleArducopter();
@@ -45,13 +47,6 @@ public:
     //! \param systemID Vehicle ID generating the log
     //!
     void createLog(const int &systemID);
-
-    //!
-    //! \brief MissionAcknowledgement Generate acknowledgement based on mission result
-    //! \param missionResult Mission result
-    //! \param publishResult Acknowledgement to publish out
-    //!
-    void MissionAcknowledgement(const MAV_MISSION_RESULT &missionResult, const bool &publishResult);
 
 public:
     void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue) override;

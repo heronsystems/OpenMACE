@@ -1,22 +1,22 @@
 #include "state_takeoff.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_Takeoff::State_Takeoff():
     AbstractRootState()
 {
     std::cout<<"We are in the constructor of STATE_TAKEOFF"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_TAKEOFF;
-    desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF;
+    currentStateEnum = ArdupilotFlightState::STATE_TAKEOFF;
+    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF;
 }
 
-AbstractStateArducopter* State_Takeoff::getClone() const
+AbstractStateArdupilot* State_Takeoff::getClone() const
 {
     return (new State_Takeoff(*this));
 }
 
-void State_Takeoff::getClone(AbstractStateArducopter** state) const
+void State_Takeoff::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_Takeoff(*this);
 }
@@ -37,24 +37,25 @@ hsm::Transition State_Takeoff::GetTransition()
             //this could be caused by a command, action sensed by the vehicle, or
             //for various other peripheral reasons
             switch (desiredStateEnum) {
-            case ArducopterFlightState::STATE_GROUNDED:
+            case ArdupilotFlightState::STATE_GROUNDED:
             {
                 rtn = hsm::SiblingTransition<State_Grounded>(currentCommand);
                 break;
             }
-            case ArducopterFlightState::STATE_TAKEOFF_CLIMBING:
+            case ArdupilotFlightState::STATE_TAKEOFF_CLIMBING:
             {
                 rtn = hsm::InnerEntryTransition<State_TakeoffClimbing>(currentCommand);
                 break;
             }
-            case ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING:
+            case ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING:
             {
                 rtn = hsm::InnerEntryTransition<State_TakeoffTransitioning>(currentCommand);
                 break;
             }
-            case ArducopterFlightState::STATE_FLIGHT:
+            case ArdupilotFlightState::STATE_FLIGHT:
             {
                 rtn = hsm::SiblingTransition<State_Flight>(currentCommand);
+                break;
             }
             default:
                 std::cout<<"I dont know how we eneded up in this transition state from STATE_TAKEOFF."<<std::endl;
@@ -67,23 +68,24 @@ hsm::Transition State_Takeoff::GetTransition()
 
 bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     this->clearCommand();
 
     switch(command->getCommandType()) {
     case COMMANDTYPE::CI_NAV_HOME:
     {
-        AbstractRootState::handleCommand(command);
+        success = AbstractRootState::handleCommand(command);
         break;
     }
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
-        AbstractStateArducopter::handleCommand(command);
+        success = AbstractStateArdupilot::handleCommand(command);
         MAVLINKUXVControllers::ControllerSystemMode* modeController = (MAVLINKUXVControllers::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
         modeController->AddLambda_Finished(this, [this,modeController](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
             {
                 //if a mode change was issued while in the takeoff sequence we may have to handle it in a specific way based on the conditions
-                desiredStateEnum = ArducopterFlightState::STATE_FLIGHT;
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT;
             }
             else
             {
@@ -96,11 +98,14 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
     case COMMANDTYPE::CI_NAV_TAKEOFF:
     {
         currentCommand = command->getClone();
+        success = true;
         break;
     }
     default:
         break;
     } //end of switch statement
+
+    return success;
 }
 
 void State_Takeoff::Update()
@@ -108,11 +113,11 @@ void State_Takeoff::Update()
     StateData_MAVLINK* vehicleData = Owner().state;
 
     if(!vehicleData->vehicleArm.get().getSystemArm())
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED;
     else
     {
         if(vehicleData->vehicleMode.get().getFlightModeString() == "GUIDED")
-            desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_CLIMBING;
+            desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
     }
 }
 
@@ -124,9 +129,9 @@ void State_Takeoff::OnEnter()
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
         controllerSystemMode->Shutdown();
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-            desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_CLIMBING;
+            desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
         else
-            desiredStateEnum = ArducopterFlightState::STATE_GROUNDED;
+            desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED;
     });
 
     controllerSystemMode->setLambda_Shutdown([this, collection]()
@@ -141,7 +146,7 @@ void State_Takeoff::OnEnter()
 
     MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
     commandMode.targetID = Owner().getMAVLINKID();
-    commandMode.vehicleMode = Owner().arducopterMode.getFlightModeFromString("GUIDED");
+    commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString("GUIDED");
     controllerSystemMode->Send(commandMode,sender,target);
     collection->Insert("modeController",controllerSystemMode);
 }
@@ -157,7 +162,7 @@ void State_Takeoff::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_grounded.h"

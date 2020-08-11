@@ -1,15 +1,15 @@
-#ifndef ARDUCOPTER_STATE_TYPES_H
-#define ARDUCOPTER_STATE_TYPES_H
+#ifndef ARDUPILOT_STATE_TYPES_H
+#define ARDUPILOT_STATE_TYPES_H
 
 #include <string>
 #include <vector>
 #include <stdexcept>
 
 
-namespace arducopter{
+namespace ardupilot{
 namespace state {
 
-enum class ArducopterFlightState{
+enum class ArdupilotFlightState{
     STATE_GROUNDED = 0, /**< */
     STATE_GROUNDED_IDLE = 1, /**< */
     STATE_GROUNDED_ARMING = 2, /**< */
@@ -47,51 +47,52 @@ enum class ArducopterFlightState{
 //! \param type
 //! \return
 //!
-inline std::string ArducopterStateToString(const ArducopterFlightState &type) {
+inline std::string ArdupilotStateToString(const ArdupilotFlightState &type) {
     switch (type) {
-    case ArducopterFlightState::STATE_GROUNDED:
+    case ArdupilotFlightState::STATE_GROUNDED:
         return "Grounded";
-    case ArducopterFlightState::STATE_GROUNDED_IDLE:
+    case ArdupilotFlightState::STATE_GROUNDED_IDLE:
         return "Grounded Idle";
-    case ArducopterFlightState::STATE_GROUNDED_ARMING:
+    case ArdupilotFlightState::STATE_GROUNDED_ARMING:
         return "Grounded Arming";
-    case ArducopterFlightState::STATE_GROUNDED_ARMED:
+    case ArdupilotFlightState::STATE_GROUNDED_ARMED:
         return "Grounded Armed";
-    case ArducopterFlightState::STATE_GROUNDED_DISARMING:
+    case ArdupilotFlightState::STATE_GROUNDED_DISARMING:
         return "Grounded Disarming";
-    case ArducopterFlightState::STATE_GROUNDED_DISARMED:
+    case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
         return "Grounded Disarmed";
-    case ArducopterFlightState::STATE_FLIGHT:
+    case ArdupilotFlightState::STATE_FLIGHT:
         return "Flight";
-    case ArducopterFlightState::STATE_TAKEOFF:
+    case ArdupilotFlightState::STATE_TAKEOFF:
         return "Flight Takeoff";
-    case ArducopterFlightState::STATE_TAKEOFF_CLIMBING:
+    case ArdupilotFlightState::STATE_TAKEOFF_CLIMBING:
         return "Flight Takeoff Climbing";
-    case ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING:
+    case ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING:
         return "Flight Takeoff Transitioning";
-    case ArducopterFlightState::STATE_FLIGHT_MANUAL:
+    case ArdupilotFlightState::STATE_FLIGHT_MANUAL:
         return "Flight Manual";
-    case ArducopterFlightState::STATE_FLIGHT_GUIDED:
+    case ArdupilotFlightState::STATE_FLIGHT_GUIDED:
         return "Flight Guided";
-    case ArducopterFlightState::STATE_FLIGHT_AUTO:
+    case ArdupilotFlightState::STATE_FLIGHT_AUTO:
         return "Flight Auto";
-    case ArducopterFlightState::STATE_FLIGHT_BRAKE:
+    case ArdupilotFlightState::STATE_FLIGHT_BRAKE:
         return "Flight Brake";
-    case ArducopterFlightState::STATE_FLIGHT_RTL:
+    case ArdupilotFlightState::STATE_FLIGHT_RTL:
         return "Flight RTL";
-    case ArducopterFlightState::STATE_LANDING:
+    case ArdupilotFlightState::STATE_LANDING:
         return "Flight Landing";
-    case ArducopterFlightState::STATE_LANDING_TRANSITIONING:
+    case ArdupilotFlightState::STATE_LANDING_TRANSITIONING:
         return "Flight Landing Transitioning";
-    case ArducopterFlightState::STATE_LANDING_DESCENDING:
+    case ArdupilotFlightState::STATE_LANDING_DESCENDING:
         return "Flight Landing Descent";
     default:
-        throw std::runtime_error("Unknown arducopter state type seen");
+        throw std::runtime_error("Unknown ardupilot state type seen");
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 
-#endif // ARDUCOPTER_STATE_TYPES_H
+#endif // ARDUPILOT_STATE_TYPES_H
+

@@ -1,30 +1,30 @@
 #include "state_landing_descent.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_LandingDescent::State_LandingDescent():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     guidedProgress = ArducopterTargetProgess(0,10,10);
     std::cout<<"We are in the constructor of STATE_LANDING_DESCENT"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_LANDING_DESCENDING;
-    desiredStateEnum = ArducopterFlightState::STATE_LANDING_DESCENDING;
+    currentStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
+    desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
 }
 
 void State_LandingDescent::OnExit()
 {
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     Owner().state->vehicleLocalPosition.RemoveNotifier(this);
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 }
 
-AbstractStateArducopter* State_LandingDescent::getClone() const
+AbstractStateArdupilot* State_LandingDescent::getClone() const
 {
     return (new State_LandingDescent(*this));
 }
 
-void State_LandingDescent::getClone(AbstractStateArducopter** state) const
+void State_LandingDescent::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_LandingDescent(*this);
 }
@@ -39,7 +39,7 @@ hsm::Transition State_LandingDescent::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_LANDING_COMPLETE:
+        case ArdupilotFlightState::STATE_LANDING_COMPLETE:
         {
             if(currentCommand == nullptr)
             {
@@ -62,6 +62,7 @@ hsm::Transition State_LandingDescent::GetTransition()
 
 bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_NAV_LAND:
@@ -87,7 +88,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {
                         this->clearCommand();
-                        desiredStateEnum = ArducopterFlightState::STATE_LANDING_COMPLETE;
+                        desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
                     }
                 });
                 break;
@@ -106,11 +107,18 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {
                         this->clearCommand();
-                        desiredStateEnum = ArducopterFlightState::STATE_LANDING_COMPLETE;
+                        desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
                     }
                 });
                 break;
             }
+            case CoordinateSystemTypes::NOT_IMPLIED:
+            case CoordinateSystemTypes::UNKNOWN:
+            {
+                break;
+            }
+            default:
+                break;
             }
         }
         else
@@ -124,7 +132,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                 if(guidedState == Data::ControllerState::ACHIEVED)
                 {
                     this->clearCommand();
-                    desiredStateEnum = ArducopterFlightState::STATE_LANDING_COMPLETE;
+                    desiredStateEnum = ArdupilotFlightState::STATE_LANDING_COMPLETE;
                 }
             });
         }
@@ -134,7 +142,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
         auto controllerDescent = new MAVLINKUXVControllers::CommandLand(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerDescent->AddLambda_Finished(this, [this,controllerDescent](const bool completed, const uint8_t finishCode){
             if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
-                GetImmediateOuterState()->setDesiredStateEnum(ArducopterFlightState::STATE_FLIGHT);
+                GetImmediateOuterState()->setDesiredStateEnum(ArdupilotFlightState::STATE_FLIGHT);
             controllerDescent->Shutdown();
         });
 
@@ -150,17 +158,20 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
 
         controllerDescent->Send(*cmd,sender,target);
         collection->Insert("landingDescent", controllerDescent);
+        success = true;
         break;
     }
     default:
         break;
     }
+
+    return success;
 }
 
 void State_LandingDescent::Update()
 {
     if(!Owner().state->vehicleArm.get().getSystemArm())
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
 }
 
 void State_LandingDescent::OnEnter()
@@ -178,7 +189,7 @@ void State_LandingDescent::OnEnter(const std::shared_ptr<AbstractCommandItem> co
         OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_landing_complete.h"

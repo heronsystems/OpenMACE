@@ -1,6 +1,6 @@
 #include "guided_timeout_controller.h"
 
-namespace arduplane_vehicle {
+namespace ardupilot_vehicle {
 
 GuidedTimeoutController::GuidedTimeoutController(const unsigned int &timeout, const int &levelTimeout, const int &killTimeout)
 {
@@ -94,4 +94,4 @@ void GuidedTimeoutController::run()
 
 
 
-} //end of namespace arduplane_vehicle
+} //end of namespace ardupilot_vehicle

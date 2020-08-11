@@ -1,14 +1,14 @@
 #include "state_flight_guided.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_FlightGuided::State_FlightGuided():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED;
 }
 
 void State_FlightGuided::OnExit()
@@ -16,12 +16,12 @@ void State_FlightGuided::OnExit()
 
 }
 
-AbstractStateArducopter* State_FlightGuided::getClone() const
+AbstractStateArdupilot* State_FlightGuided::getClone() const
 {
     return (new State_FlightGuided(*this));
 }
 
-void State_FlightGuided::getClone(AbstractStateArducopter** state) const
+void State_FlightGuided::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_FlightGuided(*this);
 }
@@ -36,32 +36,32 @@ hsm::Transition State_FlightGuided::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_Idle>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED_ATTTARGET:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_AttTarget>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_CarTarget>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED_GEOTARGET:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_GeoTarget>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED_QUEUE:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_QUEUE:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_Queue>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_SpatialItem>(currentCommand);
             break;
@@ -76,18 +76,20 @@ hsm::Transition State_FlightGuided::GetTransition()
 
 bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
     {
         if(this->IsInState<State_FlightGuided_SpatialItem>())
         {
-            arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
-            currentInnerState->handleCommand(command);
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            success = currentInnerState->handleCommand(command);
         }
         else
         {
             currentCommand = command->getClone();
-            desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
+            desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_SPATIALITEM;
+            success = true;
         }
         break;
     }
@@ -111,32 +113,37 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
                 {
                     if(this->IsInState<State_FlightGuided_GeoTarget>())
                     {
-                        arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
-                        currentInnerState->handleCommand(command);
+                        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                        success = currentInnerState->handleCommand(command);
                     }
                     else
-                        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+                    {
+                        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_GEOTARGET;
+                        success = true;
+                    }
                 }
                 else
                 {
                     if(this->IsInState<State_FlightGuided_CarTarget>())
                     {
-                        arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
-                        currentInnerState->handleCommand(command);
+                        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                        success = currentInnerState->handleCommand(command);
                     }
                     else
-                        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+                        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+                        success = true;
                 }
             }
             else
             {
                 if(this->IsInState<State_FlightGuided_CarTarget>())
                 {
-                    arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
-                    currentInnerState->handleCommand(command);
+                    ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                    success = currentInnerState->handleCommand(command);
                 }
                 else
-                    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+                    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+                    success = true;
             }
             break;
         } //end of case command_target::DynamicTarget::TargetTypes::KINEMATIC
@@ -144,11 +151,14 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
         {
             if(this->IsInState<State_FlightGuided_AttTarget>())
             {
-                arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
-                currentInnerState->handleCommand(command);
+                ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+                success = currentInnerState->handleCommand(command);
             }
             else
-                desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
+            {
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
+                success = true;
+            }
             break;
         } //end of case command_target::DynamicTarget::TargetTypes::ORIENTATION
 
@@ -160,6 +170,8 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
         break;
 
     } //end of switch statement command type
+
+    return success;
 }
 
 void State_FlightGuided::Update()
@@ -170,16 +182,17 @@ void State_FlightGuided::Update()
 void State_FlightGuided::OnEnter()
 {
     //We have no command and therefore are just in the guided mode, we can tranisition to idle
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_IDLE;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
 void State_FlightGuided::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     //If we have a command we probably will be entering a state let us figure it out
     this->OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_flight_guided_idle.h"

@@ -6,9 +6,10 @@
 
 #include "data/timer.h"
 
-#include "abstract_state_arducopter.h"
 
-#include "../guided_timeout_controller.h"
+#include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
+
+#include "module_vehicle_ardupilot/guided_timeout_controller.h"
 
 #include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
 
@@ -17,10 +18,10 @@
 #include "data_generic_mission_item_topic/mission_item_reached_topic.h"
 
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
-class State_FlightGuided_CarTarget : public AbstractStateArducopter
+class State_FlightGuided_CarTarget : public AbstractStateArdupilot
 {
 public:
     State_FlightGuided_CarTarget();
@@ -28,9 +29,9 @@ public:
     void OnExit() override;
 
 public:
-    AbstractStateArducopter* getClone() const override;
+    AbstractStateArdupilot* getClone() const override;
 
-    void getClone(AbstractStateArducopter** state) const override;
+    void getClone(AbstractStateArdupilot** state) const override;
 
 public:
     hsm::Transition GetTransition() override;
@@ -57,7 +58,7 @@ private:
     }
 
 private:
-    arducopter_vehicle::GuidedTimeoutController m_TimeoutController;
+    ardupilot_vehicle::GuidedTimeoutController m_TimeoutController;
 };
 
 } //end of namespace state

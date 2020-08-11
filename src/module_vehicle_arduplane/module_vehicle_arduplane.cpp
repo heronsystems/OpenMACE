@@ -16,7 +16,7 @@ T CopyCommandAndInsertTarget(const command_item::AbstractCommandItem &item, int 
 //    ModuleVehicleMAVLINK<DATA_VEHICLE_ARDUPLANE_TYPES>(),
 //    m_VehicleMissionTopic("vehicleMission"), m_AircraftController(nullptr), vehicleData(nullptr)
 ModuleVehicleArduplane::ModuleVehicleArduplane() :
-    ModuleVehicleMAVLINK<>(),
+    ModuleVehicleArdupilot(),
     stateMachine(nullptr)
 {
 
@@ -49,9 +49,8 @@ void ModuleVehicleArduplane::ConfigureModule(const std::shared_ptr<MaceCore::Mod
 }
 
 //!
-//! \brief MissionAcknowledgement Generate acknowledgement based on mission result
-//! \param missionResult Mission result
-//! \param publishResult Acknowledgement to publish out
+//! \brief createLog Create log file
+//! \param systemID ID of vehicle being logged
 //!
 void ModuleVehicleArduplane::createLog(const int &systemID)
 {
@@ -402,6 +401,9 @@ void ModuleVehicleArduplane::PublishVehicleData(const int &systemID, const std::
 //!
 void ModuleVehicleArduplane::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(sender);
+    UNUSED(target);
+
     if(this->m_TopicToControllers.find(topicName) == m_TopicToControllers.cend())
     {
         throw std::runtime_error("Attempting to send a topic that the vehicle module link has no knowledge of");
@@ -430,6 +432,8 @@ void ModuleVehicleArduplane::NewTopicData(const std::string &topicName, const Ma
 //!
 void ModuleVehicleArduplane::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
     if(topicName == m_VehicleMissionTopic.Name())
     {
         MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_VehicleMissionTopic.Name(), sender);

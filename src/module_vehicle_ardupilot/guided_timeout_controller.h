@@ -13,7 +13,7 @@
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_components.h"
 
-namespace arduplane_vehicle{
+namespace ardupilot_vehicle{
 
 MACE_CLASS_FORWARD(GuidedTimeoutController);
 
@@ -94,7 +94,7 @@ private:
 
 };
 
-} //end of namespace arduplane_vehicle
+} //end of namespace ardupilot_vehicle
 
 
 #endif // STATE_FLIGHT_GUIDED_TIMEOUT_CONTROLLER_H

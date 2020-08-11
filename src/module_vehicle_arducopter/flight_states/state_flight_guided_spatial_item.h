@@ -6,7 +6,8 @@
 
 #include "data/timer.h"
 
-#include "abstract_state_arducopter.h"
+
+#include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
 
 #include "../arducopter_target_progess.h"
 
@@ -19,12 +20,12 @@
 #include "data_generic_mission_item_topic/mission_item_reached_topic.h"
 
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 class State_FlightGuided_Idle;
 
-class State_FlightGuided_SpatialItem : public AbstractStateArducopter
+class State_FlightGuided_SpatialItem : public AbstractStateArdupilot
 {
 public:
     State_FlightGuided_SpatialItem();
@@ -32,9 +33,9 @@ public:
     void OnExit() override;
 
 public:
-    AbstractStateArducopter* getClone() const override;
+    AbstractStateArdupilot* getClone() const override;
 
-    void getClone(AbstractStateArducopter** state) const override;
+    void getClone(AbstractStateArdupilot** state) const override;
 
 public:
     hsm::Transition GetTransition() override;

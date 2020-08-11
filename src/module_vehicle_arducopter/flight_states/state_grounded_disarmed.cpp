@@ -1,22 +1,22 @@
 #include "state_grounded_disarmed.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_GroundedDisarmed::State_GroundedDisarmed():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_GROUNDED_DISARMED"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_GROUNDED_DISARMED;
-    desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_DISARMED;
+    currentStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
+    desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
 }
 
-AbstractStateArducopter* State_GroundedDisarmed::getClone() const
+AbstractStateArdupilot* State_GroundedDisarmed::getClone() const
 {
     return (new State_GroundedDisarmed(*this));
 }
 
-void State_GroundedDisarmed::getClone(AbstractStateArducopter** state) const
+void State_GroundedDisarmed::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_GroundedDisarmed(*this);
 }
@@ -31,7 +31,7 @@ hsm::Transition State_GroundedDisarmed::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_GROUNDED_IDLE:
+        case ArdupilotFlightState::STATE_GROUNDED_IDLE:
         {
             rtn = hsm::SiblingTransition<State_GroundedIdle>();
             break;
@@ -64,7 +64,7 @@ void State_GroundedDisarmed::OnEnter()
         controllerSystemMode->Shutdown();
         //This does not matter as we shall transition to the idle state
         UNUSED(completed); UNUSED(finishCode);
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     });
 
     controllerSystemMode->setLambda_Shutdown([this, collection]()
@@ -79,7 +79,7 @@ void State_GroundedDisarmed::OnEnter()
 
     MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
     commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
-    commandMode.vehicleMode = static_cast<uint8_t>(Owner().arducopterMode.getFlightModeFromString("STABILIZE"));
+    commandMode.vehicleMode = static_cast<uint8_t>(Owner().ardupilotMode.getFlightModeFromString("STABILIZE"));
     controllerSystemMode->Send(commandMode,sender,target);
     collection->Insert("State_GroundedDisarmed_modeController",controllerSystemMode);
 }
@@ -91,12 +91,12 @@ void State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> 
     StateData_MAVLINK* vehicleData = Owner().state;
 
     if(vehicleData->vehicleMode.get().getFlightModeString() == "STABILIZE")
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_IDLE;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     else
         this->OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace
 
 #include "flight_states/state_grounded_idle.h"

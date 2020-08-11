@@ -1,14 +1,14 @@
 #include "state_flight_guided_target_att.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_FlightGuided_AttTarget::State_FlightGuided_AttTarget():
-    AbstractStateArducopter(), m_TimeoutController(10)
+    AbstractStateArdupilot(), m_TimeoutController(10)
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_ATTTARGET"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_ATTTARGET;
 
     m_TimeoutController.connectTargetCallback(State_FlightGuided_AttTarget::retransmitGuidedCommand, this);
     Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, previousTime);
@@ -20,7 +20,7 @@ void State_FlightGuided_AttTarget::OnExit()
     std::cout<<"Exiting the attitude target state"<<std::endl;
     m_TimeoutController.stop();
 
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     std::cout<<"Exiting the attitude target state 2"<<std::endl;
 
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
@@ -32,12 +32,12 @@ void State_FlightGuided_AttTarget::OnExit()
     std::cout<<"Exiting the attitude target state 3"<<std::endl;
 }
 
-AbstractStateArducopter* State_FlightGuided_AttTarget::getClone() const
+AbstractStateArdupilot* State_FlightGuided_AttTarget::getClone() const
 {
     return (new State_FlightGuided_AttTarget(*this));
 }
 
-void State_FlightGuided_AttTarget::getClone(AbstractStateArducopter** state) const
+void State_FlightGuided_AttTarget::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_FlightGuided_AttTarget(*this);
 }
@@ -140,5 +140,5 @@ void State_FlightGuided_AttTarget::OnEnter(const std::shared_ptr<AbstractCommand
     this->handleCommand(command);
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state

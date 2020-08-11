@@ -3,7 +3,7 @@
 
 #include <mavlink.h>
 
-#include "module_vehicle_arducopter/flight_states/abstract_state_arducopter.h"
+#include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
 
 #include "module_vehicle_arducopter/flight_states/state_flight.h"
 #include "module_vehicle_arducopter/flight_states/state_flight_auto.h"

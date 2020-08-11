@@ -21,8 +21,6 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 SOURCES += module_vehicle_arducopter.cpp \
     flight_states/state_grounded_disarmed.cpp \
-    module_vehicle_arducopter_mission_parser.cpp \
-    flight_states/abstract_state_arducopter.cpp \
     flight_states/state_takeoff_climbing.cpp \
     flight_states/state_takeoff_transitioning.cpp \
     flight_states/state_flight_guided.cpp \
@@ -49,10 +47,8 @@ SOURCES += module_vehicle_arducopter.cpp \
     flight_states/state_flight_land.cpp \
     flight_states/state_flight_loiter.cpp \
     flight_states/state_unknown.cpp \
-    flight_states/abstract_root_state.cpp \
     flight_states/state_flight_guided_queue.cpp \
     flight_states/state_flight_guided_idle.cpp \
-    guided_timeout_controller.cpp \
     flight_states/state_flight_guided_target_geo.cpp \
     flight_states/state_flight_guided_target_car.cpp \
     flight_states/state_flight_guided_spatial_item.cpp \
@@ -61,10 +57,7 @@ SOURCES += module_vehicle_arducopter.cpp \
 HEADERS += module_vehicle_arducopter.h\
     flight_states/state_grounded_disarmed.h \
         module_vehicle_arducopter_global.h \
-    flight_states/abstract_state_arducopter.h \
-    flight_states/arducopter_hsm.h \
-    flight_states/arducopter_state_types.h \
-    flight_states/state_components.h \
+    flight_states/arducopter_state_components.h \
     flight_states/state_flight_guided.h \
     flight_states/state_grounded.h \
     flight_states/state_grounded_armed.h \
@@ -91,10 +84,8 @@ HEADERS += module_vehicle_arducopter.h\
     flight_states/state_flight_land.h \
     flight_states/state_flight_loiter.h \
     flight_states/state_unknown.h \
-    flight_states/abstract_root_state.h \
     flight_states/state_flight_guided_queue.h \
     flight_states/state_flight_guided_idle.h \
-    guided_timeout_controller.h \
     flight_states/state_flight_guided_target_geo.h \
     flight_states/state_flight_guided_target_car.h \
     flight_states/state_flight_guided_spatial_item.h \
@@ -176,6 +167,10 @@ else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_generic/ -lmodule_vehicle_gener
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/release/ -lmodule_vehicle_MAVLINK
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/debug/ -lmodule_vehicle_MAVLINK
 else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/ -lmodule_vehicle_MAVLINK
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/release/ -lmodule_vehicle_ardupilot
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/debug/ -lmodule_vehicle_ardupilot
+else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/ -lmodule_vehicle_ardupilot
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/release/ -ldata_interface_MAVLINK
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/debug/ -ldata_interface_MAVLINK

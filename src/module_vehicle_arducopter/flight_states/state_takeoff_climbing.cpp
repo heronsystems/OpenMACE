@@ -1,29 +1,29 @@
 #include "state_takeoff_climbing.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_TakeoffClimbing::State_TakeoffClimbing():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_TAKEOFF_CLIMBING"<<std::endl;
     guidedProgress = ArducopterTargetProgess(1,10,10);
-    currentStateEnum = ArducopterFlightState::STATE_TAKEOFF_CLIMBING;
-    desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_CLIMBING;
+    currentStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
+    desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
 }
 
 void State_TakeoffClimbing::OnExit()
 {
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 }
 
-AbstractStateArducopter* State_TakeoffClimbing::getClone() const
+AbstractStateArdupilot* State_TakeoffClimbing::getClone() const
 {
     return (new State_TakeoffClimbing(*this));
 }
 
-void State_TakeoffClimbing::getClone(AbstractStateArducopter** state) const
+void State_TakeoffClimbing::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_TakeoffClimbing(*this);
 }
@@ -38,12 +38,12 @@ hsm::Transition State_TakeoffClimbing::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING:
+        case ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING:
         {
             rtn = hsm::SiblingTransition<State_TakeoffTransitioning>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_TAKEOFF_COMPLETE:
+        case ArdupilotFlightState::STATE_TAKEOFF_COMPLETE:
         {
             rtn = hsm::SiblingTransition<State_TakeoffComplete>(currentCommand);
             break;
@@ -58,6 +58,7 @@ hsm::Transition State_TakeoffClimbing::GetTransition()
 
 bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_NAV_TAKEOFF:
@@ -71,15 +72,17 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
             case CoordinateSystemTypes::GEODETIC:
             {
                 const mace::pose::GeodeticPosition_3D* castPosition = cmd->getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
-                if(castPosition->hasAltitudeBeenSet())
+                if(castPosition->hasAltitudeBeenSet()) {
                     targetAltitude = castPosition->getAltitude();
+                }
                 break;
             }
             case CoordinateSystemTypes::CARTESIAN:
             {
                 const mace::pose::CartesianPosition_3D* castPosition = cmd->getPosition()->positionAs<mace::pose::CartesianPosition_3D>();
-                if(castPosition->hasZBeenSet())
+                if(castPosition->hasZBeenSet()) {
                     targetAltitude = castPosition->getZPosition();
+                }
                 break;
             }
             case CoordinateSystemTypes::UNKNOWN:
@@ -108,11 +111,11 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
                 {
                     if(cmd->getPosition()->areTranslationalComponentsValid())
                     {
-                        desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_TRANSITIONING;
+                        desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_TRANSITIONING;
                     }
                     else
                     {
-                        desiredStateEnum = ArducopterFlightState::STATE_TAKEOFF_COMPLETE;
+                        desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_COMPLETE;
                     }
                 }
             });
@@ -122,7 +125,7 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
             auto controllerClimb = new MAVLINKUXVControllers::CommandTakeoff(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             controllerClimb->AddLambda_Finished(this, [this,controllerClimb](const bool completed, const uint8_t finishCode){
                 if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
-                    GetImmediateOuterState()->setDesiredStateEnum(ArducopterFlightState::STATE_GROUNDED);
+                    GetImmediateOuterState()->setDesiredStateEnum(ArdupilotFlightState::STATE_GROUNDED);
                 controllerClimb->Shutdown();
             });
 
@@ -139,6 +142,7 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
             controllerClimb->Send(*cmd,sender,target);
             collection->Insert("takeoffClimb", controllerClimb);
 
+            success = true;
         }
         else
         {
@@ -149,6 +153,8 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
     default:
         break;
     }
+
+    return success;
 }
 
 void State_TakeoffClimbing::Update()
@@ -170,7 +176,7 @@ void State_TakeoffClimbing::OnEnter(const std::shared_ptr<AbstractCommandItem> c
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_takeoff_transitioning.h"

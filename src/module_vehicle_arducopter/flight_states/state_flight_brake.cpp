@@ -1,22 +1,22 @@
 #include "state_flight_brake.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_FlightBrake::State_FlightBrake():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_BRAKE"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT_BRAKE;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_BRAKE;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_BRAKE;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_BRAKE;
 }
 
-AbstractStateArducopter* State_FlightBrake::getClone() const
+AbstractStateArdupilot* State_FlightBrake::getClone() const
 {
     return (new State_FlightBrake(*this));
 }
 
-void State_FlightBrake::getClone(AbstractStateArducopter** state) const
+void State_FlightBrake::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_FlightBrake(*this);
 }
@@ -59,5 +59,5 @@ void State_FlightBrake::OnEnter(const std::shared_ptr<AbstractCommandItem> comma
     this->OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state

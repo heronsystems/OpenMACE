@@ -1,22 +1,22 @@
 #include "state_landing.h"
 
-namespace arducopter{
+namespace ardupilot{
 namespace state{
 
 State_Landing::State_Landing():
     AbstractRootState()
 {
     std::cout<<"We are in the constructor of STATE_LANDING"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_LANDING;
-    desiredStateEnum = ArducopterFlightState::STATE_LANDING;
+    currentStateEnum = ArdupilotFlightState::STATE_LANDING;
+    desiredStateEnum = ArdupilotFlightState::STATE_LANDING;
 }
 
-AbstractStateArducopter* State_Landing::getClone() const
+AbstractStateArdupilot* State_Landing::getClone() const
 {
     return (new State_Landing(*this));
 }
 
-void State_Landing::getClone(AbstractStateArducopter** state) const
+void State_Landing::getClone(AbstractStateArdupilot **state) const
 {
     *state = new State_Landing(*this);
 }
@@ -37,22 +37,22 @@ hsm::Transition State_Landing::GetTransition()
             //this could be caused by a command, action sensed by the vehicle, or
             //for various other peripheral reasons
             switch (desiredStateEnum) {
-            case ArducopterFlightState::STATE_LANDING_TRANSITIONING:
+            case ArdupilotFlightState::STATE_LANDING_TRANSITIONING:
             {
                 rtn = hsm::InnerEntryTransition<State_LandingTransitioning>(currentCommand);
                 break;
             }
-            case ArducopterFlightState::STATE_LANDING_DESCENDING:
+            case ArdupilotFlightState::STATE_LANDING_DESCENDING:
             {
                 rtn = hsm::InnerEntryTransition<State_LandingDescent>(currentCommand);
                 break;
             }
-            case ArducopterFlightState::STATE_GROUNDED:
+            case ArdupilotFlightState::STATE_GROUNDED:
             {
                 rtn = hsm::SiblingTransition<State_Grounded>(currentCommand);
                 break;
             }
-            case ArducopterFlightState::STATE_FLIGHT:
+            case ArdupilotFlightState::STATE_FLIGHT:
             {
                 rtn = hsm::SiblingTransition<State_Flight>(currentCommand);
                 break;
@@ -89,9 +89,9 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
         controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
             controllerSystemMode->Shutdown();
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = ArducopterFlightState::STATE_LANDING_TRANSITIONING;
+                desiredStateEnum = ArdupilotFlightState::STATE_LANDING_TRANSITIONING;
             else
-                desiredStateEnum = ArducopterFlightState::STATE_FLIGHT;
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT;
         });
 
         controllerSystemMode->setLambda_Shutdown([this, collection]()
@@ -106,7 +106,7 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 
         MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
-        commandMode.vehicleMode = static_cast<uint8_t>(Owner().arducopterMode.getFlightModeFromString("GUIDED"));
+        commandMode.vehicleMode = static_cast<uint8_t>(Owner().ardupilotMode.getFlightModeFromString("GUIDED"));
         controllerSystemMode->Send(commandMode,sender,target);
         collection->Insert("modeController",controllerSystemMode);
 
@@ -122,18 +122,18 @@ void State_Landing::Update()
     StateData_MAVLINK* vehicleData = Owner().state;
 
     if(!vehicleData->vehicleArm.get().getSystemArm())
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED;
     else
     {
         if(vehicleData->vehicleMode.get().getFlightModeString() == "GUIDED")
-            desiredStateEnum = ArducopterFlightState::STATE_LANDING_TRANSITIONING;
+            desiredStateEnum = ArdupilotFlightState::STATE_LANDING_TRANSITIONING;
     }
 }
 
 //this function would be called when issuing a mode change
 void State_Landing::OnEnter()
 {
-    desiredStateEnum = ArducopterFlightState::STATE_LANDING_DESCENDING;
+    desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
 }
 
 //this function is only called from the GUI
@@ -164,7 +164,7 @@ void State_Landing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_landing_descent.h"

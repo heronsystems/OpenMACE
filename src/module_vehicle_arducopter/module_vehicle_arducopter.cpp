@@ -16,7 +16,7 @@ T CopyCommandAndInsertTarget(const command_item::AbstractCommandItem &item, int 
 //    ModuleVehicleMAVLINK<DATA_VEHICLE_ARDUCOPTER_TYPES>(),
 //    m_VehicleMissionTopic("vehicleMission"), m_AircraftController(nullptr), vehicleData(nullptr)
 ModuleVehicleArducopter::ModuleVehicleArducopter() :
-    ModuleVehicleMAVLINK<>(),
+    ModuleVehicleArdupilot(),
     stateMachine(nullptr)
 {
 
@@ -49,9 +49,8 @@ void ModuleVehicleArducopter::ConfigureModule(const std::shared_ptr<MaceCore::Mo
 }
 
 //!
-//! \brief MissionAcknowledgement Generate acknowledgement based on mission result
-//! \param missionResult Mission result
-//! \param publishResult Acknowledgement to publish out
+//! \brief createLog Create log file
+//! \param systemID ID of vehicle being logged
 //!
 void ModuleVehicleArducopter::createLog(const int &systemID)
 {
@@ -87,7 +86,7 @@ void ModuleVehicleArducopter::Command_ExecuteSpatialItem(const Action_ExecuteSpa
     UNUSED(sender);
     Action_ExecuteSpatialItem commandWithTarget = CopyCommandAndInsertTarget<Action_ExecuteSpatialItem>(command, this->GetAttachedMavlinkEntity());
 
-    arducopter::state::AbstractStateArducopter* currentOuterState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());
     ProgressStateMachineStates();
 }
@@ -120,7 +119,7 @@ void ModuleVehicleArducopter::Command_SystemArm(const command_item::ActionArm &c
 
 //    mLogs->debug("Receieved a command system arm.");
 //    mLogs->info(buffer.str());
-    arducopter::state::AbstractStateArducopter* currentOuterState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(command.getClone());
 
     ProgressStateMachineStates();
@@ -143,7 +142,7 @@ void ModuleVehicleArducopter::Command_VehicleTakeoff(const command_item::Spatial
 //    mLogs->debug("Receieved a command takeoff.");
 //    mLogs->info(buffer.str());
 
-    arducopter::state::AbstractStateArducopter* currentOuterState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());
     ProgressStateMachineStates();
 }
@@ -165,7 +164,7 @@ void ModuleVehicleArducopter::Command_Land(const command_item::SpatialLand &comm
 //    mLogs->debug("Receieved a command to land.");
 //    mLogs->info(buffer.str());
 
-    arducopter::state::AbstractStateArducopter* currentOuterState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());
     ProgressStateMachineStates();
 }
@@ -183,7 +182,7 @@ void ModuleVehicleArducopter::Command_ReturnToLaunch(const command_item::Spatial
 
 //    mLogs->debug("Receieved a command RTL.");
 
-    arducopter::state::AbstractStateArducopter* currentOuterState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(commandWithTarget.getClone());
     ProgressStateMachineStates();
 }
@@ -205,7 +204,7 @@ void ModuleVehicleArducopter::Command_MissionState(const command_item::ActionMis
 
     if((m_SystemData != nullptr) && (m_SystemData->getMAVLINKID() == systemID))
     {
-        arducopter::state::AbstractStateArducopter* currentOuterState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+        ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
         currentOuterState->handleCommand(commandWithTarget.getClone());
         ProgressStateMachineStates();
     }
@@ -228,7 +227,7 @@ void ModuleVehicleArducopter::Command_ChangeSystemMode(const command_item::Actio
 //    mLogs->debug("Receieved a command to change the mode.");
 //    mLogs->info(buffer.str());
 
-    arducopter::state::AbstractStateArducopter* outerState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     outerState->handleCommand(commandWithTarget.getClone());
     ProgressStateMachineStates();
 }
@@ -236,7 +235,7 @@ void ModuleVehicleArducopter::Command_ChangeSystemMode(const command_item::Actio
 void ModuleVehicleArducopter::Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    arducopter::state::AbstractStateArducopter* outerState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     AbstractCommandItemPtr currentCommand = std::make_shared<command_item::Action_DynamicTarget>(command);
     outerState->handleCommand(currentCommand);
     ProgressStateMachineStates();
@@ -283,7 +282,7 @@ void ModuleVehicleArducopter::Command_SetHomePosition(const command_item::Spatia
     mLogs->debug("Receieved a command to home position.");
     mLogs->info(buffer.str());
     */
-    arducopter::state::AbstractStateArducopter* currentOuterState = static_cast<arducopter::state::AbstractStateArducopter*>(stateMachine->getCurrentOuterState());
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
     currentOuterState->handleCommand(vehicleHome.getClone());
     ProgressStateMachineStates();
 }
@@ -301,6 +300,7 @@ void ModuleVehicleArducopter::Command_SetHomePosition(const command_item::Spatia
 //!
 void ModuleVehicleArducopter::UpdateMissionKey(const MissionItem::MissionKeyChange &key)
 {
+    UNUSED(key);
     //    std::shared_ptr<DataARDUCOPTER::VehicleObject_ARDUCOPTER> tmpData = getArducopterData(key.oldKey.m_systemID);
     //    MissionItem::MissionList missionList = tmpData->data->Command_GetCurrentMission(key.oldKey.m_missionType);
     //    if(missionList.getMissionKey() == key.oldKey)
@@ -331,6 +331,7 @@ void ModuleVehicleArducopter::Command_UploadMission(const MissionItem::MissionLi
         MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
 
         missionController->AddLambda_Finished(this, [this, missionController, missionList](const bool completed, const uint8_t code){
+            UNUSED(this);
             UNUSED(code);
             if (completed)
                 printf("Mission Upload Completed\n");
@@ -388,6 +389,7 @@ void ModuleVehicleArducopter::Command_SetCurrentMission(const MissionItem::Missi
 //!
 void ModuleVehicleArducopter::Command_GetCurrentMission(const int &targetSystem)
 {
+    UNUSED(targetSystem);
     //    mavlink_message_t msg;
     //    mavlink_msg_mission_request_list_pack_chan(255,190,m_LinkChan,&msg,targetSystem,0,MAV_MISSION_TYPE_MISSION);
     //    m_LinkMarshaler->SendMessage<mavlink_message_t>(m_LinkName, msg);
@@ -425,6 +427,7 @@ void ModuleVehicleArducopter::Command_ClearCurrentMission(const int &targetSyste
 //!
 void ModuleVehicleArducopter::Command_GetOnboardAuto(const int &targetSystem)
 {
+    UNUSED(targetSystem);
     //    mavlink_message_t msg;
     //    mavlink_msg_mission_request_list_pack_chan(255,190,m_LinkChan,&msg,targetSystem,0,MAV_MISSION_TYPE_MISSION);
     //    m_LinkMarshaler->SendMessage<mavlink_message_t>(m_LinkName, msg);
@@ -436,6 +439,7 @@ void ModuleVehicleArducopter::Command_GetOnboardAuto(const int &targetSystem)
 //!
 void ModuleVehicleArducopter::Command_ClearOnboardAuto(const int &targetSystem)
 {
+    UNUSED(targetSystem);
     //    mavlink_message_t msg;
     //    mavlink_msg_mission_clear_all_pack_chan(255,190,m_LinkChan,&msg,targetSystem,0,MAV_MISSION_TYPE_MISSION);
     //    m_LinkMarshaler->SendMessage<mavlink_message_t>(m_LinkName, msg);
@@ -547,7 +551,7 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
         }
 
         stateMachine = new hsm::StateMachine();
-        stateMachine->Initialize<arducopter::state::State_Unknown>(m_SystemData);
+        stateMachine->Initialize<ardupilot::state::State_Unknown>(m_SystemData);
 
 //        MAVLINKUXVControllers::CommandMSGInterval* requestMessageController = new MAVLINKUXVControllers::CommandMSGInterval(m_SystemData, m_TransmissionQueue, m_LinkChan);
 //        requestMessageController->AddLambda_Finished(this, [this,requestMessageController](const bool completed, const uint8_t finishCode){
@@ -660,6 +664,8 @@ void ModuleVehicleArducopter::PublishVehicleData(const int &systemID, const std:
 //!
 void ModuleVehicleArducopter::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(sender);
+    UNUSED(target);
     if(this->m_TopicToControllers.find(topicName) == m_TopicToControllers.cend())
     {
         throw std::runtime_error("Attempting to send a topic that the vehicle module link has no knowledge of");
@@ -688,6 +694,7 @@ void ModuleVehicleArducopter::NewTopicData(const std::string &topicName, const M
 //!
 void ModuleVehicleArducopter::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
     if(topicName == m_VehicleMissionTopic.Name())
     {
         MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_VehicleMissionTopic.Name(), sender);

@@ -1,22 +1,23 @@
 #ifndef STATE_GROUNDEDDISARMED_H
 #define STATE_GROUNDEDDISARMED_H
 
-#include "abstract_state_arducopter.h"
 
-namespace arducopter{
+#include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
+
+namespace ardupilot {
 namespace state{
 
 class State_GroundedIdle;
 
-class State_GroundedDisarmed : public AbstractStateArducopter
+class State_GroundedDisarmed : public AbstractStateArdupilot
 {
 public:
     State_GroundedDisarmed();
 
 public:
-    AbstractStateArducopter* getClone() const override;
+    AbstractStateArdupilot* getClone() const override;
 
-    void getClone(AbstractStateArducopter** state) const override;
+    void getClone(AbstractStateArdupilot** state) const override;
 
 public:
     hsm::Transition GetTransition() override;
@@ -31,7 +32,7 @@ public:
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 };
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #endif // STATE_GROUNDEDDISARMED_H

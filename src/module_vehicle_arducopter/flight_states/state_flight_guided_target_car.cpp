@@ -1,21 +1,21 @@
 #include "state_flight_guided_target_car.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_FlightGuided_CarTarget::State_FlightGuided_CarTarget():
-    AbstractStateArducopter(), m_TimeoutController(500)
+    AbstractStateArdupilot(), m_TimeoutController(500)
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_CARTARGET"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED_CARTARGET;
 
     m_TimeoutController.connectTargetCallback(State_FlightGuided_CarTarget::retransmitGuidedCommand, this);
 }
 
 void State_FlightGuided_CarTarget::OnExit()
 {
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
     if(Owner().ControllersCollection()->Exist("CartesianTargetController")){
         MAVLINKUXVControllers::ControllerGuidedTargetItem_Local* ptr = dynamic_cast<MAVLINKUXVControllers::ControllerGuidedTargetItem_Local*>(Owner().ControllersCollection()->Remove("CartesianTargetController"));
@@ -24,12 +24,12 @@ void State_FlightGuided_CarTarget::OnExit()
 
 }
 
-AbstractStateArducopter* State_FlightGuided_CarTarget::getClone() const
+AbstractStateArdupilot* State_FlightGuided_CarTarget::getClone() const
 {
     return (new State_FlightGuided_CarTarget(*this));
 }
 
-void State_FlightGuided_CarTarget::getClone(AbstractStateArducopter** state) const
+void State_FlightGuided_CarTarget::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_FlightGuided_CarTarget(*this);
 }
@@ -136,5 +136,5 @@ void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommand
     this->handleCommand(command);
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state

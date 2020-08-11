@@ -1,21 +1,22 @@
 #ifndef STATE_TAKEOFF_COMPLETE_H
 #define STATE_TAKEOFF_COMPLETE_H
 
-#include "abstract_state_arducopter.h"
 
-namespace arducopter{
+#include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
+
+namespace ardupilot {
 namespace state{
 
 
-class State_TakeoffComplete : public AbstractStateArducopter
+class State_TakeoffComplete : public AbstractStateArdupilot
 {
 public:
     State_TakeoffComplete();
 
 public:
-    AbstractStateArducopter* getClone() const override;
+    AbstractStateArdupilot* getClone() const override;
 
-    void getClone(AbstractStateArducopter** state) const override;
+    void getClone(AbstractStateArdupilot** state) const override;
 
 public:
     hsm::Transition GetTransition() override;
@@ -33,7 +34,7 @@ private:
 
 };
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 

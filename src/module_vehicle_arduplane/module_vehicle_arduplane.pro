@@ -20,20 +20,16 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += module_vehicle_arduplane.cpp \
-    module_vehicle_arduplane_mission_parser.cpp \
     vehicle_object/arduplane_vehicle_object.cpp \
     vehicle_object/arduplane_component_flight_mode.cpp \
-    arduplane_target_progess.cpp \    
-    guided_timeout_controller.cpp
+    arduplane_target_progess.cpp     
 
 HEADERS += module_vehicle_arduplane.h\
         module_vehicle_arduplane_global.h \
     vehicle_object/arduplane_vehicle_object.h \
     vehicle_object/arduplane_component_flight_mode.h \
     arduplane_target_progess.h \
-    guided_timeout_controller.h \
-    flight_states/arduplane_hsm.h \
-    flight_states/state_components.h \
+    flight_states/arduplane_state_components.h \
     flight_states/arduplane_state_types.h
 
 
@@ -112,6 +108,10 @@ else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_generic/ -lmodule_vehicle_gener
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/release/ -lmodule_vehicle_MAVLINK
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/debug/ -lmodule_vehicle_MAVLINK
 else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/ -lmodule_vehicle_MAVLINK
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/release/ -lmodule_vehicle_ardupilot
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/debug/ -lmodule_vehicle_ardupilot
+else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/ -lmodule_vehicle_ardupilot
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/release/ -ldata_interface_MAVLINK
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/debug/ -ldata_interface_MAVLINK

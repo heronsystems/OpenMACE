@@ -1,22 +1,22 @@
 #include "state_unknown.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_Unknown::State_Unknown():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_UNKNOWN"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_UNKNOWN;
-    desiredStateEnum = ArducopterFlightState::STATE_UNKNOWN;
+    currentStateEnum = ArdupilotFlightState::STATE_UNKNOWN;
+    desiredStateEnum = ArdupilotFlightState::STATE_UNKNOWN;
 }
 
-AbstractStateArducopter* State_Unknown::getClone() const
+AbstractStateArdupilot* State_Unknown::getClone() const
 {
     return (new State_Unknown(*this));
 }
 
-void State_Unknown::getClone(AbstractStateArducopter** state) const
+void State_Unknown::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_Unknown(*this);
 }
@@ -31,22 +31,22 @@ hsm::Transition State_Unknown::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_GROUNDED:
+        case ArdupilotFlightState::STATE_GROUNDED:
         {
             return hsm::SiblingTransition<State_Grounded>();
             break;
         }
-        case ArducopterFlightState::STATE_TAKEOFF:
+        case ArdupilotFlightState::STATE_TAKEOFF:
         {
             return hsm::SiblingTransition<State_Takeoff>();
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT:
+        case ArdupilotFlightState::STATE_FLIGHT:
         {
             return hsm::SiblingTransition<State_Flight>();
             break;
         }
-        case ArducopterFlightState::STATE_LANDING:
+        case ArdupilotFlightState::STATE_LANDING:
         {
             return hsm::SiblingTransition<State_Landing>();
             break;
@@ -67,10 +67,10 @@ bool State_Unknown::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 void State_Unknown::Update()
 {
     if(!Owner().state->vehicleArm.get().getSystemArm())
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED; //This is a definite case condition
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED; //This is a definite case condition
     else
     {
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT;
     }
 }
 
@@ -84,7 +84,7 @@ void State_Unknown::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
     this->OnEnter();
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_grounded.h"

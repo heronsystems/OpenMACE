@@ -1,28 +1,28 @@
 #include "state_flight.h"
 
-namespace arducopter{
+namespace ardupilot{
 namespace state{
 
 State_Flight::State_Flight():
     AbstractRootState()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_FLIGHT;
-    desiredStateEnum = ArducopterFlightState::STATE_FLIGHT;
+    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT;
+    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT;
 }
 
 void State_Flight::OnExit()
 {
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     Owner().state->vehicleMode.RemoveNotifier(this);
 }
 
-AbstractStateArducopter* State_Flight::getClone() const
+AbstractStateArdupilot* State_Flight::getClone() const
 {
     return (new State_Flight(*this));
 }
 
-void State_Flight::getClone(AbstractStateArducopter** state) const
+void State_Flight::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_Flight(*this);
 }
@@ -38,47 +38,47 @@ hsm::Transition State_Flight::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_FLIGHT_AUTO:
+        case ArdupilotFlightState::STATE_FLIGHT_AUTO:
         {
             rtn = hsm::InnerTransition<State_FlightAuto>();
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_BRAKE:
+        case ArdupilotFlightState::STATE_FLIGHT_BRAKE:
         {
             rtn = hsm::InnerTransition<State_FlightBrake>();
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_GUIDED:
+        case ArdupilotFlightState::STATE_FLIGHT_GUIDED:
         {
             rtn = hsm::InnerTransition<State_FlightGuided>();
             break;
         }
-        case ArducopterFlightState::STATE_LANDING:
+        case ArdupilotFlightState::STATE_LANDING:
         {
             rtn = hsm::SiblingTransition<State_Landing>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_LOITER:
+        case ArdupilotFlightState::STATE_FLIGHT_LOITER:
         {
             rtn = hsm::InnerTransition<State_FlightLoiter>(currentCommand);
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_MANUAL:
+        case ArdupilotFlightState::STATE_FLIGHT_MANUAL:
         {
             rtn = hsm::InnerTransition<State_FlightManual>();
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_RTL:
+        case ArdupilotFlightState::STATE_FLIGHT_RTL:
         {
             rtn = hsm::InnerTransition<State_FlightRTL>();
             break;
         }
-        case ArducopterFlightState::STATE_GROUNDED:
+        case ArdupilotFlightState::STATE_GROUNDED:
         {
             rtn = hsm::SiblingTransition<State_Grounded>();
             break;
         }
-        case ArducopterFlightState::STATE_FLIGHT_UNKNOWN:
+        case ArdupilotFlightState::STATE_FLIGHT_UNKNOWN:
         {
             rtn = hsm::InnerTransition<State_FlightUnknown>();
             break;
@@ -105,10 +105,10 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             executeModeChange = true;
             if(Data::isSystemTypeRotary(Owner().state->vehicleHeartbeat.get().getType()))
             {
-                vehicleMode = Owner().arducopterMode.getFlightModeFromString("BRAKE");
+                vehicleMode = Owner().ardupilotMode.getFlightModeFromString("BRAKE");
             }
             else{
-                vehicleMode = Owner().arducopterMode.getFlightModeFromString("LOITER");
+                vehicleMode = Owner().ardupilotMode.getFlightModeFromString("LOITER");
             }
         }
         else if(cmd->getMissionCommandAction() == Data::MissionCommandAction::MISSIONCA_START)
@@ -116,7 +116,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             if(!this->IsInState<State_FlightGuided>())
             {
                 executeModeChange = true;
-                vehicleMode = Owner().arducopterMode.getFlightModeFromString("AUTO");
+                vehicleMode = Owner().ardupilotMode.getFlightModeFromString("AUTO");
             }
         }
 
@@ -125,7 +125,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
             auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             controllerSystemMode->AddLambda_Finished(this, [controllerSystemMode](const bool completed, const uint8_t finishCode){
-
+                UNUSED(completed); UNUSED(finishCode);
                 controllerSystemMode->Shutdown();
             });
 
@@ -148,7 +148,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         }
         else
         {
-            arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
             currentInnerState->handleCommand(command);
         }
         break;
@@ -162,7 +162,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
     case COMMANDTYPE::CI_NAV_LAND:
     {
         currentCommand = command;
-        desiredStateEnum = ArducopterFlightState::STATE_LANDING;
+        desiredStateEnum = ArdupilotFlightState::STATE_LANDING;
         break;
     }
     case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
@@ -173,7 +173,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         auto controllerRTL = new MAVLINKUXVControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerRTL->AddLambda_Finished(this, [this,controllerRTL](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_RTL;
+                desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_RTL;
             controllerRTL->Shutdown();
         });
 
@@ -196,7 +196,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
         else
         {
-            arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
             currentInnerState->handleCommand(command);
         }
 
@@ -208,7 +208,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
         else
         {
-            arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
             currentInnerState->handleCommand(command);
         }
 
@@ -216,7 +216,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
     }
     default:
     {
-        arducopter::state::AbstractStateArducopter* currentInnerState = static_cast<arducopter::state::AbstractStateArducopter*>(GetImmediateInnerState());
+        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
         currentInnerState->handleCommand(command);
         break;
     }
@@ -228,7 +228,7 @@ void State_Flight::Update()
     //mode changes are directly handled via add notifier events established in the OnEnter() method
 
     if(!Owner().state->vehicleArm.get().getSystemArm())
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED;
 }
 
 void State_Flight::OnEnter()
@@ -258,42 +258,42 @@ void State_Flight::checkTransitionFromMode(const std::string &mode)
 {
     if(mode == "AUTO")
     {
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_AUTO;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_AUTO;
     }
     else if(mode == "BRAKE")
     {
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_BRAKE;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_BRAKE;
     }
     else if(mode == "GUIDED")
     {
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_GUIDED;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_GUIDED;
     }
     else if(mode == "LAND")
     {
         //This event is handled differently than the land command issued from the GUI
         //A mode change we really have no way to track the progress of where we are
-        desiredStateEnum = ArducopterFlightState::STATE_LANDING;
+        desiredStateEnum = ArdupilotFlightState::STATE_LANDING;
     }
     else if(mode == "LOITER")
     {
         //This event is handled differently than the land command issued from the GUI
         //A mode change we really have no way to track the progress of where we are
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_LOITER;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_LOITER;
     }
     else if(mode == "STABILIZE")
     {
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_MANUAL;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_MANUAL;
     }
     else if(mode == "RTL")
     {
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_RTL;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_RTL;
     }
     else{
-        desiredStateEnum = ArducopterFlightState::STATE_FLIGHT_UNKNOWN;
+        desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_UNKNOWN;
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state
 
 #include "flight_states/state_flight_auto.h"

@@ -1,29 +1,29 @@
 #include "state_landing_transitioning.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_LandingTransitioning::State_LandingTransitioning():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     guidedProgress = ArducopterTargetProgess(1,10,10);
     std::cout<<"We are in the constructor of STATE_LANDING_TRANSITIONING"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_LANDING_TRANSITIONING;
-    desiredStateEnum = ArducopterFlightState::STATE_LANDING_TRANSITIONING;
+    currentStateEnum = ArdupilotFlightState::STATE_LANDING_TRANSITIONING;
+    desiredStateEnum = ArdupilotFlightState::STATE_LANDING_TRANSITIONING;
 }
 
 void State_LandingTransitioning::OnExit()
 {
-    AbstractStateArducopter::OnExit();
+    AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 }
 
-AbstractStateArducopter* State_LandingTransitioning::getClone() const
+AbstractStateArdupilot* State_LandingTransitioning::getClone() const
 {
     return (new State_LandingTransitioning(*this));
 }
 
-void State_LandingTransitioning::getClone(AbstractStateArducopter** state) const
+void State_LandingTransitioning::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_LandingTransitioning(*this);
 }
@@ -71,20 +71,20 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {
-                        desiredStateEnum = ArducopterFlightState::STATE_LANDING_DESCENDING;
+                        desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
                     }
                      });
                 break;
             }
             case(CoordinateSystemTypes::CARTESIAN):
             {
-                desiredStateEnum = ArducopterFlightState::STATE_LANDING_DESCENDING;
+                desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
                 break;
             }
             case(CoordinateSystemTypes::UNKNOWN):
             case (CoordinateSystemTypes::NOT_IMPLIED):
             {
-                desiredStateEnum = ArducopterFlightState::STATE_LANDING_DESCENDING;
+                desiredStateEnum = ArdupilotFlightState::STATE_LANDING_DESCENDING;
                 break;
             }
             }
@@ -139,5 +139,5 @@ void State_LandingTransitioning::OnEnter(const std::shared_ptr<AbstractCommandIt
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace state

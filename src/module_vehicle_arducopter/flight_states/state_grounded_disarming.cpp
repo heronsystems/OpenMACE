@@ -1,22 +1,22 @@
 #include "state_grounded_disarming.h"
 
-namespace arducopter{
+namespace ardupilot {
 namespace state{
 
 State_GroundedDisarming::State_GroundedDisarming():
-    AbstractStateArducopter()
+    AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_GROUNDED_DISARMING"<<std::endl;
-    currentStateEnum = ArducopterFlightState::STATE_GROUNDED_DISARMING;
-    desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_DISARMING;
+    currentStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMING;
+    desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMING;
 }
 
-AbstractStateArducopter* State_GroundedDisarming::getClone() const
+AbstractStateArdupilot* State_GroundedDisarming::getClone() const
 {
     return (new State_GroundedDisarming(*this));
 }
 
-void State_GroundedDisarming::getClone(AbstractStateArducopter** state) const
+void State_GroundedDisarming::getClone(AbstractStateArdupilot** state) const
 {
     *state = new State_GroundedDisarming(*this);
 }
@@ -31,7 +31,7 @@ hsm::Transition State_GroundedDisarming::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case ArducopterFlightState::STATE_GROUNDED_DISARMED:
+        case ArdupilotFlightState::STATE_GROUNDED_DISARMED:
         {
             rtn = hsm::SiblingTransition<State_GroundedDisarmed>();
             break;
@@ -67,7 +67,7 @@ void State_GroundedDisarming::Update()
 {
     if(Owner().state->vehicleArm.get().getSystemArm() == false)
     {
-        desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_DISARMED;
+        desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
     }
 }
 
@@ -81,7 +81,7 @@ void State_GroundedDisarming::OnEnter()
     controllerArm->AddLambda_Finished(this, [this,controllerArm](const bool completed, const uint8_t finishCode){
         controllerArm->Shutdown();
         if(!completed || (finishCode != MAV_RESULT_ACCEPTED))
-            desiredStateEnum = ArducopterFlightState::STATE_GROUNDED_ARMED;
+            desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
     });
 
     controllerArm->setLambda_Shutdown([this, collection]()
@@ -110,7 +110,7 @@ void State_GroundedDisarming::OnEnter(const std::shared_ptr<AbstractCommandItem>
     }
 }
 
-} //end of namespace arducopter
+} //end of namespace ardupilot
 } //end of namespace
 
 #include "flight_states/state_grounded_armed.h"
