@@ -71,12 +71,25 @@ public:
 
 public:
 
+    //!
+    //! \brief receiveFrame Gets new frame data from Adept agent
+    //!
     void receiveFrame();
 
+    //!
+    //! \brief NewlyAvailableVehicle Subscriber to a newly available vehicle topic
+    //! \param vehicleID Vehilce ID of the newly available vehicle
+    //!
     virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
+    //!
+    //! \brief NewlyAvailableFrame Subscriber to a new frame
+    //!
     void NewlyAvailableFrame(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
 
+    //!
+    //! \brief createLog Creates a new log to record flight data passing to/from adept agent
+    //!
     void createLog();
 
 private:

@@ -64,20 +64,34 @@ void ModuleVehicleAdept::NewTopicSpooled(const std::string &topicName, const Mac
     UNUSED(topicName); UNUSED(sender); UNUSED(componentsUpdated); UNUSED(target);
 }
 
+//!
+//! \brief receiveFrame Gets new frame data from Adept agent
+//!
 void ModuleVehicleAdept::receiveFrame()
 {
 
 }
 
+//!
+//! \brief NewlyAvailableVehicle Subscriber to a newly available vehicle topic
+//! \param vehicleID Vehilce ID of the newly available vehicle
+//!
 void ModuleVehicleAdept::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(vehicleID); UNUSED(sender);
 }
+
+//!
+//! \brief NewlyAvailableFrame Subscriber to a new frame
+//!
 void ModuleVehicleAdept::NewlyAvailableFrame(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(key); UNUSED(sender);
 }
 
+//!
+//! \brief createLog Creates a new log to record flight data passing to/from adept agent
+//!
 void ModuleVehicleAdept::createLog()
 {
 
