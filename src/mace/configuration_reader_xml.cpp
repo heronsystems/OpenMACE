@@ -285,13 +285,20 @@ ConfigurationParseResult ConfigurationReader_XML::Parse(const std::string &filen
 
 
 
+//!
+//! \brief Confirm that MACE Instance ID has been set
+//! \return True if ID has been set
+//!
 bool ConfigurationReader_XML::HasStaticMaceInstanceID() const
 {
     return m_MaceInstanceIDSet;
 }
 
 
-
+//!
+//! \brief Get MACE instance ID
+//! \return MACE instance ID
+//!
 uint32_t ConfigurationReader_XML::GetStaticMaceInstanceID() const
 {
     return m_MaceInstance;
@@ -337,6 +344,10 @@ std::shared_ptr<MaceCore::ModuleParameterValue> ConfigurationReader_XML::GetGlob
     return m_globalParameters;
 }
 
+//!
+//! \brief Describes the structure of the global parameters
+//! \return Global Parameter Structure
+//!
 std::shared_ptr<MaceCore::ModuleParameterStructure> ConfigurationReader_XML::GetGlobalParamStructure()
 {
     MaceCore::ModuleParameterStructure globalStructure;

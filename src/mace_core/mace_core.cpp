@@ -30,10 +30,20 @@ void MaceCore::AddDataFusion(const std::shared_ptr<MaceData> dataFusion)
     m_DataFusion = dataFusion;
 }
 
+//!
+//! \brief setGlobalConfiguration Assign global parameters obtained from parsing
+//! \param globalParams Input parameters
+//!
 void MaceCore::setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams)
 {
     UNUSED(globalParams);
 }
+
+
+//!
+//! \brief AddModule Add module to data fusion
+//! \param module Module to add
+//!
 void MaceCore::AddLocalModule(const std::shared_ptr<ModuleBase> &module)
 {
     uint8_t moduleID = 1;
