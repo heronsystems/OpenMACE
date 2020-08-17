@@ -130,7 +130,7 @@ void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommand
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
     auto cartesianTargetController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_Local(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-    cartesianTargetController->updateTransformation(Owner().state->getTransform_SwarmTOVehicleEKF());
+    cartesianTargetController->updateTransformation(Owner().environment->getTransform_SwarmTOVehicleEKF());
     collection->Insert("CartesianTargetController",cartesianTargetController);
 
     this->handleCommand(command);

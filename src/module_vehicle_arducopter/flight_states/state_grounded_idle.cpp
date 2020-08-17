@@ -81,7 +81,7 @@ bool State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem
 
 void State_GroundedIdle::Update()
 {
-    if(Owner().state->vehicleArm.get().getSystemArm())
+    if(Owner().status->vehicleArm.get().getSystemArm())
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
 }
 

@@ -110,13 +110,13 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 
 void State_Takeoff::Update()
 {
-    StateData_MAVLINK* vehicleData = Owner().state;
+    StatusData_MAVLINK* vehicleStatus = Owner().status;
 
-    if(!vehicleData->vehicleArm.get().getSystemArm())
+    if(!vehicleStatus->vehicleArm.get().getSystemArm())
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED;
     else
     {
-        if(vehicleData->vehicleMode.get().getFlightModeString() == "GUIDED")
+        if(vehicleStatus->vehicleMode.get().getFlightModeString() == "GUIDED")
             desiredStateEnum = ArdupilotFlightState::STATE_TAKEOFF_CLIMBING;
     }
 }

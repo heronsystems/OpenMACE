@@ -14,7 +14,7 @@ State_Flight::State_Flight():
 void State_Flight::OnExit()
 {
     AbstractStateArdupilot::OnExit();
-    Owner().state->vehicleMode.RemoveNotifier(this);
+    Owner().status->vehicleMode.RemoveNotifier(this);
 }
 
 AbstractStateArdupilot* State_Flight::getClone() const
@@ -103,7 +103,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         if(cmd->getMissionCommandAction() == Data::MissionCommandAction::MISSIONCA_PAUSE)
         {
             executeModeChange = true;
-            if(Data::isSystemTypeRotary(Owner().state->vehicleHeartbeat.get().getType()))
+            if(Data::isSystemTypeRotary(Owner().status->vehicleHeartbeat.get().getType()))
             {
                 vehicleMode = Owner().ardupilotMode.getFlightModeFromString("BRAKE");
             }
@@ -227,21 +227,21 @@ void State_Flight::Update()
 {
     //mode changes are directly handled via add notifier events established in the OnEnter() method
 
-    if(!Owner().state->vehicleArm.get().getSystemArm())
+    if(!Owner().status->vehicleArm.get().getSystemArm())
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED;
 }
 
 void State_Flight::OnEnter()
 {
     //This will only handle when the mode has actually changed
-    Owner().state->vehicleMode.AddNotifier(this,[this]
+    Owner().status->vehicleMode.AddNotifier(this,[this]
     {
-        std::string currentModeString = Owner().state->vehicleMode.get().getFlightModeString();
+        std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
         checkTransitionFromMode(currentModeString);
     });
 
     //This helps us based on the current conditions in the present moment
-    std::string currentModeString = Owner().state->vehicleMode.get().getFlightModeString();
+    std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
     checkTransitionFromMode(currentModeString);
 }
 

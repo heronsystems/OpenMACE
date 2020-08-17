@@ -170,7 +170,7 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleGlobalOrig
             {
                 //The received origin from the autopilot is the one it will reference
                 if(this->m_SystemData != nullptr) //because this is a lambda during a callback in future this needs to be checked
-                    this->m_SystemData->state->vehicleGlobalOrigin.set(receivedOrigin);
+                    this->m_SystemData->environment->vehicleGlobalOrigin.set(receivedOrigin);
             }
             else
             {
@@ -249,7 +249,7 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionCo
         //////////////////////////////
         command_item::SpatialHome home = std::get<0>(data);
         mace::pose::GeodeticPosition_3D* homePosition = home.getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
-        m_SystemData->state->vehicleGlobalHome.set(*homePosition);
+        m_SystemData->environment->vehicleGlobalHome.set(*homePosition);
         this->cbi_VehicleHome(home.getOriginatingSystem(),home);
 
         //////////////////////////////

@@ -65,7 +65,7 @@ bool State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractComman
 
 void State_GroundedDisarming::Update()
 {
-    if(Owner().state->vehicleArm.get().getSystemArm() == false)
+    if(Owner().status->vehicleArm.get().getSystemArm() == false)
     {
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
     }

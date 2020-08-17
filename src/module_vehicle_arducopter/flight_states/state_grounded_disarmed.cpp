@@ -88,9 +88,9 @@ void State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> 
 {
     UNUSED(command);
 
-    StateData_MAVLINK* vehicleData = Owner().state;
+    StatusData_MAVLINK* vehicleStatus = Owner().status;
 
-    if(vehicleData->vehicleMode.get().getFlightModeString() == "STABILIZE")
+    if(vehicleStatus->vehicleMode.get().getFlightModeString() == "STABILIZE")
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
     else
         this->OnEnter();

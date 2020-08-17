@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ModuleConfigurations MaceInstance="0" EKFOrigin="{lat: }">
+<ModuleConfigurations MaceInstance="0">
 
-<GlobalParams>
-
-</GlobalParams>
 
   <Module Class="VehicleComms" Type="Arducopter">
     <Parameter Name="ID">1</Parameter>

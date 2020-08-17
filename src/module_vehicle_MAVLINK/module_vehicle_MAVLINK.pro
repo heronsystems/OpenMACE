@@ -25,6 +25,8 @@ SOURCES += \
     vehicle_object/mavlink_vehicle_object.cpp \
     vehicle_object/state_data_mavlink.cpp \
     vehicle_object/parse_mavlink.cpp \
+    vehicle_object/status_data_mavlink.cpp \
+    environment_object/environment_data_mavlink.cpp \
     controllers/controller_guided_mission_item.cpp \
     vehicle_object/mission_data_mavlink.cpp \
     controllers/controller_guided_target_item_local.cpp \
@@ -43,6 +45,8 @@ HEADERS += module_vehicle_mavlink.h\
     controllers/commands/generic_long_command.h \
     vehicle_object/mavlink_vehicle_object.h \
     vehicle_object/state_data_mavlink.h \
+    vehicle_object/status_data_mavlink.h \
+    environment_object/environment_data_mavlink.h \
     controllers/controller_mission.h \
     controllers/controller_guided_mission_item.h \
     vehicle_object/mission_data_mavlink.h \

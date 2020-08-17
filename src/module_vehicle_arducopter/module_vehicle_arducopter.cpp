@@ -76,7 +76,7 @@ void ModuleVehicleArducopter::Command_SetGlobalOrigin(const Action_SetGlobalOrig
 {
     UNUSED(sender);
     mace::pose::GeodeticPosition_3D* originPosition = command.getGlobalOrigin()->positionAs<mace::pose::GeodeticPosition_3D>();
-    m_SystemData->state->swarmGlobalOrigin.set(*originPosition);
+    m_SystemData->environment->swarmGlobalOrigin.set(*originPosition);
 
 //    handleGlobalOriginController(command);
 }
@@ -526,7 +526,7 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
 
         m_SystemData->connectCallback(this);
         dynamic_cast<ArdupilotVehicleObject*>(m_SystemData)->connectTargetCallback(ModuleVehicleArducopter::staticCallbackFunction_VehicleTarget, this);
-        m_SystemData->state->set_ShouldTransformLocalAltitude(transformToSwarmAltitude);
+        m_SystemData->environment->set_ShouldTransformLocalAltitude(transformToSwarmAltitude);
 
         //setup the vision_position_estimate controller
         MAVLINKUXVControllers::Controller_VisionPositionEstimate* visionEstimateController = new MAVLINKUXVControllers::Controller_VisionPositionEstimate(m_SystemData, m_TransmissionQueue, m_LinkChan);
@@ -589,7 +589,7 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
     std::string currentFlightMode = dynamic_cast<ArdupilotVehicleObject*>(m_SystemData)->ardupilotMode.parseMAVLINK(heartbeatMSG);
     DataGenericItem::DataGenericItem_FlightMode flightMode;
     flightMode.setFlightMode(currentFlightMode);
-    if(m_SystemData->state->vehicleMode.set(flightMode))
+    if(m_SystemData->status->vehicleMode.set(flightMode))
     {
         std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_FlightMode> ptrFlightMode = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_FlightMode>(flightMode);
         this->cbi_VehicleStateData(systemID, ptrFlightMode);
@@ -597,7 +597,7 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
 
     DataGenericItem::DataGenericItem_SystemArm arm;
     arm.setSystemArm(heartbeatMSG.base_mode & MAV_MODE_FLAG_DECODE_POSITION_SAFETY);
-    if(m_SystemData->state->vehicleArm.set(arm))
+    if(m_SystemData->status->vehicleArm.set(arm))
     {
         std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemArm> ptrArm = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_SystemArm>(arm);
         ModuleVehicleMAVLINK::cbi_VehicleStateData(systemID, ptrArm);
@@ -623,7 +623,7 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
     default:
         heartbeat.setType(Data::SystemType::SYSTEM_TYPE_GENERIC);
     }
-    m_SystemData->state->vehicleHeartbeat.set(heartbeat);
+    m_SystemData->status->vehicleHeartbeat.set(heartbeat);
     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Heartbeat> ptrHeartbeat = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Heartbeat>(heartbeat);
     ModuleVehicleMAVLINK::cbi_VehicleStateData(systemID,ptrHeartbeat);
 

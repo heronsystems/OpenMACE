@@ -61,12 +61,13 @@ hsm::Transition State_Unknown::GetTransition()
 
 bool State_Unknown::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return false;
 }
 
 void State_Unknown::Update()
 {
-    if(!Owner().state->vehicleArm.get().getSystemArm())
+    if(!Owner().status->vehicleArm.get().getSystemArm())
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED; //This is a definite case condition
     else
     {
@@ -76,11 +77,11 @@ void State_Unknown::Update()
 
 void State_Unknown::OnEnter()
 {
-
 }
 
 void State_Unknown::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     this->OnEnter();
 }
 

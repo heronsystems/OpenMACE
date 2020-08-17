@@ -170,7 +170,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
 
 void State_LandingDescent::Update()
 {
-    if(!Owner().state->vehicleArm.get().getSystemArm())
+    if(!Owner().status->vehicleArm.get().getSystemArm())
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_IDLE;
 }
 

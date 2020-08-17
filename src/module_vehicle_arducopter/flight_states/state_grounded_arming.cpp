@@ -67,7 +67,7 @@ void State_GroundedArming::Update()
      * point, in all likelyhood a mavlink vehicle is going to arm.
       */
 
-    if(Owner().state->vehicleArm.get().getSystemArm())
+    if(Owner().status->vehicleArm.get().getSystemArm())
     {
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
     }

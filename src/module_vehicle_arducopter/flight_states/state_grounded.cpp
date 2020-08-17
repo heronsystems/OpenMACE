@@ -106,14 +106,14 @@ void State_Grounded::Update()
 
 void State_Grounded::OnEnter()
 {
-    StateData_MAVLINK* vehicleData = Owner().state;
+    StatusData_MAVLINK* vehicleStatus = Owner().status;
 
-    if(Owner().state->vehicleArm.get().getSystemArm())
+    if(Owner().status->vehicleArm.get().getSystemArm())
     {
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_ARMED;
     }
-    else if((Owner().state->vehicleArm.hasBeenSet()) && (!Owner().state->vehicleArm.get().getSystemArm())
-            && (vehicleData->vehicleMode.get().getFlightModeString() != "STABILIZE"))
+    else if((Owner().status->vehicleArm.hasBeenSet()) && (!Owner().status->vehicleArm.get().getSystemArm())
+            && (vehicleStatus->vehicleMode.get().getFlightModeString() != "STABILIZE"))
     {
         desiredStateEnum = ArdupilotFlightState::STATE_GROUNDED_DISARMED;
     }
