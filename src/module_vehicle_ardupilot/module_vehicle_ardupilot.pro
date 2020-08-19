@@ -20,17 +20,15 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += module_vehicle_ardupilot.cpp \
-    vehicle_object/ardupilot_vehicle_object.cpp \
-    vehicle_object/ardupilot_component_flight_mode.cpp \
     ardupilot_target_progess.cpp \
     guided_timeout_controller.cpp \
     flight_states/abstract_root_state.cpp \
-    flight_states/abstract_state_ardupilot.cpp
+    flight_states/abstract_state_ardupilot.cpp \
+    vehicle_object/vehicle_object_ardupilot.cpp
 
 HEADERS += module_vehicle_ardupilot.h\
         module_vehicle_ardupilot_global.h \
-    vehicle_object/ardupilot_vehicle_object.h \
-    vehicle_object/ardupilot_component_flight_mode.h \
+    vehicle_object/ardupilot_component_operating_mode.h \
     ardupilot_target_progess.h \
     module_vehicle_ardupilot_mission_parser.h \
     guided_timeout_controller.h \
@@ -38,7 +36,8 @@ HEADERS += module_vehicle_ardupilot.h\
     flight_states/ardupilot_state_components.h \
     flight_states/ardupilot_state_types.h \
     flight_states/abstract_root_state.h \
-    flight_states/abstract_state_ardupilot.h
+    flight_states/abstract_state_ardupilot.h \
+    vehicle_object/vehicle_object_ardupilot.h
 
 
 INCLUDEPATH += $$PWD/../

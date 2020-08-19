@@ -1,9 +1,10 @@
-#ifndef ARDUPILOT_VEHICLE_OBJECT_H
-#define ARDUPILOT_VEHICLE_OBJECT_H
+#ifndef VEHICLE_OBJECT_ARDUPILOT_H
+#define VEHICLE_OBJECT_ARDUPILOT_H
 
 #include "module_vehicle_MAVLINK/vehicle_object/mavlink_vehicle_object.h"
 
-#include "ardupilot_component_flight_mode.h"
+#include "ardupilot_component_operating_mode.h"
+
 #include "../flight_states/ardupilot_state_types.h"
 
 #include "data_generic_mission_item_topic/vehicle_target_topic.h"
@@ -13,10 +14,12 @@
 
 typedef void(*CallbackFunctionPtr_VehicleTarget)(void*, MissionTopic::VehicleTargetTopic&);
 
-class ArdupilotVehicleObject : public MavlinkVehicleObject
+class VehicleObject_Ardupilot : public MavlinkVehicleObject
 {
 public:
-    ArdupilotVehicleObject(CommsMAVLINK* commsObj, const MaceCore::ModuleCharacteristic &module, const int &mavlinkID);
+    VehicleObject_Ardupilot(CommsMAVLINK* commsObj, const MaceCore::ModuleCharacteristic &module, const int &mavlinkID);
+
+    virtual ~VehicleObject_Ardupilot() = default;
 
     CallbackInterface_MAVLINKVehicleObject* getMAVLINKCallback()
     {
@@ -41,8 +44,7 @@ protected:
     void *m_FunctionTarget;
 
 public:
-    ARDUPILOTComponent_FlightMode ardupilotMode;
-
+    ARDUPILOTComponent_OperatingMode* m_ArdupilotMode;
 
 };
 

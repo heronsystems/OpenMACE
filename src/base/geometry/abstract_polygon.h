@@ -7,6 +7,7 @@
 namespace mace{
 namespace geometry{
 
+
 class Abstract_Polygon
 {
 public:

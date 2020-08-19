@@ -17,7 +17,7 @@
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
-#include "module_vehicle_ardupilot/vehicle_object/ardupilot_vehicle_object.h"
+#include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
 #include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
 
 #include "flight_states/arduplane_state_components.h"

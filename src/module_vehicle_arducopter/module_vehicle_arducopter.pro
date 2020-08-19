@@ -49,7 +49,9 @@ SOURCES += module_vehicle_arducopter.cpp \
     flight_states/state_flight_guided_target_geo.cpp \
     flight_states/state_flight_guided_target_car.cpp \
     flight_states/state_flight_guided_spatial_item.cpp \
-    flight_states/state_flight_guided_target_att.cpp
+    flight_states/state_flight_guided_target_att.cpp \
+    vehicle_object/arducopter_component_flight_mode.cpp \
+    vehicle_object/vehicle_object_arducopter.cpp
 
 HEADERS += module_vehicle_arducopter.h\
     flight_states/state_grounded_disarmed.h \
@@ -83,7 +85,9 @@ HEADERS += module_vehicle_arducopter.h\
     flight_states/state_flight_guided_target_geo.h \
     flight_states/state_flight_guided_target_car.h \
     flight_states/state_flight_guided_spatial_item.h \
-    flight_states/state_flight_guided_target_att.h
+    flight_states/state_flight_guided_target_att.h \
+    vehicle_object/arducopter_component_flight_mode.h \
+    vehicle_object/vehicle_object_arducopter.h
 
 
 INCLUDEPATH += $$PWD/../

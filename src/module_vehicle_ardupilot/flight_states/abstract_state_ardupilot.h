@@ -10,7 +10,7 @@
 #include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
 #include "ardupilot_state_types.h"
 
-#include "../vehicle_object/ardupilot_vehicle_object.h"
+#include "../vehicle_object/vehicle_object_ardupilot.h"
 
 #include "common/logging/macelog.h"
 
