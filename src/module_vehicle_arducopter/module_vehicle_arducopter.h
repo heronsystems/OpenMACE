@@ -22,6 +22,7 @@
 #include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
 #include "module_vehicle_ardupilot/module_vehicle_ardupilot.h"
 #include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+#include "vehicle_object/vehicle_object_arducopter.h"
 
 #include "mace_core/abstract_module_base.h"
 

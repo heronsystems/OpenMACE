@@ -42,7 +42,7 @@ CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_2D &copy):
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
-    Abstract_CartesianPosition(copy), state_space::State(copy), data(copy.data)
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(copy.data(0),copy.data(1))
 {
     this->dimension = 2;
 }

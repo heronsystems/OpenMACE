@@ -522,7 +522,7 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
 
         createLog(systemID);
         //this is the first time we have seen this heartbeat or the data was destroyed for some reason
-        m_SystemData = new VehicleObject_Ardupilot(this, this->GetCharacteristic(), systemID);
+        m_SystemData = new VehicleObject_Arducopter(this, this->GetCharacteristic(), systemID);
 
         m_SystemData->connectCallback(this);
         dynamic_cast<VehicleObject_Ardupilot*>(m_SystemData)->connectTargetCallback(ModuleVehicleArducopter::staticCallbackFunction_VehicleTarget, this);
