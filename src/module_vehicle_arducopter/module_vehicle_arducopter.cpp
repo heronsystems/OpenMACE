@@ -7,7 +7,7 @@ template <typename T>
 T CopyCommandAndInsertTarget(const command_item::AbstractCommandItem &item, int targetSystem)
 {
     T cpy((T&)item);
-    cpy.setTargetSystem(targetSystem);
+    cpy.setTargetSystem(static_cast<unsigned int>(targetSystem));
     return cpy;
 }
 
@@ -522,10 +522,10 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
 
         createLog(systemID);
         //this is the first time we have seen this heartbeat or the data was destroyed for some reason
-        m_SystemData = new ArdupilotVehicleObject(this, this->GetCharacteristic(), systemID);
+        m_SystemData = new VehicleObject_Ardupilot(this, this->GetCharacteristic(), systemID);
 
         m_SystemData->connectCallback(this);
-        dynamic_cast<ArdupilotVehicleObject*>(m_SystemData)->connectTargetCallback(ModuleVehicleArducopter::staticCallbackFunction_VehicleTarget, this);
+        dynamic_cast<VehicleObject_Ardupilot*>(m_SystemData)->connectTargetCallback(ModuleVehicleArducopter::staticCallbackFunction_VehicleTarget, this);
         m_SystemData->environment->set_ShouldTransformLocalAltitude(transformToSwarmAltitude);
 
         //setup the vision_position_estimate controller
@@ -586,7 +586,7 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
         handleFirstConnectionSetup();
     } //end of if statement verifying that the current vehicle data is null
 
-    std::string currentFlightMode = dynamic_cast<ArdupilotVehicleObject*>(m_SystemData)->ardupilotMode.parseMAVLINK(heartbeatMSG);
+    std::string currentFlightMode = dynamic_cast<VehicleObject_Ardupilot*>(m_SystemData)->m_ArdupilotMode->parseMAVLINK(heartbeatMSG);
     DataGenericItem::DataGenericItem_FlightMode flightMode;
     flightMode.setFlightMode(currentFlightMode);
     if(m_SystemData->status->vehicleMode.set(flightMode))

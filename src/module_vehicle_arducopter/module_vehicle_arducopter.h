@@ -338,7 +338,7 @@ private:
 
 private:
     std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<ArdupilotVehicleObject> vehicleData;
+    std::shared_ptr<VehicleObject_Ardupilot> vehicleData;
 
 private:
     std::mutex m_Mutex_StateMachine;
