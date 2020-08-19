@@ -39,9 +39,9 @@ public:
 
     std::string parseMAVLINK(const mavlink_heartbeat_t &msg) override;
 
-    uint32_t getFlightModeFromString(const std::string &modeString) override;
+    uint32_t getFlightModeFromString(const std::string &modeString) const override;
 
-    std::map<uint32_t, std::string> getAvailableFlightModes() override;
+    std::map<uint32_t, std::string> getAvailableFlightModes() const override;
 
 
 private:

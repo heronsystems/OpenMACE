@@ -20,9 +20,9 @@ public:
 
     virtual std::string parseMAVLINK(const mavlink_heartbeat_t &msg) = 0;
 
-    virtual uint32_t getFlightModeFromString(const std::string &modeString) = 0;
+    virtual uint32_t getFlightModeFromString(const std::string &modeString) const = 0;
 
-    virtual std::map<uint32_t, std::string> getAvailableFlightModes() = 0;
+    virtual std::map<uint32_t, std::string> getAvailableFlightModes() const = 0;
 
 protected:
     uint32_t _currentMode = 0;

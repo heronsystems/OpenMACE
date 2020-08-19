@@ -6,9 +6,9 @@ ARDUCOPTERComponent_FlightMode::ARDUCOPTERComponent_FlightMode():
     _currentMode = static_cast<uint32_t>(Arducopter_FM::ACFM_UNKNOWN);
 }
 
-uint32_t ARDUCOPTERComponent_FlightMode::getFlightModeFromString(const std::string &modeString)
+uint32_t ARDUCOPTERComponent_FlightMode::getFlightModeFromString(const std::string &modeString) const
 {
-    std::map<uint32_t,std::string>::iterator it;
+    std::map<uint32_t,std::string>::const_iterator it;
     uint32_t vehicleModeID = static_cast<uint32_t>(Arducopter_FM::ACFM_UNKNOWN);
     for (it=arducopterFM.begin(); it != arducopterFM.end(); it++)
     {
@@ -20,7 +20,7 @@ uint32_t ARDUCOPTERComponent_FlightMode::getFlightModeFromString(const std::stri
     }
     return vehicleModeID;
 }
-std::map<uint32_t, std::string> ARDUCOPTERComponent_FlightMode::getAvailableFlightModes()
+std::map<uint32_t, std::string> ARDUCOPTERComponent_FlightMode::getAvailableFlightModes() const
 {
     return arducopterFM;
 }

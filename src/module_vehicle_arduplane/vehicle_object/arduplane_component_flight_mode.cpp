@@ -6,9 +6,9 @@ ARDUPLANEComponent_FlightMode::ARDUPLANEComponent_FlightMode():
     _currentMode = static_cast<uint32_t>(Arduplane_FM::APFM_UNKNOWN);
 }
 
-uint32_t ARDUPLANEComponent_FlightMode::getFlightModeFromString(const std::string &modeString)
+uint32_t ARDUPLANEComponent_FlightMode::getFlightModeFromString(const std::string &modeString) const
 {
-    std::map<uint32_t,std::string>::iterator it;
+    std::map<uint32_t,std::string>::const_iterator it;
     uint32_t vehicleModeID = static_cast<uint32_t>(Arduplane_FM::APFM_UNKNOWN);
     for (it=arduplaneFM.begin(); it != arduplaneFM.end(); it++)
     {
@@ -20,7 +20,7 @@ uint32_t ARDUPLANEComponent_FlightMode::getFlightModeFromString(const std::strin
     }
     return vehicleModeID;
 }
-std::map<uint32_t, std::string> ARDUPLANEComponent_FlightMode::getAvailableFlightModes()
+std::map<uint32_t, std::string> ARDUPLANEComponent_FlightMode::getAvailableFlightModes() const
 {
     return arduplaneFM;
 }
