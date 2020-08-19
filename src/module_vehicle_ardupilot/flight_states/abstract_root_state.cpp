@@ -37,7 +37,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 
         MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
+        commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
         controllerSystemMode->Send(commandMode,sender,target);
         collection->Insert("modeController",controllerSystemMode);
         break;

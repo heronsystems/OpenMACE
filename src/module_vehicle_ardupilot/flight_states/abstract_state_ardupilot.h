@@ -20,7 +20,7 @@ namespace ardupilot{
 namespace state{
 
 
-class AbstractStateArdupilot : public hsm::StateWithOwner<ArdupilotVehicleObject>
+class AbstractStateArdupilot : public hsm::StateWithOwner<VehicleObject_Ardupilot>
 {
 public:
     AbstractStateArdupilot();
