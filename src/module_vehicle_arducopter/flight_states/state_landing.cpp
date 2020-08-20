@@ -69,6 +69,7 @@ hsm::Transition State_Landing::GetTransition()
 
 bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     this->clearCommand();
 
     switch(command->getCommandType())
@@ -76,7 +77,7 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     case COMMANDTYPE::CI_NAV_HOME:
     {
-        AbstractRootState::handleCommand(command);
+        success = AbstractRootState::handleCommand(command);
         break;
     }
     case COMMANDTYPE::CI_NAV_LAND:
@@ -106,15 +107,19 @@ bool State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 
         MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
-        commandMode.vehicleMode = static_cast<uint8_t>(Owner().ardupilotMode.getFlightModeFromString("GUIDED"));
+        commandMode.vehicleMode = static_cast<uint8_t>(Owner().m_ArdupilotMode->getFlightModeFromString("GUIDED"));
         controllerSystemMode->Send(commandMode,sender,target);
         collection->Insert("modeController",controllerSystemMode);
+
+        success = true;
 
         break;
     }
     default:
         break;
     } //end of switch statement
+
+    return success;
 }
 
 void State_Landing::Update()

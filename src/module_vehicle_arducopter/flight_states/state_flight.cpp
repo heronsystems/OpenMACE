@@ -105,10 +105,10 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             executeModeChange = true;
             if(Data::isSystemTypeRotary(Owner().status->vehicleHeartbeat.get().getType()))
             {
-                vehicleMode = Owner().ardupilotMode.getFlightModeFromString("BRAKE");
+                vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("BRAKE");
             }
             else{
-                vehicleMode = Owner().ardupilotMode.getFlightModeFromString("LOITER");
+                vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("LOITER");
             }
         }
         else if(cmd->getMissionCommandAction() == Data::MissionCommandAction::MISSIONCA_START)
@@ -116,7 +116,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             if(!this->IsInState<State_FlightGuided>())
             {
                 executeModeChange = true;
-                vehicleMode = Owner().ardupilotMode.getFlightModeFromString("AUTO");
+                vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("AUTO");
             }
         }
 

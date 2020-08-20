@@ -79,7 +79,7 @@ void State_GroundedDisarmed::OnEnter()
 
     MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
     commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
-    commandMode.vehicleMode = static_cast<uint8_t>(Owner().ardupilotMode.getFlightModeFromString("STABILIZE"));
+    commandMode.vehicleMode = static_cast<uint8_t>(Owner().m_ArdupilotMode->getFlightModeFromString("STABILIZE"));
     controllerSystemMode->Send(commandMode,sender,target);
     collection->Insert("State_GroundedDisarmed_modeController",controllerSystemMode);
 }

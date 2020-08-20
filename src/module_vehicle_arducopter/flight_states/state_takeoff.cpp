@@ -146,7 +146,7 @@ void State_Takeoff::OnEnter()
 
     MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
     commandMode.targetID = Owner().getMAVLINKID();
-    commandMode.vehicleMode = Owner().ardupilotMode.getFlightModeFromString("GUIDED");
+    commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("GUIDED");
     controllerSystemMode->Send(commandMode,sender,target);
     collection->Insert("modeController",controllerSystemMode);
 }
