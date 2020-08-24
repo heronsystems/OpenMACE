@@ -94,7 +94,24 @@ void ModuleVehicleArdupilot::Command_ExecuteSpatialItem(const Action_ExecuteSpat
 void ModuleVehicleArdupilot::Request_FullDataSync(const int &targetSystem, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(targetSystem);
+    std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> objectData = m_SystemData->state->GetTopicData();
+    this->PublishVehicleData(targetSystem,objectData);
+    this->prepareMissionController();
+    MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
+    if(missionController)
+    {
+        missionController->AddLambda_Finished(this, [missionController](const bool completed, const uint8_t code){
+            UNUSED(code);
+            if (completed)
+                printf("Mission Download Completed\n");
+            else
+                printf("Mission Download Failed\n");
+
+            missionController->Shutdown();
+        });
+
+        missionController->GetMissions(m_SystemData->getMAVLINKID());
+    }
 }
 
 //!
