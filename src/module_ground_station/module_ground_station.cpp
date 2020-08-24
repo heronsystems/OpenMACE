@@ -397,7 +397,7 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write heartbeat data to the GUI:
-//                    m_toGUIHandler->sendVehicleHeartbeat(vehicleID, component);
+                    m_toGUIHandler->sendVehicleHeartbeat(vehicleID, component);
                 }
     //            else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_SystemTime::Name()) {
     //                std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemTime> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_SystemTime>();

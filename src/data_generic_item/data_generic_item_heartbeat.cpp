@@ -45,9 +45,16 @@ QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::s
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
     json["autopilot"] = QString::fromStdString(Data::AutopilotTypeToString(getAutopilot()));
-    json["aircraftType"] = QString::fromStdString(Data::SystemTypeToString(getType()));
+    json["vehicle_type"] = QString::fromStdString(Data::SystemTypeToString(getType()));
     json["companion"] = getCompanion();
     json["protocol"] = QString::fromStdString(Data::CommsProtocolToString(getProtocol()));
+    json["mission_state"] = (uint8_t)getMissionState();
+    json["mavlink_id"] = getMavlinkID();
+
+    // TODO: Populate:
+    json["behavior_state"] = ""; // Meant to be the behavior execution state?
+    json["vehicle_state"] = ""; // This can be where we store its state machine state. Can be used for button state machine on GUI
+
     return json;
 }
 
