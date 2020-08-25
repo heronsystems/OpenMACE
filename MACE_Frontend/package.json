@@ -1,5 +1,5 @@
 {
-  "name": "JHU_SkyborgAI",
+  "name": "OpenMACE_Frontend",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heronsystems/JHU_SkyborgAI.git"
+    "url": "git+https://github.com/heronsystems/OpenMACE.git"
   },
   "homepage": "./",
   "email": "bobby.holtzner@heronsystems.com",
@@ -31,7 +31,7 @@
   "author": "Bobby Holtzner <bobby.holtzner@heronsystems.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/heronsystems/JHU_SkyborgAI/issues"
+    "url": "https://github.com/heronsystems/OpenMACE/issues"
   },
   "dependencies": {
     "@babel/core": "^7.8.4",
@@ -90,8 +90,8 @@
     "wait-on": "^4.0.0"
   },
   "build": {
-    "appId": "com.heronsystems.jhu_skyborg",
-    "productName": "JHU_SkyborgAI",
+    "appId": "com.heronsystems.open_mace",
+    "productName": "OpenMACE",
     "copyright": "2019 Heron Systems Inc. All Rights Reserved.",
     "files": [
       "main.js",
@@ -131,7 +131,7 @@
       ],
       "icon": "build/icons/mace-icon.png",
       "category": "Development",
-      "description": "GUI for JHU SkyborgAI"
+      "description": "GUI for OpenMACE"
     }
   }
 }
