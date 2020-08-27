@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <cmath>
-
+#include <pybind11/pybind11.h>
 #include "module_vehicle_adept_global.h"
 
 
@@ -18,6 +18,10 @@
 
 #include "base/pose/dynamics_aid.h"
 #include "base_topic/base_topic_components.h"
+
+
+
+namespace py = pybind11;
 
 class MODULE_VEHICLE_ADEPTSHARED_EXPORT ModuleVehicleAdept: public MaceCore::IModuleCommandAdept
 {

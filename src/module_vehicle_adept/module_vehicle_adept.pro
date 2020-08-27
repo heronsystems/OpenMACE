@@ -15,8 +15,6 @@ QMAKE_CXXFLAGS += -std=c++11
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
-
-
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -39,6 +37,7 @@ unix:!symbian {
     INSTALLS += target
 }
 
+
 # Windows lib install
 lib.path    = $$(MACE_ROOT)/lib
 win32:CONFIG(release, debug|release):       lib.files   += release/module_vehicle_adept.lib release/module_vehicle_adept.dll
@@ -51,6 +50,18 @@ INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET
 INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
+PYTHON_VERSION= $$(PYTHON_VERSION)
+isEmpty( PYTHON_VERSION ) {
+  win32:PYTHON_VERSION=36
+  unix:PYTHON_VERSION=3.6
+  macx:PYTHON_VERSION=3.6
+}
+
+# adding the extern includes path for pybind11
+INCLUDEPATH += $$PWD/../extern/includes
+# add python3.6 libs
+LIBS += -L/usr/lib/python$${PYTHON_VERSION}
+INCLUDEPATH += /usr/include/python$${PYTHON_VERSION}/
 
 
 
