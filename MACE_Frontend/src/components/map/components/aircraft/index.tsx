@@ -26,6 +26,7 @@ export default React.memo((props: Props) => {
 
   const tailNumber = getTailNumberFromAgentID(props.data.agentID.toString());
   const color = props.data.color;
+  const altScale = 1 + 0.01*props.data.location.alt;
   return (
     <Marker
       pane="aircraft"
@@ -37,8 +38,8 @@ export default React.memo((props: Props) => {
           <>
             {props.data.vehicle_type === "QUADROTOR" ?
                 <QuadIcon
-                width={DEFAULT_WIDTH}
-                height={DEFAULT_HEIGHT}
+                width={DEFAULT_WIDTH * altScale}
+                height={DEFAULT_HEIGHT * altScale}
                 rotation={props.data.orientation.yaw}
                 color={color}
                 />
