@@ -6,6 +6,7 @@ import { State } from "./Provider";
 
 export type Context = State & {
   updateIcons: (icon: Environment.IconPayload) => void;
+  updateTargets: (target: Aircraft.TargetPayload) => void;
   removeIcon: (name: string) => void;
   setGlobalZoom: (zoom: number) => void;
   sendToMACE: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;

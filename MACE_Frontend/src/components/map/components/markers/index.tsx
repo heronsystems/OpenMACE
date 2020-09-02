@@ -24,6 +24,7 @@ export default () => {
     globalTargets,
     paths,
     updateSelectedAircraft
+    
   } = useContext<Context>(AppContext);
   const all = {
     boundaries,

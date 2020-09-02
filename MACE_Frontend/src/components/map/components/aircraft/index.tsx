@@ -45,8 +45,8 @@ export default React.memo((props: Props) => {
                 />
                 :
                 <FixedWingIcon
-                width={DEFAULT_WIDTH}
-                height={DEFAULT_HEIGHT}
+                width={DEFAULT_WIDTH * altScale}
+                height={DEFAULT_HEIGHT * altScale}
                 rotation={props.data.orientation.yaw}
                 color={color}
                 />

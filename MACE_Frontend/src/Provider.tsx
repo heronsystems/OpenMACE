@@ -896,6 +896,7 @@ export default class AppProvider extends React.Component<Props, State> {
         value={{
           ...this.state,
           updateIcons: this.updateIcons,
+          updateTargets: this.updateTargets,
           removeIcon: this.removeIcon,
           setGlobalZoom: this.setZoom,
           sendToMACE: this.sendToMACE,
