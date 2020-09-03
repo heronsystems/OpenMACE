@@ -25,30 +25,35 @@ const Target = (props: Props) => {
   const scope = props.data.is_global ? "global" : "local";
   const width = props.data.is_global ? GLOBAL_WIDTH : LOCAL_WIDTH;
   const height = props.data.is_global ? GLOBAL_HEIGHT : LOCAL_HEIGHT;
-  const centeredLocation = {lat: props.data.location.lat-0.00005, lng: props.data.location.lng};
-  if(props.data.agentID === undefined){
-    return(
-      <Marker
-        position={centeredLocation}
-        icon={L.divIcon({
-          className: "target-icon",
-          html: renderToString(
-            <>
-              <TargetIcon
-                scope={scope}
-                color={colors.gray}
-                width={width}
-                height={height}
-                selected={true}
-              />
-              
-            </>
-          ),
-          iconSize: L.point(width, height, true),
-          iconAnchor: L.point(width / 2, height, true)
-        })}
-      ></Marker>
-    );
+  const centeredLocation = { lat: props.data.location.lat - 0.00005, lng: props.data.location.lng };
+  if (props.data.agentID === undefined) {
+    // console.log("Rerendering target as " + props.data.should_display);
+    if (props.data.should_display === true) {
+      return (
+        <Marker
+          position={centeredLocation}
+          icon={L.divIcon({
+            className: "target-icon",
+            html: renderToString(
+              <>
+                <TargetIcon
+                  scope={scope}
+                  color={colors.gray}
+                  width={width}
+                  height={height}
+                  selected={true}
+                />
+
+              </>
+            ),
+            iconSize: L.point(width, height, true),
+            iconAnchor: L.point(width / 2, height, true)
+          })}
+        ></Marker>
+      );
+    } else {
+      return null;
+    }
   } else {
     const tailNumber = getTailNumberFromAgentID(props.data.agentID.toString());
     return (

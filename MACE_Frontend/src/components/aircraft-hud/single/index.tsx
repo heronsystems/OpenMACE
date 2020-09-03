@@ -63,6 +63,7 @@ type Props = {
     onRequestCenter: (LatLng) => void;
     onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
     onUpdateGoHerePts: (point: Vertex) => void;
+    toggleGoHerePt: (show: boolean) => void;
     target: Vertex;
     defaultAltitude: number;
     onToggleSelect: (agentID: string[]) => void;
@@ -146,6 +147,7 @@ export default React.memo((props: Props) => {
         props.onCommand(command, [props.data], payload);
     };
     const goHere = () => {
+        props.toggleGoHerePt(false);
         ReactTooltip.hide();
         let command: string = "SET_GO_HERE";
         props.onCommand(command, [props.data], [JSON.stringify(props.target)]);
@@ -215,6 +217,7 @@ export default React.memo((props: Props) => {
     }
 
     const setTargetToCurrentLocation = (e) => {
+        props.toggleGoHerePt(true);
         props.onUpdateGoHerePts(props.data.location);
     }
     
@@ -456,7 +459,7 @@ export default React.memo((props: Props) => {
                                 />
                             </div>
                             <div style={styles.tooltipButtons}>
-                                <button style={styles.centerButton} onClick={() => { ReactTooltip.hide()}}>
+                                <button style={styles.centerButton} onClick={() => { ReactTooltip.hide(); props.toggleGoHerePt(false);}}>
                                     <FiX color={ICON_COLOR} size={20} />                        
                                 </button>
                                 <button style={styles.centerButton} onClick={goHere}>

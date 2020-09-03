@@ -70,7 +70,6 @@ export default () => {
   };
   const CenterMarker = getDefaultMarker();
   const targets = globalTargets.concat(localTargets);
-  // console.log("rerendering");
   return (
     <>
       {/* {map.getZoom() < 12 ? (

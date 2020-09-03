@@ -16,6 +16,7 @@ type Props = {
   aircrafts: Aircraft.AircraftPayload[];
   onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
   onUpdateGoHerePts: (point: Vertex) => void;
+  toggleGoHerePt: (show: boolean) => void;
   target: Vertex;
   defaultAltitude: number;
   onToggleSelect: (agentIDs: string[], show?: boolean) => void;
@@ -189,6 +190,7 @@ export default React.memo((props: Props) => {
               key={a.agentID}
               onCommand={props.onCommand}
               onUpdateGoHerePts={props.onUpdateGoHerePts}
+              toggleGoHerePt = {props.toggleGoHerePt}
               target={props.target}
               defaultAltitude={props.defaultAltitude}
               onToggleSelect={props.onToggleSelect}

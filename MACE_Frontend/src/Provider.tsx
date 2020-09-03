@@ -802,7 +802,7 @@ export default class AppProvider extends React.Component<Props, State> {
     }
     if (!areObjectsSame(targets, this.state.globalTargets)) {
       this.setState({ globalTargets: targets });
-    }
+    } 
   };
 
   updatePaths = (path: Aircraft.PathPayload) => {

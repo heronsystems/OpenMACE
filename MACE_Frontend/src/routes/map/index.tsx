@@ -15,6 +15,7 @@ type Props = {
 
 type State = {
   showHUD?: boolean;
+  showTarget?: boolean;
   goHerePt?: Vertex;
 };
 
@@ -25,6 +26,7 @@ class MapRoute extends React.Component<Props, State> {
     this._map = createRef();
     this.state = {
       showHUD: true,
+      showTarget: false,
       goHerePt: {
         lat: 0,
         lng: 0,
@@ -73,20 +75,25 @@ class MapRoute extends React.Component<Props, State> {
       alt: this.state.goHerePt.alt
     };
     this.setState({goHerePt: a});
-    this.props.context.updateTargets({
-      location: { lat: this.state.goHerePt.lat, lng: this.state.goHerePt.lng },
-      is_global: true
-    })
+    this.sendGoHerePt();
   }
 
   HUDUpdateGoHerePt = (point: Vertex) => {
     this.setState({goHerePt: point});
-    this.props.context.updateTargets({
-      location: { lat: this.state.goHerePt.lat, lng: this.state.goHerePt.lng },
-      is_global: true
-    })
+    this.sendGoHerePt();
   }
 
+  toggleGoHerePt = (show: boolean) => {
+    this.setState({showTarget: show},this.sendGoHerePt);
+  }
+
+  sendGoHerePt = () => {
+    this.props.context.updateTargets({
+      location: { lat: this.state.goHerePt.lat, lng: this.state.goHerePt.lng },
+      is_global: true,
+      should_display: this.state.showTarget
+    })
+  }
   render() {
     return (
       <Layout>
@@ -103,6 +110,7 @@ class MapRoute extends React.Component<Props, State> {
             aircrafts={this.props.context.aircrafts}
             onCommand={this.props.context.sendToMACE}
             onUpdateGoHerePts={this.HUDUpdateGoHerePt}
+            toggleGoHerePt = {this.toggleGoHerePt}
             target={this.state.goHerePt}
             defaultAltitude={10}
             onToggleSelect={this.props.context.updateSelectedAircraft}
