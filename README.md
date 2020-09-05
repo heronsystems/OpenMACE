@@ -10,7 +10,7 @@ Open source version of the MACE architecture.
 - [LICENSE](#license)
 
 # <a name="description"></a> Description
-The Multi-Agent Cooperative Engagement (MACE) framework is a framework linking the communications, control, automation and human-machine interface components of a practical multi-vehicle system into a deployable package. MACE establishes the data management, scheduling, and monitoring required by a multi-vehicle robotic system.  Designed as a modular software architecture, MACE implements a core collaborative engine that exposes interfaces with other system components via APIs. This approach abstracts the details of the collaboration away from an individual system, allowing for rapid integration of third party components.
+The Multi-Agent Collaborative Ecosystem (MACE) is a framework linking the communications, control, automation and human-machine interface components of a practical multi-vehicle system into a deployable package. MACE establishes the data management, scheduling, and monitoring required by a multi-vehicle robotic system.  Designed as a modular software architecture, MACE implements a core collaborative engine that exposes interfaces with other system components via APIs. This approach abstracts the details of the collaboration away from an individual system, allowing for rapid integration of third party components.
 
 ![MACEArchitecture](https://github.com/heronsystems/MACE/blob/master/docs/images/maceArchitecture.png)
 
