@@ -45,7 +45,8 @@ export default {
     justifyContent: "space-between"
   },
   selectRow: {
-    padding: "4px 0px",
+    width: "200px",
+    fontSize: 18
   },
   singleSettingContainer: {
     display: "flex",

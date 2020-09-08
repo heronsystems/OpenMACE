@@ -8,9 +8,7 @@ import { Context as ContextType } from "../../Context";
 import ContextMenu from "./components/context-menu";
 import Markers from "./components/markers";
 import Select from "react-select";
-import { Label } from "recharts";
 import {FiX,FiCheck} from "react-icons/fi";
-import { symbol } from "prop-types";
 const { createRef } = React;
 const { ipcRenderer } = window.require("electron");
 
@@ -20,6 +18,17 @@ const DEFAULT_CENTER: LatLng = new LatLng(-35.361196112174795, 149.1572570800781
 //   -76.66688919067384
 // );
 const DEFAULT_ZOOM = 14;
+const options = [
+  { value: "UNKNOWN", label: "Unknown" },
+  { value: "AUTO", label: "Auto" },
+  { value: "BRAKE", label: "Brake" },
+  { value: "GUIDED", label: "Guided" },
+  { value: "LAND", label: "Land" },
+  { value: "LOITER", label: "Loiter" },
+  { value: "POSHOLD", label: "Position hold" },
+  { value: "RTL", label: "Return to Launch" },
+  { value: "STABILIZE", label: "Stabilize" }
+];
 
 type Props = {
   context?: ContextType;
@@ -34,6 +43,7 @@ type State = {
   contextMenuVisible?: boolean;
   popupVisible?:boolean;
   originPosition?: L.LatLng;
+  selectedAircraft?: string;
 };
 
 // Used for debugging. Log clicked points on map for reference
@@ -47,7 +57,8 @@ export default class MapView extends React.Component<Props, State> {
         contextMenuPosition: { x: 0, y: 0 },
         contextMenuVisible: false,
         popupVisible: false,
-        originPosition: new LatLng(0,0)
+        originPosition: new LatLng(0,0),
+        selectedAircraft: null
     };
   }
   setZoom = (e) => {
@@ -81,16 +92,47 @@ export default class MapView extends React.Component<Props, State> {
   }
 
   togglePopup = () => {
-    this.setState({popupVisible: !this.state.popupVisible});
+    this.setState({selectedAircraft: "ALL"});
+    this.setState({ popupVisible: !this.state.popupVisible });
   }
 
+  onAircraftSelected = (e) => {
+    this.setState({selectedAircraft: e.target.value });
+  }
+  createDropdownList = () => {
+    let options = [];
+    options.push(<option key={0} value="ALL">All Aircraft</option>);
+    this.props.context.aircrafts.forEach((a) => {
+      options.push(<option key={options.length} value={a.agentID}>{"Agent " + a.agentID}</option>);
+    });
+    return options;
+  }
+  handlevehicleHome = () => {
+    this.setState({ popupVisible: false });
+    let command: string = "SET_VEHICLE_HOME";
+    let payload = {
+      lat: this.state.originPosition.lat,
+      lng: this.state.originPosition.lng,
+      alt: 0.0
+    };
+    let payloadArray = [];
+    this.props.context.aircrafts.forEach((a) => {
+      payloadArray.push(JSON.stringify(payload));
+      if (this.state.selectedAircraft === a.agentID) {
+        this.props.onCommand(command, [a], [JSON.stringify(payload)]);
+      }
+    });
+    if (this.state.selectedAircraft === "ALL") {
+      this.props.onCommand(command, this.props.context.aircrafts, payloadArray);
+    }
+  }
   handleContextMenu = (e: L.LeafletMouseEvent) => {
     this.setState({
-        contextMenuPosition: {
-            x: e.originalEvent.clientX,
-            y: e.originalEvent.clientY
-        },
-        originPosition: e.latlng
+      contextMenuPosition: {
+        x: e.originalEvent.clientX,
+        y: e.originalEvent.clientY
+      },
+      originPosition: e.latlng
     });
     
     this.setState({contextMenuVisible: true});
@@ -140,7 +182,7 @@ export default class MapView extends React.Component<Props, State> {
         />
 
         <Markers />
-        
+
         <ContextMenu
           position={this.state.contextMenuPosition}
           visible={this.state.contextMenuVisible}
@@ -153,23 +195,14 @@ export default class MapView extends React.Component<Props, State> {
             autoClose={false}
             closeOnClick={true}
             closeButton={false}
-            offset={[10,15]}
+            offset={[10, 15]}
+            zoomAnimation={false}
           >
-            <div
-              key={"Aircraft"}
-              style={Object.assign(
-                {},
-                styles.selectRow
-              )}
-            >
-              <span style={styles.inputLabel}>Select Aircraft:</span>
-              <Select
-                options={null}
-                value={null}
-                onChange={(e) => {
-                  null
-                }}
-              />
+            <span style={styles.inputLabel}>Select Aircraft:</span>
+            <div>
+              <select style={styles.selectRow} onChange={this.onAircraftSelected} >
+                {this.createDropdownList()}
+              </select>
             </div>
 
             <div style={styles.singleSettingContainer}>
@@ -201,7 +234,7 @@ export default class MapView extends React.Component<Props, State> {
               <button style={styles.cancelButton} onClick={this.togglePopup}>
                 Cancel
               </button>
-              <button style={styles.saveButton} onClick={() => {  }}>
+              <button style={styles.saveButton} onClick={this.handlevehicleHome}>
                 Save
               </button>
             </div>
