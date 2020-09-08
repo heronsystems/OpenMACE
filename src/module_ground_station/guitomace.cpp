@@ -512,7 +512,7 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
     bool isVehicleCommand = false;
     // Handle "global" (or non-vehicle specific) commands:
     QJsonDocument tmpDoc = QJsonDocument::fromJson(data[0].toString().toUtf8());
-    if (command == "SET_GLOBAL_ORIGIN")
+    if (command == "SET_SWARM_ORIGIN")
     {
         setGlobalOrigin(tmpDoc);
     }

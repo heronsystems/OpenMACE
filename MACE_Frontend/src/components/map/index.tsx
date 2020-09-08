@@ -1,9 +1,16 @@
 import { LatLng } from "leaflet";
+import colors from "../../util/colors";
+import styles from "./styles";
+import * as L from "leaflet";
 import * as React from "react";
-import { Map, TileLayer, Viewport } from "react-leaflet";
+import { Map, TileLayer, Viewport, Popup } from "react-leaflet";
 import { Context as ContextType } from "../../Context";
 import ContextMenu from "./components/context-menu";
 import Markers from "./components/markers";
+import Select from "react-select";
+import { Label } from "recharts";
+import {FiX,FiCheck} from "react-icons/fi";
+import { symbol } from "prop-types";
 const { createRef } = React;
 const { ipcRenderer } = window.require("electron");
 
@@ -25,6 +32,7 @@ type State = {
   zoom?: number;
   contextMenuPosition?: { x: number; y: number };
   contextMenuVisible?: boolean;
+  popupVisible?:boolean;
   originPosition?: L.LatLng;
 };
 
@@ -38,6 +46,7 @@ export default class MapView extends React.Component<Props, State> {
     this.state = {
         contextMenuPosition: { x: 0, y: 0 },
         contextMenuVisible: false,
+        popupVisible: false,
         originPosition: new LatLng(0,0)
     };
   }
@@ -65,7 +74,14 @@ export default class MapView extends React.Component<Props, State> {
     if(this.state.contextMenuVisible != nextState.contextMenuVisible) {
         return true;
     }
+    if(this.state.popupVisible != nextState.popupVisible) {
+      return true;
+    }
     return false;
+  }
+
+  togglePopup = () => {
+    this.setState({popupVisible: !this.state.popupVisible});
   }
 
   handleContextMenu = (e: L.LeafletMouseEvent) => {
@@ -78,16 +94,17 @@ export default class MapView extends React.Component<Props, State> {
     });
     
     this.setState({contextMenuVisible: true});
+    this.setState({popupVisible: false});
   }
 
   removeContextMenu = () => {
     this.setState({contextMenuVisible: false});
   }
 
-  setGlobalOrigin = () => {
+  setSwarmOrigin = () => {
     //   console.log("Set origin to: ");
     //   console.log(this.state.originPosition);
-      let command: string = "SET_GLOBAL_ORIGIN";
+      let command: string = "SET_SWARM_ORIGIN";
       let payload = {
           lat: this.state.originPosition.lat,
           lng: this.state.originPosition.lng,
@@ -108,7 +125,7 @@ export default class MapView extends React.Component<Props, State> {
         /// @ts-ignore This does exist, TS is being dumb
         onClick={(e) => {
           pts.push(e.latlng);
-          console.log(JSON.stringify(pts));
+          // console.log(JSON.stringify(pts));
           this.props.onUpdateGoHerePts(pts);
         }}
         minZoom={5}
@@ -128,8 +145,70 @@ export default class MapView extends React.Component<Props, State> {
           position={this.state.contextMenuPosition}
           visible={this.state.contextMenuVisible}
           onRequestClose={() => this.removeContextMenu()}
-          actions={[{ label: "Set global origin", action: this.setGlobalOrigin }]}
+          actions={[{ label: "Set global origin", action: this.setSwarmOrigin }, { label: "Set Vehicle origin", action: this.togglePopup }]}
         />
+        {this.state.popupVisible &&
+          <Popup
+            position={[this.state.originPosition.lat, this.state.originPosition.lng]}
+            autoClose={false}
+            closeOnClick={true}
+            closeButton={false}
+            offset={[10,15]}
+          >
+            <div
+              key={"Aircraft"}
+              style={Object.assign(
+                {},
+                styles.selectRow
+              )}
+            >
+              <span style={styles.inputLabel}>Select Aircraft:</span>
+              <Select
+                options={null}
+                value={null}
+                onChange={(e) => {
+                  null
+                }}
+              />
+            </div>
+
+            <div style={styles.singleSettingContainer}>
+              <span style={styles.inputLabel}>Latitude:</span>
+              <input
+                id="latitude-input"
+                type="number"
+                value={this.state.originPosition.lat}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                }}
+                name={"lat"}
+                style={styles.input}
+              />
+              <span style={styles.inputLabel}>Longitude:</span>
+              <input
+                id="longitude-input"
+                type="number"
+                value={this.state.originPosition.lng}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                }}
+                name={"lng"}
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.actionsContainer}>
+              <button style={styles.cancelButton} onClick={this.togglePopup}>
+                Cancel
+              </button>
+              <button style={styles.saveButton} onClick={() => {  }}>
+                Save
+              </button>
+            </div>
+          </Popup>
+        }
+
+
       </Map>
     );
   }
