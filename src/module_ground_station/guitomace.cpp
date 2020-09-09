@@ -217,7 +217,7 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonDocument &data)
     bool latLonFlag = data["latLonFlag"].toBool();
 
     mace::pose::GeodeticPosition_3D takeoffPosition;
-    
+
     if(latLonFlag) {
         takeoffPosition.setLatitude(data["takeoffPosition"]["lat"].toDouble());
         takeoffPosition.setLongitude(data["takeoffPosition"]["lng"].toDouble());
@@ -242,7 +242,7 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonDocument &data)
 //! \param jsonObj JSON data containing the command to be issued
 //!
 bool GUItoMACE::issuedCommand(const std::string &command, const int &vehicleID, const QJsonDocument &data)
-{    
+{
     if(command == "FORCE_DATA_SYNC") {
 //        mLogs->debug("Module Ground Station issuing command force data sync to system " + std::to_string(vehicleID) + ".");
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
@@ -314,7 +314,7 @@ bool GUItoMACE::issuedCommand(const std::string &command, const int &vehicleID, 
     }
 
     return false;
-    
+
 }
 
 
@@ -384,7 +384,7 @@ void GUItoMACE::getConnectedVehicles()
 
     std::shared_ptr<const MaceCore::MaceData> macedata = m_parent->getDataObject();
     std::vector<unsigned int> vehicleIDs;
-    macedata->GetAvailableVehicles(vehicleIDs);           
+    macedata->GetAvailableVehicles(vehicleIDs);
 
     QJsonArray ids;
     QJsonArray modes;

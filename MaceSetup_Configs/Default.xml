@@ -19,7 +19,7 @@
       <Parameter Name="AirborneInstance">false</Parameter>
     </Parameter>
     <Parameter Name="LocalPositionParameters">
-      <Parameter Name="TransformAltitude">false</Parameter>
+      <Parameter Name="TransformAltitude">true</Parameter>
     </Parameter>
     <Parameter Name="EKFOrigin">
       <Parameter Name="SetEKFOrigin">true</Parameter>
@@ -44,7 +44,7 @@
       <Parameter Name="AirborneInstance">false</Parameter>
     </Parameter>
     <Parameter Name="LocalPositionParameters">
-      <Parameter Name="TransformAltitude">false</Parameter>
+      <Parameter Name="TransformAltitude">true</Parameter>
     </Parameter>
     <Parameter Name="EKFOrigin">
       <Parameter Name="SetEKFOrigin">true</Parameter>
