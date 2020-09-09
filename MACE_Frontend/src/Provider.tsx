@@ -834,7 +834,6 @@ export default class AppProvider extends React.Component<Props, State> {
     if (!areObjectsSame(icons, this.state.icons)) {
       this.setState({ icons });
     }
-    
   };
   removeIcon = (name: string) => {
     const { icons } = this.state;

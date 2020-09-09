@@ -41,6 +41,16 @@ void GUItoMACE::setSendPort(const int &sendPort) {
 }
 
 //!
+//! \brief setReferenceAltitude Set the reference altitude for new vehicle home assignments
+//! \param home A newly received vehicle home
+//!
+void GUItoMACE::setReferenceAltitude(const command_item::SpatialHome &home, const MaceCore::ModuleCharacteristic &sender){
+    int veh = sender.ModuleID;
+    double alt = home.getPosition()->getDataVector().z();
+    m_referenceAlt[veh] = alt;
+}
+
+//!
 //! \brief getEnvironmentBoundary Initiate a request to MACE core for the current environment boundary vertices
 //!
 void GUItoMACE::getEnvironmentBoundary() {
@@ -106,7 +116,7 @@ void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonDocument &data)
 
     mace::pose::GeodeticPosition_3D homePosition(data["lat"].toDouble(),
                                                  data["lng"].toDouble(),
-                                                 data["alt"].toDouble());
+                                                 data["alt"].toDouble() + m_referenceAlt[vehicleID]);
     tmpHome.setPosition(&homePosition);
 
     std::stringstream buffer;

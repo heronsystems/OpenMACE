@@ -139,6 +139,11 @@ public:
     //!
     void setSendPort(const int &sendPort);
 
+    //!
+    //! \brief setReferenceAltitude Set the reference altitude for new vehicle home assignments
+    //! \param home A newly received vehicle home
+    //!
+    void setReferenceAltitude(const command_item::SpatialHome &home, const MaceCore::ModuleCharacteristic &sender);
 
     // TESTING:
     void testFunction1(const int &vehicleID);
@@ -171,9 +176,11 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
+    std::unordered_map<int,double> m_referenceAlt;
 
     mace::state_space::Cartesian2DSpacePtr goalSpace;
     mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
+
 
 };
 
