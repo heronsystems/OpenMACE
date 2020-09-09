@@ -18,17 +18,6 @@ const DEFAULT_CENTER: LatLng = new LatLng(-35.361196112174795, 149.1572570800781
 //   -76.66688919067384
 // );
 const DEFAULT_ZOOM = 14;
-const options = [
-  { value: "UNKNOWN", label: "Unknown" },
-  { value: "AUTO", label: "Auto" },
-  { value: "BRAKE", label: "Brake" },
-  { value: "GUIDED", label: "Guided" },
-  { value: "LAND", label: "Land" },
-  { value: "LOITER", label: "Loiter" },
-  { value: "POSHOLD", label: "Position hold" },
-  { value: "RTL", label: "Return to Launch" },
-  { value: "STABILIZE", label: "Stabilize" }
-];
 
 type Props = {
   context?: ContextType;
@@ -196,7 +185,6 @@ export default class MapView extends React.Component<Props, State> {
             closeOnClick={true}
             closeButton={false}
             offset={[10, 15]}
-            zoomAnimation={false}
           >
             <span style={styles.inputLabel}>Select Aircraft:</span>
             <div>
