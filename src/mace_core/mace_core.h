@@ -73,6 +73,12 @@ public:
     //!
     void AddDataFusion(const std::shared_ptr<MaceData> dataFusion);
 
+    //!
+    //! \brief setGlobalConfiguration Assign global parameters obtained from parsing
+    //! \param globalParams Input parameters
+    //!
+    void setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams);
+
 
     //!
     //! \brief AddVehicle Add vehicle to data fusion

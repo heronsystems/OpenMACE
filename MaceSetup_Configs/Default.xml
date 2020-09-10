@@ -2,6 +2,17 @@
 <ModuleConfigurations MaceInstance="0" EKFOrigin="{lat: }">
 
 <GlobalParams>
+    <Parameter Name="GlobalOrigin">
+      	<Parameter Name="Latitude">35.6212140</Parameter>
+      	<Parameter Name="Longitude">-78.7992165</Parameter>
+      	<Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+    <Parameter Name="Home">
+      	<Parameter Name="Latitude">35.6212140</Parameter>
+      	<Parameter Name="Longitude">-78.7992165</Parameter>
+      	<Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+    <Parameter Name="maceID">1</Parameter>
 
 </GlobalParams>
 
