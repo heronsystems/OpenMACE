@@ -7,10 +7,11 @@
       	<Parameter Name="Longitude">-78.7992165</Parameter>
       	<Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
-    <Parameter Name="Home">
-      	<Parameter Name="Latitude">35.6212140</Parameter>
-      	<Parameter Name="Longitude">-78.7992165</Parameter>
-      	<Parameter Name="Altitude">0.0</Parameter>
+    <Parameter Name="EnvironmentBoundary">
+	<Parameter Name="Vertices">(56,34),
+		(-4.54545,5464.534)
+	; 	(420.69, 123245.3546)
+	</Parameter>
     </Parameter>
     <Parameter Name="maceID">1</Parameter>
 

@@ -355,13 +355,11 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ConfigurationReader_XML::Get
     originSettings->AddTerminalParameters("Latitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
     originSettings->AddTerminalParameters("Longitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
     originSettings->AddTerminalParameters("Altitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
-    globalStructure.AddNonTerminal("GlobalOrigin", originSettings, true);
+    globalStructure.AddNonTerminal("GlobalOrigin", originSettings, false);
 
-    std::shared_ptr<MaceCore::ModuleParameterStructure> homeSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
-    homeSettings->AddTerminalParameters("Latitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
-    homeSettings->AddTerminalParameters("Longitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
-    homeSettings->AddTerminalParameters("Altitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
-    globalStructure.AddNonTerminal("Home", homeSettings, true);
+    std::shared_ptr<MaceCore::ModuleParameterStructure> boundarySettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+    boundarySettings->AddTerminalParameters("Vertices",MaceCore::ModuleParameterTerminalTypes::LATLNG,true);
+    globalStructure.AddNonTerminal("EnvironmentBoundary", boundarySettings, false);
 
     globalStructure.AddTerminalParameters("maceID", MaceCore::ModuleParameterTerminalTypes::INT, false);
     return std::make_shared<MaceCore::ModuleParameterStructure>(globalStructure);

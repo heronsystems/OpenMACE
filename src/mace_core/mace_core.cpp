@@ -5,6 +5,7 @@
 
 #include "module_characteristics.h"
 
+
 namespace MaceCore
 {
 
@@ -36,7 +37,11 @@ void MaceCore::AddDataFusion(const std::shared_ptr<MaceData> dataFusion)
 //!
 void MaceCore::setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams)
 {
-    UNUSED(globalParams);
+    std::shared_ptr<ModuleParameterValue> environmentBoundaryXML = globalParams->GetNonTerminalValue("EnvironmentBoundary");
+    if(environmentBoundaryXML->HasTerminal("Vertices")) {
+        vertices = environmentBoundaryXML->GetTerminalValue<std::vector<std::pair<double,double>>>("Vertices");
+        std::cout<<"Found terminal"<<std::endl;
+    }
 }
 
 

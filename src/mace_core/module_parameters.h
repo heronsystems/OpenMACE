@@ -16,7 +16,8 @@ enum class ModuleParameterTerminalTypes
     INT,
     DOUBLE,
     STRING,
-    BOOLEAN
+    BOOLEAN,
+    LATLNG
 };
 
 
@@ -117,6 +118,60 @@ private:
         return false;
     }
 
+    //!
+    //! \brief FromString Get latlon vector from string
+    //! \param string String to query
+    //! \param value Value to return
+    //! \return Success/failure
+    //!
+    static bool FromString(const std::string &string, std::vector<std::pair<double,double>> &value)
+    {
+        try
+        {
+            std::string opener = "(";
+            std::string delimeter = ",";
+            std::string closer = ")";
+            double lat;
+            double lng;
+
+            size_t start = string.find(opener, 0) ;
+            size_t finish;
+            if (start == std::string::npos){
+                throw "syntax error";
+            }
+
+            while (start != std::string::npos){
+                finish = string.find(delimeter,start);
+                if (finish == std::string::npos){
+                    throw "syntax error";
+                    break;
+                }
+                lat = std::stod(string.substr(start + 1, finish - start - 1));
+                start = finish + delimeter.length();
+
+                finish = string.find(closer,start);
+                if (finish == std::string::npos){
+                    throw "syntax error";
+                    break;
+                }
+
+                lng = std::stod(string.substr(start, finish - start));
+                start = string.find(opener,finish);
+
+                value.push_back(std::make_pair(lat,lng));
+            }
+            return true;
+        }
+        catch(const std::invalid_argument)
+        {
+            return false;
+        }
+        catch(const std::string &string){
+            std::cout << "Parse error: Enter a series of LatLng vertices formatted as (lat,lon) with any combination of whitespace" << std::endl;
+            return false;
+        }
+    }
+
 };
 
 
@@ -201,6 +256,11 @@ public:
             AddTerminalValue(name, ParameterConversion::ConvertFromString<bool>(valueStr));
             break;
         }
+        case ModuleParameterTerminalTypes::LATLNG:
+        {
+            AddTerminalValue(name, ParameterConversion::ConvertFromString<std::vector<std::pair<double,double>>>(valueStr));
+            break;
+        }
         default:
         {
             throw std::runtime_error("Unknown type");
@@ -249,6 +309,15 @@ public:
     }
 
     //!
+    //! \brief AddTerminalValue Add latlng terminal value
+    //! \param name Terminal name
+    //! \param value Terminal value
+    //!
+    void AddTerminalValue(const std::string &name, const std::vector<std::pair<double,double>> &value)
+    {
+        m_TerminalValues.insert({name, std::make_shared<SingleParameterValue<std::vector<std::pair<double,double>>> >(SingleParameterValue<std::vector<std::pair<double,double>>>(value))});;
+    }
+    //!
     //! \brief AddNonTerminal Add module parameter by value
     //! \param name Terminal name
     //! \param value Terminal value
@@ -257,7 +326,6 @@ public:
     {
         m_NonTerminalValues.insert({name, value});
     }
-
 
     //!
     //! \brief Determine if given terminal parameter exists
