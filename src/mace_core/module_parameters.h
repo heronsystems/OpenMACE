@@ -142,19 +142,14 @@ private:
 
             while (start != std::string::npos){
                 finish = string.find(delimeter,start);
-                if (finish == std::string::npos){
+                if (finish == std::string::npos)
                     throw "syntax error";
-                    break;
-                }
                 lat = std::stod(string.substr(start + 1, finish - start - 1));
                 start = finish + delimeter.length();
 
                 finish = string.find(closer,start);
-                if (finish == std::string::npos){
+                if (finish == std::string::npos)
                     throw "syntax error";
-                    break;
-                }
-
                 lng = std::stod(string.substr(start, finish - start));
                 start = string.find(opener,finish);
 
@@ -166,7 +161,7 @@ private:
         {
             return false;
         }
-        catch(const std::string &string){
+        catch(const char* message){
             std::cout << "Parse error: Enter a series of LatLng vertices formatted as (lat,lon) with any combination of whitespace" << std::endl;
             return false;
         }
