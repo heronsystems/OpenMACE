@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <memory>
 #include <iostream>
+#include "base/pose/geodetic_position_2D.h"
 
 namespace MaceCore
 {
@@ -124,8 +125,9 @@ private:
     //! \param value Value to return
     //! \return Success/failure
     //!
-    static bool FromString(const std::string &string, std::vector<std::pair<double,double>> &value)
+    static bool FromString(const std::string &string, std::vector<mace::pose::GeodeticPosition_2D> &value)
     {
+        std::string errormsg = "Parse error: Enter a series of LatLng vertices formatted as (lat,lon) with any combination of whitespace";
         try
         {
             std::string opener = "(";
@@ -137,32 +139,32 @@ private:
             size_t start = string.find(opener, 0) ;
             size_t finish;
             if (start == std::string::npos){
-                throw "syntax error";
+                throw std::runtime_error("No vertices supplied");
             }
 
             while (start != std::string::npos){
                 finish = string.find(delimeter,start);
                 if (finish == std::string::npos)
-                    throw "syntax error";
+                    throw std::runtime_error(errormsg );
                 lat = std::stod(string.substr(start + 1, finish - start - 1));
                 start = finish + delimeter.length();
 
                 finish = string.find(closer,start);
                 if (finish == std::string::npos)
-                    throw "syntax error";
+                    throw std::runtime_error(errormsg);
                 lng = std::stod(string.substr(start, finish - start));
                 start = string.find(opener,finish);
 
-                value.push_back(std::make_pair(lat,lng));
+                value.push_back(mace::pose::GeodeticPosition_2D(lat,lng));
             }
             return true;
         }
         catch(const std::invalid_argument)
         {
+            std::cout << errormsg << std::endl;
             return false;
         }
-        catch(const char* message){
-            std::cout << "Parse error: Enter a series of LatLng vertices formatted as (lat,lon) with any combination of whitespace" << std::endl;
+        catch(const std::runtime_error){
             return false;
         }
     }
@@ -253,7 +255,7 @@ public:
         }
         case ModuleParameterTerminalTypes::LATLNG:
         {
-            AddTerminalValue(name, ParameterConversion::ConvertFromString<std::vector<std::pair<double,double>>>(valueStr));
+            AddTerminalValue(name, ParameterConversion::ConvertFromString<std::vector<mace::pose::GeodeticPosition_2D>>(valueStr));
             break;
         }
         default:
@@ -308,9 +310,9 @@ public:
     //! \param name Terminal name
     //! \param value Terminal value
     //!
-    void AddTerminalValue(const std::string &name, const std::vector<std::pair<double,double>> &value)
+    void AddTerminalValue(const std::string &name, const std::vector<mace::pose::GeodeticPosition_2D> &value)
     {
-        m_TerminalValues.insert({name, std::make_shared<SingleParameterValue<std::vector<std::pair<double,double>>> >(SingleParameterValue<std::vector<std::pair<double,double>>>(value))});;
+        m_TerminalValues.insert({name, std::make_shared<SingleParameterValue<std::vector<mace::pose::GeodeticPosition_2D>> >(SingleParameterValue<std::vector<mace::pose::GeodeticPosition_2D>>(value))});;
     }
     //!
     //! \brief AddNonTerminal Add module parameter by value

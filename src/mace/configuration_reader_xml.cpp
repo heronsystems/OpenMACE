@@ -358,7 +358,10 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ConfigurationReader_XML::Get
     globalStructure.AddNonTerminal("GlobalOrigin", originSettings, false);
 
     std::shared_ptr<MaceCore::ModuleParameterStructure> boundarySettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+    std::vector<std::string> allowableTypes={"hard", "soft"}    ;
     boundarySettings->AddTerminalParameters("Vertices",MaceCore::ModuleParameterTerminalTypes::LATLNG,true);
+    boundarySettings->AddTerminalParameters("Type",MaceCore::ModuleParameterTerminalTypes::STRING,false, "hard", allowableTypes);
+    boundarySettings->AddTerminalParameters("Name",MaceCore::ModuleParameterTerminalTypes::STRING,false, "Nameless");
     globalStructure.AddNonTerminal("EnvironmentBoundary", boundarySettings, false);
 
     globalStructure.AddTerminalParameters("maceID", MaceCore::ModuleParameterTerminalTypes::INT, false);

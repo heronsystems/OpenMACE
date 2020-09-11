@@ -560,6 +560,7 @@ export default class AppProvider extends React.Component<Props, State> {
   }
 
   constructDefaultAircraft = (): Aircraft.AircraftPayload => {
+    this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
     return {
         agentID: "DEFAULT",
         selected: true,

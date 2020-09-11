@@ -810,7 +810,6 @@ private:
     bool m_MaceInstanceIDSet;
 
     std::vector<int> m_ReservedModuleIDs;
-    std::vector<std::pair<double,double>> vertices;
     std::shared_ptr<MaceData> m_DataFusion;
 };
 

@@ -68,6 +68,7 @@ SOURCES += \
     target_items/abstract_dynamic_target.cpp \
     do_items/action_message_request.cpp
 HEADERS +=\
+    boundary_items/environment_boundary.h \
     do_items/action_arm.h \
     do_items/action_change_mode.h \
     do_items/action_change_speed.h \

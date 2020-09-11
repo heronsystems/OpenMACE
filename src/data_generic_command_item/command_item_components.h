@@ -4,6 +4,7 @@
 #include "data_generic_command_item/boundary_items/boundary_key.h"
 #include "data_generic_command_item/boundary_items/boundary_type.h"
 #include "data_generic_command_item/boundary_items/boundary_list.h"
+#include "data_generic_command_item/boundary_items/environment_boundary.h"
 
 #include "data_generic_command_item/spatial_items/abstract_spatial_action.h"
 #include "data_generic_command_item/spatial_items/spatial_home.h"

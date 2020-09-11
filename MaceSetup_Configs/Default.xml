@@ -8,10 +8,13 @@
       	<Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
     <Parameter Name="EnvironmentBoundary">
-	<Parameter Name="Vertices">(56,34),
-		(-4.54545,5464.534)
-	; 	(420.69, 123245.3546)
+	<Parameter Name="Vertices">(-35.359349, 149.154646),
+		(-35.359421, 149.160719)
+		(-35.363713, 149.162548)
+		(-35.365700, 149.155107)
 	</Parameter>
+	<Parameter Name="Type">soft</Parameter>
+	<Parameter Name="Name">YOU SHALL NOT PASS</Parameter>
     </Parameter>
     <Parameter Name="maceID">1</Parameter>
 
