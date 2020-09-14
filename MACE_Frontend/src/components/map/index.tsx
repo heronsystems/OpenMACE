@@ -7,8 +7,6 @@ import { Map, TileLayer, Viewport, Popup } from "react-leaflet";
 import { Context as ContextType } from "../../Context";
 import ContextMenu from "./components/context-menu";
 import Markers from "./components/markers";
-import Select from "react-select";
-import {FiX,FiCheck} from "react-icons/fi";
 const { createRef } = React;
 const { ipcRenderer } = window.require("electron");
 
