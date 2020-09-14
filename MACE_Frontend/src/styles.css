@@ -1,0 +1,228 @@
+@import url("https://fonts.googleapis.com/css?family=Karla:400,700|Rubik:300,400,500,700,900&display=swap");
+html,
+body,
+#app {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  max-height: 100%;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+#map {
+  height: 100%;
+}
+
+* {
+  font-family: Rubik;
+}
+
+/*  Resizable CSS  */
+.custom-box {
+  overflow: visible;
+}
+.custom-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #1153aa;
+  opacity: 0.75;
+  border-radius: 4px;
+}
+.custom-handle-sw {
+  bottom: -4px;
+  left: -4px;
+  cursor: sw-resize;
+}
+.custom-handle-se {
+  bottom: -4px;
+  right: -4px;
+  cursor: se-resize;
+}
+.custom-handle-nw {
+  top: -4px;
+  left: -4px;
+  cursor: nw-resize;
+}
+.custom-handle-ne {
+  top: -4px;
+  right: -4px;
+  cursor: ne-resize;
+}
+.custom-handle-w,
+.custom-handle-e {
+  top: 50%;
+  margin-top: -4px;
+  cursor: ew-resize;
+}
+.custom-handle-w {
+  left: -4px;
+}
+.custom-handle-e {
+  right: -4px;
+}
+.custom-handle-n,
+.custom-handle-s {
+  left: 50%;
+  margin-left: -4px;
+  cursor: ns-resize;
+}
+.custom-handle-n {
+  top: -4px;
+}
+.custom-handle-s {
+  bottom: -4px;
+}
+
+/* Rechart Style Overrides  */
+.recharts-legend-item-text {
+  font-size: 13px;
+  color: #555;
+  font-weight: 400;
+}
+
+/*  Leaflet Options  */
+.aircraft-icon {
+  background-color: transparent;
+  border: none;
+}
+.marker-tooltip {
+  background-color: #f7fafc;
+  border: none;
+  min-width: 50px;
+}
+.marker-tooltip p {
+  margin: 0;
+  padding: 0;
+}
+.aircraft-tooltip {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 8px;
+  text-align: left;
+}
+.aircraft-tooltip-row {
+  padding: 2px 0;
+}
+.aircraft-tooltip-label {
+  font-weight: 500;
+  font-size: 13px;
+  color: #2d3748;
+}
+.aircraft-tooltip-value {
+  font-size: 13px;
+  margin-left: 4px;
+  color: #4a5568;
+}
+.aircraft-fixed-tooltip {
+  padding: 0;
+}
+
+.leaflet-mouse-marker {
+  /* background-color: blue; */
+}
+.leaflet-map-pane svg {
+  z-index: 1;
+}
+.leaflet-aircraft-path-pane {
+  z-index: 600;
+}
+.leaflet-aircraft-pane {
+  z-index: 800;
+}
+.leaflet-tooltip-pane {
+  z-index: 900;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 6px;
+}
+.leaflet-popup-content {
+  margin: 8px 20px;
+}
+.leaflet-popup-tip {
+  border-radius: 3px;
+  width: 12px;
+  height: 12px;
+}
+.leaflet-popup-tip-container {
+  margin-left: -22px;
+  z-index: 999;
+}
+
+.leaflet-popup-close-button {
+  display: none;
+}
+/* .aircraft-notification {
+  width: 20,
+  height: 20,
+  backgroundColor: colors.red[600],
+  borderRadius: 50,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  position: "absolute",
+  right: 0,
+  borderWidth: 1,
+  borderColor: colors.red[400],
+  animation: notificationAnimation 1s ease-in infinite
+} */
+@keyframes notificationAnimation {
+  0% {
+    width: 24px;
+    height: 24px;
+  }
+  50% {
+    width: 32px;
+    height: 32px;
+  }
+  100% {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/*  React Notifications  */
+.react-notification-root {
+  top: 0;
+}
+
+/*   Message List Animation  */
+.move-enter {
+  opacity: 0.01;
+  transform: translate(-10px, 0);
+}
+
+.move-enter-active {
+  opacity: 1;
+  transform: translate(0, 0);
+  transition: all 500ms ease-in;
+}
+
+.move-exit {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.move-exit-active {
+  opacity: 0.01;
+  transform: translate(10px, 0);
+  transition: all 500ms ease-in;
+}
+
+.ReactModal__Overlay.ReactModal__Overlay--after-open {
+  z-index: 9999;
+}
