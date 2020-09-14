@@ -531,7 +531,6 @@ void ModuleGroundStation::NewlyAvailableMissionExeState(const MissionItem::Missi
 void ModuleGroundStation::NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     std::cout<<"Ground Control: New available home position"<<std::endl;
-    m_toMACEHandler->setReferenceAltitude(home, sender.Value());
     m_toGUIHandler->sendVehicleHome(home.getOriginatingSystem(), home);
 }
 
