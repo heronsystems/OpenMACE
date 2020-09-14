@@ -7,6 +7,7 @@ import { Map, TileLayer, Viewport, Popup } from "react-leaflet";
 import { Context as ContextType } from "../../Context";
 import ContextMenu from "./components/context-menu";
 import Markers from "./components/markers";
+import { FaShower } from "react-icons/fa";
 const { createRef } = React;
 const { ipcRenderer } = window.require("electron");
 
@@ -88,9 +89,15 @@ export default class MapView extends React.Component<Props, State> {
   }
   createDropdownList = () => {
     let options = [];
+    let hide = false;
     options.push(<option key={0} value="ALL">All Aircraft</option>);
     this.props.context.aircrafts.forEach((a) => {
-      options.push(<option key={options.length} value={a.agentID}>{"Agent " + a.agentID}</option>);
+      if (["STABILIZE",""].indexOf(a.mode) != -1){
+        hide = true;
+      } else {
+        hide = false;
+      }
+      options.push(<option key={options.length} value={a.agentID} disabled={hide}>{"Agent " + a.agentID}</option>);
     });
     return options;
   }
@@ -103,14 +110,18 @@ export default class MapView extends React.Component<Props, State> {
       alt: 0.0
     };
     let payloadArray = [];
+    let enabledAircraft = [];
     this.props.context.aircrafts.forEach((a) => {
-      payloadArray.push(JSON.stringify(payload));
+      if (["STABILIZE",""].indexOf(a.mode) == -1){
+        enabledAircraft.push(a);
+        payloadArray.push(JSON.stringify(payload));
+      }
       if (this.state.selectedAircraft === a.agentID) {
         this.props.onCommand(command, [a], [JSON.stringify(payload)]);
       }
     });
     if (this.state.selectedAircraft === "ALL") {
-      this.props.onCommand(command, this.props.context.aircrafts, payloadArray);
+      this.props.onCommand(command, enabledAircraft, payloadArray);
     }
   }
   handleContextMenu = (e: L.LeafletMouseEvent) => {
