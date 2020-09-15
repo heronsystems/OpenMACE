@@ -106,7 +106,7 @@ void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonDocument &data)
     double referenceAlt =  m_parent->getDataObject()->GetVehicleHomePostion(vehicleID).getPosition()->getDataVector().z();
     mace::pose::GeodeticPosition_3D homePosition(data["lat"].toDouble(),
                                                  data["lng"].toDouble(),
-                                                 data["alt"].toDouble() + referenceAlt);
+                                                 data["alt"].toDouble() + referenceAlt); // TODO-PAT/AARON: Figure out a more robust way to handle the home position altitude conversion
     tmpHome.setPosition(&homePosition);
 
     std::stringstream buffer;
