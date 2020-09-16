@@ -53,18 +53,20 @@ void AbstractStateArdupilot::setCurrentCommand(const std::shared_ptr<AbstractCom
 
 bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool commandHandled = false;
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
         Controllers::ControllerCollection<mavlink_message_t, int> *collection = Owner().ControllersCollection();
         auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerSystemMode->AddLambda_Finished(this, [this, controllerSystemMode](const bool completed, const uint8_t finishCode){
-
+            UNUSED(completed); UNUSED(finishCode); UNUSED(this);
             controllerSystemMode->Shutdown();
         });
 
         controllerSystemMode->setLambda_Shutdown([this, collection]()
         {
+            UNUSED(this);
             auto ptr = collection->Remove("modeController");
             delete ptr;
         });
@@ -78,17 +80,20 @@ bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<AbstractCommand
         controllerSystemMode->Send(commandMode, sender, target);
 
         collection->Insert("modeController", controllerSystemMode);
-
+        commandHandled = true;
         break;
     }
     default:
         break;
     }
+
+    return commandHandled;
 }
 
 bool AbstractStateArdupilot::handleMAVLINKMessage(const mavlink_message_t &msg)
 {
-    throw std::runtime_error("States should not longer handle mavlink messages");
+    UNUSED(msg);
+    throw std::runtime_error("States should no longer handle mavlink messages");
 
     /*
     int systemID = msg.sysid;

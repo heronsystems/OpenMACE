@@ -26,6 +26,7 @@ SOURCES += \
 
 HEADERS += data_global.h \
     i_topic_component_data_object.h \
+    mace_hsm_state.h \
     topic_data_object_collection.h \
     coordinate_frame.h \
     vehicle_command_types.h \

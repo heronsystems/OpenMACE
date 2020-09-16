@@ -16,7 +16,7 @@
 #include <functional>
 #include <memory>
 
-#include "ardupilot_state_types.h" //This could be templated out but we don't have the time for that
+#include "data/mace_hsm_state.h" //This could be templated out but we don't have the time for that
 
 #include <unordered_map>
 #include <mutex>
@@ -281,7 +281,7 @@ struct ConcreteStateFactory : StateFactory
 
 	virtual State* AllocateState() const
 	{
-        return HSM_NEW TargetState();
+                return HSM_NEW TargetState();
 	}
 
 private:
@@ -528,13 +528,13 @@ namespace detail
 
 struct State
 {
-	State()
-		: mOwnerStateMachine(0)
-		, mStackDepth(0)
-		, mStateValueResetters(0)
+    State() :
+          currentStateEnum(Data::MACEHSMState::STATE_GROUNDED)
+        , desiredStateEnum(Data::MACEHSMState::STATE_GROUNDED)
+        , mOwnerStateMachine(0)
+        , mStackDepth(0)
+        , mStateValueResetters(0)
         , mStateDebugName(0)
-        , currentStateEnum(ardupilot::state::ArdupilotFlightState::STATE_GROUNDED)
-        , desiredStateEnum(ardupilot::state::ArdupilotFlightState::STATE_GROUNDED)
 	{
 	}
 
@@ -544,12 +544,12 @@ struct State
 		ResetStateValues();
 	}
 
-    ardupilot::state::ArdupilotFlightState getCurrentStateEnum() const
+    Data::MACEHSMState getCurrentStateEnum() const
     {
         return currentStateEnum;
     }
 
-    ardupilot::state::ArdupilotFlightState getDesiredStateEnum() const
+    Data::MACEHSMState getDesiredStateEnum() const
     {
         return desiredStateEnum;
     }
@@ -665,18 +665,18 @@ struct State
 	StateOverride<SourceState> GetStateOverride();
 
 public:
-    void setDesiredStateEnum(const ardupilot::state::ArdupilotFlightState &state)
+    void setDesiredStateEnum(const Data::MACEHSMState &state)
     {
         desiredStateEnum = state;
     }
 
-    void setCurrentStateEnum(const ardupilot::state::ArdupilotFlightState &state)
+    void setCurrentStateEnum(const Data::MACEHSMState &state)
     {
         currentStateEnum = state;
     }
 protected:
-    ardupilot::state::ArdupilotFlightState currentStateEnum;
-    ardupilot::state::ArdupilotFlightState desiredStateEnum;
+    Data::MACEHSMState currentStateEnum;
+    Data::MACEHSMState desiredStateEnum;
 
 private:
 	friend void detail::InitState(State* state, StateMachine* ownerStateMachine, size_t stackDepth, const StateFactory& stateFactory);

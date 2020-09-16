@@ -7,8 +7,8 @@ State_FlightBrake::State_FlightBrake():
     AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_FLIGHT_BRAKE"<<std::endl;
-    currentStateEnum = ArdupilotFlightState::STATE_FLIGHT_BRAKE;
-    desiredStateEnum = ArdupilotFlightState::STATE_FLIGHT_BRAKE;
+    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_BRAKE;
+    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_BRAKE;
 }
 
 AbstractStateArdupilot* State_FlightBrake::getClone() const

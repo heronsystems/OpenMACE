@@ -1,5 +1,5 @@
-#ifndef STATE_COMPONENTS_H
-#define STATE_COMPONENTS_H
+#ifndef ARDUPLANE_STATE_COMPONENTS_H
+#define ARDUPLANE_STATE_COMPONENTS_H
 
 #include <mavlink.h>
 
@@ -7,7 +7,6 @@
 
 //#include "module_vehicle_arduplane/flight_states/state_flight.h"
 //#include "module_vehicle_arduplane/flight_states/state_flight_auto.h"
-//#include "module_vehicle_arduplane/flight_states/state_flight_brake.h"
 //#include "module_vehicle_arduplane/flight_states/state_flight_guided.h"
 //#include "module_vehicle_arduplane/flight_states/state_flight_land.h"
 //#include "module_vehicle_arduplane/flight_states/state_flight_loiter.h"
@@ -15,7 +14,7 @@
 //#include "module_vehicle_arduplane/flight_states/state_flight_rtl.h"
 //#include "module_vehicle_arduplane/flight_states/state_flight_unknown.h"
 
-//#include "module_vehicle_arduplane/flight_states/state_grounded.h"
+#include "module_vehicle_arduplane/flight_states/state_grounded.h"
 //#include "module_vehicle_arduplane/flight_states/state_grounded_armed.h"
 //#include "module_vehicle_arduplane/flight_states/state_grounded_arming.h"
 //#include "module_vehicle_arduplane/flight_states/state_grounded_disarming.h"
@@ -33,4 +32,4 @@
 
 //#include "module_vehicle_arduplane/flight_states/state_unknown.h"
 
-#endif // STATE_COMPONENTS_H
+#endif // ARDUPLANE_STATE_COMPONENTS_H

@@ -3,8 +3,8 @@
 namespace DataGenericItem {
 
 DataGenericItem_Heartbeat::DataGenericItem_Heartbeat() :
-    autopilot(Data::AutopilotType::AUTOPILOT_TYPE_GENERIC),protocol(Data::CommsProtocol::COMMS_MACE),type(Data::SystemType::SYSTEM_TYPE_GENERIC),
-    missionState(Data::MissionExecutionState::MESTATE_UNEXECUTED),maceCompanion(true)
+    autopilot(Data::AutopilotType::AUTOPILOT_TYPE_GENERIC), protocol(Data::CommsProtocol::COMMS_MACE), type(Data::SystemType::SYSTEM_TYPE_GENERIC),
+    missionState(Data::MissionExecutionState::MESTATE_UNEXECUTED), maceCompanion(true), currentHSMState(Data::MACEHSMState::STATE_UNKNOWN)
 {
 
 }
@@ -17,6 +17,7 @@ DataGenericItem_Heartbeat::DataGenericItem_Heartbeat(const DataGenericItem_Heart
     this->missionState = copyObj.getMissionState();
     this->maceCompanion = copyObj.getCompanion();
     this->mavlinkID = copyObj.getMavlinkID();
+    this->currentHSMState = copyObj.getHSMState();
 }
 
 
@@ -29,6 +30,7 @@ mace_heartbeat_t DataGenericItem_Heartbeat::getMACECommsObject() const
     rtnObj.protocol = (uint8_t)this->protocol;
     rtnObj.type = (uint8_t)this->type;
     rtnObj.mavlinkID = this->mavlinkID;
+//    rtnObj.currentHSMState = (uint8_t)this->currentHSMState; // TODO: Edit Heartbeat mavlink message to include HSM state
 
     return rtnObj;
 }
@@ -53,7 +55,7 @@ QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::s
 
     // TODO: Populate:
     json["behavior_state"] = ""; // Meant to be the behavior execution state?
-    json["vehicle_state"] = ""; // This can be where we store its state machine state. Can be used for button state machine on GUI
+    json["vehicle_state"] = QString::fromStdString(Data::MACEHSMStateToString(getHSMState())); // This can be where we store its state machine state. Can be used for button state machine on GUI
 
     return json;
 }

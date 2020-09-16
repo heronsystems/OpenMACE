@@ -1,5 +1,5 @@
-#ifndef STATE_COMPONENTS_H
-#define STATE_COMPONENTS_H
+#ifndef ARDUCOPTER_STATE_COMPONENTS_H
+#define ARDUCOPTER_STATE_COMPONENTS_H
 
 #include <mavlink.h>
 
@@ -33,4 +33,4 @@
 
 #include "module_vehicle_arducopter/flight_states/state_unknown.h"
 
-#endif // STATE_COMPONENTS_H
+#endif // ARDUCOPTER_STATE_COMPONENTS_H

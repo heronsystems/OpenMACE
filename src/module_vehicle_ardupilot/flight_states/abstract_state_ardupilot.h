@@ -8,7 +8,7 @@
 #include "data_generic_command_item/abstract_command_item.h"
 
 #include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
-#include "ardupilot_state_types.h"
+#include "data/mace_hsm_state.h"
 
 #include "../vehicle_object/vehicle_object_ardupilot.h"
 

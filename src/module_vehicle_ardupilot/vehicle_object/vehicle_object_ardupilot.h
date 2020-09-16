@@ -5,7 +5,7 @@
 
 #include "ardupilot_component_operating_mode.h"
 
-#include "../flight_states/ardupilot_state_types.h"
+#include "data/mace_hsm_state.h"
 
 #include "data_generic_mission_item_topic/vehicle_target_topic.h"
 

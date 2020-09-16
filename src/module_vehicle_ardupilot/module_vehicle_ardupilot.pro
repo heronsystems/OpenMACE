@@ -34,7 +34,6 @@ HEADERS += module_vehicle_ardupilot.h\
     guided_timeout_controller.h \
     flight_states/ardupilot_hsm.h \
     flight_states/ardupilot_state_components.h \
-    flight_states/ardupilot_state_types.h \
     flight_states/abstract_root_state.h \
     flight_states/abstract_state_ardupilot.h \
     vehicle_object/vehicle_object_ardupilot.h

@@ -623,6 +623,12 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
     default:
         heartbeat.setType(Data::SystemType::SYSTEM_TYPE_GENERIC);
     }
+
+    // Set MACE HSM state:
+    if(this->stateMachine->getCurrentState()) {
+        heartbeat.setHSMState(stateMachine->getCurrentState()->getCurrentStateEnum());
+    }
+
     m_SystemData->status->vehicleHeartbeat.set(heartbeat);
     std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Heartbeat> ptrHeartbeat = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Heartbeat>(heartbeat);
     ModuleVehicleMAVLINK::cbi_VehicleStateData(systemID,ptrHeartbeat);
