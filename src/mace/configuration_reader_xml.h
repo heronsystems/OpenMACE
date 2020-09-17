@@ -44,9 +44,16 @@ public:
     //!
     ConfigurationParseResult Parse(const std::string &filename);
 
-
+    //!
+    //! \brief Confirm that MACE Instance ID has been set
+    //! \return True if ID has been set
+    //!
     bool HasStaticMaceInstanceID() const;
 
+    //!
+    //! \brief Get MACE instance ID
+    //! \return MACE instance ID
+    //!
     uint32_t GetStaticMaceInstanceID() const;
 
 
@@ -65,6 +72,15 @@ public:
     //! \return Configuration for module
     //!
     std::shared_ptr<MaceCore::ModuleParameterValue> GetModuleConfiguration(const std::shared_ptr<MaceCore::ModuleBase> &module);
+    //!
+    //! \brief Get the global configuration parameters after parse
+    //!
+    //! Must be called after Parse is called and returns with a value of true
+    //! \param module Pointer to module to get configuration of
+    //! \return Global Configuration
+    //!
+    std::shared_ptr<MaceCore::ModuleParameterValue> GetGlobalConfiguration();
+
 
 private:
 
@@ -77,6 +93,13 @@ private:
 
     std::map<std::shared_ptr<MaceCore::ModuleBase>, std::string> m_ModuleTypes;
     std::map<std::shared_ptr<MaceCore::ModuleBase>, std::shared_ptr<MaceCore::ModuleParameterValue> > m_Parameters;
+    std::shared_ptr<MaceCore::ModuleParameterValue> m_globalParameters;
+
+    //!
+    //! \brief Describes the structure of the global parameters
+    //! \return Global Parameter Structure
+    //!
+    std::shared_ptr<MaceCore::ModuleParameterStructure> GetGlobalParamStructure();
 };
 
 #endif // CONFIGURATIONREADER_XML_H

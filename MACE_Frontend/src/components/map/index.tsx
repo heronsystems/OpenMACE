@@ -4,6 +4,8 @@ import { Map, TileLayer, Viewport } from "react-leaflet";
 import { Context as ContextType } from "../../Context";
 import ContextMenu from "./components/context-menu";
 import Markers from "./components/markers";
+import { Vertex } from "../../data-types";
+import DefaultMarker from "./components/default-marker";
 const { createRef } = React;
 const { ipcRenderer } = window.require("electron");
 
@@ -16,8 +18,9 @@ const DEFAULT_ZOOM = 14;
 
 type Props = {
   context?: ContextType;
-  onUpdateGoHerePts: (pts: L.LatLng[]) => void;
+  onUpdateGoHerePts: (pts: L.LatLng) => void;
   onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
+  target: Vertex;
 };
 
 type State = {
@@ -107,9 +110,7 @@ export default class MapView extends React.Component<Props, State> {
         ref={this._map}
         /// @ts-ignore This does exist, TS is being dumb
         onClick={(e) => {
-          pts.push(e.latlng);
-          console.log(JSON.stringify(pts));
-          this.props.onUpdateGoHerePts(pts);
+          this.props.onUpdateGoHerePts(e.latlng);
         }}
         minZoom={5}
         maxZoom={18}

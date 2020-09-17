@@ -45,29 +45,32 @@ void GUItoMACE::setSendPort(const int &sendPort) {
 //!
 void GUItoMACE::getEnvironmentBoundary() {
     std::shared_ptr<const MaceCore::MaceData> data = m_parent->getDataObject();
-    std::vector<mace::pose::GeodeticPosition_2D> environmentVertices = data->GetEnvironmentBoundary();
+    if (data->EnvironmentBoundarySet()) {
+        BoundaryItem::EnvironmentBoundary environmentBoundary = data->GetEnvironmentBoundary();
 
-    QJsonObject json;
-    json["dataType"] = "EnvironmentBoundary";
-    json["vehicleID"] = 0;
+        QJsonObject json;
+        json["message_type"] = QString::fromStdString(guiMessageString(GuiMessageTypes::ENVIRONMENT_BOUNDARY));
+        json["boundary_name"] = QString::fromStdString(environmentBoundary.getName());
+        json["boundary_type"] = QString::fromStdString(environmentBoundary.getType());
 
-    QJsonArray verticies;
-    for(auto&& vertex : environmentVertices) {
-        QJsonObject obj;
-        obj["lat"] = vertex.getLatitude();
-        obj["lng"] = vertex.getLongitude();
-        obj["alt"] = 0.0;
+        QJsonArray vertices;
+        for(auto&& vertex : environmentBoundary.getVertices()) {
+            QJsonObject obj;
+            obj["lat"] = vertex.getLatitude();
+            obj["lng"] = vertex.getLongitude();
+            obj["alt"] = 0.0;
 
-        verticies.push_back(obj);
-    }
+            vertices.push_back(obj);
+        }
 
-    json["environmentBoundary"] = verticies;
+        json["vertices"] = vertices;
 
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+        QJsonDocument doc(json);
+        bool bytesWritten = writeTCPData(doc.toJson());
 
-    if(!bytesWritten){
-        std::cout << "Write environment boundary failed..." << std::endl;
+        if(!bytesWritten){
+            std::cout << "Write environment boundary failed..." << std::endl;
+        }
     }
 }
 
@@ -197,7 +200,7 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonDocument &data)
 
     mace::pose::GeodeticPosition_3D goPosition(data["lat"].toDouble(),
                                                data["lng"].toDouble(),
-                                               10.0); // TODO: Either set altitude from GUI or stay at same altitude as vehicle
+                                               data["alt"].toDouble()); // TODO: Either set altitude from GUI or stay at same altitude as vehicle
     spatialAction->setPosition(&goPosition);
     cmdGoTo.setSpatialAction(spatialAction);
 

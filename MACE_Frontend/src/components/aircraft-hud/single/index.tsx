@@ -18,6 +18,7 @@ import {
     HeadingIndicator
 } from 'react-flight-indicators'
 import Select from "react-select";
+import { Vertex } from "../../../data-types";
 
 const hiddenFields = ["lat", "lng"];
 const buttonOptions = {
@@ -61,8 +62,10 @@ type Props = {
     data: Aircraft.AircraftPayload;
     onRequestCenter: (LatLng) => void;
     onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
+    onUpdateGoHerePts: (point: Vertex) => void;
+    toggleGoHerePt: (show: boolean) => void;
+    target: Vertex;
     defaultAltitude: number;
-    goHerePts: L.LatLng[];
     onToggleSelect: (agentID: string[]) => void;
 };
 
@@ -96,7 +99,6 @@ const arePropsSame = (prevProps: Props, nextProps: Props) => {
 export default React.memo((props: Props) => {
     const fields = getFields(props.data, ["agentID"]);
     const [altitude, setAltitude] = React.useState(props.defaultAltitude);
-    const [recordGoHere, setRecordGoHere] = React.useState(false);
     const MODE_OPTIONS = fields["vehicle_type"] === "QUADROTOR" ? ROTOR_MODE_OPTIONS : FIXED_WING_MODE_OPTIONS;
     const ICON_COLOR = colors.gray[700];
     const DISABLED_ICON_COLOR = colors.gray[400];
@@ -105,7 +107,7 @@ export default React.memo((props: Props) => {
         const { location } = props.data;
         props.onRequestCenter(location);
     };
-
+    
     const updateMission = () => {
         let command: string = "FORCE_DATA_SYNC";
         let payload = [];
@@ -114,7 +116,6 @@ export default React.memo((props: Props) => {
 
     const takeoff = () => {
         let command: string = "TAKEOFF";
-        console.log("TODO: Add takeoff altitude to command: " + altitude);
         let payload = {
             takeoffPosition: {
                 alt: altitude
@@ -146,15 +147,10 @@ export default React.memo((props: Props) => {
         props.onCommand(command, [props.data], payload);
     };
     const goHere = () => {
+        props.toggleGoHerePt(false);
+        ReactTooltip.hide();
         let command: string = "SET_GO_HERE";
-        console.log("TODO: Add go here lat/lng to command");
-        // console.log(props.goHerePts[props.goHerePts.length-1]);
-        let payload = {
-            lat: props.goHerePts[props.goHerePts.length - 1].lat,
-            lng: props.goHerePts[props.goHerePts.length - 1].lng
-        };
-        props.onCommand(command, [props.data], [JSON.stringify(payload)]);
-        toggleRecordGoHere();
+        props.onCommand(command, [props.data], [JSON.stringify(props.target)]);
     }
 
     const getBatteryIcon = () => {
@@ -211,10 +207,20 @@ export default React.memo((props: Props) => {
         setAltitude(parseFloat(value));
     };
 
-    const toggleRecordGoHere = () => {
-        setRecordGoHere(!recordGoHere);
+    const updateTarget = (field: string, value: number) => {
+        let newTarget = props.target;
+        if (field === "lat") { newTarget["lat"] = value; }
+        if (field === "lng") { newTarget["lng"] = value; }
+        if (field === "alt") { newTarget["alt"] = value; }
+        props.onUpdateGoHerePts(newTarget);
+
     }
 
+    const setTargetToCurrentLocation = (e) => {
+        props.toggleGoHerePt(true);
+        props.onUpdateGoHerePts(props.data.location);
+    }
+    
     const getVehicleIcon = () => {
         if(fields["vehicle_type"] === "FIXED_WING") {
             return <img src='./icons/fixed-wing.png' style={{height: 20, width: 20}} alt={fields["vehicle_type"]} />
@@ -280,10 +286,11 @@ export default React.memo((props: Props) => {
                 return buttonOptions.SHOW;
             }
         case "setgohere":
-            if (["GROUNDED","TAKEOFF","LAND"].indexOf(mode) != -1 ) { 
-                return buttonOptions.GRAY;
-            } else {
+            if (mode === "GUIDED") { 
+                // console.log("Lat: " + props.target.lat + ", Long: " + props.target.lng);
                 return buttonOptions.SHOW;
+            } else {
+                return buttonOptions.GRAY;
             }
         }
     }
@@ -347,14 +354,13 @@ export default React.memo((props: Props) => {
             </div>
 
             <div style={styles.commandsContainer}>
-                {!recordGoHere ?
                     <div style={styles.commandButtons}>
-                        { showButton("takeoff")==2 &&
+                        { showButton("takeoff") === 2 &&
                         <button style={styles.centerButton}>
                             <MdFlightTakeoff data-for={props.data.agentID + "_tooltip"} data-tip='custom show' data-event='click' color={ICON_COLOR} size={20} />        
                         </button>
                         }
-                        { showButton("takeoff")==2 &&
+                        { showButton("takeoff") === 2 &&
                         <ReactTooltip id={props.data.agentID + "_tooltip"} place='left' globalEventOff='click' clickable={true} backgroundColor={colors.white}>
                             <div style={styles.singleSettingContainer}>
                                 <label style={styles.inputLabel}>Takeoff Alt (m):</label>
@@ -362,7 +368,7 @@ export default React.memo((props: Props) => {
                                     id="takeoff-tooltip-input"
                                     type="number"
                                     min={0}
-                                    defaultValue={10}
+                                    defaultValue={altitude}
                                     onChange={updateAltitude}
                                     name={"alt"}
                                     style={styles.input}
@@ -379,9 +385,9 @@ export default React.memo((props: Props) => {
                         </ReactTooltip>
                         }
                         { showButton("land") &&
-                        <button style={showButton("land") == 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("land") == 1 ? true : false} onClick={land}>
-                            { showButton("land") == 1 && <MdFlightLand color={DISABLED_ICON_COLOR} size={20} />}
-                            { showButton("land") == 2 && <MdFlightLand color={ICON_COLOR} size={20} />}
+                        <button style={showButton("land") === 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("land") === 1 ? true : false} onClick={land}>
+                            { showButton("land") === 1 && <MdFlightLand color={DISABLED_ICON_COLOR} size={20} />}
+                            { showButton("land") === 2 && <MdFlightLand color={ICON_COLOR} size={20} />}
                         </button>
                         }  
                         { showButton("startmission") &&                    
@@ -390,52 +396,81 @@ export default React.memo((props: Props) => {
                         </button>
                         }
                         { showButton("pausemission") &&
-                        <button style={showButton("pausemission") == 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("pausemission") == 1 ? true : false} onClick={pauseMission}>
-                            { showButton("pausemission") == 1 && <FiPause color={DISABLED_ICON_COLOR} size={20} />}
-                            { showButton("pausemission") == 2 && <FiPause color={ICON_COLOR} size={20} />}
+                        <button style={showButton("pausemission") === 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("pausemission") === 1 ? true : false} onClick={pauseMission}>
+                            { showButton("pausemission") === 1 && <FiPause color={DISABLED_ICON_COLOR} size={20} />}
+                            { showButton("pausemission") === 2 && <FiPause color={ICON_COLOR} size={20} />}
                         </button>
                         }
                         {showButton("rtl") &&
-                        <button style={showButton("rtl") == 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("rtl") == 1 ? true : false} onClick={returnToLaunch}>
-                            { showButton("rtl") == 1 && <FiHome color={DISABLED_ICON_COLOR} size={20} />}
-                            { showButton("rtl") == 2 && <FiHome color={ICON_COLOR} size={20} />}
+                        <button style={showButton("rtl") === 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("rtl") === 1 ? true : false} onClick={returnToLaunch}>
+                            { showButton("rtl") === 1 && <FiHome color={DISABLED_ICON_COLOR} size={20} />}
+                            { showButton("rtl") === 2 && <FiHome color={ICON_COLOR} size={20} />}
                         </button>
                         }
-                        {showButton("setgohere") == 1 &&
+                        {showButton("setgohere") === 1 &&
                             <button style={styles.disabled_centerButton} disabled={true}>
                                 <FiTarget color={DISABLED_ICON_COLOR} size={20} />
                             </button>
                         }
-                        {showButton("setgohere") == 2 &&
-                            <button style={styles.centerButton} onClick={toggleRecordGoHere}>
-                                {recordGoHere ?
-                                    <FiX color={ICON_COLOR} size={20} />
-                                    :
-                                    <FiTarget color={ICON_COLOR} size={20} />
-                                }
+                        {showButton("setgohere") === 2 &&
+                            <button style={styles.centerButton}>
+                                    <FiTarget data-for={"gohere_" + props.data.agentID + "_tooltip"} data-tip='custom show' data-event='click' color={ICON_COLOR} size={20} />
                             </button>
+                        }
+                        {showButton("setgohere") === 2 &&
+                        <ReactTooltip id={"gohere_" + props.data.agentID + "_tooltip"} afterShow={setTargetToCurrentLocation} place='left' clickable={true} backgroundColor={colors.white}>
+                            <div style={styles.singleSettingContainer}>
+                                <label style={styles.inputLabel}>Latitude:</label>
+                                <input
+                                    id="latitude-tooltip-input"
+                                    type="number"
+                                    value={props.target.lat}
+                                    onChange={(e) => {
+                                        const { name, value } = e.target;
+                                        updateTarget(name,parseFloat(value));
+                                    }}
+                                    name={"lat"}
+                                    style={styles.input}
+                                />
+                                <label style={styles.inputLabel}>Longitude:</label>
+                                <input
+                                    id="longitude-tooltip-input"
+                                    type="number"
+                                    value={props.target.lng}
+                                    onChange={(e) => {
+                                        const { name, value } = e.target;
+                                        updateTarget(name,parseFloat(value));
+                                    }}
+                                    name={"lng"}
+                                    style={styles.input}
+                                />
+                                <label style={styles.inputLabel}>Altitude (m):</label>
+                                <input
+                                    id="altitude-tooltip-input"
+                                    type="number"
+                                    min={altitude}
+                                    value={props.target.alt}
+                                    onChange={(e) => {
+                                        const { name, value } = e.target;
+                                        updateTarget(name,parseFloat(value));
+                                    }}
+                                    name={"alt"}
+                                    style={styles.input}
+                                />
+                            </div>
+                            <div style={styles.tooltipButtons}>
+                                <button style={styles.centerButton} onClick={() => { ReactTooltip.hide(); props.toggleGoHerePt(false);}}>
+                                    <FiX color={ICON_COLOR} size={20} />                        
+                                </button>
+                                <button style={styles.centerButton} onClick={goHere}>
+                                    <FiCheck color={ICON_COLOR} size={20} />                        
+                                </button>
+                            </div>
+                        </ReactTooltip>
                         }
 
                     </div>
-                    :
-                    <div style={styles.commandButtons}>
-                        <span style={styles.hudValue}>{props.goHerePts[0] ? "Lat: " + props.goHerePts[props.goHerePts.length-1].lat.toFixed(4) : "Click map..."}</span>
-                        <span style={styles.hudValue}>{props.goHerePts[0] ? "Lng: " + props.goHerePts[props.goHerePts.length-1].lng.toFixed(4) : null}</span>
-                        {props.goHerePts[0] ?
-                            <button style={styles.centerButton} onClick={goHere}>
-                                <FiCheck color={ICON_COLOR} size={20} />
-                            </button>
-                            :
-                            null
-                        }
-
-                        <button style={styles.centerButton} onClick={toggleRecordGoHere}>
-                            <FiX color={colors.gray[700]} size={20} />
-                        </button>
-                        
-                        
-                    </div>
-                }
+                
                 
             </div>
 

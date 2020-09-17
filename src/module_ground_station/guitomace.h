@@ -29,6 +29,8 @@
 
 #include "base/state_space/cartesian_2D_space.h"
 
+#include "messagetypes.h"
+
 class GUItoMACE
 {
 public:
