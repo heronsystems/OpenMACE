@@ -8,20 +8,24 @@ import { FiSearch, FiX, FiPlay, FiPause, FiHome } from "react-icons/fi";
 import { MdFlightTakeoff, MdFlightLand } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
 import colors from "../../util/colors";
+import { Vertex } from "../../data-types";
 
 
 type Props = {
   onRequestCenter: (LatLng) => void;
   aircrafts: Aircraft.AircraftPayload[];
   onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
+  onUpdateGoHerePts: (point: Vertex) => void;
+  toggleGoHerePt: (show: boolean) => void;
+  target: Vertex;
   defaultAltitude: number;
-  goHerePts: L.LatLng[];
   onToggleSelect: (agentIDs: string[], show?: boolean) => void;
 };
 
 export default React.memo((props: Props) => {
   const [search, setSearch] = React.useState("");
   const [altitude, setAltitude] = React.useState(props.defaultAltitude);
+  const [target, setTarget] = React.useState(props.target);
   const [filteredAircrafts, setFilteredAircrafts] = React.useState(
     props.aircrafts
   );
@@ -185,8 +189,10 @@ export default React.memo((props: Props) => {
               onRequestCenter={props.onRequestCenter}
               key={a.agentID}
               onCommand={props.onCommand}
+              onUpdateGoHerePts={props.onUpdateGoHerePts}
+              toggleGoHerePt = {props.toggleGoHerePt}
+              target={props.target}
               defaultAltitude={props.defaultAltitude}
-              goHerePts={props.goHerePts}
               onToggleSelect={props.onToggleSelect}
             />
           );

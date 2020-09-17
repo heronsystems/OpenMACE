@@ -200,7 +200,7 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonDocument &data)
 
     mace::pose::GeodeticPosition_3D goPosition(data["lat"].toDouble(),
                                                data["lng"].toDouble(),
-                                               10.0); // TODO: Either set altitude from GUI or stay at same altitude as vehicle
+                                               data["alt"].toDouble()); // TODO: Either set altitude from GUI or stay at same altitude as vehicle
     spatialAction->setPosition(&goPosition);
     cmdGoTo.setSpatialAction(spatialAction);
 
