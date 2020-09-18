@@ -106,10 +106,10 @@ void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonDocument &data)
 {
     command_item::SpatialHome tmpHome;
     tmpHome.setTargetSystem(vehicleID);
-
+    double referenceAlt =  m_parent->getDataObject()->GetVehicleHomePostion(vehicleID).getPosition()->getDataVector().z();
     mace::pose::GeodeticPosition_3D homePosition(data["lat"].toDouble(),
                                                  data["lng"].toDouble(),
-                                                 data["alt"].toDouble());
+                                                 data["alt"].toDouble() + referenceAlt); // TODO-PAT/AARON: Figure out a more robust way to handle the home position altitude conversion
     tmpHome.setPosition(&homePosition);
 
     std::stringstream buffer;
@@ -220,7 +220,7 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonDocument &data)
     bool latLonFlag = data["latLonFlag"].toBool();
 
     mace::pose::GeodeticPosition_3D takeoffPosition;
-    
+
     if(latLonFlag) {
         takeoffPosition.setLatitude(data["takeoffPosition"]["lat"].toDouble());
         takeoffPosition.setLongitude(data["takeoffPosition"]["lng"].toDouble());
@@ -245,7 +245,7 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonDocument &data)
 //! \param jsonObj JSON data containing the command to be issued
 //!
 bool GUItoMACE::issuedCommand(const std::string &command, const int &vehicleID, const QJsonDocument &data)
-{    
+{
     if(command == "FORCE_DATA_SYNC") {
 //        mLogs->debug("Module Ground Station issuing command force data sync to system " + std::to_string(vehicleID) + ".");
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
@@ -317,7 +317,7 @@ bool GUItoMACE::issuedCommand(const std::string &command, const int &vehicleID, 
     }
 
     return false;
-    
+
 }
 
 
@@ -387,7 +387,7 @@ void GUItoMACE::getConnectedVehicles()
 
     std::shared_ptr<const MaceCore::MaceData> macedata = m_parent->getDataObject();
     std::vector<unsigned int> vehicleIDs;
-    macedata->GetAvailableVehicles(vehicleIDs);           
+    macedata->GetAvailableVehicles(vehicleIDs);
 
     QJsonArray ids;
     QJsonArray modes;
@@ -515,7 +515,7 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
     bool isVehicleCommand = false;
     // Handle "global" (or non-vehicle specific) commands:
     QJsonDocument tmpDoc = QJsonDocument::fromJson(data[0].toString().toUtf8());
-    if (command == "SET_GLOBAL_ORIGIN")
+    if (command == "SET_SWARM_ORIGIN")
     {
         setGlobalOrigin(tmpDoc);
     }
