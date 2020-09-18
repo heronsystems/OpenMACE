@@ -329,82 +329,82 @@ export default class AppProvider extends React.Component<Props, State> {
       }
     });
   };
-  addDefaultEvents = () => {
-    this.updateBoundaries({
-      boundary_name: "test",
-      boundary_type: "hard",
-      vertices: [
-        { lat: 38.33640510467016, lng: -76.78361892700197 },
-        { lat: 38.336135807840115, lng: -76.5630340576172 },
-        { lat: 38.29465215149741, lng: -76.49368286132814 },
-        { lat: 38.26082811638795, lng: -76.5571975708008 },
-        { lat: 38.260288960391925, lng: -76.77658081054689 }
-      ]
-    });
-    this.updateBoundaries({
-      boundary_name: "test2",
-      boundary_type: "soft",
-      vertices: [
-        { lat: 38.32724845095056, lng: -76.77091598510744 },
-        { lat: 38.32670978823017, lng: -76.57281875610353 },
-        { lat: 38.29519105238491, lng: -76.53470993041994 },
-        { lat: 38.27187993253012, lng: -76.56372070312501 },
-        { lat: 38.26972361264482, lng: -76.76061630249025 }
-      ]
-    });
-    this.updateAircrafts({
-      agentID: "agent_805",
-      vehicle_state: "",
-      behavior_state: "",
-      vehicle_type: "QUADROTOR",
-      autopilot: "",
-      companion: false,
-      protocol: "",
-      mission_state: 0,
-      mavlink_id: 0,
-    });
-    setTimeout(() => {
-      this.updateAircrafts({
-        agentID: "agent_124",
-        vehicle_state: "",
-        behavior_state: "",
-        vehicle_type: "QUADROTOR",
-        autopilot: "",
-        companion: false,
-        protocol: "",
-        mission_state: 0,
-        mavlink_id: 0,
-      });
-    }, 100);
-    // this.updateTargets({
-    //   agentID: "agent_123",
-    //   location: { lat: 38.31903340948611, lng: -76.59444808959962 }
-    // });
-    this.updateTargets({
-      agentID: "agent_805",
-      location: { lat: 38.31903340948611, lng: -76.59444808959962 }
-      // is_global: false
-    });
-    setTimeout(() => {
-      this.updateTargets({
-        agentID: "agent_124",
-        location: { lat: 38.4, lng: -76.65 }
-        // is_global: false
-      });
-    }, 100);
-    setTimeout(() => {
-      this.updateAircrafts({
-        agentID: "agent_805",
-        vehicle_state: "",
-        behavior_state: "",
-        vehicle_type: "QUADROTOR",
-        autopilot: "",
-        companion: false,
-        protocol: "",
-        mission_state: 0,
-        mavlink_id: 0,
-      });
-    }, 5000);
+  // addDefaultEvents = () => {
+  //   this.updateBoundaries({
+  //     boundary_name: "test",
+  //     boundary_type: "hard",
+  //     vertices: [
+  //       { lat: 38.33640510467016, lng: -76.78361892700197 },
+  //       { lat: 38.336135807840115, lng: -76.5630340576172 },
+  //       { lat: 38.29465215149741, lng: -76.49368286132814 },
+  //       { lat: 38.26082811638795, lng: -76.5571975708008 },
+  //       { lat: 38.260288960391925, lng: -76.77658081054689 }
+  //     ]
+  //   });
+  //   this.updateBoundaries({
+  //     boundary_name: "test2",
+  //     boundary_type: "soft",
+  //     vertices: [
+  //       { lat: 38.32724845095056, lng: -76.77091598510744 },
+  //       { lat: 38.32670978823017, lng: -76.57281875610353 },
+  //       { lat: 38.29519105238491, lng: -76.53470993041994 },
+  //       { lat: 38.27187993253012, lng: -76.56372070312501 },
+  //       { lat: 38.26972361264482, lng: -76.76061630249025 }
+  //     ]
+  //   });
+  //   this.updateAircrafts({
+  //     agentID: "agent_805",
+  //     vehicle_state: "",
+  //     behavior_state: "",
+  //     vehicle_type: "QUADROTOR",
+  //     autopilot: "",
+  //     companion: false,
+  //     protocol: "",
+  //     mission_state: 0,
+  //     mavlink_id: 0,
+  //   });
+  //   setTimeout(() => {
+  //     this.updateAircrafts({
+  //       agentID: "agent_124",
+  //       vehicle_state: "",
+  //       behavior_state: "",
+  //       vehicle_type: "QUADROTOR",
+  //       autopilot: "",
+  //       companion: false,
+  //       protocol: "",
+  //       mission_state: 0,
+  //       mavlink_id: 0,
+  //     });
+  //   }, 100);
+  //   // this.updateTargets({
+  //   //   agentID: "agent_123",
+  //   //   location: { lat: 38.31903340948611, lng: -76.59444808959962 }
+  //   // });
+  //   this.updateTargets({
+  //     agentID: "agent_805",
+  //     location: { lat: 38.31903340948611, lng: -76.59444808959962 }
+  //     // is_global: false
+  //   });
+  //   setTimeout(() => {
+  //     this.updateTargets({
+  //       agentID: "agent_124",
+  //       location: { lat: 38.4, lng: -76.65 }
+  //       // is_global: false
+  //     });
+  //   }, 100);
+  //   setTimeout(() => {
+  //     this.updateAircrafts({
+  //       agentID: "agent_805",
+  //       vehicle_state: "",
+  //       behavior_state: "",
+  //       vehicle_type: "QUADROTOR",
+  //       autopilot: "",
+  //       companion: false,
+  //       protocol: "",
+  //       mission_state: 0,
+  //       mavlink_id: 0,
+  //     });
+  //   }, 5000);
     // this.updatePaths({
     //   agentID: "path1",
     //   vertices: [
@@ -432,47 +432,47 @@ export default class AppProvider extends React.Component<Props, State> {
     //   { lat: 38.30771936971291, lng: -76.60526275634767 },
     //   { lat: 38.319302769869594, lng: -76.59444808959962 }
     // ]);
-    this.updateIcons({
-      type: "takeoff_land",
-      lat: 38.25193153082154, lng: -76.71855926513673,
-      name: "test-home"
-    });
-    this.updateIcons({
-      type: "mission_target",
-      lat: 38.283738547437515, lng: -76.73744201660158,
-      name: "test-mission-target"
-    });
-    this.updateIcons({
-      type: "origin",
-      lat: 38.312568460056966, lng: -76.69469833374025,
-      name: "test-origin"
-    });
-    this.updateIcons({
-      type: "command_control",
-      lat: 38.28158257969907, lng: -76.61453247070314,
-      name: "test-origin"
-    });
+    // this.updateIcons({
+    //   type: "takeoff_land",
+    //   lat: 38.25193153082154, lng: -76.71855926513673,
+    //   name: "test-home"
+    // });
+    // this.updateIcons({
+    //   type: "mission_target",
+    //   lat: 38.283738547437515, lng: -76.73744201660158,
+    //   name: "test-mission-target"
+    // });
+    // this.updateIcons({
+    //   type: "origin",
+    //   lat: 38.312568460056966, lng: -76.69469833374025,
+    //   name: "test-origin"
+    // });
+    // this.updateIcons({
+    //   type: "command_control",
+    //   lat: 38.28158257969907, lng: -76.61453247070314,
+    //   name: "test-origin"
+    // });
 
-  };
-  simulatePath = (path: Vertices) => {
-    let index = 0;
-    setInterval(() => {
-      if (index <= path.length - 1) {
-        this.updateAircrafts({
-          agentID: "agent_123",
-          vehicle_state: "",
-          behavior_state: "",
-          vehicle_type: "QUADROTOR",
-          autopilot: "",
-          companion: false,
-          protocol: "",
-          mission_state: 0,
-          mavlink_id: 0,
-        });
-        index++;
-      }
-    }, 1000);
-  };
+  // };
+  // simulatePath = (path: Vertices) => {
+  //   let index = 0;
+  //   setInterval(() => {
+  //     if (index <= path.length - 1) {
+  //       this.updateAircrafts({
+  //         agentID: "agent_123",
+  //         vehicle_state: "",
+  //         behavior_state: "",
+  //         vehicle_type: "QUADROTOR",
+  //         autopilot: "",
+  //         companion: false,
+  //         protocol: "",
+  //         mission_state: 0,
+  //         mavlink_id: 0,
+  //       });
+  //       index++;
+  //     }
+  //   }, 1000);
+  // };
   updateBoundaries = (boundary: Environment.BoundaryPayload) => {
     const { ...all } = boundary;
     let boundaries = [...this.state.boundaries];

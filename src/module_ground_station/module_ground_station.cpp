@@ -530,8 +530,11 @@ void ModuleGroundStation::NewlyAvailableMissionExeState(const MissionItem::Missi
 //!
 void ModuleGroundStation::NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    uint8_t vehicleID;
+    this->getDataObject()->getMavlinkIDFromModule(sender.Value(), vehicleID);
     std::cout<<"Ground Control: New available home position"<<std::endl;
-    m_toGUIHandler->sendVehicleHome(home.getOriginatingSystem(), home);
+
+    m_toGUIHandler->sendVehicleHome(vehicleID, home);
 }
 
 //!

@@ -15,11 +15,7 @@ export default (props: Props) => {
     case "mission_target":
       return <MissionTarget {...props} />;
     case "takeoff_land":
-      if(props.data.name != "0"){
-      return <Home {...props} />;
-      }else {
-        return null;
-      }
+        return <Home {...props} />;
     case "origin":
       return <Origin {...props} />;
     default:

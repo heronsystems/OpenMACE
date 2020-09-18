@@ -18,7 +18,7 @@ type Props = {
 const HomeMarker = (props: Props) => {
   const _marker: React.RefObject<Marker> = useRef();
   const { icons, updateIcons, aircrafts  } = useContext<Context>(AppContext);
-  const aircraft = aircrafts.find((a) => a.agentID === props.data.name);
+  const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
   
   return (
     <Marker
