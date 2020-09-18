@@ -6,6 +6,7 @@ const { createRef } = React;
 import { LatLng } from "leaflet";
 import { withAppContext, Context } from "../../Context";
 import { checkIfEqual } from "../../util/helpers";
+import { Vertex } from "../../data-types";
 const { ipcRenderer } = window.require("electron");
 
 type Props = {
@@ -14,7 +15,8 @@ type Props = {
 
 type State = {
   showHUD?: boolean;
-  goHerePts?: L.LatLng[];
+  showTarget?: boolean;
+  goHerePt?: Vertex;
 };
 
 class MapRoute extends React.Component<Props, State> {
@@ -24,7 +26,12 @@ class MapRoute extends React.Component<Props, State> {
     this._map = createRef();
     this.state = {
       showHUD: true,
-      goHerePts: []
+      showTarget: false,
+      goHerePt: {
+        lat: 0,
+        lng: 0,
+        alt: 0
+      }
     };
   }
   componentDidMount() {
@@ -61,17 +68,40 @@ class MapRoute extends React.Component<Props, State> {
     return shouldUpdate;
   }
 
-  onUpdateGoHerePts = (pts: L.LatLng[]) => {
-      this.setState({goHerePts: pts});
+  mapUpdateGoHerePt = (pts: L.LatLng) => {
+    let a = {
+      lat: pts.lat,
+      lng: pts.lng,
+      alt: this.state.goHerePt.alt
+    };
+    this.setState({goHerePt: a});
+    this.sendGoHerePt();
   }
 
+  HUDUpdateGoHerePt = (point: Vertex) => {
+    this.setState({goHerePt: point});
+    this.sendGoHerePt();
+  }
+
+  toggleGoHerePt = (show: boolean) => {
+    this.setState({showTarget: show},this.sendGoHerePt);
+  }
+
+  sendGoHerePt = () => {
+    this.props.context.updateTargets({
+      location: { lat: this.state.goHerePt.lat, lng: this.state.goHerePt.lng },
+      is_global: true,
+      should_display: this.state.showTarget
+    })
+  }
   render() {
     return (
       <Layout>
         <MapView 
             ref={this._map} 
             context={this.props.context} 
-            onUpdateGoHerePts={this.onUpdateGoHerePts}
+            onUpdateGoHerePts={this.mapUpdateGoHerePt}
+            target={this.state.goHerePt}
             onCommand={this.props.context.sendToMACE}
         />
         {this.state.showHUD && (
@@ -79,8 +109,10 @@ class MapRoute extends React.Component<Props, State> {
             onRequestCenter={this.onRequestCenter}
             aircrafts={this.props.context.aircrafts}
             onCommand={this.props.context.sendToMACE}
+            onUpdateGoHerePts={this.HUDUpdateGoHerePt}
+            toggleGoHerePt = {this.toggleGoHerePt}
+            target={this.state.goHerePt}
             defaultAltitude={10}
-            goHerePts={this.state.goHerePts}
             onToggleSelect={this.props.context.updateSelectedAircraft}
           />
         )}

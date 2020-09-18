@@ -24,6 +24,7 @@ export default () => {
     globalTargets,
     paths,
     updateSelectedAircraft
+    
   } = useContext<Context>(AppContext);
   const all = {
     boundaries,
@@ -69,7 +70,6 @@ export default () => {
   };
   const CenterMarker = getDefaultMarker();
   const targets = globalTargets.concat(localTargets);
-  // console.log("rerendering");
   return (
     <>
       {/* {map.getZoom() < 12 ? (

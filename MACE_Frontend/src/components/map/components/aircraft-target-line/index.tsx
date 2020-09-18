@@ -16,14 +16,18 @@ type Props = {
 const TargetLine = (props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);
   const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
-  return (
-    <Polyline
-      positions={[props.data.location, aircraft ? aircraft.location : props.data.location]}
-      color={aircraft.selected ? aircraft.color[500] : aircraft.color[500] + "30"}
-      weight={5}
-    />
+  if (aircraft === undefined) {
+    return null;
+  } else{
+    return (
+      <Polyline
+        positions={[props.data.location, aircraft ? aircraft.location : props.data.location]}
+        color={aircraft.selected ? aircraft.color[500] : aircraft.color[500] + "30"}
+        weight={5}
+      />
 
-  );
+    );
+  }
 };
 
 

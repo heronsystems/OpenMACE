@@ -114,7 +114,10 @@ int main(int argc, char *argv[])
         throw std::runtime_error("No Mace instance ID is given.");
         //MTB - Unimplimented funcationalty. If no ID is given MACE can determine an ID to use. This would require coordination to avoid conflicts.
     }
-    core.setMaceInstanceID(hostMaceInstance);
+
+    core.setGlobalConfiguration(parser.GetGlobalConfiguration()); // Send global parameters to mace_core for setup
+
+    core.setMaceInstanceID(hostMaceInstance);//to be removed?
 
     std::map<std::shared_ptr<MaceCore::ModuleBase>, std::string > modules = parser.GetCreatedModules();
     std::vector<std::thread*> threads;

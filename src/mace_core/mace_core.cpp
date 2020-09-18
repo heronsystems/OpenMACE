@@ -5,6 +5,7 @@
 
 #include "module_characteristics.h"
 
+
 namespace MaceCore
 {
 
@@ -30,7 +31,39 @@ void MaceCore::AddDataFusion(const std::shared_ptr<MaceData> dataFusion)
     m_DataFusion = dataFusion;
 }
 
+//!
+//! \brief setGlobalConfiguration Assign global parameters obtained from parsing
+//! \param globalParams Input parameters
+//!
+void MaceCore::setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams)
+{
+    if (globalParams->HasNonTerminal("EnvironmentBoundary")){
+        std::vector<mace::pose::GeodeticPosition_2D> vertices;
+        std::string type;
+        std::string name;
 
+        std::shared_ptr<ModuleParameterValue> environmentBoundaryXML = globalParams->GetNonTerminalValue("EnvironmentBoundary");
+        if(environmentBoundaryXML->HasTerminal("Vertices")) {
+            vertices = environmentBoundaryXML->GetTerminalValue<std::vector<mace::pose::GeodeticPosition_2D>>("Vertices");
+        }
+        if(environmentBoundaryXML->HasTerminal("Type")) {
+            type = environmentBoundaryXML->GetTerminalValue<std::string>("Type");
+        }
+        if(environmentBoundaryXML->HasTerminal("Name")) {
+            name =environmentBoundaryXML->GetTerminalValue<std::string>("Name");
+        }
+
+        if (!vertices.empty() && !name.empty() && !type.empty()){
+            m_DataFusion->UpdateEnvironmentBoundary(vertices,name,type);
+        }
+    }
+}
+
+
+//!
+//! \brief AddModule Add module to data fusion
+//! \param module Module to add
+//!
 void MaceCore::AddLocalModule(const std::shared_ptr<ModuleBase> &module)
 {
     uint8_t moduleID = 1;

@@ -560,6 +560,7 @@ export default class AppProvider extends React.Component<Props, State> {
   }
 
   constructDefaultAircraft = (): Aircraft.AircraftPayload => {
+    this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
     return {
         agentID: "DEFAULT",
         selected: true,
@@ -802,7 +803,7 @@ export default class AppProvider extends React.Component<Props, State> {
     }
     if (!areObjectsSame(targets, this.state.globalTargets)) {
       this.setState({ globalTargets: targets });
-    }
+    } 
   };
 
   updatePaths = (path: Aircraft.PathPayload) => {
@@ -896,6 +897,7 @@ export default class AppProvider extends React.Component<Props, State> {
         value={{
           ...this.state,
           updateIcons: this.updateIcons,
+          updateTargets: this.updateTargets,
           removeIcon: this.removeIcon,
           setGlobalZoom: this.setZoom,
           sendToMACE: this.sendToMACE,

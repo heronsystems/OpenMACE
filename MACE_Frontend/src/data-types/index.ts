@@ -1,4 +1,4 @@
-type Vertex = { lat: number; lng: number; alt?: number };
+export type Vertex = { lat: number; lng: number; alt?: number };
 type Vertices = Vertex[];
 type ColorObject = {
     100: string;
@@ -293,7 +293,7 @@ namespace Aircraft {
     }
 
     export type TargetPayload = {
-        agentID: string;
+        agentID?: string;
         location: Vertex;
         date?: number;
         should_display?: boolean;
