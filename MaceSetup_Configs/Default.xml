@@ -19,7 +19,7 @@
         <Parameter Name="maceID">1</Parameter>
     </GlobalParams>
 
-  <Module Class="VehicleComms" Type="Arduplane">
+  <Module Class="VehicleComms" Type="Arducopter">
     <Parameter Name="ID">1</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>

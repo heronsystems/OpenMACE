@@ -189,7 +189,6 @@ export default class AppProvider extends React.Component<Props, State> {
               this.updateIcons(rest as Environment.IconPayload);
               break;
           case "vehicle_heartbeat":
-              console.log(rest.vehicle_state);
               this.updateAircrafts(rest as Aircraft.HeartbeatPayload);
               break;
           case "vehicle_position":

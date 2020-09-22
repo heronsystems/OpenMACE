@@ -427,3 +427,141 @@ export const checkIfEqual = (
   });
   return equal;
 };
+
+// const buttonOptions = {
+//     HIDE : 0,
+//     GRAY : 1,
+//     SHOW : 2
+// }
+
+const defaultButtonStatus = {
+    "takeoff": {
+        show: false,
+        disabled: true
+    },
+    "land": {
+        show: false,
+        disabled: true
+    },
+    "startmission": {
+        show: false,
+        disabled: true
+    },
+    "pausemission": {
+        show: false,
+        disabled: true
+    },
+    "rtl": {
+        show: false,
+        disabled: true
+    },
+    "setgohere": {
+        show: false,
+        disabled: true
+    }
+}
+
+export const getShowButton = (vehicleState: string) => {
+    let buttons = defaultButtonStatus;
+    switch (vehicleState) {
+        case "Grounded":
+        case "Grounded Idle":
+        case "Grounded Arming":
+        case "Grounded Disarmed":
+        case "Grounded Armed":
+        case "Grounded Disarming":
+            // console.log("Show takeoff, play (disabled), rtl (disabled), target (disabled)");
+            buttons.takeoff = { show: true, disabled: false};
+            buttons.land = { show: false, disabled: true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: false, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+            break;
+        case "Flight":
+        case "Flight Takeoff":
+        case "Flight Takeoff Climbing":
+        case "Flight Takeoff Transitioning":
+            // console.log("Show land, play (disabled), rtl (disabled), target (disabled)");
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: false, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+            break;
+        case "Flight Takeoff Complete":
+        case "Flight Manual":
+        case "Flight Guided":
+        case "Flight Guided Idle":
+        case "Flight Guided Spatial Item":
+        case "Flight Guided Queue":
+        case "Flight Guided AttTarget":
+        case "Flight Guided GeoTarget":
+        case "Flight Guided CartTarget":
+        case "Flight Brake":
+        case "Flight Loiter":
+        case "Flight Unknown":
+            // console.log("Show land, play, rtl, target");
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: false};
+            buttons.startmission = { show: true, disabled: false};
+            buttons.pausemission = { show: false, disabled: true};
+            buttons.rtl = { show: true, disabled: false};
+            buttons.setgohere = { show: true, disabled: false};
+            break;
+        case "Flight Auto":
+            // console.log("Show land, pause, rtl, target");
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: false};
+            buttons.startmission = { show: false, disabled: true};
+            buttons.pausemission = { show: true, disabled: false};
+            buttons.rtl = { show: true, disabled: false};
+            buttons.setgohere = { show: true, disabled: false};
+            break;
+        case "Flight RTL":
+            // console.log("Show land, play, pause, target (disabled)");
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: false};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: true, disabled: false};
+            buttons.rtl = { show: false, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+            break;
+        case "Flight Land":
+        case "Flight Landing":
+        case "Flight Landing Transitioning":
+        case "Flight Landing Descent":
+            // console.log("Show land(disabled), pause, rtl, target (disabled)");
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: true};
+            buttons.startmission = { show: false, disabled: true};
+            buttons.pausemission = { show: true, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+            break;
+        case "Flight Landing Complete":
+            // console.log("Show takeoff, play (disabled), rtl (disabled), target (disabled)");
+            buttons.takeoff = { show: true, disabled: false};
+            buttons.land = { show: false, disabled: true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: false, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+            break;
+        case "Unknown":
+            // console.log("Show takeoff (disabled), play (disabled), rtl (disabled), target (disabled)");
+            buttons.takeoff = { show: true, disabled: true};
+            buttons.land = { show: false, disabled: true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: false, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+            break;
+
+        default:
+            break;
+    }
+
+    return buttons;
+}

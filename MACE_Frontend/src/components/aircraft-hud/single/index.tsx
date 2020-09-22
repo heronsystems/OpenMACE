@@ -5,7 +5,8 @@ import {
     getDisplayParam,
     getStringValue,
     getBatteryTextColor,
-    getTextSeverityColor
+    getTextSeverityColor,
+    getShowButton
 } from "../../../util/helpers";
 import ReactTooltip from "react-tooltip";
 import { FaBatteryEmpty, FaBatteryQuarter, FaBatteryHalf, FaBatteryThreeQuarters, FaBatteryFull, FaLevelUpAlt, FaCaretDown } from "react-icons/fa";
@@ -21,11 +22,6 @@ import Select from "react-select";
 import { Vertex } from "../../../data-types";
 
 const hiddenFields = ["lat", "lng"];
-const buttonOptions = {
-    HIDE : false,
-    GRAY : 1,
-    SHOW : 2
-}
 
 const ROTOR_MODE_OPTIONS = [
     { value: "UNKNOWN", label: "Unknown" },
@@ -246,64 +242,65 @@ export default React.memo((props: Props) => {
         props.onToggleSelect([props.data.agentID]);
     }
 
-    const showButton = (requestedButton: string) => {
-        // TESTING:
-        return buttonOptions.SHOW;
+    const showButton = () => {
+        console.log(props.data.vehicle_state);
 
-        let mode = fields["mode"];
+        return getShowButton(props.data.vehicle_state);
 
-        if ((fields["alt"] < (altitude - 0.5)) && mode === "GUIDED"){
-            mode = "TAKEOFF";
-        }
-        if (["STABILIZE",""].indexOf(mode) != -1 ){
-            mode = "GROUNDED";
-        }
+        // let mode = fields["mode"];
 
-        switch (requestedButton){
-        case "takeoff":
-            if (mode === "GROUNDED"){
-                return buttonOptions.SHOW;
-            } else { 
-                return buttonOptions.HIDE;
-            }
-        case "land":
-            if (mode === "LAND"){
-                return buttonOptions.GRAY;
-            } else if (mode === "GROUNDED") { 
-                return buttonOptions.HIDE;
-            } else {
-                return buttonOptions.SHOW;
-            }
-        case "startmission":
-            // if (["STABILIZE","UNKNOWN","","LAND"].indexOf(mode) != -1){
-            //     return buttonOptions.GRAY; } else
-            if (mode === "BRAKE"){
-                return buttonOptions.SHOW;
-            } else { 
-                return buttonOptions.HIDE;
-            }
-        case "pausemission":
-            if (mode === "BRAKE"){
-                return buttonOptions.HIDE;
-            } else if (["GROUNDED","TAKEOFF","LAND"].indexOf(mode) != -1 ) { 
-                return buttonOptions.GRAY;
-            } else {
-                return buttonOptions.SHOW;
-            }
-        case "rtl":
-            if (["GROUNDED","TAKEOFF","LAND", "RTL"].indexOf(mode) != -1 ) { 
-                return buttonOptions.GRAY;
-            } else {
-                return buttonOptions.SHOW;
-            }
-        case "setgohere":
-            if (mode === "GUIDED") { 
-                // console.log("Lat: " + props.target.lat + ", Long: " + props.target.lng);
-                return buttonOptions.SHOW;
-            } else {
-                return buttonOptions.GRAY;
-            }
-        }
+        // if ((fields["alt"] < (altitude - 0.5)) && mode === "GUIDED"){
+        //     mode = "TAKEOFF";
+        // }
+        // if (["STABILIZE",""].indexOf(mode) != -1 ){
+        //     mode = "GROUNDED";
+        // }
+
+        // switch (requestedButton){
+        // case "takeoff":
+        //     if (mode === "GROUNDED"){
+        //         return buttonOptions.SHOW;
+        //     } else { 
+        //         return buttonOptions.HIDE;
+        //     }
+        // case "land":
+        //     if (mode === "LAND"){
+        //         return buttonOptions.GRAY;
+        //     } else if (mode === "GROUNDED") { 
+        //         return buttonOptions.HIDE;
+        //     } else {
+        //         return buttonOptions.SHOW;
+        //     }
+        // case "startmission":
+        //     // if (["STABILIZE","UNKNOWN","","LAND"].indexOf(mode) != -1){
+        //     //     return buttonOptions.GRAY; } else
+        //     if (mode === "BRAKE"){
+        //         return buttonOptions.SHOW;
+        //     } else { 
+        //         return buttonOptions.HIDE;
+        //     }
+        // case "pausemission":
+        //     if (mode === "BRAKE"){
+        //         return buttonOptions.HIDE;
+        //     } else if (["GROUNDED","TAKEOFF","LAND"].indexOf(mode) != -1 ) { 
+        //         return buttonOptions.GRAY;
+        //     } else {
+        //         return buttonOptions.SHOW;
+        //     }
+        // case "rtl":
+        //     if (["GROUNDED","TAKEOFF","LAND", "RTL"].indexOf(mode) != -1 ) { 
+        //         return buttonOptions.GRAY;
+        //     } else {
+        //         return buttonOptions.SHOW;
+        //     }
+        // case "setgohere":
+        //     if (mode === "GUIDED") { 
+        //         // console.log("Lat: " + props.target.lat + ", Long: " + props.target.lng);
+        //         return buttonOptions.SHOW;
+        //     } else {
+        //         return buttonOptions.GRAY;
+        //     }
+        // }
     }
 
 
@@ -369,12 +366,12 @@ export default React.memo((props: Props) => {
 
             <div style={styles.commandsContainer}>
                     <div style={styles.commandButtons}>
-                        { showButton("takeoff") === 2 &&
+                        { showButton().takeoff.show &&
                         <button style={styles.centerButton}>
                             <MdFlightTakeoff data-for={props.data.agentID + "_tooltip"} data-tip='custom show' data-event='click' color={ICON_COLOR} size={20} />        
                         </button>
                         }
-                        { showButton("takeoff") === 2 &&
+                        { showButton().takeoff.show &&
                         <ReactTooltip id={props.data.agentID + "_tooltip"} place='left' globalEventOff='click' clickable={true} backgroundColor={colors.white}>
                             <div style={styles.singleSettingContainer}>
                                 <label style={styles.inputLabel}>Takeoff Alt (m):</label>
@@ -398,89 +395,102 @@ export default React.memo((props: Props) => {
                             </div>
                         </ReactTooltip>
                         }
-                        { showButton("land") &&
-                        <button style={showButton("land") === 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("land") === 1 ? true : false} onClick={land}>
-                            { showButton("land") === 1 && <MdFlightLand color={DISABLED_ICON_COLOR} size={20} />}
-                            { showButton("land") === 2 && <MdFlightLand color={ICON_COLOR} size={20} />}
+                        { showButton().land.show &&
+                        <button style={showButton().land.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().land.disabled} onClick={land}>
+                            { showButton().land.disabled ? 
+                                <MdFlightLand color={DISABLED_ICON_COLOR} size={20} />
+                                :
+                                <MdFlightLand color={ICON_COLOR} size={20} />
+                            }
                         </button>
                         }  
-                        { showButton("startmission") &&                    
-                        <button style={styles.centerButton} onClick={startMission}>
-                            <FiPlay color={ICON_COLOR} size={20} />
+                        { showButton().startmission.show &&                    
+                        <button style={showButton().startmission.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().startmission.disabled}>
+                            { showButton().startmission.disabled ? 
+                                <FiPlay color={DISABLED_ICON_COLOR} size={20} />
+                            :
+                                <FiPlay color={ICON_COLOR} size={20} />
+                            }
                         </button>
                         }
-                        { showButton("pausemission") &&
-                        <button style={showButton("pausemission") === 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("pausemission") === 1 ? true : false} onClick={pauseMission}>
-                            { showButton("pausemission") === 1 && <FiPause color={DISABLED_ICON_COLOR} size={20} />}
-                            { showButton("pausemission") === 2 && <FiPause color={ICON_COLOR} size={20} />}
+                        { showButton().pausemission.show &&
+                        <button style={showButton().pausemission.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().pausemission.disabled} onClick={pauseMission}>
+                            { showButton().pausemission.disabled ? 
+                                <FiPause color={DISABLED_ICON_COLOR} size={20} />
+                            :
+                                <FiPause color={ICON_COLOR} size={20} />
+                            }
                         </button>
                         }
-                        {showButton("rtl") &&
-                        <button style={showButton("rtl") === 1 ? styles.disabled_centerButton : styles.centerButton} disabled={showButton("rtl") === 1 ? true : false} onClick={returnToLaunch}>
-                            { showButton("rtl") === 1 && <FiHome color={DISABLED_ICON_COLOR} size={20} />}
-                            { showButton("rtl") === 2 && <FiHome color={ICON_COLOR} size={20} />}
+                        {showButton().rtl.show &&
+                        <button style={showButton().rtl.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().rtl.disabled} onClick={returnToLaunch}>
+                            { showButton().rtl.disabled ?
+                                <FiHome color={DISABLED_ICON_COLOR} size={20} />
+                            :
+                                <FiHome color={ICON_COLOR} size={20} />
+                            }
                         </button>
                         }
-                        {showButton("setgohere") === 1 &&
-                            <button style={styles.disabled_centerButton} disabled={true}>
-                                <FiTarget color={DISABLED_ICON_COLOR} size={20} />
-                            </button>
-                        }
-                        {showButton("setgohere") === 2 &&
-                            <button style={styles.centerButton}>
+
+                        {showButton().setgohere.show &&
+                            <button style={showButton().setgohere.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().setgohere.disabled}>
+                                { showButton().setgohere.disabled ?
+                                    <FiTarget color={DISABLED_ICON_COLOR} size={20} />
+                                :
                                     <FiTarget data-for={"gohere_" + props.data.agentID + "_tooltip"} data-tip='custom show' data-event='click' color={ICON_COLOR} size={20} />
+                                }
                             </button>
                         }
-                        {showButton("setgohere") === 2 &&
-                        <ReactTooltip id={"gohere_" + props.data.agentID + "_tooltip"} afterShow={setTargetToCurrentLocation} place='left' clickable={true} backgroundColor={colors.white}>
-                            <div style={styles.singleSettingContainer}>
-                                <label style={styles.inputLabel}>Latitude:</label>
-                                <input
-                                    id="latitude-tooltip-input"
-                                    type="number"
-                                    value={props.target.lat}
-                                    onChange={(e) => {
-                                        const { name, value } = e.target;
-                                        updateTarget(name,parseFloat(value));
-                                    }}
-                                    name={"lat"}
-                                    style={styles.input}
-                                />
-                                <label style={styles.inputLabel}>Longitude:</label>
-                                <input
-                                    id="longitude-tooltip-input"
-                                    type="number"
-                                    value={props.target.lng}
-                                    onChange={(e) => {
-                                        const { name, value } = e.target;
-                                        updateTarget(name,parseFloat(value));
-                                    }}
-                                    name={"lng"}
-                                    style={styles.input}
-                                />
-                                <label style={styles.inputLabel}>Altitude (m):</label>
-                                <input
-                                    id="altitude-tooltip-input"
-                                    type="number"
-                                    min={altitude}
-                                    value={props.target.alt}
-                                    onChange={(e) => {
-                                        const { name, value } = e.target;
-                                        updateTarget(name,parseFloat(value));
-                                    }}
-                                    name={"alt"}
-                                    style={styles.input}
-                                />
-                            </div>
-                            <div style={styles.tooltipButtons}>
-                                <button style={styles.centerButton} onClick={() => { ReactTooltip.hide(); props.toggleGoHerePt(false);}}>
-                                    <FiX color={ICON_COLOR} size={20} />                        
-                                </button>
-                                <button style={styles.centerButton} onClick={goHere}>
-                                    <FiCheck color={ICON_COLOR} size={20} />                        
-                                </button>
-                            </div>
-                        </ReactTooltip>
+                        {(showButton().setgohere.show && !showButton().setgohere.disabled) &&
+                            <ReactTooltip id={"gohere_" + props.data.agentID + "_tooltip"} afterShow={setTargetToCurrentLocation} place='left' clickable={true} backgroundColor={colors.white}>
+                                <div style={styles.singleSettingContainer}>
+                                    <label style={styles.inputLabel}>Latitude:</label>
+                                    <input
+                                        id="latitude-tooltip-input"
+                                        type="number"
+                                        value={props.target.lat}
+                                        onChange={(e) => {
+                                            const { name, value } = e.target;
+                                            updateTarget(name,parseFloat(value));
+                                        }}
+                                        name={"lat"}
+                                        style={styles.input}
+                                    />
+                                    <label style={styles.inputLabel}>Longitude:</label>
+                                    <input
+                                        id="longitude-tooltip-input"
+                                        type="number"
+                                        value={props.target.lng}
+                                        onChange={(e) => {
+                                            const { name, value } = e.target;
+                                            updateTarget(name,parseFloat(value));
+                                        }}
+                                        name={"lng"}
+                                        style={styles.input}
+                                    />
+                                    <label style={styles.inputLabel}>Altitude (m):</label>
+                                    <input
+                                        id="altitude-tooltip-input"
+                                        type="number"
+                                        min={altitude}
+                                        value={props.target.alt}
+                                        onChange={(e) => {
+                                            const { name, value } = e.target;
+                                            updateTarget(name,parseFloat(value));
+                                        }}
+                                        name={"alt"}
+                                        style={styles.input}
+                                    />
+                                </div>
+                                <div style={styles.tooltipButtons}>
+                                    <button style={styles.centerButton} onClick={() => { ReactTooltip.hide(); props.toggleGoHerePt(false);}}>
+                                        <FiX color={ICON_COLOR} size={20} />                        
+                                    </button>
+                                    <button style={styles.centerButton} onClick={goHere}>
+                                        <FiCheck color={ICON_COLOR} size={20} />                        
+                                    </button>
+                                </div>
+                            </ReactTooltip>
                         }
 
                     </div>
