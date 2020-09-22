@@ -65,6 +65,9 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
     {
         currentCommand = command->getClone();
         double targetAltitude = 0.0;
+
+        // TODO-PAT: Add command_item that is a PitchTakeoff for plane
+
         const command_item::SpatialTakeoff* cmd = currentCommand->as<command_item::SpatialTakeoff>();
         if(cmd->getPosition()->is3D()) //we only proceed if at a minimum the altitude has been set
         {

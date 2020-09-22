@@ -63,7 +63,7 @@ public:
         }
     }
 
-    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const override
     {
         QJsonObject json = toJSON_base(vehicleID,dataType);
         getPosition()->updateQJSONObject(json);

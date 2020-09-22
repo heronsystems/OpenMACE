@@ -84,7 +84,11 @@ void ModuleVehicleArduplane::Command_SetGlobalOrigin(const Action_SetGlobalOrigi
 void ModuleVehicleArduplane::Command_ExecuteSpatialItem(const Action_ExecuteSpatialItem &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(command);
+    Action_ExecuteSpatialItem commandWithTarget = CopyCommandAndInsertTarget<Action_ExecuteSpatialItem>(command, this->GetAttachedMavlinkEntity());
+
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    currentOuterState->handleCommand(commandWithTarget.getClone());
+    ProgressStateMachineStates();
 }
 
 //!
@@ -94,7 +98,9 @@ void ModuleVehicleArduplane::Command_ExecuteSpatialItem(const Action_ExecuteSpat
 void ModuleVehicleArduplane::Request_FullDataSync(const int &targetSystem, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(targetSystem);
+    std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> objectData = m_SystemData->state->GetTopicData();
+    this->PublishVehicleData(targetSystem,objectData);
+    //vehicleData->m_MissionController->requestMission();
 }
 
 //!
@@ -105,7 +111,18 @@ void ModuleVehicleArduplane::Request_FullDataSync(const int &targetSystem, const
 void ModuleVehicleArduplane::Command_SystemArm(const command_item::ActionArm &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(command);
+    //Temporary solution to solve boadcasting until rework of commands can be done
+    command_item::ActionArm commandWithTarget = CopyCommandAndInsertTarget<command_item::ActionArm>(command, this->GetAttachedMavlinkEntity());
+
+    std::stringstream buffer;
+    buffer << commandWithTarget;
+
+//    mLogs->debug("Receieved a command system arm.");
+//    mLogs->info(buffer.str());
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    currentOuterState->handleCommand(command.getClone());
+
+    ProgressStateMachineStates();
 }
 
 //!
@@ -115,8 +132,9 @@ void ModuleVehicleArduplane::Command_SystemArm(const command_item::ActionArm &co
 //!
 void ModuleVehicleArduplane::Command_VehicleTakeoff(const command_item::SpatialTakeoff &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
-    UNUSED(sender);
     UNUSED(command);
+    UNUSED(sender);
+    // TODO-PAT: Handle takeoff command with plane
 }
 
 //!
@@ -128,6 +146,7 @@ void ModuleVehicleArduplane::Command_Land(const command_item::SpatialLand &comma
 {
     UNUSED(sender);
     UNUSED(command);
+    // TODO-PAT: Handle land command with plane
 }
 
 //!
@@ -138,7 +157,14 @@ void ModuleVehicleArduplane::Command_Land(const command_item::SpatialLand &comma
 void ModuleVehicleArduplane::Command_ReturnToLaunch(const command_item::SpatialRTL &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(command);
+    //Temporary solution to solve boadcasting until rework of commands can be done
+    command_item::SpatialRTL commandWithTarget = CopyCommandAndInsertTarget<command_item::SpatialRTL>(command, this->GetAttachedMavlinkEntity());
+
+//    mLogs->debug("Receieved a command RTL.");
+
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    currentOuterState->handleCommand(commandWithTarget.getClone());
+    ProgressStateMachineStates();
 }
 
 //!
@@ -149,7 +175,19 @@ void ModuleVehicleArduplane::Command_ReturnToLaunch(const command_item::SpatialR
 void ModuleVehicleArduplane::Command_MissionState(const command_item::ActionMissionCommand &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(command);
+    //Temporary solution to solve boadcasting until rework of commands can be done
+    command_item::ActionMissionCommand commandWithTarget = CopyCommandAndInsertTarget<command_item::ActionMissionCommand>(command, this->GetAttachedMavlinkEntity());
+
+    //mLogs->debug("Receieved a command to change mission state.");
+
+    int systemID = commandWithTarget.getTargetSystem();
+
+    if((m_SystemData != nullptr) && (m_SystemData->getMAVLINKID() == systemID))
+    {
+        ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+        currentOuterState->handleCommand(commandWithTarget.getClone());
+        ProgressStateMachineStates();
+    }
 }
 
 //!
@@ -160,13 +198,27 @@ void ModuleVehicleArduplane::Command_MissionState(const command_item::ActionMiss
 void ModuleVehicleArduplane::Command_ChangeSystemMode(const command_item::ActionChangeMode &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(command);
+    //Temporary solution to solve boadcasting until rework of commands can be done
+    command_item::ActionChangeMode commandWithTarget = CopyCommandAndInsertTarget<command_item::ActionChangeMode>(command, this->GetAttachedMavlinkEntity());
+
+    std::stringstream buffer;
+    buffer << commandWithTarget;
+
+//    mLogs->debug("Receieved a command to change the mode.");
+//    mLogs->info(buffer.str());
+
+    ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    outerState->handleCommand(commandWithTarget.getClone());
+    ProgressStateMachineStates();
 }
 
 void ModuleVehicleArduplane::Command_ExecuteDynamicTarget(const command_item::Action_DynamicTarget &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(command);
+    ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    AbstractCommandItemPtr currentCommand = std::make_shared<command_item::Action_DynamicTarget>(command);
+    outerState->handleCommand(currentCommand);
+    ProgressStateMachineStates();
 }
 
 //!
@@ -203,7 +255,9 @@ void ModuleVehicleArduplane::Command_GetHomePosition(const int &vehicleID, const
 void ModuleVehicleArduplane::Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
     UNUSED(sender);
-    UNUSED(vehicleHome);
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    currentOuterState->handleCommand(vehicleHome.getClone());
+    ProgressStateMachineStates();
 }
 
 
@@ -363,8 +417,84 @@ void ModuleVehicleArduplane::VehicleHeartbeatInfo(const std::string &linkName, c
     }
 
     UNUSED(linkName);
-    UNUSED(systemID);
-    UNUSED(heartbeatMSG);
+    if(m_SystemData == nullptr)
+    {
+        MavlinkEntityKey key = systemID;
+        SetAttachedMavlinkEntity(key);
+
+        createLog(systemID);
+        //this is the first time we have seen this heartbeat or the data was destroyed for some reason
+        m_SystemData = new VehicleObject_Arduplane(this, this->GetCharacteristic(), systemID);
+
+        m_SystemData->connectCallback(this);
+        dynamic_cast<VehicleObject_Ardupilot*>(m_SystemData)->connectTargetCallback(ModuleVehicleArduplane::staticCallbackFunction_VehicleTarget, this);
+        m_SystemData->environment->set_ShouldTransformLocalAltitude(transformToSwarmAltitude);
+
+        MaceCore::ModuleCharacteristic moduleCharacterstic = this->GetCharacteristic();
+        ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr){
+            ptr->Events_NewVehicle(this, static_cast<uint8_t>(systemID), moduleCharacterstic);
+        });
+
+        if(stateMachine)
+        {
+            delete stateMachine;
+            stateMachine = nullptr;
+        }
+
+        stateMachine = new hsm::StateMachine();
+        stateMachine->Initialize<ardupilot::state::State_Unknown>(m_SystemData);
+
+        handleFirstConnectionSetup();
+    } //end of if statement verifying that the current vehicle data is null
+
+    std::string currentFlightMode = dynamic_cast<VehicleObject_Ardupilot*>(m_SystemData)->m_ArdupilotMode->parseMAVLINK(heartbeatMSG);
+    DataGenericItem::DataGenericItem_FlightMode flightMode;
+    flightMode.setFlightMode(currentFlightMode);
+    if(m_SystemData->status->vehicleMode.set(flightMode))
+    {
+        std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_FlightMode> ptrFlightMode = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_FlightMode>(flightMode);
+        this->cbi_VehicleStateData(systemID, ptrFlightMode);
+    }
+
+    DataGenericItem::DataGenericItem_SystemArm arm;
+    arm.setSystemArm(heartbeatMSG.base_mode & MAV_MODE_FLAG_DECODE_POSITION_SAFETY);
+    if(m_SystemData->status->vehicleArm.set(arm))
+    {
+        std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemArm> ptrArm = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_SystemArm>(arm);
+        ModuleVehicleMAVLINK::cbi_VehicleStateData(systemID, ptrArm);
+    }
+
+    DataGenericItem::DataGenericItem_Heartbeat heartbeat;
+    heartbeat.setAutopilot(Data::AutopilotType::AUTOPILOT_TYPE_ARDUPILOTMEGA);
+    heartbeat.setCompanion(this->airborneInstance);
+    heartbeat.setProtocol(Data::CommsProtocol::COMMS_MAVLINK);
+    heartbeat.setMavlinkID(systemID);
+
+    switch(heartbeatMSG.type)
+    {
+    case MAV_TYPE_TRICOPTER:
+    case MAV_TYPE_QUADROTOR:
+    case MAV_TYPE_HEXAROTOR:
+    case MAV_TYPE_OCTOROTOR:
+        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_QUADROTOR);
+        break;
+    case MAV_TYPE_FIXED_WING:
+        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_FIXED_WING);
+        break;
+    default:
+        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_GENERIC);
+    }
+
+    // Set MACE HSM state:
+    if(this->stateMachine->getCurrentState()) {
+        heartbeat.setHSMState(stateMachine->getCurrentState()->getCurrentStateEnum());
+    }
+
+    m_SystemData->status->vehicleHeartbeat.set(heartbeat);
+    std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Heartbeat> ptrHeartbeat = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Heartbeat>(heartbeat);
+    ModuleVehicleMAVLINK::cbi_VehicleStateData(systemID,ptrHeartbeat);
+
+    ProgressStateMachineStates();
 }
 
 //!

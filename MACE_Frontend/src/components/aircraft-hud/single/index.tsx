@@ -114,6 +114,14 @@ export default React.memo((props: Props) => {
         props.onCommand(command, [props.data], payload);
     }
 
+    const arm = () => {
+        let command: string = "SET_VEHICLE_ARM";
+        let payload = {
+            arm: true
+        };
+        props.onCommand(command, [props.data], [JSON.stringify(payload)]);
+    }
+
     const takeoff = () => {
         let command: string = "TAKEOFF";
         let payload = {
@@ -239,6 +247,9 @@ export default React.memo((props: Props) => {
     }
 
     const showButton = (requestedButton: string) => {
+        // TESTING:
+        return buttonOptions.SHOW;
+
         let mode = fields["mode"];
 
         if ((fields["alt"] < (altitude - 0.5)) && mode === "GUIDED"){
@@ -301,6 +312,9 @@ export default React.memo((props: Props) => {
             <div onClick={(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => selectAircraft(e)} style={{...styles.header, backgroundColor: getVehicleColor()}}>
                 <span style={styles.title}>{props.data.agentID}</span>
                 {getVehicleIcon()}
+                <button style={styles.centerButton} onClick={arm}>
+                    <FiCheck color={colors.teal[100]} size={20} />
+                </button>
                 <button style={styles.centerButton} onClick={requestCenter}>
                     <FiCrosshair color={colors.teal[100]} size={20} />
                 </button>
