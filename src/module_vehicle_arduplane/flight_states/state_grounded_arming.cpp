@@ -114,5 +114,5 @@ void State_GroundedArming::OnEnter(const std::shared_ptr<AbstractCommandItem> co
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "flight_states/state_grounded_idle.h"
+#include "./flight_states/state_grounded_idle.h"
 #include "flight_states/state_grounded_armed.h"

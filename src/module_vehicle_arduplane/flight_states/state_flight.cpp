@@ -88,6 +88,7 @@ hsm::Transition State_Flight::GetTransition()
 
 bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     COMMANDTYPE commandType = command->getCommandType();
     switch (commandType) {
     case COMMANDTYPE::CI_ACT_MISSIONCMD:
@@ -140,18 +141,20 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
             ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
             currentInnerState->handleCommand(command);
         }
+        success = true;
         break;
     }
     case COMMANDTYPE::CI_NAV_HOME:
     case COMMANDTYPE::CI_ACT_CHANGEMODE:
     {
-        AbstractRootState::handleCommand(command);
+        success = AbstractRootState::handleCommand(command);
         break;
     }
     case COMMANDTYPE::CI_NAV_LAND:
     {
         currentCommand = command;
         desiredStateEnum = Data::MACEHSMState::STATE_LANDING;
+        success = true;
         break;
     }
     case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
@@ -177,6 +180,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
 
         controllerRTL->Send(*cmd,sender,target);
         collection->Insert("RTLController",controllerRTL);
+        success = true;
         break;
     }
     case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
@@ -186,7 +190,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         else
         {
             ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
-            currentInnerState->handleCommand(command);
+            success = currentInnerState->handleCommand(command);
         }
 
         break;
@@ -198,7 +202,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         else
         {
             ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
-            currentInnerState->handleCommand(command);
+            success = currentInnerState->handleCommand(command);
         }
 
         break;
@@ -210,6 +214,8 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         break;
     }
 } //end of switch statement
+
+    return success;
 }
 
 void State_Flight::Update()

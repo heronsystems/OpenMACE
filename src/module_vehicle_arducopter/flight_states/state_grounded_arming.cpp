@@ -57,6 +57,7 @@ bool State_GroundedArming::handleCommand(const std::shared_ptr<AbstractCommandIt
     default:
         break;
     }
+    return true;
 }
 
 void State_GroundedArming::Update()

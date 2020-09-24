@@ -37,7 +37,8 @@ hsm::Transition State_TakeoffComplete::GetTransition()
 
 bool State_TakeoffComplete::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return true;
 }
 
 void State_TakeoffComplete::Update()
@@ -52,7 +53,7 @@ void State_TakeoffComplete::OnEnter()
 
 void State_TakeoffComplete::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
 }
 
 } //end of namespace ardupilot

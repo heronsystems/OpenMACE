@@ -37,7 +37,8 @@ hsm::Transition State_TakeoffComplete::GetTransition()
 
 bool State_TakeoffComplete::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return true;
 }
 
 void State_TakeoffComplete::Update()
@@ -47,12 +48,13 @@ void State_TakeoffComplete::Update()
 
 void State_TakeoffComplete::OnEnter()
 {
-
+    // TODO-PAT: Handle changing to GUIDED mode at end of takeoff??
 }
 
 void State_TakeoffComplete::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    // TODO-PAT: Handle changing to GUIDED mode at end of takeoff??
 }
 
 } //end of namespace ardupilot

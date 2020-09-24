@@ -30,7 +30,7 @@ public:
 
     void OnEnter() override;
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command);
+    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 
     void OnExit() override;
 };

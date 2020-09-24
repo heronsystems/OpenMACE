@@ -45,7 +45,8 @@ const FIXED_WING_MODE_OPTIONS = [
     { value: "LOITER", label: "Loiter" },
     { value: "MANUAL", label: "Manual" },
     { value: "RTL", label: "Return to launch" },
-    { value: "STABILIZE", label: "Stabilize" }
+    { value: "STABILIZE", label: "Stabilize" },
+    { value: "TAKEOFF", label: "Takeoff" }
     // { value: "QSTABILIZE", label: "QStabilize" },
     // { value: "QHOVER", label: "QHover" },
     // { value: "QLOITER", label: "QLoiter" },

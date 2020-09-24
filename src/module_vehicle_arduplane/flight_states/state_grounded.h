@@ -3,8 +3,8 @@
 
 #include "module_vehicle_ardupilot/flight_states/abstract_root_state.h"
 
-namespace ardupilot{
-namespace state{
+namespace ardupilot {
+namespace state {
 
 class State_GroundedIdle;
 class State_GroundedArming;

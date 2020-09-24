@@ -134,7 +134,20 @@ void ModuleVehicleArduplane::Command_VehicleTakeoff(const command_item::SpatialT
 {
     UNUSED(command);
     UNUSED(sender);
-    // TODO-PAT: Handle takeoff command with plane
+
+    UNUSED(sender);
+    //Temporary solution to solve boadcasting until rework of commands can be done
+    command_item::SpatialTakeoff commandWithTarget = CopyCommandAndInsertTarget<command_item::SpatialTakeoff>(command, this->GetAttachedMavlinkEntity());
+
+    std::stringstream buffer;
+    buffer << commandWithTarget;
+
+//    mLogs->debug("Receieved a command takeoff.");
+//    mLogs->info(buffer.str());
+
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    currentOuterState->handleCommand(commandWithTarget.getClone());
+    ProgressStateMachineStates();
 }
 
 //!
@@ -146,7 +159,7 @@ void ModuleVehicleArduplane::Command_Land(const command_item::SpatialLand &comma
 {
     UNUSED(sender);
     UNUSED(command);
-    // TODO-PAT: Handle land command with plane
+    // TODO-PAT: Handle land command with plane. Look in GCS_MAVLINK or other source code in ardupilot to see what they do for landing
 }
 
 //!

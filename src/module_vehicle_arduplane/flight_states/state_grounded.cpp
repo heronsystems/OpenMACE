@@ -135,7 +135,7 @@ void State_Grounded::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 #include "flight_states/state_grounded_arming.h"
 #include "flight_states/state_grounded_disarming.h"
 #include "flight_states/state_grounded_disarmed.h"
-#include "flight_states/state_grounded_idle.h"
+#include "./flight_states/state_grounded_idle.h"
 
 #include "flight_states/state_takeoff.h"
 
