@@ -1,19 +1,26 @@
-#ifndef AP_STATE_GROUNDEDIDLE_H
-#define AP_STATE_GROUNDEDIDLE_H
+#ifndef AP_STATE_TAKEOFF_H
+#define AP_STATE_TAKEOFF_H
 
+#include <mavlink.h>
 
-#include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
+#include "module_vehicle_ardupilot/flight_states/abstract_root_state.h"
+
+#include "module_vehicle_ardupilot/ardupilot_target_progess.h"
+
 
 namespace ardupilot {
 namespace state{
 
-class State_GroundedArming;
-class State_GroundedArmed;
+class AP_State_Grounded;
+class AP_AP_State_TakeoffClimbing;
+class AP_AP_State_TakeoffTransitioning;
+class AP_AP_State_TakeoffComplete;
+class AP_State_Flight;
 
-class State_GroundedIdle : public AbstractStateArdupilot
+class AP_State_Takeoff : public AbstractRootState
 {
 public:
-    State_GroundedIdle();
+    AP_State_Takeoff();
 
 public:
     AbstractStateArdupilot* getClone() const override;
@@ -32,10 +39,11 @@ public:
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 
-    void OnExit() override;
+private:
+
 };
 
 } //end of namespace ardupilot
 } //end of namespace state
 
-#endif // AP_STATE_GROUNDEDIDLE_H
+#endif // AP_STATE_TAKEOFF_H

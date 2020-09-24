@@ -7,13 +7,13 @@
 namespace ardupilot {
 namespace state{
 
-class State_GroundedArming;
-class State_GroundedArmed;
+class AP_State_GroundedArming;
+class AP_State_GroundedArmed;
 
-class State_GroundedIdle : public AbstractStateArdupilot
+class AP_State_GroundedIdle : public AbstractStateArdupilot
 {
 public:
-    State_GroundedIdle();
+    AP_State_GroundedIdle();
 
 public:
     AbstractStateArdupilot* getClone() const override;

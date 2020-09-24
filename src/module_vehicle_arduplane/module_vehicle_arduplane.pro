@@ -22,71 +22,71 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 SOURCES += module_vehicle_arduplane.cpp \
     vehicle_object/arduplane_component_flight_mode.cpp \
     vehicle_object/vehicle_object_arduplane.cpp \
-    flight_states/state_grounded_disarmed.cpp \
-    flight_states/state_takeoff_climbing.cpp \
-    flight_states/state_takeoff_transitioning.cpp \
-    flight_states/state_flight_guided.cpp \
-    flight_states/state_grounded_idle.cpp \
-    flight_states/state_grounded_arming.cpp \
-    flight_states/state_grounded_disarming.cpp \
-    flight_states/state_grounded_armed.cpp \
-    flight_states/state_grounded.cpp \
-    flight_states/state_takeoff.cpp \
-    flight_states/state_landing_transitioning.cpp \
-    flight_states/state_landing_descent.cpp \
-    flight_states/state_landing.cpp \
-    flight_states/state_flight_manual.cpp \
-    flight_states/state_flight_auto.cpp \
-    flight_states/state_takeoff_complete.cpp \
-    flight_states/state_flight.cpp \
-    flight_states/state_landing_complete.cpp \
-    flight_states/state_flight_rtl.cpp \
-    flight_states/state_flight_unknown.cpp \
-    flight_states/state_flight_land.cpp \
-    flight_states/state_flight_loiter.cpp \
-    flight_states/state_unknown.cpp \
-    flight_states/state_flight_guided_queue.cpp \
-    flight_states/state_flight_guided_idle.cpp \
-    flight_states/state_flight_guided_target_geo.cpp \
-    flight_states/state_flight_guided_target_car.cpp \
-    flight_states/state_flight_guided_spatial_item.cpp \
-    flight_states/state_flight_guided_target_att.cpp
+    plane_flight_states/state_grounded_disarmed.cpp \
+    plane_flight_states/state_takeoff_climbing.cpp \
+    plane_flight_states/state_takeoff_transitioning.cpp \
+    plane_flight_states/state_flight_guided.cpp \
+    plane_flight_states/state_grounded_idle.cpp \
+    plane_flight_states/state_grounded_arming.cpp \
+    plane_flight_states/state_grounded_disarming.cpp \
+    plane_flight_states/state_grounded_armed.cpp \
+    plane_flight_states/state_grounded.cpp \
+    plane_flight_states/state_takeoff.cpp \
+    plane_flight_states/state_landing_transitioning.cpp \
+    plane_flight_states/state_landing_descent.cpp \
+    plane_flight_states/state_landing.cpp \
+    plane_flight_states/state_flight_manual.cpp \
+    plane_flight_states/state_flight_auto.cpp \
+    plane_flight_states/state_takeoff_complete.cpp \
+    plane_flight_states/state_flight.cpp \
+    plane_flight_states/state_landing_complete.cpp \
+    plane_flight_states/state_flight_rtl.cpp \
+    plane_flight_states/state_flight_unknown.cpp \
+    plane_flight_states/state_flight_land.cpp \
+    plane_flight_states/state_flight_loiter.cpp \
+    plane_flight_states/state_unknown.cpp \
+    plane_flight_states/state_flight_guided_queue.cpp \
+    plane_flight_states/state_flight_guided_idle.cpp \
+    plane_flight_states/state_flight_guided_target_geo.cpp \
+    plane_flight_states/state_flight_guided_target_car.cpp \
+    plane_flight_states/state_flight_guided_spatial_item.cpp \
+    plane_flight_states/state_flight_guided_target_att.cpp
 
 HEADERS += module_vehicle_arduplane.h\
         module_vehicle_arduplane_global.h \
-    flight_states/arduplane_state_components.h \
+    plane_flight_states/arduplane_state_components.h \
     vehicle_object/arduplane_component_flight_mode.h \
     vehicle_object/vehicle_object_arduplane.h \
-    flight_states/state_grounded_disarmed.h \
-    flight_states/arducopter_state_components.h \
-    flight_states/state_flight_guided.h \
-    flight_states/state_grounded.h \
-    flight_states/state_grounded_armed.h \
-    flight_states/state_grounded_arming.h \
-    flight_states/state_grounded_disarming.h \
-    flight_states/state_grounded_idle.h \
-    flight_states/state_takeoff_climbing.h \
-    flight_states/state_takeoff_transitioning.h \
-    flight_states/state_takeoff.h \
-    flight_states/state_landing_transitioning.h \
-    flight_states/state_landing_descent.h \
-    flight_states/state_landing.h \
-    flight_states/state_flight_manual.h \
-    flight_states/state_flight_auto.h \
-    flight_states/state_takeoff_complete.h \
-    flight_states/state_flight.h \
-    flight_states/state_landing_complete.h \
-    flight_states/state_flight_rtl.h \
-    flight_states/state_flight_unknown.h \
-    flight_states/state_flight_land.h \
-    flight_states/state_flight_loiter.h \
-    flight_states/state_unknown.h \
-    flight_states/state_flight_guided_queue.h \
-    flight_states/state_flight_guided_idle.h \
-    flight_states/state_flight_guided_target_geo.h \
-    flight_states/state_flight_guided_target_car.h \
-    flight_states/state_flight_guided_spatial_item.h \
-    flight_states/state_flight_guided_target_att.h
+    plane_flight_states/state_grounded_disarmed.h \
+    plane_flight_states/arducopter_state_components.h \
+    plane_flight_states/state_flight_guided.h \
+    plane_flight_states/state_grounded.h \
+    plane_flight_states/state_grounded_armed.h \
+    plane_flight_states/state_grounded_arming.h \
+    plane_flight_states/state_grounded_disarming.h \
+    plane_flight_states/state_grounded_idle.h \
+    plane_flight_states/state_takeoff_climbing.h \
+    plane_flight_states/state_takeoff_transitioning.h \
+    plane_flight_states/state_takeoff.h \
+    plane_flight_states/state_landing_transitioning.h \
+    plane_flight_states/state_landing_descent.h \
+    plane_flight_states/state_landing.h \
+    plane_flight_states/state_flight_manual.h \
+    plane_flight_states/state_flight_auto.h \
+    plane_flight_states/state_takeoff_complete.h \
+    plane_flight_states/state_flight.h \
+    plane_flight_states/state_landing_complete.h \
+    plane_flight_states/state_flight_rtl.h \
+    plane_flight_states/state_flight_unknown.h \
+    plane_flight_states/state_flight_land.h \
+    plane_flight_states/state_flight_loiter.h \
+    plane_flight_states/state_unknown.h \
+    plane_flight_states/state_flight_guided_queue.h \
+    plane_flight_states/state_flight_guided_idle.h \
+    plane_flight_states/state_flight_guided_target_geo.h \
+    plane_flight_states/state_flight_guided_target_car.h \
+    plane_flight_states/state_flight_guided_spatial_item.h \
+    plane_flight_states/state_flight_guided_target_att.h
 
 
 INCLUDEPATH += $$PWD/../

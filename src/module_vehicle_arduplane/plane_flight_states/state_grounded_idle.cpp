@@ -1,9 +1,9 @@
 #include "state_grounded_idle.h"
 
 namespace ardupilot {
-namespace state {
+namespace state{
 
-State_GroundedIdle::State_GroundedIdle():
+AP_State_GroundedIdle::AP_State_GroundedIdle():
     AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_GROUNDED_IDLE"<<std::endl;
@@ -11,17 +11,17 @@ State_GroundedIdle::State_GroundedIdle():
     desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
 }
 
-AbstractStateArdupilot* State_GroundedIdle::getClone() const
+AbstractStateArdupilot* AP_State_GroundedIdle::getClone() const
 {
-    return (new State_GroundedIdle(*this));
+    return (new AP_State_GroundedIdle(*this));
 }
 
-void State_GroundedIdle::getClone(AbstractStateArdupilot** state) const
+void AP_State_GroundedIdle::getClone(AbstractStateArdupilot** state) const
 {
-    *state = new State_GroundedIdle(*this);
+    *state = new AP_State_GroundedIdle(*this);
 }
 
-hsm::Transition State_GroundedIdle::GetTransition()
+hsm::Transition AP_State_GroundedIdle::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
@@ -33,23 +33,23 @@ hsm::Transition State_GroundedIdle::GetTransition()
         switch (desiredStateEnum) {
         case Data::MACEHSMState::STATE_GROUNDED_ARMING:
         {
-            return hsm::SiblingTransition<State_GroundedArming>(currentCommand);
+            return hsm::SiblingTransition<AP_State_GroundedArming>(currentCommand);
             break;
         }
         case Data::MACEHSMState::STATE_GROUNDED_ARMED:
         {
-            return hsm::SiblingTransition<State_GroundedArmed>();
+            return hsm::SiblingTransition<AP_State_GroundedArmed>();
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_GroundedIdle."<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from AP_State_GroundedIdle."<<std::endl;
             break;
         }
     }
     return rtn;
 }
 
-bool State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     bool success = false;
     COMMANDTYPE type = command->getCommandType();
@@ -79,24 +79,24 @@ bool State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem
     return success;
 }
 
-void State_GroundedIdle::Update()
+void AP_State_GroundedIdle::Update()
 {
     if(Owner().status->vehicleArm.get().getSystemArm())
         desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
 }
 
-void State_GroundedIdle::OnEnter()
+void AP_State_GroundedIdle::OnEnter()
 {
 
 
 }
 
-void State_GroundedIdle::OnExit()
+void AP_State_GroundedIdle::OnExit()
 {
     AbstractStateArdupilot::OnExit();
 }
 
-void State_GroundedIdle::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_GroundedIdle::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
     this->OnEnter();
 
@@ -112,5 +112,5 @@ void State_GroundedIdle::OnEnter(const std::shared_ptr<AbstractCommandItem> comm
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "flight_states/state_grounded_arming.h"
-#include "flight_states/state_grounded_armed.h"
+#include "plane_flight_states/state_grounded_arming.h"
+#include "plane_flight_states/state_grounded_armed.h"

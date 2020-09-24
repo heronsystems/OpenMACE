@@ -455,7 +455,7 @@ void ModuleVehicleArduplane::VehicleHeartbeatInfo(const std::string &linkName, c
         }
 
         stateMachine = new hsm::StateMachine();
-        stateMachine->Initialize<ardupilot::state::State_Unknown>(m_SystemData);
+        stateMachine->Initialize<ardupilot::state::AP_State_Unknown>(m_SystemData);
 
         handleFirstConnectionSetup();
     } //end of if statement verifying that the current vehicle data is null
