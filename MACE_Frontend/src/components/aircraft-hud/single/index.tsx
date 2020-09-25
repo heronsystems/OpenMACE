@@ -244,64 +244,7 @@ export default React.memo((props: Props) => {
     }
 
     const showButton = () => {
-        console.log(props.data.vehicle_state);
-
         return getShowButton(props.data.vehicle_state);
-
-        // let mode = fields["mode"];
-
-        // if ((fields["alt"] < (altitude - 0.5)) && mode === "GUIDED"){
-        //     mode = "TAKEOFF";
-        // }
-        // if (["STABILIZE",""].indexOf(mode) != -1 ){
-        //     mode = "GROUNDED";
-        // }
-
-        // switch (requestedButton){
-        // case "takeoff":
-        //     if (mode === "GROUNDED"){
-        //         return buttonOptions.SHOW;
-        //     } else { 
-        //         return buttonOptions.HIDE;
-        //     }
-        // case "land":
-        //     if (mode === "LAND"){
-        //         return buttonOptions.GRAY;
-        //     } else if (mode === "GROUNDED") { 
-        //         return buttonOptions.HIDE;
-        //     } else {
-        //         return buttonOptions.SHOW;
-        //     }
-        // case "startmission":
-        //     // if (["STABILIZE","UNKNOWN","","LAND"].indexOf(mode) != -1){
-        //     //     return buttonOptions.GRAY; } else
-        //     if (mode === "BRAKE"){
-        //         return buttonOptions.SHOW;
-        //     } else { 
-        //         return buttonOptions.HIDE;
-        //     }
-        // case "pausemission":
-        //     if (mode === "BRAKE"){
-        //         return buttonOptions.HIDE;
-        //     } else if (["GROUNDED","TAKEOFF","LAND"].indexOf(mode) != -1 ) { 
-        //         return buttonOptions.GRAY;
-        //     } else {
-        //         return buttonOptions.SHOW;
-        //     }
-        // case "rtl":
-        //     if (["GROUNDED","TAKEOFF","LAND", "RTL"].indexOf(mode) != -1 ) { 
-        //         return buttonOptions.GRAY;
-        //     } else {
-        //         return buttonOptions.SHOW;
-        //     }
-        // case "setgohere":
-        //     if (mode === "GUIDED") { 
-        //         // console.log("Lat: " + props.target.lat + ", Long: " + props.target.lng);
-        //         return buttonOptions.SHOW;
-        //     } else {
-        //         return buttonOptions.GRAY;
-        //     }
-        // }
     }
 
 

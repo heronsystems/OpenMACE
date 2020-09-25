@@ -3,7 +3,7 @@
 namespace ardupilot {
 namespace state{
 
-AP_AP_State_TakeoffTransitioning::AP_AP_State_TakeoffTransitioning():
+AP_State_TakeoffTransitioning::AP_State_TakeoffTransitioning():
     AbstractStateArdupilot()
 {
     guidedProgress = ArdupilotTargetProgess(1,10,10);
@@ -12,23 +12,23 @@ AP_AP_State_TakeoffTransitioning::AP_AP_State_TakeoffTransitioning():
     desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING;
 }
 
-void AP_AP_State_TakeoffTransitioning::OnExit()
+void AP_State_TakeoffTransitioning::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 }
 
-AbstractStateArdupilot* AP_AP_State_TakeoffTransitioning::getClone() const
+AbstractStateArdupilot* AP_State_TakeoffTransitioning::getClone() const
 {
-    return (new AP_AP_State_TakeoffTransitioning(*this));
+    return (new AP_State_TakeoffTransitioning(*this));
 }
 
-void AP_AP_State_TakeoffTransitioning::getClone(AbstractStateArdupilot** state) const
+void AP_State_TakeoffTransitioning::getClone(AbstractStateArdupilot** state) const
 {
-    *state = new AP_AP_State_TakeoffTransitioning(*this);
+    *state = new AP_State_TakeoffTransitioning(*this);
 }
 
-hsm::Transition AP_AP_State_TakeoffTransitioning::GetTransition()
+hsm::Transition AP_State_TakeoffTransitioning::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
@@ -40,19 +40,20 @@ hsm::Transition AP_AP_State_TakeoffTransitioning::GetTransition()
         switch (desiredStateEnum) {
         case Data::MACEHSMState::STATE_TAKEOFF_COMPLETE:
         {
-            rtn = hsm::SiblingTransition<AP_AP_State_TakeoffComplete>(currentCommand);
+            rtn = hsm::SiblingTransition<AP_State_TakeoffComplete>(currentCommand);
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from AP_AP_State_TakeoffTransitioning."<<std::endl;
+            std::cout<<"I dont know how we eneded up in this transition state from AP_State_TakeoffTransitioning."<<std::endl;
             break;
         }
     }
     return rtn;
 }
 
-bool AP_AP_State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_NAV_TAKEOFF:
@@ -117,25 +118,28 @@ bool AP_AP_State_TakeoffTransitioning::handleCommand(const std::shared_ptr<Abstr
         takeoffTarget.setPosition(cmd->getPosition());
         takeoffTransition->Send(takeoffTarget,sender,target);
         collection->Insert("takeoffTransition",takeoffTransition);
+        success = true;
 
         break;
     }
     default:
         break;
     }
+
+    return success;
 }
 
-void AP_AP_State_TakeoffTransitioning::Update()
+void AP_State_TakeoffTransitioning::Update()
 {
 
 }
 
-void AP_AP_State_TakeoffTransitioning::OnEnter()
+void AP_State_TakeoffTransitioning::OnEnter()
 {
     //By default I dont think there are any actions that we need to do
 }
 
-void AP_AP_State_TakeoffTransitioning::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_TakeoffTransitioning::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
     this->OnEnter();
     if(command != nullptr)

@@ -125,8 +125,6 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
                 delete ptr;
             });
 
-
-
             MavlinkEntityKey target = Owner().getMAVLINKID();
             MavlinkEntityKey sender = 255;
 
@@ -278,6 +276,10 @@ void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
     else if(mode == "RTL")
     {
         desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_RTL;
+    }
+    else if(mode == "TAKEOFF")
+    {
+        desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
     }
     else{
         desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_UNKNOWN;

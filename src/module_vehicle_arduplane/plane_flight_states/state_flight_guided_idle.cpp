@@ -52,6 +52,8 @@ bool AP_State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractCom
     default:
         break;
     }
+
+    return false;
 }
 
 void AP_State_FlightGuided_Idle::Update()
@@ -66,6 +68,7 @@ void AP_State_FlightGuided_Idle::OnEnter()
 
 void AP_State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     this->OnEnter();
 }
 

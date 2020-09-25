@@ -27,7 +27,7 @@ hsm::Transition AP_State_Takeoff::GetTransition()
 
     if(currentStateEnum != desiredStateEnum)
     {
-        if(IsInInnerState<AP_AP_State_TakeoffComplete>())
+        if(IsInInnerState<AP_State_TakeoffComplete>())
         {
             rtn = hsm::SiblingTransition<AP_State_Flight>();
         }
@@ -44,12 +44,12 @@ hsm::Transition AP_State_Takeoff::GetTransition()
             }
             case Data::MACEHSMState::STATE_TAKEOFF_CLIMBING:
             {
-                rtn = hsm::InnerEntryTransition<AP_AP_State_TakeoffClimbing>(currentCommand);
+                rtn = hsm::InnerEntryTransition<AP_State_TakeoffClimbing>(currentCommand);
                 break;
             }
             case Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING:
             {
-                rtn = hsm::InnerEntryTransition<AP_AP_State_TakeoffTransitioning>(currentCommand);
+                rtn = hsm::InnerEntryTransition<AP_State_TakeoffTransitioning>(currentCommand);
                 break;
             }
             case Data::MACEHSMState::STATE_FLIGHT:
@@ -116,7 +116,7 @@ void AP_State_Takeoff::Update()
         desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
     else
     {
-        if(vehicleStatus->vehicleMode.get().getFlightModeString() == "GUIDED")
+        if(vehicleStatus->vehicleMode.get().getFlightModeString() == "TAKEOFF")
             desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
     }
 }

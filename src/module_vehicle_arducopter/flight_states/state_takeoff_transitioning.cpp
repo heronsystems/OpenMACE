@@ -53,6 +53,7 @@ hsm::Transition State_TakeoffTransitioning::GetTransition()
 
 bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_NAV_TAKEOFF:
@@ -117,12 +118,15 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
         takeoffTarget.setPosition(cmd->getPosition());
         takeoffTransition->Send(takeoffTarget,sender,target);
         collection->Insert("takeoffTransition",takeoffTransition);
+        success = true;
 
         break;
     }
     default:
         break;
     }
+
+    return success;
 }
 
 void State_TakeoffTransitioning::Update()

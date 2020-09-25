@@ -3,7 +3,7 @@
 namespace ardupilot {
 namespace state{
 
-AP_AP_State_TakeoffClimbing::AP_AP_State_TakeoffClimbing():
+AP_State_TakeoffClimbing::AP_State_TakeoffClimbing():
     AbstractStateArdupilot()
 {
     std::cout<<"We are in the constructor of STATE_TAKEOFF_CLIMBING"<<std::endl;
@@ -12,23 +12,23 @@ AP_AP_State_TakeoffClimbing::AP_AP_State_TakeoffClimbing():
     desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
 }
 
-void AP_AP_State_TakeoffClimbing::OnExit()
+void AP_State_TakeoffClimbing::OnExit()
 {
     AbstractStateArdupilot::OnExit();
     Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
 }
 
-AbstractStateArdupilot* AP_AP_State_TakeoffClimbing::getClone() const
+AbstractStateArdupilot* AP_State_TakeoffClimbing::getClone() const
 {
-    return (new AP_AP_State_TakeoffClimbing(*this));
+    return (new AP_State_TakeoffClimbing(*this));
 }
 
-void AP_AP_State_TakeoffClimbing::getClone(AbstractStateArdupilot** state) const
+void AP_State_TakeoffClimbing::getClone(AbstractStateArdupilot** state) const
 {
-    *state = new AP_AP_State_TakeoffClimbing(*this);
+    *state = new AP_State_TakeoffClimbing(*this);
 }
 
-hsm::Transition AP_AP_State_TakeoffClimbing::GetTransition()
+hsm::Transition AP_State_TakeoffClimbing::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
@@ -40,12 +40,12 @@ hsm::Transition AP_AP_State_TakeoffClimbing::GetTransition()
         switch (desiredStateEnum) {
         case Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING:
         {
-            rtn = hsm::SiblingTransition<AP_AP_State_TakeoffTransitioning>(currentCommand);
+            rtn = hsm::SiblingTransition<AP_State_TakeoffTransitioning>(currentCommand);
             break;
         }
         case Data::MACEHSMState::STATE_TAKEOFF_COMPLETE:
         {
-            rtn = hsm::SiblingTransition<AP_AP_State_TakeoffComplete>(currentCommand);
+            rtn = hsm::SiblingTransition<AP_State_TakeoffComplete>(currentCommand);
             break;
         }
         default:
@@ -56,7 +56,7 @@ hsm::Transition AP_AP_State_TakeoffClimbing::GetTransition()
     return rtn;
 }
 
-bool AP_AP_State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     bool success = false;
     clearCommand();
@@ -102,7 +102,9 @@ bool AP_AP_State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCo
             Owner().state->vehicleGlobalPosition.AddNotifier(this,[this,cmd,targetPosition]
             {
                 mace::pose::GeodeticPosition_3D currentPosition = Owner().state->vehicleGlobalPosition.get();
-                double distance = fabs(currentPosition.deltaAltitude(&targetPosition));
+//                double distance = fabs(currentPosition.deltaAltitude(&targetPosition));
+                // For plane, once we are above the takeoff altitude, we can assume we've achieved takeoff:
+                double distance = currentPosition.deltaAltitude(&targetPosition);
 
                 Data::ControllerState guidedState = guidedProgress.updateTargetState(distance);
 //                MissionTopic::VehicleTargetTopic vehicleTarget(cmd->getTargetSystem(), &targetPosition);
@@ -158,17 +160,17 @@ bool AP_AP_State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCo
     return success;
 }
 
-void AP_AP_State_TakeoffClimbing::Update()
+void AP_State_TakeoffClimbing::Update()
 {
 
 }
 
-void AP_AP_State_TakeoffClimbing::OnEnter()
+void AP_State_TakeoffClimbing::OnEnter()
 {
     //By default I dont think there are any actions that we need to do
 }
 
-void AP_AP_State_TakeoffClimbing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_TakeoffClimbing::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
     this->OnEnter();
     if(command != nullptr)

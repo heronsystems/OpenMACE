@@ -12,9 +12,9 @@ namespace ardupilot {
 namespace state{
 
 class AP_State_Grounded;
-class AP_AP_State_TakeoffClimbing;
-class AP_AP_State_TakeoffTransitioning;
-class AP_AP_State_TakeoffComplete;
+class AP_State_TakeoffClimbing;
+class AP_State_TakeoffTransitioning;
+class AP_State_TakeoffComplete;
 class AP_State_Flight;
 
 class AP_State_Takeoff : public AbstractRootState

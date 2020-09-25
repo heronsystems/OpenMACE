@@ -13,13 +13,13 @@
 namespace ardupilot {
 namespace state{
 
-class AP_AP_State_TakeoffTransitioning;
-class AP_AP_State_TakeoffComplete;
+class AP_State_TakeoffTransitioning;
+class AP_State_TakeoffComplete;
 
-class AP_AP_State_TakeoffClimbing : public AbstractStateArdupilot
+class AP_State_TakeoffClimbing : public AbstractStateArdupilot
 {
 public:
-    AP_AP_State_TakeoffClimbing();
+    AP_State_TakeoffClimbing();
 
 public:
     AbstractStateArdupilot* getClone() const override;

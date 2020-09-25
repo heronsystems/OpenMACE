@@ -8,10 +8,10 @@ namespace ardupilot {
 namespace state{
 
 
-class AP_AP_State_TakeoffComplete : public AbstractStateArdupilot
+class AP_State_TakeoffComplete : public AbstractStateArdupilot
 {
 public:
-    AP_AP_State_TakeoffComplete();
+    AP_State_TakeoffComplete();
 
 public:
     AbstractStateArdupilot* getClone() const override;

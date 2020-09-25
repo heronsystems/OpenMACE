@@ -52,12 +52,16 @@ bool AP_State_GroundedDisarmed::handleCommand(const std::shared_ptr<AbstractComm
 
 void AP_State_GroundedDisarmed::Update()
 {
+//    StatusData_MAVLINK* vehicleStatus = Owner().status;
 
+//    if(vehicleStatus->vehicleMode.get().getFlightModeString() != "STABILIZE") {
+//        std::cout << "Mode change unsuccessful..." << std::endl;
+//    }
 }
 
 void AP_State_GroundedDisarmed::OnEnter()
 {
-    //check that the vehicle is truely armed and switch us into the guided mode
+    std::cout << "In OnEnter()" << std::endl;
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
     auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
@@ -81,11 +85,12 @@ void AP_State_GroundedDisarmed::OnEnter()
     commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
     commandMode.vehicleMode = static_cast<uint8_t>(Owner().m_ArdupilotMode->getFlightModeFromString("STABILIZE"));
     controllerSystemMode->Send(commandMode,sender,target);
-    collection->Insert("AP_State_GroundedDisarmed_modeController",controllerSystemMode);
+    collection->Insert("AP_State_GroundedDisarmed_modeController", controllerSystemMode);
 }
 
 void AP_State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    std::cout << "In OnEnter(stuff)" << std::endl;
     UNUSED(command);
 
     StatusData_MAVLINK* vehicleStatus = Owner().status;
