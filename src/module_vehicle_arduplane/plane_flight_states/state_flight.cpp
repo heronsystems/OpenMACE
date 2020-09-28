@@ -79,7 +79,7 @@ hsm::Transition AP_State_Flight::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT."<<std::endl;
+            std::cout << "I dont know how we eneded up in this transition state from STATE_FLIGHT. State: " << MACEHSMStateToString(desiredStateEnum) << std::endl;
             break;
         }
     }
@@ -279,7 +279,7 @@ void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
     }
     else if(mode == "TAKEOFF")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
+        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
     }
     else{
         desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_UNKNOWN;
