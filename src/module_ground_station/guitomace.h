@@ -141,7 +141,6 @@ public:
     //!
     void setSendPort(const int &sendPort);
 
-
     // TESTING:
     void testFunction1(const int &vehicleID);
     void testFunction2(const int &vehicleID);
@@ -176,6 +175,7 @@ private:
 
     mace::state_space::Cartesian2DSpacePtr goalSpace;
     mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
+
 
 };
 

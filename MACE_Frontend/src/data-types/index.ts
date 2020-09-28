@@ -73,6 +73,7 @@ namespace Environment {
     };
 
     export type IconPayload = {
+        agentID: string;
         name: string;
         type: IconType;
         lat: number;

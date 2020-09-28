@@ -17,54 +17,9 @@ type Props = {
 
 const HomeMarker = (props: Props) => {
   const _marker: React.RefObject<Marker> = useRef();
-  const _popup: React.RefObject<Popup> = useRef();
-  const [draggable, setDraggable] = useState(false);
-  const [longitude, setLongitude] = useState(props.data.lng);
-  const [latitude, setLatitude] = useState(props.data.lat);
-  const { icons, updateIcons, removeIcon } = useContext<Context>(AppContext);
-  const updateIconPosition = ({ lat, lng }) => {
-    const existing = icons.find((i) => i.name === props.data.name);
-    updateIcons({
-      ...existing,
-      lat,
-      lng,
-      auto_focus: false
-    });
-  };
-  const updateTempPosition = ({ lat, lng }) => {
-    setLatitude(lat);
-    setLongitude(lng);
-  };
-  const save = () => {
-    updateIconPosition({ lat: latitude, lng: longitude });
-    setDraggable(false);
-    _marker.current.leafletElement.closePopup();
-    // TODO: Send event to HMI with save details
-  };
-  const reset = () => {
-    setLatitude(props.data.lat);
-    setLongitude(props.data.lng);
-    setDraggable(false);
-    _marker.current.leafletElement.closePopup();
-    _marker.current.leafletElement.setLatLng({lat: props.data.lat, lng: props.data.lng});
-  };
-  const onDragEnd = (e) => {
-    updateTempPosition(e.target.getLatLng());
-    _marker.current.leafletElement.togglePopup();
-  };
-  const handleMarkerClick = () => {
-    setDraggable(true);
-  };
-  useEffect(() => {
-    if (props.data.auto_focus) {
-      _marker.current.leafletElement.openPopup();
-      setDraggable(true);
-    }
-  }, [{lat: props.data.lat, lng: props.data.lng}]);
-  const remove = () => {
-    removeIcon(props.data.name);
-    // TODO: Send event to HMI w/ removal details
-  };
+  const { icons, updateIcons, aircrafts  } = useContext<Context>(AppContext);
+  const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
+  
   return (
     <Marker
       ref={_marker}
@@ -72,61 +27,22 @@ const HomeMarker = (props: Props) => {
       icon={L.divIcon({
         className: "home-icon",
         html: renderToString(
-          <HomeIcon width={DEFAULT_WIDTH} height={DEFAULT_HEIGHT} />
+          <HomeIcon 
+            width={DEFAULT_WIDTH} 
+           height={DEFAULT_HEIGHT}
+           color={aircraft.color} />
         ),
         iconSize: L.point(DEFAULT_WIDTH, DEFAULT_HEIGHT, true)
       })}
-      draggable={draggable}
       // @ts-ignore this exists?
-      onDragEnd={onDragEnd}
-      onClick={handleMarkerClick}
     >
       <Tooltip
         direction="right"
         offset={[DEFAULT_WIDTH / 4, 0]}
         data={props.data}
-        show={!draggable}
       />
-      <Popup
-        autoClose={false}
-        closeOnClick={false}
-        offset={new L.Point(0, -16)}
-        ref={_popup}
-      >
-        <>
-          <div>Drag marker or enter coordinates</div>
-          <div style={styles.manualEntryContainer}>
-            <div style={styles.inputContainer}>
-              <label>Latitude</label>
-              <input
-                style={styles.input}
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value as any)}
-              />
-            </div>
-            <div style={styles.inputContainer}>
-              <label>Longitude</label>
-              <input
-                style={styles.input}
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value as any)}
-              />
-            </div>
-          </div>
-        </>
-        <div style={styles.actionsContainer}>
-          <button style={styles.saveButton} onClick={save}>
-            Save
-          </button>
-          <button style={styles.cancelButton} onClick={reset}>
-            Cancel
-          </button>
-          <button style={styles.removeButton} onClick={remove}>
-            Remove
-          </button>
-        </div>
-      </Popup>
-    </Marker>
+     
+    </Marker> 
   );
 };
 

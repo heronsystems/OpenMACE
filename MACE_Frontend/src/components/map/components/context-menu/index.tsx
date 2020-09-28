@@ -20,7 +20,7 @@ const ContextMenu = (props: Props) => {
       >
         {props.actions.map((action, index) => {
           return (
-            <a
+            <div
               key={index}
               style={styles.option}
               onClick={() => {
@@ -29,7 +29,7 @@ const ContextMenu = (props: Props) => {
               }}
             >
               {action.label}
-            </a>
+            </div>
           );
         })}
       </div>

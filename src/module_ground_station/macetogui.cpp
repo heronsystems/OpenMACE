@@ -74,11 +74,10 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
     if(home.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
         QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
-        obj["name"] = QString::fromStdString("Agent " + std::to_string(vehicleID));
+        obj["name"] = QString::fromStdString("Agent " + std::to_string(vehicleID) + " Home");
         obj["type"] = "takeoff_land";
         QJsonDocument doc(obj);
         bool bytesWritten = writeTCPData(doc.toJson());
-
         if(!bytesWritten){
             std::cout << "Write Home position failed..." << std::endl;
         }
