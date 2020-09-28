@@ -461,7 +461,7 @@ const defaultButtonStatus = {
     }
 }
 
-export const getShowButton = (vehicleState: string) => {
+export const getShowButton = (vehicleState: string, vehicleType: string) => {
     let buttons = defaultButtonStatus;
     switch (vehicleState) {
         case "Grounded":
@@ -472,7 +472,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Grounded Disarming":
             // console.log("Show takeoff, play (disabled), rtl (disabled), target (disabled)");
             buttons.takeoff = { show: true, disabled: false};
-            buttons.land = { show: false, disabled: true};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
             buttons.startmission = { show: true, disabled: true};
             buttons.pausemission = { show: false, disabled: true};
             buttons.rtl = { show: true, disabled: true};
@@ -484,7 +484,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Flight Takeoff Transitioning":
             // console.log("Show land, play (disabled), rtl (disabled), target (disabled)");
             buttons.takeoff = { show: false, disabled: true};
-            buttons.land = { show: true, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : true};
             buttons.startmission = { show: true, disabled: true};
             buttons.pausemission = { show: false, disabled: true};
             buttons.rtl = { show: true, disabled: true};
@@ -504,7 +504,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Flight Unknown":
             // console.log("Show land, play, rtl, target");
             buttons.takeoff = { show: false, disabled: true};
-            buttons.land = { show: true, disabled: false};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
             buttons.startmission = { show: true, disabled: false};
             buttons.pausemission = { show: false, disabled: true};
             buttons.rtl = { show: true, disabled: false};
@@ -513,7 +513,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Flight Auto":
             // console.log("Show land, pause, rtl, target");
             buttons.takeoff = { show: false, disabled: true};
-            buttons.land = { show: true, disabled: false};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
             buttons.startmission = { show: false, disabled: true};
             buttons.pausemission = { show: true, disabled: false};
             buttons.rtl = { show: true, disabled: false};
@@ -522,7 +522,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Flight RTL":
             // console.log("Show land, play, pause, target (disabled)");
             buttons.takeoff = { show: false, disabled: true};
-            buttons.land = { show: true, disabled: false};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
             buttons.startmission = { show: true, disabled: true};
             buttons.pausemission = { show: true, disabled: false};
             buttons.rtl = { show: false, disabled: true};
@@ -534,7 +534,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Flight Landing Descent":
             // console.log("Show land(disabled), pause, rtl, target (disabled)");
             buttons.takeoff = { show: false, disabled: true};
-            buttons.land = { show: true, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : true};
             buttons.startmission = { show: false, disabled: true};
             buttons.pausemission = { show: true, disabled: true};
             buttons.rtl = { show: true, disabled: true};
@@ -543,7 +543,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Flight Landing Complete":
             // console.log("Show takeoff, play (disabled), rtl (disabled), target (disabled)");
             buttons.takeoff = { show: true, disabled: false};
-            buttons.land = { show: false, disabled: true};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
             buttons.startmission = { show: true, disabled: true};
             buttons.pausemission = { show: false, disabled: true};
             buttons.rtl = { show: true, disabled: true};
@@ -552,7 +552,7 @@ export const getShowButton = (vehicleState: string) => {
         case "Unknown":
             // console.log("Show takeoff (disabled), play (disabled), rtl (disabled), target (disabled)");
             buttons.takeoff = { show: true, disabled: true};
-            buttons.land = { show: false, disabled: true};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
             buttons.startmission = { show: true, disabled: true};
             buttons.pausemission = { show: false, disabled: true};
             buttons.rtl = { show: true, disabled: true};

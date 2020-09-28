@@ -244,7 +244,7 @@ export default React.memo((props: Props) => {
     }
 
     const showButton = () => {
-        return getShowButton(props.data.vehicle_state);
+        return getShowButton(props.data.vehicle_state, props.data.vehicle_type);
     }
 
 
