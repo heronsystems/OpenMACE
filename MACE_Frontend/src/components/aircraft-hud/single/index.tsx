@@ -305,7 +305,8 @@ export default React.memo((props: Props) => {
             <div style={styles.indicatorContainer}>                
                 <HeadingIndicator heading={fields["yaw"]} showBox={false} />
 
-                <AttitudeIndicator roll={fields["roll"]} pitch={fields["pitch"]} showBox={false} />
+                {/* TODO-PAT/AARON: Is negating the roll angle correct here? The roll angle is reported as + for right roll from MACE, this indicator seems to plot the opposite */}
+                <AttitudeIndicator roll={-fields["roll"]} pitch={fields["pitch"]} showBox={false} />
             </div>
 
             <div style={styles.commandsContainer}>
