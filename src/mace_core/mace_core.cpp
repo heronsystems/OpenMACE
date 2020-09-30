@@ -956,7 +956,8 @@ void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_
     //specific methods and information. Otherwise we may be blasting to an unknown world.
     //This is also bad as we are assuming that the only item calling this would be a vehicle instance
 
-    uint8_t vehicleID = vehicleHome.getOriginatingSystem();
+    uint8_t vehicleID;
+    m_DataFusion->getMavlinkIDFromModule(sender->GetCharacteristic(), vehicleID);
     m_DataFusion->UpdateVehicleHomePosition(vehicleID, vehicleHome);
 
     //If there is a ground station, and it didn't generate the home; send the home position
