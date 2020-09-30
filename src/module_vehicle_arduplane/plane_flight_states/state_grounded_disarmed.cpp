@@ -67,7 +67,7 @@ void AP_State_GroundedDisarmed::OnEnter()
         controllerSystemMode->Shutdown();
         //This does not matter as we shall transition to the idle state
         UNUSED(completed); UNUSED(finishCode);
-        MaceLog::Red(std::to_string(completed) + " / " + std::to_string(finishCode));
+//        MaceLog::Red(std::to_string(completed) + " / " + std::to_string(finishCode));
         desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
     });
 
@@ -85,7 +85,7 @@ void AP_State_GroundedDisarmed::OnEnter()
     commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
     commandMode.vehicleMode = static_cast<uint8_t>(Owner().m_ArdupilotMode->getFlightModeFromString("STABILIZE"));
     controllerSystemMode->Send(commandMode,sender,target);
-    MaceLog::Red(std::to_string(commandMode.vehicleMode) + " / " + std::to_string(sender) + " / " + std::to_string(target));
+//    MaceLog::Red(std::to_string(commandMode.vehicleMode) + " / " + std::to_string(sender) + " / " + std::to_string(target));
     collection->Insert("AP_State_GroundedDisarmed_modeController", controllerSystemMode);
 }
 
