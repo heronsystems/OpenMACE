@@ -17,6 +17,7 @@ class AP_State_FlightLoiter;
 class AP_State_FlightManual;
 class AP_State_FlightRTL;
 class AP_State_FlightUnknown;
+class AP_State_Unknown;
 
 class AP_State_Landing;
 class AP_State_Grounded;

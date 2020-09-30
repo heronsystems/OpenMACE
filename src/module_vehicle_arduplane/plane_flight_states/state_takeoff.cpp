@@ -137,7 +137,7 @@ void AP_State_Takeoff::OnEnter()
     controllerSystemMode->setLambda_Shutdown([this, collection]()
     {
         UNUSED(this);
-        auto ptr = collection->Remove("modeController");
+        auto ptr = collection->Remove("AP_State_Takeoff_modeController");
         delete ptr;
     });
 
@@ -148,7 +148,7 @@ void AP_State_Takeoff::OnEnter()
     commandMode.targetID = Owner().getMAVLINKID();
     commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("TAKEOFF");
     controllerSystemMode->Send(commandMode,sender,target);
-    collection->Insert("modeController",controllerSystemMode);
+    collection->Insert("AP_State_Takeoff_modeController",controllerSystemMode);
 }
 
 

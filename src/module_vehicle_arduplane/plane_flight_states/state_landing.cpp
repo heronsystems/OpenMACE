@@ -98,7 +98,7 @@ bool AP_State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> 
         controllerSystemMode->setLambda_Shutdown([this, collection]()
         {
             UNUSED(this);
-            auto ptr = collection->Remove("modeController");
+            auto ptr = collection->Remove("AP_State_Landing_modeController");
             delete ptr;
         });
 
@@ -109,7 +109,7 @@ bool AP_State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> 
         commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
         commandMode.vehicleMode = static_cast<uint8_t>(Owner().m_ArdupilotMode->getFlightModeFromString("GUIDED"));
         controllerSystemMode->Send(commandMode,sender,target);
-        collection->Insert("modeController",controllerSystemMode);
+        collection->Insert("AP_State_Landing_modeController",controllerSystemMode);
 
         success = true;
 

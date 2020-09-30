@@ -55,8 +55,8 @@ void AP_State_TakeoffComplete::OnEnter()
         controllerSystemMode->Shutdown();
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
             desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
-        else
-            desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
+//        else
+//            desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
     });
 
     controllerSystemMode->setLambda_Shutdown([this, collection]()

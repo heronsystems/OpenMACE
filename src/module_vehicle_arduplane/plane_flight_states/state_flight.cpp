@@ -121,7 +121,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
 
             controllerSystemMode->setLambda_Shutdown([collection]()
             {
-                auto ptr = collection->Remove("modeController");
+                auto ptr = collection->Remove("AP_State_Flight_modeController");
                 delete ptr;
             });
 
@@ -132,7 +132,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
             commandMode.targetID = Owner().getMAVLINKID();
             commandMode.vehicleMode = vehicleMode;
             controllerSystemMode->Send(commandMode,sender,target);
-            collection->Insert("modeController",controllerSystemMode);
+            collection->Insert("AP_State_Flight_modeController",controllerSystemMode);
         }
         else
         {
@@ -280,6 +280,10 @@ void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
     else if(mode == "TAKEOFF")
     {
         desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+    }
+    else if(mode == "INITIALIZING")
+    {
+        desiredStateEnum = Data::MACEHSMState::STATE_UNKNOWN;
     }
     else{
         desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_UNKNOWN;
