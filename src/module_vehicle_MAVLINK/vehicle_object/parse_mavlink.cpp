@@ -49,6 +49,11 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         break;
     }
+    case MAVLINK_MSG_ID_PARAM_VALUE:
+    {
+        //This is message definition 22
+        //A controller should be handling this in the event it was requested
+    }
     case MAVLINK_MSG_ID_GPS_RAW_INT:
     {
         //This is message definition 24

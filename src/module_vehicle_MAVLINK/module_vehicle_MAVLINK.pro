@@ -21,6 +21,7 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 SOURCES += \
     controllers/commands/command_msg_interval.cpp \
+    controllers/controller_parameter_request.cpp \
     module_vehicle_mavlink.cpp \
     vehicle_object/mavlink_vehicle_object.cpp \
     vehicle_object/state_data_mavlink.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
     controllers/controller_guided_target_item_attitude.cpp
 
 HEADERS += module_vehicle_mavlink.h\
+    controllers/controller_parameter_request.h \
   controllers/controller_vision_position_estimate.h \
         module_vehicle_mavlink_global.h \
     controllers/controller_system_mode.h \
