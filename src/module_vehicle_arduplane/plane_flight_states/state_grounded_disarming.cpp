@@ -97,8 +97,8 @@ void AP_State_GroundedDisarming::OnEnter()
     command_item::ActionArm action(255, Owner().getMAVLINKID());
     action.setVehicleArm(false);
     controllerArm->Send(action,sender,target);
-    printf("Adding disarmController %x\n", controllerArm);
-    collection->Insert("disarmController",controllerArm);
+//    printf("Adding disarmController %x\n", controllerArm);
+    collection->Insert("disarmController", controllerArm);
 }
 
 void AP_State_GroundedDisarming::OnEnter(const std::shared_ptr<AbstractCommandItem> command)

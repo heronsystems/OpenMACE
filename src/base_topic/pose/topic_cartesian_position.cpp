@@ -38,8 +38,10 @@ MaceCore::TopicDatagram Topic_CartesianPosition::GenerateDatagram() const {
 
 void Topic_CartesianPosition::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
 
-    if(positionObj)
-        delete this->positionObj; positionObj = nullptr;
+    if(positionObj) {
+        delete this->positionObj;
+        positionObj = nullptr;
+    }
 
     uint8_t dimension = datagram.GetTerminal<uint8_t>("Dimension");
     if(dimension == 2)

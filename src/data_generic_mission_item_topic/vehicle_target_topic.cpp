@@ -55,8 +55,10 @@ MaceCore::TopicDatagram VehicleTargetTopic::GenerateDatagram() const {
 
 void VehicleTargetTopic::CreateFromDatagram(const MaceCore::TopicDatagram &datagram)
 {
-    if(m_targetPosition)
-        delete this->m_targetPosition; m_targetPosition = nullptr;
+    if(m_targetPosition) {
+        delete this->m_targetPosition;
+        m_targetPosition = nullptr;
+    }
 
     systemID = datagram.GetTerminal<int>("systemID");
     uint8_t dimension = datagram.GetTerminal<uint8_t>("Dimension");
@@ -115,6 +117,7 @@ VehicleTargetTopic::VehicleTargetTopic(const VehicleTargetTopic &copy)
 
 VehicleTargetTopic::VehicleTargetTopic(const mace_guided_target_stats_t &obj)
 {
+    UNUSED(obj);
     //Ken we need to reconstruct inside here
 }
 
@@ -176,6 +179,8 @@ mace_message_t VehicleTargetTopic::getMACEMsg(const uint8_t systemID, const uint
 
 std::ostream& operator<<(std::ostream& os, const VehicleTargetTopic& t)
 {
+    UNUSED(t);
+
     std::stringstream stream;
     stream.precision(6);
     //stream << std::fixed << "Target Topic for system " << t.systemID << ": " << t.targetPosition.getX() << ", "<< t.targetPosition.getY() << ", "<< t.targetPosition.getZ() << ", "<< t.targetDistance<<", "<<Data::ControllerStateToString(t.targetState)<< ".";

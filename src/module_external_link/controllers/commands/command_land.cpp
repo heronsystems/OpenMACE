@@ -11,6 +11,8 @@ namespace ExternalLink {
 
     void CommandLand::FillCommand(const command_item::SpatialLand &commandItem, mace_command_long_t &cmd) const
     {
+        UNUSED(commandItem);
+        UNUSED(cmd);
 //        if(commandItem.position->isCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT))
 //        {
 //            cmd.param2 = commandItem.position->getPosXFlag();
@@ -24,6 +26,8 @@ namespace ExternalLink {
 
     void CommandLand::BuildCommand(const mace_command_long_t &message, command_item::SpatialLand &data) const
     {
+        UNUSED(message);
+        UNUSED(data);
 
 //        data.setTargetSystem(-1);
 

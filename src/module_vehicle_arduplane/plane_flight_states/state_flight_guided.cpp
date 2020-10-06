@@ -130,8 +130,10 @@ bool AP_State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandI
                         success = currentInnerState->handleCommand(command);
                     }
                     else
+                    {
                         desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET;
                         success = true;
+                    }
                 }
             }
             else
@@ -142,8 +144,10 @@ bool AP_State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandI
                     success = currentInnerState->handleCommand(command);
                 }
                 else
+                {
                     desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET;
                     success = true;
+                }
             }
             break;
         } //end of case command_target::DynamicTarget::TargetTypes::KINEMATIC

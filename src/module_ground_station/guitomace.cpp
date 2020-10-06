@@ -392,8 +392,8 @@ void GUItoMACE::getConnectedVehicles()
     QJsonArray ids;
     QJsonArray modes;
     if(vehicleIDs.size() > 0){
-        for (const int& i : vehicleIDs) {
-            ids.append(i);
+        for (const uint& i : vehicleIDs) {
+            ids.append((int)i);
             std::string mode;
             macedata->GetVehicleFlightMode(i, mode);
             modes.append(QString::fromStdString(mode));
@@ -549,54 +549,49 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 
     int counter = 0;
     // Handle vehicle-specific commands:
-    foreach (const QJsonValue &agent, aircraft)
-    {
-        vehicleID = agent.toString().toInt();
+    if(isVehicleCommand) {
+        foreach (const QJsonValue &agent, aircraft)
+        {
+            vehicleID = agent.toString().toInt();
 
-        QJsonDocument tmpDoc = QJsonDocument::fromJson(data[counter].toString().toUtf8());
-        qDebug() << "Agent: " << vehicleID;
-        qDebug() << tmpDoc;
+            QJsonDocument tmpDoc = QJsonDocument::fromJson(data[counter].toString().toUtf8());
+            qDebug() << "Agent: " << vehicleID;
+            qDebug() << tmpDoc;
 
-        if(issuedCommand(command, vehicleID, tmpDoc))
-        {
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_VEHICLE_MODE")
-        {
-            setVehicleMode(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_VEHICLE_HOME")
-        {
-            setVehicleHome(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_VEHICLE_ARM")
-        {
-            setVehicleArm(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_GO_HERE")
-        {
-            setGoHere(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "GET_VEHICLE_MISSION")
-        {
-            getVehicleMission(vehicleID);
-            isVehicleCommand = true;
-        }
-        else if (command == "GET_VEHICLE_HOME")
-        {
-            getVehicleHome(vehicleID);
-            isVehicleCommand = true;
-        }
-        else {
-            std::cout << "Command " << command << " not recognized." << std::endl;
-            return;
-        }
+            if(issuedCommand(command, vehicleID, tmpDoc))
+            {
+            }
+            else if (command == "SET_VEHICLE_MODE")
+            {
+                setVehicleMode(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_VEHICLE_HOME")
+            {
+                setVehicleHome(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_VEHICLE_ARM")
+            {
+                setVehicleArm(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_GO_HERE")
+            {
+                setGoHere(vehicleID, tmpDoc);
+            }
+            else if (command == "GET_VEHICLE_MISSION")
+            {
+                getVehicleMission(vehicleID);
+            }
+            else if (command == "GET_VEHICLE_HOME")
+            {
+                getVehicleHome(vehicleID);
+            }
+            else {
+                std::cout << "Command " << command << " not recognized." << std::endl;
+                return;
+            }
 
-        counter++;
+            counter++;
+        }
     }
 }
 

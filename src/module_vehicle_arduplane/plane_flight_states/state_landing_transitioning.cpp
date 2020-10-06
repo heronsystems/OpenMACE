@@ -48,6 +48,7 @@ hsm::Transition AP_State_LandingTransitioning::GetTransition()
 
 bool AP_State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
     case COMMANDTYPE::CI_NAV_LAND:
@@ -73,18 +74,21 @@ bool AP_State_LandingTransitioning::handleCommand(const std::shared_ptr<Abstract
                     {
                         desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
                     }
-                     });
+                });
+                success = true;
                 break;
             }
             case(CoordinateSystemTypes::CARTESIAN):
             {
                 desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
+                success = true;
                 break;
             }
             case(CoordinateSystemTypes::UNKNOWN):
             case (CoordinateSystemTypes::NOT_IMPLIED):
             {
                 desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
+                success = true;
                 break;
             }
             }
@@ -112,12 +116,15 @@ bool AP_State_LandingTransitioning::handleCommand(const std::shared_ptr<Abstract
             landingTarget.setPosition(cmd->getPosition());
             landingTransitioning->Send(landingTarget,sender,target);
             collection->Insert("landingTransition",landingTransitioning);
+            success = true;
         }
         break;
     }
     default:
         break;
     }
+
+    return success;
 }
 
 void AP_State_LandingTransitioning::Update()

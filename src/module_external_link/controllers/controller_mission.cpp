@@ -10,6 +10,8 @@ namespace ExternalLink {
     //!
     bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_mission_request_list_t &cmd, MissionItem::MissionKey &queueObj)
     {
+        UNUSED(target);
+
         queueObj = data;
 
         cmd.mission_creator = static_cast<uint8_t>(data.m_creatorID);
@@ -268,7 +270,7 @@ namespace ExternalLink {
             return false;
         }
 
-        int seqReceived = missionItem.seq;
+        uint seqReceived = missionItem.seq;
         if(seqReceived > (m_MissionsBeingFetching[key].mission.getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Mission download Error: received a mission item with an index greater than available in the queue" << std::endl;
@@ -435,6 +437,10 @@ namespace ExternalLink {
 
     bool ControllerMission::BuildData_Send(const mace_mission_request_list_generic_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_mission_ack_t &response, MaceCore::ModuleCharacteristic &vehicleObj, MissionItem::MissionKey &receiveQueueObj, MissionItem::MissionKey &respondQueueObj)
     {
+        UNUSED(sender);
+        UNUSED(receiveQueueObj);
+        UNUSED(respondQueueObj);
+
         MissionItem::MISSIONSTATE state = static_cast<MissionItem::MISSIONSTATE>(msg.mission_state);
         if(state == MissionItem::MISSIONSTATE::CURRENT)
         {
@@ -482,6 +488,8 @@ namespace ExternalLink {
 
     bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_new_onboard_mission_t &msg, MaceCore::ModuleCharacteristic &queue)
     {
+        UNUSED(sender);
+
         queue = target;
 
         msg.mission_creator = static_cast<uint8_t>(data.m_creatorID);

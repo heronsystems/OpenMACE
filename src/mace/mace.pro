@@ -38,6 +38,11 @@ INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+# Octomap Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
 else:unix:!macx: LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
@@ -180,38 +185,42 @@ unix: LIBS += -lboost_system
 unix: LIBS += -llz4
 
 unix {
-    exists(/opt/ros/melodic/lib/) {
+    exists(/opt/ros/kinetic/lib/) {
         DEFINES += ROS_EXISTS
-        INCLUDEPATH += /opt/ros/melodic/include
-        INCLUDEPATH += /opt/ros/melodic/lib
+        INCLUDEPATH += /opt/ros/kinetic/include
+        INCLUDEPATH += /opt/ros/kinetic/lib
 
-        LIBS += -L/opt/ros/melodic/lib -lroscpp
-        LIBS += -L/opt/ros/melodic/lib -lroscpp_serialization
-        LIBS += -L/opt/ros/melodic/lib -lrostime
-        LIBS += -L/opt/ros/melodic/lib -lxmlrpcpp
-        LIBS += -L/opt/ros/melodic/lib -lcpp_common
-        LIBS += -L/opt/ros/melodic/lib -lrosconsole_log4cxx
-        LIBS += -L/opt/ros/melodic/lib -lrosconsole_backend_interface
-        LIBS += -L/opt/ros/melodic/lib -lroslib
-        LIBS += -L/opt/ros/melodic/lib -lrospack
-        LIBS += -L/opt/ros/melodic/lib -lmessage_filters
-        LIBS += -L/opt/ros/melodic/lib -lclass_loader
-        LIBS += -L/opt/ros/melodic/lib -lconsole_bridge
-        LIBS += -L/opt/ros/melodic/lib -lrosconsole
-        LIBS += -L/opt/ros/melodic/lib -limage_transport
-        LIBS += -L/opt/ros/melodic/lib -lcv_bridge
-        LIBS += -L/opt/ros/melodic/lib -ltf
-        LIBS += -L/opt/ros/melodic/lib -ltf2
-        LIBS += -L/opt/ros/melodic/lib -ltf2_ros
-        LIBS += -L/opt/ros/melodic/lib -lactionlib
-        LIBS += -L/opt/ros/melodic/lib -loctomap_ros
-        LIBS += -L/opt/ros/melodic/lib -loctomap
-        LIBS += -L/opt/ros/melodic/lib -loctomath
+        LIBS += -L/opt/ros/kinetic/lib -lroscpp
+        LIBS += -L/opt/ros/kinetic/lib -lroscpp_serialization
+        LIBS += -L/opt/ros/kinetic/lib -lrostime
+        LIBS += -L/opt/ros/kinetic/lib -lxmlrpcpp
+        LIBS += -L/opt/ros/kinetic/lib -lcpp_common
+        LIBS += -L/opt/ros/kinetic/lib -lrosconsole_log4cxx
+        LIBS += -L/opt/ros/kinetic/lib -lrosconsole_backend_interface
+        LIBS += -L/opt/ros/kinetic/lib -lroslib
+        LIBS += -L/opt/ros/kinetic/lib -lrospack
+        LIBS += -L/opt/ros/kinetic/lib -lmessage_filters
+        LIBS += -L/opt/ros/kinetic/lib -lclass_loader
+        LIBS += -L/opt/ros/kinetic/lib -lconsole_bridge
+        LIBS += -L/opt/ros/kinetic/lib -lrosconsole
+        LIBS += -L/opt/ros/kinetic/lib -limage_transport
+        LIBS += -L/opt/ros/kinetic/lib -lcv_bridge
+        LIBS += -L/opt/ros/kinetic/lib -ltf
+        LIBS += -L/opt/ros/kinetic/lib -ltf2
+        LIBS += -L/opt/ros/kinetic/lib -ltf2_ros
+        LIBS += -L/opt/ros/kinetic/lib -lactionlib
+        LIBS += -L/opt/ros/kinetic/lib -loctomap_ros
+        LIBS += -L/opt/ros/kinetic/lib -loctomap
+        LIBS += -L/opt/ros/kinetic/lib -loctomath
 
 #        LIBS += -L$$(MACE_ROOT)/catkin_sim_environment/devel/lib/ -lmace_matlab_msgs
 
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/kinetic/include
+        QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/catkin_sim_environment/devel/include
 
     } else:exists(/opt/ros/melodic/lib/) {
         DEFINES += ROS_EXISTS
@@ -243,9 +252,16 @@ unix {
 
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/melodic/include
+        QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/catkin_sim_environment/devel/include
     } else {
         INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
         LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+
+        # Octomap Warning suppression:
+        QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
     }
 }
 
@@ -253,3 +269,6 @@ unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
+
+# Flann Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$PWD/../../tools/flann/src/cpp

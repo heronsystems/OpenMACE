@@ -60,6 +60,7 @@ void Action_SetGlobalOrigin::populateCommandItem(mace_command_long_t &obj) const
 
 void Action_SetGlobalOrigin::fromCommandItem(const mace_command_long_t &obj)
 {
+    UNUSED(obj);
     //this->setVehicleArm(static_cast<bool>(obj.param));
 }
 /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
@@ -83,6 +84,8 @@ void Action_SetGlobalOrigin::generateMACEMSG_MissionItem(mace_message_t &msg) co
 
 void Action_SetGlobalOrigin::generateMACEMSG_CommandItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
+
     mace_command_long_t longCommand;
     this->populateCommandItem(longCommand);
     //mace_msg_command_short_encode_chan();

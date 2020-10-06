@@ -79,7 +79,10 @@ public:
         m_currentMapObject = layeredMap;
     }
 
-    std::vector<state_space::State*> solve() {}
+    std::vector<state_space::State*> solve() {
+        std::vector<state_space::State*> solutionVector;
+        return solutionVector;
+    }
 
 
     void computeRepulsiveGradientMap(const mace::maps::BaseGridMap* &dynamicMap);

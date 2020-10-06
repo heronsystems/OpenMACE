@@ -236,7 +236,8 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleGroundStation::ModuleC
 void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params)
 {
     QHostAddress guiHostAddress;
-    int listenPort, sendPort;
+    int listenPort = 5678;
+    int sendPort = 1234;
     if(params->HasNonTerminal("MACEComms")) {
         std::shared_ptr<MaceCore::ModuleParameterValue> maceCommsXML = params->GetNonTerminalValue("MACEComms");
         if(maceCommsXML->HasTerminal("GUIHostAddress")) {
@@ -309,7 +310,10 @@ void ModuleGroundStation::AttachedAsModule(MaceCore::IModuleTopicEvents *ptr)
 //!
 void ModuleGroundStation::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName);
+    UNUSED(sender);
+    UNUSED(data);
+    UNUSED(target);
 }
 
 
@@ -325,6 +329,8 @@ void ModuleGroundStation::NewTopicData(const std::string &topicName, const MaceC
 //!
 void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
     uint8_t vehicleID;
     if(this->getDataObject()->getMavlinkIDFromModule(sender, vehicleID)) {
         //example read of vehicle data
@@ -588,6 +594,9 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
 //!
 void ModuleGroundStation::NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(key);
+    UNUSED(sender);
+
     /* MTB - Removing 7/2/2018
      * @pnolan Issue: 138
      *

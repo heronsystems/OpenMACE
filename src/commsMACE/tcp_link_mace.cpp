@@ -346,7 +346,7 @@ void TcpLink::startTCPClient()
 
 void TcpLink::WriteBytesBroadcast(const char *bytes, int length, const OptionalParameter<Resource> &target) const
 {
-
+    UNUSED(target);
     std::cout<<"TcpLink::WriteBytes" << std::endl;
     QByteArray data(bytes, length);
     if(m_udpSocket && m_udpSocket->isOpen()) {
@@ -360,6 +360,7 @@ void TcpLink::WriteBytesBroadcast(const char *bytes, int length, const OptionalP
 
 void TcpLink::WriteBytes(const char *bytes, int length, const OptionalParameter<Resource> &target)
 {
+    UNUSED(target);
     QByteArray data(bytes, length);
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
 

@@ -29,8 +29,10 @@ public:
 
     ~VehicleTargetTopic()
     {
-        if(m_targetPosition)
-            delete m_targetPosition; m_targetPosition = nullptr;
+        if(m_targetPosition) {
+            delete m_targetPosition;
+            m_targetPosition = nullptr;
+        }
     }
 
 public:

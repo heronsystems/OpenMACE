@@ -85,6 +85,7 @@ void ActionArm::fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
 
 void ActionArm::generateMACEMSG_MissionItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
     mace_mission_item_t missionItem;
     AbstractCommandItem::populateMACECOMMS_MissionItem(missionItem);
     //mace_msg_mission_item_encode_chan();
@@ -92,6 +93,7 @@ void ActionArm::generateMACEMSG_MissionItem(mace_message_t &msg) const
 
 void ActionArm::generateMACEMSG_CommandItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
     mace_command_short_t shortCommand;
     this->populateCommandItem(shortCommand);
     //mace_msg_command_short_encode_chan();

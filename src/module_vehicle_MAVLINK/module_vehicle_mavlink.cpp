@@ -94,6 +94,7 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositi
             auto homePositionController = new MAVLINKUXVControllers::Command_HomePositionGet(m_SystemData, m_TransmissionQueue, m_LinkChan);
             //create "stateless" global origin controller that exists within the module itself
             homePositionController->AddLambda_Finished(this, [this, homePositionController](const bool completed, const uint8_t finishCode){
+                UNUSED(finishCode);
                 homePositionController->Shutdown();
                 if(!completed)
                     return;
@@ -117,6 +118,7 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositi
             auto homePositionController = new MAVLINKUXVControllers::Command_HomePositionSet(m_SystemData, m_TransmissionQueue, m_LinkChan);
             //create "stateless" global origin controller that exists within the module itself
             homePositionController->AddLambda_Finished(this, [this, homePositionController](const bool completed, const uint8_t finishCode){
+                UNUSED(finishCode);
                 homePositionController->Shutdown();
                 if(!completed)
                     return;

@@ -41,7 +41,8 @@ hsm::Transition State_FlightUnknown::GetTransition()
 
 bool State_FlightUnknown::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return false;
 }
 
 void State_FlightUnknown::Update()
@@ -56,6 +57,7 @@ void State_FlightUnknown::OnEnter()
 
 void State_FlightUnknown::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     this->OnEnter();
 }
 

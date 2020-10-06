@@ -41,7 +41,8 @@ hsm::Transition AP_State_FlightLand::GetTransition()
 
 bool AP_State_FlightLand::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return false;
 }
 
 void AP_State_FlightLand::Update()
@@ -56,6 +57,7 @@ void AP_State_FlightLand::OnEnter()
 
 void AP_State_FlightLand::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     this->OnEnter();
 }
 

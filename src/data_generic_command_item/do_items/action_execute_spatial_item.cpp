@@ -77,7 +77,7 @@ void Action_ExecuteSpatialItem::generateMACEMSG_CommandItem(mace_message_t &msg)
 
 std::string Action_ExecuteSpatialItem::printCommandInfo() const
 {
-
+    return "TODO: IMPLEMENT printCommandInfo";
 }
 
 

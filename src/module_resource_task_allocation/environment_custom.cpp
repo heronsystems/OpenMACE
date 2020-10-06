@@ -22,6 +22,8 @@ double rnd() {return double(rand())/RAND_MAX;}
 Environment_Map::Environment_Map(const Polygon_Cartesian &boundingPolygon, const double &gridSpacing, const bool &globalInstance) :
     m_boundary(boundingPolygon), m_globalInstance(globalInstance) {
 
+    UNUSED(gridSpacing);
+
 //    // Only generated and insert nodes if the RTA instance is a local instance (i.e. onboard a vehicle that needs to generate nodes)
 //    if(!globalInstance) {
 //        m_dataGrid = new mace::maps::Bounded2DGrid(m_boundary, gridSpacing, gridSpacing);
@@ -34,6 +36,8 @@ Environment_Map::Environment_Map(const Polygon_Cartesian &boundingPolygon, const
  * @return Success or Failure
  */
 bool Environment_Map::computeBalancedVoronoi(const std::map<int, CartesianPosition_2D> &vehicles) {
+    UNUSED(vehicles);
+
     bool success = false;
 //    if(m_boundary.getVector().size() > 2) {
 //        // Step 1): Use the number of vehicles to create evenly spaced points in environment
@@ -129,6 +133,11 @@ bool Environment_Map::computeBalancedVoronoi(const std::map<int, CartesianPositi
  * @return Success or Failure
  */
 bool Environment_Map::computeVoronoi(std::vector<Cell_2DC> &cellVec, const std::vector<CartesianPosition_2D> &sitePositions) {
+    UNUSED(cellVec);
+    UNUSED(sitePositions);
+
+    return false;
+
 //    bool success = false;
 
 //    // Set up constants for the container geometry

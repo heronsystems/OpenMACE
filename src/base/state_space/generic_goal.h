@@ -17,7 +17,7 @@ public:
     GoalSampler(const StateSpacePtr &space, const double &value = 0.0):
         m_StateSpace(space)
     {
-
+        UNUSED(value);
     }
 
     virtual void sampleGoal(State* sample) = 0;

@@ -10,6 +10,7 @@ StartState::StartState(const StateSpacePtr &space, const double &value):
     {
         stateSpace->getNewState();
         sample = startState;
+        if(sample != nullptr){} // Warning suppression
     });
 }
 

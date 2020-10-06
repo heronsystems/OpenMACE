@@ -19,7 +19,9 @@ GuidedTimeoutController::~GuidedTimeoutController() {
 
 void GuidedTimeoutController::registerAbortingTarget(const command_item::AbstractCommandItemPtr command, const TimeoutMode &mode, const int &timeout)
 {
-
+    UNUSED(command);
+    UNUSED(mode);
+    UNUSED(timeout);
 }
 
 void GuidedTimeoutController::registerCurrentTarget(const command_item::Action_DynamicTarget &commandTarget, const TimeoutMode &mode)
@@ -35,6 +37,12 @@ void GuidedTimeoutController::registerCurrentTarget(const command_item::Action_D
                 this->m_Timeout.start();
                 break;
             }
+            case TimeoutMode::ABORT:
+            case TimeoutMode::LEVELING:
+            default:
+            {
+                break;
+            }
             }
         });
     }
@@ -47,6 +55,12 @@ void GuidedTimeoutController::registerCurrentTarget(const command_item::Action_D
             this->m_Timeout.start();
             Thread::start();
 
+            break;
+        }
+        case TimeoutMode::ABORT:
+        case TimeoutMode::LEVELING:
+        default:
+        {
             break;
         }
         }

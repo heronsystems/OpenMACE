@@ -46,7 +46,8 @@ hsm::Transition State_FlightGuided_Queue::GetTransition()
 
 bool State_FlightGuided_Queue::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return false;
 }
 
 void State_FlightGuided_Queue::Update()
@@ -61,6 +62,7 @@ void State_FlightGuided_Queue::OnEnter()
 
 void State_FlightGuided_Queue::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     this->OnEnter();
 }
 

@@ -114,6 +114,7 @@ public:
     //!
     bool operator == (const GoalState &rhs) const
     {
+        UNUSED(rhs);
         return false;
     }
 

@@ -8,9 +8,13 @@
 //! \brief ModuleRTA Default constructor
 //!
 ModuleRTA::ModuleRTA():
-    m_VehicleDataTopic("vehicleData"), m_SensorDataTopic("sensorData"),
-    m_SensorFootprintDataTopic("sensorFootprint"), gridSpacingSent(false), environmentBoundarySent(false),
-    m_globalInstance(true), m_gridSpacing(1)
+    m_gridSpacing(1),
+    m_globalInstance(true),
+    gridSpacingSent(false),
+    environmentBoundarySent(false),
+    m_VehicleDataTopic("vehicleData"),
+    m_SensorDataTopic("sensorData"),
+    m_SensorFootprintDataTopic("sensorFootprint")
 {
     std::vector<CartesianPosition_2D> localBoundaryVerts;
     Polygon_Cartesian poly(localBoundaryVerts);
@@ -133,6 +137,8 @@ void ModuleRTA::NewTopicData(const std::string &topicName, const MaceCore::Modul
 //!
 void ModuleRTA::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
 //    if(!gridSpacingSent) {
 //        ModuleRTA::NotifyListeners([&](MaceCore::IModuleEventsRTA* ptr) {
 //            ptr->Event_SetGridSpacing(this, m_gridSpacing);
@@ -258,6 +264,8 @@ void ModuleRTA::NewlyUpdatedGlobalOrigin(const mace::pose::GeodeticPosition_3D &
 //!
 void ModuleRTA::NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
+
     BoundaryItem::BoundaryCharacterisic characterstic;
     BoundaryItem::BoundaryList boundary;
     this->getDataObject()->getBoundaryFromIdentifier(key, boundary);
@@ -323,6 +331,9 @@ void ModuleRTA::NewlyAvailableBoundary(const uint8_t &key, const OptionalParamet
 //!
 void ModuleRTA::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(vehicleID);
+    UNUSED(sender);
+
 //    std::vector<MaceCore::TopicCharacteristic> x = this->GetEmittedTopics();
 
 //    MaceCore::TopicDatagram topicDatagram;
@@ -384,6 +395,9 @@ void ModuleRTA::NewlyAvailableVehicle(const int &vehicleID, const OptionalParame
  * @param direction Grid direction for missions (NORTH_SOUTH, EAST_WEST, or CLOSEST_POINT)
  */
 void ModuleRTA::updateMACEMissions(std::map<int, Cell_2DC> updateCells, GridDirection direction) {
+    UNUSED(updateCells);
+    UNUSED(direction);
+
     //    DataState::StateGlobalPosition tmpGlobalOrigin;
     //    if(environment->getGlobalOrigin()->has2DPositionSet()) {
     //        tmpGlobalOrigin.setLatitude(environment->getGlobalOrigin()->getLatitude());
@@ -441,6 +455,8 @@ void ModuleRTA::updateMACEMissions(std::map<int, Cell_2DC> updateCells, GridDire
 
 void ModuleRTA::TestFunction(const int &vehicleID)
 {
+    UNUSED(vehicleID);
+
     //    GridDirection direction = GridDirection::EAST_WEST;
     //    std::map<int, Position<CartesianPosition_2D> > vehicles;
     //    Position<CartesianPosition_2D> pt1, pt2;
