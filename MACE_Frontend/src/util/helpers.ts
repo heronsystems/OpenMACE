@@ -507,6 +507,14 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
         case "Flight Guided AttTarget":
         case "Flight Guided GeoTarget":
         case "Flight Guided CartTarget":
+            // console.log("Show land, play, rtl, target");
+            buttons.takeoff = { show: false, disabled: true };
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false };
+            buttons.startmission = { show: true, disabled: false };
+            buttons.pausemission = { show: false, disabled: true };
+            buttons.rtl = { show: true, disabled: false };
+            buttons.setgohere = { show: true, disabled: false };
+        break;
         case "Flight Brake":
         case "Flight Loiter":
         case "Flight Unknown":
@@ -516,7 +524,7 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
             buttons.startmission = { show: true, disabled: false};
             buttons.pausemission = { show: false, disabled: true};
             buttons.rtl = { show: true, disabled: false};
-            buttons.setgohere = { show: true, disabled: false};
+            buttons.setgohere = { show: true, disabled: true};
             break;
         case "Flight Auto":
             // console.log("Show land, pause, rtl, target");
@@ -525,7 +533,7 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
             buttons.startmission = { show: false, disabled: true};
             buttons.pausemission = { show: true, disabled: false};
             buttons.rtl = { show: true, disabled: false};
-            buttons.setgohere = { show: true, disabled: false};
+            buttons.setgohere = { show: true, disabled: true};
             break;
         case "Flight RTL":
             // console.log("Show land, pause, rtl (disabled), target (disabled)");
