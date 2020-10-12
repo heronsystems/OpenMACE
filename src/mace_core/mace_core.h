@@ -38,6 +38,7 @@
 #include "octomap/OcTree.h"
 
 #include "data_generic_command_item/command_item_components.h"
+#include "data_generic_item/data_generic_item_components.h"
 
 #include <common/logging/macelog.h>
 
@@ -392,13 +393,19 @@ public:
     /// GENERAL VEHICLE EVENTS: These events are associated from IModuleEventsGeneralVehicle
     ////////////////////////////////////////////////////////////////////////////////////////
 
-
     //!
     //! \brief GVEvents_NewHomePosition New home position
     //! \param sender Sender module
     //! \param vehicleHome New vehicle home
     //!
     virtual void GVEvents_NewHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome);
+
+    //!
+    //! \brief GVEvents_NewParamterValue New parameters pertinent for the vehicle
+    //! \param sender Sender module
+    //! \param vehicleParams New vehicle parameters
+    //!
+    virtual void GVEvents_NewParamterValue(const ModuleBase *sender, DataGenericItem::DataGenericItem_ParamValue &vehicleParam);
 
     //!
     //! \brief GVEvents_MissionExeStateUpdated New mission EXE state event

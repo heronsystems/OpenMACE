@@ -124,6 +124,11 @@ public:
     //!
     virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
+    //!
+    //! \brief NewlyAvailableParameterList Explicitly being told about the newly available parameters
+    //! \param params the params that are currently relevant to the vehicle
+    //!
+    void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params) override;
 
     //!
     //! \brief NewlyAvailableCurrentMission Subscriber to a new vehicle mission topic

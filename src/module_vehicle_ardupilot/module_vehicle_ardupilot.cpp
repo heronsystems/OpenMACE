@@ -97,6 +97,7 @@ void ModuleVehicleArdupilot::Request_FullDataSync(const int &targetSystem, const
     std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> objectData = m_SystemData->state->GetTopicData();
     this->PublishVehicleData(targetSystem,objectData);
     this->prepareMissionController();
+
     MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
     if(missionController)
     {

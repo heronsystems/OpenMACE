@@ -582,6 +582,12 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
     }
 }
 
+void ModuleGroundStation::NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params)
+{
+    std::cout<<"Pat do something with the parameters here as you desire."<<std::endl;
+}
+
+
 //!
 //! \brief NewlyAvailableBoundary Subscriber to a new boundary
 //! \param key Key corresponding to the updated boundary in the core

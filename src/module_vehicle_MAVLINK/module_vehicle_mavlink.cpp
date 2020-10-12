@@ -46,6 +46,26 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
 
         missionController->GetMissions(m_SystemData->getMAVLINKID());
     }
+
+    //request the current parameters on the vehicle (for now we do just one)
+    this->prepareParameterController();
+    MAVLINKUXVControllers::Controller_ParameterRequest* parameterController = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("parameterController"));
+    parameterController->Construct_Send()
+    if(parameterController)
+    {
+        parameterController->AddLambda_Finished(this, [parameterController](const bool completed, const uint8_t code){
+            UNUSED(code);
+            if (completed)
+                printf("Parameter Download Completed\n");
+            else
+                printf("Parameter Download Failed\n");
+            //Ken Fix: We should handle stuff related to the completion and the code
+
+            parameterController->Shutdown();
+        });
+
+        parameterController->GetMissions(m_SystemData->getMAVLINKID());
+    }
 }
 
 template <typename ...VehicleTopicAdditionalComponents>
@@ -237,7 +257,7 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionCo
         }
     }
 
-    //create "stateless" mission controller that exists within the module itself
+    //create "stateless" parameter controller that exists within the module itself
     auto missionController = new MAVLINKUXVControllers::ControllerMission(m_SystemData, m_TransmissionQueue, m_LinkChan);
 
     missionController->setLambda_DataReceived([this](const MavlinkEntityKey key, const MAVLINKUXVControllers::MissionDownloadResult &data){
@@ -278,4 +298,67 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionCo
     });
 
     m_ControllersCollection.Insert("missionController",missionController);
+}
+
+
+template <typename ...VehicleTopicAdditionalComponents>
+void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareParameterController()
+{
+    //If there is an old parameter controller still running, allow us to shut it down
+    if(m_ControllersCollection.Exist("parameterController"))
+    {
+        auto parameterControllerOld = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("parameterController"));
+        if(parameterControllerOld != nullptr)
+        {
+            std::cout << "Shutting down previous parameter controller, which was still active" << std::endl;
+            parameterControllerOld->Shutdown();
+
+            // Need to wait for the old controller to be shutdown.
+            std::unique_lock<std::mutex> controllerLock(m_mutex_ParameterController);
+            while (!m_oldMissionControllerShutdown)
+                m_condition_ParameterController.wait(controllerLock);
+            m_oldParameterControllerShutdown = false;
+            controllerLock.unlock();
+        }
+    }
+
+    //create "stateless" mission controller that exists within the module itself
+    auto parameterController = new MAVLINKUXVControllers::Controller_ParameterRequest(m_SystemData, m_TransmissionQueue, m_LinkChan);
+
+    parameterController->setLambda_DataReceived([this](const MavlinkEntityKey key, const MAVLINKUXVControllers::ParameterRequestResult &data){
+
+        DataGenericItem::DataGenericItem_ParamValue parameterValue;
+        parameterValue.setParamValues(data.parameterIndex, data.parameterName, data.parameterValue);
+
+        //notify the core of the change
+        ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr){
+            ptr->GVEvents_NewParamterValue(this, parameterValue);
+        });
+
+    });
+
+    parameterController->setLambda_Shutdown([this, parameterController]() mutable
+    {
+        auto ptr = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("parameterController"));
+
+        if (ptr == parameterController && ptr != nullptr)
+        {
+            m_ControllersCollection.Remove("parameterController");
+            delete ptr;
+            parameterController = nullptr;
+        }
+
+        std::lock_guard<std::mutex> guard(m_mutex_MissionController);
+        m_oldParameterControllerShutdown = true;
+        m_condition_ParameterController.notify_one();
+    });
+
+    MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
+    MavlinkEntityKey sender = 255;
+    MAVLINKUXVControllers::ParameterRequestResult parameterRequest;
+    parameterRequest.vehicleID = this->GetAttachedMavlinkEntity();
+    parameterRequest.parameterName = "TKOFF_ALT";
+
+    m_ControllersCollection.Insert("parameterController", parameterController);
+    parameterController->Send(parameterRequest, sender, target);
 }

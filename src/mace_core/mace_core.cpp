@@ -984,6 +984,45 @@ void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_
 }
 
 //!
+//! \brief GVEvents_NewHomePosition New home position
+//! \param sender Sender module
+//! \param vehicleHome New vehicle home
+//!
+void MaceCore::GVEvents_NewParamterValue(const ModuleBase *sender, DataGenericItem::DataGenericItem_ParamValue &vehicleParam)
+{
+    UNUSED(sender);
+    UNUSED(vehicleParam);
+    //TODO FIX KEN: We should incorporate a method that shall exist to understand who wants to receive
+    //specific methods and information. Otherwise we may be blasting to an unknown world.
+    //This is also bad as we are assuming that the only item calling this would be a vehicle instance
+
+    uint8_t vehicleID;
+    m_DataFusion->getMavlinkIDFromModule(sender->GetCharacteristic(), vehicleID);
+
+    //create the list needed for the ground station
+    std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> paramValues;
+    paramValues.insert(std::pair<std::string, DataGenericItem::DataGenericItem_ParamValue>(vehicleParam.getID(),vehicleParam));
+
+    //If there is a ground station, and it didn't generate the home; send the home position
+    if(m_GroundStation && m_GroundStation.get() != sender)
+        m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE_PARAMETERS, paramValues, sender->GetCharacteristic());
+
+    //Ken we need to fix for transmission over external link
+//    if(m_ExternalLink.size() > 0)
+//    {
+//        for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it=m_ExternalLink.begin(); it!=m_ExternalLink.end(); ++it)
+//        {
+//            if(it->get() == sender)
+//            {
+//                continue;
+//            }
+//            (*it)->MarshalCommand(ExternalLinkCommands::NEWLY_AVAILABLE_HOME_POSITION,vehicleHome, sender->GetCharacteristic());
+//        }
+//    }
+}
+
+
+//!
 //! \brief GVEvents_MissionExeStateUpdated New mission EXE state event
 //! \param sender Sender module
 //! \param missionKey Mission key corresponding to the new EXE state
