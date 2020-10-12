@@ -58,7 +58,6 @@ HEADERS += module_vehicle_arduplane.h\
     vehicle_object/arduplane_component_flight_mode.h \
     vehicle_object/vehicle_object_arduplane.h \
     plane_flight_states/state_grounded_disarmed.h \
-    plane_flight_states/arducopter_state_components.h \
     plane_flight_states/state_flight_guided.h \
     plane_flight_states/state_grounded.h \
     plane_flight_states/state_grounded_armed.h \
@@ -94,6 +93,9 @@ INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 # Unix lib Install
 unix:!symbian {
@@ -190,15 +192,25 @@ unix {
         INCLUDEPATH += /opt/ros/kinetic/lib
         LIBS += -L/opt/ros/kinetic/lib -loctomath
         LIBS += -L/opt/ros/kinetic/lib -loctomap
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/kinetic/include
+
     } else:exists(/opt/ros/melodic/lib/) {
         DEFINES += ROS_EXISTS
         INCLUDEPATH += /opt/ros/melodic/include
         INCLUDEPATH += /opt/ros/melodic/lib
         LIBS += -L/opt/ros/melodic/lib -loctomath
         LIBS += -L/opt/ros/melodic/lib -loctomap
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/melodic/include
     } else {
         INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
         LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+
+        # Octomap Warning suppression:
+        QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
     }
 }
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath

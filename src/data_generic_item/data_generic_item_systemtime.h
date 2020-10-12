@@ -5,6 +5,8 @@
 
 #include "mace.h"
 
+#include "common/common.h"
+
 namespace DataGenericItem {
 
 class DataGenericItem_SystemTime

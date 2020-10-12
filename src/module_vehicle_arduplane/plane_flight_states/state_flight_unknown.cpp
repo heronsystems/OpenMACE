@@ -42,6 +42,7 @@ hsm::Transition AP_State_FlightUnknown::GetTransition()
 bool AP_State_FlightUnknown::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     UNUSED(command);
+    return false;
 }
 
 void AP_State_FlightUnknown::Update()

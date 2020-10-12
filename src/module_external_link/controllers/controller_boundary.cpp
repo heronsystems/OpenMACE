@@ -173,7 +173,7 @@ namespace ExternalLink{
         //check that the given boundary has been initiated for an upload
         if(m_BoundariesUploading.find(pair) == m_BoundariesUploading.cend())
         {
-            printf("ERROR!!!!!!!!!!!!\N  -- Boundary Controller was asked to send a item to a boundary it doesn't have knowledge of\n");
+            printf("ERROR!!!!!!!!!!!!\n  -- Boundary Controller was asked to send a item to a boundary it doesn't have knowledge of\n");
 //            if(CONTROLLER_BOUNDARY_TYPE::mLog)
 //                CONTROLLER_BOUNDARY_TYPE::mLog->error("BoundaryController_ExternalLink has been told to transmit a boundary item from a boundary which keys dont match the contained.");
             return false;
@@ -181,12 +181,12 @@ namespace ExternalLink{
 
 
         //pull index we need to fetch
-        int index = msg.seq;
+        uint index = msg.seq;
 
         //ensure the requested index is within the expected range
         if(index >= m_BoundariesUploading[pair].getQueueSize())
         {
-            printf("ERROR!!!!!!!!!!!!\N  -- Boundary Controller was asked to send a item whoose sequence is larger than what the boundary it knows about has\n");
+            printf("ERROR!!!!!!!!!!!!\n  -- Boundary Controller was asked to send a item whoose sequence is larger than what the boundary it knows about has\n");
 //            if(CONTROLLER_BOUNDARY_TYPE::mLog)
 //                CONTROLLER_BOUNDARY_TYPE::mLog->error("BoundaryController_ExternalLink has been told to transmit a boundary item with index " + std::to_string(index) + " which is greater than the size of the list contained.");
             return false;
@@ -236,7 +236,7 @@ namespace ExternalLink{
         //check if boundary item received is part of a boundary we are activly downloading
         if(this->m_BoundariesBeingFetching.find(pair) == m_BoundariesBeingFetching.cend())
         {
-            printf("ERROR!!!!!!!!!\N  --Not Activly downloading boundary for key received\n");
+            printf("ERROR!!!!!!!!!\n  --Not Activly downloading boundary for key received\n");
 //            if(CONTROLLER_BOUNDARY_TYPE::mLog)
 //                CONTROLLER_BOUNDARY_TYPE::mLog->error("Boundary controller received a boundary item with a key that is not equal to the one we were originally told.");
             return false;
@@ -244,7 +244,7 @@ namespace ExternalLink{
 
 
         //check that the sequence received is less than the previous COUNT message indicated earlier
-        int seqReceived = msg.seq;
+        uint seqReceived = msg.seq;
         if(seqReceived > (std::get<1>(m_BoundariesBeingFetching[pair]).getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Boundary download Error: received a boundary item with an index greater than available in the queue" << std::endl;
@@ -312,7 +312,7 @@ namespace ExternalLink{
         //check if boundary item received is part of a boundary we are activly downloading
         if(this->m_BoundariesBeingFetching.find(pair) == m_BoundariesBeingFetching.cend())
         {
-            printf("ERROR!!!!!!!!!\N  --Not Activly downloading boundary for key received\n");
+            printf("ERROR!!!!!!!!!\n  --Not Activly downloading boundary for key received\n");
 //            if(CONTROLLER_BOUNDARY_TYPE::mLog)
 //                CONTROLLER_BOUNDARY_TYPE::mLog->error("Boundary controller received a boundary item with a key that is not equal to the one we were originally told.");
             return false;
@@ -320,7 +320,7 @@ namespace ExternalLink{
 
 
         //check that the sequence received is less than the previous COUNT message indicated earlier
-        int seqReceived = msg.seq;
+        uint seqReceived = msg.seq;
         if(seqReceived > (std::get<1>(m_BoundariesBeingFetching[pair]).getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Boundary download Error: received a boundary item with an index greater than available in the queue" << std::endl;

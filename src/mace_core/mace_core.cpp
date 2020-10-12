@@ -491,7 +491,8 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 //!
 void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 {
-
+    UNUSED(sender);
+    UNUSED(vehicleID);
 }
 
 
@@ -503,6 +504,8 @@ void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 //!
 void MaceCore::Event_NewModule(const ModuleBase* sender, const ModuleCharacteristic &characterstic, const ModuleClasses &type)
 {
+    UNUSED(sender);
+
     //if event came from external link then its a remote module, otherwise assume local
     if(characterstic.MaceInstance != this->getMaceInstanceID())
     {
@@ -870,9 +873,9 @@ void MaceCore::EventVehicle_NewOnboardVehicleMission(const ModuleBase *sender, c
 {
     UNUSED(sender);
     //Update the core about the information
-    MissionItem::MissionKey key = missionList.getMissionKey();
+//    MissionItem::MissionKey key = missionList.getMissionKey();
     m_DataFusion->receivedNewMission(missionList);
-    bool isMissionCurrent = m_DataFusion->checkForCurrentMission(key);
+//    bool isMissionCurrent = m_DataFusion->checkForCurrentMission(key);
 
     //Now update all potential listeners based on the type
     if(m_GroundStation)
@@ -1076,6 +1079,7 @@ void MaceCore::GVEvents_MissionItemCurrent(const void *sender, const MissionItem
 //!
 void MaceCore::GVEvents_NewSystemTime(const ModuleBase *sender, const DataGenericItem::DataGenericItem_SystemTime &systemTime)
 {
+    UNUSED(sender);
     m_DataFusion->updateCurrentSystemTimeDelta(systemTime.getUsecSinceEpoch());
 }
 
@@ -1270,10 +1274,12 @@ void MaceCore::ExternalEvent_NewBoundary(const ModuleBase *sender, const NewBoun
 //!
 void MaceCore::ExternalEvent_RequestingDataSync(const void *sender, const ModuleCharacteristic &module)
 {
+    UNUSED(sender);
+
     std::unordered_map<std::string, TopicDatagram> topicMap = m_DataFusion->getAllLatestTopics(module);
     for(auto it = topicMap.cbegin() ; it != topicMap.cend() ; ++it) {
         std::vector<std::string> components = it->second.ListNonTerminals();
-        ModuleBase* base = (ModuleBase*)sender;
+//        ModuleBase* base = (ModuleBase*)sender;
         //base->NewTopic(it->first,targetID,components);
 //        throw std::runtime_error("Requesting Data Sync Not Implemented");
         MaceLog::Debug("Requesting Data Sync not implemented");
@@ -1312,6 +1318,7 @@ void MaceCore::ExternalEvent_FinishedRXMissionList(const void *sender, const Mis
 void MaceCore::ExternalEvent_FinishedRXBoundaryList(const void *sender, const BoundaryItem::BoundaryList &boundaryList)
 {
     UNUSED(sender);
+    UNUSED(boundaryList);
 
     throw std::runtime_error("External Link Finished Receiving boundary list not implimented");
 
@@ -1436,6 +1443,8 @@ void MaceCore::EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const comm
 //!
 void MaceCore::EventPP_LoadOccupancyEnvironment(const ModuleBase *sender, const string &filePath)
 {
+    UNUSED(sender);
+
     std::cout<<"Somehow load occupancy environment is being called"<<std::endl;
     if(m_DataFusion->loadOccupancyEnvironment(filePath))
     {
@@ -1453,6 +1462,8 @@ void MaceCore::EventPP_LoadOccupancyEnvironment(const ModuleBase *sender, const 
 //!
 void MaceCore::EventPP_LoadOctomapProperties(const ModuleBase *sender, const maps::OctomapSensorDefinition &properties)
 {
+    UNUSED(sender);
+
     std::cout<<"Somehow load octomap properties is being called"<<std::endl;
     if(m_DataFusion->updateOctomapProperties(properties))
     {
@@ -1477,7 +1488,8 @@ void MaceCore::EventPP_LoadOctomapProperties(const ModuleBase *sender, const map
 //!
 void MaceCore::EventPP_LoadMappingProjectionProperties(const ModuleBase *sender, const maps::Octomap2DProjectionDefinition &properties)
 {
-
+    UNUSED(sender);
+    UNUSED(properties);
 }
 
 //!
@@ -1503,7 +1515,7 @@ void MaceCore::Event_SetBoundary(const ModuleBase *sender, const BoundaryItem::B
         }
         list_str += "]";
     }
-    printf("Mace Core: Received a new Boundary\n  verticies: %d\n  Type: %s\n  Vehicles: %s\n", boundary.getQueueSize(), BoundaryItem::BoundaryTypeToString(characterstic.Type()).c_str(), list_str.c_str());
+    printf("Mace Core: Received a new Boundary\n  verticies: %d\n  Type: %s\n  Vehicles: %s\n", (int)boundary.getQueueSize(), BoundaryItem::BoundaryTypeToString(characterstic.Type()).c_str(), list_str.c_str());
 
     //Update the underalying data object
     uint8_t rtnKey = m_DataFusion->setBoundaryByKey(characterstic, boundary);
@@ -1609,8 +1621,11 @@ void MaceCore::AppendVehicleCommands(const std::string &vehicleID, const std::ve
 //!
 void MaceCore::EventPP_New2DOccupancyMap(const void* sender, const mace::maps::Data2DGrid<mace::maps::OccupiedResult> &map)
 {
-    if(m_ROS)
+    UNUSED(sender);
+
+    if(m_ROS) {
         m_ROS->MarshalCommand(ROSCommands::NEWLY_COMPRESSED_OCCUPANCY_MAP, map);
+    }
 }
 
 //!

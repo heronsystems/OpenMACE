@@ -665,6 +665,7 @@ private:
     //!
     void OccupancyMap_GenericOperation(const std::function<void(Eigen::MatrixXd &)> &func)
     {
+        UNUSED(func);
         //func(m_OccupancyMap);
     }
 

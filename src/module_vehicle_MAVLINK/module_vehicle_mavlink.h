@@ -87,7 +87,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ModuleVehicleMAVLINK():
         ModuleVehicleGeneric<VehicleTopicAdditionalComponents..., DataMAVLINK::EmptyMAVLINK>(),
-        airborneInstance(false), m_VehicleMissionTopic("vehicleMission"), m_IsAttachedMavlinkEntitySet(false), m_SystemData(nullptr)
+         m_IsAttachedMavlinkEntitySet(false), m_VehicleMissionTopic("vehicleMission"), m_SystemData(nullptr), airborneInstance(false)
     {
 
     }
@@ -279,6 +279,7 @@ public:
     //! \param systemTime System time
     //!
     virtual void cbi_VehicleSystemTime(const int &systemID, std::shared_ptr<DataGenericItem::DataGenericItem_SystemTime> systemTime) {
+        UNUSED(systemID);
         ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr) {
             ptr->GVEvents_NewSystemTime(this, *systemTime);
         });

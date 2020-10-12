@@ -116,12 +116,12 @@ bool InteropComponent::SendData(const ResourceKey &resourceKey, const ResourceVa
     if(m_Resources.HasAddr(resourceKey, resourceValue) == false)
     {
         std::string str = "[ ";
-        for(int i = 0 ; i < resourceKey.size() ; i++)
+        for(size_t i = 0 ; i < resourceKey.size() ; i++)
         {
             str += resourceKey.at(i) + " ";
         }
         str += "] { ";
-        for(int i = 0 ; i < resourceValue.size() ; i++)
+        for(size_t i = 0 ; i < resourceValue.size() ; i++)
         {
             str += std::to_string(resourceValue.at(i)) + " ";
         }

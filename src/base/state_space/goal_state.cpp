@@ -19,7 +19,10 @@ GoalState::GoalState(const GoalState &copy):
 GoalState::~GoalState()
 {
     if(goalState != nullptr)
-        delete goalState; goalState = nullptr;
+    {
+        delete goalState;
+        goalState = nullptr;
+    }
 }
 
 void GoalState::setState(const State* state)

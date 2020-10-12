@@ -7,14 +7,14 @@
 
 ModulePathPlanningNASAPhase2::ModulePathPlanningNASAPhase2() :
     MaceCore::IModuleCommandPathPlanning(),
-    m_VehicleDataTopic("vehicleData"),
-    m_MissionDataTopic("vehicleMission"),
-    m_PlanningStateTopic("planningState"),
-    m_MapTopic("mappingData"),
     m_Space(nullptr),
     sampler(nullptr),
     stateCheck(nullptr),
-    spaceInfo(nullptr)
+    spaceInfo(nullptr),
+    m_VehicleDataTopic("vehicleData"),
+    m_MissionDataTopic("vehicleMission"),
+    m_PlanningStateTopic("planningState"),
+    m_MapTopic("mappingData")
 {    
 
     myfile.open("C:/Github/OpenMACE/potential_fields_velocity_response.csv");
@@ -25,7 +25,8 @@ ModulePathPlanningNASAPhase2::ModulePathPlanningNASAPhase2() :
 
     stateCheck = std::make_shared<mace::state_space::SpecialValidityCheck>(m_Space);
     auto stateValidityCheck = ([this](const mace::state_space::State *state){
-
+        UNUSED(this);
+        UNUSED(state);
         return false;
     });
     stateCheck->setLambda_Validity(stateValidityCheck);
@@ -144,6 +145,8 @@ void ModulePathPlanningNASAPhase2::NewTopicData(const std::string &topicName, co
 //!
 void ModulePathPlanningNASAPhase2::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
     //example read of vehicle data
     if(topicName == m_VehicleDataTopic.Name())
     {
@@ -233,12 +236,13 @@ void ModulePathPlanningNASAPhase2::NewlyAvailableGoalState(const mace::state_spa
 
 void ModulePathPlanningNASAPhase2::cbiPlanner_SampledState(const mace::state_space::State *sampleState)
 {
-
+    UNUSED(sampleState);
 }
 
 void ModulePathPlanningNASAPhase2::cbiPlanner_NewConnection(const mace::state_space::State *beginState, const mace::state_space::State *secondState)
 {
-
+    UNUSED(beginState);
+    UNUSED(secondState);
 }
 
 void ModulePathPlanningNASAPhase2::updateAgentAction()
@@ -301,7 +305,7 @@ VPF_ResultingForce ModulePathPlanningNASAPhase2::computeVirtualForce(double &vRe
 
 command_target::DynamicTarget_Kinematic ModulePathPlanningNASAPhase2::computeDynamicTarget(const VPF_ResultingForce &apfObj, const double &vResponse)
 {
-    double heading = wrapTo2Pi(atan2(apfObj.getForceY(), apfObj.getForceX()));
+//    double heading = wrapTo2Pi(atan2(apfObj.getForceY(), apfObj.getForceX()));
     double forceY = apfObj.getForceY();
     double forceX = apfObj.getForceX();
     double magnitude = sqrt(pow(forceY,2) + pow(forceX,2));

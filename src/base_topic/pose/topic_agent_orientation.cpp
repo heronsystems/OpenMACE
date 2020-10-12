@@ -24,8 +24,10 @@ MaceCore::TopicDatagram Topic_AgentOrientation::GenerateDatagram() const {
 
 void Topic_AgentOrientation::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
 
-    if(m_RotationObj)
-        delete this->m_RotationObj; m_RotationObj = nullptr;
+    if(m_RotationObj) {
+        delete this->m_RotationObj;
+        m_RotationObj = nullptr;
+    }
 
     uint8_t dimension = datagram.GetTerminal<uint8_t>("Dimension");
 

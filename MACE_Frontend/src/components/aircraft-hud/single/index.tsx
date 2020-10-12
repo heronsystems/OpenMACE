@@ -210,6 +210,7 @@ export default React.memo((props: Props) => {
     const updateAltitude = (e) => {
         const { name, value } = e.target;
         setAltitude(parseFloat(value));
+        // TODO-PAT: Check against vehicle TKOFF_ALT parameter for max allowable altitude
     };
 
     const updateTarget = (field: string, value: number) => {

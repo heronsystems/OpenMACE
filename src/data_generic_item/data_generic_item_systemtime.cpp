@@ -31,6 +31,8 @@ mace_system_time_t DataGenericItem_SystemTime::getMACECommsObject() const
 
 mace_message_t DataGenericItem_SystemTime::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
+    UNUSED(chan);
+
     mace_message_t msg;
     mace_system_time_t systemTime = getMACECommsObject();
     mace_msg_system_time_encode(systemID, compID, &msg, &systemTime);

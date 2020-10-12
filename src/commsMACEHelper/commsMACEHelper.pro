@@ -40,6 +40,11 @@ INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+# Octomap Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
+
 # Unix lib Install
 unix:!symbian {
     target.path = $$(MACE_ROOT)/lib

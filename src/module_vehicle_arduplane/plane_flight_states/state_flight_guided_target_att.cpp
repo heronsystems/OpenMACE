@@ -79,11 +79,11 @@ bool AP_State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<Abstra
         command_target::DynamicTarget* currentTarget = cmd->getDynamicTarget();
         if(currentTarget->getTargetType() == command_target::DynamicTarget::TargetTypes::ORIENTATION)
         {
-            const mace::pose::AbstractRotation* currentRotation = currentTarget->targetAs<command_target::DynamicTarget_Orientation>()->getTargetOrientation();
-            const mace::pose::Rotation_3D* rotation3D = currentRotation->rotationAs<mace::pose::Rotation_3D>();
+//            const mace::pose::AbstractRotation* currentRotation = currentTarget->targetAs<command_target::DynamicTarget_Orientation>()->getTargetOrientation();
+//            const mace::pose::Rotation_3D* rotation3D = currentRotation->rotationAs<mace::pose::Rotation_3D>();
             Data::EnvironmentTime currentTime;
             Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
-            uint64_t elapsedTime = currentTime - previousTime;
+//            uint64_t elapsedTime = currentTime - previousTime;
             count++;
         }
 

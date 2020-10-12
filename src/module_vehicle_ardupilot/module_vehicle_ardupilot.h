@@ -310,7 +310,7 @@ public:
     //!
     virtual void RequestDummyFunction(const int &vehicleID) override
     {
-
+        UNUSED(vehicleID);
     }
 
 private:

@@ -42,7 +42,8 @@ hsm::Transition State_LandingComplete::GetTransition()
 
 bool State_LandingComplete::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return false;
 }
 
 void State_LandingComplete::Update()

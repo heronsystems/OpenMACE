@@ -213,6 +213,8 @@ protected:
      */
     void Request_Construct(const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_mission_request_list_t &msg, void* &queue)
     {
+        UNUSED(sender);
+
         msg.mission_type = 0;
         msg.target_system = target;
         msg.target_component = 0;
@@ -236,6 +238,7 @@ protected:
      */
     virtual bool Finish_Receive(const mavlink_mission_count_t &msg, const MavlinkEntityKey &sender, uint8_t& ack, void* &queueObj)
     {
+        UNUSED(sender);
 
         if(msg.count == 0)
         {
@@ -372,6 +375,8 @@ protected:
 
     virtual bool Construct_Send(const MissionDownloadResult &data, const MavlinkEntityKey &sender, const MavlinkEntityKey &target, mavlink_mission_count_t &msg, void* &queue)
     {
+        UNUSED(sender);
+
         m_MissionUploading = std::make_shared<MissionDownloadResult>(data);
 
         queue = 0;
@@ -416,6 +421,10 @@ protected:
 
     virtual bool Finish_Receive(const mavlink_mission_ack_t &msg, const MavlinkEntityKey &sender, uint8_t& ack, void* &queueObj)
     {
+        UNUSED(msg);
+        UNUSED(sender);
+        UNUSED(ack);
+
         m_MissionUploading = nullptr;
 
         queueObj = 0;

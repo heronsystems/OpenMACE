@@ -18,6 +18,8 @@
 #include "math_helper.h"
 #include "callback.h"
 
+#include "common/common.h"
+
 
 #define START_BYTE 0x7e
 #define BROADCAST_ADDRESS 0x000000000000ffff
@@ -94,7 +96,8 @@ public:
         std::shared_ptr<FramePersistanceBehavior<P>> frameBehavior = std::make_shared<FramePersistanceBehavior<P>>(persistance);
         ((FramePersistanceBehavior<>*)frameBehavior.get())->setCallback<T>(callback);
 
-        int frame_id = AT_command_helper(parameterName, frameBehavior);
+//        int frame_id = AT_command_helper(parameterName, frameBehavior);
+        AT_command_helper(parameterName, frameBehavior);
     }
 
 

@@ -14,6 +14,7 @@ class FramePersistanceBehavior<ShutdownFirstResponse, Rest...> : public FramePer
 public:
 
     FramePersistanceBehavior(const ShutdownFirstResponse &params) {
+        UNUSED(params);
     }
 
     void Test() {

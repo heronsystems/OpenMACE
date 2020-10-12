@@ -60,6 +60,7 @@ void DigiMeshRadio::SetNewDataCallback(std::function<void(const std::vector<uint
 
 void DigiMeshRadio::ReceiveData(SerialLink *link_ptr, const std::vector<uint8_t> &buffer)
 {
+    UNUSED(link_ptr);
     //add what we received to the current buffer.
 
     m_CurrBuffMutex.lock();
@@ -165,22 +166,26 @@ void DigiMeshRadio::ReceiveData(SerialLink *link_ptr, const std::vector<uint8_t>
 
 void DigiMeshRadio::CommunicationError(const SerialLink* link_ptr, const std::string &type, const std::string &msg)
 {
-
+    UNUSED(link_ptr);
+    UNUSED(type);
+    UNUSED(msg);
 }
 
 void DigiMeshRadio::CommunicationUpdate(const SerialLink *link_ptr, const std::string &name, const std::string &msg)
 {
-
+    UNUSED(link_ptr);
+    UNUSED(name);
+    UNUSED(msg);
 }
 
 void DigiMeshRadio::Connected(const SerialLink* link_ptr)
 {
-
+    UNUSED(link_ptr);
 }
 
 void DigiMeshRadio::ConnectionRemoved(const SerialLink *link_ptr)
 {
-
+    UNUSED(link_ptr);
 }
 
 

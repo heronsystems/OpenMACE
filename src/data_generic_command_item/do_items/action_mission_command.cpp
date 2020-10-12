@@ -47,7 +47,7 @@ ActionMissionCommand::ActionMissionCommand(const unsigned int &systemOrigin, con
 
 std::string ActionMissionCommand::printCommandInfo() const
 {
-
+    return "TODO: IMPLEMENT printCommandInfo";
 }
 
 /** Interface imposed via Interface_CommandItem<mace_command_short_t> */

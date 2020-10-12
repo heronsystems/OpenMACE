@@ -16,6 +16,8 @@
 
 #include "i_link.h"
 
+#include "common/common.h"
+
 
 namespace Comms
 {

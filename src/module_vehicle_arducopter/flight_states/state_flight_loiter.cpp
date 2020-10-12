@@ -41,7 +41,8 @@ hsm::Transition State_FlightLoiter::GetTransition()
 
 bool State_FlightLoiter::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
-
+    UNUSED(command);
+    return false;
 }
 
 void State_FlightLoiter::Update()
@@ -56,6 +57,7 @@ void State_FlightLoiter::OnEnter()
 
 void State_FlightLoiter::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    UNUSED(command);
     this->OnEnter();
 }
 
