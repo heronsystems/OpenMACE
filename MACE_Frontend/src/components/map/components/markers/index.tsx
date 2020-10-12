@@ -13,6 +13,7 @@ import DefaultMarker from "../default-marker";
 import EnvironmentIcon from "../environment-icon";
 const { useContext } = React;
 const { Pane } = ReactLeaflet;
+import * as Types from "../../../../data-types/index";
 
 export default () => {
   const { map } = useLeaflet();
@@ -78,7 +79,7 @@ export default () => {
       <>
         <Pane name="aircraft-path" />
         <Pane name="aircraft" />
-        {boundaries.map((boundary: Environment.BoundaryPayload, index) => {
+        {boundaries.map((boundary: Types.Environment.BoundaryPayload, index) => {
           return (
             <Boundary
               key={`boundary-${boundary.boundary_name}`}
@@ -86,10 +87,10 @@ export default () => {
             />
           );
         })}
-        {paths.map((path: Aircraft.PathPayload, index) => {
+        {paths.map((path: Types.Aircraft.PathPayload, index) => {
           return <AircraftPath key={`path-${path.agentID}`} data={path} />;
         })}
-        {targets.map((target: Aircraft.TargetPayload, index) => {
+        {targets.map((target: Types.Aircraft.TargetPayload, index) => {
           return (
             <AircraftTarget
               key={`target-${target.agentID}-${index}`}
@@ -97,7 +98,7 @@ export default () => {
             />
           );
         })}
-        {targets.map((target: Aircraft.TargetPayload, index) => {
+        {targets.map((target: Types.Aircraft.TargetPayload, index) => {
           return (
             <TargetLine
               key={`target-${target.agentID}-${index}`}
@@ -105,7 +106,7 @@ export default () => {
             />
           );
         })}
-        {icons.map((icon: Environment.IconPayload) => {
+        {icons.map((icon: Types.Environment.IconPayload) => {
           return (
             <EnvironmentIcon
               key={`environment-icon-${icon.name}`}
@@ -113,7 +114,7 @@ export default () => {
             />
           );
         })}
-        {aircrafts.map((aircraft: Aircraft.AircraftPayload, index) => {
+        {aircrafts.map((aircraft: Types.Aircraft.AircraftPayload, index) => {
           return (
             <Aircraft key={`aircraft-${aircraft.agentID}`} data={aircraft} onToggleSelect = {updateSelectedAircraft} />
           );

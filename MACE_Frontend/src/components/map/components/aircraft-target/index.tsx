@@ -9,6 +9,7 @@ import colors from "../../../../util/colors";
 const { useContext } = React;
 import { getTailNumberFromAgentID } from "../../../../util/helpers";
 import TailNumber from "./tail-number";
+import * as Types from "../../../../data-types/index";
 
 const LOCAL_WIDTH = 24;
 const LOCAL_HEIGHT = 24;
@@ -17,7 +18,7 @@ const GLOBAL_WIDTH = 48;
 const GLOBAL_HEIGHT = 48;
 
 type Props = {
-  data: Aircraft.TargetPayload;
+  data: Types.Aircraft.TargetPayload;
 };
 const Target = (props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);

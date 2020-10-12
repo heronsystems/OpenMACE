@@ -8,16 +8,17 @@ import { FiSearch, FiX, FiPlay, FiPause, FiHome } from "react-icons/fi";
 import { MdFlightTakeoff, MdFlightLand } from "react-icons/md";
 import ReactTooltip from "react-tooltip";
 import colors from "../../util/colors";
-import { Vertex } from "../../data-types";
+import * as Types from "../../data-types/index";
 
 
 type Props = {
+  addNotification: (notification: Types.Notification) => void;
   onRequestCenter: (LatLng) => void;
-  aircrafts: Aircraft.AircraftPayload[];
-  onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
-  onUpdateGoHerePts: (point: Vertex) => void;
+  aircrafts: Types.Aircraft.AircraftPayload[];
+  onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
+  onUpdateGoHerePts: (point: Types.Vertex) => void;
   toggleGoHerePt: (show: boolean) => void;
-  target: Vertex;
+  target: Types.Vertex;
   defaultAltitude: number;
   onToggleSelect: (agentIDs: string[], show?: boolean) => void;
 };
@@ -68,8 +69,8 @@ export default React.memo((props: Props) => {
 
   const takeoff = () => {
       let command: string = "TAKEOFF";
-      console.log("TODO: Add takeoff altitude to command: " + altitude);
       let payloadArray = [];
+      let altitudesSafe = true;
       filteredAircrafts.forEach((a) => {
             let payload = {
                 takeoffPosition: {
@@ -78,8 +79,21 @@ export default React.memo((props: Props) => {
                 latLonFlag: false
             };
           payloadArray.push(JSON.stringify(payload));
+
+          let tkoffAlt = a.param_list.filter(function(p) { return p.param_id === 'TKOFF_ALT'; });
+          if(tkoffAlt[0].value < altitude) {
+            altitudesSafe = false;
+            props.addNotification({
+                title: "Takeoff Failed!",
+                message: "Takeoff higher than TKOFF_ALT=" + tkoffAlt[0].value + " for Vehicle " + a.agentID,
+                type: "danger"
+            });
+          }
       });
-      props.onCommand(command, filteredAircrafts, payloadArray);
+
+      if(altitudesSafe) {
+        props.onCommand(command, filteredAircrafts, payloadArray);
+      }
   };
   const land = () => {
       let command: string = "LAND";
@@ -107,6 +121,7 @@ export default React.memo((props: Props) => {
     const { name, value } = e.target;
     setAltitude(parseFloat(value));
   };
+
   const toggleShowHidePaths = (event: React.ChangeEvent<HTMLInputElement>) => {
       setShowPaths(!showPaths);
       let agentIDs = [];
@@ -194,6 +209,7 @@ export default React.memo((props: Props) => {
               target={props.target}
               defaultAltitude={props.defaultAltitude}
               onToggleSelect={props.onToggleSelect}
+              addNotification={props.addNotification}
             />
           );
         })

@@ -7,12 +7,13 @@ import FixedWingIcon from "./fixed_wing_icon";
 import { getTailNumberFromAgentID } from "../../../../util/helpers";
 import colors from "../../../../util/colors";
 import TailNumber from "./tail-number";
+import * as Types from "../../../../data-types/index";
 
 const DEFAULT_WIDTH = 44;
 const DEFAULT_HEIGHT = 44;
 
 type Props = {
-  data: Aircraft.AircraftPayload;
+  data: Types.Aircraft.AircraftPayload;
   onToggleSelect: (agentID: string[]) => void;
 };
 
@@ -26,7 +27,8 @@ export default React.memo((props: Props) => {
 
   const tailNumber = getTailNumberFromAgentID(props.data.agentID.toString());
   const color = props.data.color;
-  const altScale = 1 + 0.01*props.data.location.alt;
+//   const altScale = 1 + 0.01*props.data.location.alt;
+  const altScale = 1;
   return (
     <Marker
       pane="aircraft"

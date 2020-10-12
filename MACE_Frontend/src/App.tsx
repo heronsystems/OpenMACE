@@ -6,6 +6,9 @@ import "react-notifications-component/dist/theme.css";
 import "animate.css";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import { Map as MapView } from "./routes";
+import ReactNotification from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+
 
 type Props = {};
 
@@ -22,6 +25,8 @@ class App extends React.Component<Props, State> {
             </Switch>
           </HashRouter>
         </div>
+
+        <ReactNotification />
       </AppProvider>
     );
   }

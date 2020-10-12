@@ -2,9 +2,10 @@ import * as React from "react";
 import { Tooltip } from "react-leaflet";
 import { PointTuple } from "leaflet";
 import styles from "./styles";
+import * as Types from "../../../../data-types/index";
 
 type Props = {
-  data: Environment.IconPayload;
+  data: Types.Environment.IconPayload;
   direction: "right" | "left" | "top" | "bottom";
   offset: PointTuple;
   show?: boolean;

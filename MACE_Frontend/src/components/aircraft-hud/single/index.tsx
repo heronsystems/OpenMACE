@@ -19,7 +19,9 @@ import {
     HeadingIndicator
 } from 'react-flight-indicators'
 import Select from "react-select";
-import { Vertex } from "../../../data-types";
+import { Context } from "../../../Context";
+import * as Types from "../../../data-types/index";
+import contextMenu from "../../map/components/context-menu";
 
 const hiddenFields = ["lat", "lng"];
 
@@ -56,12 +58,13 @@ const FIXED_WING_MODE_OPTIONS = [
   ];
 
 type Props = {
-    data: Aircraft.AircraftPayload;
+    addNotification: (notification: Types.Notification) => void;
+    data: Types.Aircraft.AircraftPayload;
     onRequestCenter: (LatLng) => void;
-    onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
-    onUpdateGoHerePts: (point: Vertex) => void;
+    onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
+    onUpdateGoHerePts: (point: Types.Vertex) => void;
     toggleGoHerePt: (show: boolean) => void;
-    target: Vertex;
+    target: Types.Vertex;
     defaultAltitude: number;
     onToggleSelect: (agentID: string[]) => void;
 };
@@ -120,16 +123,27 @@ export default React.memo((props: Props) => {
     }
 
     const takeoff = () => {
-        let command: string = "TAKEOFF";
-        let payload = {
-            takeoffPosition: {
-                alt: altitude
-            },
-            latLonFlag: false
-        };
-        props.onCommand(command, [props.data], [JSON.stringify(payload)]);
-        updateMission();
+        let tkoffAlt = props.data.param_list.filter(function(p) { return p.param_id === 'TKOFF_ALT'; });
+        if(tkoffAlt[0].value >= altitude) {
+            let command: string = "TAKEOFF";
+            let payload = {
+                takeoffPosition: {
+                    alt: altitude
+                },
+                latLonFlag: false
+            };
+            props.onCommand(command, [props.data], [JSON.stringify(payload)]);
+            updateMission();
+        }
+        else {
+            props.addNotification({
+                title: "Takeoff Failed!",                
+                message: "Takeoff higher than TKOFF_ALT=" + tkoffAlt[0].value + " for Vehicle " + props.data.agentID,
+                type: "danger"
+            });
+        }
     };
+    
     const land = () => {
         let command: string = "LAND";
         let payload = [];
@@ -210,7 +224,6 @@ export default React.memo((props: Props) => {
     const updateAltitude = (e) => {
         const { name, value } = e.target;
         setAltitude(parseFloat(value));
-        // TODO-PAT: Check against vehicle TKOFF_ALT parameter for max allowable altitude
     };
 
     const updateTarget = (field: string, value: number) => {

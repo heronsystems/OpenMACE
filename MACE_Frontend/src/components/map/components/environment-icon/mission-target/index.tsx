@@ -4,12 +4,13 @@ import * as L from "leaflet";
 import { renderToString } from "react-dom/server";
 import TargetIcon from "./icon";
 import Tooltip from "../tooltip";
+import * as Types from "../../../../../data-types/index";
 
 const DEFAULT_WIDTH = 48;
 const DEFAULT_HEIGHT = 48;
 
 type Props = {
-  data: Environment.IconPayload;
+  data: Types.Environment.IconPayload;
 };
 
 const TargetMarker = (props: Props) => {

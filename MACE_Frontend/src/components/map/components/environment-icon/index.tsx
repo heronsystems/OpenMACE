@@ -3,9 +3,10 @@ import CommandControl from "./command-control";
 import MissionTarget from "./mission-target";
 import Home from "./home";
 import Origin from "./origin";
+import * as Types from "../../../../data-types/index";
 
 type Props = {
-  data: Environment.IconPayload;
+  data: Types.Environment.IconPayload;
 };
 
 export default (props: Props) => {

@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Polygon } from "react-leaflet";
 import colors from "../../../../util/colors";
+import * as Types from "../../../../data-types/index";
 
 type Props = {
-  data: Environment.BoundaryPayload;
+  data: Types.Environment.BoundaryPayload;
 };
 
 export default (props: Props) => {

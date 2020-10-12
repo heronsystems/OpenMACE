@@ -3,12 +3,13 @@ import { Marker } from "react-leaflet";
 import * as L from "leaflet";
 import { renderToString } from "react-dom/server";
 import TargetIcon from "./icon";
+import * as Types from "../../../../data-types/index";
 
 const DEFAULT_WIDTH = 48;
 const DEFAULT_HEIGHT = 48;
 
 type Props = {
-  position: Vertex;
+  position: Types.Vertex;
   onClick: (e: any) => void;
 };
 

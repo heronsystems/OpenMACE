@@ -1,6 +1,8 @@
 import * as React from "react";
 import styles from "./styles";
 import onClickOutside from "react-onclickoutside";
+import * as Types from "../../../../data-types/index";
+
 type Props = {
   position: { x: number; y: number };
   visible: boolean;

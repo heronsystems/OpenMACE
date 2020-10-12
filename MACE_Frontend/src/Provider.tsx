@@ -19,29 +19,31 @@ const { map_port } = config;
 import PortConfiguration from "./components/configuration/port";
 const fs = window.require("fs");
 
+import * as Types from "./data-types/index";
+
 const DEFAULT_MAP_PORT = 8080;
 
 type Props = {
   location?: any;
 };
 export type State = {
-  boundaries?: Environment.BoundaryPayload[];
-  aircrafts?: Aircraft.AircraftPayload[];
-  localTargets?: Aircraft.TargetPayload[];
-  globalTargets?: Aircraft.TargetPayload[];
-  paths?: Aircraft.PathPayload[];
+  boundaries?: Types.Environment.BoundaryPayload[];
+  aircrafts?: Types.Aircraft.AircraftPayload[];
+  localTargets?: Types.Aircraft.TargetPayload[];
+  globalTargets?: Types.Aircraft.TargetPayload[];
+  paths?: Types.Aircraft.PathPayload[];
   connectionState?: "connecting" | "connected" | "disconnected";
-  icons?: Environment.IconPayload[];
-  initialLocation?: Vertex;
+  icons?: Types.Environment.IconPayload[];
+  initialLocation?: Types.Vertex;
   initialZoom?: number;
-  messages?: Message[];
+  messages?: Types.Message[];
   zoom?: number;
   showPortConfiguration?: boolean;
   ports?: { [port_type: string]: number };
 };
 
 export default class AppProvider extends React.Component<Props, State> {
-  _messageBuffer: Message[] = [];
+  _messageBuffer: Types.Message[] = [];
   _sockets: any[] = [];
   _server: any = null;
   _message: string = "";
@@ -134,7 +136,7 @@ export default class AppProvider extends React.Component<Props, State> {
 
             // console.log(messages);
             messages.forEach((m) => {
-              this.onMessage(m as Message);
+              this.onMessage(m as Types.Message);
             });
 
             // Respond to client for proper closing:
@@ -172,7 +174,7 @@ export default class AppProvider extends React.Component<Props, State> {
     console.log("System waiting at http://localhost:8080");
   };
 
-  onMessage = (message: Message) => {
+  onMessage = (message: Types.Message) => {
     const { messages } = this.state;
     // TODO: Should add this to the other side
     // this.setState({ messages: messages.concat(message) });
@@ -183,40 +185,43 @@ export default class AppProvider extends React.Component<Props, State> {
     this._messageBuffer.push(message);
       switch (message_type) {
           case "environment_boundary":
-              this.updateBoundaries(rest as Environment.BoundaryPayload);
+              this.updateBoundaries(rest as Types.Environment.BoundaryPayload);
               break;
           case "environment_icon":
-              this.updateIcons(rest as Environment.IconPayload);
+              this.updateIcons(rest as Types.Environment.IconPayload);
               break;
           case "vehicle_heartbeat":
-              this.updateAircrafts(rest as Aircraft.HeartbeatPayload);
+              this.updateAircrafts(rest as Types.Aircraft.HeartbeatPayload);
               break;
           case "vehicle_position":
-              this.updateAircraftPosition(rest as Aircraft.PositionPayload);
+              this.updateAircraftPosition(rest as Types.Aircraft.PositionPayload);
               break;
           case "vehicle_attitude":
-              this.updateAircraftAttitude(rest as Aircraft.AttitudePayload);
+              this.updateAircraftAttitude(rest as Types.Aircraft.AttitudePayload);
               break;
           case "vehicle_arm":
-              this.updateAircraftArmed(rest as Aircraft.ArmPayload);
+              this.updateAircraftArmed(rest as Types.Aircraft.ArmPayload);
               break;
           case "vehicle_gps":
-              this.updateAircraftGPS(rest as Aircraft.GPSPayload);
+              this.updateAircraftGPS(rest as Types.Aircraft.GPSPayload);
               break;
           case "vehicle_text":
-              this.updateAircraftText(rest as Aircraft.TextPayload);
+              this.updateAircraftText(rest as Types.Aircraft.TextPayload);
               break;
           case "vehicle_mode":
-              this.updateAircraftMode(rest as Aircraft.ModePayload);
+              this.updateAircraftMode(rest as Types.Aircraft.ModePayload);
               break;
           case "vehicle_fuel":
-              this.updateAircraftFuel(rest as Aircraft.FuelPayload);
+              this.updateAircraftFuel(rest as Types.Aircraft.FuelPayload);
               break;
           case "vehicle_path":
-              this.updatePaths(rest as Aircraft.PathPayload);
+              this.updatePaths(rest as Types.Aircraft.PathPayload);
               break;
           case "vehicle_target":
-              this.updateTargets(rest as Aircraft.TargetPayload);
+              this.updateTargets(rest as Types.Aircraft.TargetPayload);
+              break;
+          case "vehicle_parameter_list":
+              this.updateParameters(rest as Types.Aircraft.ParametersPayload);
               break;
           default:
           // do nothing
@@ -256,7 +261,7 @@ export default class AppProvider extends React.Component<Props, State> {
       try {
         const messages = parseJson(message);
         messages.forEach((m) => {
-          this.onMessage(m as Message);
+          this.onMessage(m as Types.Message);
         });
       } catch (error) {
         console.log("Failed to parse message: ", error);
@@ -304,31 +309,26 @@ export default class AppProvider extends React.Component<Props, State> {
   onMessageString = (message: string) => {
     const messages = parseJson(message);
     messages.forEach((m) => {
-      this.onMessage(m as Message);
+      this.onMessage(m as Types.Message);
     });
   };
 
-  addNotification = ({
-    title,
-    message,
-    type
-  }: {
-    title: string;
-    message: string;
-    type: "error" | "success" | "info" | "warning";
-  }) => {
+  addNotification = (notification: Types.Notification) => {
     store.addNotification({
-      title,
-      message,
-      type,
-      container: "top-right", // where to position the notifications
-      animationIn: ["animated", "fadeIn"], // animate.css classes that's applied
-      animationOut: ["animated", "fadeOut"], // animate.css classes that's applied
-      dismiss: {
-        duration: 3000
-      }
-    });
+        title: notification.title,
+        message: notification.message,
+        type: notification.type,
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
   };
+
   // addDefaultEvents = () => {
   //   this.updateBoundaries({
   //     boundary_name: "test",
@@ -473,7 +473,7 @@ export default class AppProvider extends React.Component<Props, State> {
   //     }
   //   }, 1000);
   // };
-  updateBoundaries = (boundary: Environment.BoundaryPayload) => {
+  updateBoundaries = (boundary: Types.Environment.BoundaryPayload) => {
     const { ...all } = boundary;
     let boundaries = [...this.state.boundaries];
     const existingIndex = boundaries.findIndex(
@@ -490,7 +490,7 @@ export default class AppProvider extends React.Component<Props, State> {
       this.setState({ boundaries });
     }
   };
-  updateAircrafts = (heartbeat: Aircraft.HeartbeatPayload) => {
+  updateAircrafts = (heartbeat: Types.Aircraft.HeartbeatPayload) => {
     const { ...all } = location;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -510,7 +510,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].should_display = heartbeat.should_display;
             aircrafts[existingIndex].lastUpdate = heartbeat.lastUpdate;
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = heartbeat.agentID;
             // tmpAC.autopilot = heartbeat.autopilot;
             tmpAC.vehicle_type = heartbeat.vehicle_type;
@@ -530,7 +530,7 @@ export default class AppProvider extends React.Component<Props, State> {
           this.setState({ aircrafts });
         }
   };
-  pickAircraftColor = (): ColorObject => {
+  pickAircraftColor = (): Types.ColorObject => {
     let numAircraft = this.state.aircrafts.length;
     while (numAircraft > 9) {
       numAircraft-=10;
@@ -559,7 +559,7 @@ export default class AppProvider extends React.Component<Props, State> {
     }
   }
 
-  constructDefaultAircraft = (): Aircraft.AircraftPayload => {
+  constructDefaultAircraft = (): Types.Aircraft.AircraftPayload => {
     this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
     return {
         agentID: "DEFAULT",
@@ -590,11 +590,17 @@ export default class AppProvider extends React.Component<Props, State> {
         mode: "",
         battery_remaining: 0.0,
         battery_current: 0.0,
-        battery_voltage: 0.0
+        battery_voltage: 0.0,
+        param_list: [
+            {
+                param_id: "TKOFF_ALT",
+                value: 50
+            }
+        ]
     }
   }
 
-    updateAircraftPosition = (position: Aircraft.PositionPayload) => {
+    updateAircraftPosition = (position: Types.Aircraft.PositionPayload) => {
         const { ...all } = location;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -608,7 +614,7 @@ export default class AppProvider extends React.Component<Props, State> {
                 aircrafts[existingIndex].location.alt = position.alt;
             }
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = position.agentID;
             tmpAC.location.lat = position.lat;
             tmpAC.location.lng = position.lng;
@@ -621,7 +627,7 @@ export default class AppProvider extends React.Component<Props, State> {
         }
     }
 
-    updateAircraftAttitude = (attitude: Aircraft.AttitudePayload) => {
+    updateAircraftAttitude = (attitude: Types.Aircraft.AttitudePayload) => {
         const { ...all } = attitude;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -632,7 +638,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].orientation.pitch = attitude.pitch;
             aircrafts[existingIndex].orientation.yaw = attitude.yaw;
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = attitude.agentID;
             tmpAC.orientation.roll = attitude.roll;
             tmpAC.orientation.pitch = attitude.pitch;
@@ -644,7 +650,7 @@ export default class AppProvider extends React.Component<Props, State> {
         }
     }
 
-    updateAircraftArmed = (armed: Aircraft.ArmPayload) => {
+    updateAircraftArmed = (armed: Types.Aircraft.ArmPayload) => {
         const { ...all } = armed;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -653,7 +659,7 @@ export default class AppProvider extends React.Component<Props, State> {
         if (existingIndex !== -1) {
             aircrafts[existingIndex].armed = armed.armed;
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = armed.agentID;
             tmpAC.armed = armed.armed;
             aircrafts.push(tmpAC);
@@ -663,7 +669,7 @@ export default class AppProvider extends React.Component<Props, State> {
         }
     }
 
-    updateAircraftGPS = (gps: Aircraft.GPSPayload) => {
+    updateAircraftGPS = (gps: Types.Aircraft.GPSPayload) => {
         const { ...all } = gps;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -675,7 +681,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].hdop = gps.hdop;
             aircrafts[existingIndex].visible_sats = gps.visible_sats;
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = gps.agentID;
             tmpAC.gps_fix = gps.gps_fix;
             tmpAC.vdop = gps.vdop;
@@ -688,7 +694,7 @@ export default class AppProvider extends React.Component<Props, State> {
         }
     }
 
-    updateAircraftText = (text: Aircraft.TextPayload) => {
+    updateAircraftText = (text: Types.Aircraft.TextPayload) => {
         const { ...all } = text;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -707,7 +713,7 @@ export default class AppProvider extends React.Component<Props, State> {
                 textSeverity: text.severity
             };
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = text.agentID;
             tmpAC.text = {
                 textStr: text.text,
@@ -720,7 +726,7 @@ export default class AppProvider extends React.Component<Props, State> {
         }
     }
 
-    updateAircraftMode = (mode: Aircraft.ModePayload) => {
+    updateAircraftMode = (mode: Types.Aircraft.ModePayload) => {
         const { ...all } = mode;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -729,7 +735,7 @@ export default class AppProvider extends React.Component<Props, State> {
         if (existingIndex !== -1) {
             aircrafts[existingIndex].mode = mode.mode;
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = mode.agentID;
             tmpAC.mode = mode.mode;
             aircrafts.push(tmpAC);
@@ -739,7 +745,7 @@ export default class AppProvider extends React.Component<Props, State> {
         }
     }
 
-    updateAircraftFuel = (fuel: Aircraft.FuelPayload) => {
+    updateAircraftFuel = (fuel: Types.Aircraft.FuelPayload) => {
         const { ...all } = fuel;
         let aircrafts = cloneDeep(this.state.aircrafts);
         const existingIndex = aircrafts.findIndex(
@@ -750,7 +756,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].battery_remaining = fuel.battery_remaining;
             aircrafts[existingIndex].battery_voltage = fuel.battery_voltage;
         } else {
-            let tmpAC: Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = fuel.agentID;
             tmpAC.battery_current = fuel.battery_current;
             tmpAC.battery_remaining = fuel.battery_remaining;
@@ -762,7 +768,7 @@ export default class AppProvider extends React.Component<Props, State> {
         }
     }
 
-  updateTargets = (target: Aircraft.TargetPayload) => {
+  updateTargets = (target: Types.Aircraft.TargetPayload) => {
     if (target.is_global) {
       this.updateGlobalTargets(target);
     } else {
@@ -770,7 +776,7 @@ export default class AppProvider extends React.Component<Props, State> {
     }
   };
 
-  updateLocalTargets = (target: Aircraft.TargetPayload) => {
+  updateLocalTargets = (target: Types.Aircraft.TargetPayload) => {
     const { ...all } = target;
     let targets = [...this.state.localTargets];
     const existingIndex = targets.findIndex(
@@ -788,7 +794,7 @@ export default class AppProvider extends React.Component<Props, State> {
     }
   };
 
-  updateGlobalTargets = (target: Aircraft.TargetPayload) => {
+  updateGlobalTargets = (target: Types.Aircraft.TargetPayload) => {
     const { ...all } = target;
     let targets = [...this.state.globalTargets];
     const existingIndex = targets.findIndex(
@@ -806,7 +812,26 @@ export default class AppProvider extends React.Component<Props, State> {
     } 
   };
 
-  updatePaths = (path: Aircraft.PathPayload) => {
+  updateParameters = (params: Types.Aircraft.ParametersPayload) => {
+    const { ...all } = params;
+    let aircrafts = cloneDeep(this.state.aircrafts);
+    const existingIndex = aircrafts.findIndex(
+      (a) => params.agentID === a.agentID
+    );
+    if (existingIndex !== -1) {
+        // aircrafts[existingIndex].battery_current = fuel.battery_current;
+    } else {
+        let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
+        tmpAC.agentID = params.agentID;
+        tmpAC.param_list = params.param_list;
+        aircrafts.push(tmpAC);
+    }
+    if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
+      this.setState({ aircrafts });
+    }
+  }
+
+  updatePaths = (path: Types.Aircraft.PathPayload) => {
     const { ...all } = path;
     let paths = [...this.state.paths];
     const existingIndex = paths.findIndex((p) => path.agentID === p.agentID);
@@ -821,7 +846,7 @@ export default class AppProvider extends React.Component<Props, State> {
       this.setState({ paths });
     }
   };
-  updateIcons = (icon: Environment.IconPayload) => {
+  updateIcons = (icon: Types.Environment.IconPayload) => {
     const { ...all } = icon;
     const icons = [...this.state.icons];
     const existingIndex = icons.findIndex((i) => icon.name === i.name);
@@ -847,7 +872,10 @@ export default class AppProvider extends React.Component<Props, State> {
   setZoom = (zoom: number) => {
     this.setState({ zoom });
   };
-  sendToMACE = (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => {
+
+  
+
+  sendToMACE = (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => {
       let aircraftIds = [];
       filteredAircrafts.forEach((a) => {
           aircraftIds.push(a.agentID);
@@ -901,7 +929,8 @@ export default class AppProvider extends React.Component<Props, State> {
           removeIcon: this.removeIcon,
           setGlobalZoom: this.setZoom,
           sendToMACE: this.sendToMACE,
-          updateSelectedAircraft: this.updateSelectedAircraft
+          updateSelectedAircraft: this.updateSelectedAircraft,
+          addNotification: this.addNotification
         }}
       >
         <>

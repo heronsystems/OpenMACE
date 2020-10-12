@@ -7,10 +7,11 @@ import colors from "../../../../util/colors";
 const { useContext } = React;
 import { getTailNumberFromAgentID, getColorForIndex } from "../../../../util/helpers";
 import { MdInvertColors } from "react-icons/md";
+import * as Types from "../../../../data-types/index";
 
 
 type Props = {
-  data: Aircraft.TargetPayload;
+  data: Types.Aircraft.TargetPayload;
 };
 
 const TargetLine = (props: Props) => {

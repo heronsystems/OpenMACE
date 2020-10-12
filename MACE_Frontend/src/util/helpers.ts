@@ -1,6 +1,7 @@
 import * as L from "leaflet";
 import colors from "./colors";
 import * as _ from "lodash";
+import * as Types from "../data-types/index";
 
 type SimpleLocation = { lat: number; lng: number };
 type LocationArray = number[][];
@@ -108,7 +109,7 @@ export const capitalize = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-export const getEventNameFromType = (type: MessageType) => {
+export const getEventNameFromType = (type: Types.MessageType) => {
   switch (type) {
     case "environment_boundary":
       return "Environment Boundary";
@@ -120,6 +121,8 @@ export const getEventNameFromType = (type: MessageType) => {
       return "Vehicle Path";
     case "vehicle_target":
       return "Vehicle Target";
+    case "vehicle_parameter_list":
+        return "Vehicle Parameter List";
     default:
       console.warn(`Could not find conversion for ${type}`);
   }

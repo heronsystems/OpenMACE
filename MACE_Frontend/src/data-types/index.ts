@@ -1,6 +1,13 @@
+
+export type Notification = {
+    title: string;
+    message: string;
+    type: "danger" | "success" | "info" | "warning" | "default";
+}
+
 export type Vertex = { lat: number; lng: number; alt?: number };
 type Vertices = Vertex[];
-type ColorObject = {
+export type ColorObject = {
     100: string;
     200: string;
     300: string;
@@ -12,7 +19,7 @@ type ColorObject = {
     900: string;
 };
 
-type MessageType =
+export type MessageType =
     | EnvironmentBoundary_MessageType
     | EnvironmentIcon_MessageType
     | VehicleHeartbeat_MessageType
@@ -25,6 +32,7 @@ type MessageType =
     | VehicleFuel_MessageType
     | VehicleTarget_MessageType
     | VehiclePath_MessageType
+    | VehicleParameterList_MessageType
 
 interface IMessage {
     message_type: MessageType;
@@ -43,8 +51,9 @@ type VehicleMode_MessageType = "vehicle_mode";
 type VehicleFuel_MessageType = "vehicle_fuel";
 type VehicleTarget_MessageType = "vehicle_target";
 type VehiclePath_MessageType = "vehicle_path";
+type VehicleParameterList_MessageType = "vehicle_parameter_list"
 
-type Message =
+export type Message =
     | Environment.Boundary
     | Environment.Icon
     | Aircraft.Heartbeat
@@ -57,8 +66,9 @@ type Message =
     | Aircraft.Fuel
     | Aircraft.Path
     | Aircraft.Target
+    | Aircraft.Parameters
 
-namespace Environment {
+export namespace Environment {
     export type BoundaryType = "soft" | "hard";
     export type IconType =
         | "command_control"
@@ -103,7 +113,7 @@ namespace Environment {
     }
 }
 
-namespace Aircraft {
+export namespace Aircraft {
     export type AircraftPayload = {
         agentID: string;
         selected: boolean;
@@ -133,6 +143,10 @@ namespace Aircraft {
         battery_remaining: number;
         battery_current: number;
         battery_voltage: number;
+        param_list: {
+            param_id: string;
+            value: number
+        }[];
     }
 
     export type HeartbeatPayload = {
@@ -308,6 +322,25 @@ namespace Aircraft {
         date?: number;
         should_display?: boolean;
         is_global?: boolean;
+    }
+
+    export type ParametersPayload = {
+        agentID?: string;
+        param_list: {
+            param_id: string;
+            value: number;
+        }[];
+        should_display?: boolean;
+    }
+
+    export interface Parameters {
+        message_type: VehicleParameterList_MessageType;
+        agentID?: string;
+        param_list: {
+            param_id: string;
+            value: number;
+        }[];
+        should_display?: boolean;
     }
 }
 

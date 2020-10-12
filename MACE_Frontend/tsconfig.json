@@ -11,9 +11,10 @@
     "experimentalDecorators": true,
     "outDir": "dist",
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./src/data-types"]
   },
-  "compileOnSave": false,
+  "compileOnSave": true,
   "include": ["src/**/*.ts", "src/**/*.tsx", "main.ts"],
   "exclude": ["node_modules"]
 }
