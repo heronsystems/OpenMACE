@@ -522,9 +522,14 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.vehicle_state = heartbeat.vehicle_state;
             tmpAC.date = heartbeat.date;
             tmpAC.should_display = heartbeat.should_display;
-            tmpAC.lastUpdate = heartbeat.lastUpdate;
+            tmpAC.lastUpdate = heartbeat.lastUpdate;            
             aircrafts.push(tmpAC);
         }
+
+        // Sort array based on Agent ID (assumes agentID is a stringified integer)
+        aircrafts.sort(function(a, b) {
+            return (parseInt(a.agentID) - parseInt(b.agentID));
+        });
 
         if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
           this.setState({ aircrafts });
