@@ -114,10 +114,10 @@ export default React.memo((props: Props) => {
         props.onCommand(command, [props.data], payload);
     }
 
-    const arm = () => {
+    const arm = (shouldArm: boolean) => {
         let command: string = "SET_VEHICLE_ARM";
         let payload = {
-            arm: true
+            arm: shouldArm
         };
         props.onCommand(command, [props.data], [JSON.stringify(payload)]);
     }
@@ -150,10 +150,17 @@ export default React.memo((props: Props) => {
         props.onCommand(command, [props.data], payload);
     };
     const startMission = () => {
-        updateMission();
-        let command: string = "START_MISSION";
-        let payload = [];
-        props.onCommand(command, [props.data], payload);
+        // updateMission();
+        // let command: string = "START_MISSION";
+        // let payload = [];
+        // props.onCommand(command, [props.data], payload);
+        
+        // TODO: Figure out smarter way to do mission start. Not intuitive on GUI for UMD, so changing to GUIDED on this button push for now:
+        let command: string = "SET_VEHICLE_MODE";
+        let payload = {
+            mode: "GUIDED"
+        };
+        props.onCommand(command, [props.data], [JSON.stringify(payload)]);
     };
     const pauseMission = () => {
         let command: string = "PAUSE_MISSION";
@@ -267,9 +274,25 @@ export default React.memo((props: Props) => {
             <div onClick={(e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => selectAircraft(e)} style={{...styles.header, backgroundColor: getVehicleColor()}}>
                 <span style={styles.title}>{props.data.agentID}</span>
                 {getVehicleIcon()}
-                <button style={styles.centerButton} onClick={arm}>
-                    <FiCheck color={colors.teal[100]} size={20} />
-                </button>
+
+                { showButton().arm.show &&
+                    <button style={showButton().arm.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().arm.disabled} onClick={() => arm(true)}>
+                        {showButton().arm.disabled ? 
+                            <FiCheck color={colors.gray[400]} size={20} />
+                            :
+                            <FiCheck color={colors.teal[100]} size={20} />
+                        }
+                    </button>
+                }
+                { showButton().disarm.show &&
+                    <button style={showButton().disarm.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().disarm.disabled} onClick={() => arm(false)}>
+                        {showButton().disarm.disabled ? 
+                            <FiX color={colors.gray[400]} size={20} />
+                            :
+                            <FiX color={colors.teal[100]} size={20} />
+                        }
+                    </button>
+                }
                 <button style={styles.centerButton} onClick={requestCenter}>
                     <FiCrosshair color={colors.teal[100]} size={20} />
                 </button>
@@ -364,7 +387,7 @@ export default React.memo((props: Props) => {
                         </button>
                         }  
                         { showButton().startmission.show &&                    
-                        <button style={showButton().startmission.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().startmission.disabled}>
+                        <button style={showButton().startmission.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().startmission.disabled} onClick={startMission}>
                             { showButton().startmission.disabled ? 
                                 <FiPlay color={DISABLED_ICON_COLOR} size={20} />
                             :

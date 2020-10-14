@@ -101,11 +101,23 @@ export default React.memo((props: Props) => {
       props.onCommand(command, filteredAircrafts, payload);
   };
   const startMission = () => {
-      let command: string = "START_MISSION";
-      let payload = [];
-      props.onCommand(command, filteredAircrafts, payload);
-      // command = "GET_VEHICLE_MISSION";
-      // props.onCommand(command, filteredAircrafts, payload);
+    //   let command: string = "START_MISSION";
+    //   let payload = [];
+    //   props.onCommand(command, filteredAircrafts, payload);
+    //   // command = "GET_VEHICLE_MISSION";
+    //   // props.onCommand(command, filteredAircrafts, payload);
+
+        
+    // TODO: Figure out smarter way to do mission start. Not intuitive on GUI for UMD, so changing to GUIDED on this button push for now:
+    let command: string = "SET_VEHICLE_MODE";
+    let payload = [];
+    filteredAircrafts.forEach(element => {
+        let modeObj = {
+            mode: "GUIDED"
+        }
+        payload.push(JSON.stringify(modeObj));
+    });
+    props.onCommand(command, filteredAircrafts, payload);
   };
   const pauseMission = () => {
       let command: string = "PAUSE_MISSION";
