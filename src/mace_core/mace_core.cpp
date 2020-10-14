@@ -987,11 +987,11 @@ void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_
 }
 
 //!
-//! \brief GVEvents_NewHomePosition New home position
+//! \brief GVEvents_NewParameterValue New home position
 //! \param sender Sender module
 //! \param vehicleHome New vehicle home
 //!
-void MaceCore::GVEvents_NewParamterValue(const ModuleBase *sender, DataGenericItem::DataGenericItem_ParamValue &vehicleParam)
+void MaceCore::GVEvents_NewParameterValue(const ModuleBase *sender, const DataGenericItem::DataGenericItem_ParamValue &vehicleParam)
 {
     UNUSED(sender);
     UNUSED(vehicleParam);

@@ -86,7 +86,40 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 }
 
 //!
-//! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
+//! \brief sendVehicleParameterList Send the list of vehicle specific parameters
+//! \param vehicleID Vehicle ID parameters pertain to
+//! \param params Parameter map (Key = string, Value = DataGenericItem::DataGenericItem_ParamValue)
+//!
+void MACEtoGUI::sendVehicleParameterList(const int &vehicleID, const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params)
+{
+//    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
+    QJsonObject obj;
+    obj["agentID"] = std::to_string(vehicleID).c_str();;
+    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
+
+    QJsonArray verticies;
+    for(auto&& param : params) {
+        QJsonObject obj;
+        obj["param_id"] = QString::fromStdString(param.second.getID());
+        obj["value"] = param.second.getValue();
+
+        verticies.push_back(obj);
+    }
+
+    obj["param_list"] = verticies;
+
+    QJsonDocument doc(obj);
+    bool bytesWritten = writeTCPData(doc.toJson());
+    if(!bytesWritten){
+        std::cout << "Write parameter list failed..." << std::endl;
+    }
+
+
+    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << params.at("TKOFF_ALT").getValue() << std::endl;
+}
+
+//!
+//! \brief sendGlobalOrigin Send new global origin to the MACE GUI
 //! \param origin New global origin
 //!
 void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)

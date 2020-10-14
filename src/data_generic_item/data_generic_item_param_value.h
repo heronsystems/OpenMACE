@@ -6,6 +6,9 @@
 
 #include "mace.h"
 
+#include "data/jsonconverter.h"
+#include "common/common.h"
+
 namespace DataGenericItem {
 
 class DataGenericItem_ParamValue
@@ -38,7 +41,7 @@ public:
         this->_value = rhs._value;
     }
 
-    bool operator == (const DataGenericItem_ParamValue &rhs) {
+    bool operator == (const DataGenericItem_ParamValue &rhs) const {
         if(this->_indexID != rhs._indexID){
             return false;
         }
@@ -51,7 +54,7 @@ public:
         return true;
     }
 
-    bool operator != (const DataGenericItem_ParamValue &rhs) {
+    bool operator != (const DataGenericItem_ParamValue &rhs) const {
         return !(*this == rhs);
     }
 

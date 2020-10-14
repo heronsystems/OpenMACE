@@ -567,8 +567,8 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
 
     QJsonArray ids;
     if(vehicleIDs.size() > 0){
-        for (const int& i : vehicleIDs) {
-            ids.append(i);
+        for (const unsigned int& i : vehicleIDs) {
+            ids.append((int)i);
         }
     }
     else {
@@ -588,9 +588,11 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
     }
 }
 
-void ModuleGroundStation::NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params)
+void ModuleGroundStation::NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
-    std::cout<<"Pat do something with the parameters here as you desire."<<std::endl;
+    uint8_t vehicleID;
+    this->getDataObject()->getMavlinkIDFromModule(sender.Value(), vehicleID);
+    m_toGUIHandler->sendVehicleParameterList(vehicleID, params);
 }
 
 

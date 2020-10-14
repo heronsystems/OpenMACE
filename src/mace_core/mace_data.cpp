@@ -225,7 +225,7 @@ bool MaceData::getCurrentMissionValidity(const int &systemID) const
 //        MissionItem::MissionKey key = mapCurrentMission.at(systemID);
         mapCurrentMission.at(systemID);
     }catch(const std::out_of_range &oor){
-        std::cout<<"getCurrentMission tried to access an item OOR"<<std::endl;
+        std::cout<<"getCurrentMissionValidity tried to access an item OOR"<<std::endl;
         returnVal = false;
     }
     return returnVal;

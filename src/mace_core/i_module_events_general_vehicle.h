@@ -31,11 +31,11 @@ public:
     virtual void GVEvents_NewHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome) = 0;
 
     //!
-    //! \brief GVEvents_NewParamterValue This function is emitted to alert other modules of the current limitations of the vehicle
+    //! \brief GVEvents_NewParameterValue This function is emitted to alert other modules of the current limitations of the vehicle
     //! \param sender
     //! \param vehicleParams
     //!
-    virtual void GVEvents_NewParamterValue(const ModuleBase *sender, const DataGenericItem::DataGenericItem_ParamValue &vehicleParams) = 0;
+    virtual void GVEvents_NewParameterValue(const ModuleBase *sender, const DataGenericItem::DataGenericItem_ParamValue &vehicleParam) = 0;
 
 
     //!

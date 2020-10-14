@@ -114,7 +114,14 @@ public:
     void sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home);
 
     //!
-    //! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
+    //! \brief sendVehicleParameterList Send the list of vehicle specific parameters
+    //! \param vehicleID Vehicle ID parameters pertain to
+    //! \param params Parameter map (Key = string, Value = DataGenericItem::DataGenericItem_ParamValue)
+    //!
+    void sendVehicleParameterList(const int &vehicleID, const std::map<string, DataGenericItem::DataGenericItem_ParamValue> &params);
+
+    //!
+    //! \brief sendGlobalOrigin Send new global origin to the MACE GUI
     //! \param origin New global origin
     //!
     void sendGlobalOrigin(const command_item::SpatialHome &origin);

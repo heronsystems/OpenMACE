@@ -67,7 +67,7 @@ public:
 
         AddCommandLogic<std::map<std::string, DataGenericItem::DataGenericItem_ParamValue>>(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE_PARAMETERS, [this](const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &paramValues, const OptionalParameter<ModuleCharacteristic> &sender){
             UNUSED(sender);
-            NewlyAvailableParameterList(paramValues);
+            NewlyAvailableParameterList(paramValues, sender);
         });
     }
 
@@ -107,7 +107,7 @@ public:
     //! \brief NewlyAvailableParameterList
     //! \param params
     //!
-    virtual void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params) = 0;
+    virtual void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief StartTCPServer Start module TCP server for GUI communications

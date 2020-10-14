@@ -125,7 +125,7 @@ public:
         }
         m_ActiveTransmitsMutex.unlock();
 
-        printf("Removed Transmision - Number active: %u\n", (uint)m_ActiveTransmits.size());
+        printf("Removed Transmission - Number active: %u\n", (uint)m_ActiveTransmits.size());
     }
 
 

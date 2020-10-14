@@ -401,11 +401,11 @@ public:
     virtual void GVEvents_NewHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome);
 
     //!
-    //! \brief GVEvents_NewParamterValue New parameters pertinent for the vehicle
+    //! \brief GVEvents_NewParameterValue New parameters pertinent for the vehicle
     //! \param sender Sender module
     //! \param vehicleParams New vehicle parameters
     //!
-    virtual void GVEvents_NewParamterValue(const ModuleBase *sender, DataGenericItem::DataGenericItem_ParamValue &vehicleParam);
+    virtual void GVEvents_NewParameterValue(const ModuleBase *sender, const DataGenericItem::DataGenericItem_ParamValue &vehicleParam);
 
     //!
     //! \brief GVEvents_MissionExeStateUpdated New mission EXE state event

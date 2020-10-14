@@ -128,7 +128,7 @@ public:
     //! \brief NewlyAvailableParameterList Explicitly being told about the newly available parameters
     //! \param params the params that are currently relevant to the vehicle
     //!
-    void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params) override;
+    void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyAvailableCurrentMission Subscriber to a new vehicle mission topic
