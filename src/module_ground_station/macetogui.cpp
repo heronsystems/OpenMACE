@@ -171,9 +171,9 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
 
         bytesWritten = writeTCPData(doc.toJson(), true);
 
-        if(!bytesWritten){
-            std::cout << "Write Position Data to ML failed..." << std::endl;
-        }
+//        if(!bytesWritten){
+//            std::cout << "Write Position Data to ML failed..." << std::endl;
+//        }
     }
 }
 
@@ -194,9 +194,9 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
 
     bytesWritten = writeTCPData(doc.toJson(), true);
 
-    if(!bytesWritten){
-        std::cout << "Write Attitude Data to ML failed..." << std::endl;
-    }
+//    if(!bytesWritten){
+//        std::cout << "Write Attitude Data to ML failed..." << std::endl;
+//    }
 }
 
 //!
@@ -231,9 +231,9 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
 
     bytesWritten = writeTCPData(doc.toJson(), true);
 
-    if(!bytesWritten){
-        std::cout << "Write Fuel Data to ML failed..." << std::endl;
-    }
+//    if(!bytesWritten){
+//        std::cout << "Write Fuel Data to ML failed..." << std::endl;
+//    }
 }
 
 //!
@@ -544,10 +544,12 @@ bool MACEtoGUI::writeTCPData(QByteArray data, bool toML)
         tcpSocket->flush();
         tcpSocket->waitForBytesWritten();
         return true;
-    }
-    else
-    {
-        std::cout << "TCP socket not connected MACE TO GUI" << std::endl;
+    } else {
+        if(toML){
+//            std::cout << "TCP socket not connected MACE TO MLGUI" << std::endl;
+        } else {
+            std::cout << "TCP socket not connected MACE TO GUI" << std::endl;
+        }
         tcpSocket->close();
         return false;
     }

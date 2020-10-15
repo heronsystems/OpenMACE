@@ -69,6 +69,55 @@
     </Parameter>
   </Module>
 
+<Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">3</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14553</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+<Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">4</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14554</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+
 
 
   <Module Class="GroundStation" Type="NASAPhase2">

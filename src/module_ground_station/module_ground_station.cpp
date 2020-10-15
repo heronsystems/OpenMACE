@@ -230,9 +230,9 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleGroundStation::ModuleC
     structure.AddNonTerminal("MACEComms", maceCommsParams, false);
 
     std::shared_ptr<MaceCore::ModuleParameterStructure> mlCommsParams = std::make_shared<MaceCore::ModuleParameterStructure>();
-    mlCommsParams->AddTerminalParameters("GUIHostAddress", MaceCore::ModuleParameterTerminalTypes::STRING, false);
-    mlCommsParams->AddTerminalParameters("ListenPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
-    mlCommsParams->AddTerminalParameters("SendPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
+    mlCommsParams->AddTerminalParameters("GUIHostAddress", MaceCore::ModuleParameterTerminalTypes::STRING, false, "127.0.0.1");
+    mlCommsParams->AddTerminalParameters("ListenPort", MaceCore::ModuleParameterTerminalTypes::INT, false,"1234");
+    mlCommsParams->AddTerminalParameters("SendPort", MaceCore::ModuleParameterTerminalTypes::INT, false,"5678");
     structure.AddNonTerminal("MLComms", maceCommsParams, false);
     structure.AddTerminalParameters("ID", MaceCore::ModuleParameterTerminalTypes::INT, false);
 
