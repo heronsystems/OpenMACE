@@ -130,4 +130,4 @@ private:
 
 }
 
-#endif // UDPLINK_H
+#endif // TCPLINK_H

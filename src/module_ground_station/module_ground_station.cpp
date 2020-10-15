@@ -511,7 +511,7 @@ void ModuleGroundStation::NewlyAvailableCurrentMission(const MissionItem::Missio
     bool valid = this->getDataObject()->getMissionList(missionKey,newList);
     if(valid)
     {
-        m_toGUIHandler->sendVehicleMission(missionKey.m_systemID,newList);
+//        m_toGUIHandler->sendVehicleMission(missionKey.m_systemID,newList);
     }
 }
 
@@ -581,7 +581,8 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
     json["connectedVehicles"] = ids;
 
     QJsonDocument doc(json);
-    bool bytesWritten = m_toGUIHandler->writeTCPData(doc.toJson());
+//    bool bytesWritten = m_toGUIHandler->writeTCPData(doc.toJson());
+    bool bytesWritten = m_toGUIHandler->writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write ConnectedVehicles failed..." << std::endl;

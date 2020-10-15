@@ -19,6 +19,10 @@ const { map_port } = config;
 import PortConfiguration from "./components/configuration/port";
 const fs = window.require("fs");
 
+
+const dgram = window.require("dgram");
+
+
 import * as Types from "./data-types/index";
 
 const DEFAULT_MAP_PORT = 8080;
@@ -101,77 +105,106 @@ export default class AppProvider extends React.Component<Props, State> {
   };
 
   initServer = () => {
-    // Avoid dead sockets by responding to the 'end' event
-    //   const sockets = [];
-    //   var message = ""; // variable that collects chunks
-    //   var message_separater = "\r";
-    //   this.sockets = [];
-    //   this.message = "";
-    //   this.message_separator = "\r";
-    // Create a TCP socket listener
-    this._server = net.Server(
-      function (socket) {
-        // Add the new client socket connection to the array of
-        // sockets
-        this._message = "";
-        this._sockets.push(socket);
-        // console.log("Added new socket", this._sockets.length);
-        // 'data' is an event that means that a message was just sent by the
-        // client application
-        socket.on("data", (data) => {
-          //   console.log("Open socket connections: ", this._sockets.length);
+    // // Avoid dead sockets by responding to the 'end' event
+    // //   const sockets = [];
+    // //   var message = ""; // variable that collects chunks
+    // //   var message_separater = "\r";
+    // //   this.sockets = [];
+    // //   this.message = "";
+    // //   this.message_separator = "\r";
+    // // Create a TCP socket listener
+    // this._server = net.Server(
+    //   function (socket) {
+    //     // Add the new client socket connection to the array of
+    //     // sockets
+    //     this._message = "";
+    //     this._sockets.push(socket);
+    //     // console.log("Added new socket", this._sockets.length);
+    //     // 'data' is an event that means that a message was just sent by the
+    //     // client application
+    //     socket.on("data", (data) => {
+    //       //   console.log("Open socket connections: ", this._sockets.length);
 
-          this._message += data;
+    //       this._message += data;
 
-          let message_separator_index = this._message.indexOf(
-            this._message_separator
-          );
-          let foundEntireMessage = message_separator_index !== -1;
+    //       let message_separator_index = this._message.indexOf(
+    //         this._message_separator
+    //       );
+    //       let foundEntireMessage = message_separator_index !== -1;
 
-        //   console.log(foundEntireMessage);
-        //   if (foundEntireMessage) {
-            let msg = this._message.slice(0, message_separator_index);
+    //     //   console.log(foundEntireMessage);
+    //     //   if (foundEntireMessage) {
+    //         let msg = this._message.slice(0, message_separator_index);
 
-            let messages = parseJson(msg);
+    //         let messages = parseJson(msg);
 
-            // console.log(messages);
-            messages.forEach((m) => {
-              this.onMessage(m as Types.Message);
-            });
+    //         // console.log(messages);
+    //         messages.forEach((m) => {
+    //             console.log(m);
+    //           this.onMessage(m as Types.Message);
+    //         });
 
-            // Respond to client for proper closing:
-            msg += this._message_separator;
-            // this._sockets.forEach((s) => {
-            //   s.write("GUI received message, closing socket.\r");
-            // });
+    //         // Respond to client for proper closing:
+    //         msg += this._message_separator;
+    //         // this._sockets.forEach((s) => {
+    //         //   s.write("GUI received message, closing socket.\r");
+    //         // });
 
-            this._message = this._message.slice(message_separator_index + 1);
-        //   } else {
-        //     let messages = parseJson(this._message);
+    //         this._message = this._message.slice(message_separator_index + 1);
+    //     //   } else {
+    //     //     let messages = parseJson(this._message);
 
-        //     // console.log(messages);
-        //   }
+    //     //     // console.log(messages);
+    //     //   }
+    //     });
+
+    //     // Use splice to get rid of the socket that is ending.
+    //     // The 'end' event means tcp client has disconnected.
+    //     socket.on("end", () => {
+    //       // console.log("socket done");
+    //       // const i = sockets.indexOf(socket);
+    //       // sockets.splice(i, 1);
+    //     });
+    //     socket.on("close", () => {
+    //       // console.log("Trying to close");
+    //       const i = this._sockets.indexOf(socket);
+    //       this._sockets.splice(i, 1);
+    //     });
+    //     socket.on("error", (err) => {
+    //       console.log("Error with socket: ", err);
+    //     });
+    //   }.bind(this)
+    // );
+    // this._server.listen(this._port);
+    // console.log("System waiting at http://localhost:8080");
+
+
+    // UDP SERVER TEST:
+    var PORT = this._port;
+    var HOST = '127.0.0.1'; // Not needed...
+
+    // var dgram = require('dgram');
+    // var server = dgram.createSocket('udp4');
+    this._server = dgram.createSocket('udp4');
+
+    this._server.on('listening', function() {
+        // var address = this._server.address();
+        console.log('UDP Server listening on ' + HOST + ':' + PORT);
+    });
+
+    this._server.on('message', function(message, remote) {
+        // console.log("New UDP Message: ")
+        // console.log(remote.address + ':' + remote.port +' - ' + message);
+        // console.log(message.toString());
+        let messages = parseJson(message.toString());
+        messages.forEach((m) => {
+            // console.log(m);
+            this.onMessage(m as Types.Message);
         });
+    }.bind(this));
 
-        // Use splice to get rid of the socket that is ending.
-        // The 'end' event means tcp client has disconnected.
-        socket.on("end", () => {
-          // console.log("socket done");
-          // const i = sockets.indexOf(socket);
-          // sockets.splice(i, 1);
-        });
-        socket.on("close", () => {
-          // console.log("Trying to close");
-          const i = this._sockets.indexOf(socket);
-          this._sockets.splice(i, 1);
-        });
-        socket.on("error", (err) => {
-          console.log("Error with socket: ", err);
-        });
-      }.bind(this)
-    );
-    this._server.listen(this._port);
-    console.log("System waiting at http://localhost:8080");
+    // this._server.bind(PORT, HOST);
+    this._server.bind(PORT);
   };
 
   onMessage = (message: Types.Message) => {
@@ -182,7 +215,7 @@ export default class AppProvider extends React.Component<Props, State> {
     if (rest.should_display) {
       this.setState({ messages: messages.concat(message) });
     }
-    this._messageBuffer.push(message);
+    // this._messageBuffer.push(message);
       switch (message_type) {
           case "environment_boundary":
               this.updateBoundaries(rest as Types.Environment.BoundaryPayload);

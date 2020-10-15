@@ -28,6 +28,9 @@
 #include "base_topic/pose/topic_agent_orientation.h"
 #include "base_topic/measurements/topic_speed.h"
 
+#include "commsMACE/udp_link_mace.h"
+#include "commsMACE/udp_configuration_mace.h"
+
 #include "messagetypes.h"
 
 class MACEtoGUI
@@ -63,6 +66,13 @@ public:
     //! \return True: success / False: failure
     //!
     bool writeTCPData(QByteArray data);
+
+    //!
+    //! \brief writeUDPData Write data to the MACE GUI via UDP
+    //! \param data Data to be sent to the MACE GUI
+    //! \return True: success / False: failure
+    //!
+    bool writeUDPData(QByteArray data);
 
     //!
     //! \brief sendPositionData Send vehicle position data to the MACE GUI
@@ -217,6 +227,10 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
+
+
+    CommsMACE::UdpConfiguration m_udpConfig;
+    std::shared_ptr<CommsMACE::UdpLink> m_udpLink;
 
 };
 
