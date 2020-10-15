@@ -613,10 +613,14 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 //! \param data Data to be sent to the MACE GUI
 //! \return True: success / False: failure
 //!
-bool GUItoMACE::writeTCPData(QByteArray data)
+bool GUItoMACE::writeTCPData(QByteArray data, bool toML)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
-    tcpSocket->connectToHost(m_sendAddress, m_sendPort);
+    if (toML){
+        tcpSocket->connectToHost(m_mlSendAddress, m_mlSendPort);
+    } else {
+        tcpSocket->connectToHost(m_sendAddress, m_sendPort);
+    }
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
     {
@@ -634,28 +638,4 @@ bool GUItoMACE::writeTCPData(QByteArray data)
     }
 }
 
-//!
-//! \brief writeMLData Write data to the MACE MLGUI via TCP
-//! \param data Data to be sent to the MACE MLGUI
-//! \return True: success / False: failure
-//!
-bool GUItoMACE::writeMLData(QByteArray data)
-{
-    std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
-    tcpSocket->connectToHost(m_mlSendAddress, m_mlSendPort);
-    tcpSocket->waitForConnected();
-    if(tcpSocket->state() == QAbstractSocket::ConnectedState)
-    {
-        tcpSocket->write(data); //write the data itself
-        tcpSocket->flush();
-        tcpSocket->waitForBytesWritten();
-        return true;
-    }
-    else
-    {
-        std::cout << "TCP socket not connected MLGUI TO MACE" << std::endl;
-        std::cout << tcpSocket->errorString().toStdString() << std::endl;
-        tcpSocket->close();
-        return false;
-    }
-}
+

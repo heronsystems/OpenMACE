@@ -162,14 +162,7 @@ public:
     //! \param data Data to be sent to the MACE GUI
     //! \return True: success / False: failure
     //!
-    bool writeTCPData(QByteArray data);
-
-    //!
-    //! \brief writeMLData Write data to the MACE MLGUI via TCP
-    //! \param data Data to be sent to the MACE MLGUI
-    //! \return True: success / False: failure
-    //!
-    bool writeMLData(QByteArray data);
+    bool writeTCPData(QByteArray data, bool toML = false);
 
 private:
     //!
