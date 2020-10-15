@@ -3,13 +3,17 @@
 
 MACEtoGUI::MACEtoGUI() :
     m_sendAddress(QHostAddress::LocalHost),
-    m_sendPort(1234)
+    m_sendPort(1234),
+    m_mlSendAddress(QHostAddress::LocalHost),
+    m_mlSendPort(1234)
 {
 }
 
 MACEtoGUI::MACEtoGUI(const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
-    m_sendPort(sendPort)
+    m_sendPort(sendPort),
+    m_mlSendAddress(QHostAddress::LocalHost),
+    m_mlSendPort(1234)
 {
 }
 
@@ -31,6 +35,16 @@ void MACEtoGUI::setSendAddress(const QHostAddress &sendAddress) {
 //!
 void MACEtoGUI::setSendPort(const int &sendPort) {
     m_sendPort = sendPort;
+}
+
+//!
+//! \brief setMLGUIparams Set the TCP send port and address for MACE-to-MLGUI comms
+//! \param sendAddress TCP send address
+//! \param sendPort TCP send port
+//!
+void MACEtoGUI::setMLGUIparams(const QHostAddress &sendAddress, const int &sendPort){
+    m_mlSendAddress = sendAddress;
+    m_mlSendPort = sendPort;
 }
 
 //!
@@ -154,6 +168,12 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
         if(!bytesWritten){
             std::cout << "Write Position Data failed..." << std::endl;
         }
+
+        bytesWritten = writeMLData(doc.toJson());
+
+        if(!bytesWritten){
+            std::cout << "Write Position Data to ML failed..." << std::endl;
+        }
     }
 }
 
@@ -170,6 +190,12 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
 
     if(!bytesWritten){
         std::cout << "Write Attitude Data failed..." << std::endl;
+    }
+
+    bytesWritten = writeMLData(doc.toJson());
+
+    if(!bytesWritten){
+        std::cout << "Write Attitude Data to ML failed..." << std::endl;
     }
 }
 
@@ -201,6 +227,12 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
 
     if(!bytesWritten){
         std::cout << "Write Fuel Data failed..." << std::endl;
+    }
+
+    bytesWritten = writeMLData(doc.toJson());
+
+    if(!bytesWritten){
+        std::cout << "Write Fuel Data to ML failed..." << std::endl;
     }
 }
 
@@ -512,6 +544,26 @@ bool MACEtoGUI::writeTCPData(QByteArray data)
     else
     {
         std::cout << "TCP socket not connected MACE TO GUI" << std::endl;
+        tcpSocket->close();
+        return false;
+    }
+}
+
+bool MACEtoGUI::writeMLData(QByteArray data)
+{
+    std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
+    tcpSocket->connectToHost(m_mlSendAddress, static_cast<quint16>(m_mlSendPort));
+    tcpSocket->waitForConnected();
+    if(tcpSocket->state() == QAbstractSocket::ConnectedState)
+    {
+        tcpSocket->write(data); //write the data itself
+        tcpSocket->flush();
+        tcpSocket->waitForBytesWritten();
+        return true;
+    }
+    else
+    {
+        std::cout << "TCP socket not connected MACE TO MLGUI" << std::endl;
         tcpSocket->close();
         return false;
     }

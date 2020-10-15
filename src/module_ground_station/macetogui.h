@@ -53,7 +53,12 @@ public:
     //!
     void setSendPort(const int &sendPort);
 
-
+    //!
+    //! \brief setMLGUIparams Set the TCP send port and address for MACE-to-MLGUI comms
+    //! \param sendAddress TCP send address
+    //! \param sendPort TCP send port
+    //!
+    void setMLGUIparams(const QHostAddress &sendAddress, const int &sendPort);
     // ============================================================================= //
     // ======================== Send data to the MACE GUI ========================== //
     // ============================================================================= //
@@ -63,6 +68,13 @@ public:
     //! \return True: success / False: failure
     //!
     bool writeTCPData(QByteArray data);
+
+    //!
+    //! \brief writeMLData Write data to the MACE MLGUI via TCP
+    //! \param data Data to be sent to the MACE MLGUI
+    //! \return True: success / False: failure
+    //!
+    bool writeMLData(QByteArray data);
 
     //!
     //! \brief sendPositionData Send vehicle position data to the MACE GUI
@@ -217,6 +229,16 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
+
+    //!
+    //! \brief m_mlSendAddress TCP send address for MACE-to-MLGUI connection
+    //!
+    QHostAddress m_mlSendAddress;
+
+    //!
+    //! \brief m_mlSendPort TCP send port for MACE-to-MLGUI connection
+    //!
+    int m_mlSendPort;
 
 };
 

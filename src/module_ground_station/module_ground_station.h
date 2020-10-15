@@ -216,9 +216,19 @@ private:
     QHostAddress m_guiHostAddress;
 
     //!
+    //! \brief m_mlGuiHostAddress TCP listen address for MLGUI-to-MACE connection
+    //!
+    QHostAddress m_mlGuiHostAddress;
+
+    //!
     //! \brief m_listenPort TCP listen port for GUI-to-MACE connection
     //!
     int m_listenPort;
+
+    //!
+    //! \brief m_mlListenPort TCP listen port for MLGUI-to-MACE connection
+    //!
+    int m_mlListenPort;
 
     //!
     //! \brief m_toMACEHandler Handler for all comms going to MACE from the GUI

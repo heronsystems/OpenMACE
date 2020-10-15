@@ -58,7 +58,10 @@ ModuleGroundStation::ModuleGroundStation() :
     m_MissionDataTopic("vehicleMission"),
     m_ListenThread(nullptr),
     m_guiHostAddress(QHostAddress::LocalHost),
-    m_listenPort(5678)
+    m_mlGuiHostAddress(QHostAddress::LocalHost),
+    m_listenPort(5678),
+    m_mlListenPort(5678)
+
 {
     latitude = 37.8910356;
 
@@ -132,6 +135,8 @@ bool ModuleGroundStation::StartTCPServer()
     // For some reason, listening on any other specific address (i.e. not Any) fails.
     //      - As a workaround, I check the incoming connection below for equality with the guiHostAddress before parsing
     m_TcpServer->listen(QHostAddress::Any, m_listenPort);
+    m_TcpServer->listen(QHostAddress::Any, m_mlListenPort);
+
 //    m_TcpServer->listen(m_guiHostAddress, m_listenPort);
 
     m_TcpServer->moveToThread(m_ListenThread);
@@ -165,8 +170,8 @@ void ModuleGroundStation::on_newConnection()
         // Split string and find just the address part:
         std::size_t found = peerAddress.find_last_of(":\\");
         peerAddress = peerAddress.substr(found+1);
-        if(peerAddress != m_guiHostAddress.toString().toStdString()) {
-            std::cout << "Unknown IP address: " << peerAddress << ". Compare to GUI Host Address: " << m_guiHostAddress.toString().toStdString() << std::endl;
+        if(peerAddress != m_guiHostAddress.toString().toStdString() && peerAddress != m_mlGuiHostAddress.toString().toStdString()) {
+            std::cout << "Unknown IP address: " << peerAddress << ". Compare to GUI Host Address: " << m_guiHostAddress.toString().toStdString() << " or MLGUI Host Address: " << m_mlGuiHostAddress.toString().toStdString()<< std::endl;
             return;
         }
 
@@ -223,6 +228,12 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleGroundStation::ModuleC
     maceCommsParams->AddTerminalParameters("ListenPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
     maceCommsParams->AddTerminalParameters("SendPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
     structure.AddNonTerminal("MACEComms", maceCommsParams, false);
+
+    std::shared_ptr<MaceCore::ModuleParameterStructure> mlCommsParams = std::make_shared<MaceCore::ModuleParameterStructure>();
+    mlCommsParams->AddTerminalParameters("GUIHostAddress", MaceCore::ModuleParameterTerminalTypes::STRING, false);
+    mlCommsParams->AddTerminalParameters("ListenPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
+    mlCommsParams->AddTerminalParameters("SendPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
+    structure.AddNonTerminal("MLComms", maceCommsParams, false);
     structure.AddTerminalParameters("ID", MaceCore::ModuleParameterTerminalTypes::INT, false);
 
     return std::make_shared<MaceCore::ModuleParameterStructure>(structure);
@@ -253,6 +264,23 @@ void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::Module
         }
     }
 
+    QHostAddress mlguiHostAddress;
+    int mlListenPort = 5678;
+    int mlSendPort = 1234;
+    if(params->HasNonTerminal("MLComms")) {
+        std::shared_ptr<MaceCore::ModuleParameterValue> mlCommsXML = params->GetNonTerminalValue("MLComms");
+        if(mlCommsXML->HasTerminal("GUIHostAddress")) {
+            std::string hostAddress = mlCommsXML->GetTerminalValue<std::string>("GUIHostAddress");
+            mlguiHostAddress = QHostAddress(QString::fromStdString(hostAddress));
+        }
+        if(mlCommsXML->HasTerminal("ListenPort")) {
+            mlListenPort = mlCommsXML->GetTerminalValue<int>("ListenPort");
+        }
+        if(mlCommsXML->HasTerminal("SendPort")) {
+            mlSendPort = mlCommsXML->GetTerminalValue<int>("SendPort");
+        }
+    }
+
     if(params->HasTerminal("ID"))
     {
         this->SetID(params->GetTerminalValue<int>("ID"));
@@ -260,11 +288,17 @@ void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::Module
 
     m_guiHostAddress = guiHostAddress;
     m_listenPort = listenPort;
-  
+    m_mlGuiHostAddress = mlguiHostAddress;
+    m_mlListenPort = mlListenPort;
+
     m_toGUIHandler->setSendAddress(guiHostAddress);
     m_toGUIHandler->setSendPort(sendPort);
+    m_toGUIHandler->setMLGUIparams(mlguiHostAddress,mlSendPort);
+
     m_toMACEHandler->setSendAddress(guiHostAddress);
     m_toMACEHandler->setSendPort(sendPort);
+    m_toMACEHandler->setMLGUIparams(mlguiHostAddress,mlSendPort);
+
 }
 
 //!

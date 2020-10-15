@@ -3,6 +3,8 @@
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234),
+    m_mlSendAddress(QHostAddress::LocalHost),
+    m_mlSendPort(1234),
     goalSpace(nullptr),
     m_goalSampler(nullptr)
 {
@@ -16,7 +18,9 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
-    m_sendPort(sendPort)
+    m_sendPort(sendPort),
+    m_mlSendAddress(QHostAddress::LocalHost),
+    m_mlSendPort(1234)
 {
     m_parent = ptrRef;
 }
@@ -40,6 +44,15 @@ void GUItoMACE::setSendPort(const int &sendPort) {
     m_sendPort = sendPort;
 }
 
+//!
+//! \brief setMLGUIparams Set the TCP send port and address for MACE-to-MLGUI comms
+//! \param sendAddress TCP send address
+//! \param sendPort TCP send port
+//!
+void GUItoMACE::setMLGUIparams(const QHostAddress &sendAddress, const int &sendPort){
+    m_mlSendAddress = sendAddress;
+    m_mlSendPort = sendPort;
+}
 //!
 //! \brief getEnvironmentBoundary Initiate a request to MACE core for the current environment boundary vertices
 //!
@@ -615,6 +628,32 @@ bool GUItoMACE::writeTCPData(QByteArray data)
     else
     {
         std::cout << "TCP socket not connected GUI TO MACE" << std::endl;
+        std::cout << tcpSocket->errorString().toStdString() << std::endl;
+        tcpSocket->close();
+        return false;
+    }
+}
+
+//!
+//! \brief writeMLData Write data to the MACE MLGUI via TCP
+//! \param data Data to be sent to the MACE MLGUI
+//! \return True: success / False: failure
+//!
+bool GUItoMACE::writeMLData(QByteArray data)
+{
+    std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
+    tcpSocket->connectToHost(m_mlSendAddress, m_mlSendPort);
+    tcpSocket->waitForConnected();
+    if(tcpSocket->state() == QAbstractSocket::ConnectedState)
+    {
+        tcpSocket->write(data); //write the data itself
+        tcpSocket->flush();
+        tcpSocket->waitForBytesWritten();
+        return true;
+    }
+    else
+    {
+        std::cout << "TCP socket not connected MLGUI TO MACE" << std::endl;
         std::cout << tcpSocket->errorString().toStdString() << std::endl;
         tcpSocket->close();
         return false;
