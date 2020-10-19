@@ -53,6 +53,7 @@ protected:
         queueObj = target;
         if((userRequest.parameterIndex == -1) && (!userRequest.parameterName.empty())) //populate using the string
         {
+                request.param_index = -1; //this forces the command to pay attention to the string instead
                 char *target;
                 if(userRequest.parameterName.length() < 16)
                     target = static_cast<char*>(malloc((1 + userRequest.parameterName.length())));
@@ -62,7 +63,8 @@ protected:
                     return false; //we shouldnt have made this request
                 if (target == nullptr) /* check that nothing special happened to prevent tragedy  */
                     return false;
-                strcpy(target, request.param_id);
+                strcpy(target, userRequest.parameterName.c_str());
+                strcpy(request.param_id, target);
                 free(target);
         }
         else if(userRequest.parameterIndex >=0)
@@ -74,14 +76,15 @@ protected:
             return false;
         }
         request.target_system = userRequest.vehicleID;
-        request.target_component = 0;
+        request.target_component = 1;
         return true;
     }
     virtual bool Finish_Receive(const mavlink_param_value_t &msg, const MavlinkEntityKey &sender, ParameterRequestResult &result, MavlinkEntityKey &queueObj)
     {
         UNUSED(sender);
         UNUSED(queueObj);
-        std::cout<<"The parameter value received is: "<<msg.param_value<<std::endl;
+        std::string IDString(msg.param_id);
+        result.parameterName = IDString;
         result.parameterValue = static_cast<double>(msg.param_value);
         return true;
     }
