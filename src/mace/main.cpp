@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
     }
 
     bool addedGroundStation = false;
+    bool addedMLStation = false;
     bool addedPathPlanning = false;
     bool addedROS = false;
     bool addedGlobalRTA = false;
@@ -202,6 +203,17 @@ int main(int argc, char *argv[])
             }
             core.AddGroundStationModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandGroundStation>(module));
             addedGroundStation = true;
+            break;
+        }
+        case  MaceCore::ModuleClasses::ML_STATION:
+        {
+            if(addedMLStation == true)
+            {
+                std::cerr << "Only one ML Station module can be added" << std::endl;
+                return 1;
+            }
+            core.AddMLStationModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandMLStation>(module));
+            addedMLStation = true;
             break;
         }
         case MaceCore::ModuleClasses::SENSORS:

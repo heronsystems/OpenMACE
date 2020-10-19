@@ -3,6 +3,7 @@
 #include "module_external_link/module_external_link.h"
 
 #include "module_ground_station/module_ground_station.h"
+#include "module_ml_station/module_ml_station.h"
 
 #include "module_path_planning_NASAPhase2/module_path_planning_nasaphase2.h"
 #include "module_resource_task_allocation/module_rta.h"
@@ -25,6 +26,7 @@ public:
         MaceCore::ModuleFactory* factory = new MaceCore::ModuleFactory();
         Register<ModuleExternalLink>(factory, "Ardupilot");
         Register<ModuleGroundStation>(factory, "NASAPhase2");
+        Register<ModuleMLStation>(factory, "SubScale");
         Register<ModulePathPlanningNASAPhase2>(factory, "NASAPhase2");
         Register<ModuleROS>(factory, "NASAPhase2");
         Register<ModuleROSUMD>(factory, "OFFSET_Auctioneer");

@@ -141,13 +141,6 @@ public:
     //!
     void setSendPort(const int &sendPort);
 
-    //!
-    //! \brief setMLGUIparams Set the TCP send port and address for MLGUI-to-MACE comms
-    //! \param sendAddress TCP send address
-    //! \param sendPort TCP send port
-    //!
-    void setMLGUIparams(const QHostAddress &sendAddress, const int &sendPort);
-
     // TESTING:
     void testFunction1(const int &vehicleID);
     void testFunction2(const int &vehicleID);
@@ -162,7 +155,7 @@ public:
     //! \param data Data to be sent to the MACE GUI
     //! \return True: success / False: failure
     //!
-    bool writeTCPData(QByteArray data, bool toML = false);
+    bool writeTCPData(QByteArray data);
 
 private:
     //!
@@ -179,16 +172,6 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
-
-    //!
-    //! \brief m_mlSendAddress TCP send address for MACE-to-MLGUI connection
-    //!
-    QHostAddress m_mlSendAddress;
-
-    //!
-    //! \brief m_mlSendPort TCP send port for MACE-to-MLGUI connection
-    //!
-    int m_mlSendPort;
 
     mace::state_space::Cartesian2DSpacePtr goalSpace;
     mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;

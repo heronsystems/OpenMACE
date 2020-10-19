@@ -3,8 +3,6 @@
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234),
-    m_mlSendAddress(QHostAddress::LocalHost),
-    m_mlSendPort(1234),
     goalSpace(nullptr),
     m_goalSampler(nullptr)
 {
@@ -18,9 +16,7 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
-    m_sendPort(sendPort),
-    m_mlSendAddress(QHostAddress::LocalHost),
-    m_mlSendPort(1234)
+    m_sendPort(sendPort)
 {
     m_parent = ptrRef;
 }
@@ -44,15 +40,6 @@ void GUItoMACE::setSendPort(const int &sendPort) {
     m_sendPort = sendPort;
 }
 
-//!
-//! \brief setMLGUIparams Set the TCP send port and address for MACE-to-MLGUI comms
-//! \param sendAddress TCP send address
-//! \param sendPort TCP send port
-//!
-void GUItoMACE::setMLGUIparams(const QHostAddress &sendAddress, const int &sendPort){
-    m_mlSendAddress = sendAddress;
-    m_mlSendPort = sendPort;
-}
 //!
 //! \brief getEnvironmentBoundary Initiate a request to MACE core for the current environment boundary vertices
 //!
@@ -613,14 +600,11 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 //! \param data Data to be sent to the MACE GUI
 //! \return True: success / False: failure
 //!
-bool GUItoMACE::writeTCPData(QByteArray data, bool toML)
+bool GUItoMACE::writeTCPData(QByteArray data)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
-    if (toML){
-        tcpSocket->connectToHost(m_mlSendAddress, m_mlSendPort);
-    } else {
-        tcpSocket->connectToHost(m_sendAddress, m_sendPort);
-    }
+
+    tcpSocket->connectToHost(m_sendAddress, m_sendPort);
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
     {

@@ -127,7 +127,10 @@
 		<Parameter Name="ListenPort">8082</Parameter>
 		<Parameter Name="SendPort">8080</Parameter>
 	</Parameter>
-	<Parameter Name="MLComms">
+   </Module>
+   <Module Class="MLStation" Type="SubScale">
+	<Parameter Name="ID">1</Parameter>
+	<Parameter Name="MACEComms">
 		<Parameter Name="GUIHostAddress">127.0.0.1</Parameter>
 		<Parameter Name="ListenPort">9082</Parameter>
 		<Parameter Name="SendPort">9080</Parameter>

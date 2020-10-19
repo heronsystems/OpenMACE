@@ -42,6 +42,8 @@ public:
             return "ExternalLink";
         case ModuleClasses::GROUND_STATION:
             return "GroundStation";
+        case ModuleClasses::ML_STATION:
+            return "MLStation";
         case ModuleClasses::PATH_PLANNING:
             return "PathPlanning";
         case ModuleClasses::ROS:
@@ -68,6 +70,8 @@ public:
             return ModuleClasses::EXTERNAL_LINK;
         if(string == "GroundStation")
             return ModuleClasses::GROUND_STATION;
+        if(string == "MLStation")
+            return ModuleClasses::ML_STATION;
         if(string == "PathPlanning")
             return ModuleClasses::PATH_PLANNING;
         if(string == "ROS")
