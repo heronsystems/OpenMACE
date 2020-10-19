@@ -125,7 +125,22 @@ void MACEtoGUI::sendVehicleParameterList(const int &vehicleID, const std::map<st
     }
 
 
-    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << params.at("TKOFF_ALT").getValue() << std::endl;
+    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << ": " << params.at("TKOFF_ALT").getValue() << std::endl;
+
+
+    // Write out generic message to display on GUI:
+    QJsonObject textJson;
+    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
+    textJson["agentID"] = std::to_string(vehicleID).c_str();;
+    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(DataGenericItem::DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO));
+    std::string text = "TKOFF_ALT param set to " + std::to_string(params.at("TKOFF_ALT").getValue());
+    textJson["text"] = QString::fromStdString(text);
+    QJsonDocument textDoc(textJson);
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool textBytesWritten = writeUDPData(textDoc.toJson());
+    if(!textBytesWritten){
+        std::cout << "Write parameter list TEXT failed..." << std::endl;
+    }
 }
 
 //!
@@ -242,7 +257,7 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> &component)
 {
-    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_TEXT)));
+    QJsonDocument doc(component->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TEXT)));
     //    bool bytesWritten = writeTCPData(doc.toJson());
     bool bytesWritten = writeUDPData(doc.toJson());
 

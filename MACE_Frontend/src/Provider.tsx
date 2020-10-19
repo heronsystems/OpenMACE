@@ -232,6 +232,9 @@ export default class AppProvider extends React.Component<Props, State> {
           case "vehicle_attitude":
               this.updateAircraftAttitude(rest as Types.Aircraft.AttitudePayload);
               break;
+          case "vehicle_airspeed":
+              this.updateAircraftAirspeed(rest as Types.Aircraft.AirspeedPayload);
+              break;
           case "vehicle_arm":
               this.updateAircraftArmed(rest as Types.Aircraft.ArmPayload);
               break;
@@ -599,6 +602,8 @@ export default class AppProvider extends React.Component<Props, State> {
 
   constructDefaultAircraft = (): Types.Aircraft.AircraftPayload => {
     this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
+    let now = new Date();
+    let timestamp = now.getTime();
     return {
         agentID: "DEFAULT",
         selected: true,
@@ -623,7 +628,8 @@ export default class AppProvider extends React.Component<Props, State> {
         vdop: 0.0,
         text: {
             textStr: "No messages",
-            textSeverity: ""
+            textSeverity: "",
+            textTimestamp: timestamp
         },
         mode: "",
         battery_remaining: 0.0,
@@ -634,7 +640,10 @@ export default class AppProvider extends React.Component<Props, State> {
                 param_id: "TKOFF_ALT",
                 value: 50
             }
-        ]
+        ],
+        airspeed: 0.0,
+        distance_to_target: 0.0,
+        flight_time: 0.0
     }
   }
 
@@ -681,6 +690,25 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.orientation.roll = attitude.roll;
             tmpAC.orientation.pitch = attitude.pitch;
             tmpAC.orientation.yaw = attitude.yaw;
+            aircrafts.push(tmpAC);
+        }
+        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
+          this.setState({ aircrafts });
+        }
+    }
+
+    updateAircraftAirspeed = (airspeed: Types.Aircraft.AirspeedPayload) => {
+        const { ...all } = airspeed;
+        let aircrafts = cloneDeep(this.state.aircrafts);
+        const existingIndex = aircrafts.findIndex(
+          (a) => airspeed.agentID === a.agentID
+        );
+        if (existingIndex !== -1) {
+            aircrafts[existingIndex].airspeed = airspeed.airspeed;
+        } else {
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
+            tmpAC.agentID = airspeed.agentID;
+            tmpAC.airspeed = airspeed.airspeed;
             aircrafts.push(tmpAC);
         }
         if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
@@ -738,6 +766,7 @@ export default class AppProvider extends React.Component<Props, State> {
         const existingIndex = aircrafts.findIndex(
           (a) => text.agentID === a.agentID
         );
+        let now = new Date();
         if (existingIndex !== -1) {
 
             if ((aircrafts[existingIndex].text.textStr !== text.text) && (text.text === "Flight plan received")){
@@ -748,14 +777,16 @@ export default class AppProvider extends React.Component<Props, State> {
 
             aircrafts[existingIndex].text = {
                 textStr: text.text,
-                textSeverity: text.severity
+                textSeverity: text.severity,
+                textTimestamp: now.getTime()
             };
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = text.agentID;
             tmpAC.text = {
                 textStr: text.text,
-                textSeverity: text.severity
+                textSeverity: text.severity,
+                textTimestamp: now.getTime()
             };
             aircrafts.push(tmpAC);
         }

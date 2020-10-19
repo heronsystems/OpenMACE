@@ -25,6 +25,7 @@ export type MessageType =
     | VehicleHeartbeat_MessageType
     | VehiclePosition_MessageType
     | VehicleAttitude_MessageType
+    | VehicleAirspeed_MessageType
     | VehicleArm_MessageType
     | VehicleGPS_MessageType
     | VehicleText_MessageType
@@ -44,6 +45,7 @@ type EnvironmentIcon_MessageType = "environment_icon";
 type VehicleHeartbeat_MessageType = "vehicle_heartbeat";
 type VehiclePosition_MessageType = "vehicle_position";
 type VehicleAttitude_MessageType = "vehicle_attitude";
+type VehicleAirspeed_MessageType = "vehicle_airspeed";
 type VehicleArm_MessageType = "vehicle_arm";
 type VehicleGPS_MessageType = "vehicle_gps";
 type VehicleText_MessageType = "vehicle_text";
@@ -59,6 +61,7 @@ export type Message =
     | Aircraft.Heartbeat
     | Aircraft.Position
     | Aircraft.Attitude
+    | Aircraft.Airspeed
     | Aircraft.Arm
     | Aircraft.GPS
     | Aircraft.Text
@@ -138,6 +141,7 @@ export namespace Aircraft {
         text: {
             textStr: string;
             textSeverity: string;
+            textTimestamp: number;
         };
         mode: string;
         battery_remaining: number;
@@ -147,6 +151,9 @@ export namespace Aircraft {
             param_id: string;
             value: number
         }[];
+        airspeed: number;
+        distance_to_target: number;
+        flight_time: number;
     }
 
     export type HeartbeatPayload = {
@@ -211,6 +218,19 @@ export namespace Aircraft {
         roll: number;
         pitch: number;
         yaw: number;
+    }
+
+    export type AirspeedPayload = {
+        agentID: string;
+        should_display?: boolean;
+        airspeed: number;
+    }
+
+    export interface Airspeed {
+        message_type: VehicleAirspeed_MessageType;
+        agentID: string;
+        should_display?: boolean;
+        airspeed: number;
     }
 
 

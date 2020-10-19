@@ -229,7 +229,14 @@ private:
     int m_sendPort;
 
 
+    //!
+    //! \brief m_udpConfig UDP configuration for UDP comms
+    //!
     CommsMACE::UdpConfiguration m_udpConfig;
+
+    //!
+    //! \brief m_udpLink UDP comms link object
+    //!
     std::shared_ptr<CommsMACE::UdpLink> m_udpLink;
 
 };

@@ -3,7 +3,7 @@ import * as React from "react";
 import { useLeaflet } from "react-leaflet";
 import * as ReactLeaflet from "react-leaflet";
 import AppContext, { Context } from "../../../../Context";
-import { getCentroid } from "../../../../util/helpers";
+import { getCentroid, getDisplayTargetAndPath } from "../../../../util/helpers";
 import Aircraft from "../aircraft";
 import AircraftPath from "../aircraft-path";
 import AircraftTarget from "../aircraft-target";
@@ -88,23 +88,38 @@ export default () => {
           );
         })}
         {paths.map((path: Types.Aircraft.PathPayload, index) => {
-          return <AircraftPath key={`path-${path.agentID}`} data={path} />;
+          const acIndex = aircrafts.findIndex(
+                (a) => path.agentID === a.agentID
+          );
+          if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
+            return <AircraftPath key={`path-${path.agentID}`} data={path} />;
+          }
         })}
         {targets.map((target: Types.Aircraft.TargetPayload, index) => {
-          return (
-            <AircraftTarget
-              key={`target-${target.agentID}-${index}`}
-              data={target}
-            />
-          );
+            const acIndex = aircrafts.findIndex(
+                (a) => target.agentID === a.agentID
+            );
+            if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
+                return (
+                    <AircraftTarget
+                    key={`target-${target.agentID}-${index}`}
+                    data={target}
+                    />
+                );
+            }
         })}
         {targets.map((target: Types.Aircraft.TargetPayload, index) => {
-          return (
-            <TargetLine
-              key={`target-${target.agentID}-${index}`}
-              data={target}
-            />
-          );
+            const acIndex = aircrafts.findIndex(
+                (a) => target.agentID === a.agentID
+            );
+            if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
+                return (
+                    <TargetLine
+                    key={`target-${target.agentID}-${index}`}
+                    data={target}
+                    />
+                );
+            }
         })}
         {icons.map((icon: Types.Environment.IconPayload) => {
           return (

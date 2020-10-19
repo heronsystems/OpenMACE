@@ -29,6 +29,9 @@
 
 #include "base/state_space/cartesian_2D_space.h"
 
+#include "commsMACE/udp_link_mace.h"
+#include "commsMACE/udp_configuration_mace.h"
+
 #include "messagetypes.h"
 
 class GUItoMACE
@@ -157,6 +160,13 @@ public:
     //!
     bool writeTCPData(QByteArray data);
 
+    //!
+    //! \brief writeUDPData Write data to the MACE GUI via UDP
+    //! \param data Data to be sent to the MACE GUI
+    //! \return True: success / False: failure
+    //!
+    bool writeUDPData(QByteArray data);
+
 private:
     //!
     //! \brief m_parent Reference to parent object
@@ -175,6 +185,16 @@ private:
 
     mace::state_space::Cartesian2DSpacePtr goalSpace;
     mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
+
+    //!
+    //! \brief m_udpConfig UDP configuration for UDP comms
+    //!
+    CommsMACE::UdpConfiguration m_udpConfig;
+
+    //!
+    //! \brief m_udpLink UDP comms link object
+    //!
+    std::shared_ptr<CommsMACE::UdpLink> m_udpLink;
 
 
 };

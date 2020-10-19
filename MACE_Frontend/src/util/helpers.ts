@@ -431,12 +431,6 @@ export const checkIfEqual = (
   return equal;
 };
 
-// const buttonOptions = {
-//     HIDE : 0,
-//     GRAY : 1,
-//     SHOW : 2
-// }
-
 const defaultButtonStatus = {
     "takeoff": {
         show: false,
@@ -631,4 +625,21 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
     }
 
     return buttons;
+}
+
+
+
+export const getDisplayTargetAndPath = (mode: string) => {
+    if(mode === "GUIDED" 
+       || mode === "CIRCLE"
+       || mode === "RTL"
+       || mode === "LOITER"
+       || mode === "TAKEOFF"
+       || mode === "AUTO") 
+       {
+           return true;
+       }
+       else {
+           return false;
+       }
 }

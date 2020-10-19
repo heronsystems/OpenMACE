@@ -4,8 +4,12 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234),
     goalSpace(nullptr),
-    m_goalSampler(nullptr)
+    m_goalSampler(nullptr),
+    m_udpConfig("127.0.0.1", 5678, m_sendAddress.toString().toStdString(), m_sendPort)
 {
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
+
     m_parent = ptrRef;
     goalSpace = std::make_shared<mace::state_space::Cartesian2DSpace>();
     mace::state_space::Cartesian2DSpaceBounds bounds(-20,20,-10,10);
@@ -16,9 +20,13 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
-    m_sendPort(sendPort)
+    m_sendPort(sendPort),
+    m_udpConfig("127.0.0.1", 5678, sendAddress.toString().toStdString(), sendPort)
 {
     m_parent = ptrRef;
+
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
 }
 
 GUItoMACE::~GUItoMACE() {
@@ -66,7 +74,8 @@ void GUItoMACE::getEnvironmentBoundary() {
         json["vertices"] = vertices;
 
         QJsonDocument doc(json);
-        bool bytesWritten = writeTCPData(doc.toJson());
+        //    bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
         if(!bytesWritten){
             std::cout << "Write environment boundary failed..." << std::endl;
@@ -90,7 +99,8 @@ void GUItoMACE::getGlobalOrigin()
     json["gridSpacing"] = m_parent->getDataObject()->GetGridSpacing();
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write global origin failed..." << std::endl;
@@ -413,7 +423,8 @@ void GUItoMACE::getConnectedVehicles()
     json["connectedVehicles"] = connectedVehicles;
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write New Vehicle Data failed..." << std::endl;
@@ -619,4 +630,24 @@ bool GUItoMACE::writeTCPData(QByteArray data)
         tcpSocket->close();
         return false;
     }
+}
+
+//!
+//! \brief writeUDPData Write data to the MACE GUI via UDP
+//! \param data Data to be sent to the MACE GUI
+//! \return True: success / False: failure
+//!
+bool GUItoMACE::writeUDPData(QByteArray data)
+{
+    // TODO: implement
+    // Use UdpLink
+    if(m_udpLink->isConnected()) {
+        m_udpLink->WriteBytes(data, data.length());
+    }
+    else {
+        std::cout << "UDP Link not connected..." << std::endl;
+        return false;
+    }
+
+    return true;
 }

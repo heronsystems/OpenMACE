@@ -1006,7 +1006,7 @@ void MaceCore::GVEvents_NewParameterValue(const ModuleBase *sender, const DataGe
     std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> paramValues;
     paramValues.insert(std::pair<std::string, DataGenericItem::DataGenericItem_ParamValue>(vehicleParam.getID(),vehicleParam));
 
-    //If there is a ground station, and it didn't generate the home; send the home position
+
     if(m_GroundStation && m_GroundStation.get() != sender)
         m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE_PARAMETERS, paramValues, sender->GetCharacteristic());
 

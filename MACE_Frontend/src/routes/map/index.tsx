@@ -112,7 +112,7 @@ class MapRoute extends React.Component<Props, State> {
             onUpdateGoHerePts={this.HUDUpdateGoHerePt}
             toggleGoHerePt = {this.toggleGoHerePt}
             target={this.state.goHerePt}
-            defaultAltitude={10}
+            defaultAltitude={50}
             onToggleSelect={this.props.context.updateSelectedAircraft}
             addNotification={this.props.context.addNotification}
           />

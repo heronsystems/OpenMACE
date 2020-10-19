@@ -219,7 +219,7 @@ export default React.memo((props: Props) => {
               onUpdateGoHerePts={props.onUpdateGoHerePts}
               toggleGoHerePt = {props.toggleGoHerePt}
               target={props.target}
-              defaultAltitude={props.defaultAltitude}
+              defaultAltitude={a.param_list.filter(function(p) { return p.param_id === 'TKOFF_ALT'; })[0].value}
               onToggleSelect={props.onToggleSelect}
               addNotification={props.addNotification}
             />
