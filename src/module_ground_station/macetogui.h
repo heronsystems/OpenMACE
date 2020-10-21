@@ -203,7 +203,7 @@ public:
     //! \param vehicleID Vehicle ID with the new vehicle target
     //! \param component Vehicle target component
     //!
-    void sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition);
+    void sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component);
 
     // ============================================================================= //
     // ================================== Helpers ================================== //

@@ -69,7 +69,7 @@ type Props = {
     data: Types.Aircraft.AircraftPayload;
     onRequestCenter: (LatLng) => void;
     onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
-    onUpdateGoHerePts: (point: Types.Vertex) => void;
+    onUpdateGoHerePts: (point: Types.Vertex & {agentID: string}) => void;
     toggleGoHerePt: (show: boolean) => void;
     target: Types.Vertex;
     defaultAltitude: number;
@@ -251,17 +251,19 @@ export default React.memo((props: Props) => {
     };
 
     const updateTarget = (field: string, value: number) => {
-        let newTarget = props.target;
+        let newTarget: any = props.target;
         if (field === "lat") { newTarget["lat"] = value; }
         if (field === "lng") { newTarget["lng"] = value; }
         if (field === "alt") { newTarget["alt"] = value; }
+        newTarget["agentID"] = props.data.agentID;
         props.onUpdateGoHerePts(newTarget);
-
     }
 
     const setTargetToCurrentLocation = (e) => {
         props.toggleGoHerePt(true);
-        props.onUpdateGoHerePts(props.data.location);
+        let newTarget: any = props.data.location;
+        newTarget["agentID"] = props.data.agentID;
+        props.onUpdateGoHerePts(newTarget);
     }
     
     const getVehicleIcon = () => {

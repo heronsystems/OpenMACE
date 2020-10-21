@@ -841,8 +841,22 @@ export default class AppProvider extends React.Component<Props, State> {
     if (target.is_global) {
       this.updateGlobalTargets(target);
     } else {
-      this.updateLocalTargets(target);
+        this.updateLocalTargets(target);
+
+        // Update aircraft distance to target:
+        let aircrafts = cloneDeep(this.state.aircrafts);
+        const acIndex = aircrafts.findIndex(
+        (a) => target.agentID === a.agentID
+        );
+        if (acIndex !== -1) {
+            aircrafts[acIndex].distance_to_target = target.distance_to_target;
+            if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
+                this.setState({ aircrafts });
+            }
+        }
     }
+
+
   };
 
   updateLocalTargets = (target: Types.Aircraft.TargetPayload) => {
@@ -860,7 +874,7 @@ export default class AppProvider extends React.Component<Props, State> {
     }
     if (!areObjectsSame(targets, this.state.localTargets)) {
       this.setState({ localTargets: targets });
-    }
+    }    
   };
 
   updateGlobalTargets = (target: Types.Aircraft.TargetPayload) => {

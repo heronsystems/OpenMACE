@@ -24,6 +24,7 @@ type Props = {
   onUpdateGoHerePts: (pts: L.LatLng) => void;
   onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
   target: Types.Vertex;
+  goHereEnabled: boolean;
 };
 
 type State = {
@@ -77,6 +78,9 @@ export default class MapView extends React.Component<Props, State> {
     }
     if(this.state.popupVisible != nextState.popupVisible) {
       return true;
+    }
+    if(nextProps.goHereEnabled != this.props.goHereEnabled) {
+        return true;
     }
     return false;
   }
@@ -179,7 +183,9 @@ export default class MapView extends React.Component<Props, State> {
           attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
         />
 
-        <Markers />
+        <Markers
+            goHereEnabled={this.props.goHereEnabled}
+         />
 
         <ContextMenu
           position={this.state.contextMenuPosition}

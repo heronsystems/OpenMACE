@@ -16,7 +16,7 @@ type Props = {
   onRequestCenter: (LatLng) => void;
   aircrafts: Types.Aircraft.AircraftPayload[];
   onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
-  onUpdateGoHerePts: (point: Types.Vertex) => void;
+  onUpdateGoHerePts: (point: Types.Vertex & {agentID: string}) => void;
   toggleGoHerePt: (show: boolean) => void;
   target: Types.Vertex;
   defaultAltitude: number;

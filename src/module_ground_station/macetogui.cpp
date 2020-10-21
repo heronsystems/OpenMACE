@@ -61,9 +61,41 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
 //! \param vehicleID Vehicle ID with the new vehicle target
 //! \param component Vehicle target component
 //!
-void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition) {
-    
-    QJsonDocument doc(targetPosition->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET)));
+void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
+{
+    QJsonObject obj;
+    switch (component->m_targetPosition->getCoordinateSystemType()) {
+    case CoordinateSystemTypes::GEODETIC:
+    {
+        Abstract_GeodeticPosition* targetPosition;
+        targetPosition = dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition);
+        obj = targetPosition->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET));
+
+        break;
+    }
+    case CoordinateSystemTypes::CARTESIAN:
+    {
+//        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+
+//        if(!globalOrigin.isAnyPositionValid())
+//            return;
+
+//        mace::pose::GeodeticPosition_2D targetPosition;
+//        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
+
+        break;
+    }
+    case CoordinateSystemTypes::UNKNOWN:
+    case CoordinateSystemTypes::NOT_IMPLIED:
+        break;
+    }
+
+
+    obj["distance_to_target"] = component->m_distanceToTarget;
+
+
+
+    QJsonDocument doc(obj);
     //    bool bytesWritten = writeTCPData(doc.toJson());
     bool bytesWritten = writeUDPData(doc.toJson());
 

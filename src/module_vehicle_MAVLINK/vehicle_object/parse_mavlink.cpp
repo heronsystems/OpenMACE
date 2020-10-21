@@ -409,7 +409,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                        AltitudeReferenceTypes::REF_ALT_RELATIVE,
                                                        static_cast<double>(decodedMSG.alt), "Target Position");
 
-        MissionTopic::VehicleTargetTopic vehicleTarget(systemID, &targetPosition);
+        MissionTopic::VehicleTargetTopic vehicleTarget(systemID, &targetPosition, -1); // TODO-PAT/KEN: Add distance to target.
         std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrMissionTopic = std::make_shared<MissionTopic::VehicleTargetTopic>(vehicleTarget);
 
         if(this->m_CB != nullptr)

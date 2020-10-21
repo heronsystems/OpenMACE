@@ -32,8 +32,8 @@ void DataGenericItemTopic_GPS::CreateFromDatagram(const MaceCore::TopicDatagram 
 QJsonObject DataGenericItemTopic_GPS::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
-    json["visibleSats"] = getSatVisible();
-    json["gpsFix"] = QString::fromStdString(DataGenericItem::DataGenericItem_GPS::GPSFixTypeToString(getGPSFix()));
+    json["visible_sats"] = getSatVisible();
+    json["gps_fix"] = QString::fromStdString(DataGenericItem::DataGenericItem_GPS::GPSFixTypeToString(getGPSFix()));
     json["hdop"] = getHDOP();
     json["vdop"] = getVDOP();
     return json;

@@ -452,31 +452,8 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     std::shared_ptr<MissionTopic::VehicleTargetTopic> component = std::make_shared<MissionTopic::VehicleTargetTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
 
-                    switch (component->m_targetPosition->getCoordinateSystemType()) {
-                    case CoordinateSystemTypes::GEODETIC:
-                    {
-                        // Write vehicle target to the GUI:
-
-                        m_toGUIHandler->sendVehicleTarget(vehicleID, dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition));
-                        break;
-                    }
-                    case CoordinateSystemTypes::CARTESIAN:
-                    {
-                        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-
-                        if(!globalOrigin.isAnyPositionValid())
-                            return;
-
-                        mace::pose::GeodeticPosition_2D targetPosition;
-                        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
-
-                        break;
-                    }
-                    case CoordinateSystemTypes::UNKNOWN:
-                    case CoordinateSystemTypes::NOT_IMPLIED:
-                        break;
-                    }
-
+                    // Write vehicle target to the GUI:
+                    m_toGUIHandler->sendVehicleTarget(vehicleID, component);
                 }
             }
         }

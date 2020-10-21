@@ -15,7 +15,11 @@ const { useContext } = React;
 const { Pane } = ReactLeaflet;
 import * as Types from "../../../../data-types/index";
 
-export default () => {
+type Props = {
+    goHereEnabled: boolean;
+};
+
+export default (props: Props) => {
   const { map } = useLeaflet();
   const {
     boundaries,
@@ -87,38 +91,53 @@ export default () => {
             />
           );
         })}
-        {paths.map((path: Types.Aircraft.PathPayload, index) => {
+        {/* {paths.map((path: Types.Aircraft.PathPayload, index) => {
           const acIndex = aircrafts.findIndex(
                 (a) => path.agentID === a.agentID
           );
-          if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
-            return <AircraftPath key={`path-${path.agentID}`} data={path} />;
+          if(acIndex !== -1) {
+            if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
+                console.log(path.agentID);
+                return <AircraftPath key={`path-${path.agentID}`} data={path} />;
+            }
           }
-        })}
+        })} */}
         {targets.map((target: Types.Aircraft.TargetPayload, index) => {
             const acIndex = aircrafts.findIndex(
                 (a) => target.agentID === a.agentID
             );
-            if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
+            if(acIndex !== -1) {
+              if(getDisplayTargetAndPath(aircrafts[acIndex].mode) && !target.is_global){
                 return (
                     <AircraftTarget
-                    key={`target-${target.agentID}-${index}`}
-                    data={target}
+                        key={`target-${target.agentID}-${index}`}
+                        data={target}
                     />
                 );
+              }
+              else if(target.is_global && props.goHereEnabled) {
+                return (
+                    <AircraftTarget
+                        key={`target-${target.agentID}-${index}`}
+                        data={target}
+                    />
+                );
+              }
             }
         })}
         {targets.map((target: Types.Aircraft.TargetPayload, index) => {
             const acIndex = aircrafts.findIndex(
                 (a) => target.agentID === a.agentID
             );
-            if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
+            if(acIndex !== -1 && !target.is_global) {
+              if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
                 return (
                     <TargetLine
-                    key={`target-${target.agentID}-${index}`}
-                    data={target}
+                        key={`target-${target.agentID}-${index}`}
+                        data={target}
                     />
                 );
+              }
             }
         })}
         {icons.map((icon: Types.Environment.IconPayload) => {

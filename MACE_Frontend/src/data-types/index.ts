@@ -333,6 +333,7 @@ export namespace Aircraft {
         date?: number;
         should_display?: boolean;
         is_global?: boolean;
+        distance_to_target: number;
     };
 
     export interface Target {

@@ -69,6 +69,7 @@ class MapRoute extends React.Component<Props, State> {
   }
 
   mapUpdateGoHerePt = (pts: L.LatLng) => {
+    console.log("MAP-UPDATE GO HERE>");
     let a = {
       lat: pts.lat,
       lng: pts.lng,
@@ -78,20 +79,25 @@ class MapRoute extends React.Component<Props, State> {
     this.sendGoHerePt();
   }
 
-  HUDUpdateGoHerePt = (point: Vertex) => {
+  HUDUpdateGoHerePt = (point: Vertex & {agentID: string}) => {
+    console.log("HUD-UPDATE GO HERE");
     this.setState({goHerePt: point});
-    this.sendGoHerePt();
+    this.sendGoHerePt(point.agentID);
   }
 
   toggleGoHerePt = (show: boolean) => {
-    this.setState({showTarget: show},this.sendGoHerePt);
+      console.log("TOGGLE GO HERE");
+      console.log(show);
+    this.setState({showTarget: show}, this.sendGoHerePt);
   }
 
-  sendGoHerePt = () => {
+  sendGoHerePt = (agentID?: string) => {
     this.props.context.updateTargets({
       location: { lat: this.state.goHerePt.lat, lng: this.state.goHerePt.lng },
       is_global: true,
-      should_display: this.state.showTarget
+      should_display: this.state.showTarget,
+      distance_to_target: 0.0,
+      agentID: agentID ? agentID : "1"
     })
   }
   render() {
@@ -103,6 +109,7 @@ class MapRoute extends React.Component<Props, State> {
             onUpdateGoHerePts={this.mapUpdateGoHerePt}
             target={this.state.goHerePt}
             onCommand={this.props.context.sendToMACE}
+            goHereEnabled={this.state.showTarget}
         />
         {this.state.showHUD && (
           <AircraftHUD
