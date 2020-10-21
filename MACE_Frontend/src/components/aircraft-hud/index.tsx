@@ -17,10 +17,11 @@ type Props = {
   aircrafts: Types.Aircraft.AircraftPayload[];
   onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
   onUpdateGoHerePts: (point: Types.Vertex & {agentID: string}) => void;
-  toggleGoHerePt: (show: boolean) => void;
+  toggleGoHerePt: (show: boolean, agentID: string) => void;
   target: Types.Vertex;
   defaultAltitude: number;
   onToggleSelect: (agentIDs: string[], show?: boolean) => void;
+  showTargetFlags?: {agentID: string; showGoHere: boolean}[];
 };
 
 export default React.memo((props: Props) => {
@@ -222,6 +223,7 @@ export default React.memo((props: Props) => {
               defaultAltitude={a.param_list.filter(function(p) { return p.param_id === 'TKOFF_ALT'; })[0].value}
               onToggleSelect={props.onToggleSelect}
               addNotification={props.addNotification}
+              showTargetFlags={props.showTargetFlags}
             />
           );
         })

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModuleConfigurations MaceInstance="0">
-
     <GlobalParams>
         <Parameter Name="GlobalOrigin">
             <Parameter Name="Latitude">35.6212140</Parameter>
@@ -44,7 +43,7 @@
     </Parameter>
   </Module>
 
-  <!-- <Module Class="VehicleComms" Type="Arduplane">
+  <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">2</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>
@@ -68,8 +67,7 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
-
-  <Module Class="VehicleComms" Type="Arduplane">
+  <!-- <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">3</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>
@@ -93,7 +91,6 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
-
   <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">4</Parameter>
     <Parameter Name="ProtocolParameters">
@@ -103,6 +100,151 @@
 	<Parameter Name="UDPParameters">
       <Parameter Name="ListenAddress">127.0.0.1</Parameter>
       <Parameter Name="ListenPortNumber">14554</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">5</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14555</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">6</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14556</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">7</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14557</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">8</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14558</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module>
+  <Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">9</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14559</Parameter>
+    </Parameter>
+    <Parameter Name="ModuleParameters">
+      <Parameter Name="AirborneInstance">false</Parameter>
+    </Parameter>
+    <Parameter Name="LocalPositionParameters">
+      <Parameter Name="TransformAltitude">true</Parameter>
+    </Parameter>
+    <Parameter Name="EKFOrigin">
+      <Parameter Name="SetEKFOrigin">true</Parameter>
+      <Parameter Name="DuplicateToHome">false</Parameter>
+      <Parameter Name="Latitude">35.6212140</Parameter>
+      <Parameter Name="Longitude">-78.7992165</Parameter>
+      <Parameter Name="Altitude">0.0</Parameter>
+    </Parameter>
+  </Module> -->
+
+  <!--<Module Class="VehicleComms" Type="Arduplane">
+    <Parameter Name="ID">10</Parameter>
+    <Parameter Name="ProtocolParameters">
+      <Parameter Name="Name">Mavlink</Parameter>
+      <Parameter Name="Version">V2</Parameter>
+    </Parameter>
+	<Parameter Name="UDPParameters">
+      <Parameter Name="ListenAddress">127.0.0.1</Parameter>
+      <Parameter Name="ListenPortNumber">14560</Parameter>
     </Parameter>
     <Parameter Name="ModuleParameters">
       <Parameter Name="AirborneInstance">false</Parameter>
@@ -127,5 +269,4 @@
 		<Parameter Name="SendPort">8080</Parameter>
 	</Parameter>
    </Module>
-    
 </ModuleConfigurations>

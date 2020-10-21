@@ -16,7 +16,7 @@ const { Pane } = ReactLeaflet;
 import * as Types from "../../../../data-types/index";
 
 type Props = {
-    goHereEnabled: boolean;
+    goHereEnabled: {agentID: string, showGoHere: boolean}[];
 };
 
 export default (props: Props) => {
@@ -115,13 +115,15 @@ export default (props: Props) => {
                     />
                 );
               }
-              else if(target.is_global && props.goHereEnabled) {
-                return (
-                    <AircraftTarget
-                        key={`target-${target.agentID}-${index}`}
-                        data={target}
-                    />
-                );
+              else if(target.is_global && props.goHereEnabled.filter(function(p) { return p.agentID === target.agentID; }).length > 0) {
+                  if(props.goHereEnabled.filter(function(p) { return p.agentID === target.agentID; })[0].showGoHere) {
+                    return (
+                        <AircraftTarget
+                            key={`target-${target.agentID}-${index}`}
+                            data={target}
+                        />
+                    );
+                  }                
               }
             }
         })}

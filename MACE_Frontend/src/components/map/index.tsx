@@ -24,7 +24,7 @@ type Props = {
   onUpdateGoHerePts: (pts: L.LatLng) => void;
   onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
   target: Types.Vertex;
-  goHereEnabled: boolean;
+  goHereEnabled: {agentID: string, showGoHere: boolean}[];
 };
 
 type State = {

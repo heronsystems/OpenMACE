@@ -843,20 +843,18 @@ export default class AppProvider extends React.Component<Props, State> {
     } else {
         this.updateLocalTargets(target);
 
-        // Update aircraft distance to target:
-        let aircrafts = cloneDeep(this.state.aircrafts);
-        const acIndex = aircrafts.findIndex(
-        (a) => target.agentID === a.agentID
-        );
-        if (acIndex !== -1) {
-            aircrafts[acIndex].distance_to_target = target.distance_to_target;
-            if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-                this.setState({ aircrafts });
-            }
-        }
+    //     // Update aircraft distance to target:
+    //     let aircrafts = cloneDeep(this.state.aircrafts);
+    //     const acIndex = aircrafts.findIndex(
+    //     (a) => target.agentID === a.agentID
+    //     );
+    //     if (acIndex !== -1) {
+    //         aircrafts[acIndex].distance_to_target = target.distance_to_target;
+    //         if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
+    //             this.setState({ aircrafts });
+    //         }
+    //     }
     }
-
-
   };
 
   updateLocalTargets = (target: Types.Aircraft.TargetPayload) => {

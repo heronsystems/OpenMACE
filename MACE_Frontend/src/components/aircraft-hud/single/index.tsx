@@ -70,10 +70,11 @@ type Props = {
     onRequestCenter: (LatLng) => void;
     onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
     onUpdateGoHerePts: (point: Types.Vertex & {agentID: string}) => void;
-    toggleGoHerePt: (show: boolean) => void;
+    toggleGoHerePt: (show: boolean, agentID: string) => void;
     target: Types.Vertex;
     defaultAltitude: number;
     onToggleSelect: (agentID: string[]) => void;
+    showTargetFlags?: {agentID: string; showGoHere: boolean}[];
 };
 
 /**
@@ -182,7 +183,7 @@ export default React.memo((props: Props) => {
         props.onCommand(command, [props.data], payload);
     };
     const goHere = () => {
-        props.toggleGoHerePt(false);
+        props.toggleGoHerePt(false, props.data.agentID);
         ReactTooltip.hide();
         let command: string = "SET_GO_HERE";
         props.onCommand(command, [props.data], [JSON.stringify(props.target)]);
@@ -260,7 +261,7 @@ export default React.memo((props: Props) => {
     }
 
     const setTargetToCurrentLocation = (e) => {
-        props.toggleGoHerePt(true);
+        props.toggleGoHerePt(true, props.data.agentID);
         let newTarget: any = props.data.location;
         newTarget["agentID"] = props.data.agentID;
         props.onUpdateGoHerePts(newTarget);
@@ -298,6 +299,17 @@ export default React.memo((props: Props) => {
             return fields["battery_current"] + "A";
         }
     }
+
+    // TODO-PAT: Somehow use the showTargetFlags to disable target button or hide any open tooltips for Go Here for other vehicles...
+    // const getShowHUDTooltip = () => {
+    //     props.showTargetFlags.forEach(e => {
+    //         // console.log(e.showGoHere);
+    //         if(e.agentID === props.data.agentID) {
+    //             return e.showGoHere;
+    //         }
+    //     });
+    //     return false;
+    // }
 
     return (
         <div style={styles.container}>
@@ -509,7 +521,7 @@ export default React.memo((props: Props) => {
                         >
                             <div style={styles.hudElement}>
                                 <span>Flight time: </span>
-                                <span style={styles.hudValue}>{getStringValue(fields["flight_time"]).toFixed()}</span>
+                                <span style={styles.hudValue}>{getStringValue(fields["flight_time"].toFixed(2))}</span>
                             </div>
                         </div>
                     </div>
@@ -522,7 +534,7 @@ export default React.memo((props: Props) => {
                 <div style={styles.commandButtons}>
                     { showButton().takeoff.show &&
                     <button style={styles.centerButton}>
-                        <MdFlightTakeoff data-for={props.data.agentID + "_takeoff_tooltip"} data-tip='custom show' data-event='click' color={ICON_COLOR} size={20} />        
+                        <MdFlightTakeoff data-for={props.data.agentID + "_takeoff_tooltip"} data-tip='custom show' data-event='click' color={ICON_COLOR} size={20} />
                     </button>
                     }
                     { showButton().takeoff.show &&
@@ -587,7 +599,7 @@ export default React.memo((props: Props) => {
                     }
 
                     {showButton().setgohere.show &&
-                        <button style={showButton().setgohere.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().setgohere.disabled}>
+                        <button style={showButton().setgohere.disabled ? styles.disabled_centerButton : styles.centerButton} disabled={showButton().setgohere.disabled} onClick={() => props.toggleGoHerePt(true, props.data.agentID)}>
                             { showButton().setgohere.disabled ?
                                 <FiTarget color={DISABLED_ICON_COLOR} size={20} />
                             :
@@ -596,7 +608,7 @@ export default React.memo((props: Props) => {
                         </button>
                     }
                     {(showButton().setgohere.show && !showButton().setgohere.disabled) &&
-                        <ReactTooltip id={"gohere_" + props.data.agentID + "_tooltip"} afterShow={setTargetToCurrentLocation} place='left' clickable={true} backgroundColor={colors.white}>
+                        <ReactTooltip id={"gohere_" + props.data.agentID + "_tooltip"} afterShow={setTargetToCurrentLocation} afterHide={() => props.toggleGoHerePt(false, props.data.agentID)} place='left' clickable={true} backgroundColor={colors.white}>
                             <div style={styles.singleSettingContainer}>
                                 <label style={styles.inputLabel}>Latitude:</label>
                                 <input
@@ -637,7 +649,7 @@ export default React.memo((props: Props) => {
                                 />
                             </div>
                             <div style={styles.tooltipButtons}>
-                                <button style={styles.centerButton} onClick={() => { ReactTooltip.hide(); props.toggleGoHerePt(false);}}>
+                                <button style={styles.centerButton} onClick={() => { ReactTooltip.hide(); props.toggleGoHerePt(false, props.data.agentID);}}>
                                     <FiX color={ICON_COLOR} size={20} />                        
                                 </button>
                                 <button style={styles.centerButton} onClick={goHere}>
