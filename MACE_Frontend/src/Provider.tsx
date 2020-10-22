@@ -208,6 +208,8 @@ export default class AppProvider extends React.Component<Props, State> {
   };
 
   onMessage = (message: Types.Message) => {
+    console.log("Received message...");
+
     const { messages } = this.state;
     // TODO: Should add this to the other side
     // this.setState({ messages: messages.concat(message) });
@@ -601,7 +603,9 @@ export default class AppProvider extends React.Component<Props, State> {
   }
 
   constructDefaultAircraft = (): Types.Aircraft.AircraftPayload => {
-    this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
+      // TODO-PAT: Commented out for spamming testing:
+    // this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
+
     let now = new Date();
     let timestamp = now.getTime();
     return {
