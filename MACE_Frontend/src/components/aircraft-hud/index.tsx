@@ -145,6 +145,10 @@ export default React.memo((props: Props) => {
       props.onToggleSelect(agentIDs, event.target.checked);
   }
 
+  const onRequestCenter = (agentID: string) => {
+    props.onRequestCenter(agentID)
+  }
+
   return props.aircrafts && props.aircrafts.length > 0 ? (
     <div style={styles.container}>
       <div style={styles.searchContainer}>
@@ -214,7 +218,7 @@ export default React.memo((props: Props) => {
           return (
             <AircraftHUD
               data={a}
-              onRequestCenter={props.onRequestCenter}
+              onRequestCenter={onRequestCenter}
               key={a.agentID}
               onCommand={props.onCommand}
               onUpdateGoHerePts={props.onUpdateGoHerePts}

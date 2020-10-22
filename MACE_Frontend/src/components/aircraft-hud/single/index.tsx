@@ -67,7 +67,7 @@ const TOGGLE_OPTIONS = [
 type Props = {
     addNotification: (notification: Types.Notification) => void;
     data: Types.Aircraft.AircraftPayload;
-    onRequestCenter: (LatLng) => void;
+    onRequestCenter: (id: string) => void;
     onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
     onUpdateGoHerePts: (point: Types.Vertex & {agentID: string}) => void;
     toggleGoHerePt: (show: boolean, agentID: string) => void;
@@ -114,8 +114,8 @@ export default React.memo((props: Props) => {
     const DISABLED_ICON_COLOR = colors.gray[400];
     
     const requestCenter = () => {
-        const { location } = props.data;
-        props.onRequestCenter(location);
+        const { agentID } = props.data;
+        props.onRequestCenter(agentID);
     };
     
     const updateMission = () => {

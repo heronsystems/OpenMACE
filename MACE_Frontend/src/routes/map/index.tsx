@@ -40,8 +40,10 @@ class MapRoute extends React.Component<Props, State> {
       this.setState({ showHUD: !this.state.showHUD });
     });
   }
-  onRequestCenter = (center: LatLng) => {
-    this._map.current.setCenter(center);
+  onRequestCenter = (agentID: string) => {
+    const agent = this.props.context.aircrafts.find(a => a.agentID === agentID)
+    const {lat, lng} = agent.location
+    this._map.current.setCenter({lat, lng});
   };
   shouldComponentUpdate(prevProps: Props) {
     let shouldUpdate = false;
