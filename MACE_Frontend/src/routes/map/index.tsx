@@ -137,18 +137,19 @@ class MapRoute extends React.Component<Props, State> {
             goHereEnabled={this.state.showTarget}
         />
         {this.state.showHUD && (
-          <AircraftHUD
-            onRequestCenter={this.onRequestCenter}
-            aircrafts={this.props.context.aircrafts}
-            onCommand={this.props.context.sendToMACE}
-            onUpdateGoHerePts={this.HUDUpdateGoHerePt}
-            toggleGoHerePt = {this.toggleGoHerePt}
-            target={this.state.goHerePt}
-            defaultAltitude={50}
-            onToggleSelect={this.props.context.updateSelectedAircraft}
-            addNotification={this.props.context.addNotification}
-            showTargetFlags={this.state.showTarget}
-          />
+          // <AircraftHUD
+          //   onRequestCenter={this.onRequestCenter}
+          //   aircrafts={this.props.context.aircrafts}
+          //   onCommand={this.props.context.sendToMACE}
+          //   onUpdateGoHerePts={this.HUDUpdateGoHerePt}
+          //   toggleGoHerePt = {this.toggleGoHerePt}
+          //   target={this.state.goHerePt}
+          //   defaultAltitude={50}
+          //   onToggleSelect={this.props.context.updateSelectedAircraft}
+          //   addNotification={this.props.context.addNotification}
+          //   showTargetFlags={this.state.showTarget}
+          // />
+          null
         )}
       </Layout>
     );

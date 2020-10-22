@@ -11,11 +11,11 @@ function ping() {
         udp.writeHeartbeatData(i.toString(), count);
         udp.writePositionData(i.toString(), count);
         udp.writeAttitudeData(i.toString(), count);
-        // udp.writeVehicleAirspeed(i.toString(), count);
-        // udp.writeVehicleGPS(i.toString(), count);
-        // udp.writeVehicleMode(i.toString(), count);
-        // udp.writeVehicleFuel(i.toString(), count);
-        // udp.writeVehicleTarget(i.toString(), count);
+        udp.writeVehicleAirspeed(i.toString(), count);
+        udp.writeVehicleGPS(i.toString(), count);
+        udp.writeVehicleMode(i.toString(), count);
+        udp.writeVehicleFuel(i.toString(), count);
+        udp.writeVehicleTarget(i.toString(), count);
         count++;
     }
 }
