@@ -11,6 +11,7 @@ namespace MaceCore
 
 MaceCore::MaceCore() :
     m_GroundStation(nullptr),
+    m_MLStation(nullptr),
     m_PathPlanning(nullptr),
     m_GlobalRTA(nullptr),
     m_MaceInstanceIDSet(false)
@@ -183,6 +184,12 @@ void MaceCore::AddLocalModule_ExternalLink(const std::shared_ptr<IModuleCommandE
         externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_GroundStation->GetCharacteristic(), ModuleClasses::GROUND_STATION);
     }
 
+    //if there is a ML station, notify this new external link about the existance of GS
+    if(m_MLStation != nullptr)
+    {
+        externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_MLStation->GetCharacteristic(), ModuleClasses::ML_STATION);
+    }
+
     //if there is an RTA module, notify this new external link about the existance of the rta module
     if(m_GlobalRTA != nullptr)
     {
@@ -224,6 +231,31 @@ void MaceCore::AddGroundStationModule(const std::shared_ptr<IModuleCommandGround
         }
     }
 
+
+}
+
+//!
+//! \brief AddMLStationModule Add ML station module
+//! \param MLStation ML station module setup
+//!
+void MaceCore::AddMLStationModule(const std::shared_ptr<IModuleCommandMLStation> &mlStation)
+{
+    AddLocalModule(mlStation);
+
+    mlStation->addListener(this);
+    mlStation->addTopicListener(this);
+    mlStation->StartTCPServer();
+    m_MLStation = mlStation;
+
+
+    //notify all existing external links about new ML station.
+    if(m_ExternalLink.size() > 0)
+    {
+        for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it=m_ExternalLink.begin(); it!=m_ExternalLink.end(); ++it)
+        {
+            (*it)->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_MLStation->GetCharacteristic(), ModuleClasses::ML_STATION);
+        }
+    }
 
 }
 
@@ -573,6 +605,9 @@ void MaceCore::Events_NewVehicle(const ModuleBase *sender, const uint8_t publicI
 
     if(m_GroundStation)
         m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
+
+    if(m_MLStation)
+        m_MLStation->MarshalCommand(MLStationCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
 
     if(m_GlobalRTA)
         m_GlobalRTA->MarshalCommand(RTACommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);

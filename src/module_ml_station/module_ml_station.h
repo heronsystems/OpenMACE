@@ -1,7 +1,7 @@
-#ifndef MODULE_GROUND_STATION_H
-#define MODULE_GROUND_STATION_H
+#ifndef MODULE_ML_STATION_H
+#define MODULE_ML_STATION_H
 
-#include "module_ground_station_global.h"
+#include "module_ml_station_global.h"
 
 #include <string>
 #include <memory>
@@ -14,30 +14,29 @@
 #include <QThread>
 
 #include "common/common.h"
+#include "mltimer.h"
+#include "mlmacetogui.h"
+#include "mlguitomace.h"
 
-#include "guitimer.h"
-#include "macetogui.h"
-#include "guitomace.h"
-
-#include "mace_core/i_module_command_ground_station.h"
+#include "mace_core/i_module_command_ml_station.h"
 
 #include "base_topic/base_topic_components.h"
 
 using namespace std;
 
-class MODULE_GROUND_STATIONSHARED_EXPORT ModuleGroundStation : public MaceCore::IModuleCommandGroundStation
+class MODULE_ML_STATIONSHARED_EXPORT ModuleMLStation : public MaceCore::IModuleCommandMLStation
 {
 
 public:
-    ModuleGroundStation();
+    ModuleMLStation();
 
-    ~ModuleGroundStation();
+    ~ModuleMLStation();
 
     virtual std::vector<MaceCore::TopicCharacteristic> GetEmittedTopics();
 
 
     //!
-    //! \brief initiateLogs Start log files and logging for the Ground Station module
+    //! \brief initiateLogs Start log files and logging for the ML Station module
     //!
     void initiateLogs();
 
@@ -101,20 +100,14 @@ public:
     //!
     virtual void NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>());
 
-
-    // ============================================================================= //
-    // ======== Virtual functions as defined by IModuleCommandGenericBoundaries ==== //
-    // ============================================================================= //
-
     //!
     //! \brief NewlyAvailableBoundary Subscriber to a new boundary
     //! \param key Key corresponding to the updated boundary in the core
     //!
     void NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
-
     // ============================================================================= //
-    // ======== Virtual functions as defined by IModuleCommandGroundStation ======== //
+    // ======== Virtual functions as defined by IModuleCommandMLStation ======== //
     // ============================================================================= //
 public:
 
@@ -130,28 +123,6 @@ public:
     //!
     void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
-    //!
-    //! \brief NewlyAvailableCurrentMission Subscriber to a new vehicle mission topic
-    //! \param missionKey Key denoting which mission is available
-    //!
-    void NewlyAvailableCurrentMission(const MissionItem::MissionKey &missionKey) override;
-
-    //!
-    //! \brief NewlyAvailableMissionExeState Subscriber to a new vehicle mission state topic
-    //! \param key Key denoting which mission has a new exe state
-    //!
-    void NewlyAvailableMissionExeState(const MissionItem::MissionKey &key) override;
-
-    //!
-    //! \brief NewlyAvailableHomePosition Subscriber to a new home position
-    //! \param home New home position
-    //!
-    void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
-
-    //!
-    //! \brief NewlyAvailableGlobalOrigin Subscriber to a new global origin
-    //!
-    void NewlyUpdatedGlobalOrigin(const mace::pose::GeodeticPosition_3D &position) override;
 
 
     // ============================================================================= //
@@ -184,11 +155,6 @@ private:
     //!
     Data::TopicDataObjectCollection<DATA_GENERIC_VEHICLE_ITEM_TOPICS, BASE_POSE_TOPICS, VEHICLE_MEASUREMENT_TOPICS> m_VehicleDataTopic;
 
-    //!
-    //! \brief m_MissionDataTopic Mission data topic collection
-    //!
-    Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
-
 
     // ============================================================================= //
     // ============================== Member Variables ============================= //
@@ -208,7 +174,7 @@ private:
     //!
     //! \brief m_timer Timer that fires to adjust timeout flags
     //!
-    std::shared_ptr<GUITimer> m_timer;
+    std::shared_ptr<MLTimer> m_timer;
 
     //!
     //! \brief m_guiHostAddress TCP listen address for GUI-to-MACE connection
@@ -233,18 +199,14 @@ private:
     //!
     //! \brief m_toMACEHandler Handler for all comms going to MACE from the GUI
     //!
-    std::shared_ptr<GUItoMACE> m_toMACEHandler;
+    std::shared_ptr<MLGUItoMACE> m_toMACEHandler;
 
     //!
     //! \brief m_toGUIHandler Handler for all comms going to the GUI from MACE
     //!
-    std::shared_ptr<MACEtoGUI> m_toGUIHandler;
+    std::shared_ptr<MLMACEtoGUI> m_toGUIHandler;
 
-    // TESTING:
-    double latitude;
-    // END TESTING
+
 };
 
-#endif // MODULE_GROUND_STATION_H
-
-
+#endif // MODULE_ML_STATION_H

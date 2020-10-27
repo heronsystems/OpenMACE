@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <cmath>
-#include <pybind11/pybind11.h>
+//#include <pybind11/pybind11.h>
 #include "module_vehicle_adept_global.h"
 
 
@@ -21,7 +21,7 @@
 
 
 
-namespace py = pybind11;
+//namespace py = pybind11;
 
 class MODULE_VEHICLE_ADEPTSHARED_EXPORT ModuleVehicleAdept: public MaceCore::IModuleCommandAdept
 {

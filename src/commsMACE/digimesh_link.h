@@ -28,6 +28,7 @@ namespace CommsMACE
 extern char MACE_INSTANCE_STR[];
 extern char VEHICLE_STR[];
 extern char GROUNDSTATION_STR[];
+extern char MLSTATION_STR[];
 extern char RTA_STR[];
 extern char EXTERNAL_LINK_STR[];
 
@@ -85,7 +86,7 @@ private:
 private:
     DigiMeshConfiguration _config;
 
-    MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR, RTA_STR, EXTERNAL_LINK_STR> *m_Link;
+    MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR, MLSTATION_STR, RTA_STR, EXTERNAL_LINK_STR> *m_Link;
 };
 
 } //END MAVLINKComms

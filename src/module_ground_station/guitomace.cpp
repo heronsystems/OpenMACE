@@ -614,6 +614,7 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 bool GUItoMACE::writeTCPData(QByteArray data)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
+
     tcpSocket->connectToHost(m_sendAddress, m_sendPort);
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
