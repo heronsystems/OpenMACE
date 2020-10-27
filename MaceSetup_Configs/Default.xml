@@ -269,4 +269,9 @@
 		<Parameter Name="SendPort">8080</Parameter>
 	</Parameter>
    </Module>
+    
+    
+   <Module Class="Adept" Type="ACE"> </Module>
+    
+
 </ModuleConfigurations>

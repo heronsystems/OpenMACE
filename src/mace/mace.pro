@@ -167,6 +167,10 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sens
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/debug/ -lmodule_vehicle_sensors
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_sensors/ -lmodule_vehicle_sensors
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/release/ -lmodule_vehicle_adept
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/debug/ -lmodule_vehicle_adept
+else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_adept/ -lmodule_vehicle_adept
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../planners/release/ -lplanners
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../planners/debug/ -lplanners
 else:unix:!macx: LIBS += -L$$OUT_PWD/../planners/ -lplanners

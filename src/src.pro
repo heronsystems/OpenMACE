@@ -39,6 +39,7 @@ SUBDIRS += \
     module_ROS_UMD \
     #commsExample \
     #example_vehicle_module \
+    module_vehicle_adept \
     mace \
     TestMaps
     #example \
@@ -81,8 +82,9 @@ module_vehicle_sensors.depends = common base data comms mace_core data_generic_i
 module_resource_task_allocation.depends = data base base_topic maps mace_core comms data_generic_item data_generic_item_topic data_generic_command_item_topic data_generic_mission_item_topic data_vehicle_sensors
 module_ROS.depends = common base data mace_core base_topic data_generic_item data_generic_item_topic data_generic_command_item maps
 module_ROS_UMD.depends = common base data mace_core base_topic data_generic_item data_generic_item_topic data_generic_command_item data_generic_mission_item_topic maps
+module_vehicle_adept.depends = common base data comms mace_core data_generic_item data_generic_item_topic data_generic_command_item data_generic_command_item_topic data_generic_mission_item_topic data_vehicle_sensors maps
 
-mace.depends = common data base base_topic maps comms commsMACE commsMACEHelper commsMAVLINK controllers data_generic_command_item data_generic_command_item_topic data_generic_item data_generic_item_topic data_generic_mission_item_topic data_interface_MAVLINK data_vehicle_sensors mace_core module_external_link module_ground_station module_resource_task_allocation module_path_planning_NASAPhase2 module_ROS module_ROS_UMD module_vehicle_ardupilot module_vehicle_arducopter module_vehicle_arduplane module_vehicle_generic module_vehicle_MAVLINK module_vehicle_sensors planners DigiMesh MACEDigiMeshWrapper
+mace.depends = common data base base_topic maps comms commsMACE commsMACEHelper commsMAVLINK controllers data_generic_command_item data_generic_command_item_topic data_generic_item data_generic_item_topic data_generic_mission_item_topic data_interface_MAVLINK data_vehicle_sensors mace_core module_external_link module_ground_station module_resource_task_allocation module_path_planning_NASAPhase2 module_ROS module_ROS_UMD module_vehicle_ardupilot module_vehicle_arducopter module_vehicle_arduplane module_vehicle_generic module_vehicle_MAVLINK module_vehicle_sensors module_vehicle_adept planners DigiMesh MACEDigiMeshWrapper
 
 TestMaps.depends = common base data maps graphs planners
 

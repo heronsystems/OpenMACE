@@ -15,6 +15,7 @@ enum class ModuleClasses
     ROS,
     RTA,
     SENSORS,
+    ADEPT,
     NR_TYPES
 };
 

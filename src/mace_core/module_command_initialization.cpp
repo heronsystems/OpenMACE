@@ -5,6 +5,7 @@
 #include "i_module_command_ground_station.h"
 #include "i_module_command_external_link.h"
 #include "i_module_command_sensors.h"
+#include "i_module_command_adept.h"
 
 namespace MaceCore
 {
@@ -16,5 +17,6 @@ ModuleClasses IModuleCommandVehicle::moduleClass = ModuleClasses::VEHICLE_COMMS;
 ModuleClasses IModuleCommandGroundStation::moduleClass = ModuleClasses::GROUND_STATION;
 ModuleClasses IModuleCommandExternalLink::moduleClass = ModuleClasses::EXTERNAL_LINK;
 ModuleClasses IModuleCommandSensors::moduleClass = ModuleClasses::SENSORS;
+ModuleClasses IModuleCommandAdept::moduleClass = ModuleClasses::ADEPT;
 
 }

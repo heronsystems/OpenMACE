@@ -12,6 +12,7 @@
 #include "module_vehicle_sensors/module_vehicle_sensors.h"
 #include "module_vehicle_arducopter/module_vehicle_arducopter.h"
 #include "module_vehicle_arduplane/module_vehicle_arduplane.h"
+#include "module_vehicle_adept/module_vehicle_adept.h"
 
 #include "mace_core/module_factory.h"
 
@@ -32,6 +33,7 @@ public:
         Register<ModuleVehicleSensors>(factory, "NASAPhase2");
         Register<ModuleVehicleArducopter>(factory, "Arducopter");
         Register<ModuleVehicleArduplane>(factory, "Arduplane");
+        Register<ModuleVehicleAdept>(factory,"ACE");
 
         return factory;
     }
