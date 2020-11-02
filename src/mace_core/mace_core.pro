@@ -21,7 +21,13 @@ SOURCES += mace_core.cpp \
     module_command_initialization.cpp
 
 HEADERS += mace_core.h\
+    i_module_command_adept.h \
+    i_module_events_adept.h \
+    metadata_adept.h \
+    i_module_command_ml_station.h \
+    i_module_events_ml_station.h \
         mace_core_global.h \
+    metadata_ml_station.h \
     metadata_vehicle.h \
     metadata_ground_station.h \
     metadata_rta.h \

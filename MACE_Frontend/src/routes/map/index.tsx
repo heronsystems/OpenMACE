@@ -151,7 +151,7 @@ class MapRoute extends React.Component<Props, State> {
             aircrafts={this.props.context.aircrafts}
             onCommand={this.props.context.sendToMACE}
             onUpdateGoHerePts={this.HUDUpdateGoHerePt}
-            toggleGoHerePt={this.toggleGoHerePt}
+            toggleGoHerePt = {this.toggleGoHerePt}
             target={this.state.goHerePt}
             defaultAltitude={50}
             onToggleSelect={this.props.context.updateSelectedAircraft}

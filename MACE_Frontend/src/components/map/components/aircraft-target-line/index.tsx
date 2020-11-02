@@ -16,16 +16,16 @@ type Props = {
 
 let lastUpdate = Date.now()
 
-const checkIfTimeToUpdate = () => {
-  let preventUpdate = true
-  const now = Date.now()
-  const diff = now - lastUpdate
-  if (diff > 100) {
-    preventUpdate = false
-    lastUpdate = now
-  }
-  return preventUpdate
-};
+// const checkIfTimeToUpdate = () => {
+//   let preventUpdate = true
+//   const now = Date.now()
+//   const diff = now - lastUpdate
+//   if (diff > 100) {
+//     preventUpdate = false
+//     lastUpdate = now
+//   }
+//   return preventUpdate
+// };
 
 const TargetLine = React.memo((props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);
@@ -42,7 +42,8 @@ const TargetLine = React.memo((props: Props) => {
 
     );
   }
-}, checkIfTimeToUpdate);
+// }, checkIfTimeToUpdate);
+});
 
 
 export default TargetLine;

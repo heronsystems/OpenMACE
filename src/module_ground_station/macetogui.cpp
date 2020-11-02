@@ -39,6 +39,7 @@ void MACEtoGUI::setSendPort(const int &sendPort) {
     m_sendPort = sendPort;
 }
 
+
 //!
 //! \brief sendCurrentMissionItem Send vehicle mission to the MACE GUI
 //! \param vehicleID Vehicle ID with the new vehicle mission
@@ -213,6 +214,7 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
         if(!bytesWritten){
             std::cout << "Write Position Data failed..." << std::endl;
         }
+
     }
 }
 
@@ -264,6 +266,7 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
     if(!bytesWritten){
         std::cout << "Write Fuel Data failed..." << std::endl;
     }
+
 }
 
 //!
@@ -572,17 +575,16 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
 bool MACEtoGUI::writeTCPData(QByteArray data)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
-    tcpSocket->connectToHost(m_sendAddress, static_cast<quint16>(m_sendPort));
+    tcpSocket->connectToHost(m_sendAddress, m_sendPort);
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
     {
         tcpSocket->write(data); //write the data itself
         tcpSocket->flush();
         tcpSocket->waitForBytesWritten();
+
         return true;
-    }
-    else
-    {
+    } else {
         std::cout << "TCP socket not connected MACE TO GUI" << std::endl;
         tcpSocket->close();
         return false;
