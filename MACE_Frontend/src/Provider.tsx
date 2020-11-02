@@ -53,6 +53,12 @@ export default class AppProvider extends React.Component<Props, State> {
   _message: string = "";
   _message_separator: string = "\r";
   _port: number = 8080;
+  _aircrafts: Types.Aircraft.AircraftPayload[] = [];
+  _localTargets: Types.Aircraft.TargetPayload[] = [];
+  _globalTargets: Types.Aircraft.TargetPayload[] = [];
+  _paths: Types.Aircraft.PathPayload[] = [];
+  _icons: Types.Environment.IconPayload[] = [];
+  _lastUpdate: number = Date.now();
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -73,7 +79,30 @@ export default class AppProvider extends React.Component<Props, State> {
       }
     };
     // this.spamGUI();
+
+    this.setupUpdateInterval();
   }
+
+    setupUpdateInterval = () => {
+        setInterval(() => {
+            if (!areObjectsSame(this._aircrafts, this.state.aircrafts)) {
+                this.setState({ aircrafts: this._aircrafts });
+            }
+            if (!areObjectsSame(this._localTargets, this.state.localTargets)) {
+                this.setState({ localTargets: this._localTargets });
+            } 
+            if (!areObjectsSame(this._globalTargets, this.state.globalTargets)) {
+                this.setState({ globalTargets: this._globalTargets });
+            } 
+            if (!areObjectsSame(this._paths, this.state.paths)) {
+                this.setState({ paths: this._paths });
+            }  
+            if (!areObjectsSame(this._icons, this.state.icons)) {
+                this.setState({ icons: this._icons });
+            }  
+        }, 100);
+    };
+
   determinePort = () => {
     switch (window.location.hash) {
       case "#/":
@@ -208,8 +237,6 @@ export default class AppProvider extends React.Component<Props, State> {
   };
 
   onMessage = (message: Types.Message) => {
-    console.log("Received message...");
-
     const { messages } = this.state;
     // TODO: Should add this to the other side
     // this.setState({ messages: messages.concat(message) });
@@ -530,7 +557,7 @@ export default class AppProvider extends React.Component<Props, State> {
   };
   updateAircrafts = (heartbeat: Types.Aircraft.HeartbeatPayload) => {
     const { ...all } = location;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => heartbeat.agentID === a.agentID
         );
@@ -569,12 +596,12 @@ export default class AppProvider extends React.Component<Props, State> {
             return (parseInt(a.agentID) - parseInt(b.agentID));
         });
 
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
   };
   pickAircraftColor = (): Types.ColorObject => {
-    let numAircraft = this.state.aircrafts.length;
+    let numAircraft = this._aircrafts.length;
     while (numAircraft > 9) {
       numAircraft-=10;
     }
@@ -653,7 +680,7 @@ export default class AppProvider extends React.Component<Props, State> {
 
     updateAircraftPosition = (position: Types.Aircraft.PositionPayload) => {
         const { ...all } = location;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => position.agentID === a.agentID
         );
@@ -673,14 +700,14 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts.push(tmpAC);
         }
 
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
     updateAircraftAttitude = (attitude: Types.Aircraft.AttitudePayload) => {
         const { ...all } = attitude;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => attitude.agentID === a.agentID
         );
@@ -696,14 +723,14 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.orientation.yaw = attitude.yaw;
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
     updateAircraftAirspeed = (airspeed: Types.Aircraft.AirspeedPayload) => {
         const { ...all } = airspeed;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => airspeed.agentID === a.agentID
         );
@@ -715,14 +742,14 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.airspeed = airspeed.airspeed;
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
     updateAircraftArmed = (armed: Types.Aircraft.ArmPayload) => {
         const { ...all } = armed;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => armed.agentID === a.agentID
         );
@@ -734,14 +761,14 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.armed = armed.armed;
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
     updateAircraftGPS = (gps: Types.Aircraft.GPSPayload) => {
         const { ...all } = gps;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => gps.agentID === a.agentID
         );
@@ -759,14 +786,14 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.visible_sats = gps.visible_sats;
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
     updateAircraftText = (text: Types.Aircraft.TextPayload) => {
         const { ...all } = text;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => text.agentID === a.agentID
         );
@@ -794,14 +821,14 @@ export default class AppProvider extends React.Component<Props, State> {
             };
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
     updateAircraftMode = (mode: Types.Aircraft.ModePayload) => {
         const { ...all } = mode;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => mode.agentID === a.agentID
         );
@@ -813,14 +840,14 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.mode = mode.mode;
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
     updateAircraftFuel = (fuel: Types.Aircraft.FuelPayload) => {
         const { ...all } = fuel;
-        let aircrafts = cloneDeep(this.state.aircrafts);
+        let aircrafts = cloneDeep(this._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => fuel.agentID === a.agentID
         );
@@ -836,8 +863,8 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.battery_voltage = fuel.battery_voltage;
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-          this.setState({ aircrafts });
+        if (!areObjectsSame(aircrafts, this._aircrafts)) {
+            this._aircrafts = aircrafts;
         }
     }
 
@@ -863,7 +890,7 @@ export default class AppProvider extends React.Component<Props, State> {
 
   updateLocalTargets = (target: Types.Aircraft.TargetPayload) => {
     const { ...all } = target;
-    let targets = [...this.state.localTargets];
+    let targets = [...this._localTargets];
     const existingIndex = targets.findIndex(
       (t) => target.agentID === t.agentID
     );
@@ -874,14 +901,14 @@ export default class AppProvider extends React.Component<Props, State> {
     } else {
       targets.push({ ...all });
     }
-    if (!areObjectsSame(targets, this.state.localTargets)) {
-      this.setState({ localTargets: targets });
+    if (!areObjectsSame(targets, this._localTargets)) {
+      this._localTargets = targets;
     }    
   };
 
   updateGlobalTargets = (target: Types.Aircraft.TargetPayload) => {
     const { ...all } = target;
-    let targets = [...this.state.globalTargets];
+    let targets = [...this._globalTargets];
     const existingIndex = targets.findIndex(
       (t) => target.agentID === t.agentID
     );
@@ -892,14 +919,14 @@ export default class AppProvider extends React.Component<Props, State> {
     } else {
       targets.push({ ...all });
     }
-    if (!areObjectsSame(targets, this.state.globalTargets)) {
-      this.setState({ globalTargets: targets });
+    if (!areObjectsSame(targets, this._globalTargets)) {
+      this._globalTargets = targets;
     } 
   };
 
   updateParameters = (params: Types.Aircraft.ParametersPayload) => {
     const { ...all } = params;
-    let aircrafts = cloneDeep(this.state.aircrafts);
+    let aircrafts = cloneDeep(this._aircrafts);
     const existingIndex = aircrafts.findIndex(
       (a) => params.agentID === a.agentID
     );
@@ -911,14 +938,14 @@ export default class AppProvider extends React.Component<Props, State> {
         tmpAC.param_list = params.param_list;
         aircrafts.push(tmpAC);
     }
-    if (!areObjectsSame(aircrafts, this.state.aircrafts)) {
-      this.setState({ aircrafts });
+    if (!areObjectsSame(aircrafts, this._aircrafts)) {
+        this._aircrafts = aircrafts;
     }
   }
 
   updatePaths = (path: Types.Aircraft.PathPayload) => {
     const { ...all } = path;
-    let paths = [...this.state.paths];
+    let paths = [...this._paths];
     const existingIndex = paths.findIndex((p) => path.agentID === p.agentID);
     if (existingIndex !== -1) {
       if (!areObjectsSame(paths[existingIndex], { ...all })) {
@@ -927,13 +954,13 @@ export default class AppProvider extends React.Component<Props, State> {
     } else {
       paths.push({ ...all });
     }
-    if (!areObjectsSame(paths, this.state.paths)) {
-      this.setState({ paths });
+    if (!areObjectsSame(paths, this._paths)) {
+      this._paths = paths;
     }
   };
   updateIcons = (icon: Types.Environment.IconPayload) => {
     const { ...all } = icon;
-    const icons = [...this.state.icons];
+    const icons = [...this._icons];
     const existingIndex = icons.findIndex((i) => icon.name === i.name);
     if (existingIndex !== -1) {
       if (!areObjectsSame(icons[existingIndex], { ...all })) {
@@ -942,8 +969,8 @@ export default class AppProvider extends React.Component<Props, State> {
     } else {
       icons.push({ ...all });
     }
-    if (!areObjectsSame(icons, this.state.icons)) {
-      this.setState({ icons });
+    if (!areObjectsSame(icons, this._icons)) {
+        this._icons = icons;
     }
   };
   removeIcon = (name: string) => {

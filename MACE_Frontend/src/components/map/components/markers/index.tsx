@@ -21,17 +21,17 @@ type Props = {
 
 let lastUpdate = Date.now()
 
-const checkIfTimeToUpdate = () => {
-  let preventUpdate = true
-  const now = Date.now()
-  const diff = now - lastUpdate
-  if (diff > 100) {
-    console.log(diff)
-    preventUpdate = false
-    lastUpdate = now
-  }
-  return preventUpdate
-};
+// const checkIfTimeToUpdate = () => {
+//   let preventUpdate = true
+//   const now = Date.now()
+//   const diff = now - lastUpdate
+//   if (diff > 100) {
+//     console.log(diff)
+//     preventUpdate = false
+//     lastUpdate = now
+//   }
+//   return preventUpdate
+// };
 
 export default React.memo((props: Props) => {
   const { map } = useLeaflet();
@@ -173,4 +173,5 @@ export default React.memo((props: Props) => {
       {/* )} */}
     </>
   );
-}, checkIfTimeToUpdate);
+// }, checkIfTimeToUpdate);
+});
