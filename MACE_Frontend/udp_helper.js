@@ -34,9 +34,9 @@ function writeAttitudeData(agentID, count) {
     let message = {
         message_type: "vehicle_attitude",
         agentID: agentID,
-        pitch: 0.0,
-        roll: 0.0,
-        yaw: 0.0
+        pitch: 0.0 + (count/ 10),
+        roll: 0.0 + (count/ 10),
+        yaw: 0.0 + (count/ 10)
     }
 
     writeUDPData(JSON.stringify(message));
@@ -59,7 +59,7 @@ function writeVehicleGPS(agentID, count) {
         gps_fix: "RTK Fixed",
         vdop: 10,
         hdop: 10,
-        visible_sats: 10
+        visible_sats: 10 + (count/ 1000),
     }
 
     writeUDPData(JSON.stringify(message));
@@ -108,7 +108,7 @@ function writeVehicleTarget(agentID, count) {
         agentID: agentID,
         location: {lat: -35.3632621, lng: 149.1652374},
         is_global: false,
-        distance_to_target: count/100
+        distance_to_target: count/10
     }
 
     writeUDPData(JSON.stringify(message));
