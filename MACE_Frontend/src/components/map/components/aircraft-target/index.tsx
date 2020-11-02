@@ -20,7 +20,8 @@ const GLOBAL_HEIGHT = 48;
 type Props = {
   data: Types.Aircraft.TargetPayload;
 };
-const Target = (props: Props) => {
+
+export default React.memo((props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);
   const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
   const scope = props.data.is_global ? "global" : "local";
@@ -100,6 +101,4 @@ const Target = (props: Props) => {
       </Marker>
     );
   }
-};
-
-export default Target;
+});

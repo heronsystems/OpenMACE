@@ -208,7 +208,7 @@ export default class AppProvider extends React.Component<Props, State> {
   };
 
   onMessage = (message: Types.Message) => {
-    console.log("Received message...");
+    // console.log("Received message...");
 
     const { messages } = this.state;
     // TODO: Should add this to the other side

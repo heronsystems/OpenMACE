@@ -38,7 +38,6 @@ const checkIfTimeToUpdate = (props: Props) => {
 };
 
 export default React.memo((props: Props) => {
-  
   const selectAircraft = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     props.onToggleSelect([props.data.agentID]);
   }
