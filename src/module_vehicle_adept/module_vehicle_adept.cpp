@@ -62,6 +62,16 @@ void ModuleVehicleAdept::NewTopicData(const std::string &topicName, const MaceCo
 void ModuleVehicleAdept::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
     UNUSED(topicName); UNUSED(sender); UNUSED(componentsUpdated); UNUSED(target);
+
+//    // listen for all my data, add as I receive:
+//    if(componentsUpdated.at(i) == mace::pose_topics::Topic_GeodeticPosition::Name()) {
+//        std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> component = std::make_shared<mace::pose_topics::Topic_GeodeticPosition>();
+//        m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
+
+//        // Write Position data to the GUI:
+//        writeToFrame_Pos(component->getPositionObj());
+//        m_toGUIHandler->sendPositionData(vehicleID, component);
+//    }
 }
 
 //!

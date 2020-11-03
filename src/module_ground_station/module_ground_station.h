@@ -23,6 +23,10 @@
 
 #include "base_topic/base_topic_components.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
+
 using namespace std;
 
 class MODULE_GROUND_STATIONSHARED_EXPORT ModuleGroundStation : public MaceCore::IModuleCommandGroundStation
@@ -243,6 +247,11 @@ private:
     // TESTING:
     double latitude;
     // END TESTING
+
+    //!
+    //! \brief m_logLevel Log level (e.g. trace, debug, info, warn, err, critical, off)
+    //!
+    std::string m_logLevel;
 };
 
 #endif // MODULE_GROUND_STATION_H

@@ -33,6 +33,10 @@
 
 #include "messagetypes.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
+
 class MACEtoGUI
 {
 public:
@@ -55,6 +59,11 @@ public:
     //! \param sendPort TCP send port
     //!
     void setSendPort(const int &sendPort);
+
+    //!
+    //! \brief initiateLogs Start log files and logging for the Ground Station module
+    //!
+    void initiateLogs(const std::string &loggerName, const std::string &loggingPath);
 
     // ============================================================================= //
     // ======================== Send data to the MACE GUI ========================== //
@@ -216,6 +225,17 @@ private:
     //!
     void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems, QJsonArray &path);
 
+    //!
+    //! \brief logToFile Helper method to log JSON data to file:
+    //! \param doc
+    //!
+    void logToFile(const QJsonDocument &doc) {
+        if(m_logger) {
+            std::string str = doc.toJson(QJsonDocument::Compact).toStdString();
+            m_logger->info(str);
+        }
+    }
+
 private:
     //!
     //! \brief m_sendAddress TCP send address for MACE-to-GUI connection
@@ -237,6 +257,11 @@ private:
     //! \brief m_udpLink UDP comms link object
     //!
     std::shared_ptr<CommsMACE::UdpLink> m_udpLink;
+
+    //!
+    //! \brief m_logger spdlog logging object
+    //!
+    std::shared_ptr<spdlog::logger> m_logger;
 
 };
 

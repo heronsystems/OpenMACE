@@ -30,6 +30,26 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const 
 }
 
 GUItoMACE::~GUItoMACE() {
+    m_logger->flush();
+}
+
+//!
+//! \brief initiateLogs Start log files and logging for the Ground Station module
+//!
+void GUItoMACE::initiateLogs(const std::string &loggerName, const std::string &loggingPath)
+{
+    try
+    {
+        m_logger = spdlog::basic_logger_mt<spdlog::async_factory>(loggerName, loggingPath);
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Log initialization failed: " << ex.what() << std::endl;
+    }
+
+    // Flush logger every 2 seconds:
+//    spdlog::flush_every(std::chrono::seconds(2));
+    m_logger->flush_on(spdlog::level::info);      // flush when "info" or higher message is logged
 }
 
 //!
@@ -520,6 +540,9 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
     std::string command = jsonObj["command"].toString().toStdString();
     QJsonArray aircraft = jsonObj["aircraft"].toArray();
     QJsonArray data = jsonObj["data"].toArray();
+
+    // Log to file:
+    logToFile(QJsonDocument(jsonObj));
 
 
     int vehicleID = 0;

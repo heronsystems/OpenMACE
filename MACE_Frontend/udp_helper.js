@@ -23,7 +23,7 @@ function writePositionData(agentID, count) {
         message_type: "vehicle_position",
         agentID: agentID,
         alt: 10,
-        lat: -35.3632621 + count/100,
+        lat: -35.3632621 + count/10000,
         lng: 149.1652374 + (parseFloat(agentID) / 300)
     }
 

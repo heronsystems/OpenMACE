@@ -4,7 +4,7 @@ var HOST = '127.0.0.1';
 // var udp = require("./udp_helper");
 const udp = require("./udp_helper");
 
-let numAgents = 50;
+let numAgents = 10;
 let agentIDs = [];
 for(let i = 1; i < numAgents+1; i++) {
     agentIDs.push(i);

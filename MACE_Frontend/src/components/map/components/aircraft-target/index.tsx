@@ -82,7 +82,7 @@ export default React.memo((props: Props) => {
           iconAnchor: L.point(width / 2, height, true)
         })}
       >
-        {!props.data.is_global && (
+        {/* {!props.data.is_global && (
           <Tooltip
             direction="right"
             offset={[16, -height / 2]}
@@ -97,7 +97,7 @@ export default React.memo((props: Props) => {
               </div>
             </div>
           </Tooltip>
-        )}
+        )} */}
       </Marker>
     );
   }

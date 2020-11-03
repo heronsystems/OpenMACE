@@ -114,7 +114,12 @@ std::vector<MaceCore::TopicCharacteristic> ModuleGroundStation::GetEmittedTopics
 //!
 void ModuleGroundStation::initiateLogs()
 {
+    std::string loggerName = "mace_to_gui";
+    std::string loggerPath = this->loggingPath + "/gcs_logs/GCS.txt";
+    m_toGUIHandler->initiateLogs(loggerName, loggerPath);
 
+    loggerName = "gui_to_mace";
+    m_toMACEHandler->initiateLogs(loggerName, loggerPath);
 }
 
 //!
