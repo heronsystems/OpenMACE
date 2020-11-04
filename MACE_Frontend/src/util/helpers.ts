@@ -395,7 +395,8 @@ export const areObjectsSame = (a: Object, b: Object) => {
 //   console.log(a, b);
 //   console.log(JSON.stringify(a) === JSON.stringify(b))
 //   console.log(JSON.stringify(a), JSON.stringify(b))
-  return JSON.stringify(a) === JSON.stringify(b);
+//   return JSON.stringify(a) === JSON.stringify(b);
+    return _.isEqual(a, b);
 };
 
 export const getTailNumberFromAgentID = (agentID: string) => {

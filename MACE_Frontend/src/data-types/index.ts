@@ -94,6 +94,7 @@ export namespace Environment {
         alt?: number;
         should_display?: boolean;
         auto_focus?: boolean;
+        lastUpdate?: number;
     };
 
     export interface Boundary extends IMessage {
@@ -113,6 +114,7 @@ export namespace Environment {
         alt?: number;
         should_display?: boolean;
         auto_focus?: boolean;
+        lastUpdate?: number;
     }
 }
 
@@ -123,7 +125,7 @@ export namespace Aircraft {
         should_display?: boolean;
         color?: ColorObject;
         date?: number;
-        lastUpdate?: string;
+        lastUpdate?: number;
         vehicle_type: string;
         behavior_state: string;
         vehicle_state: string;
@@ -168,7 +170,7 @@ export namespace Aircraft {
         vehicle_state: string;
         date?: number;
         should_display?: boolean;
-        lastUpdate?: string;
+        lastUpdate?: number;
     };
     export interface Heartbeat extends IMessage {
         message_type: VehicleHeartbeat_MessageType;
@@ -183,7 +185,7 @@ export namespace Aircraft {
         vehicle_state: string;
         date?: number;
         should_display?: boolean;
-        lastUpdate?: string;
+        lastUpdate?: number;
     }
 
     export type PositionPayload = {
@@ -317,6 +319,7 @@ export namespace Aircraft {
         vertices: Vertices;
         date?: number;
         should_display?: boolean;
+        lastUpdate?: number;
     };
 
     export interface Path {
@@ -325,6 +328,7 @@ export namespace Aircraft {
         vertices: Vertices;
         date?: number;
         should_display?: boolean;
+        lastUpdate?: number;
     }
 
     export type TargetPayload = {
@@ -334,6 +338,7 @@ export namespace Aircraft {
         should_display?: boolean;
         is_global?: boolean;
         distance_to_target: number;
+        lastUpdate?: number;
     };
 
     export interface Target {
@@ -343,6 +348,7 @@ export namespace Aircraft {
         date?: number;
         should_display?: boolean;
         is_global?: boolean;
+        lastUpdate?: number;
     }
 
     export type ParametersPayload = {

@@ -36,7 +36,7 @@ function writeAttitudeData(agentID, count) {
         agentID: agentID,
         pitch: 0.0 + (count/ 10),
         roll: 0.0 + (count/ 10),
-        yaw: 0.0 + (count/ 10)
+        yaw: 0.0 + (count)
     }
 
     writeUDPData(JSON.stringify(message));

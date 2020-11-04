@@ -24,6 +24,7 @@ const dgram = window.require("dgram");
 
 
 import * as Types from "./data-types/index";
+import aircraft from "./components/map/components/aircraft";
 
 const DEFAULT_MAP_PORT = 8080;
 
@@ -53,12 +54,11 @@ export default class AppProvider extends React.Component<Props, State> {
   _message: string = "";
   _message_separator: string = "\r";
   _port: number = 8080;
-  _aircrafts: Types.Aircraft.AircraftPayload[] = [];
-  _localTargets: Types.Aircraft.TargetPayload[] = [];
-  _globalTargets: Types.Aircraft.TargetPayload[] = [];
-  _paths: Types.Aircraft.PathPayload[] = [];
-  _icons: Types.Environment.IconPayload[] = [];
-  _lastUpdate: number = Date.now();
+  _aircraft_list: {_aircrafts: Types.Aircraft.AircraftPayload[], last_updated: number} = {_aircrafts: [], last_updated: Date.now()};
+  _localTargets_list: {_localTargets: Types.Aircraft.TargetPayload[], last_updated: number} = {_localTargets: [], last_updated: Date.now()};
+  _globalTargets_list: {_globalTargets: Types.Aircraft.TargetPayload[], last_updated: number} = {_globalTargets: [], last_updated: Date.now()};
+  _paths_list: {_paths: Types.Aircraft.PathPayload[], last_updated: number} = {_paths: [], last_updated: Date.now()};
+  _icons_list: {_icons: Types.Environment.IconPayload[], last_updated: number} = {_icons: [], last_updated: Date.now()};
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -85,21 +85,43 @@ export default class AppProvider extends React.Component<Props, State> {
 
     setupUpdateInterval = () => {
         setInterval(() => {
-            if (!areObjectsSame(this._aircrafts, this.state.aircrafts)) {
-                this.setState({ aircrafts: this._aircrafts });
+            let update = false;
+            let updateObject = {};
+            if (!areObjectsSame(this._aircraft_list._aircrafts, this.state.aircrafts)) {
+                // this.setState({ aircrafts: this._aircrafts });
+                update = true;
+                // updateObject = updateObject && {aircrafts: this._aircraft_list._aircrafts};
             }
-            if (!areObjectsSame(this._localTargets, this.state.localTargets)) {
-                this.setState({ localTargets: this._localTargets });
+            if (!areObjectsSame(this._localTargets_list._localTargets, this.state.localTargets)) {
+                // this.setState({ localTargets: this._localTargets });
+                update = true;
+                // updateObject = updateObject && {localTargets: this._localTargets_list._localTargets};
             } 
-            if (!areObjectsSame(this._globalTargets, this.state.globalTargets)) {
-                this.setState({ globalTargets: this._globalTargets });
+            if (!areObjectsSame(this._globalTargets_list._globalTargets, this.state.globalTargets)) {
+                // this.setState({ globalTargets: this._globalTargets });
+                update = true;
+                // updateObject = updateObject && {globalTargets: this._globalTargets_list._globalTargets};
             } 
-            if (!areObjectsSame(this._paths, this.state.paths)) {
-                this.setState({ paths: this._paths });
+            if (!areObjectsSame(this._paths_list._paths, this.state.paths)) {
+                // this.setState({ paths: this._paths });
+                update = true;
+                // updateObject = updateObject && {paths: this._paths_list._paths};
             }  
-            if (!areObjectsSame(this._icons, this.state.icons)) {
-                this.setState({ icons: this._icons });
-            }  
+            if (!areObjectsSame(this._icons_list._icons, this.state.icons)) {
+                // this.setState({ icons: this._icons });
+                update = true;
+                // updateObject = updateObject && {icons: this._icons_list._icons};
+            }
+
+            if(update) {
+                this.setState({
+                    aircrafts: this._aircraft_list._aircrafts,
+                    localTargets: this._localTargets_list._localTargets,
+                    globalTargets: this._globalTargets_list._globalTargets,
+                    paths: this._paths_list._paths,
+                    icons: this._icons_list._icons
+                })
+            }
         }, 100);
     };
 
@@ -473,8 +495,8 @@ export default class AppProvider extends React.Component<Props, State> {
     }
   };
   updateAircrafts = (heartbeat: Types.Aircraft.HeartbeatPayload) => {
-    const { ...all } = location;
-        let aircrafts = cloneDeep(this._aircrafts);
+        const { ...all } = location;
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => heartbeat.agentID === a.agentID
         );
@@ -490,7 +512,8 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].vehicle_state = heartbeat.vehicle_state;
             aircrafts[existingIndex].date = heartbeat.date;
             aircrafts[existingIndex].should_display = heartbeat.should_display;
-            aircrafts[existingIndex].lastUpdate = heartbeat.lastUpdate;
+            // aircrafts[existingIndex].lastUpdate = heartbeat.lastUpdate;
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = heartbeat.agentID;
@@ -504,7 +527,8 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.vehicle_state = heartbeat.vehicle_state;
             tmpAC.date = heartbeat.date;
             tmpAC.should_display = heartbeat.should_display;
-            tmpAC.lastUpdate = heartbeat.lastUpdate;            
+            // tmpAC.lastUpdate = heartbeat.lastUpdate;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
 
@@ -513,12 +537,13 @@ export default class AppProvider extends React.Component<Props, State> {
             return (parseInt(a.agentID) - parseInt(b.agentID));
         });
 
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
   };
   pickAircraftColor = (): Types.ColorObject => {
-    let numAircraft = this._aircrafts.length;
+    let numAircraft = this._aircraft_list._aircrafts.length;
     while (numAircraft > 9) {
       numAircraft-=10;
     }
@@ -591,13 +616,14 @@ export default class AppProvider extends React.Component<Props, State> {
         ],
         airspeed: 0.0,
         distance_to_target: 0.0,
-        flight_time: 0.0
+        flight_time: 0.0,
+        lastUpdate: Date.now()
     }
   }
 
     updateAircraftPosition = (position: Types.Aircraft.PositionPayload) => {
         const { ...all } = location;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => position.agentID === a.agentID
         );
@@ -608,23 +634,26 @@ export default class AppProvider extends React.Component<Props, State> {
             if(position.alt) {
                 aircrafts[existingIndex].location.alt = position.alt;
             }
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = position.agentID;
             tmpAC.location.lat = position.lat;
             tmpAC.location.lng = position.lng;
             tmpAC.location.alt = position.alt ? position.alt : 0.0;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
 
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
     updateAircraftAttitude = (attitude: Types.Aircraft.AttitudePayload) => {
         const { ...all } = attitude;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => attitude.agentID === a.agentID
         );
@@ -632,60 +661,69 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].orientation.roll = attitude.roll;
             aircrafts[existingIndex].orientation.pitch = attitude.pitch;
             aircrafts[existingIndex].orientation.yaw = attitude.yaw;
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = attitude.agentID;
             tmpAC.orientation.roll = attitude.roll;
             tmpAC.orientation.pitch = attitude.pitch;
             tmpAC.orientation.yaw = attitude.yaw;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
     updateAircraftAirspeed = (airspeed: Types.Aircraft.AirspeedPayload) => {
         const { ...all } = airspeed;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => airspeed.agentID === a.agentID
         );
         if (existingIndex !== -1) {
             aircrafts[existingIndex].airspeed = airspeed.airspeed;
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = airspeed.agentID;
             tmpAC.airspeed = airspeed.airspeed;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
     updateAircraftArmed = (armed: Types.Aircraft.ArmPayload) => {
         const { ...all } = armed;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => armed.agentID === a.agentID
         );
         if (existingIndex !== -1) {
             aircrafts[existingIndex].armed = armed.armed;
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = armed.agentID;
             tmpAC.armed = armed.armed;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
     updateAircraftGPS = (gps: Types.Aircraft.GPSPayload) => {
         const { ...all } = gps;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => gps.agentID === a.agentID
         );
@@ -694,6 +732,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].vdop = gps.vdop;
             aircrafts[existingIndex].hdop = gps.hdop;
             aircrafts[existingIndex].visible_sats = gps.visible_sats;
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = gps.agentID;
@@ -701,16 +740,18 @@ export default class AppProvider extends React.Component<Props, State> {
             tmpAC.vdop = gps.vdop;
             tmpAC.hdop = gps.hdop;
             tmpAC.visible_sats = gps.visible_sats;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
     updateAircraftText = (text: Types.Aircraft.TextPayload) => {
         const { ...all } = text;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => text.agentID === a.agentID
         );
@@ -728,6 +769,7 @@ export default class AppProvider extends React.Component<Props, State> {
                 textSeverity: text.severity,
                 textTimestamp: now.getTime()
             };
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = text.agentID;
@@ -736,35 +778,40 @@ export default class AppProvider extends React.Component<Props, State> {
                 textSeverity: text.severity,
                 textTimestamp: now.getTime()
             };
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
     updateAircraftMode = (mode: Types.Aircraft.ModePayload) => {
         const { ...all } = mode;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => mode.agentID === a.agentID
         );
         if (existingIndex !== -1) {
             aircrafts[existingIndex].mode = mode.mode;
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = mode.agentID;
             tmpAC.mode = mode.mode;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
     updateAircraftFuel = (fuel: Types.Aircraft.FuelPayload) => {
         const { ...all } = fuel;
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const existingIndex = aircrafts.findIndex(
           (a) => fuel.agentID === a.agentID
         );
@@ -772,16 +819,19 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].battery_current = fuel.battery_current;
             aircrafts[existingIndex].battery_remaining = fuel.battery_remaining;
             aircrafts[existingIndex].battery_voltage = fuel.battery_voltage;
+            aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
             let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = fuel.agentID;
             tmpAC.battery_current = fuel.battery_current;
             tmpAC.battery_remaining = fuel.battery_remaining;
             tmpAC.battery_voltage = fuel.battery_voltage;
+            tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
-        if (!areObjectsSame(aircrafts, this._aircrafts)) {
-            this._aircrafts = aircrafts;
+        if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+            this._aircraft_list._aircrafts = aircrafts;
+            this._aircraft_list.last_updated = Date.now();
         }
     }
 
@@ -792,14 +842,15 @@ export default class AppProvider extends React.Component<Props, State> {
         this.updateLocalTargets(target);
 
         // Update aircraft distance to target:
-        let aircrafts = cloneDeep(this._aircrafts);
+        let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
         const acIndex = aircrafts.findIndex(
-        (a) => target.agentID === a.agentID
+            (a) => target.agentID === a.agentID
         );
         if (acIndex !== -1) {
             aircrafts[acIndex].distance_to_target = target.distance_to_target;
-            if (!areObjectsSame(aircrafts, this._aircrafts)) {
-                this._aircrafts = aircrafts;
+            if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+                this._aircraft_list._aircrafts = aircrafts;
+                this._aircraft_list.last_updated = Date.now();
             }
         }
     }
@@ -807,43 +858,49 @@ export default class AppProvider extends React.Component<Props, State> {
 
   updateLocalTargets = (target: Types.Aircraft.TargetPayload) => {
     const { ...all } = target;
-    let targets = [...this._localTargets];
+    let targets = [...this._localTargets_list._localTargets];
     const existingIndex = targets.findIndex(
       (t) => target.agentID === t.agentID
     );
     if (existingIndex !== -1) {
       if (!areObjectsSame(targets[existingIndex], { ...all })) {
         targets[existingIndex] = { ...all };
+        targets[existingIndex].lastUpdate = Date.now();
       }
     } else {
-      targets.push({ ...all });
+        target.lastUpdate = Date.now();
+      targets.push(target);
     }
-    if (!areObjectsSame(targets, this._localTargets)) {
-      this._localTargets = targets;
-    }    
+    if (!areObjectsSame(targets, this._localTargets_list._localTargets)) {
+        this._localTargets_list._localTargets = targets;
+        this._localTargets_list.last_updated = Date.now();
+    }   
   };
 
   updateGlobalTargets = (target: Types.Aircraft.TargetPayload) => {
     const { ...all } = target;
-    let targets = [...this._globalTargets];
+    let targets = [...this._globalTargets_list._globalTargets];
     const existingIndex = targets.findIndex(
       (t) => target.agentID === t.agentID
     );
     if (existingIndex !== -1) {
       if (!areObjectsSame(targets[existingIndex], { ...all })) {
         targets[existingIndex] = { ...all };
+        targets[existingIndex].lastUpdate = Date.now();
       }
     } else {
-      targets.push({ ...all });
+        target.lastUpdate = Date.now();
+      targets.push(target);
     }
-    if (!areObjectsSame(targets, this._globalTargets)) {
-      this._globalTargets = targets;
+    if (!areObjectsSame(targets, this._globalTargets_list._globalTargets)) {
+        this._globalTargets_list._globalTargets = targets;
+        this._globalTargets_list.last_updated = Date.now();
     } 
   };
 
   updateParameters = (params: Types.Aircraft.ParametersPayload) => {
     const { ...all } = params;
-    let aircrafts = cloneDeep(this._aircrafts);
+    let aircrafts = cloneDeep(this._aircraft_list._aircrafts);
     const existingIndex = aircrafts.findIndex(
       (a) => params.agentID === a.agentID
     );
@@ -853,41 +910,49 @@ export default class AppProvider extends React.Component<Props, State> {
         let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
         tmpAC.agentID = params.agentID;
         tmpAC.param_list = params.param_list;
+        tmpAC.lastUpdate = Date.now();
         aircrafts.push(tmpAC);
     }
-    if (!areObjectsSame(aircrafts, this._aircrafts)) {
-        this._aircrafts = aircrafts;
-    }
+    if (!areObjectsSame(aircrafts, this._aircraft_list._aircrafts)) {
+        this._aircraft_list._aircrafts = aircrafts;
+        this._aircraft_list.last_updated = Date.now();
+    } 
   }
 
   updatePaths = (path: Types.Aircraft.PathPayload) => {
     const { ...all } = path;
-    let paths = [...this._paths];
+    let paths = [...this._paths_list._paths];
     const existingIndex = paths.findIndex((p) => path.agentID === p.agentID);
     if (existingIndex !== -1) {
       if (!areObjectsSame(paths[existingIndex], { ...all })) {
         paths[existingIndex] = { ...all };
+        paths[existingIndex].lastUpdate = Date.now();
       }
     } else {
-      paths.push({ ...all });
+        path.lastUpdate = Date.now();
+        paths.push(path);
     }
-    if (!areObjectsSame(paths, this._paths)) {
-      this._paths = paths;
+    if (!areObjectsSame(paths, this._paths_list._paths)) {
+        this._paths_list._paths = paths;
+        this._paths_list.last_updated = Date.now();
     }
   };
   updateIcons = (icon: Types.Environment.IconPayload) => {
     const { ...all } = icon;
-    const icons = [...this._icons];
+    const icons = [...this._icons_list._icons];
     const existingIndex = icons.findIndex((i) => icon.name === i.name);
     if (existingIndex !== -1) {
       if (!areObjectsSame(icons[existingIndex], { ...all })) {
         icons[existingIndex] = { ...all };
+        icons[existingIndex].lastUpdate = Date.now();
       }
     } else {
-      icons.push({ ...all });
+        icon.lastUpdate = Date.now();
+        icons.push(icon);
     }
-    if (!areObjectsSame(icons, this._icons)) {
-        this._icons = icons;
+    if (!areObjectsSame(icons, this._icons_list._icons)) {
+        this._icons_list._icons = icons;
+        this._icons_list.last_updated = Date.now();
     }
   };
   removeIcon = (name: string) => {
