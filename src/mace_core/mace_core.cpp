@@ -5,6 +5,7 @@
 
 #include "module_characteristics.h"
 
+
 namespace MaceCore
 {
 
@@ -30,7 +31,39 @@ void MaceCore::AddDataFusion(const std::shared_ptr<MaceData> dataFusion)
     m_DataFusion = dataFusion;
 }
 
+//!
+//! \brief setGlobalConfiguration Assign global parameters obtained from parsing
+//! \param globalParams Input parameters
+//!
+void MaceCore::setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams)
+{
+    if (globalParams->HasNonTerminal("EnvironmentBoundary")){
+        std::vector<mace::pose::GeodeticPosition_2D> vertices;
+        std::string type;
+        std::string name;
 
+        std::shared_ptr<ModuleParameterValue> environmentBoundaryXML = globalParams->GetNonTerminalValue("EnvironmentBoundary");
+        if(environmentBoundaryXML->HasTerminal("Vertices")) {
+            vertices = environmentBoundaryXML->GetTerminalValue<std::vector<mace::pose::GeodeticPosition_2D>>("Vertices");
+        }
+        if(environmentBoundaryXML->HasTerminal("Type")) {
+            type = environmentBoundaryXML->GetTerminalValue<std::string>("Type");
+        }
+        if(environmentBoundaryXML->HasTerminal("Name")) {
+            name =environmentBoundaryXML->GetTerminalValue<std::string>("Name");
+        }
+
+        if (!vertices.empty() && !name.empty() && !type.empty()){
+            m_DataFusion->UpdateEnvironmentBoundary(vertices,name,type);
+        }
+    }
+}
+
+
+//!
+//! \brief AddModule Add module to data fusion
+//! \param module Module to add
+//!
 void MaceCore::AddLocalModule(const std::shared_ptr<ModuleBase> &module)
 {
     uint8_t moduleID = 1;
@@ -458,7 +491,8 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 //!
 void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 {
-
+    UNUSED(sender);
+    UNUSED(vehicleID);
 }
 
 
@@ -470,6 +504,8 @@ void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 //!
 void MaceCore::Event_NewModule(const ModuleBase* sender, const ModuleCharacteristic &characterstic, const ModuleClasses &type)
 {
+    UNUSED(sender);
+
     //if event came from external link then its a remote module, otherwise assume local
     if(characterstic.MaceInstance != this->getMaceInstanceID())
     {
@@ -806,7 +842,7 @@ void MaceCore::Event_SetGlobalOrigin(const ModuleBase* sender, const GeodeticPos
     if(m_PathPlanning && m_PathPlanning.get() != sender) {
         m_PathPlanning->MarshalCommand(PathPlanningCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
-    if(m_GroundStation && m_GroundStation.get() != sender) {
+    if(m_GroundStation /*&& m_GroundStation.get() != sender*/) {
         m_GroundStation->MarshalCommand(GroundStationCommands::UPDATE_GLOBAL_ORIGIN, position);
     }
     if(m_GlobalRTA) {
@@ -837,9 +873,9 @@ void MaceCore::EventVehicle_NewOnboardVehicleMission(const ModuleBase *sender, c
 {
     UNUSED(sender);
     //Update the core about the information
-    MissionItem::MissionKey key = missionList.getMissionKey();
+//    MissionItem::MissionKey key = missionList.getMissionKey();
     m_DataFusion->receivedNewMission(missionList);
-    bool isMissionCurrent = m_DataFusion->checkForCurrentMission(key);
+//    bool isMissionCurrent = m_DataFusion->checkForCurrentMission(key);
 
     //Now update all potential listeners based on the type
     if(m_GroundStation)
@@ -923,7 +959,8 @@ void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_
     //specific methods and information. Otherwise we may be blasting to an unknown world.
     //This is also bad as we are assuming that the only item calling this would be a vehicle instance
 
-    uint8_t vehicleID = vehicleHome.getOriginatingSystem();
+    uint8_t vehicleID;
+    m_DataFusion->getMavlinkIDFromModule(sender->GetCharacteristic(), vehicleID);
     m_DataFusion->UpdateVehicleHomePosition(vehicleID, vehicleHome);
 
     //If there is a ground station, and it didn't generate the home; send the home position
@@ -948,6 +985,45 @@ void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_
         m_VehicleIDToPort.at(vehicleHome.getTargetSystem())->MarshalCommand(VehicleCommands::SET_VEHICLE_HOME, vehicleHome, sender->GetCharacteristic());
     }
 }
+
+//!
+//! \brief GVEvents_NewParameterValue New home position
+//! \param sender Sender module
+//! \param vehicleHome New vehicle home
+//!
+void MaceCore::GVEvents_NewParameterValue(const ModuleBase *sender, const DataGenericItem::DataGenericItem_ParamValue &vehicleParam)
+{
+    UNUSED(sender);
+    UNUSED(vehicleParam);
+    //TODO FIX KEN: We should incorporate a method that shall exist to understand who wants to receive
+    //specific methods and information. Otherwise we may be blasting to an unknown world.
+    //This is also bad as we are assuming that the only item calling this would be a vehicle instance
+
+    uint8_t vehicleID;
+    m_DataFusion->getMavlinkIDFromModule(sender->GetCharacteristic(), vehicleID);
+
+    //create the list needed for the ground station
+    std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> paramValues;
+    paramValues.insert(std::pair<std::string, DataGenericItem::DataGenericItem_ParamValue>(vehicleParam.getID(),vehicleParam));
+
+
+    if(m_GroundStation && m_GroundStation.get() != sender)
+        m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE_PARAMETERS, paramValues, sender->GetCharacteristic());
+
+    //Ken we need to fix for transmission over external link
+//    if(m_ExternalLink.size() > 0)
+//    {
+//        for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it=m_ExternalLink.begin(); it!=m_ExternalLink.end(); ++it)
+//        {
+//            if(it->get() == sender)
+//            {
+//                continue;
+//            }
+//            (*it)->MarshalCommand(ExternalLinkCommands::NEWLY_AVAILABLE_HOME_POSITION,vehicleHome, sender->GetCharacteristic());
+//        }
+//    }
+}
+
 
 //!
 //! \brief GVEvents_MissionExeStateUpdated New mission EXE state event
@@ -1003,6 +1079,7 @@ void MaceCore::GVEvents_MissionItemCurrent(const void *sender, const MissionItem
 //!
 void MaceCore::GVEvents_NewSystemTime(const ModuleBase *sender, const DataGenericItem::DataGenericItem_SystemTime &systemTime)
 {
+    UNUSED(sender);
     m_DataFusion->updateCurrentSystemTimeDelta(systemTime.getUsecSinceEpoch());
 }
 
@@ -1197,10 +1274,12 @@ void MaceCore::ExternalEvent_NewBoundary(const ModuleBase *sender, const NewBoun
 //!
 void MaceCore::ExternalEvent_RequestingDataSync(const void *sender, const ModuleCharacteristic &module)
 {
+    UNUSED(sender);
+
     std::unordered_map<std::string, TopicDatagram> topicMap = m_DataFusion->getAllLatestTopics(module);
     for(auto it = topicMap.cbegin() ; it != topicMap.cend() ; ++it) {
         std::vector<std::string> components = it->second.ListNonTerminals();
-        ModuleBase* base = (ModuleBase*)sender;
+//        ModuleBase* base = (ModuleBase*)sender;
         //base->NewTopic(it->first,targetID,components);
 //        throw std::runtime_error("Requesting Data Sync Not Implemented");
         MaceLog::Debug("Requesting Data Sync not implemented");
@@ -1239,6 +1318,7 @@ void MaceCore::ExternalEvent_FinishedRXMissionList(const void *sender, const Mis
 void MaceCore::ExternalEvent_FinishedRXBoundaryList(const void *sender, const BoundaryItem::BoundaryList &boundaryList)
 {
     UNUSED(sender);
+    UNUSED(boundaryList);
 
     throw std::runtime_error("External Link Finished Receiving boundary list not implimented");
 
@@ -1352,7 +1432,6 @@ void MaceCore::GSEvent_UploadMission(const void *sender, const MissionItem::Miss
 
 void MaceCore::EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const command_item::Action_DynamicTarget &obj)
 {
-    std::cout<<"Mace core has been notified by a module of the path planning variety that there is a new dynamic target."<<std::endl;
     MarshalCommandToVehicle<command_item::Action_DynamicTarget>(obj.getTargetSystem(), VehicleCommands::EXECUTE_DYNAMIC_TARGET, ExternalLinkCommands::EXECUTE_DYNAMIC_TARGET, obj, sender->GetCharacteristic());
 
 }
@@ -1364,6 +1443,8 @@ void MaceCore::EventPP_ExecuteDynamicTarget(const ModuleBase* sender, const comm
 //!
 void MaceCore::EventPP_LoadOccupancyEnvironment(const ModuleBase *sender, const string &filePath)
 {
+    UNUSED(sender);
+
     std::cout<<"Somehow load occupancy environment is being called"<<std::endl;
     if(m_DataFusion->loadOccupancyEnvironment(filePath))
     {
@@ -1381,6 +1462,8 @@ void MaceCore::EventPP_LoadOccupancyEnvironment(const ModuleBase *sender, const 
 //!
 void MaceCore::EventPP_LoadOctomapProperties(const ModuleBase *sender, const maps::OctomapSensorDefinition &properties)
 {
+    UNUSED(sender);
+
     std::cout<<"Somehow load octomap properties is being called"<<std::endl;
     if(m_DataFusion->updateOctomapProperties(properties))
     {
@@ -1405,7 +1488,8 @@ void MaceCore::EventPP_LoadOctomapProperties(const ModuleBase *sender, const map
 //!
 void MaceCore::EventPP_LoadMappingProjectionProperties(const ModuleBase *sender, const maps::Octomap2DProjectionDefinition &properties)
 {
-
+    UNUSED(sender);
+    UNUSED(properties);
 }
 
 //!
@@ -1431,7 +1515,7 @@ void MaceCore::Event_SetBoundary(const ModuleBase *sender, const BoundaryItem::B
         }
         list_str += "]";
     }
-    printf("Mace Core: Received a new Boundary\n  verticies: %d\n  Type: %s\n  Vehicles: %s\n", boundary.getQueueSize(), BoundaryItem::BoundaryTypeToString(characterstic.Type()).c_str(), list_str.c_str());
+    printf("Mace Core: Received a new Boundary\n  verticies: %d\n  Type: %s\n  Vehicles: %s\n", (int)boundary.getQueueSize(), BoundaryItem::BoundaryTypeToString(characterstic.Type()).c_str(), list_str.c_str());
 
     //Update the underalying data object
     uint8_t rtnKey = m_DataFusion->setBoundaryByKey(characterstic, boundary);
@@ -1537,8 +1621,11 @@ void MaceCore::AppendVehicleCommands(const std::string &vehicleID, const std::ve
 //!
 void MaceCore::EventPP_New2DOccupancyMap(const void* sender, const mace::maps::Data2DGrid<mace::maps::OccupiedResult> &map)
 {
-    if(m_ROS)
+    UNUSED(sender);
+
+    if(m_ROS) {
         m_ROS->MarshalCommand(ROSCommands::NEWLY_COMPRESSED_OCCUPANCY_MAP, map);
+    }
 }
 
 //!
@@ -1659,6 +1746,20 @@ void MaceCore::ROS_NewLaserScan(const octomap::Pointcloud &obj, const CartesianP
         m_ROS->MarshalCommand(ROSCommands::NEWLY_UPDATED_3D_OCCUPANCY_MAP, 0); // TODO: Parse for vehicle ID
 
 }
+
+void MaceCore::ROS_NewVisionPoseEstimate(const unsigned int &vehicleID, const mace::pose::Pose &pose)
+{
+    try
+    {
+        m_VehicleIDToPtr.at(std::to_string(vehicleID))->MarshalCommand(VehicleCommands::TRANSMIT_VISION_POSE_ESTIMATE,pose);
+    }
+    catch(const std::out_of_range &oor)
+    {
+        std::cout<<"The vehicle ID is not contained within this MACE instances vehicle map.";
+    }
+
+}
+
 
 /////////////////////////////////////////////////////////////////////////
 /// MACE COMMS EVENTS

@@ -42,7 +42,7 @@ SpatialHome::~SpatialHome()
 SpatialHome::SpatialHome(const SpatialHome &obj):
     AbstractSpatialAction(obj)
 {
-
+    this->setPosToCurrent = obj.setPosToCurrent;
 }
 
 SpatialHome::SpatialHome(const unsigned int &systemOrigin, const unsigned int &systemTarget):
@@ -65,6 +65,7 @@ std::string SpatialHome::printSpatialCMDInfo() const
 
 std::ostream& operator<<(std::ostream& os, const SpatialHome& t)
 {
+    UNUSED(t);
 
     std::stringstream stream;
     stream.precision(6);

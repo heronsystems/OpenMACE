@@ -16,6 +16,8 @@
 #include <mutex>
 #include <algorithm>
 
+#include "common/common.h"
+
 class ResourceKey : public std::vector<std::string>
 {
 
@@ -285,6 +287,7 @@ public:
 
     std::vector<std::tuple<ResourceKey, ResourceValue>> getResourcesMatch(const ResourceKey &key, bool subMatch = true, bool internalOnly = false)
     {
+        UNUSED(subMatch);
         std::vector<std::tuple<ResourceKey, ResourceValue>> rtn;
 
         m_Mutex.lock();
@@ -349,7 +352,7 @@ public:
 
 
         m_componentNames =  { N... };
-        m_IDs = { ids... };
+        m_IDs = { (int)ids... }; // TODO: Is casting here appropriate? It was for suppressing "-wnarrowing" warnings
     }
 
     size_t Size() const

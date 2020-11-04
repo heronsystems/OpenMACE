@@ -65,12 +65,17 @@ public:
     //!
     double getAltitude() const override;
 
-
+    /** Interface imposed via Position */
 public:
+    PositionTypes getPositionalType() const override
+    {
+        return PositionTypes::ELEVATION;
+    }
+
     void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) override;
 
     void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) override;
-
+    /** End of interface imposed via Position */
 public:
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 

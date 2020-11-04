@@ -39,12 +39,14 @@ public:
     virtual ~Velocity() override = default;
 
     /** Interface imposed via Kinemnatic_BaseInterace */
-    KinematicTypes getKinematicType() const override
+    virtual KinematicTypes getKinematicType() const override
     {
         return KinematicTypes::VELOCITY;
     }
 
     /** End of interface imposed via Kinemnatic_BaseInterace */
+
+    virtual VelocityTypes getVelocityType() const = 0;
 
 public:
     virtual Eigen::VectorXd getDataVector() const = 0;

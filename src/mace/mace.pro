@@ -38,6 +38,11 @@ INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+# Octomap Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
 else:unix:!macx: LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
@@ -142,6 +147,14 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardu
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/debug/ -lmodule_vehicle_ardupilot
 else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_ardupilot/ -lmodule_vehicle_ardupilot
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arducopter/release/ -lmodule_vehicle_arducopter
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arducopter/debug/ -lmodule_vehicle_arducopter
+else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_arducopter/ -lmodule_vehicle_arducopter
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arduplane/release/ -lmodule_vehicle_arduplane
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_arduplane/debug/ -lmodule_vehicle_arduplane
+else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_arduplane/ -lmodule_vehicle_arduplane
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/release/ -lmodule_vehicle_generic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_generic/debug/ -lmodule_vehicle_generic
 else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_generic/ -lmodule_vehicle_generic
@@ -205,6 +218,10 @@ unix {
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
 
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/kinetic/include
+        QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/catkin_sim_environment/devel/include
+
     } else:exists(/opt/ros/melodic/lib/) {
         DEFINES += ROS_EXISTS
         INCLUDEPATH += /opt/ros/melodic/include
@@ -235,9 +252,16 @@ unix {
 
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/melodic/include
+        QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/catkin_sim_environment/devel/include
     } else {
         INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
         LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+
+        # Octomap Warning suppression:
+        QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
     }
 }
 
@@ -245,3 +269,6 @@ unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
+
+# Flann Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$PWD/../../tools/flann/src/cpp

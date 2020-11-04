@@ -54,6 +54,7 @@ std::string SpatialLand::printSpatialCMDInfo() const
 
 std::ostream& operator<<(std::ostream& os, const SpatialLand& t)
 {
+    UNUSED(t);
     std::stringstream stream;
     stream.precision(6);
     //stream << std::fixed << "Spatial Land: " << t.position->getX() << ", "<< t.position->getY() << ", "<< t.position->getZ() << ".";

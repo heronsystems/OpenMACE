@@ -44,4 +44,22 @@ void SensorVertices_Global::setSensorVertices(const std::vector<mace::pose::Geod
     verticeLocations = verticeVector;
 }
 
+QJsonObject SensorVertices_Global::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    QJsonArray verticies;
+    for(auto&& vertex : getSensorVertices()) {
+        QJsonObject obj;
+        obj["lat"] = vertex.getLatitude();
+        obj["lng"] = vertex.getLongitude();
+        obj["alt"] = 0.0;
+
+        verticies.push_back(obj);
+    }
+
+    json["sensorFootprint"] = verticies;
+
+    return json;
+}
+
 } //end of namespace DataVehicleSensors

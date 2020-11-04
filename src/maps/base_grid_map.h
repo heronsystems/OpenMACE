@@ -295,10 +295,10 @@ public:
     }
 
 public:
-    virtual bool updateGridSize(const double &minX, const double &maxX, const double &minY, const double &maxY, const double &x_res, const double &y_res) = 0;
+    virtual bool updateGridSize(const double &minX, const double &maxX, const double &minY, const double &maxY, const double &x_res, const double &y_res);
 
     virtual bool updateGridSizeByLength(const double &x_length = 10.0, const double &y_length = 10.0,
-                     const double &x_res = 0.5, const double &y_res = 0.5) = 0;
+                     const double &x_res = 0.5, const double &y_res = 0.5);
 
     virtual void setXResolution(const double &x_res);
 

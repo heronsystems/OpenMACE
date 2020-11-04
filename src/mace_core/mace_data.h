@@ -276,17 +276,27 @@ public:
         return gridSpacing;
     }
 
-
+    //!
+    //! \brief EnvironmentBoundarySet Determine if an Environment boundary has been set
+    //! \return environment boundary flag
+    //!
+    bool EnvironmentBoundarySet() const
+    {
+        std::lock_guard<std::mutex> guard(m_EnvironmentalBoundaryMutex);
+        bool boundarySet = flagBoundaryVerts;
+        return boundarySet;
+    }
     //!
     //! \brief GetEnvironmentBoundary Get the environment boundary
     //! \return Vector of positions that make up the boundary
     //!
-    std::vector<mace::pose::GeodeticPosition_2D> GetEnvironmentBoundary() const
+    BoundaryItem::EnvironmentBoundary GetEnvironmentBoundary() const
     {
         std::lock_guard<std::mutex> guard(m_EnvironmentalBoundaryMutex);
-        std::vector<mace::pose::GeodeticPosition_2D> boundaryVerts = m_BoundaryVerts;
+        BoundaryItem::EnvironmentBoundary boundaryVerts = m_environmentBoundary;
         return boundaryVerts;
     }
+
 
     //!
     //! \brief GetVehicleBoundaryList Get vehicle boundary list
@@ -358,16 +368,19 @@ private:
     }
 
 
-    //Gets called when you draw on the GUI
     //!
-    //! \brief UpdateEnvironmentVertices Update environment vertices from the GCS module
+    //! \brief UpdateEnvironmentBoundary Update environment boundary from the global parameters
     //! \param boundaryVerts New boundary vertices vector
+    //! \param name New boundary name
+    //! \param type New boundary type
     //!
-    void UpdateEnvironmentVertices(const std::vector<mace::pose::GeodeticPosition_2D> &boundaryVerts) {
+    void UpdateEnvironmentBoundary(const std::vector<mace::pose::GeodeticPosition_2D> &boundaryVerts, const std::string &name, const std::string &type) {
         std::lock_guard<std::mutex> guard(m_EnvironmentalBoundaryMutex);
-        m_BoundaryVerts = boundaryVerts;
+        m_environmentBoundary.setValues(boundaryVerts,type,name);
         flagBoundaryVerts = true;
     }
+
+
 
     //This is only called via RTA
     //!
@@ -652,6 +665,7 @@ private:
     //!
     void OccupancyMap_GenericOperation(const std::function<void(Eigen::MatrixXd &)> &func)
     {
+        UNUSED(func);
         //func(m_OccupancyMap);
     }
 
@@ -908,10 +922,11 @@ private:
     double m_GridSpacing = -1;
 
     mutable std::mutex m_VehicleBoundaryMutex;
-    std::vector<mace::pose::GeodeticPosition_2D> m_BoundaryVerts;
     std::map<int, mace::geometry::Cell_2DC> m_vehicleCellMap;
     std::vector<BoundaryItem::BoundaryList> m_vehicleBoundaryList;
+    BoundaryItem::EnvironmentBoundary m_environmentBoundary;
     bool flagBoundaryVerts;
+
 
     std::map<std::string, ObservationHistory<TIME, VectorDynamics> > m_PositionDynamicsHistory;
     std::map<std::string, ObservationHistory<TIME, VectorDynamics> > m_AttitudeDynamicsHistory;

@@ -1,0 +1,1 @@
+Invoking command in '/home/aaron/Software/OpenMACE/build/device': /usr/bin/cmake /home/aaron/Software/OpenMACE/MATLAB/UMD_TaskGeneration/external/goxel-0.8.0/ext_src/cycles/src/device -DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/device

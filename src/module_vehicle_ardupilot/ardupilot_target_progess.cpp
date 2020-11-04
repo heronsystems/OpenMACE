@@ -25,10 +25,9 @@ Data::ControllerState ArdupilotTargetProgess::newTargetItem(const double &distan
     return rtnState;
 }
 
-Data::ControllerState ArdupilotTargetProgess::updateTargetTimes()
-{
-
-}
+//Data::ControllerState ArdupilotTargetProgess::updateTargetTimes()
+//{
+//}
 
 Data::ControllerState ArdupilotTargetProgess::updateTargetState(const double &distance)
 {

@@ -77,7 +77,9 @@ public:
     ~Action_SetGlobalOrigin() override
     {
         if(m_Origin != nullptr)
+        {
             delete m_Origin; m_Origin = nullptr;
+        }
     }
 
 public:

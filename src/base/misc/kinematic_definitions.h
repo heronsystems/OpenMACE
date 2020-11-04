@@ -8,13 +8,16 @@ enum class KinematicTypes: uint8_t{
     VELOCITY = 1,
     ACCELERATION = 2,
     ORIENTATION = 3,
-    ORIENATION_RATE = 4,
-    ORIENTATION_ACCEL = 5
 };
 
 enum class PositionTypes: uint8_t{
     TRANSLATIONAL = 0,
     ELEVATION = 1
+};
+
+enum class VelocityTypes: uint8_t{
+    TRANSLATIONAL = 0,
+    ROTATIONAL = 1
 };
 
 enum class CoordinateSystemTypes : uint8_t{

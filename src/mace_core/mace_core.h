@@ -38,6 +38,7 @@
 #include "octomap/OcTree.h"
 
 #include "data_generic_command_item/command_item_components.h"
+#include "data_generic_item/data_generic_item_components.h"
 
 #include <common/logging/macelog.h>
 
@@ -72,6 +73,12 @@ public:
     //! \param dataFusion Data fusion to add
     //!
     void AddDataFusion(const std::shared_ptr<MaceData> dataFusion);
+
+    //!
+    //! \brief setGlobalConfiguration Assign global parameters obtained from parsing
+    //! \param globalParams Input parameters
+    //!
+    void setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams);
 
 
     //!
@@ -386,13 +393,19 @@ public:
     /// GENERAL VEHICLE EVENTS: These events are associated from IModuleEventsGeneralVehicle
     ////////////////////////////////////////////////////////////////////////////////////////
 
-
     //!
     //! \brief GVEvents_NewHomePosition New home position
     //! \param sender Sender module
     //! \param vehicleHome New vehicle home
     //!
     virtual void GVEvents_NewHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome);
+
+    //!
+    //! \brief GVEvents_NewParameterValue New parameters pertinent for the vehicle
+    //! \param sender Sender module
+    //! \param vehicleParams New vehicle parameters
+    //!
+    virtual void GVEvents_NewParameterValue(const ModuleBase *sender, const DataGenericItem::DataGenericItem_ParamValue &vehicleParam);
 
     //!
     //! \brief GVEvents_MissionExeStateUpdated New mission EXE state event
@@ -670,6 +683,14 @@ public:
     //! \param orientation Orientation of sensor
     //!
     void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) override;
+
+
+    //!
+    //! \brief ROS_NewVisionPoseEstimate
+    //! \param pose
+    //!
+    void ROS_NewVisionPoseEstimate(const unsigned int &vehicleID, const mace::pose::Pose &pose) override;
+
 public:
 
     /////////////////////////////////////////////////////////////////////////
@@ -701,14 +722,7 @@ private:
                 {
                     continue;
                 }
-                /*
-                T *Copy = new T(data);
-                if(((CommandItem::std::shared_ptr<AbstractCommandItem>)Copy)->getTargetSystem() == 0)
-                {
-                    int ID = it->second->GetCharacteristic().ID;
-                    ((CommandItem::std::shared_ptr<AbstractCommandItem>)Copy)->setTargetSystem(ID);
-                }
-                */
+
                 it->second->MarshalCommand(vehicleCommand, data, sender);
             }
 
@@ -803,7 +817,6 @@ private:
     bool m_MaceInstanceIDSet;
 
     std::vector<int> m_ReservedModuleIDs;
-
     std::shared_ptr<MaceData> m_DataFusion;
 };
 

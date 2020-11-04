@@ -3,8 +3,6 @@
 
 #include "module_ground_station_global.h"
 
-#include "spdlog/spdlog.h"
-
 #include <string>
 #include <memory>
 
@@ -126,6 +124,11 @@ public:
     //!
     virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
+    //!
+    //! \brief NewlyAvailableParameterList Explicitly being told about the newly available parameters
+    //! \param params the params that are currently relevant to the vehicle
+    //!
+    void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyAvailableCurrentMission Subscriber to a new vehicle mission topic
@@ -186,15 +189,6 @@ private:
     //!
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
 
-    // ============================================================================= //
-    // ================================== Loggers ================================== //
-    // ============================================================================= //
-private:
-
-    //!
-    //! \brief mLogs Ground station logs
-    //!
-    std::shared_ptr<spdlog::logger> mLogs;
 
     // ============================================================================= //
     // ============================== Member Variables ============================= //

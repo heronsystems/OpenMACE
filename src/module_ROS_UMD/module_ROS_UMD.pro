@@ -53,6 +53,11 @@ INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 DEPENDPATH += $$PWD/../
 
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+# Octomap Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
 else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
@@ -127,6 +132,10 @@ exists(/opt/ros/kinetic/lib/) {
 
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/kinetic/include
+
 } else:exists(/opt/ros/melodic/lib/) {
     DEFINES += ROS_EXISTS
     INCLUDEPATH += /opt/ros/melodic/include
@@ -155,7 +164,12 @@ exists(/opt/ros/kinetic/lib/) {
         LIBS += -L/opt/ros/melodic/lib -loctomap
         LIBS += -L/opt/ros/melodic/lib -loctomath
 
+        LIBS += -L$$(MACE_ROOT)/catkin_sim_environment/devel/lib/ -lmace_matlab_msgs
+
         INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
         DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/melodic/include
 }
 }

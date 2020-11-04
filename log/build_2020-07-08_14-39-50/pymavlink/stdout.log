@@ -1,0 +1,11 @@
+running egg_info
+creating /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info
+writing /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/PKG-INFO
+writing dependency_links to /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/dependency_links.txt
+writing requirements to /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/requires.txt
+writing top-level names to /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/top_level.txt
+writing manifest file '/home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/SOURCES.txt'
+reading manifest file '/home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/SOURCES.txt'
+writing manifest file '/home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/SOURCES.txt'
+running build
+running build_py

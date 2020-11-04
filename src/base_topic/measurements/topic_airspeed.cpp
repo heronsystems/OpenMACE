@@ -24,6 +24,13 @@ void Topic_AirSpeed::CreateFromDatagram(const MaceCore::TopicDatagram &datagram)
     m_SpeedObj.setSpeed(datagram.GetTerminal<double>("Speed"));
 }
 
+QJsonObject Topic_AirSpeed::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["airspeed"] = getSpeedObj().getSpeed();
+    return json;
+}
+
 Topic_AirSpeed::Topic_AirSpeed()
 {
 
@@ -49,6 +56,8 @@ void Topic_AirSpeed::setSpeedObj(const mace::measurements::Speed &speedObj)
 {
     this->m_SpeedObj = speedObj;
 }
+
+
 
 } //end of namespace measurement_topics
 } //end of namespace pose

@@ -45,7 +45,7 @@ void DigiMeshLink::WriteBytes(const char *bytes, int length, const OptionalParam
 {
     //pack into std::vector
     std::vector<uint8_t> data;
-    for(size_t i = 0 ; i < length ; i++) {
+    for(int i = 0 ; i < length ; i++) {
         data.push_back(bytes[i]);
     }
 

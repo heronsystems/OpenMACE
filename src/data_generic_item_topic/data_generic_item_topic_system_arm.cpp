@@ -20,6 +20,13 @@ void DataGenericItemTopic_SystemArm::CreateFromDatagram(const MaceCore::TopicDat
     armed = datagram.GetTerminal<bool>("armed");
 }
 
+QJsonObject DataGenericItemTopic_SystemArm::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["armed"] = getSystemArm();
+    return json;
+}
+
 DataGenericItemTopic_SystemArm::DataGenericItemTopic_SystemArm()
     :DataGenericItem::DataGenericItem_SystemArm()
 {

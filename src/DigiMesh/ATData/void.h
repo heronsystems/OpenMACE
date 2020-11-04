@@ -3,6 +3,7 @@
 
 
 #include "I_AT_data.h"
+#include "common/common.h"
 
 namespace ATData
 {
@@ -14,6 +15,7 @@ public:
 
     Void(const std::vector<uint8_t> &data)
     {
+        UNUSED(data);
     }
 
     Void()
@@ -21,7 +23,9 @@ public:
     }
 
 
-    virtual void DeSerialize(const std::vector<uint8_t> &data){
+    virtual void DeSerialize(const std::vector<uint8_t> &data)
+    {
+        UNUSED(data);
     }
 
     virtual std::vector<uint8_t> Serialize() const {

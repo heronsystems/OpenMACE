@@ -4,35 +4,35 @@
 #include <Eigen/Core>
 #include <type_traits>
 
-#include "velocity_interface.h"
+#include "velocity_interface_translational.h"
 
 namespace mace{
 namespace pose{
 
 template<const CoordinateSystemTypes coordType, typename CFDATA, class DATA = Eigen::Vector2d>
-class VelocityHelper: public VelocityInterface<coordType, CFDATA, DATA>
+class VelocityHelper: public VelocityInterface_Translational<coordType, CFDATA, DATA>
 {
 
 };
 
 template<const CoordinateSystemTypes coordType, typename CFDATA>
-class VelocityHelper<coordType, CFDATA, Eigen::Vector2d> : public VelocityInterface<coordType, CFDATA, Eigen::Vector2d>
+class VelocityHelper<coordType, CFDATA, Eigen::Vector2d> : public VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector2d>
 {
 public:
     VelocityHelper():
-        VelocityInterface<coordType, CFDATA, Eigen::Vector2d>()
+        VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector2d>()
     {
         this->dimension = 2;
     }
 
     VelocityHelper(const CFDATA &frame):
-        VelocityInterface<coordType, CFDATA, Eigen::Vector2d>(frame)
+        VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector2d>(frame)
     {
         this->dimension = 2;
     }
 
     VelocityHelper(const VelocityHelper &copy):
-        VelocityInterface<coordType, CFDATA, Eigen::Vector2d>(copy)
+        VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector2d>(copy)
     {
 
     }
@@ -78,23 +78,23 @@ public:
 };
 
 template<const CoordinateSystemTypes coordType, typename CFDATA>
-class VelocityHelper<coordType, CFDATA, Eigen::Vector3d> : public VelocityInterface<coordType, CFDATA, Eigen::Vector3d>
+class VelocityHelper<coordType, CFDATA, Eigen::Vector3d> : public VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector3d>
 {
 public:
     VelocityHelper():
-        VelocityInterface<coordType, CFDATA, Eigen::Vector3d>()
+        VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector3d>()
     {
         this->dimension = 3;
     }
 
     VelocityHelper(const CFDATA &frame):
-        VelocityInterface<coordType, CFDATA, Eigen::Vector3d>(frame)
+        VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector3d>(frame)
     {
         this->dimension = 3;
     }
 
     VelocityHelper(const VelocityHelper &copy):
-        VelocityInterface<coordType, CFDATA, Eigen::Vector3d>(copy)
+        VelocityInterface_Translational<coordType, CFDATA, Eigen::Vector3d>(copy)
     {
 
     }
@@ -159,8 +159,8 @@ public:
 };
 
 
-typedef VelocityHelper<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector2d> Cartesian_Velocity2D;
-typedef VelocityHelper<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector3d> Cartesian_Velocity3D;
+typedef VelocityHelper<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector2d> Velocity_Cartesian2D;
+typedef VelocityHelper<CoordinateSystemTypes::CARTESIAN, CartesianFrameTypes, Eigen::Vector3d> Velocity_Cartesian3D;
 
 
 } // end of namespace pose

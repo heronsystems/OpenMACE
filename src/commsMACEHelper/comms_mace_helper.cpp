@@ -146,7 +146,7 @@ void CommsMACEHelper::ConfigureMACEComms(const std::shared_ptr<MaceCore::ModuleP
                     maceStatus->flags |= MACE_STATUS_FLAG_OUT_MACE1;
                     break;
                 }
-                // Fallthrough to set version 2
+                // fall through
             case CommsMACE::MavlinkConfiguration::MavlinkVersion::MavlinkVersionAlways2:
                 maceStatus->flags &= ~MACE_STATUS_FLAG_OUT_MACE1;
                 break;
@@ -201,7 +201,7 @@ void CommsMACEHelper::ConfigureMACEComms(const std::shared_ptr<MaceCore::ModuleP
                     maceStatus->flags |= MACE_STATUS_FLAG_OUT_MACE1;
                     break;
                 }
-                // Fallthrough to set version 2
+                // fall through
             case CommsMACE::MavlinkConfiguration::MavlinkVersion::MavlinkVersionAlways2:
                 maceStatus->flags &= ~MACE_STATUS_FLAG_OUT_MACE1;
                 break;
@@ -256,7 +256,7 @@ void CommsMACEHelper::ConfigureMACEComms(const std::shared_ptr<MaceCore::ModuleP
                     maceStatus->flags |= MACE_STATUS_FLAG_OUT_MACE1;
                     break;
                 }
-                // Fallthrough to set version 2
+                // fall through
             case CommsMACE::MavlinkConfiguration::MavlinkVersion::MavlinkVersionAlways2:
                 maceStatus->flags &= ~MACE_STATUS_FLAG_OUT_MACE1;
                 break;
@@ -312,7 +312,7 @@ void CommsMACEHelper::ConfigureMACEComms(const std::shared_ptr<MaceCore::ModuleP
                     maceStatus->flags |= MACE_STATUS_FLAG_OUT_MACE1;
                     break;
                 }
-                // Fallthrough to set version 2
+                // fall through
             case CommsMACE::MavlinkConfiguration::MavlinkVersion::MavlinkVersionAlways2:
                 maceStatus->flags &= ~MACE_STATUS_FLAG_OUT_MACE1;
                 break;
@@ -363,7 +363,7 @@ void CommsMACEHelper::ConfigureMACEComms(const std::shared_ptr<MaceCore::ModuleP
                     maceStatus->flags |= MACE_STATUS_FLAG_OUT_MACE1;
                     break;
                 }
-                // Fallthrough to set version 2
+                // fall through
             case CommsMACE::MavlinkConfiguration::MavlinkVersion::MavlinkVersionAlways2:
                 maceStatus->flags &= ~MACE_STATUS_FLAG_OUT_MACE1;
                 break;

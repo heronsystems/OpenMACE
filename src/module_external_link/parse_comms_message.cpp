@@ -26,8 +26,8 @@ void ModuleExternalLink::ParseForData(const mace_message_t* message){
     {
         mace_vehicle_sync_t decodedMSG;
         mace_msg_vehicle_sync_decode(message,&decodedMSG);
-        if(mLog)
-            mLog->debug("External link saw a request to sync its data to a remote instance.");
+//        if(mLog)
+//            mLog->debug("External link saw a request to sync its data to a remote instance.");
 
         MaceCore::ModuleCharacteristic module = this->getDataObject()->GetVehicleFromMAVLINKID(decodedMSG.target_system);
 

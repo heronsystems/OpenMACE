@@ -11,6 +11,7 @@ const MaceCore::TopicComponentStructure DataGenericItemTopicHeartbeat_structure 
     structure.AddTerminal<Data::MissionExecutionState>("missionState");
     structure.AddTerminal<bool>("maceCompanion");
     structure.AddTerminal<uint8_t>("mavlinkID");
+    structure.AddTerminal<Data::MACEHSMState>("currentHSMState");
     return structure;
 }();
 
@@ -22,6 +23,7 @@ MaceCore::TopicDatagram DataGenericItemTopic_Heartbeat::GenerateDatagram() const
     datagram.AddTerminal<Data::MissionExecutionState>("missionState", missionState);
     datagram.AddTerminal<bool>("maceCompanion", maceCompanion);
     datagram.AddTerminal<uint8_t>("mavlinkID", mavlinkID);
+    datagram.AddTerminal<Data::MACEHSMState>("currentHSMState", currentHSMState);
     return datagram;
 }
 
@@ -32,6 +34,7 @@ void DataGenericItemTopic_Heartbeat::CreateFromDatagram(const MaceCore::TopicDat
     missionState = datagram.GetTerminal<Data::MissionExecutionState>("missionState");
     maceCompanion = datagram.GetTerminal<bool>("maceCompanion");
     mavlinkID = datagram.GetTerminal<uint8_t>("mavlinkID");
+    currentHSMState = datagram.GetTerminal<Data::MACEHSMState>("currentHSMState");
 }
 
 DataGenericItemTopic_Heartbeat::DataGenericItemTopic_Heartbeat()

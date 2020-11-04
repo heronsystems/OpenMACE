@@ -59,6 +59,9 @@ INCLUDEPATH += $$PWD/../../speedLog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
 # Windows lib install
 lib.path    = $$(MACE_ROOT)/lib
 win32:CONFIG(release, debug|release):       lib.files   += release/controllers.lib release/controllers.dll

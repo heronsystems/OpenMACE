@@ -21,11 +21,13 @@
 
 #include "../abstract_command_item.h"
 
+#include "data/jsonconverter.h"
+
 namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractSpatialAction);
 
-class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>
+class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>, public JSONConverter
 {
 public:
     AbstractSpatialAction():
@@ -61,6 +63,13 @@ public:
         }
     }
 
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const override
+    {
+        QJsonObject json = toJSON_base(vehicleID,dataType);
+        getPosition()->updateQJSONObject(json);
+        return json;
+    }
+
     virtual bool hasSpatialInfluence() const override
     {
         return true;
@@ -73,9 +82,9 @@ public:
 
     void setPosition(const mace::pose::Position* pos)
     {
-        if(position != nullptr) //first delete and clear the current position
+        if(position != nullptr){ //first delete and clear the current position
             delete position; position = nullptr;
-
+        }
         position = pos->getPositionalClone();
     }
 
@@ -132,8 +141,9 @@ public:
 
         AbstractCommandItem::operator =(rhs);
 
-        if(this->position != nullptr)
+        if(this->position != nullptr){
             delete position; position = nullptr;
+        }
 
         if(rhs.position != nullptr)
         {

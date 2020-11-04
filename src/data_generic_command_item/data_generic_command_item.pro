@@ -68,6 +68,7 @@ SOURCES += \
     target_items/abstract_dynamic_target.cpp \
     do_items/action_message_request.cpp
 HEADERS +=\
+    boundary_items/environment_boundary.h \
     do_items/action_arm.h \
     do_items/action_change_mode.h \
     do_items/action_change_speed.h \
@@ -139,6 +140,9 @@ include(../headerinstall.pri)
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

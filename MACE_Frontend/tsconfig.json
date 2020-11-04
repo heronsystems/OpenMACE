@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "es6",
+    "noImplicitAny": false,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "allowJs": false,
+    "jsx": "react",
+    "target": "ES6",
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./src/data-types"]
+  },
+  "compileOnSave": true,
+  "include": ["src/**/*.ts", "src/**/*.tsx", "main.ts"],
+  "exclude": ["node_modules"]
+}

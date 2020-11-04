@@ -51,10 +51,14 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
             mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
             if(castPosition->getCartesianCoordinateFrame() == mace::CartesianFrameTypes::CF_LOCAL_NED) //if not in the body frame we can move it
                 castPosition->applyTransformation(m_vehicleHomeTOswarm);
-            if(castPosition->hasXBeenSet())
-                mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
-            if(castPosition->hasYBeenSet())
-                mavlinkItem.y = static_cast<float>(castPosition->getYPosition()); bitArray = (bitArray & (~2));
+            if(castPosition->hasXBeenSet()) {
+                mavlinkItem.x = static_cast<float>(castPosition->getXPosition());
+                bitArray = (bitArray & (~1));
+            }
+            if(castPosition->hasYBeenSet()) {
+                mavlinkItem.y = static_cast<float>(castPosition->getYPosition());
+                bitArray = (bitArray & (~2));
+            }
         }
         else if(currentTarget.getPosition()->is3D())
         {
@@ -62,12 +66,18 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
             mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castPosition->getExplicitCoordinateFrame());
             if(castPosition->getCartesianCoordinateFrame() == mace::CartesianFrameTypes::CF_LOCAL_NED) //if not in the body frame we can move it
                 castPosition->applyTransformation(m_vehicleHomeTOswarm);
-            if(castPosition->hasXBeenSet())
-                mavlinkItem.x = static_cast<float>(castPosition->getXPosition()); bitArray = (bitArray & (~1));
-            if(castPosition->hasYBeenSet())
-                mavlinkItem.y = static_cast<float>(castPosition->getYPosition()); bitArray = (bitArray & (~2));
-            if(castPosition->hasZBeenSet())
-                mavlinkItem.z = static_cast<float>(castPosition->getAltitude());  bitArray = (bitArray & (~4));
+            if(castPosition->hasXBeenSet()) {
+                mavlinkItem.x = static_cast<float>(castPosition->getXPosition());
+                bitArray = (bitArray & (~1));
+            }
+            if(castPosition->hasYBeenSet()) {
+                mavlinkItem.y = static_cast<float>(castPosition->getYPosition());
+                bitArray = (bitArray & (~2));
+            }
+            if(castPosition->hasZBeenSet()) {
+                mavlinkItem.z = static_cast<float>(castPosition->getAltitude());
+                bitArray = (bitArray & (~4));
+            }
             std::cout<<"The target position is: "<<*castPosition<<std::endl;
         }
     }
@@ -77,22 +87,32 @@ void ControllerGuidedTargetItem_Local::FillTargetItem(const command_target::Dyna
     {
         if(currentTarget.getVelocity()->is2D())
         {
-            mace::pose::Cartesian_Velocity2D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Cartesian_Velocity2D>();
-            if(castVelocity->hasXBeenSet())
-                mavlinkItem.vx = static_cast<float>(castVelocity->getXVelocity()); bitArray = (bitArray & (~8));
-            if(castVelocity->hasYBeenSet())
-                mavlinkItem.vy = static_cast<float>(castVelocity->getYVelocity()); bitArray = (bitArray & (~16));
+            mace::pose::Velocity_Cartesian2D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Velocity_Cartesian2D>();
+            if(castVelocity->hasXBeenSet()) {
+                mavlinkItem.vx = static_cast<float>(castVelocity->getXVelocity());
+                bitArray = (bitArray & (~8));
+            }
+            if(castVelocity->hasYBeenSet()) {
+                mavlinkItem.vy = static_cast<float>(castVelocity->getYVelocity());
+                bitArray = (bitArray & (~16));
+            }
         }
         else if(currentTarget.getVelocity()->is3D())
         {
-            mace::pose::Cartesian_Velocity3D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Cartesian_Velocity3D>();
+            mace::pose::Velocity_Cartesian3D* castVelocity = currentTarget.getVelocity()->velocityAs<mace::pose::Velocity_Cartesian3D>();
             mavlinkItem.coordinate_frame = getMAVLINKCoordinateFrame(castVelocity->getExplicitCoordinateFrame());
-            if(castVelocity->hasXBeenSet())
-                mavlinkItem.vx = static_cast<float>(castVelocity->getXVelocity()); bitArray = (bitArray & (~8));
-            if(castVelocity->hasYBeenSet())
-                mavlinkItem.vy = static_cast<float>(castVelocity->getYVelocity()); bitArray = (bitArray & (~16));
-            if(castVelocity->hasZBeenSet())
-                mavlinkItem.vz = static_cast<float>(castVelocity->getZVelocity()); bitArray = (bitArray & (~32));
+            if(castVelocity->hasXBeenSet()) {
+                mavlinkItem.vx = static_cast<float>(castVelocity->getXVelocity());
+                bitArray = (bitArray & (~8));
+            }
+            if(castVelocity->hasYBeenSet()) {
+                mavlinkItem.vy = static_cast<float>(castVelocity->getYVelocity());
+                bitArray = (bitArray & (~16));
+            }
+            if(castVelocity->hasZBeenSet()) {
+                mavlinkItem.vz = static_cast<float>(castVelocity->getZVelocity());
+                bitArray = (bitArray & (~32));
+            }
         }
     }
 

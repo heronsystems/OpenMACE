@@ -1,11 +1,15 @@
-#include "guitomace.h"
+﻿#include "guitomace.h"
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234),
     goalSpace(nullptr),
-    m_goalSampler(nullptr)
+    m_goalSampler(nullptr),
+    m_udpConfig("127.0.0.1", 5678, m_sendAddress.toString().toStdString(), m_sendPort)
 {
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
+
     m_parent = ptrRef;
     goalSpace = std::make_shared<mace::state_space::Cartesian2DSpace>();
     mace::state_space::Cartesian2DSpaceBounds bounds(-20,20,-10,10);
@@ -16,9 +20,13 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
-    m_sendPort(sendPort)
+    m_sendPort(sendPort),
+    m_udpConfig("127.0.0.1", 5678, sendAddress.toString().toStdString(), sendPort)
 {
     m_parent = ptrRef;
+
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
 }
 
 GUItoMACE::~GUItoMACE() {
@@ -45,29 +53,33 @@ void GUItoMACE::setSendPort(const int &sendPort) {
 //!
 void GUItoMACE::getEnvironmentBoundary() {
     std::shared_ptr<const MaceCore::MaceData> data = m_parent->getDataObject();
-    std::vector<mace::pose::GeodeticPosition_2D> environmentVertices = data->GetEnvironmentBoundary();
+    if (data->EnvironmentBoundarySet()) {
+        BoundaryItem::EnvironmentBoundary environmentBoundary = data->GetEnvironmentBoundary();
 
-    QJsonObject json;
-    json["dataType"] = "EnvironmentBoundary";
-    json["vehicleID"] = 0;
+        QJsonObject json;
+        json["message_type"] = QString::fromStdString(guiMessageString(GuiMessageTypes::ENVIRONMENT_BOUNDARY));
+        json["boundary_name"] = QString::fromStdString(environmentBoundary.getName());
+        json["boundary_type"] = QString::fromStdString(environmentBoundary.getType());
 
-    QJsonArray verticies;
-    for(auto&& vertex : environmentVertices) {
-        QJsonObject obj;
-        obj["lat"] = vertex.getLatitude();
-        obj["lng"] = vertex.getLongitude();
-        obj["alt"] = 0.0;
+        QJsonArray vertices;
+        for(auto&& vertex : environmentBoundary.getVertices()) {
+            QJsonObject obj;
+            obj["lat"] = vertex.getLatitude();
+            obj["lng"] = vertex.getLongitude();
+            obj["alt"] = 0.0;
 
-        verticies.push_back(obj);
-    }
+            vertices.push_back(obj);
+        }
 
-    json["environmentBoundary"] = verticies;
+        json["vertices"] = vertices;
 
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+        QJsonDocument doc(json);
+        //    bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
-    if(!bytesWritten){
-        std::cout << "Write environment boundary failed..." << std::endl;
+        if(!bytesWritten){
+            std::cout << "Write environment boundary failed..." << std::endl;
+        }
     }
 }
 
@@ -87,7 +99,8 @@ void GUItoMACE::getGlobalOrigin()
     json["gridSpacing"] = m_parent->getDataObject()->GetGridSpacing();
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write global origin failed..." << std::endl;
@@ -99,15 +112,14 @@ void GUItoMACE::getGlobalOrigin()
 //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
 //! \param jsonObj JSON data containing the new vehicle home data
 //!
-void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonObject &jsonObj)
+void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonDocument &data)
 {
     command_item::SpatialHome tmpHome;
     tmpHome.setTargetSystem(vehicleID);
-    QJsonObject position = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-
-    mace::pose::GeodeticPosition_3D homePosition(position.value("lat").toDouble(),
-                                                 position.value("lng").toDouble(),
-                                                 position.value("alt").toDouble());
+    double referenceAlt =  m_parent->getDataObject()->GetVehicleHomePostion(vehicleID).getPosition()->getDataVector().z();
+    mace::pose::GeodeticPosition_3D homePosition(data["lat"].toDouble(),
+                                                 data["lng"].toDouble(),
+                                                 data["alt"].toDouble() + referenceAlt); // TODO-PAT/AARON: Figure out a more robust way to handle the home position altitude conversion
     tmpHome.setPosition(&homePosition);
 
     std::stringstream buffer;
@@ -124,14 +136,15 @@ void GUItoMACE::setVehicleHome(const int &vehicleID, const QJsonObject &jsonObj)
 //! \brief setGlobalOrigin GUI command to set a new global origin position
 //! \param jsonObj JSON data containing the new global origin data
 //!
-void GUItoMACE::setGlobalOrigin(const QJsonObject &jsonObj)
+void GUItoMACE::setGlobalOrigin(const QJsonDocument &data)
 {
-    QJsonObject position = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-
     mace::pose::GeodeticPosition_3D origin;
-    origin.setLatitude(position.value("lat").toDouble());
-    origin.setLongitude(position.value("lng").toDouble());
-    origin.setAltitude(position.value("alt").toDouble());
+    origin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
+    origin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
+
+    origin.setLatitude(data["lat"].toDouble());
+    origin.setLongitude(data["lng"].toDouble());
+    origin.setAltitude(data["alt"].toDouble());
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr) {
         ptr->Event_SetGlobalOrigin(m_parent, origin);
@@ -142,42 +155,40 @@ void GUItoMACE::setGlobalOrigin(const QJsonObject &jsonObj)
 //! \brief setEnvironmentVertices GUI command to set new environment boundary vertices
 //! \param jsonObj JSON data containing the new environment vertices
 //!
-void GUItoMACE::setEnvironmentVertices(const QJsonObject &jsonObj)
+void GUItoMACE::setEnvironmentVertices(const QJsonDocument &data)
 {
-    BoundaryItem::BoundaryList operationalBoundary;
+    UNUSED(data);
+//    BoundaryItem::BoundaryList operationalBoundary;
 
-    mace::pose::GeodeticPosition_3D origin = m_parent->getDataObject()->GetGlobalOrigin();
+//    mace::pose::GeodeticPosition_3D origin = m_parent->getDataObject()->GetGlobalOrigin();
 
-    QJsonObject tmpBoundaryObj = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-    QJsonArray boundary = tmpBoundaryObj.value("boundary").toArray();
+//    foreach(const QJsonValue & v, data) {
+//        std::cout << "Lat: " << v.toObject().value("lat").toDouble() << " / Lon: " << v.toObject().value("lng").toDouble() << std::endl;
+//        double tmpLat = v.toObject().value("lat").toDouble();
+//        double tmpLon = v.toObject().value("lng").toDouble();
+//        double tmpAlt = v.toObject().value("alt").toDouble();
 
-    foreach(const QJsonValue & v, boundary) {
-        std::cout << "Lat: " << v.toObject().value("lat").toDouble() << " / Lon: " << v.toObject().value("lng").toDouble() << std::endl;
-        double tmpLat = v.toObject().value("lat").toDouble();
-        double tmpLon = v.toObject().value("lng").toDouble();
-        double tmpAlt = v.toObject().value("alt").toDouble();
+//        mace::pose::GeodeticPosition_3D vertexGlobal(tmpLat,tmpLon,tmpAlt);
+//        mace::pose::CartesianPosition_3D vertexLocal3D;
 
-        mace::pose::GeodeticPosition_3D vertexGlobal(tmpLat,tmpLon,tmpAlt);
-        mace::pose::CartesianPosition_3D vertexLocal3D;
+//        if(origin.isAnyPositionValid()) {
+//            mace::pose::DynamicsAid::GlobalPositionToLocal(&origin,&vertexGlobal,&vertexLocal3D);
+//            mace::pose::CartesianPosition_2D vertexLocal2D(vertexLocal3D.getXPosition(),vertexLocal3D.getYPosition());
 
-        if(origin.isAnyPositionValid()) {
-            mace::pose::DynamicsAid::GlobalPositionToLocal(&origin,&vertexGlobal,&vertexLocal3D);
-            mace::pose::CartesianPosition_2D vertexLocal2D(vertexLocal3D.getXPosition(),vertexLocal3D.getYPosition());
+//            operationalBoundary.appendVertexItem(&vertexLocal2D);
+//        }
+//    }
 
-            operationalBoundary.appendVertexItem(&vertexLocal2D);
-        }
-    }
+//    BoundaryItem::BoundaryCharacterisic key(BoundaryItem::BOUNDARYTYPE::OPERATIONAL_FENCE);
 
-    BoundaryItem::BoundaryCharacterisic key(BoundaryItem::BOUNDARYTYPE::OPERATIONAL_FENCE);
+//    if(operationalBoundary.getQueueSize() > 0) {
+//        m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr) {
+//            ptr->Event_SetBoundary(m_parent, key, operationalBoundary);
+//        });
+//    }
 
-    if(operationalBoundary.getQueueSize() > 0) {
-        m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr) {
-            ptr->Event_SetBoundary(m_parent, key, operationalBoundary);
-        });
-    }
-
-    // Get and send vertices to the GUI:
-    getEnvironmentBoundary();
+//    // Get and send vertices to the GUI:
+//    getEnvironmentBoundary();
 }
 
 //!
@@ -185,7 +196,7 @@ void GUItoMACE::setEnvironmentVertices(const QJsonObject &jsonObj)
 //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
 //! \param jsonObj JSON data containing the "go here" position
 //!
-void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
+void GUItoMACE::setGoHere(const int &vehicleID, const QJsonDocument &data)
 {
     // TODO:
     std::cout << "Go here command issued" << std::endl;
@@ -197,11 +208,9 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
     command_item::SpatialWaypointPtr spatialAction = std::make_shared<command_item::SpatialWaypoint>(vehicleID);
 //    spatialAction->getPosition().setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
 
-    QJsonObject vehicleCommand = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-
-    mace::pose::GeodeticPosition_3D goPosition(vehicleCommand.value("lat").toDouble(),
-                                               vehicleCommand.value("lon").toDouble(),
-                                               10.0);
+    mace::pose::GeodeticPosition_3D goPosition(data["lat"].toDouble(),
+                                               data["lng"].toDouble(),
+                                               data["alt"].toDouble()); // TODO: Either set altitude from GUI or stay at same altitude as vehicle
     spatialAction->setPosition(&goPosition);
     cmdGoTo.setSpatialAction(spatialAction);
 
@@ -215,20 +224,18 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonObject &jsonObj)
 //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
 //! \param jsonObj JSON data containing the takeoff position and altitude
 //!
-void GUItoMACE::takeoff(const int &vehicleID, const QJsonObject &jsonObj)
+void GUItoMACE::takeoff(const int &vehicleID, const QJsonDocument &data)
 {
     command_item::SpatialTakeoff newTakeoff;
-    QJsonObject vehicleCommand = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-    QJsonObject position = vehicleCommand["takeoffPosition"].toObject();
-    bool latLonFlag = vehicleCommand["latLonFlag"].toBool();
+    bool latLonFlag = data["latLonFlag"].toBool();
 
     mace::pose::GeodeticPosition_3D takeoffPosition;
 
     if(latLonFlag) {
-        takeoffPosition.setLatitude(position.value("lat").toDouble());
-        takeoffPosition.setLongitude(position.value("lon").toDouble());
+        takeoffPosition.setLatitude(data["takeoffPosition"]["lat"].toDouble());
+        takeoffPosition.setLongitude(data["takeoffPosition"]["lng"].toDouble());
     }
-    takeoffPosition.setAltitude(position.value("alt").toDouble());
+    takeoffPosition.setAltitude(data["takeoffPosition"]["alt"].toDouble());
     newTakeoff.setPosition(&takeoffPosition);
     newTakeoff.setTargetSystem(vehicleID);
 
@@ -247,15 +254,20 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonObject &jsonObj)
 //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
 //! \param jsonObj JSON data containing the command to be issued
 //!
-void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
-{    
-    if(jsonObj["vehicleCommand"] == "FORCE_DATA_SYNC") {
+bool GUItoMACE::issuedCommand(const std::string &command, const int &vehicleID, const QJsonDocument &data)
+{
+    if(command == "FORCE_DATA_SYNC") {
 //        mLogs->debug("Module Ground Station issuing command force data sync to system " + std::to_string(vehicleID) + ".");
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
             ptr->Event_ForceVehicleDataSync(m_parent, vehicleID);
         });
+        return true;
     }
-    else if(jsonObj["vehicleCommand"] == "RTL") {
+    else if(command == "TAKEOFF"){
+        takeoff(vehicleID, data);
+        return true;
+    }
+    else if(command == "RTL") {
 //        mLogs->debug("Module Ground Station issuing command RTL to system " + std::to_string(vehicleID) + ".");
         command_item::SpatialRTL rtlCommand;
         rtlCommand.setTargetSystem(vehicleID);
@@ -264,8 +276,9 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
             ptr->Event_IssueCommandRTL(m_parent, rtlCommand);
         });
+        return true;
     }
-    else if(jsonObj["vehicleCommand"] == "LAND") {
+    else if(command == "LAND") {
 //        mLogs->debug("Module Ground Station issuing land command to system " + std::to_string(vehicleID) + ".");
         command_item::SpatialLand landCommand;
         landCommand.setTargetSystem(vehicleID);
@@ -274,8 +287,9 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
             ptr->Event_IssueCommandLand(m_parent, landCommand);
         });
+        return true;
     }
-    else if(jsonObj["vehicleCommand"] == "AUTO_START") {
+    else if(command == "START_MISSION") {
 //        mLogs->debug("Module Ground Station issuing mission start command to system " + std::to_string(vehicleID) + ".");
         command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionStart();
@@ -285,8 +299,9 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
             ptr->Event_IssueMissionCommand(m_parent, missionCommand);
         });
+        return true;
     }
-    else if(jsonObj["vehicleCommand"] == "AUTO_PAUSE") {
+    else if(command== "PAUSE_MISSION") {
 //        mLogs->debug("Module Ground Station issuing mission pause command to system " + std::to_string(vehicleID) + ".");
         command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionPause();
@@ -296,8 +311,9 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
             ptr->Event_IssueMissionCommand(m_parent, missionCommand);
         });
+        return true;
     }
-    else if(jsonObj["vehicleCommand"] == "AUTO_RESUME") {
+    else if(command == "RESUME_MISSION") {
 //        mLogs->debug("Module Ground Station issuing mission resume command to system " + std::to_string(vehicleID) + ".");
         command_item::ActionMissionCommand missionCommand;
         missionCommand.setMissionResume();
@@ -307,7 +323,10 @@ void GUItoMACE::issueCommand(const int &vehicleID, const QJsonObject &jsonObj)
         m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
             ptr->Event_IssueMissionCommand(m_parent, missionCommand);
         });
+        return true;
     }
+
+    return false;
 
 }
 
@@ -376,17 +395,17 @@ void GUItoMACE::getConnectedVehicles()
 {
 //    mLogs->debug("Module Ground Station saw a request for getting connected vehicles.");
 
-    std::shared_ptr<const MaceCore::MaceData> data = m_parent->getDataObject();
+    std::shared_ptr<const MaceCore::MaceData> macedata = m_parent->getDataObject();
     std::vector<unsigned int> vehicleIDs;
-    data->GetAvailableVehicles(vehicleIDs);           
+    macedata->GetAvailableVehicles(vehicleIDs);
 
     QJsonArray ids;
     QJsonArray modes;
     if(vehicleIDs.size() > 0){
-        for (const int& i : vehicleIDs) {
-            ids.append(i);
+        for (const uint& i : vehicleIDs) {
+            ids.append((int)i);
             std::string mode;
-            data->GetVehicleFlightMode(i, mode);
+            macedata->GetVehicleFlightMode(i, mode);
             modes.append(QString::fromStdString(mode));
         }
     }
@@ -404,7 +423,8 @@ void GUItoMACE::getConnectedVehicles()
     json["connectedVehicles"] = connectedVehicles;
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write New Vehicle Data failed..." << std::endl;
@@ -438,13 +458,11 @@ void GUItoMACE::getVehicleHome(const int &vehicleID)
 //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
 //! \param jsonObj JSON data containing the new vehicle arm status
 //!
-void GUItoMACE::setVehicleArm(const int &vehicleID, const QJsonObject &jsonObj)
+void GUItoMACE::setVehicleArm(const int &vehicleID, const QJsonDocument &data)
 {
     command_item::ActionArm tmpArm;
     tmpArm.setTargetSystem(vehicleID); // the vehicle ID coordinates to the specific vehicle //vehicle 0 is reserved for all connected vehicles
-
-    QJsonObject arm = QJsonDocument::fromJson(jsonObj["vehicleCommand"].toString().toUtf8()).object();
-    tmpArm.setVehicleArm(arm.value("arm").toBool());
+    tmpArm.setVehicleArm(data["arm"].toBool());
 
     std::stringstream buffer;
     buffer << tmpArm;
@@ -461,11 +479,11 @@ void GUItoMACE::setVehicleArm(const int &vehicleID, const QJsonObject &jsonObj)
 //! \param vehicleID Vehicle ID that the command is initated from (0 = all vehicles)
 //! \param jsonObj JSON data containing the new vehicle mode
 //!
-void GUItoMACE::setVehicleMode(const int &vehicleID, const QJsonObject &jsonObj)
+void GUItoMACE::setVehicleMode(const int &vehicleID, const QJsonDocument &data)
 {
     command_item::ActionChangeMode tmpMode;
     tmpMode.setTargetSystem(vehicleID); // the vehicle ID coordinates to the specific vehicle //vehicle 0 is reserved for all connected vehicles
-    tmpMode.setRequestMode(jsonObj["vehicleCommand"].toString().toStdString()); //where the string here is the desired Flight Mode...available modes can be found in the appropriate topic
+    tmpMode.setRequestMode(data["mode"].toString().toStdString()); //where the string here is the desired Flight Mode...available modes can be found in the appropriate topic
     std::cout<<"We are changing the vehicle mode as issued by the GUI: "<<tmpMode.getRequestMode()<<std::endl;
 
     m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
@@ -497,75 +515,94 @@ void GUItoMACE::setVehicleMode(const int &vehicleID, const QJsonObject &jsonObj)
 //!
 void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 {
-    QString command = jsonObj["tcpCommand"].toString();
-    int vehicleID = jsonObj["vehicleID"].toInt();
+    qDebug() << jsonObj;
 
-    QByteArray data;
-    if(command == "SET_VEHICLE_MODE")
+    std::string command = jsonObj["command"].toString().toStdString();
+    QJsonArray aircraft = jsonObj["aircraft"].toArray();
+    QJsonArray data = jsonObj["data"].toArray();
+
+
+    int vehicleID = 0;
+    bool isVehicleCommand = false;
+    // Handle "global" (or non-vehicle specific) commands:
+    QJsonDocument tmpDoc = QJsonDocument::fromJson(data[0].toString().toUtf8());
+    if (command == "SET_SWARM_ORIGIN")
     {
-        setVehicleMode(vehicleID, jsonObj);
+        setGlobalOrigin(tmpDoc);
     }
-    else if(command == "ISSUE_COMMAND")
+    else if (command == "SET_ENVIRONMENT_VERTICES")
     {
-        issueCommand(vehicleID, jsonObj);
+        setEnvironmentVertices(tmpDoc);
     }
-    else if(command == "SET_VEHICLE_HOME")
-    {
-        setVehicleHome(vehicleID, jsonObj);
-    }
-    else if(command == "SET_GLOBAL_ORIGIN")
-    {
-        setGlobalOrigin(jsonObj);
-    }
-    else if(command == "SET_ENVIRONMENT_VERTICES")
-    {
-        setEnvironmentVertices(jsonObj);
-    }
-    else if(command == "SET_VEHICLE_ARM")
-    {
-        setVehicleArm(vehicleID, jsonObj);
-    }
-    else if(command == "SET_GO_HERE")
-    {
-        setGoHere(vehicleID, jsonObj);
-    }
-    else if(command == "GET_VEHICLE_MISSION")
-    {
-        getVehicleMission(vehicleID);
-    }
-    else if(command == "GET_CONNECTED_VEHICLES")
+    else if (command == "GET_CONNECTED_VEHICLES")
     {
         getConnectedVehicles();
     }
-    else if(command == "GET_VEHICLE_HOME")
-    {
-        getVehicleHome(vehicleID);
-    }
-    else if(command == "TEST_FUNCTION1")
+    else if (command == "TEST_FUNCTION1")
     {
         testFunction1(vehicleID);
     }
-    else if(command == "TEST_FUNCTION2")
+    else if (command == "TEST_FUNCTION2")
     {
         testFunction2(vehicleID);
     }
-    else if(command == "VEHICLE_TAKEOFF")
-    {
-        takeoff(vehicleID, jsonObj);
-    }
-    else if(command == "GET_ENVIRONMENT_BOUNDARY")
+    else if (command == "GET_ENVIRONMENT_BOUNDARY")
     {
         getEnvironmentBoundary();
     }
-    else if(command == "GET_GLOBAL_ORIGIN")
+    else if (command == "GET_GLOBAL_ORIGIN")
     {
         getGlobalOrigin();
     }
-    else
-    {
-        std::cout << "Command " << command.toStdString() << " not recognized." << std::endl;
-        data = "command_not_recognized";
-        return;
+    else {
+        isVehicleCommand = true;
+    }
+
+    int counter = 0;
+    // Handle vehicle-specific commands:
+    if(isVehicleCommand) {
+        foreach (const QJsonValue &agent, aircraft)
+        {
+            vehicleID = agent.toString().toInt();
+
+            QJsonDocument tmpDoc = QJsonDocument::fromJson(data[counter].toString().toUtf8());
+            qDebug() << "Agent: " << vehicleID;
+            qDebug() << tmpDoc;
+
+            if(issuedCommand(command, vehicleID, tmpDoc))
+            {
+            }
+            else if (command == "SET_VEHICLE_MODE")
+            {
+                setVehicleMode(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_VEHICLE_HOME")
+            {
+                setVehicleHome(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_VEHICLE_ARM")
+            {
+                setVehicleArm(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_GO_HERE")
+            {
+                setGoHere(vehicleID, tmpDoc);
+            }
+            else if (command == "GET_VEHICLE_MISSION")
+            {
+                getVehicleMission(vehicleID);
+            }
+            else if (command == "GET_VEHICLE_HOME")
+            {
+                getVehicleHome(vehicleID);
+            }
+            else {
+                std::cout << "Command " << command << " not recognized." << std::endl;
+                return;
+            }
+
+            counter++;
+        }
     }
 }
 
@@ -593,4 +630,24 @@ bool GUItoMACE::writeTCPData(QByteArray data)
         tcpSocket->close();
         return false;
     }
+}
+
+//!
+//! \brief writeUDPData Write data to the MACE GUI via UDP
+//! \param data Data to be sent to the MACE GUI
+//! \return True: success / False: failure
+//!
+bool GUItoMACE::writeUDPData(QByteArray data)
+{
+    // TODO: implement
+    // Use UdpLink
+    if(m_udpLink->isConnected()) {
+        m_udpLink->WriteBytes(data, data.length());
+    }
+    else {
+        std::cout << "UDP Link not connected..." << std::endl;
+        return false;
+    }
+
+    return true;
 }

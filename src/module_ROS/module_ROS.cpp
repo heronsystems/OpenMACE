@@ -30,10 +30,10 @@ ModuleROS::ModuleROS() :
     m_PlanningStateTopic("planningState"),
     m_VehicleDataTopic("vehicleData"),
     m_MapTopic("mappingData"),
+    m_CompressedMapCalculation([this](const std::shared_ptr<mace::maps::Data2DGrid<mace::maps::OccupiedResult>> &map){this->NewlyCompressedOccupancyMap(*map);}),
     #ifdef ROS_EXISTS
-        m_OccupancyMapCalculation([this](const std::shared_ptr<octomap::OcTree> &tree){this->renderOccupancyMap(tree);}),
+        m_OccupancyMapCalculation([this](const std::shared_ptr<octomap::OcTree> &tree){this->renderOccupancyMap(tree);})
     #endif
-    m_CompressedMapCalculation([this](const std::shared_ptr<mace::maps::Data2DGrid<mace::maps::OccupiedResult>> &map){this->NewlyCompressedOccupancyMap(*map);})
 {
     //m_tfListener = std::make_shared<tf2_ros::TransformListener>(m_tfBuffer);
 }
@@ -148,6 +148,8 @@ void ModuleROS::ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterV
 
 void ModuleROS::setPublishers(std::string unparsedPublishers)
 {
+    UNUSED(unparsedPublishers);
+
 //    std::string nextPub;
 //    std::vector<std::string> publishers;
 //    // For each character in the string
@@ -184,7 +186,10 @@ void ModuleROS::setPublishers(std::string unparsedPublishers)
 //!
 void ModuleROS::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName);
+    UNUSED(sender);
+    UNUSED(data);
+    UNUSED(target);
 }
 
 
@@ -200,6 +205,8 @@ void ModuleROS::NewTopicData(const std::string &topicName, const MaceCore::Modul
 //!
 void ModuleROS::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
     int senderID = sender.ModuleID;
     if(topicName == m_PlanningStateTopic.Name())
     {
@@ -269,6 +276,8 @@ void ModuleROS::NewTopicSpooled(const std::string &topicName, const MaceCore::Mo
 //!
 void ModuleROS::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
+
     std::cout<<"The ROS module is going to see a new vehicle"<<std::endl;
     // If vehicle does not exist in our map, insert into the map
     insertVehicleIfNotExist(vehicleID);
@@ -309,9 +318,9 @@ void ModuleROS::NewlyCompressedOccupancyMap(const mace::maps::Data2DGrid<mace::m
     occupancyGrid.info.origin.orientation.w = 1.0;
 
     occupancyGrid.data.resize(map.getNodeCount());
-    const float cellMin = 0;
-    const float cellMax = 100;
-    const float cellRange = cellMax - cellMin;
+//    const float cellMin = 0;
+//    const float cellMax = 100;
+//    const float cellRange = cellMax - cellMin;
     mace::maps::GridMapIterator it(&map);
     for(;!it.isPastEnd();++it)
     {
@@ -348,6 +357,8 @@ void ModuleROS::NewlyCompressedOccupancyMap(const mace::maps::Data2DGrid<mace::m
 //!
 void ModuleROS::NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
+
 #ifdef ROS_EXISTS
     geometry_msgs::Point startPoint;
     geometry_msgs::Point endPoint;
@@ -356,7 +367,7 @@ void ModuleROS::NewlyAvailableBoundary(const uint8_t &key, const OptionalParamet
     this->getDataObject()->getBoundaryFromIdentifier(key, boundary);
 
     auto vertices = boundary.boundingPolygon.getVector();
-    for(int i = 1; i < vertices.size();i ++)
+    for(size_t i = 1; i < vertices.size();i ++)
     {
         startPoint.x = vertices.at(i-1).getXPosition();
         startPoint.y = vertices.at(i-1).getYPosition();
@@ -384,7 +395,7 @@ void ModuleROS::NewlyFoundPath(const std::vector<mace::state_space::StatePtr> &p
     geometry_msgs::Point startPoint;
     geometry_msgs::Point endPoint;
 
-    for(int i = 1; i < path.size();i ++)
+    for(size_t i = 1; i < path.size();i ++)
     {
         std::cout<<"X: "<<path[i]->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition()<<"Y: "<<path[i]->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition()<<std::endl;
 
@@ -474,6 +485,8 @@ void ModuleROS::insertVehicleIfNotExist(const int &vehicleID) {
 //!
 void ModuleROS::updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component)
 {
+    UNUSED(component);
+
 //    double roll = component->roll;
 //    double pitch = component->pitch;
 //    double yaw = component->yaw;
@@ -504,6 +517,8 @@ void ModuleROS::updateAttitudeData(const int &vehicleID, const std::shared_ptr<m
 //!
 void ModuleROS::updatePositionData(const int &vehicleID, const std::shared_ptr<pose_topics::Topic_CartesianPosition> &component)
 {
+    UNUSED(component);
+
 //    double x = component->getX();
 //    double y = component->getY();
 //    double z = component->getZ();
@@ -639,7 +654,7 @@ void ModuleROS::newLaserScan(const ros::MessageEvent<sensor_msgs::LaserScan cons
     std::cout << "  Range max: " << msg->range_max << std::endl;
 
     double minDistance = std::numeric_limits<double>::max();
-    for(int i = 0; i < msg->ranges.size(); i++) {
+    for(size_t i = 0; i < msg->ranges.size(); i++) {
         if(msg->ranges[i] < minDistance) {
             minDistance = msg->ranges[i];
         }
@@ -903,7 +918,9 @@ std_msgs::ColorRGBA ModuleROS::generateColorHeight(double height)
 //! \brief convertToGazeboCartesian Convert position in local frame to Gazebo's world frame
 //! \param localPos MACE local position
 //!
-void ModuleROS::convertToGazeboCartesian(mace::pose::CartesianPosition_3D& localPos) {
+void ModuleROS::convertToGazeboCartesian(mace::pose::CartesianPosition_3D& localPos)
+{
+    UNUSED(localPos);
 
 //    switch (localPos.getCoordinateFrame()) {
 //    case Data::CoordinateFrameType::CF_GLOBAL:
@@ -982,6 +999,8 @@ bool ModuleROS::publishVehiclePose(const int &vehicleID) {
 //    }
 
     ros::spinOnce();
+
+    return true;
 }
 
 //!

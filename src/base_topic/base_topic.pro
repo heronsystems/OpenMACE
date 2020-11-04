@@ -35,7 +35,8 @@ SOURCES += \
     pose/topic_altitude.cpp \
     pose/topic_agent_orientation.cpp \
     measurements/topic_airspeed.cpp \
-    measurements/topic_groundspeed.cpp
+    measurements/topic_groundspeed.cpp \
+    pose/topic_rotational_velocity.cpp
 
 HEADERS += \
     base_topic_global.h \
@@ -45,7 +46,8 @@ HEADERS += \
     pose/topic_cartesian_velocity.h \
     pose/topic_altitude.h \
     pose/topic_agent_orientation.h \
-    measurements/topic_speed.h
+    measurements/topic_speed.h \
+    pose/topic_rotational_velocity.h
 
 # Unix lib Install
 unix:!symbian {
@@ -68,6 +70,9 @@ include(../headerinstall.pri)
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

@@ -168,7 +168,7 @@ void CommsMAVLINK::ConfigureComms(const std::shared_ptr<MaceCore::ModuleParamete
                     mavlinkStatus->flags |= MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
                     break;
                 }
-                // Fallthrough to set version 2
+                // fall through
             case Comms::MavlinkConfiguration::MavlinkVersion::MavlinkVersionAlways2:
                 mavlinkStatus->flags &= ~MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
                 break;
@@ -222,7 +222,7 @@ void CommsMAVLINK::ConfigureComms(const std::shared_ptr<MaceCore::ModuleParamete
                     mavlinkStatus->flags |= MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
                     break;
                 }
-                // Fallthrough to set version 2
+                // fall through
             case Comms::MavlinkConfiguration::MavlinkVersion::MavlinkVersionAlways2:
                 mavlinkStatus->flags &= ~MAVLINK_STATUS_FLAG_OUT_MAVLINK1;
                 break;

@@ -57,7 +57,8 @@ bool OctomapWrapper::updateSensorProperties(const OctomapSensorDefinition &senso
 
 bool OctomapWrapper::updateProjectionProperties(const Octomap2DProjectionDefinition &projectionProperties)
 {
-
+    UNUSED(projectionProperties);
+    return false;
 }
 
 void OctomapWrapper::updateFromPointCloud(octomap::Pointcloud *pc, const pose::CartesianPosition_3D &position)

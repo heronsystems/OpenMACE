@@ -12,8 +12,6 @@
 
 #include "mace.h"
 
-#include "spdlog/spdlog.h"
-
 #include "common/common.h"
 
 #include "commsMACEHelper/comms_mace_helper.h"
@@ -104,26 +102,26 @@ public:
 
     ~ModuleExternalLink();
 
-    virtual std::vector<MaceCore::TopicCharacteristic> GetEmittedTopics();
+    virtual std::vector<MaceCore::TopicCharacteristic> GetEmittedTopics() override;
 
     //!
     //! \brief This module as been attached as a module
     //! \param ptr pointer to object that attached this instance to itself
     //!
-    virtual void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr);
+    virtual void AttachedAsModule(MaceCore::IModuleTopicEvents* ptr) override;
 
     //!
     //! \brief Describes the strucure of the parameters for this module
     //! \return Strucure
     //!
-    virtual std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const;
+    virtual std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleConfigurationStructure() const override;
 
 
     //!
     //! \brief Provides object contains parameters values to configure module with
     //! \param params Parameters to configure
     //!
-    virtual void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params);
+    virtual void ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params) override;
 
 
     //!
@@ -137,17 +135,17 @@ public:
 
     std::string createLog(const unsigned int &systemID);
 
-    virtual void TransmitMessage(const mace_message_t &msg, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) const;
+    virtual void TransmitMessage(const mace_message_t &msg, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) const override;
 
-    virtual MaceCore::ModuleCharacteristic GetKeyFromSecondaryID(int ID) const;
+    virtual MaceCore::ModuleCharacteristic GetKeyFromSecondaryID(int ID) const override;
 
-    virtual MaceCore::ModuleCharacteristic GetHostKey() const;
+    virtual MaceCore::ModuleCharacteristic GetHostKey() const override;
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /// The following are public virtual functions imposed from the Heartbeat Controller
     /// Interface via callback functionality.
     ///////////////////////////////////////////////////////////////////////////////////////
-    void cbiHeartbeatController_transmitCommand(const mace_heartbeat_t &heartbeat);
+    void cbiHeartbeatController_transmitCommand(const mace_heartbeat_t &heartbeat) override;
 
 
     void ReceivedMission(const MissionItem::MissionList &list);
@@ -183,7 +181,7 @@ public:
     //! \param linkName Name of link message received over
     //! \param msg Message received
     //!
-    virtual void MACEMessage(const std::string &linkName, const mace_message_t &msg);
+    virtual void MACEMessage(const std::string &linkName, const mace_message_t &msg) override;
 
     //!
     //! \brief VehicleHeartbeatInfo
@@ -203,7 +201,7 @@ public:
     //! \param data Data for topic
     //! \param target Target module (or broadcasted)
     //!
-    virtual void NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target);
+    virtual void NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target) override;
 
 
     //!
@@ -216,7 +214,7 @@ public:
     //! \param componentsUpdated Components in topic that where updated
     //! \param target Target moudle (or broadcast)
     //!
-    virtual void NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>());
+    virtual void NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
 
 
@@ -318,13 +316,13 @@ public:
     //! should be made with this associated list state until such event takes place.
     //! \param missionList The mission desired to be transmitted to the remote instance.
     //!
-    virtual void Command_UploadMission(const MissionItem::MissionList &missionList);
+    virtual void Command_UploadMission(const MissionItem::MissionList &missionList) override;
 
-    virtual void Command_GetCurrentMission(const int &targetSystem);
+    virtual void Command_GetCurrentMission(const int &targetSystem) override;
 
-    virtual void Command_SetCurrentMission(const MissionItem::MissionKey &key);
-    virtual void Command_GetMission(const MissionItem::MissionKey &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
-    virtual void Command_ClearCurrentMission(const int &targetSystem);
+    virtual void Command_SetCurrentMission(const MissionItem::MissionKey &key) override;
+    virtual void Command_GetMission(const MissionItem::MissionKey &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+    virtual void Command_ClearCurrentMission(const int &targetSystem) override;
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -337,13 +335,13 @@ public:
     //! \brief SetCurrentGuidedQueue
     //! \param missionList
     //!
-    virtual void Command_GetOnboardAuto(const int &targetSystem);
+    virtual void Command_GetOnboardAuto(const int &targetSystem) override;
 
     //!
     //! \brief RequestCurrentGuidedQueue
     //! \param vehicleID
     //!
-    virtual void Command_ClearOnboardAuto (const int &targetSystem);
+    virtual void Command_ClearOnboardAuto (const int &targetSystem) override;
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -356,13 +354,13 @@ public:
     //! \brief SetCurrentGuidedQueue
     //! \param missionList
     //!
-    virtual void Command_GetOnboardGuided(const int &targetSystem);
+    virtual void Command_GetOnboardGuided(const int &targetSystem) override;
 
     //!
     //! \brief RequestCurrentGuidedQueue
     //! \param vehicleID
     //!
-    virtual void Command_ClearOnboardGuided (const int &targetSystem);
+    virtual void Command_ClearOnboardGuided (const int &targetSystem) override;
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -375,24 +373,24 @@ public:
     //! \brief Command_GetHomePosition
     //! \param vehicleID
     //!
-    virtual void Command_GetHomePosition (const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
+    virtual void Command_GetHomePosition (const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
     //!
     //! \brief Command_SetHomePosition
     //! \param vehicleHome
     //!
-    virtual void Command_SetHomePosition(const command_item::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
+    virtual void Command_SetHomePosition(const command_item::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /// The following are public virtual functions imposed from IModuleCommandExternalLink.
     ///////////////////////////////////////////////////////////////////////////////////////
     void NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
-    virtual void NewlyAvailableOnboardMission(const MissionItem::MissionKey &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>());
-    virtual void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
-    virtual void NewlyAvailableMissionExeState(const MissionItem::MissionKey &missionKey);
-    virtual void NewlyAvailableModule(const MaceCore::ModuleCharacteristic &module, const MaceCore::ModuleClasses &type);
-    virtual void ReceivedMissionACK(const MissionItem::MissionACK &ack);
-    virtual void Command_RequestBoundaryDownload(const std::tuple<MaceCore::ModuleCharacteristic, uint8_t> &remote, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
+    virtual void NewlyAvailableOnboardMission(const MissionItem::MissionKey &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+    virtual void NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+    virtual void NewlyAvailableMissionExeState(const MissionItem::MissionKey &missionKey) override;
+    virtual void NewlyAvailableModule(const MaceCore::ModuleCharacteristic &module, const MaceCore::ModuleClasses &type) override;
+    virtual void ReceivedMissionACK(const MissionItem::MissionACK &ack) override;
+    virtual void Command_RequestBoundaryDownload(const std::tuple<MaceCore::ModuleCharacteristic, uint8_t> &remote, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
 private:
 
@@ -466,8 +464,6 @@ private:
     //!
     unsigned int associatedSystemID;
     std::map<unsigned int,unsigned int> systemIDMap;
-
-    std::shared_ptr<spdlog::logger> mLog;
 
     MaceCore::SpooledTopic<BASE_POSE_TOPICS, DATA_GENERIC_VEHICLE_ITEM_TOPICS> m_VehicleDataTopic;
     MaceCore::SpooledTopic<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;

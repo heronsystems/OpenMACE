@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "../types/shutdown-first-response.h"
+#include "common/common.h"
 
 template <typename ...T>
 class FramePersistanceBehavior;
@@ -39,6 +40,7 @@ public:
 
 
     void AddFrameReturn(int frame_id, const std::vector<uint8_t> &data) {
+        UNUSED(frame_id);
         (*m_NewFrame)(data);
     }
 

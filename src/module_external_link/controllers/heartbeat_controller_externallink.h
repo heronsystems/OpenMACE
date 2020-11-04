@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <QDate>
-#include "spdlog/spdlog.h"
 
 #include "mace.h"
 #include "common/thread_manager.h"

@@ -65,19 +65,6 @@ ModuleGroundStation::ModuleGroundStation() :
     // Start timer:
     m_timer = std::make_shared<GUITimer>([=]()
     {
-        if(!m_toGUIHandler->getPositionTimeout()) {
-            m_toGUIHandler->setPositionTimeout(true);
-        }
-        if(!m_toGUIHandler->getAttitudeTimeout()) {
-            m_toGUIHandler->setAttitudeTimeout(true);
-        }
-        if(!m_toGUIHandler->getModeTimeout()) {
-            m_toGUIHandler->setModeTimeout(true);
-        }
-        if(!m_toGUIHandler->getFuelTimeout()) {
-            m_toGUIHandler->setFuelTimeout(true);
-        }
-
         if(m_TcpServer) {
             if(!m_TcpServer->isListening()) {
                 std::cout << "Server status: Disconnected" << std::endl;
@@ -128,13 +115,6 @@ std::vector<MaceCore::TopicCharacteristic> ModuleGroundStation::GetEmittedTopics
 void ModuleGroundStation::initiateLogs()
 {
 
-    std::string logname = this->loggingPath + "/MACE_Module_GCS.txt";
-    //initiate the logs
-    size_t q_size = 8192; //queue size must be power of 2
-    spdlog::set_async_mode(q_size,spdlog::async_overflow_policy::discard_log_msg,nullptr,std::chrono::seconds(2));
-
-//    mLogs = spdlog::basic_logger_mt("MACE_Module_GCS", logname);
-//    mLogs->set_level(spdlog::level::debug);
 }
 
 //!
@@ -256,7 +236,8 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleGroundStation::ModuleC
 void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params)
 {
     QHostAddress guiHostAddress;
-    int listenPort, sendPort;
+    int listenPort = 5678;
+    int sendPort = 1234;
     if(params->HasNonTerminal("MACEComms")) {
         std::shared_ptr<MaceCore::ModuleParameterValue> maceCommsXML = params->GetNonTerminalValue("MACEComms");
         if(maceCommsXML->HasTerminal("GUIHostAddress")) {
@@ -329,7 +310,10 @@ void ModuleGroundStation::AttachedAsModule(MaceCore::IModuleTopicEvents *ptr)
 //!
 void ModuleGroundStation::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName);
+    UNUSED(sender);
+    UNUSED(data);
+    UNUSED(target);
 }
 
 
@@ -345,6 +329,8 @@ void ModuleGroundStation::NewTopicData(const std::string &topicName, const MaceC
 //!
 void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
     uint8_t vehicleID;
     if(this->getDataObject()->getMavlinkIDFromModule(sender, vehicleID)) {
         //example read of vehicle data
@@ -466,31 +452,8 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     std::shared_ptr<MissionTopic::VehicleTargetTopic> component = std::make_shared<MissionTopic::VehicleTargetTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
 
-                    switch (component->m_targetPosition->getCoordinateSystemType()) {
-                    case CoordinateSystemTypes::GEODETIC:
-                    {
-                        // Write vehicle target to the GUI:
-
-                        m_toGUIHandler->sendVehicleTarget(vehicleID, dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition));
-                        break;
-                    }
-                    case CoordinateSystemTypes::CARTESIAN:
-                    {
-                        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-
-                        if(!globalOrigin.isAnyPositionValid())
-                            return;
-
-                        mace::pose::GeodeticPosition_2D targetPosition;
-                        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
-
-                        break;
-                    }
-                    case CoordinateSystemTypes::UNKNOWN:
-                    case CoordinateSystemTypes::NOT_IMPLIED:
-                        break;
-                    }
-
+                    // Write vehicle target to the GUI:
+                    m_toGUIHandler->sendVehicleTarget(vehicleID, component);
                 }
             }
         }
@@ -525,7 +488,7 @@ void ModuleGroundStation::NewlyAvailableCurrentMission(const MissionItem::Missio
     bool valid = this->getDataObject()->getMissionList(missionKey,newList);
     if(valid)
     {
-        m_toGUIHandler->sendVehicleMission(missionKey.m_systemID,newList);
+//        m_toGUIHandler->sendVehicleMission(missionKey.m_systemID,newList);
     }
 }
 
@@ -550,8 +513,11 @@ void ModuleGroundStation::NewlyAvailableMissionExeState(const MissionItem::Missi
 //!
 void ModuleGroundStation::NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    uint8_t vehicleID;
+    this->getDataObject()->getMavlinkIDFromModule(sender.Value(), vehicleID);
     std::cout<<"Ground Control: New available home position"<<std::endl;
-    m_toGUIHandler->sendVehicleHome(home.getOriginatingSystem(), home);
+
+    m_toGUIHandler->sendVehicleHome(vehicleID, home);
 }
 
 //!
@@ -578,8 +544,8 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
 
     QJsonArray ids;
     if(vehicleIDs.size() > 0){
-        for (const int& i : vehicleIDs) {
-            ids.append(i);
+        for (const unsigned int& i : vehicleIDs) {
+            ids.append((int)i);
         }
     }
     else {
@@ -592,12 +558,21 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
     json["connectedVehicles"] = ids;
 
     QJsonDocument doc(json);
-    bool bytesWritten = m_toGUIHandler->writeTCPData(doc.toJson());
+//    bool bytesWritten = m_toGUIHandler->writeTCPData(doc.toJson());
+    bool bytesWritten = m_toGUIHandler->writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write ConnectedVehicles failed..." << std::endl;
     }
 }
+
+void ModuleGroundStation::NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    uint8_t vehicleID;
+    this->getDataObject()->getMavlinkIDFromModule(sender.Value(), vehicleID);
+    m_toGUIHandler->sendVehicleParameterList(vehicleID, params);
+}
+
 
 //!
 //! \brief NewlyAvailableBoundary Subscriber to a new boundary
@@ -605,6 +580,9 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
 //!
 void ModuleGroundStation::NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(key);
+    UNUSED(sender);
+
     /* MTB - Removing 7/2/2018
      * @pnolan Issue: 138
      *

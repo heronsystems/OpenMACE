@@ -30,6 +30,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    pose/twist.cpp \
+    pose/velocity_interface_translational.cpp \
     state_space/real_vector.cpp \
     pose/cartesian_position_3D.cpp \
     pose/cartesian_position_2D.cpp \
@@ -61,7 +63,6 @@ SOURCES += \
     pose/abstract_rotation.cpp \
     pose/abstract_position.cpp \
     pose/rotation_2D.cpp \
-    pose/velocity_interface.cpp \
     misc/kinematic_definitions.cpp \
     pose/pose.cpp
 
@@ -71,6 +72,9 @@ HEADERS +=\
     pose/cartesian_position_2D.h \
     pose/cartesian_position_3D.h \
     geometry/base_polygon.h \
+    pose/twist.h \
+    pose/velocity_interface_rotational.h \
+    pose/velocity_interface_translational.h \
     state_space/real_vector.h \
     geometry/geometry_helper.h \
     state_space/real_vector_bounds.h \
@@ -123,7 +127,6 @@ HEADERS +=\
     pose/abstract_position.h \
     pose/rotation_2D.h \
     pose/pose_components.h \
-    pose/velocity_interface.h \
     pose/velocity_helper.h \
     misc/dimension.h \
     pose/pose.h \
@@ -151,6 +154,9 @@ include(../headerinstall.pri)
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

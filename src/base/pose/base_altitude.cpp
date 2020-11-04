@@ -35,6 +35,7 @@ double Altitude::getAltitude() const
 
 void Altitude::applyTransformation(const Eigen::Transform<double, 2, Eigen::Affine> &t)
 {
+    UNUSED(t);
     //it does not make sense to apply a transformation here, and therefore will ignore.
 }
 
@@ -49,6 +50,9 @@ void Altitude::applyTransformation(const Eigen::Transform<double, 3, Eigen::Affi
 
 mace_message_t Altitude::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
+    UNUSED(systemID);
+    UNUSED(compID);
+    UNUSED(chan);
     mace_message_t msg;
     return msg;
 }

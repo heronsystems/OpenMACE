@@ -27,7 +27,7 @@ T* Helper_CreateAndSetUp(ModuleExternalLink* obj, TransmitQueue *queue, uint8_t 
 
 
 ModuleExternalLink::ModuleExternalLink() :
-    airborneInstance(true), associatedSystemID(254), m_HeartbeatController(nullptr),
+    m_HeartbeatController(nullptr), airborneInstance(true), associatedSystemID(254),
     m_VehicleDataTopic("vehicleData"),m_MissionDataTopic("vehicleMission")
 {
     m_queue = new TransmitQueue(4000, 3);
@@ -83,7 +83,7 @@ ModuleExternalLink::ModuleExternalLink() :
 
 void ModuleExternalLink::ReceivedCommand(const MaceCore::ModuleCharacteristic &moduleFor, const AbstractCommandItem &command)
 {
-    uint8_t mavlinkID;
+    uint8_t mavlinkID = 0;
     if(moduleFor.MaceInstance != 0)
     {
         if(!this->getDataObject()->getMavlinkIDFromModule(moduleFor, mavlinkID)) {
@@ -103,7 +103,7 @@ void ModuleExternalLink::ReceivedCommand(const MaceCore::ModuleCharacteristic &m
 
 void ModuleExternalLink::ReceivedGoToCommand(const MaceCore::ModuleCharacteristic &moduleFor, const AbstractCommandItem &command)
 {
-    uint8_t mavlinkID;
+    uint8_t mavlinkID = 0;
     if(moduleFor.MaceInstance != 0)
     {
         if(!this->getDataObject()->getMavlinkIDFromModule(moduleFor, mavlinkID)) {
@@ -281,14 +281,7 @@ std::string ModuleExternalLink::createLog(const unsigned int &systemID)
     loggerCreated = true;
     std::string logname = this->loggingPath + "/ExternalLinkModule" + std::to_string(systemID) + ".txt";
     std::string loggerName = "ExternalLinkModule_" + std::to_string(systemID);
-    char logNameArray[loggerName.size()+1];//as 1 char space for null is also required
-    strcpy(logNameArray, loggerName.c_str());
 
-    //initiate the logs
-    size_t q_size = 8192; //queue size must be power of 2
-    spdlog::set_async_mode(q_size,spdlog::async_overflow_policy::discard_log_msg,nullptr,std::chrono::seconds(2));
-    mLog = spdlog::basic_logger_mt(logNameArray, logname);
-    mLog->set_level(spdlog::level::debug);
     return loggerName;
 }
 
@@ -638,6 +631,7 @@ void ModuleExternalLink::PublishMissionData(const MaceCore::ModuleCharacteristic
 
 void ModuleExternalLink::Command_SetGlobalOrigin(const Action_SetGlobalOrigin &command, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(command);
     UNUSED(sender);
 }
 
@@ -808,7 +802,7 @@ void ModuleExternalLink::Command_UploadMission(const MissionItem::MissionList &m
 {
     MissionItem::MissionList::MissionListStatus status = missionList.getMissionListStatus();
 
-    MaceCore::ModuleCharacteristic target = this->getDataObject()->GetVehicleFromMAVLINKID(missionList.getVehicleID());
+//    MaceCore::ModuleCharacteristic target = this->getDataObject()->GetVehicleFromMAVLINKID(missionList.getVehicleID());
 
     if(status.state == MissionItem::MissionList::COMPLETE)
     {
@@ -847,6 +841,8 @@ void ModuleExternalLink::Command_RequestBoundaryDownload(const std::tuple<MaceCo
 
 void ModuleExternalLink::Command_SetCurrentMission(const MissionItem::MissionKey &key)
 {
+    UNUSED(key);
+
     //    mace_message_t msg;
     //    mace_mission_set_current_t request;
     //    request.

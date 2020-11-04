@@ -33,7 +33,7 @@ MissionItem::MissionKey MaceData::appendAssociatedMissionMap(const int &newSyste
 MissionItem::MissionKey MaceData::appendAssociatedMissionMap(const MissionItem::MissionList &missionList)
 {
     MissionItem::MissionList correctedMissionList = missionList;
-    int systemID = missionList.getVehicleID();
+//    int systemID = missionList.getVehicleID();
     int updatedMissionID = getAvailableMissionID(missionList.getMissionKey());
     correctedMissionList.setMissionID(updatedMissionID);
 
@@ -49,7 +49,7 @@ MissionItem::MissionKey MaceData::appendAssociatedMissionMap(const MissionItem::
 //!
 int MaceData::getAvailableMissionID(const MissionItem::MissionKey &key)
 {
-    int prevID = 0;
+    uint64_t prevID = 0;
     std::lock_guard<std::mutex> guard(MUTEXMissionID);
     std::map<int,std::map<int,int>>::iterator it;
     it = mapMissionID.find(key.m_systemID);
@@ -63,7 +63,7 @@ int MaceData::getAvailableMissionID(const MissionItem::MissionKey &key)
         if(itInternal != internalMap.end()) //this implies that there is a creator in the queue
         {
             prevID = itInternal->second;
-            if(prevID>=key.m_missionID)
+            if(prevID >= key.m_missionID)
                 prevID++;
             else
                 prevID = key.m_missionID;
@@ -95,6 +95,8 @@ bool MaceData::updateCurrentMissionItem(const MissionItem::MissionItemCurrent &c
 
     std::lock_guard<std::mutex> guard(MUTEXMissions);
     mapMissions.find(key)->second.setActiveIndex(index);
+
+    return true;
 }
 
 //!
@@ -107,6 +109,11 @@ bool MaceData::updateCurrentMissionItem(const MissionItem::MissionItemCurrent &c
 //!
 bool MaceData::getMissionList(const int &systemID, const MissionItem::MISSIONTYPE &type, const MissionItem::MISSIONSTATE &state, MissionItem::MissionList &missionList) const
 {
+    UNUSED(systemID);
+    UNUSED(type);
+    UNUSED(state);
+    UNUSED(missionList);
+
     return false;
     //    bool rtnValue = false;
     //    switch(state)
@@ -215,9 +222,10 @@ bool MaceData::getCurrentMissionValidity(const int &systemID) const
     bool returnVal = true;
     std::lock_guard<std::mutex> guard(MUTEXMissions);
     try{
-        MissionItem::MissionKey key = mapCurrentMission.at(systemID);
+//        MissionItem::MissionKey key = mapCurrentMission.at(systemID);
+        mapCurrentMission.at(systemID);
     }catch(const std::out_of_range &oor){
-        std::cout<<"getCurrentMission tried to access an item OOR"<<std::endl;
+        std::cout<<"getCurrentMissionValidity tried to access an item OOR"<<std::endl;
         returnVal = false;
     }
     return returnVal;
@@ -232,7 +240,11 @@ bool MaceData::getMissionKeyValidity(const MissionItem::MissionKey &key) const
 {
     std::lock_guard<std::mutex> guard(MUTEXMissions);
     if(mapMissions.count(key) > 0)
+    {
         return true;
+    }
+
+    return false;
 }
 /*
 The following methods aid getting the mission list from the mace data class. The following methods aid getting
@@ -257,8 +269,9 @@ std::vector<MissionItem::MissionKey> MaceData::getMissionKeysForVehicle(const in
     {
         MissionItem::MissionList list;
         MissionItem::MissionKey key = it->first;
-        if((key.m_systemID == systemID))
+        if(key.m_systemID == (uint)systemID) {
             keyVector.push_back(key);
+        }
     }
     return keyVector;
 }
@@ -340,8 +353,8 @@ void MaceData::updateMissionExeState(const MissionItem::MissionKey &missionKey, 
 //!
 bool MaceData::updateOnboardMission(const MissionItem::MissionKey &missionKey)
 {
-    int systemID = missionKey.m_systemID;
-    MissionItem::MISSIONTYPE type = missionKey.m_missionType;
+//    int systemID = missionKey.m_systemID;
+//    MissionItem::MISSIONTYPE type = missionKey.m_missionType;
 
     std::lock_guard<std::mutex> guard(MUTEXMissions);
 
@@ -426,7 +439,11 @@ bool MaceData::updateOctomapProperties(const mace::maps::OctomapSensorDefinition
 //!
 bool MaceData::updateMappingProjectionProperties(const mace::maps::Octomap2DProjectionDefinition &properties)
 {
+    UNUSED(properties);
+
     std::lock_guard<std::mutex> guard(m_Mutex_OccupancyMaps);
+
+    return false;
 }
 
 //!
@@ -616,7 +633,7 @@ Data::EnvironmentTime MaceData::getCurrentSystemTime_Adjusted() const {
     Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
 
     double delta_msec = this->getDeltaT_msec();
-    double delta_sec = this->getDeltaT_msec() / 1000.0;
+    double delta_sec = delta_msec / 1000.0;
     Data::EnvironmentTime rtnTime;
     rtnTime = Data::EnvironmentTime::FromSecSinceEpoch(currentTime.ToSecSinceEpoch() + delta_sec);
     return rtnTime;

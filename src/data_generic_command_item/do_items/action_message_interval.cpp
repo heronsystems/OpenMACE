@@ -61,7 +61,7 @@ void ActionMessageInterval::populateCommandItem(mace_command_long_t &obj) const
 
 void ActionMessageInterval::fromCommandItem(const mace_command_long_t &obj)
 {
-
+    UNUSED(obj);
 }
 
 /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */

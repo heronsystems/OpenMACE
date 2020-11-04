@@ -7,6 +7,8 @@
 #include <mutex>
 #include <algorithm>
 
+#include "common/common.h"
+
 class ResourceKey : public std::vector<std::string>
 {
 
@@ -39,12 +41,12 @@ public:
     //!
     bool containsKey(const ResourceKey &rhs) const
     {
-        for(int i = 0 ; i < rhs.size() ; i++)
+        for(size_t i = 0 ; i < rhs.size() ; i++)
         {
             std::string nameInGivenKey = rhs.at(i);
 
             bool found = false;
-            for(int j = 0 ; j < this->size() ; j++)
+            for(size_t j = 0 ; j < this->size() ; j++)
             {
                 std::string nameInThis = this->at(j);
                 if(nameInThis == nameInGivenKey)
@@ -318,6 +320,7 @@ public:
 
     std::vector<std::tuple<ResourceKey, ResourceValue>> getResourcesMatch(const ResourceKey &key, bool subMatch = true, bool internalOnly = false)
     {
+        UNUSED(subMatch);
         std::vector<std::tuple<ResourceKey, ResourceValue>> rtn;
 
         m_Mutex.lock();

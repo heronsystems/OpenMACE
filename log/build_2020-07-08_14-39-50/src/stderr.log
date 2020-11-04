@@ -1,0 +1,6 @@
+CMake Error at CMakeLists.txt:59 (message):
+  find_package(catkin) failed.  catkin was neither found in the workspace nor
+  in the CMAKE_PREFIX_PATH.  One reason may be that no ROS setup.sh was
+  sourced before.
+
+

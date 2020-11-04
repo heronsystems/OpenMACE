@@ -29,8 +29,12 @@
 
 #ifdef ROS_EXISTS
 #include <ros/ros.h>
-
 #include <module_ROS_UMD/matlab_listener.h>
+
+#include <geometry_msgs/PoseStamped.h>
+#include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Quaternion.h>
+
 #endif
 
 #include "rosTimer.h"
@@ -173,11 +177,26 @@ public:
     void updateGlobalPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component);
 
     //!
+    //! \brief updateTranslationalVelocity
+    //! \param vehicleID
+    //! \param component
+    //!
+    void updateTranslationalVelocity(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_CartesianVelocity> &component);
+
+    //!
     //! \brief updateAttitudeData Update the attitude of the corresponding Gazebo model based on attitude of MACE vehicle
     //! \param vehicleID ID of the vehicle to update
     //! \param component Attitude
     //!
     void updateAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component);
+
+
+    //!
+    //! \brief updateRotationalVelocity
+    //! \param vehicleID
+    //! \param component
+    //!
+    void updateRotationalVelocity(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_RotationalVelocity> &component);
 
     // ============================================================================= //
     // ========================  ROS Specific functions:  ========================== //
@@ -242,6 +261,12 @@ public:
     //!
     bool publishCmdStatus(const int &vehicleID);
 
+    void publicVehicleOdometry(const int &vehicleID);
+
+public:
+    void ROSCallback_VisionPoseEstimate(const geometry_msgs::PoseStamped::ConstPtr &msg);
+
+
 #endif
 
     // ============================================================================= //
@@ -275,15 +300,16 @@ private:
     // =====================  ROS Specific private members:  ======================= //
     // ============================================================================= //
 #ifdef ROS_EXISTS
+
+    //!
+    //! \brief m_vehicleMap Container for map of vehicle IDs and corresponding most recent Position and Attitude data
+    //!
+    std::map<int, nav_msgs::Odometry*> m_vehiclePoseMap;
+
     //!
     //! \brief nh ROS node handler
     //!
     ros::NodeHandle nh;
-
-//    //!
-//    //! \brief m_vehiclePosePubMap Map of the pose publisher applicable to each vehicle ID
-//    //!
-//    std::map<int, ros::Publisher> m_vehiclePosePubMap;
 
     //!
     //! \brief m_matlabListener Container for MATLAB listener and accompanying methods for services
@@ -299,6 +325,11 @@ private:
     //! \brief m_client Service client for datum commands issued from MATLAB
     //!
     ros::ServiceServer m_datumService;
+
+    //!
+    //! \brief m_client Service client for home commands issued from MATLAB
+    //!
+    ros::ServiceServer m_homeService;
 
     //!
     //! \brief m_client Service client for dynamic kinematic commands issued from MATLAB
@@ -366,6 +397,13 @@ private:
     //! \brief m_cmdStatusPub Publisher for command status
     //!
     ros::Publisher m_cmdStatusPub;
+
+    ros::Publisher m_posePub;
+
+
+    ros::Subscriber m_subscriber_VisionPoseEstimate;
+
+    double count = 0.0;
 
 #endif
 

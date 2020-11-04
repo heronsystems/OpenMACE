@@ -81,7 +81,7 @@ inline T correctForAcuteAngle(const T &value)
 }
 
 template<class T>
-inline T correctSignFromPolar(T &xValue, T &yValue, const T &polarValue )
+inline void correctSignFromPolar(T &xValue, T &yValue, const T &polarValue )
 {
     if(polarValue <= M_PI_2)
     {

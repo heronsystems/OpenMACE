@@ -82,6 +82,8 @@ protected:
 
     virtual void Construct_Broadcast(const COMMANDDATASTRUCTURE &data, const MaceCore::ModuleCharacteristic &sender, mace_command_long_t &cmd)
     {
+        UNUSED(sender);
+
         std::cout << "!!!WARNING!!!: Broadcasting a command. Commands should be targeted" << std::endl;
 
         cmd = initializeCommandLong();

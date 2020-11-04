@@ -2,12 +2,14 @@
 
 namespace ardupilot_vehicle {
 
-GuidedTimeoutController::GuidedTimeoutController(const unsigned int &timeout)
+GuidedTimeoutController::GuidedTimeoutController(const unsigned int &timeout, const int &levelTimeout, const int &killTimeout)
 {
     m_CBTarget = nullptr;
     m_FunctionTarget = nullptr;
 
     this->timeout = timeout;
+    this->levelTimeout = levelTimeout;
+    this->abortTimeout = killTimeout;
 }
 
 GuidedTimeoutController::~GuidedTimeoutController() {
@@ -15,21 +17,53 @@ GuidedTimeoutController::~GuidedTimeoutController() {
     this->stop();
 }
 
-void GuidedTimeoutController::registerCurrentTarget(const command_item::Action_DynamicTarget &commandTarget)
+void GuidedTimeoutController::registerAbortingTarget(const command_item::AbstractCommandItemPtr command, const TimeoutMode &mode, const int &timeout)
+{
+    UNUSED(command);
+    UNUSED(mode);
+    UNUSED(timeout);
+}
+
+void GuidedTimeoutController::registerCurrentTarget(const command_item::Action_DynamicTarget &commandTarget, const TimeoutMode &mode)
 {
     if(isThreadActive())
     {
-        m_LambdasToRun.push_back([this,commandTarget]{
-            this->m_Timeout.stop();
-            this->m_CurrentTarget = commandTarget;
-            this->m_Timeout.start();
+        m_LambdasToRun.push_back([this,commandTarget, mode]{
+            switch (mode) {
+            case TimeoutMode::NORMAL:
+            {
+                this->m_Timeout.stop();
+                this->m_CurrentTarget = commandTarget;
+                this->m_Timeout.start();
+                break;
+            }
+            case TimeoutMode::ABORT:
+            case TimeoutMode::LEVELING:
+            default:
+            {
+                break;
+            }
+            }
         });
     }
     else
     {
-        this->m_CurrentTarget = commandTarget;
-        this->m_Timeout.start();
-        Thread::start();
+        switch (mode) {
+        case TimeoutMode::NORMAL:
+        {
+            this->m_CurrentTarget = commandTarget;
+            this->m_Timeout.start();
+            Thread::start();
+
+            break;
+        }
+        case TimeoutMode::ABORT:
+        case TimeoutMode::LEVELING:
+        default:
+        {
+            break;
+        }
+        }
     }
 }
 

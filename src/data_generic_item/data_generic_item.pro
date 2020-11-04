@@ -31,6 +31,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     data_generic_item_flightmode.cpp \
     data_generic_item_GPS.cpp \
+    data_generic_item_param_value.cpp \
     data_generic_item_text.cpp \
     data_generic_item_battery.cpp \
     data_generic_item_heartbeat.cpp \
@@ -42,6 +43,7 @@ HEADERS +=\
     data_generic_item_components.h \
     data_generic_item_flightmode.h \
     data_generic_item_GPS.h \
+    data_generic_item_param_value.h \
     data_generic_item_text.h \
     data_generic_item_battery.h \
     data_generic_item_heartbeat.h \
@@ -70,6 +72,9 @@ include(../headerinstall.pri)
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
