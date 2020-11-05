@@ -14,6 +14,8 @@
 #include "../controllers/controller_collection.h"
 
 #include "state_data_mavlink.h"
+#include "../environment_object/environment_data_mavlink.h"
+#include "status_data_mavlink.h"
 #include "mission_data_mavlink.h"
 
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
@@ -116,6 +118,8 @@ private:
 
 public:
     StateData_MAVLINK *state;
+    EnvironmentData_MAVLINK *environment;
+    StatusData_MAVLINK *status;
     MissionData_MAVLINK *mission;
 protected:
     int mavlinkID;

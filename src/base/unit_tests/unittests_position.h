@@ -15,7 +15,6 @@
 // ** Unit test 1 --  ** //
 // ********************************* //
 inline bool test_PositionTransform_LocalToGlobal(std::string &returnString, std::vector<std::string> &testOutputs) {
-
     mace::pose::GeodeticPosition_3D originPosition(35.6208989, -78.8033793, 10);
     mace::pose::CartesianPosition_3D initialPosition(10,10,10); //this should amount to the distance being sqrt(200)
     initialPosition.setAltitudeReferenceFrame(mace::AltitudeReferenceTypes::REF_ALT_RELATIVE);
@@ -35,6 +34,9 @@ inline bool test_PositionTransform_LocalToGlobal(std::string &returnString, std:
         success = true;
         returnString = "Unit test 1 -- Position Transformation LocalToGlobal: PASS";
     }
+
+    testOutputs.push_back(returnString);
+
     return success;
 }
 
@@ -64,6 +66,9 @@ inline bool test_PositionTransform_GlobalToLocal(std::string &returnString, std:
         success = true;
         returnString = "Unit test 2 -- Position Transformation GlobalToLocal: PASS";
     }
+
+    testOutputs.push_back(returnString);
+
     return success;
 }
 
@@ -84,6 +89,9 @@ inline bool test_Position_DistanceBetween(std::string &returnString, std::vector
         success = true;
         returnString = "Unit test 3 -- Position Distance Between Global: PASS";
     }
+
+    testOutputs.push_back(returnString);
+
     return success;
 }
 

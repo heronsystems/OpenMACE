@@ -1,11 +1,12 @@
 import * as React from "react";
 import colors from "../../../../util/colors";
 import styles from "./styles";
+import * as Types from "../../../../data-types/index";
 
 type Props = {
   notification?: boolean;
   value: string;
-  color: ColorObject;
+  color: Types.ColorObject;
 };
 
 export default (props: Props) => {

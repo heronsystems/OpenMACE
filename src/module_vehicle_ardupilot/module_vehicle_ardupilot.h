@@ -17,9 +17,9 @@
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
-#include "ardupilot_states/ardupilot_hsm.h"
-#include "ardupilot_states/state_components.h"
-#include "vehicle_object/ardupilot_vehicle_object.h"
+#include "flight_states/ardupilot_hsm.h"
+#include "flight_states/ardupilot_state_components.h"
+#include "vehicle_object/vehicle_object_ardupilot.h"
 
 #include "mace_core/abstract_module_base.h"
 
@@ -45,13 +45,6 @@ public:
     //! \param systemID Vehicle ID generating the log
     //!
     void createLog(const int &systemID);
-
-    //!
-    //! \brief MissionAcknowledgement Generate acknowledgement based on mission result
-    //! \param missionResult Mission result
-    //! \param publishResult Acknowledgement to publish out
-    //!
-    void MissionAcknowledgement(const MAV_MISSION_RESULT &missionResult, const bool &publishResult);
 
 public:
     void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue) override;
@@ -317,7 +310,7 @@ public:
     //!
     virtual void RequestDummyFunction(const int &vehicleID) override
     {
-
+        UNUSED(vehicleID);
     }
 
 private:
@@ -339,13 +332,11 @@ private:
     //!
     void ProgressStateMachineStates();
 
-    void TransformDynamicMissionQueue();
-
     unsigned int count = 0;
 
 private:
     std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<ArdupilotVehicleObject> vehicleData;
+    std::shared_ptr<VehicleObject_Ardupilot> vehicleData;
 
 private:
     std::mutex m_Mutex_StateMachine;

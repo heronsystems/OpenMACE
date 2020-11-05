@@ -4,8 +4,12 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234),
     goalSpace(nullptr),
-    m_goalSampler(nullptr)
+    m_goalSampler(nullptr),
+    m_udpConfig("127.0.0.1", 5678, m_sendAddress.toString().toStdString(), m_sendPort)
 {
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
+
     m_parent = ptrRef;
     goalSpace = std::make_shared<mace::state_space::Cartesian2DSpace>();
     mace::state_space::Cartesian2DSpaceBounds bounds(-20,20,-10,10);
@@ -16,12 +20,36 @@ GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef) :
 
 GUItoMACE::GUItoMACE(const MaceCore::IModuleCommandGroundStation* ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
-    m_sendPort(sendPort)
+    m_sendPort(sendPort),
+    m_udpConfig("127.0.0.1", 5678, sendAddress.toString().toStdString(), sendPort)
 {
     m_parent = ptrRef;
+
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
 }
 
 GUItoMACE::~GUItoMACE() {
+    m_logger->flush();
+}
+
+//!
+//! \brief initiateLogs Start log files and logging for the Ground Station module
+//!
+void GUItoMACE::initiateLogs(const std::string &loggerName, const std::string &loggingPath)
+{
+    try
+    {
+        m_logger = spdlog::basic_logger_mt<spdlog::async_factory>(loggerName, loggingPath);
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Log initialization failed: " << ex.what() << std::endl;
+    }
+
+    // Flush logger every 2 seconds:
+//    spdlog::flush_every(std::chrono::seconds(2));
+    m_logger->flush_on(spdlog::level::info);      // flush when "info" or higher message is logged
 }
 
 //!
@@ -66,7 +94,8 @@ void GUItoMACE::getEnvironmentBoundary() {
         json["vertices"] = vertices;
 
         QJsonDocument doc(json);
-        bool bytesWritten = writeTCPData(doc.toJson());
+        //    bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
         if(!bytesWritten){
             std::cout << "Write environment boundary failed..." << std::endl;
@@ -90,7 +119,8 @@ void GUItoMACE::getGlobalOrigin()
     json["gridSpacing"] = m_parent->getDataObject()->GetGridSpacing();
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write global origin failed..." << std::endl;
@@ -392,8 +422,8 @@ void GUItoMACE::getConnectedVehicles()
     QJsonArray ids;
     QJsonArray modes;
     if(vehicleIDs.size() > 0){
-        for (const int& i : vehicleIDs) {
-            ids.append(i);
+        for (const uint& i : vehicleIDs) {
+            ids.append((int)i);
             std::string mode;
             macedata->GetVehicleFlightMode(i, mode);
             modes.append(QString::fromStdString(mode));
@@ -413,7 +443,8 @@ void GUItoMACE::getConnectedVehicles()
     json["connectedVehicles"] = connectedVehicles;
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write New Vehicle Data failed..." << std::endl;
@@ -510,6 +541,9 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
     QJsonArray aircraft = jsonObj["aircraft"].toArray();
     QJsonArray data = jsonObj["data"].toArray();
 
+    // Log to file:
+    logToFile(QJsonDocument(jsonObj));
+
 
     int vehicleID = 0;
     bool isVehicleCommand = false;
@@ -549,54 +583,49 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 
     int counter = 0;
     // Handle vehicle-specific commands:
-    foreach (const QJsonValue &agent, aircraft)
-    {
-        vehicleID = agent.toString().toInt();
+    if(isVehicleCommand) {
+        foreach (const QJsonValue &agent, aircraft)
+        {
+            vehicleID = agent.toString().toInt();
 
-        QJsonDocument tmpDoc = QJsonDocument::fromJson(data[counter].toString().toUtf8());
-        qDebug() << "Agent: " << vehicleID;
-        qDebug() << tmpDoc;
+            QJsonDocument tmpDoc = QJsonDocument::fromJson(data[counter].toString().toUtf8());
+            qDebug() << "Agent: " << vehicleID;
+            qDebug() << tmpDoc;
 
-        if(issuedCommand(command, vehicleID, tmpDoc))
-        {
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_VEHICLE_MODE")
-        {
-            setVehicleMode(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_VEHICLE_HOME")
-        {
-            setVehicleHome(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_VEHICLE_ARM")
-        {
-            setVehicleArm(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "SET_GO_HERE")
-        {
-            setGoHere(vehicleID, tmpDoc);
-            isVehicleCommand = true;
-        }
-        else if (command == "GET_VEHICLE_MISSION")
-        {
-            getVehicleMission(vehicleID);
-            isVehicleCommand = true;
-        }
-        else if (command == "GET_VEHICLE_HOME")
-        {
-            getVehicleHome(vehicleID);
-            isVehicleCommand = true;
-        }
-        else {
-            std::cout << "Command " << command << " not recognized." << std::endl;
-            return;
-        }
+            if(issuedCommand(command, vehicleID, tmpDoc))
+            {
+            }
+            else if (command == "SET_VEHICLE_MODE")
+            {
+                setVehicleMode(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_VEHICLE_HOME")
+            {
+                setVehicleHome(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_VEHICLE_ARM")
+            {
+                setVehicleArm(vehicleID, tmpDoc);
+            }
+            else if (command == "SET_GO_HERE")
+            {
+                setGoHere(vehicleID, tmpDoc);
+            }
+            else if (command == "GET_VEHICLE_MISSION")
+            {
+                getVehicleMission(vehicleID);
+            }
+            else if (command == "GET_VEHICLE_HOME")
+            {
+                getVehicleHome(vehicleID);
+            }
+            else {
+                std::cout << "Command " << command << " not recognized." << std::endl;
+                return;
+            }
 
-        counter++;
+            counter++;
+        }
     }
 }
 
@@ -608,6 +637,7 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
 bool GUItoMACE::writeTCPData(QByteArray data)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
+
     tcpSocket->connectToHost(m_sendAddress, m_sendPort);
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
@@ -624,4 +654,24 @@ bool GUItoMACE::writeTCPData(QByteArray data)
         tcpSocket->close();
         return false;
     }
+}
+
+//!
+//! \brief writeUDPData Write data to the MACE GUI via UDP
+//! \param data Data to be sent to the MACE GUI
+//! \return True: success / False: failure
+//!
+bool GUItoMACE::writeUDPData(QByteArray data)
+{
+    // TODO: implement
+    // Use UdpLink
+    if(m_udpLink->isConnected()) {
+        m_udpLink->WriteBytes(data, data.length());
+    }
+    else {
+        std::cout << "UDP Link not connected..." << std::endl;
+        return false;
+    }
+
+    return true;
 }

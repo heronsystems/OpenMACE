@@ -330,7 +330,7 @@ public:
     std::pair<const T&, bool> GetCellImmutable(const Eigen::Vector3d& location) const
     {
         assert(cell_initialized_);
-        int64_t data_index = GetLocationDataIndex(location);
+        uint64_t data_index = GetLocationDataIndex(location);
         if (data_index >= 0)
         {
             assert(data_index < data_.size());
@@ -359,7 +359,7 @@ public:
     bool SetCellValue(const Eigen::Vector3d& location, const T& value)
     {
         assert(cell_initialized_);
-        int64_t data_index = GetLocationDataIndex(location);
+        uint64_t data_index = GetLocationDataIndex(location);
         if (data_index >= 0)
         {
             assert(data_index < data_.size());

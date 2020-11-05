@@ -79,7 +79,7 @@ protected:
 
         targetItem.target_component =0;
         targetItem.target_system = 0;
-        targetItem.type_mask = 65535; //by default we want to ignore all of the values
+        targetItem.type_mask = (uint8_t)65535; //by default we want to ignore all of the values
         return targetItem;
     }
 

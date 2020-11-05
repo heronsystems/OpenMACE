@@ -18,6 +18,7 @@ enum class GuiMessageTypes: uint8_t{
     VEHICLE_HEARTBEAT,
     VEHICLE_MISSION,
     VEHICLE_PATH,
+    VEHICLE_PARAM_LIST,
     GLOBAL_ORIGIN,
     CURRENT_MISSION_ITEM,
     MISSION_ITEM_REACHED,
@@ -53,6 +54,8 @@ inline std::string guiMessageString(const GuiMessageTypes &type) {
         return "vehicle_mission";
     case GuiMessageTypes::VEHICLE_PATH:
         return "vehicle_path";
+    case GuiMessageTypes::VEHICLE_PARAM_LIST:
+        return "vehicle_param_list";
     case GuiMessageTypes::GLOBAL_ORIGIN:
         return "environment_icon";
     case GuiMessageTypes::CURRENT_MISSION_ITEM:

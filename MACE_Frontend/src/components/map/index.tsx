@@ -7,7 +7,7 @@ import { Map, TileLayer, Viewport, Popup } from "react-leaflet";
 import { Context as ContextType } from "../../Context";
 import ContextMenu from "./components/context-menu";
 import Markers from "./components/markers";
-import { Vertex } from "../../data-types";
+import * as Types from "../../data-types/index";
 
 const { createRef } = React;
 const { ipcRenderer } = window.require("electron");
@@ -22,8 +22,9 @@ const DEFAULT_ZOOM = 14;
 type Props = {
   context?: ContextType;
   onUpdateGoHerePts: (pts: L.LatLng) => void;
-  onCommand: (command: string, filteredAircrafts: Aircraft.AircraftPayload[], payload: string[]) => void;
-  target: Vertex;
+  onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
+  target: Types.Vertex;
+  goHereEnabled: {agentID: string, showGoHere: boolean}[];
 };
 
 type State = {
@@ -77,6 +78,9 @@ export default class MapView extends React.Component<Props, State> {
     }
     if(this.state.popupVisible != nextState.popupVisible) {
       return true;
+    }
+    if(nextProps.goHereEnabled != this.props.goHereEnabled) {
+        return true;
     }
     return false;
   }
@@ -173,13 +177,16 @@ export default class MapView extends React.Component<Props, State> {
         onZoomEnd={this.setZoom}
         animate={true}
         oncontextmenu={this.handleContextMenu}
+        preferCanvas={true}
       >
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
         />
 
-        <Markers />
+        <Markers
+            goHereEnabled={this.props.goHereEnabled}
+         />
 
         <ContextMenu
           position={this.state.contextMenuPosition}

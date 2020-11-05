@@ -7,12 +7,13 @@ import Tooltip from "../tooltip";
 const { useContext, useState, useEffect, useRef } = React;
 import AppContext, { Context } from "../../../../../Context";
 import styles from "./styles";
+import * as Types from "../../../../../data-types/index";
 
 const DEFAULT_WIDTH = 48;
 const DEFAULT_HEIGHT = 48;
 
 type Props = {
-  data: Environment.IconPayload;
+  data: Types.Environment.IconPayload;
 };
 
 const HomeMarker = (props: Props) => {

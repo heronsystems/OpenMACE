@@ -34,7 +34,8 @@ MissionItemReachedTopic::MissionItemReachedTopic(const MissionItem::MissionItemA
     this->indexAchieved = achievedItem.getMissionAchievedIndex();
 }
 
-MissionItemReachedTopic::MissionItemReachedTopic(const MissionItemReachedTopic &copyObj)
+MissionItemReachedTopic::MissionItemReachedTopic(const MissionItemReachedTopic &copyObj) :
+    MissionItem::MissionItemAchieved()
 {
     this->key = copyObj.getMissionKey();
     this->indexAchieved = copyObj.getMissionAchievedIndex();

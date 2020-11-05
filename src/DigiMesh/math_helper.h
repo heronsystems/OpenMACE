@@ -2,6 +2,7 @@
 #define MATH_HELPER_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 class MathHelper {
 

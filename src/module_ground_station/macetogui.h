@@ -28,7 +28,14 @@
 #include "base_topic/pose/topic_agent_orientation.h"
 #include "base_topic/measurements/topic_speed.h"
 
+#include "commsMACE/udp_link_mace.h"
+#include "commsMACE/udp_configuration_mace.h"
+
 #include "messagetypes.h"
+
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
 
 class MACEtoGUI
 {
@@ -53,6 +60,10 @@ public:
     //!
     void setSendPort(const int &sendPort);
 
+    //!
+    //! \brief initiateLogs Start log files and logging for the Ground Station module
+    //!
+    void initiateLogs(const std::string &loggerName, const std::string &loggingPath);
 
     // ============================================================================= //
     // ======================== Send data to the MACE GUI ========================== //
@@ -63,6 +74,13 @@ public:
     //! \return True: success / False: failure
     //!
     bool writeTCPData(QByteArray data);
+
+    //!
+    //! \brief writeUDPData Write data to the MACE GUI via UDP
+    //! \param data Data to be sent to the MACE GUI
+    //! \return True: success / False: failure
+    //!
+    bool writeUDPData(QByteArray data);
 
     //!
     //! \brief sendPositionData Send vehicle position data to the MACE GUI
@@ -114,7 +132,14 @@ public:
     void sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home);
 
     //!
-    //! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
+    //! \brief sendVehicleParameterList Send the list of vehicle specific parameters
+    //! \param vehicleID Vehicle ID parameters pertain to
+    //! \param params Parameter map (Key = string, Value = DataGenericItem::DataGenericItem_ParamValue)
+    //!
+    void sendVehicleParameterList(const int &vehicleID, const std::map<string, DataGenericItem::DataGenericItem_ParamValue> &params);
+
+    //!
+    //! \brief sendGlobalOrigin Send new global origin to the MACE GUI
     //! \param origin New global origin
     //!
     void sendGlobalOrigin(const command_item::SpatialHome &origin);
@@ -186,7 +211,7 @@ public:
     //! \param vehicleID Vehicle ID with the new vehicle target
     //! \param component Vehicle target component
     //!
-    void sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition);
+    void sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component);
 
     // ============================================================================= //
     // ================================== Helpers ================================== //
@@ -200,6 +225,17 @@ private:
     //!
     void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems, QJsonArray &path);
 
+    //!
+    //! \brief logToFile Helper method to log JSON data to file:
+    //! \param doc
+    //!
+    void logToFile(const QJsonDocument &doc) {
+        if(m_logger) {
+            std::string str = doc.toJson(QJsonDocument::Compact).toStdString();
+            m_logger->info(str);
+        }
+    }
+
 private:
     //!
     //! \brief m_sendAddress TCP send address for MACE-to-GUI connection
@@ -210,6 +246,22 @@ private:
     //! \brief m_sendPort TCP send port for MACE-to-GUI connection
     //!
     int m_sendPort;
+
+
+    //!
+    //! \brief m_udpConfig UDP configuration for UDP comms
+    //!
+    CommsMACE::UdpConfiguration m_udpConfig;
+
+    //!
+    //! \brief m_udpLink UDP comms link object
+    //!
+    std::shared_ptr<CommsMACE::UdpLink> m_udpLink;
+
+    //!
+    //! \brief m_logger spdlog logging object
+    //!
+    std::shared_ptr<spdlog::logger> m_logger;
 
 };
 

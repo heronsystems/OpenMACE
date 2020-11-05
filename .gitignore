@@ -66,3 +66,6 @@ ElectronGUI/yarn.lock
 /catkin_sim_environment/src/matlab_gen/*
 
 /MaceSetup_Configs/TestConfigs/*
+
+MACE_Frontend/logs/*
+MACE_Frontend/node_modules/

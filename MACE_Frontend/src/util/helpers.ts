@@ -1,6 +1,7 @@
 import * as L from "leaflet";
 import colors from "./colors";
 import * as _ from "lodash";
+import * as Types from "../data-types/index";
 
 type SimpleLocation = { lat: number; lng: number };
 type LocationArray = number[][];
@@ -108,7 +109,7 @@ export const capitalize = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
-export const getEventNameFromType = (type: MessageType) => {
+export const getEventNameFromType = (type: Types.MessageType) => {
   switch (type) {
     case "environment_boundary":
       return "Environment Boundary";
@@ -120,6 +121,8 @@ export const getEventNameFromType = (type: MessageType) => {
       return "Vehicle Path";
     case "vehicle_target":
       return "Vehicle Target";
+    case "vehicle_parameter_list":
+        return "Vehicle Parameter List";
     default:
       console.warn(`Could not find conversion for ${type}`);
   }
@@ -392,7 +395,8 @@ export const areObjectsSame = (a: Object, b: Object) => {
 //   console.log(a, b);
 //   console.log(JSON.stringify(a) === JSON.stringify(b))
 //   console.log(JSON.stringify(a), JSON.stringify(b))
-  return JSON.stringify(a) === JSON.stringify(b);
+//   return JSON.stringify(a) === JSON.stringify(b);
+    return _.isEqual(a, b);
 };
 
 export const getTailNumberFromAgentID = (agentID: string) => {
@@ -427,3 +431,216 @@ export const checkIfEqual = (
   });
   return equal;
 };
+
+const defaultButtonStatus = {
+    "takeoff": {
+        show: false,
+        disabled: true
+    },
+    "land": {
+        show: false,
+        disabled: true
+    },
+    "startmission": {
+        show: false,
+        disabled: true
+    },
+    "pausemission": {
+        show: false,
+        disabled: true
+    },
+    "rtl": {
+        show: false,
+        disabled: true
+    },
+    "setgohere": {
+        show: false,
+        disabled: true
+    },
+    "arm": {
+        show: true,
+        disabled: false
+    },
+    "disarm": {
+        show: false,
+        disabled: true
+    }
+}
+
+export const getShowButton = (vehicleState: string, vehicleType: string) => {
+    let buttons = defaultButtonStatus;
+    switch (vehicleState) {
+        case "Grounded":
+        case "Grounded Idle":
+        case "Grounded Disarmed":
+            buttons.takeoff = { show: true, disabled: false};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: true, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: true, disabled: false};
+            buttons.disarm = { show: false, disabled: true};
+            break;
+        case "Grounded Armed":
+            buttons.takeoff = { show: true, disabled: false};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: true, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: false};
+            break;
+        case "Grounded Arming":
+        case "Grounded Disarming":
+            buttons.takeoff = { show: true, disabled: false};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: true, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Flight":
+        case "Flight Takeoff":
+        case "Flight Takeoff Climbing":
+        case "Flight Takeoff Transitioning":
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: true, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Flight Manual":
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.startmission = { show: true, disabled: false};
+            buttons.pausemission = { show: true, disabled: false};
+            buttons.rtl = { show: true, disabled: false};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Flight Takeoff Complete":
+        case "Flight Guided":
+        case "Flight Guided Idle":
+        case "Flight Guided Spatial Item":
+        case "Flight Guided Queue":
+        case "Flight Guided AttTarget":
+        case "Flight Guided GeoTarget":
+        case "Flight Guided CartTarget":
+            buttons.takeoff = { show: false, disabled: true };
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false };
+            buttons.startmission = { show: true, disabled: false };
+            buttons.pausemission = { show: true, disabled: false};
+            buttons.rtl = { show: true, disabled: false };
+            buttons.setgohere = { show: true, disabled: false };
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+        break;
+        case "Flight Brake":
+        case "Flight Loiter":
+        case "Flight Unknown":
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.startmission = { show: true, disabled: false};
+            buttons.pausemission = { show: true, disabled: false};
+            buttons.rtl = { show: true, disabled: false};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Flight Auto":
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: true, disabled: false};
+            buttons.rtl = { show: true, disabled: false};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Flight RTL":
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: true, disabled: false};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Flight Land":
+        case "Flight Landing":
+        case "Flight Landing Transitioning":
+        case "Flight Landing Descent":
+            buttons.takeoff = { show: false, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : true};
+            buttons.startmission = { show: false, disabled: true};
+            buttons.pausemission = { show: true, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Flight Landing Complete":
+            buttons.takeoff = { show: true, disabled: false};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: false, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: false, disabled: true};
+            buttons.disarm = { show: true, disabled: true};
+            break;
+        case "Unknown":
+            buttons.takeoff = { show: true, disabled: true};
+            buttons.land = { show: false, disabled: vehicleType === "FIXED_WING" ? true : true};
+            buttons.startmission = { show: true, disabled: true};
+            buttons.pausemission = { show: false, disabled: true};
+            buttons.rtl = { show: true, disabled: true};
+            buttons.setgohere = { show: true, disabled: true};
+
+            buttons.arm = { show: true, disabled: false};
+            buttons.disarm = { show: false, disabled: true};
+            break;
+
+        default:
+            break;
+    }
+
+    return buttons;
+}
+
+
+
+export const getDisplayTargetAndPath = (mode: string) => {
+    if(mode === "GUIDED" 
+       || mode === "CIRCLE"
+       || mode === "RTL"
+       || mode === "LOITER"
+       || mode === "TAKEOFF"
+       || mode === "AUTO") 
+       {
+           return true;
+       }
+       else {
+           return false;
+       }
+}

@@ -11,6 +11,9 @@ DynamicTarget_Orientation::DynamicTarget_Orientation():
 DynamicTarget_Orientation::DynamicTarget_Orientation(const AbstractRotation* orientation, const AbstractRotation* orientationRate, const double &thrust):
     m_Rotation(nullptr), m_Thrust(0.0), m_YawRate(0.0)
 {
+    UNUSED(orientation);
+    UNUSED(orientationRate);
+
     this->setTargetOrientation(orientation);
 
     this->setTargetThrust(thrust);

@@ -7,6 +7,7 @@ import { LatLng } from "leaflet";
 import { withAppContext, Context } from "../../Context";
 import { checkIfEqual } from "../../util/helpers";
 import { Vertex } from "../../data-types";
+import { cloneDeep } from "lodash";
 const { ipcRenderer } = window.require("electron");
 
 type Props = {
@@ -15,7 +16,7 @@ type Props = {
 
 type State = {
   showHUD?: boolean;
-  showTarget?: boolean;
+  showTarget?: { agentID: string; showGoHere: boolean }[];
   goHerePt?: Vertex;
 };
 
@@ -26,12 +27,12 @@ class MapRoute extends React.Component<Props, State> {
     this._map = createRef();
     this.state = {
       showHUD: true,
-      showTarget: false,
+      showTarget: [],
       goHerePt: {
         lat: 0,
         lng: 0,
-        alt: 0
-      }
+        alt: 0,
+      },
     };
   }
   componentDidMount() {
@@ -39,8 +40,12 @@ class MapRoute extends React.Component<Props, State> {
       this.setState({ showHUD: !this.state.showHUD });
     });
   }
-  onRequestCenter = (center: LatLng) => {
-    this._map.current.setCenter(center);
+  onRequestCenter = (agentID: string) => {
+    const agent = this.props.context.aircrafts.find(
+      (a) => a.agentID === agentID
+    );
+    const { lat, lng } = agent.location;
+    this._map.current.setCenter({ lat, lng });
   };
   shouldComponentUpdate(prevProps: Props) {
     let shouldUpdate = false;
@@ -69,40 +74,76 @@ class MapRoute extends React.Component<Props, State> {
   }
 
   mapUpdateGoHerePt = (pts: L.LatLng) => {
+    // console.log("MAP-UPDATE GO HERE>");
     let a = {
       lat: pts.lat,
       lng: pts.lng,
-      alt: this.state.goHerePt.alt
+      alt: this.state.goHerePt.alt,
     };
-    this.setState({goHerePt: a});
-    this.sendGoHerePt();
-  }
+    this.setState({ goHerePt: a });
+    this.updateGoHerePt();
+  };
 
-  HUDUpdateGoHerePt = (point: Vertex) => {
-    this.setState({goHerePt: point});
-    this.sendGoHerePt();
-  }
+  HUDUpdateGoHerePt = (point: Vertex & { agentID: string }) => {
+    // console.log("HUD-UPDATE GO HERE");
+    this.setState({ goHerePt: point });
+    this.updateGoHerePt(point.agentID);
+  };
 
-  toggleGoHerePt = (show: boolean) => {
-    this.setState({showTarget: show},this.sendGoHerePt);
-  }
+  toggleGoHerePt = (show: boolean, agentID: string) => {
+    //   console.log("TOGGLE GO HERE");
+    //   console.log(show);
+    let goHereVec = cloneDeep(this.state.showTarget);
+    if (
+      goHereVec.filter(function (p) {
+        return p.agentID === agentID;
+      }).length > 0
+    ) {
+      goHereVec.forEach((element) => {
+        if (element.agentID === agentID) {
+          element.showGoHere = show;
+        }
+      });
+    } else {
+      goHereVec.push({ agentID: agentID, showGoHere: show });
+    }
 
-  sendGoHerePt = () => {
+    this.setState({ showTarget: goHereVec }, () =>
+      this.updateGoHerePt(agentID)
+    );
+  };
+
+  updateGoHerePt = (agentID?: string) => {
+    if (!agentID) {
+      this.state.showTarget.forEach((element) => {
+        if (element.showGoHere) {
+          agentID = element.agentID;
+        }
+      });
+    }
+
+    let display = this.state.showTarget.filter(function (p) {
+      return p.agentID === agentID;
+    });
+
     this.props.context.updateTargets({
       location: { lat: this.state.goHerePt.lat, lng: this.state.goHerePt.lng },
       is_global: true,
-      should_display: this.state.showTarget
-    })
-  }
+      should_display: display[0] ? display[0].showGoHere : false,
+      distance_to_target: 0.0,
+      agentID: agentID,
+    });
+  };
   render() {
     return (
       <Layout>
-        <MapView 
-            ref={this._map} 
-            context={this.props.context} 
-            onUpdateGoHerePts={this.mapUpdateGoHerePt}
-            target={this.state.goHerePt}
-            onCommand={this.props.context.sendToMACE}
+        <MapView
+          ref={this._map}
+          context={this.props.context}
+          onUpdateGoHerePts={this.mapUpdateGoHerePt}
+          target={this.state.goHerePt}
+          onCommand={this.props.context.sendToMACE}
+          goHereEnabled={this.state.showTarget}
         />
         {this.state.showHUD && (
           <AircraftHUD
@@ -112,8 +153,10 @@ class MapRoute extends React.Component<Props, State> {
             onUpdateGoHerePts={this.HUDUpdateGoHerePt}
             toggleGoHerePt = {this.toggleGoHerePt}
             target={this.state.goHerePt}
-            defaultAltitude={10}
+            defaultAltitude={50}
             onToggleSelect={this.props.context.updateSelectedAircraft}
+            addNotification={this.props.context.addNotification}
+            showTargetFlags={this.state.showTarget}
           />
         )}
       </Layout>

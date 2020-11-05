@@ -114,7 +114,12 @@ std::vector<MaceCore::TopicCharacteristic> ModuleGroundStation::GetEmittedTopics
 //!
 void ModuleGroundStation::initiateLogs()
 {
+    std::string loggerName = "mace_to_gui";
+    std::string loggerPath = this->loggingPath + "/gcs_logs/GCS.txt";
+    m_toGUIHandler->initiateLogs(loggerName, loggerPath);
 
+    loggerName = "gui_to_mace";
+    m_toMACEHandler->initiateLogs(loggerName, loggerPath);
 }
 
 //!
@@ -132,6 +137,7 @@ bool ModuleGroundStation::StartTCPServer()
     // For some reason, listening on any other specific address (i.e. not Any) fails.
     //      - As a workaround, I check the incoming connection below for equality with the guiHostAddress before parsing
     m_TcpServer->listen(QHostAddress::Any, m_listenPort);
+
 //    m_TcpServer->listen(m_guiHostAddress, m_listenPort);
 
     m_TcpServer->moveToThread(m_ListenThread);
@@ -223,6 +229,7 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleGroundStation::ModuleC
     maceCommsParams->AddTerminalParameters("ListenPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
     maceCommsParams->AddTerminalParameters("SendPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
     structure.AddNonTerminal("MACEComms", maceCommsParams, false);
+
     structure.AddTerminalParameters("ID", MaceCore::ModuleParameterTerminalTypes::INT, false);
 
     return std::make_shared<MaceCore::ModuleParameterStructure>(structure);
@@ -236,7 +243,8 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleGroundStation::ModuleC
 void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::ModuleParameterValue> &params)
 {
     QHostAddress guiHostAddress;
-    int listenPort, sendPort;
+    int listenPort = 5678;
+    int sendPort = 1234;
     if(params->HasNonTerminal("MACEComms")) {
         std::shared_ptr<MaceCore::ModuleParameterValue> maceCommsXML = params->GetNonTerminalValue("MACEComms");
         if(maceCommsXML->HasTerminal("GUIHostAddress")) {
@@ -252,6 +260,7 @@ void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::Module
         }
     }
 
+
     if(params->HasTerminal("ID"))
     {
         this->SetID(params->GetTerminalValue<int>("ID"));
@@ -259,11 +268,13 @@ void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::Module
 
     m_guiHostAddress = guiHostAddress;
     m_listenPort = listenPort;
-  
+
     m_toGUIHandler->setSendAddress(guiHostAddress);
     m_toGUIHandler->setSendPort(sendPort);
+
     m_toMACEHandler->setSendAddress(guiHostAddress);
     m_toMACEHandler->setSendPort(sendPort);
+
 }
 
 //!
@@ -309,7 +320,10 @@ void ModuleGroundStation::AttachedAsModule(MaceCore::IModuleTopicEvents *ptr)
 //!
 void ModuleGroundStation::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName);
+    UNUSED(sender);
+    UNUSED(data);
+    UNUSED(target);
 }
 
 
@@ -325,6 +339,8 @@ void ModuleGroundStation::NewTopicData(const std::string &topicName, const MaceC
 //!
 void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
     uint8_t vehicleID;
     if(this->getDataObject()->getMavlinkIDFromModule(sender, vehicleID)) {
         //example read of vehicle data
@@ -397,7 +413,7 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     m_VehicleDataTopic.GetComponent(component, read_topicDatagram);
 
                     // Write heartbeat data to the GUI:
-//                    m_toGUIHandler->sendVehicleHeartbeat(vehicleID, component);
+                    m_toGUIHandler->sendVehicleHeartbeat(vehicleID, component);
                 }
     //            else if(componentsUpdated.at(i) == DataGenericItemTopic::DataGenericItemTopic_SystemTime::Name()) {
     //                std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemTime> component = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_SystemTime>();
@@ -446,31 +462,8 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
                     std::shared_ptr<MissionTopic::VehicleTargetTopic> component = std::make_shared<MissionTopic::VehicleTargetTopic>();
                     m_MissionDataTopic.GetComponent(component, read_topicDatagram);
 
-                    switch (component->m_targetPosition->getCoordinateSystemType()) {
-                    case CoordinateSystemTypes::GEODETIC:
-                    {
-                        // Write vehicle target to the GUI:
-
-                        m_toGUIHandler->sendVehicleTarget(vehicleID, dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition));
-                        break;
-                    }
-                    case CoordinateSystemTypes::CARTESIAN:
-                    {
-                        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-
-                        if(!globalOrigin.isAnyPositionValid())
-                            return;
-
-                        mace::pose::GeodeticPosition_2D targetPosition;
-                        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
-
-                        break;
-                    }
-                    case CoordinateSystemTypes::UNKNOWN:
-                    case CoordinateSystemTypes::NOT_IMPLIED:
-                        break;
-                    }
-
+                    // Write vehicle target to the GUI:
+                    m_toGUIHandler->sendVehicleTarget(vehicleID, component);
                 }
             }
         }
@@ -505,7 +498,7 @@ void ModuleGroundStation::NewlyAvailableCurrentMission(const MissionItem::Missio
     bool valid = this->getDataObject()->getMissionList(missionKey,newList);
     if(valid)
     {
-        m_toGUIHandler->sendVehicleMission(missionKey.m_systemID,newList);
+//        m_toGUIHandler->sendVehicleMission(missionKey.m_systemID,newList);
     }
 }
 
@@ -561,8 +554,8 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
 
     QJsonArray ids;
     if(vehicleIDs.size() > 0){
-        for (const int& i : vehicleIDs) {
-            ids.append(i);
+        for (const unsigned int& i : vehicleIDs) {
+            ids.append((int)i);
         }
     }
     else {
@@ -575,12 +568,21 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
     json["connectedVehicles"] = ids;
 
     QJsonDocument doc(json);
-    bool bytesWritten = m_toGUIHandler->writeTCPData(doc.toJson());
+//    bool bytesWritten = m_toGUIHandler->writeTCPData(doc.toJson());
+    bool bytesWritten = m_toGUIHandler->writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write ConnectedVehicles failed..." << std::endl;
     }
 }
+
+void ModuleGroundStation::NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    uint8_t vehicleID;
+    this->getDataObject()->getMavlinkIDFromModule(sender.Value(), vehicleID);
+    m_toGUIHandler->sendVehicleParameterList(vehicleID, params);
+}
+
 
 //!
 //! \brief NewlyAvailableBoundary Subscriber to a new boundary
@@ -588,6 +590,9 @@ void ModuleGroundStation::NewlyAvailableVehicle(const int &vehicleID, const Opti
 //!
 void ModuleGroundStation::NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(key);
+    UNUSED(sender);
+
     /* MTB - Removing 7/2/2018
      * @pnolan Issue: 138
      *

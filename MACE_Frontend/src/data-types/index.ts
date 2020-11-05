@@ -1,6 +1,13 @@
+
+export type Notification = {
+    title: string;
+    message: string;
+    type: "danger" | "success" | "info" | "warning" | "default";
+}
+
 export type Vertex = { lat: number; lng: number; alt?: number };
 type Vertices = Vertex[];
-type ColorObject = {
+export type ColorObject = {
     100: string;
     200: string;
     300: string;
@@ -12,12 +19,13 @@ type ColorObject = {
     900: string;
 };
 
-type MessageType =
+export type MessageType =
     | EnvironmentBoundary_MessageType
     | EnvironmentIcon_MessageType
     | VehicleHeartbeat_MessageType
     | VehiclePosition_MessageType
     | VehicleAttitude_MessageType
+    | VehicleAirspeed_MessageType
     | VehicleArm_MessageType
     | VehicleGPS_MessageType
     | VehicleText_MessageType
@@ -25,6 +33,7 @@ type MessageType =
     | VehicleFuel_MessageType
     | VehicleTarget_MessageType
     | VehiclePath_MessageType
+    | VehicleParameterList_MessageType
 
 interface IMessage {
     message_type: MessageType;
@@ -36,6 +45,7 @@ type EnvironmentIcon_MessageType = "environment_icon";
 type VehicleHeartbeat_MessageType = "vehicle_heartbeat";
 type VehiclePosition_MessageType = "vehicle_position";
 type VehicleAttitude_MessageType = "vehicle_attitude";
+type VehicleAirspeed_MessageType = "vehicle_airspeed";
 type VehicleArm_MessageType = "vehicle_arm";
 type VehicleGPS_MessageType = "vehicle_gps";
 type VehicleText_MessageType = "vehicle_text";
@@ -43,13 +53,15 @@ type VehicleMode_MessageType = "vehicle_mode";
 type VehicleFuel_MessageType = "vehicle_fuel";
 type VehicleTarget_MessageType = "vehicle_target";
 type VehiclePath_MessageType = "vehicle_path";
+type VehicleParameterList_MessageType = "vehicle_parameter_list"
 
-type Message =
+export type Message =
     | Environment.Boundary
     | Environment.Icon
     | Aircraft.Heartbeat
     | Aircraft.Position
     | Aircraft.Attitude
+    | Aircraft.Airspeed
     | Aircraft.Arm
     | Aircraft.GPS
     | Aircraft.Text
@@ -57,8 +69,9 @@ type Message =
     | Aircraft.Fuel
     | Aircraft.Path
     | Aircraft.Target
+    | Aircraft.Parameters
 
-namespace Environment {
+export namespace Environment {
     export type BoundaryType = "soft" | "hard";
     export type IconType =
         | "command_control"
@@ -81,6 +94,7 @@ namespace Environment {
         alt?: number;
         should_display?: boolean;
         auto_focus?: boolean;
+        lastUpdate?: number;
     };
 
     export interface Boundary extends IMessage {
@@ -100,17 +114,18 @@ namespace Environment {
         alt?: number;
         should_display?: boolean;
         auto_focus?: boolean;
+        lastUpdate?: number;
     }
 }
 
-namespace Aircraft {
+export namespace Aircraft {
     export type AircraftPayload = {
         agentID: string;
         selected: boolean;
         should_display?: boolean;
         color?: ColorObject;
         date?: number;
-        lastUpdate?: string;
+        lastUpdate?: number;
         vehicle_type: string;
         behavior_state: string;
         vehicle_state: string;
@@ -128,11 +143,19 @@ namespace Aircraft {
         text: {
             textStr: string;
             textSeverity: string;
+            textTimestamp: number;
         };
         mode: string;
         battery_remaining: number;
         battery_current: number;
         battery_voltage: number;
+        param_list: {
+            param_id: string;
+            value: number
+        }[];
+        airspeed: number;
+        distance_to_target: number;
+        flight_time: number;
     }
 
     export type HeartbeatPayload = {
@@ -147,7 +170,7 @@ namespace Aircraft {
         vehicle_state: string;
         date?: number;
         should_display?: boolean;
-        lastUpdate?: string;
+        lastUpdate?: number;
     };
     export interface Heartbeat extends IMessage {
         message_type: VehicleHeartbeat_MessageType;
@@ -162,7 +185,7 @@ namespace Aircraft {
         vehicle_state: string;
         date?: number;
         should_display?: boolean;
-        lastUpdate?: string;
+        lastUpdate?: number;
     }
 
     export type PositionPayload = {
@@ -197,6 +220,19 @@ namespace Aircraft {
         roll: number;
         pitch: number;
         yaw: number;
+    }
+
+    export type AirspeedPayload = {
+        agentID: string;
+        should_display?: boolean;
+        airspeed: number;
+    }
+
+    export interface Airspeed {
+        message_type: VehicleAirspeed_MessageType;
+        agentID: string;
+        should_display?: boolean;
+        airspeed: number;
     }
 
 
@@ -283,6 +319,7 @@ namespace Aircraft {
         vertices: Vertices;
         date?: number;
         should_display?: boolean;
+        lastUpdate?: number;
     };
 
     export interface Path {
@@ -291,6 +328,7 @@ namespace Aircraft {
         vertices: Vertices;
         date?: number;
         should_display?: boolean;
+        lastUpdate?: number;
     }
 
     export type TargetPayload = {
@@ -299,6 +337,8 @@ namespace Aircraft {
         date?: number;
         should_display?: boolean;
         is_global?: boolean;
+        distance_to_target: number;
+        lastUpdate?: number;
     };
 
     export interface Target {
@@ -308,6 +348,26 @@ namespace Aircraft {
         date?: number;
         should_display?: boolean;
         is_global?: boolean;
+        lastUpdate?: number;
+    }
+
+    export type ParametersPayload = {
+        agentID?: string;
+        param_list: {
+            param_id: string;
+            value: number;
+        }[];
+        should_display?: boolean;
+    }
+
+    export interface Parameters {
+        message_type: VehicleParameterList_MessageType;
+        agentID?: string;
+        param_list: {
+            param_id: string;
+            value: number;
+        }[];
+        should_display?: boolean;
     }
 }
 

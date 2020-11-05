@@ -83,6 +83,17 @@ void BaseGridMap::resizeGridSizeByLength(const double &x_length, const double &y
     // callback
     this->callUpdatedGridSizeCallback();
 }
+bool BaseGridMap::updateGridSize(const double &minX, const double &maxX, const double &minY, const double &maxY, const double &x_res, const double &y_res)
+{
+    this->resizeGrid(minX, maxX, minY, maxY, x_res, y_res);
+    return true;
+}
+
+bool BaseGridMap::updateGridSizeByLength(const double &x_length, const double &y_length, const double &x_res, const double &y_res)
+{
+    this->resizeGridSizeByLength(x_length, y_length, x_res, y_res);
+    return true;
+}
 
 void BaseGridMap::setXResolution(const double &x_res)
 {

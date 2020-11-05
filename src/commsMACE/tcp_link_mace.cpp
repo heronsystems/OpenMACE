@@ -108,7 +108,7 @@ bool TcpLink::Connect(void)
     this->StartTCPServer();
     this->StartUDPListener();
 
-//    m_Link = new MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR, RTA_STR, EXTERNAL_LINK_STR>(_config.portName(), _config.baud());
+//    m_Link = new MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR, MLSTATION_STR, RTA_STR, EXTERNAL_LINK_STR>(_config.portName(), _config.baud());
 
 //    m_Link->AddHandler_NewRemoteComponentItem_Generic([this](const ResourceKey &resourceKey, const ResourceValue &resourceValue, uint64_t addr){
 //        UNUSED(addr);
@@ -346,7 +346,7 @@ void TcpLink::startTCPClient()
 
 void TcpLink::WriteBytesBroadcast(const char *bytes, int length, const OptionalParameter<Resource> &target) const
 {
-
+    UNUSED(target);
     std::cout<<"TcpLink::WriteBytes" << std::endl;
     QByteArray data(bytes, length);
     if(m_udpSocket && m_udpSocket->isOpen()) {
@@ -360,6 +360,7 @@ void TcpLink::WriteBytesBroadcast(const char *bytes, int length, const OptionalP
 
 void TcpLink::WriteBytes(const char *bytes, int length, const OptionalParameter<Resource> &target)
 {
+    UNUSED(target);
     QByteArray data(bytes, length);
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
 

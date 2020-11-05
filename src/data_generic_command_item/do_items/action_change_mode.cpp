@@ -59,6 +59,7 @@ void ActionChangeMode::populateCommandItem(mace_command_short_t &obj) const
 
 void ActionChangeMode::fromCommandItem(const mace_command_short_t &obj)
 {
+    UNUSED(obj);
     //this->setVehicleArm(static_cast<bool>(obj.param));
 }
 /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
@@ -82,6 +83,7 @@ void ActionChangeMode::fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
 
 void ActionChangeMode::generateMACEMSG_MissionItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
     mace_mission_item_t missionItem;
     AbstractCommandItem::populateMACECOMMS_MissionItem(missionItem);
     //mace_msg_mission_item_encode_chan();
@@ -89,6 +91,7 @@ void ActionChangeMode::generateMACEMSG_MissionItem(mace_message_t &msg) const
 
 void ActionChangeMode::generateMACEMSG_CommandItem(mace_message_t &msg) const
 {
+    UNUSED(msg);
     mace_command_short_t shortCommand;
     this->populateCommandItem(shortCommand);
     //mace_msg_command_short_encode_chan();

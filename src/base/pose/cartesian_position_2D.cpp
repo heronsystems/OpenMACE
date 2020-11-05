@@ -36,17 +36,15 @@ CartesianPosition_2D::CartesianPosition_2D(const double &x, const double &y):
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_2D &copy):
-    Abstract_CartesianPosition(copy), state_space::State(copy), data(0.0,0.0)
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(copy.data)
 {
     this->dimension = 2;
-    this->updatePosition(copy.getXPosition(), copy.getYPosition());
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
-    Abstract_CartesianPosition(copy), state_space::State(copy), data(0.0,0.0)
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(copy.data(0),copy.data(1))
 {
     this->dimension = 2;
-    this->updatePosition(copy.getXPosition(), copy.getYPosition());
 }
 
 bool CartesianPosition_2D::hasXBeenSet() const

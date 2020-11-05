@@ -131,7 +131,10 @@ void ModuleROSUMD::ConfigureModule(const std::shared_ptr<MaceCore::ModuleParamet
 //!
 void ModuleROSUMD::NewTopicData(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const MaceCore::TopicDatagram &data, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
-
+    UNUSED(topicName);
+    UNUSED(sender);
+    UNUSED(data);
+    UNUSED(target);
 }
 
 
@@ -147,6 +150,8 @@ void ModuleROSUMD::NewTopicData(const std::string &topicName, const MaceCore::Mo
 //!
 void ModuleROSUMD::NewTopicSpooled(const std::string &topicName, const MaceCore::ModuleCharacteristic &sender, const std::vector<std::string> &componentsUpdated, const OptionalParameter<MaceCore::ModuleCharacteristic> &target)
 {
+    UNUSED(target);
+
     uint8_t vehicleID;
     if(this->getDataObject()->getMavlinkIDFromModule(sender, vehicleID)) {
         if(topicName == m_VehicleDataTopic.Name())
@@ -230,6 +235,8 @@ void ModuleROSUMD::NewTopicSpooled(const std::string &topicName, const MaceCore:
 //!
 void ModuleROSUMD::NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(sender);
+
     nav_msgs::Odometry* defaultOdom = new nav_msgs::Odometry();
     defaultOdom->child_frame_id = "odom";
     geometry_msgs::Quaternion defaultQuaternion;
@@ -252,6 +259,7 @@ void ModuleROSUMD::NewlyUpdated3DOccupancyMap()
 //!
 void ModuleROSUMD::NewlyCompressedOccupancyMap(const mace::maps::Data2DGrid<mace::maps::OccupiedResult> &map)
 {
+    UNUSED(map);
 }
 
 //!
@@ -260,6 +268,8 @@ void ModuleROSUMD::NewlyCompressedOccupancyMap(const mace::maps::Data2DGrid<mace
 //!
 void ModuleROSUMD::NewlyAvailableBoundary(const uint8_t &key, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
+    UNUSED(key);
+    UNUSED(sender);
 }
 
 //!
@@ -268,6 +278,7 @@ void ModuleROSUMD::NewlyAvailableBoundary(const uint8_t &key, const OptionalPara
 //!
 void ModuleROSUMD::NewlyFoundPath(const std::vector<mace::state_space::StatePtr> &path)
 {
+    UNUSED(path);
 }
 
 
@@ -544,7 +555,8 @@ void ModuleROSUMD::ROSCallback_VisionPoseEstimate(const geometry_msgs::PoseStamp
 bool ModuleROSUMD::publishVehiclePosition(const int &vehicleID)
 {
     // robot state
-
+    UNUSED(vehicleID);
+    return false;
 }
 
 
@@ -570,6 +582,8 @@ bool ModuleROSUMD::publishVehicleAttitude(const int &vehicleID)
     // TODO: Timestamp
 
     m_vehicleAttPub.publish(attitude);
+
+    return true;
 }
 
 
@@ -589,6 +603,8 @@ bool ModuleROSUMD::publishVehicleGPS(const int &vehicleID, const std::shared_ptr
     // TODO: Timestamp
 
     m_gpsPub.publish(gps);
+
+    return true;
 }
 
 //!
@@ -606,6 +622,8 @@ bool ModuleROSUMD::publishVehicleBattery(const int &vehicleID, const std::shared
     // TODO: Timestamp
 
     m_batteryPub.publish(battery);
+
+    return true;
 }
 
 //!
@@ -624,10 +642,16 @@ bool ModuleROSUMD::publishVehicleHeartbeat(const int &vehicleID, const std::shar
     // TODO: Timestamp
 
     m_heartbeatPub.publish(heartbeat);
+
+    return true;
 }
 
 bool ModuleROSUMD::publishVehicleTargetInfo(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
 {
+    UNUSED(vehicleID);
+    UNUSED(component);
+
+    return false;
 
     //    mace_matlab::UPDATE_VEHICLE_TARGET target;
     //    target.vehicleID = vehicleID;
@@ -664,6 +688,8 @@ bool ModuleROSUMD::publishVehicleTargetInfo(const int &vehicleID, const std::sha
 //!
 bool ModuleROSUMD::publishCmdStatus(const int &vehicleID) {
     // Not needed?
+    UNUSED(vehicleID);
+    return false;
 }
 
 void ModuleROSUMD::publicVehicleOdometry(const int &vehicleID)

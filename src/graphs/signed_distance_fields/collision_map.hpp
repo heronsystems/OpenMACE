@@ -731,6 +731,8 @@ public:
 
     sdf_generation::DistanceField ExtractDistanceField(const float oob_value) const
     {
+        UNUSED(oob_value);
+
         // Make the SDF
         std::vector<GRID_INDEX> filled;
         for (int64_t x_index = 0; x_index < GetNumXCells(); x_index++)

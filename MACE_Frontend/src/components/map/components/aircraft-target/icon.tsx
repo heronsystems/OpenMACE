@@ -1,9 +1,10 @@
 import * as React from "react";
+import * as Types from "../../../../data-types/index";
 
 type Props = {
   width: number | string;
   height: number | string;
-  color: ColorObject;
+  color: Types.ColorObject;
   scope: "global" | "local";
   selected: boolean;
 };

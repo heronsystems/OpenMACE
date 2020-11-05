@@ -23,8 +23,8 @@ SOURCES += module_ground_station.cpp \
     guitomace.cpp
 
 HEADERS += module_ground_station.h \
-    guimessagetypes.h \
-        module_ground_station_global.h \
+    messagetypes.h \
+    module_ground_station_global.h \
     guitimer.h \
     macetogui.h \
     guitomace.h
@@ -48,11 +48,14 @@ INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
 
-INCLUDEPATH += $$PWD/../../speedLog/
+INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/V2/common
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
@@ -105,15 +108,24 @@ unix {
         INCLUDEPATH += /opt/ros/kinetic/lib
         LIBS += -L/opt/ros/kinetic/lib -loctomath
         LIBS += -L/opt/ros/kinetic/lib -loctomap
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/kinetic/include
     } else:exists(/opt/ros/melodic/lib/) {
         DEFINES += ROS_EXISTS
         INCLUDEPATH += /opt/ros/melodic/include
         INCLUDEPATH += /opt/ros/melodic/lib
         LIBS += -L/opt/ros/melodic/lib -loctomath
         LIBS += -L/opt/ros/melodic/lib -loctomap
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/melodic/include
     } else {
         INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
         LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+
+        # Octomap Warning suppression:
+        QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
     }
 }
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath

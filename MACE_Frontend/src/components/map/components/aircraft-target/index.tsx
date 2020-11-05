@@ -9,6 +9,7 @@ import colors from "../../../../util/colors";
 const { useContext } = React;
 import { getTailNumberFromAgentID } from "../../../../util/helpers";
 import TailNumber from "./tail-number";
+import * as Types from "../../../../data-types/index";
 
 const LOCAL_WIDTH = 24;
 const LOCAL_HEIGHT = 24;
@@ -17,9 +18,10 @@ const GLOBAL_WIDTH = 48;
 const GLOBAL_HEIGHT = 48;
 
 type Props = {
-  data: Aircraft.TargetPayload;
+  data: Types.Aircraft.TargetPayload;
 };
-const Target = (props: Props) => {
+
+export default React.memo((props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);
   const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
   const scope = props.data.is_global ? "global" : "local";
@@ -80,7 +82,7 @@ const Target = (props: Props) => {
           iconAnchor: L.point(width / 2, height, true)
         })}
       >
-        {!props.data.is_global && (
+        {/* {!props.data.is_global && (
           <Tooltip
             direction="right"
             offset={[16, -height / 2]}
@@ -95,10 +97,8 @@ const Target = (props: Props) => {
               </div>
             </div>
           </Tooltip>
-        )}
+        )} */}
       </Marker>
     );
   }
-};
-
-export default Target;
+});

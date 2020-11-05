@@ -78,7 +78,7 @@ public:
         Construct_ReliableBroadcast_Vector(commandItem, sender, vec, queue);
 
         printf("--------------------------------------------------------------------\n");
-        printf("%d\n", targets.size());
+        printf("%d\n", (int)targets.size());
 
         BASE::m_Controller-> template QueueReliableBroadcast<QUEUE_TYPE>(queue, MESSAGE_ACK_ID, targets, [this, vec, sender, targets](const std::vector<COMPONENT_KEY> &unheard){
 

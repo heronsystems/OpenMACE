@@ -113,7 +113,8 @@ export default {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    height: 150
+    height: 150,
+    pointerEvents: "none" as "none"
   },
   indicator: {
       width: 100+"px",
@@ -155,5 +156,8 @@ export default {
       position: "absolute" as "absolute",
       right: 200,
       zIndex: 9999
+  },
+  segmentedControlContainer: {
+    justifyContent: "center" as "center"
   }
 };

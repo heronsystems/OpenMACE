@@ -40,7 +40,8 @@ MissionItemCurrentTopic::MissionItemCurrentTopic(const MissionItem::MissionItemC
     this->indexCurrent = achievedItem.getMissionCurrentIndex();
 }
 
-MissionItemCurrentTopic::MissionItemCurrentTopic(const MissionItemCurrentTopic &copyObj)
+MissionItemCurrentTopic::MissionItemCurrentTopic(const MissionItemCurrentTopic &copyObj) :
+    MissionItem::MissionItemCurrent()
 {
     this->key = copyObj.getMissionKey();
     this->indexCurrent = copyObj.getMissionCurrentIndex();

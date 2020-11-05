@@ -23,6 +23,10 @@
 
 #include "base_topic/base_topic_components.h"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
+
 using namespace std;
 
 class MODULE_GROUND_STATIONSHARED_EXPORT ModuleGroundStation : public MaceCore::IModuleCommandGroundStation
@@ -124,6 +128,11 @@ public:
     //!
     virtual void NewlyAvailableVehicle(const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender);
 
+    //!
+    //! \brief NewlyAvailableParameterList Explicitly being told about the newly available parameters
+    //! \param params the params that are currently relevant to the vehicle
+    //!
+    void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
     //!
     //! \brief NewlyAvailableCurrentMission Subscriber to a new vehicle mission topic
@@ -211,9 +220,19 @@ private:
     QHostAddress m_guiHostAddress;
 
     //!
+    //! \brief m_mlGuiHostAddress TCP listen address for MLGUI-to-MACE connection
+    //!
+    QHostAddress m_mlGuiHostAddress;
+
+    //!
     //! \brief m_listenPort TCP listen port for GUI-to-MACE connection
     //!
     int m_listenPort;
+
+    //!
+    //! \brief m_mlListenPort TCP listen port for MLGUI-to-MACE connection
+    //!
+    int m_mlListenPort;
 
     //!
     //! \brief m_toMACEHandler Handler for all comms going to MACE from the GUI
@@ -228,6 +247,11 @@ private:
     // TESTING:
     double latitude;
     // END TESTING
+
+    //!
+    //! \brief m_logLevel Log level (e.g. trace, debug, info, warn, err, critical, off)
+    //!
+    std::string m_logLevel;
 };
 
 #endif // MODULE_GROUND_STATION_H

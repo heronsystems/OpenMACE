@@ -7,13 +7,27 @@ import colors from "../../../../util/colors";
 const { useContext } = React;
 import { getTailNumberFromAgentID, getColorForIndex } from "../../../../util/helpers";
 import { MdInvertColors } from "react-icons/md";
+import * as Types from "../../../../data-types/index";
 
 
 type Props = {
-  data: Aircraft.TargetPayload;
+  data: Types.Aircraft.TargetPayload;
 };
 
-const TargetLine = (props: Props) => {
+let lastUpdate = Date.now()
+
+// const checkIfTimeToUpdate = () => {
+//   let preventUpdate = true
+//   const now = Date.now()
+//   const diff = now - lastUpdate
+//   if (diff > 100) {
+//     preventUpdate = false
+//     lastUpdate = now
+//   }
+//   return preventUpdate
+// };
+
+const TargetLine = React.memo((props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);
   const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
   if (aircraft === undefined) {
@@ -28,7 +42,8 @@ const TargetLine = (props: Props) => {
 
     );
   }
-};
+// }, checkIfTimeToUpdate);
+});
 
 
 export default TargetLine;

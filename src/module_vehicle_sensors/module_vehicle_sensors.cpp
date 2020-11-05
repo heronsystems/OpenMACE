@@ -193,7 +193,7 @@ void ModuleVehicleSensors::NewTopicSpooled(const std::string &topicName, const M
 //!
 void ModuleVehicleSensors::computeVehicleFootprint(const int &systemID, const DataVehicleSensors::SensorCamera &camera, const GeodeticPosition_3D &globalPosition, const Rotation_3D &attitude)
 {
-    UNUSED(camera); UNUSED(globalPosition); UNUSED(attitude);
+    UNUSED(camera); UNUSED(globalPosition); UNUSED(attitude); UNUSED(systemID);
 //
 //    DataState::StateGlobalPositionEx vehicleOrigin = globalPosition;
 
@@ -203,13 +203,13 @@ void ModuleVehicleSensors::computeVehicleFootprint(const int &systemID, const Da
 //    //The first check will be to see if the camera is stabilized
 //    //If this is true, this allows us to easily compute a basic quadrilateral footprint
 
-//    /*
+//
 //    4 ------- 1
-//     \       /
+//     \       / -
 //         X
-//     /       \
+//     /       \ -
 //    3         2
-//    */
+//
 //    mace::pose::GeodeticPosition_3D origin = this->getDataObject()->GetGlobalOrigin();
 //    CommandItem::SpatialHome globalHome(origin);
 //    DataState::StateGlobalPosition globalPos(globalHome.position->getX(),globalHome.position->getY(),globalHome.position->getZ());

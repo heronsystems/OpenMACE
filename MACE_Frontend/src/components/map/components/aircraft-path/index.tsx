@@ -2,10 +2,11 @@ import * as React from "react";
 import { Polyline } from "react-leaflet";
 import colors from "../../../../util/colors";
 import AppContext, { Context } from "../../../../Context";
+import * as Types from "../../../../data-types/index";
 const { useContext } = React;
 
 type Props = {
-  data: Aircraft.PathPayload;
+  data: Types.Aircraft.PathPayload;
 };
 
 export default (props: Props) => {

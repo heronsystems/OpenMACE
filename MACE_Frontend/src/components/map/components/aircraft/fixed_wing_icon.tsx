@@ -1,8 +1,9 @@
 import * as React from "react";
 import colors from "../../../../util/colors";
+import * as Types from "../../../../data-types/index";
 
 type Props = {
-  color?: ColorObject;
+  color?: Types.ColorObject;
   width?: number | string;
   height?: number | string;
   rotation?: number;

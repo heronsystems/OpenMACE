@@ -1,10 +1,11 @@
 import * as React from "react";
 import { filterProps } from "recharts/types/util/types";
+import * as Types from "../../../../../data-types/index";
 
 type Props = {
   width: number | string;
   height: number | string;
-  color: ColorObject;
+  color: Types.ColorObject;
 };
 
 export default (props: Props) => {

@@ -61,6 +61,9 @@ INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/V2/common
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
 else:unix:!macx: LIBS += -L$$OUT_PWD/../base/ -lbase

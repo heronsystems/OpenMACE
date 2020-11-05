@@ -43,10 +43,15 @@ include(../headerinstall.pri)
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/include
-INCLUDEPATH += $$PWD/../../speedLog/
+INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+# Octomap Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
@@ -99,5 +104,8 @@ unix:!macx|win32: LIBS += -L$$PWD/../../tools/flann/build/lib/ -lflann_s
 
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 DEPENDPATH += $$PWD/../../tools/flann/src/cpp
+
+# Flann Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$PWD/../../tools/flann/src/cpp
 
 unix: LIBS += -llz4

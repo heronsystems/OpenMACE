@@ -7,6 +7,8 @@ namespace ExternalLink {
     void ControllerHome::Construct_Broadcast(const command_item::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &msg)
     {
         UNUSED(sender);
+        UNUSED(data);
+        UNUSED(msg);
 //        msg.latitude = data.position->getX() * pow(10,7);
 //        msg.longitude = data.position->getY()* pow(10,7);
 //        msg.altitude = data.position->getZ() * 1000.0;
@@ -33,6 +35,9 @@ namespace ExternalLink {
      */
     bool ControllerHome::Construct_FinalObject(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data)
     {
+        UNUSED(msg);
+        UNUSED(data);
+
         //If we have requested home position received module then don't do anything.
         // (Because this handles broadcast, let other method handle this case)
         if(m_ModulesRequestedFrom.find(sender) != m_ModulesRequestedFrom.cend())
@@ -67,6 +72,8 @@ namespace ExternalLink {
 
     bool ControllerHome::BuildData_Send(const mace_mission_request_home_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_t &rsp, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &receiveQueueObj, MaceCore::ModuleCharacteristic &respondQueueObj)
     {
+        UNUSED(rsp);
+
         receiveQueueObj = sender;
         respondQueueObj = receiveQueueObj;
 
@@ -88,6 +95,8 @@ namespace ExternalLink {
 
     bool ControllerHome::Construct_FinalObjectAndResponse(const mace_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_home_position_ack_t &response, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
     {
+        UNUSED(msg);
+
         //Only continue if we have requested a home posiiton from this module.
         if(m_ModulesRequestedFrom.find(sender) == m_ModulesRequestedFrom.cend())
         {
@@ -131,6 +140,8 @@ namespace ExternalLink {
     bool ControllerHome::Construct_Send(const command_item::SpatialHome &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_set_home_position_t &msg, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
+        UNUSED(target);
+        UNUSED(msg);
 
         //std::cout << "DEBUG: Sending SetHomePosition. Raw XYZ Values: " << data.position->getX() << " " << data.position->getY() << " " << data.position->getZ() << std::endl;
 

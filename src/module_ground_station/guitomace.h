@@ -29,7 +29,14 @@
 
 #include "base/state_space/cartesian_2D_space.h"
 
+#include "commsMACE/udp_link_mace.h"
+#include "commsMACE/udp_configuration_mace.h"
+
 #include "messagetypes.h"
+
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
 
 class GUItoMACE
 {
@@ -38,6 +45,11 @@ public:
     GUItoMACE(const MaceCore::IModuleCommandGroundStation *ptrRef, const QHostAddress &sendAddress, const int &sendPort);
 
     ~GUItoMACE();
+
+    //!
+    //! \brief initiateLogs Start log files and logging for the Ground Station module
+    //!
+    void initiateLogs(const std::string &loggerName, const std::string &loggingPath);
 
     // ============================================================================= //
     // ===================== Commands from GUI to MACE Core ======================== //
@@ -157,6 +169,25 @@ public:
     //!
     bool writeTCPData(QByteArray data);
 
+    //!
+    //! \brief writeUDPData Write data to the MACE GUI via UDP
+    //! \param data Data to be sent to the MACE GUI
+    //! \return True: success / False: failure
+    //!
+    bool writeUDPData(QByteArray data);
+
+private:
+    //!
+    //! \brief logToFile Helper method to log JSON data to file:
+    //! \param doc
+    //!
+    void logToFile(const QJsonDocument &doc) {
+        if(m_logger) {
+            std::string str = doc.toJson(QJsonDocument::Compact).toStdString();
+            m_logger->error(str);
+        }
+    }
+
 private:
     //!
     //! \brief m_parent Reference to parent object
@@ -176,7 +207,21 @@ private:
     mace::state_space::Cartesian2DSpacePtr goalSpace;
     mace::state_space::Cartesian2DSpace_SamplerPtr m_goalSampler;
 
+    //!
+    //! \brief m_udpConfig UDP configuration for UDP comms
+    //!
+    CommsMACE::UdpConfiguration m_udpConfig;
 
+    //!
+    //! \brief m_udpLink UDP comms link object
+    //!
+    std::shared_ptr<CommsMACE::UdpLink> m_udpLink;
+
+protected:
+    //!
+    //! \brief m_logger spdlog logging object
+    //!
+    std::shared_ptr<spdlog::logger> m_logger;
 };
 
 #endif // GUITOMACE_H

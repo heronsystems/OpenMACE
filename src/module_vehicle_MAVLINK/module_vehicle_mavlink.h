@@ -36,6 +36,7 @@
 #include "module_vehicle_MAVLINK/controllers/commands/command_msg_request.h"
 #include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
 #include "module_vehicle_MAVLINK/controllers/controller_mission.h"
+#include "module_vehicle_MAVLINK/controllers/controller_parameter_request.h"
 #include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
 #include "module_vehicle_MAVLINK/controllers/controller_vision_position_estimate.h"
 
@@ -86,7 +87,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ModuleVehicleMAVLINK():
         ModuleVehicleGeneric<VehicleTopicAdditionalComponents..., DataMAVLINK::EmptyMAVLINK>(),
-        airborneInstance(false), m_VehicleMissionTopic("vehicleMission"), m_IsAttachedMavlinkEntitySet(false), m_SystemData(nullptr)
+         m_IsAttachedMavlinkEntitySet(false), m_VehicleMissionTopic("vehicleMission"), m_SystemData(nullptr), airborneInstance(false)
     {
 
     }
@@ -278,6 +279,7 @@ public:
     //! \param systemTime System time
     //!
     virtual void cbi_VehicleSystemTime(const int &systemID, std::shared_ptr<DataGenericItem::DataGenericItem_SystemTime> systemTime) {
+        UNUSED(systemID);
         ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr) {
             ptr->GVEvents_NewSystemTime(this, *systemTime);
         });
@@ -406,6 +408,12 @@ protected:
     std::mutex m_mutex_MissionController;
     std::condition_variable m_condition_MissionController;
     bool m_oldMissionControllerShutdown = false;
+
+protected:
+    void prepareParameterController();
+    std::mutex m_mutex_ParameterController;
+    std::condition_variable m_condition_ParameterController;
+    bool m_oldParameterControllerShutdown = false;
 
 protected:
     virtual void handleFirstConnectionSetup();

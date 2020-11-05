@@ -1,5 +1,4 @@
 #include "module_vehicle_mavlink.h"
-
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConnectionSetup()
 {
@@ -11,7 +10,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
         command_EKFOrigin.setGlobalOrigin(&desiredEKFPosition);
         handleGlobalOriginController(command_EKFOrigin);
     }
-
     if(setEKFasHOME == true)
     {
         command_item::SpatialHome command_SystemHome;
@@ -27,7 +25,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
         homeRequest.setActionType(command_item::AbstractCommandItem::GET_COMMAND);
         handleHomePositionController(homeRequest);
     }
-
     //request the current mission on the vehicle
     this->prepareMissionController();
     MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
@@ -40,14 +37,39 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
             else
                 printf("Mission Download Failed\n");
             //Ken Fix: We should handle stuff related to the completion and the code
-
             missionController->Shutdown();
         });
-
         missionController->GetMissions(m_SystemData->getMAVLINKID());
     }
-}
+    //request the current parameters on the vehicle (for now we do just one)
+    this->prepareParameterController();
+    MAVLINKUXVControllers::Controller_ParameterRequest* parameterController = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("parameterController"));
+    if(parameterController)
+    {
+        parameterController->AddLambda_Finished(this, [this, parameterController](const bool completed, const MAVLINKUXVControllers::ParameterRequestResult &data){
+            if (completed)
+                printf("Parameter Download Completed\n");
+            else
+                printf("Parameter Download Failed\n");
 
+            DataGenericItem::DataGenericItem_ParamValue parameterValue;
+            parameterValue.setParamValues(data.parameterIndex, data.parameterName, data.parameterValue);
+            //notify the core of the change
+            ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr){
+                ptr->GVEvents_NewParameterValue(this, parameterValue);
+            });
+
+            //Ken Fix: We should handle stuff related to the completion and the code
+            parameterController->Shutdown();
+        });
+        MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
+        MavlinkEntityKey sender = 255;
+        MAVLINKUXVControllers::ParameterRequestResult parameterRequest;
+        parameterRequest.vehicleID = this->GetAttachedMavlinkEntity();
+        parameterRequest.parameterName = "TKOFF_ALT";
+        parameterController->Send(parameterRequest, sender, target);
+    }
+}
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositionController(const command_item::SpatialHome &commandObj)
 {
@@ -63,7 +85,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositi
                 if(homePositionOld != nullptr)
                 {
                     homePositionOld->Shutdown();
-
                     // Need to wait for the old controller to be shutdown.
                     std::unique_lock<std::mutex> controllerLock(m_mutex_HomePositionController);
                     while (!m_oldHomePositionControllerShutdown)
@@ -78,7 +99,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositi
                 if(homePositionOld != nullptr)
                 {
                     homePositionOld->Shutdown();
-
                     // Need to wait for the old controller to be shutdown.
                     std::unique_lock<std::mutex> controllerLock(m_mutex_HomePositionController);
                     while (!m_oldHomePositionControllerShutdown)
@@ -88,17 +108,16 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositi
                 }
             }
         }
-
         if(currentAction == command_item::AbstractCommandItem::GET_COMMAND)
         {
             auto homePositionController = new MAVLINKUXVControllers::Command_HomePositionGet(m_SystemData, m_TransmissionQueue, m_LinkChan);
             //create "stateless" global origin controller that exists within the module itself
             homePositionController->AddLambda_Finished(this, [this, homePositionController](const bool completed, const uint8_t finishCode){
+                UNUSED(finishCode);
                 homePositionController->Shutdown();
                 if(!completed)
                     return;
             });
-
             homePositionController->setLambda_Shutdown([this]()
             {
                 auto ptr = m_ControllersCollection.Remove("homePositionController");
@@ -117,11 +136,11 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositi
             auto homePositionController = new MAVLINKUXVControllers::Command_HomePositionSet(m_SystemData, m_TransmissionQueue, m_LinkChan);
             //create "stateless" global origin controller that exists within the module itself
             homePositionController->AddLambda_Finished(this, [this, homePositionController](const bool completed, const uint8_t finishCode){
+                UNUSED(finishCode);
                 homePositionController->Shutdown();
                 if(!completed)
                     return;
             });
-
             homePositionController->setLambda_Shutdown([this]()
             {
                 auto ptr = m_ControllersCollection.Remove("homePositionController");
@@ -135,10 +154,8 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositi
             homePositionController->Send(objCopy, sender, target);
             m_ControllersCollection.Insert("homePositionController", homePositionController);
         }
-
     }
 }
-
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleGlobalOriginController(const command_item::Action_SetGlobalOrigin &originObj)
 {
@@ -151,7 +168,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleGlobalOrig
             {
                 std::cout << "Shutting down the previous global origin controller which was still active prior to receiving this update." << std::endl;
                 globalOriginOld->Shutdown();
-
                 // Need to wait for the old controller to be shutdown.
                 std::unique_lock<std::mutex> controllerLock(m_mutex_GlobalOriginController);
                 while (!m_oldGlobalOriginControllerShutdown)
@@ -160,17 +176,14 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleGlobalOrig
                 controllerLock.unlock();
             }
         }
-
-
         //create "stateless" global origin controller that exists within the module itself
         auto globalOriginController = new MAVLINKUXVControllers::Controller_SetGPSGlobalOrigin(m_SystemData, m_TransmissionQueue, m_LinkChan);
         globalOriginController->AddLambda_Finished(this, [this, globalOriginController](const bool completed, const mace::pose::GeodeticPosition_3D receivedOrigin){
-
             if(completed)
             {
                 //The received origin from the autopilot is the one it will reference
                 if(this->m_SystemData != nullptr) //because this is a lambda during a callback in future this needs to be checked
-                    this->m_SystemData->state->vehicleGlobalOrigin.set(receivedOrigin);
+                    this->m_SystemData->environment->vehicleGlobalOrigin.set(receivedOrigin);
             }
             else
             {
@@ -189,33 +202,27 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleGlobalOrig
                     });
                     MavlinkEntityKey target = m_SystemData->getMAVLINKID();
                     MavlinkEntityKey sender = 255;
-
                     m_ControllersCollection.Insert("messageRequest", newMSGRequest);
                     newMSGRequest->Send(messageRequest,sender,target);
                 });
                 thread.detach();
             }
             globalOriginController->Shutdown();
-
         });
-
         globalOriginController->setLambda_Shutdown([this]()
         {
             auto ptr = m_ControllersCollection.Remove("swarmOriginController");
             delete ptr;
         });
-
         MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
         MavlinkEntityKey sender = 255;
         command_item::Action_SetGlobalOrigin originCopy(originObj);
         originCopy.setTargetSystem(target);
         originCopy.setOriginatingSystem(sender);
-
         m_ControllersCollection.Insert("swarmOriginController", globalOriginController);
         globalOriginController->Send(originCopy, sender, target);
     }
 }
-
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionController()
 {
@@ -227,7 +234,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionCo
         {
             std::cout << "Shutting down previous mission controller, which was still active" << std::endl;
             missionControllerOld->Shutdown();
-
             // Need to wait for the old controller to be shutdown.
             std::unique_lock<std::mutex> controllerLock(m_mutex_MissionController);
             while (!m_oldMissionControllerShutdown)
@@ -236,22 +242,17 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionCo
             controllerLock.unlock();
         }
     }
-
-    //create "stateless" mission controller that exists within the module itself
+    //create "stateless" parameter controller that exists within the module itself
     auto missionController = new MAVLINKUXVControllers::ControllerMission(m_SystemData, m_TransmissionQueue, m_LinkChan);
-
     missionController->setLambda_DataReceived([this](const MavlinkEntityKey key, const MAVLINKUXVControllers::MissionDownloadResult &data){
-
         UNUSED(key);
-
         //////////////////////////////
         ///Update about Home position
         //////////////////////////////
         command_item::SpatialHome home = std::get<0>(data);
         mace::pose::GeodeticPosition_3D* homePosition = home.getPosition()->positionAs<mace::pose::GeodeticPosition_3D>();
-        m_SystemData->state->vehicleGlobalHome.set(*homePosition);
+        m_SystemData->environment->vehicleGlobalHome.set(*homePosition);
         this->cbi_VehicleHome(home.getOriginatingSystem(),home);
-
         //////////////////////////////
         ///Update about mission list
         //////////////////////////////
@@ -260,22 +261,53 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionCo
         m_SystemData->mission->currentAutoMission.set(missionList);
         this->cbi_VehicleMission(missionList.getVehicleID(),missionList);
     });
-
     missionController->setLambda_Shutdown([this, missionController]() mutable
     {
         auto ptr = static_cast<MAVLINKUXVControllers::ControllerMission*>(m_ControllersCollection.At("missionController"));
-
         if (ptr == missionController && ptr != nullptr)
         {
             m_ControllersCollection.Remove("missionController");
             delete ptr;
             missionController = nullptr;
         }
-
         std::lock_guard<std::mutex> guard(m_mutex_MissionController);
         m_oldMissionControllerShutdown = true;
         m_condition_MissionController.notify_one();
     });
-
     m_ControllersCollection.Insert("missionController",missionController);
+}
+template <typename ...VehicleTopicAdditionalComponents>
+void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareParameterController()
+{
+    //If there is an old parameter controller still running, allow us to shut it down
+    if(m_ControllersCollection.Exist("parameterController"))
+    {
+        auto parameterControllerOld = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("parameterController"));
+        if(parameterControllerOld != nullptr)
+        {
+            std::cout << "Shutting down previous parameter controller, which was still active" << std::endl;
+            parameterControllerOld->Shutdown();
+            // Need to wait for the old controller to be shutdown.
+            std::unique_lock<std::mutex> controllerLock(m_mutex_ParameterController);
+            while (!m_oldParameterControllerShutdown)
+                m_condition_ParameterController.wait(controllerLock);
+            m_oldParameterControllerShutdown = false;
+            controllerLock.unlock();
+        }
+    }
+    //create "stateless" parameter controller that exists within the module itself
+    auto parameterController = new MAVLINKUXVControllers::Controller_ParameterRequest(m_SystemData, m_TransmissionQueue, m_LinkChan);
+    parameterController->setLambda_Shutdown([this, parameterController]() mutable
+    {
+        auto ptr = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("parameterController"));
+        if (ptr != nullptr)
+        {
+            auto ptr = m_ControllersCollection.Remove("parameterController");
+            delete ptr;
+        }
+        std::lock_guard<std::mutex> guard(m_mutex_ParameterController);
+        m_oldParameterControllerShutdown = true;
+        m_condition_ParameterController.notify_one();
+    });
+    m_ControllersCollection.Insert("parameterController", parameterController);
 }

@@ -14,6 +14,7 @@
 Interop::Interop(const std::string &port, DigiMeshBaudRates rate, const std::string &nameOfNode, bool scanForNodes) :
     m_NodeName(nameOfNode)
 {
+    UNUSED(scanForNodes);
     m_Radio = new DigiMeshRadio(port, rate);
 
     m_NIMutex.lock();
@@ -59,7 +60,7 @@ void Interop::BroadcastData(const std::vector<uint8_t> &data)
 {
     //construct packet, putting the packet type at head
     std::vector<uint8_t> packet = {(uint8_t)PacketTypes::DATA};
-    for(int i = 0 ; i < data.size() ; i++) {
+    for(size_t i = 0 ; i < data.size() ; i++) {
         packet.push_back(data.at(i));
     }
 
@@ -98,7 +99,7 @@ void Interop::SendDataToAddress(uint64_t addr, const std::vector<uint8_t> &data,
 
     //construct packet, putting the packet type at head
     std::vector<uint8_t> packet = {(uint8_t)PacketTypes::DATA};
-    for(int i = 0 ; i < data.size() ; i++) {
+    for(size_t i = 0 ; i < data.size() ; i++) {
         packet.push_back(data.at(i));
     }
 
@@ -119,7 +120,7 @@ void Interop::on_message_received(const std::vector<uint8_t> &msg, uint64_t addr
         case PacketTypes::DATA:
             {
             std::vector<uint8_t> data;
-            for(int i = 1 ; i < msg.size() ; i++) {
+            for(size_t i = 1 ; i < msg.size() ; i++) {
                 data.push_back(msg.at(i));
             }
             Notify<const std::vector<uint8_t>&>(m_Handlers_Data, data);
