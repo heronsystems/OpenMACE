@@ -34,11 +34,31 @@ public:
         distanceThresholdAchieved = value;
     }
 
+    double getMaxDurationRouting() const
+    {
+        return maxDuration_Routing;
+    }
+
+    double getMaxDurationHunting() const
+    {
+        return maxDuration_Hunting;
+    }
+
+    double getDistanceThresholdHunting() const
+    {
+        return distanceThresholdHunting;
+    }
+
+    double getDistanceThresholdAchieved() const
+    {
+        return distanceThresholdAchieved;
+    }
+
     Data::ControllerState newTargetItem(const double &distance);
 
     Data::ControllerState updateTargetState(const double &distance);
 
-    Data::ControllerState updateTargetTimes();
+//    Data::ControllerState updateTargetTimes();
 
     float getCurrentMissionTime();
     float getCurrentTargetTime();

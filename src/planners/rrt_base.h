@@ -29,7 +29,7 @@ class RRTBase : public planners::Planners{
 
 public:
     RRTBase(const state_space::SpaceInformationPtr &spaceInfo):
-        Planners(spaceInfo), goalProbability(0.1), maxBranchLength(1.0), m_nnStrategy(nullptr)
+        Planners(spaceInfo), m_nnStrategy(nullptr), goalProbability(0.1), maxBranchLength(1.0)
     {
         m_samplingStrategy = spaceInfo->getStateSampler();
     }

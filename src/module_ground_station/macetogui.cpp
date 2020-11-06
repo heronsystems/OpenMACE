@@ -1,28 +1,45 @@
-#include "macetogui.h"
+﻿#include "macetogui.h"
 
 
 MACEtoGUI::MACEtoGUI() :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234),
-    m_positionTimeoutOccured(false),
-    m_attitudeTimeoutOccured(false),
-    m_modeTimeoutOccured(false),
-    m_fuelTimeoutOccured(false)
+    m_udpConfig("127.0.0.1", 5678, "127.0.0.1", 8080)
 {
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
 }
 
 MACEtoGUI::MACEtoGUI(const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
     m_sendPort(sendPort),
-    m_positionTimeoutOccured(false),
-    m_attitudeTimeoutOccured(false),
-    m_modeTimeoutOccured(false),
-    m_fuelTimeoutOccured(false)
+    m_udpConfig("127.0.0.1", 5678, sendAddress.toString().toStdString(), sendPort)
 {
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
 }
 
 MACEtoGUI::~MACEtoGUI() {
+    m_logger->flush();
+}
 
+//!
+//! \brief initiateLogs Start log files and logging for the Ground Station module
+//!
+void MACEtoGUI::initiateLogs(const std::string &loggerName, const std::string &loggingPath)
+{
+    try
+    {
+        m_logger = spdlog::basic_logger_mt<spdlog::async_factory>(loggerName, loggingPath);
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Log initialization failed: " << ex.what() << std::endl;
+    }
+
+    // Flush logger every 2 seconds:
+//    spdlog::flush_every(std::chrono::seconds(2));
+    m_logger->flush_on(spdlog::level::info);      // flush when "info" or higher message is logged
 }
 
 //!
@@ -41,37 +58,6 @@ void MACEtoGUI::setSendPort(const int &sendPort) {
     m_sendPort = sendPort;
 }
 
-//!
-//! \brief setPositionTimeout Set position timeout flag
-//! \param flag Boolean denoting if timer has fired (true) or not (false)
-//!
-void MACEtoGUI::setPositionTimeout(const bool &flag) {
-    m_positionTimeoutOccured = flag;
-}
-
-//!
-//! \brief setAttitudeTimeout Set attitude timeout flag
-//! \param flag Boolean denoting if timer has fired (true) or not (false)
-//!
-void MACEtoGUI::setAttitudeTimeout(const bool &flag) {
-    m_attitudeTimeoutOccured = flag;
-}
-
-//!
-//! \brief setFuelTimeout Set fuel timeout flag
-//! \param flag Boolean denoting if timer has fired (true) or not (false)
-//!
-void MACEtoGUI::setFuelTimeout(const bool &flag) {
-    m_fuelTimeoutOccured = flag;
-}
-
-//!
-//! \brief setModeTimeout Set mode timeout flag
-//! \param flag Boolean denoting if timer has fired (true) or not (false)
-//!
-void MACEtoGUI::setModeTimeout(const bool &flag) {
-    m_modeTimeoutOccured = flag;
-}
 
 //!
 //! \brief sendCurrentMissionItem Send vehicle mission to the MACE GUI
@@ -81,17 +67,16 @@ void MACEtoGUI::setModeTimeout(const bool &flag) {
 void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemCurrentTopic> &component) {
     UNUSED(vehicleID);
 
-    QJsonObject json;
-    json["dataType"] = "CurrentMissionItem";
-    json["vehicleID"] = static_cast<int>(component->getMissionKey().m_systemID);
-    json["missionItemIndex"] = static_cast<int>(component->getMissionCurrentIndex());
-
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonDocument doc(component->toJSON(static_cast<int>(component->getMissionKey().m_systemID),guiMessageString(GuiMessageTypes::CURRENT_MISSION_ITEM)));
+//    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write current mission item failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -99,19 +84,50 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
 //! \param vehicleID Vehicle ID with the new vehicle target
 //! \param component Vehicle target component
 //!
-void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition) {
-    QJsonObject json;
-    json["dataType"] = "CurrentVehicleTarget";
-    json["vehicleID"] = vehicleID;
-    json["distanceToTarget"] = 0.0;
-    targetPosition->updateQJSONObject(json);
+void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
+{
+    QJsonObject obj;
+    switch (component->m_targetPosition->getCoordinateSystemType()) {
+    case CoordinateSystemTypes::GEODETIC:
+    {
+        Abstract_GeodeticPosition* targetPosition;
+        targetPosition = dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition);
+        obj = targetPosition->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET));
 
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+        break;
+    }
+    case CoordinateSystemTypes::CARTESIAN:
+    {
+//        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+
+//        if(!globalOrigin.isAnyPositionValid())
+//            return;
+
+//        mace::pose::GeodeticPosition_2D targetPosition;
+//        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
+
+        break;
+    }
+    case CoordinateSystemTypes::UNKNOWN:
+    case CoordinateSystemTypes::NOT_IMPLIED:
+        break;
+    }
+
+
+    obj["distance_to_target"] = component->m_distanceToTarget;
+
+
+
+    QJsonDocument doc(obj);
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
-        std::cout << "Write global origin failed..." << std::endl;
+        std::cout << "Write vehicle target failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -121,43 +137,96 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticP
 //!
 void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleHome";
-    json["vehicleID"] = vehicleID;
     if(home.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        home.getPosition()->updateQJSONObject(json);
-
-        QJsonDocument doc(json);
-        bool bytesWritten = writeTCPData(doc.toJson());
-
+        QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
+        obj["name"] = QString::fromStdString("Agent " + std::to_string(vehicleID) + " Home");
+        obj["type"] = "takeoff_land";
+        QJsonDocument doc(obj);
+        //    bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
         if(!bytesWritten){
             std::cout << "Write Home position failed..." << std::endl;
         }
-    }
 
+        // Log to file:
+        logToFile(doc);
+    }
 }
 
 //!
-//! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
+//! \brief sendVehicleParameterList Send the list of vehicle specific parameters
+//! \param vehicleID Vehicle ID parameters pertain to
+//! \param params Parameter map (Key = string, Value = DataGenericItem::DataGenericItem_ParamValue)
+//!
+void MACEtoGUI::sendVehicleParameterList(const int &vehicleID, const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params)
+{
+////    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
+//    QJsonObject obj;
+//    obj["agentID"] = std::to_string(vehicleID).c_str();;
+//    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
+
+//    QJsonArray verticies;
+//    for(auto&& param : params) {
+//        QJsonObject obj;
+//        obj["param_id"] = QString::fromStdString(param.second.getID());
+//        obj["value"] = param.second.getValue();
+
+//        verticies.push_back(obj);
+//    }
+
+//    obj["param_list"] = verticies;
+
+//    QJsonDocument doc(obj);
+//    //    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool bytesWritten = writeUDPData(doc.toJson());
+//    if(!bytesWritten){
+//        std::cout << "Write parameter list failed..." << std::endl;
+//    }
+
+
+//    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << ": " << params.at("TKOFF_ALT").getValue() << std::endl;
+
+
+//    // Write out generic message to display on GUI:
+//    QJsonObject textJson;
+//    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
+//    textJson["agentID"] = std::to_string(vehicleID).c_str();;
+//    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(DataGenericItem::DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO));
+//    std::string text = "TKOFF_ALT param set to " + std::to_string(params.at("TKOFF_ALT").getValue());
+//    textJson["text"] = QString::fromStdString(text);
+//    QJsonDocument textDoc(textJson);
+//    //    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool textBytesWritten = writeUDPData(textDoc.toJson());
+//    if(!textBytesWritten){
+//        std::cout << "Write parameter list TEXT failed..." << std::endl;
+//    }
+
+//    // Log to file:
+//    logToFile(doc);
+}
+
+//!
+//! \brief sendGlobalOrigin Send new global origin to the MACE GUI
 //! \param origin New global origin
 //!
 void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 {
-    QJsonObject json;
-    json["dataType"] = "GlobalOrigin";
-    json["vehicleID"] = 0;
-
     if(origin.getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        origin.getPosition()->updateQJSONObject(json);
-
-        QJsonDocument doc(json);
-        bool bytesWritten = writeTCPData(doc.toJson());
+        QJsonObject obj = origin.toJSON(0, guiMessageString(GuiMessageTypes::GLOBAL_ORIGIN));
+        obj["name"] = "Swarm origin";
+        obj["type"] = "origin";
+        QJsonDocument doc(obj);
+        //    bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
         if(!bytesWritten){
             std::cout << "Write global origin failed..." << std::endl;
         }
+
+        // Log to file:
+        logToFile(doc);
     }
 }
 
@@ -168,26 +237,19 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
 //!
 void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_GeodeticPosition> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehiclePosition";
-    json["vehicleID"] = vehicleID;
-
     if(component->getPositionObj()->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
     {
-        component->getPositionObj()->updateQJSONObject(json);
 
-        QJsonDocument doc(json);
-        if(m_positionTimeoutOccured)
-        {
-            bool bytesWritten = writeTCPData(doc.toJson());
+        QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_POSITION)));
+        //    bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
-            if(!bytesWritten){
-                std::cout << "Write Position Data failed..." << std::endl;
-            }
-
-            // Reset timeout:
-            m_positionTimeoutOccured = false;
+        if(!bytesWritten){
+            std::cout << "Write Position Data failed..." << std::endl;
         }
+
+        // Log to file:
+        logToFile(doc);
     }
 }
 
@@ -198,36 +260,17 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
 //!
 void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mace::pose_topics::Topic_AgentOrientation> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleAttitude";
-    json["vehicleID"] = vehicleID;
-    uint8_t rotDOF = component->getRotationObj()->getDOF();
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_ATTITUDE)));
 
-    if(rotDOF == 3)
-    {
-        mace::pose::Rotation_3D* castRotation = component->getRotationObj()->rotationAs<mace::pose::Rotation_3D>();
-        json["roll"] = castRotation->getRoll() * (180/M_PI);
-        json["pitch"] = castRotation->getPitch() * (180/M_PI);
-        json["yaw"] = (castRotation->getYaw() * (180/M_PI) < 0) ? (castRotation->getYaw() * (180/M_PI) + 360) : (castRotation->getYaw() * (180/M_PI));
-    }
-    else if(rotDOF == 2)
-    {
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
+    if(!bytesWritten){
+        std::cout << "Write Attitude Data failed..." << std::endl;
     }
 
-
-    QJsonDocument doc(json);
-    if(m_attitudeTimeoutOccured)
-    {
-        bool bytesWritten = writeTCPData(doc.toJson());
-
-        if(!bytesWritten){
-            std::cout << "Write Attitude Data failed..." << std::endl;
-        }
-
-        // Reset timeout:
-        m_attitudeTimeoutOccured = false;
-    }
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -237,17 +280,16 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
 //!
 void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component)
 {
-        QJsonObject json;
-        json["dataType"] = "VehicleAirspeed";
-        json["vehicleID"] = vehicleID;
-        json["airspeed"] = component->getSpeedObj().getSpeed();
-
-        QJsonDocument doc(json);
-        bool bytesWritten = writeTCPData(doc.toJson());
+        QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_AIRSPEED)));
+        //    bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
         if(!bytesWritten){
             std::cout << "Write vehicle airspeed Data failed..." << std::endl;
         }
+
+        // Log to file:
+        logToFile(doc);
 }
 
 //!
@@ -257,25 +299,17 @@ void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measuremen
 //!
 void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleFuel";
-    json["vehicleID"] = vehicleID;
-    json["batteryRemaining"] = component->getBatteryRemaining();
-    json["batteryCurrent"] = component->getBatteryCurrent();
-    json["batteryVoltage"] = component->getBatteryVoltage();
 
-    QJsonDocument doc(json);
-    if(m_fuelTimeoutOccured)
-    {
-        bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_FUEL)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
-        if(!bytesWritten){
-            std::cout << "Write Fuel Data failed..." << std::endl;
-        }
-
-        // Reset timeout:
-        m_fuelTimeoutOccured = false;
+    if(!bytesWritten){
+        std::cout << "Write Fuel Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -285,23 +319,16 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_FlightMode> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleMode";
-    json["vehicleID"] = vehicleID;
-    json["vehicleMode"] = QString::fromStdString(component->getFlightModeString());
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_MODE)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
-    QJsonDocument doc(json);
-    if(m_modeTimeoutOccured)
-    {
-        bool bytesWritten = writeTCPData(doc.toJson());
-
-        if(!bytesWritten){
-            std::cout << "Write Vehicle Mode Data failed..." << std::endl;
-        }
-
-        // Reset timeout:
-        m_modeTimeoutOccured = false;
+    if(!bytesWritten){
+        std::cout << "Write Vehicle Mode Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -311,17 +338,16 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleText";
-    json["vehicleID"] = vehicleID;
-    json["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(component->getSeverity()));
-    json["text"] = QString::fromStdString(component->getText());
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonDocument doc(component->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TEXT)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write Vehicle Text Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -331,19 +357,16 @@ void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<Data
 //!
 void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleGPS";
-    json["vehicleID"] = vehicleID;
-    json["visibleSats"] = component->getSatVisible();
-    json["gpsFix"] = QString::fromStdString(DataGenericItem::DataGenericItem_GPS::GPSFixTypeToString(component->getGPSFix()));
-    json["hdop"] = component->getHDOP();
-    json["vdop"] = component->getVDOP();
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_GPS)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write Vehicle GPS Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -353,17 +376,16 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
 //!
 void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_SystemArm> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleArm";
-    json["vehicleID"] = vehicleID;
-    json["armed"] = component->getSystemArm();
-
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_ARM)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write vehicle arm failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -373,17 +395,16 @@ void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataG
 //!
 void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_ptr<MissionTopic::MissionItemReachedTopic> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "MissionItemReached";
-    json["vehicleID"] = vehicleID;
-    json["itemIndex"] = static_cast<int>(component->getMissionAchievedIndex());
-
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::MISSION_ITEM_REACHED)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write mission item reached failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -393,20 +414,16 @@ void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_p
 //!
 void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr<DataGenericItem::DataGenericItem_Heartbeat> &component)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleHeartbeat";
-    json["vehicleID"] = vehicleID;
-    json["autopilot"] = QString::fromStdString(Data::AutopilotTypeToString(component->getAutopilot()));
-    json["aircraftType"] = QString::fromStdString(Data::SystemTypeToString(component->getType()));
-    json["companion"] = component->getCompanion();
-    json["protocol"] = QString::fromStdString(Data::CommsProtocolToString(component->getProtocol()));
-
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_HEARTBEAT)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write vehicle heartbeat failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -416,25 +433,34 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
 //!
 void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::MissionList &missionList)
 {
-    QJsonObject json;
-    json["dataType"] = "VehicleMission";
-    json["vehicleID"] = vehicleID;
-    json["creatorID"] = static_cast<int>(missionList.getCreatorID());
-    json["missionID"] = static_cast<int>(missionList.getMissionID());
-
-    Data::MissionExecutionState missionState = missionList.getMissionExeState();
-    json["missionState"] = QString::fromStdString(Data::MissionExecutionStateToString(missionState));
-    json["missionType"] = QString::fromStdString(MissionItem::MissionTypeToString(missionList.getMissionType()));
+    QJsonObject jsonMission = missionList.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_MISSION));
+    QJsonObject jsonPath = missionList.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_PATH));
     QJsonArray missionItems;
-    missionListToJSON(missionList,missionItems);
-    json["missionItems"] = missionItems;
-
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    QJsonArray path;
+    missionListToJSON(missionList, missionItems, path);
+    jsonMission["missionItems"] = missionItems;
+    jsonPath["vertices"] = path;
+    QJsonDocument docMission(jsonMission);
+    QJsonDocument docPath(jsonPath);
+//    bool bytesWritten = writeTCPData(docMission.toJson());
+    bool bytesWritten = writeUDPData(docMission.toJson());
 
     if(!bytesWritten){
         std::cout << "Write Vehicle Mission Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(docMission);
+
+//    bytesWritten = writeTCPData(docPath.toJson());
+    bytesWritten = writeUDPData(docPath.toJson());
+
+    if(!bytesWritten){
+        std::cout << "Write Vehicle Path Data failed..." << std::endl;
+    }
+
+    // Log to file:
+    logToFile(docPath);
 }
 
 //!
@@ -443,30 +469,17 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
 //! \param component Vehicle sensor footprint component
 //!
 void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<DataVehicleSensors::SensorVertices_Global> &component) {
-    QJsonObject json;
-    json["dataType"] = "SensorFootprint";
-    json["vehicleID"] = vehicleID;
-
-    std::vector<mace::pose::GeodeticPosition_2D> sensorFootprint = component->getSensorVertices();
-
-    QJsonArray verticies;
-    for(auto&& vertex : sensorFootprint) {
-        QJsonObject obj;
-        obj["lat"] = vertex.getLatitude();
-        obj["lng"] = vertex.getLongitude();
-        obj["alt"] = 0.0;
-
-        verticies.push_back(obj);
-    }
-
-    json["sensorFootprint"] = verticies;
-
-    QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+   
+    QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::SENSOR_FOOTPRINT)));
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write vehicle sensor footprint failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -476,8 +489,8 @@ void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<
 void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPosition_3D> &component) {
 
     QJsonObject json;
-    json["dataType"] = "EnvironmentBoundary";
-    json["vehicleID"] = 0;
+    json["message_type"] = QString::fromStdString(guiMessageString(GuiMessageTypes::ENVIRONMENT_BOUNDARY));
+    json["agentID"] = 0;
 
     QJsonArray verticies;
     for(auto&& vertex : component) {
@@ -492,19 +505,18 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
     json["environmentBoundary"] = verticies;
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write environment boundary failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
-//!
-//! \brief missionListToJSON Convert a mission list to a JSON array
-//! \param list Mission list to convert to a JSON array
-//! \param missionItems JSON Container for converted mission items
-//!
-void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems)
+void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems,QJsonArray &path)
 {
     for(size_t i = 0; i < list.getQueueSize(); i++)
     {
@@ -567,6 +579,10 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             std::shared_ptr<command_item::SpatialWaypoint> castItem = std::dynamic_pointer_cast<command_item::SpatialWaypoint>(missionItem);
             obj["positionalFrame"] = "global";
             castItem->getPosition()->updateQJSONObject(obj);
+
+            QJsonObject waypoint;
+            castItem->getPosition()->updateQJSONObject(waypoint);
+            path.push_back(waypoint);
             break;
         }
         case command_item::COMMANDTYPE::CI_NAV_LOITER_TIME:
@@ -632,19 +648,38 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
 bool MACEtoGUI::writeTCPData(QByteArray data)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
-    tcpSocket->connectToHost(m_sendAddress, static_cast<quint16>(m_sendPort));
+    tcpSocket->connectToHost(m_sendAddress, m_sendPort);
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
     {
         tcpSocket->write(data); //write the data itself
         tcpSocket->flush();
         tcpSocket->waitForBytesWritten();
+
         return true;
-    }
-    else
-    {
+    } else {
         std::cout << "TCP socket not connected MACE TO GUI" << std::endl;
         tcpSocket->close();
         return false;
     }
+}
+
+//!
+//! \brief writeUDPData Write data to the MACE GUI via UDP
+//! \param data Data to be sent to the MACE GUI
+//! \return True: success / False: failure
+//!
+bool MACEtoGUI::writeUDPData(QByteArray data)
+{
+    // TODO: implement
+    // Use UdpLink
+    if(m_udpLink->isConnected()) {
+        m_udpLink->WriteBytes(data, data.length());
+    }
+    else {
+        std::cout << "UDP Link not connected..." << std::endl;
+        return false;
+    }
+
+    return true;
 }

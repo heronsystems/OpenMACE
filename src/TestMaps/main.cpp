@@ -139,6 +139,8 @@ void plotMyArrivalTimesPath(nDGridMap<FMCell, 2>& grid, const Path2D& path, std:
 
 int main(int argc, char *argv[])
 {
+    UNUSED(argc); UNUSED(argv);
+
     //runPositionTests();
     mace::pose::GeodeticPosition_3D swarmOrigin(-35.3631970,149.1653205,584);
     mace::pose::GeodeticPosition_3D vehicleOrigin(-35.363261,149.165230,583.83);
@@ -193,7 +195,6 @@ int main(int argc, char *argv[])
 
     }
 
-    /*
     unsigned int idx;
     double max_vel = 2;
     vector<unsigned int> obs;

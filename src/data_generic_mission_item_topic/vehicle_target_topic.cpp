@@ -8,6 +8,7 @@ const MaceCore::TopicComponentStructure VehicleTargetTopic_structure = []{
     structure.AddTerminal<int>("systemID");
 
     structure.AddTerminal<std::string>("Position Name");
+    structure.AddTerminal<double>("Distance to Target");
     structure.AddTerminal<CoordinateSystemTypes>("Coordinate System");
     structure.AddTerminal<mace::CoordinateFrameTypes>("Explicit Frame");
     structure.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame");
@@ -20,7 +21,8 @@ MaceCore::TopicDatagram VehicleTargetTopic::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
     datagram.AddTerminal<int>("systemID",systemID);
 
-    datagram.AddTerminal<std::string>("Position Name",m_targetPosition->getName());
+    datagram.AddTerminal<std::string>("Position Name", m_targetPosition->getName());
+    datagram.AddTerminal<double>("Distance to Target", m_distanceToTarget);
     datagram.AddTerminal<CoordinateSystemTypes>("Coordinate System", m_targetPosition->getCoordinateSystemType());
     datagram.AddTerminal<mace::CoordinateFrameTypes>("Explicit Frame", m_targetPosition->getExplicitCoordinateFrame());
     datagram.AddTerminal<uint8_t>("Dimension", m_targetPosition->getDimension());
@@ -55,8 +57,10 @@ MaceCore::TopicDatagram VehicleTargetTopic::GenerateDatagram() const {
 
 void VehicleTargetTopic::CreateFromDatagram(const MaceCore::TopicDatagram &datagram)
 {
-    if(m_targetPosition)
-        delete this->m_targetPosition; m_targetPosition = nullptr;
+    if(m_targetPosition) {
+        delete this->m_targetPosition;
+        m_targetPosition = nullptr;
+    }
 
     systemID = datagram.GetTerminal<int>("systemID");
     uint8_t dimension = datagram.GetTerminal<uint8_t>("Dimension");
@@ -90,19 +94,23 @@ void VehicleTargetTopic::CreateFromDatagram(const MaceCore::TopicDatagram &datag
     case CoordinateSystemTypes::NOT_IMPLIED:
         break;
     }
+
+    m_distanceToTarget = datagram.GetTerminal<double>("Distance to Target");
 }
 
 VehicleTargetTopic::VehicleTargetTopic() :
-    systemID(0), m_targetPosition(nullptr)
+    systemID(0), m_targetPosition(nullptr), m_distanceToTarget(0.0)
 {
 
 }
 
-VehicleTargetTopic::VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* position):
+VehicleTargetTopic::VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* targetPosition, const double &distanceToTarget):
     systemID(vehicleID)
 {
-    if(position)
-        m_targetPosition = position->getPositionalClone();
+    if(targetPosition)
+        m_targetPosition = targetPosition->getPositionalClone();
+
+    m_distanceToTarget = distanceToTarget;
 }
 
 
@@ -111,10 +119,13 @@ VehicleTargetTopic::VehicleTargetTopic(const VehicleTargetTopic &copy)
     this->systemID = copy.systemID;
     if(copy.m_targetPosition)
         this->m_targetPosition = copy.m_targetPosition->getPositionalClone();
+
+    this->m_distanceToTarget = copy.m_distanceToTarget;
 }
 
 VehicleTargetTopic::VehicleTargetTopic(const mace_guided_target_stats_t &obj)
 {
+    UNUSED(obj);
     //Ken we need to reconstruct inside here
 }
 
@@ -122,6 +133,7 @@ mace_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
 {
     //Ken we need to reconstruct inside here
     mace_guided_target_stats_t rtn;
+    rtn.distance = this->m_distanceToTarget;
     rtn.coordinate_frame = static_cast<uint8_t>(this->m_targetPosition->getExplicitCoordinateFrame());
 
     switch (this->m_targetPosition->getCoordinateSystemType()) {
@@ -176,6 +188,8 @@ mace_message_t VehicleTargetTopic::getMACEMsg(const uint8_t systemID, const uint
 
 std::ostream& operator<<(std::ostream& os, const VehicleTargetTopic& t)
 {
+    UNUSED(t);
+
     std::stringstream stream;
     stream.precision(6);
     //stream << std::fixed << "Target Topic for system " << t.systemID << ": " << t.targetPosition.getX() << ", "<< t.targetPosition.getY() << ", "<< t.targetPosition.getZ() << ", "<< t.targetDistance<<", "<<Data::ControllerStateToString(t.targetState)<< ".";

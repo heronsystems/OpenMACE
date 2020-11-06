@@ -28,7 +28,7 @@ public:
 
     SerialLink(const SerialConfiguration &config);
 
-    ~SerialLink();
+    virtual ~SerialLink();
 
     void AddListener(ILinkEvents* ptr)
     {

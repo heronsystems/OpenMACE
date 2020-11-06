@@ -5,7 +5,7 @@ namespace maps {
 
 void LayeredMap::addMapLayer(const std::string &layerName)
 {
-    BaseGridMap* tmpLayer;
+    BaseGridMap* tmpLayer = new BaseGridMap();
     double xSize, ySize, xRes, yRes;
     if(this->getLayerSize(xSize, ySize, xRes, yRes)) {
         tmpLayer->updateGridSizeByLength(xSize, ySize, xRes, yRes);

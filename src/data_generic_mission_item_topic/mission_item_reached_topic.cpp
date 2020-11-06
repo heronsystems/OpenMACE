@@ -34,9 +34,18 @@ MissionItemReachedTopic::MissionItemReachedTopic(const MissionItem::MissionItemA
     this->indexAchieved = achievedItem.getMissionAchievedIndex();
 }
 
-MissionItemReachedTopic::MissionItemReachedTopic(const MissionItemReachedTopic &copyObj)
+MissionItemReachedTopic::MissionItemReachedTopic(const MissionItemReachedTopic &copyObj) :
+    MissionItem::MissionItemAchieved()
 {
     this->key = copyObj.getMissionKey();
     this->indexAchieved = copyObj.getMissionAchievedIndex();
 }
+
+QJsonObject MissionItemReachedTopic::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["itemIndex"] = static_cast<int>(getMissionAchievedIndex());    
+    return json;
+}
+
 } //end of namespace MissionTopic

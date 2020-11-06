@@ -16,6 +16,8 @@
 
 #include "i_link.h"
 
+#include "common/common.h"
+
 
 namespace Comms
 {
@@ -128,4 +130,4 @@ private:
 
 }
 
-#endif // UDPLINK_H
+#endif // TCPLINK_H

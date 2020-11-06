@@ -38,14 +38,12 @@ MissionList::MissionList(const MissionList &rhs)
 
 void MissionList::initializeQueue(const size_t &size)
 {
-    if(size <= 0){
-        // TODO-Ken/Pat: Throw a message with exception
-        std::cout << "Cannot initialize queue of 0" << std::endl;
-        throw std::exception();
-    }
     missionQueue.clear();
-    std::vector<std::shared_ptr<command_item::AbstractCommandItem>> tmpVector(size,nullptr);
-    missionQueue = tmpVector;
+
+    if(size > 0){
+        std::vector<std::shared_ptr<command_item::AbstractCommandItem>> tmpVector(size,nullptr);
+        missionQueue = tmpVector;
+    }
 }
 
 void MissionList::clearQueue()
@@ -117,6 +115,22 @@ void MissionList::setActiveIndex(const unsigned int &activeIndex)
     activeMissionItem = activeIndex;
 }
 
+QJsonObject MissionList::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["creatorID"] = static_cast<int>(getCreatorID());
+    json["missionID"] = static_cast<int>(getMissionID());
+    json["missionState"] = QString::fromStdString(Data::MissionExecutionStateToString(getMissionExeState()));
+    json["missionType"] = QString::fromStdString(MissionItem::MissionTypeToString(getMissionType()));
+    return json;
+}
+
+//!
+//! \brief missionListToJSON Convert a mission list to a JSON array
+//! \param list Mission list to convert to a JSON array
+//! \param missionItems JSON Container for converted mission items
+//!
+
 std::ostream& operator<<(std::ostream& os, const MissionList& t)
 {
     std::stringstream stream;
@@ -127,5 +141,6 @@ std::ostream& operator<<(std::ostream& os, const MissionList& t)
 
     return os;
 }
+
 
 }//end of namespace MissionItem

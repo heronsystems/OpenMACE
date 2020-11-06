@@ -56,7 +56,8 @@ std::vector<state_space::State*> RRTBase::solve()
         {
             //do the interpretation
             state_space::State* interpolatedState;
-            bool validity = m_spaceInfo->getStateSpace()->interpolateStates(closestState,sampleState,maxBranchLength/distance, &interpolatedState);
+//            bool validity = m_spaceInfo->getStateSpace()->interpolateStates(closestState,sampleState,maxBranchLength/distance, &interpolatedState);
+            m_spaceInfo->getStateSpace()->interpolateStates(closestState,sampleState,maxBranchLength/distance, &interpolatedState);
 
             //Set the samplestate to newly interpolated and set in node.
             sampleNode->setCurrentState(*interpolatedState);
@@ -115,7 +116,7 @@ std::vector<state_space::State*> RRTBase::solve()
     for(unsigned int i = 0; i < path.size(); i++)
     {
         std::string str = std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition()) + "," + std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition());
-        mLog->debug(str);
+//        mLog->debug(str);
     }
 
     PathReduction newReduction(m_spaceInfo);
@@ -124,7 +125,7 @@ std::vector<state_space::State*> RRTBase::solve()
     for(unsigned int i = 0; i < path.size(); i++)
     {
         std::string str = std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getXPosition()) + "," + std::to_string(path.at(i)->stateAs<mace::pose::CartesianPosition_2D>()->getYPosition());
-        mLog->debug(str);
+//        mLog->debug(str);
     }
 
 

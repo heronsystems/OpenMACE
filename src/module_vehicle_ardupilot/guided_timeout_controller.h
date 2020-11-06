@@ -10,6 +10,7 @@
 #include "common/thread_manager.h"
 #include "common/class_forward.h"
 
+#include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_components.h"
 
 namespace ardupilot_vehicle{
@@ -21,7 +22,23 @@ typedef void(*CallbackFunctionPtr_DynamicTarget)(void*, command_item::Action_Dyn
 class GuidedTimeoutController : public Thread
 {
 public:
-    GuidedTimeoutController(const unsigned int &timeout);
+    enum TimeoutMode
+    {
+        NORMAL,
+        LEVELING,
+        ABORT
+    };
+
+private:
+    struct TimeoutDataStruct
+    {
+        TimeoutMode mode;
+        int timeout;
+        void* functionTarget;
+    };
+
+public:
+    GuidedTimeoutController(const unsigned int &timeout, const int &levelTimeout = -1, const int &killTimeout = -1);
 
     ~GuidedTimeoutController() override;
 
@@ -29,7 +46,9 @@ public:
 
     void run() override;
 
-    void registerCurrentTarget(const command_item::Action_DynamicTarget &commandTarget);
+    void registerCurrentTarget(const command_item::Action_DynamicTarget &commandTarget, const TimeoutMode &mode = TimeoutMode::NORMAL);
+
+    void registerAbortingTarget(const command_item::AbstractCommandItemPtr command, const TimeoutMode &mode = TimeoutMode::NORMAL, const int &timeout = -1);
 
     void clearTarget();
 
@@ -51,11 +70,11 @@ private:
     void *m_FunctionTarget;
 
 private:
-    command_item::Action_DynamicTarget m_CurrentTarget;
+    command_item::Action_DynamicTarget m_CurrentTarget, m_LevelTarget, m_AbortTarget;
 
     Timer m_Timeout;
 
-    unsigned int timeout;
+    unsigned int timeout, levelTimeout, abortTimeout;
 
 private:
     std::list<std::function<void()>> m_LambdasToRun;

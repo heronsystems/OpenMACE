@@ -96,6 +96,8 @@ std::shared_ptr<command_item::AbstractCommandItem> Helper_MissionMAVLINKtoMACE::
 
 void Helper_MissionMAVLINKtoMACE::convertHome(const int sysID, const mavlink_set_home_position_t &mavlinkItem, command_item::SpatialHome &missionItem)
 {
+    UNUSED(mavlinkItem);
+
     missionItem.setTargetSystem(sysID);
     missionItem.setOriginatingSystem(sysID);
 //    missionItem.position->setX(mavlinkItem.latitude / pow(10,7));

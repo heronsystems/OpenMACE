@@ -9,16 +9,16 @@ namespace mace
 {
 PotentialFields::PotentialFields(const state_space::SpaceInformationPtr &spaceInfo, const mace::maps::Data2DGrid<mace::maps::OccupiedResult>* staticMap):
     Planners(spaceInfo),
-    targetPositionActive(false),
     m_repulsionRadius(6),
     m_linearAttractionRadius(2),
+    m_linearAttractionGain(0.5),
     m_planningRadius(2),
     m_repulsionGain(30),
-    m_linearAttractionGain(0.5),
-    m_radialInfluence(5),
     m_attractiveGoalThreshold(2),
     m_attractiveLinearGoalThreshold(5),
-    m_goalRadialInfluence(3)
+    m_radialInfluence(5),
+    m_goalRadialInfluence(3),
+    targetPositionActive(false)
 {
 
     m_repulsionGain = m_attractiveLinearGoalThreshold * m_linearAttractionGain * 2;
@@ -128,6 +128,11 @@ void PotentialFields::updateStaticObstacleGradient(const mace::maps::Data2DGrid<
                 }
                 break;
             }
+            case mace::maps::OccupiedResult::OUTSIDE_ENVIRONMENT:
+            case mace::maps::OccupiedResult::NOT_OCCUPIED:
+            case mace::maps::OccupiedResult::UNKNOWN:
+            default:
+                break;
             }
         }
     }
@@ -168,12 +173,14 @@ VPF_ResultingForce PotentialFields::computeRepulsiveGradient(const Abstract_Cart
 VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::CartesianPosition_2D agentPose, const mace::pose::Rotation_2D &agentRotation,
                                                               const mace::pose::CartesianPosition_2D targetPosition)
 {
+    UNUSED(agentRotation);
+
     VPF_ResultingForce vf;
 
-    Eigen::Vector2d targetVector = targetPosition.getDataVector();
-    Eigen::Vector2d agentVector = agentPose.getDataVector();
+//    Eigen::Vector2d targetVector = targetPosition.getDataVector();
+//    Eigen::Vector2d agentVector = agentPose.getDataVector();
 
-    double bearing = agentPose.polarBearingTo(&targetPosition);
+//    double bearing = agentPose.polarBearingTo(&targetPosition);
 
     double deltaX = targetPosition.deltaX(agentPose);
     double deltaY = targetPosition.deltaY(agentPose);
@@ -204,7 +211,7 @@ VPF_ResultingForce PotentialFields::computeAttractionGradient(const mace::pose::
     return vf;
 }
 
-VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition, const mace::pose::Cartesian_Velocity2D* agentVelocity,
+VPF_ResultingForce PotentialFields::computeArtificialForceVector(const mace::pose::Abstract_CartesianPosition* agentPosition, const mace::pose::Velocity_Cartesian2D* agentVelocity,
                                                                  const mace::pose::Abstract_CartesianPosition* targetPosition, double &vResponse)
 {
     VPF_ResultingForce rtnObj;

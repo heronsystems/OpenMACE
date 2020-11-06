@@ -28,6 +28,15 @@
 #include "base_topic/pose/topic_agent_orientation.h"
 #include "base_topic/measurements/topic_speed.h"
 
+#include "commsMACE/udp_link_mace.h"
+#include "commsMACE/udp_configuration_mace.h"
+
+#include "messagetypes.h"
+
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
+
 class MACEtoGUI
 {
 public:
@@ -52,57 +61,9 @@ public:
     void setSendPort(const int &sendPort);
 
     //!
-    //! \brief setPositionTimeout Set position timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
+    //! \brief initiateLogs Start log files and logging for the Ground Station module
     //!
-    void setPositionTimeout(const bool &flag);
-
-    //!
-    //! \brief setAttitudeTimeout Set attitude timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
-    //!
-    void setAttitudeTimeout(const bool &flag);
-
-    //!
-    //! \brief setFuelTimeout Set fuel timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
-    //!
-    void setFuelTimeout(const bool &flag);
-
-    //!
-    //! \brief setModeTimeout Set mode timeout flag
-    //! \param flag Boolean denoting if timer has fired (true) or not (false)
-    //!
-    void setModeTimeout(const bool &flag);
-
-    // ============================================================================= //
-    // ================================= Getters =================================== //
-    // ============================================================================= //
-
-    //!
-    //! \brief getPositionTimeout Get the current position timeout flag value
-    //! \return Position timeout flag
-    //!
-    bool getPositionTimeout() { return m_positionTimeoutOccured; }
-
-    //!
-    //! \brief getAttitudeTimeout Get the current attitude timeout flag value
-    //! \return Attitude timeout flag
-    //!
-    bool getAttitudeTimeout() { return m_attitudeTimeoutOccured; }
-
-    //!
-    //! \brief getFuelTimeout Get the current fuel timeout flag value
-    //! \return Fuel timeout flag
-    //!
-    bool getFuelTimeout() { return m_fuelTimeoutOccured; }
-
-    //!
-    //! \brief getModeTimeout Get the current mode timeout flag value
-    //! \return Mode timeout flag
-    //!
-    bool getModeTimeout() { return m_modeTimeoutOccured; }
-
+    void initiateLogs(const std::string &loggerName, const std::string &loggingPath);
 
     // ============================================================================= //
     // ======================== Send data to the MACE GUI ========================== //
@@ -113,6 +74,13 @@ public:
     //! \return True: success / False: failure
     //!
     bool writeTCPData(QByteArray data);
+
+    //!
+    //! \brief writeUDPData Write data to the MACE GUI via UDP
+    //! \param data Data to be sent to the MACE GUI
+    //! \return True: success / False: failure
+    //!
+    bool writeUDPData(QByteArray data);
 
     //!
     //! \brief sendPositionData Send vehicle position data to the MACE GUI
@@ -164,7 +132,14 @@ public:
     void sendVehicleHome(const int &vehicleID, const command_item::SpatialHome &home);
 
     //!
-    //! \brief MACEtoGUI::sendGlobalOrigin Send new global origin to the MACE GUI
+    //! \brief sendVehicleParameterList Send the list of vehicle specific parameters
+    //! \param vehicleID Vehicle ID parameters pertain to
+    //! \param params Parameter map (Key = string, Value = DataGenericItem::DataGenericItem_ParamValue)
+    //!
+    void sendVehicleParameterList(const int &vehicleID, const std::map<string, DataGenericItem::DataGenericItem_ParamValue> &params);
+
+    //!
+    //! \brief sendGlobalOrigin Send new global origin to the MACE GUI
     //! \param origin New global origin
     //!
     void sendGlobalOrigin(const command_item::SpatialHome &origin);
@@ -236,7 +211,7 @@ public:
     //! \param vehicleID Vehicle ID with the new vehicle target
     //! \param component Vehicle target component
     //!
-    void sendVehicleTarget(const int &vehicleID, const Abstract_GeodeticPosition* targetPosition);
+    void sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component);
 
     // ============================================================================= //
     // ================================== Helpers ================================== //
@@ -248,7 +223,18 @@ private:
     //! \param list Mission list to convert to a JSON array
     //! \param missionItems JSON Container for converted mission items
     //!
-    void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems);
+    void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems, QJsonArray &path);
+
+    //!
+    //! \brief logToFile Helper method to log JSON data to file:
+    //! \param doc
+    //!
+    void logToFile(const QJsonDocument &doc) {
+        if(m_logger) {
+            std::string str = doc.toJson(QJsonDocument::Compact).toStdString();
+            m_logger->info(str);
+        }
+    }
 
 private:
     //!
@@ -261,25 +247,21 @@ private:
     //!
     int m_sendPort;
 
-    //!
-    //! \brief m_positionTimeoutOccured Timeout flag to check if new position data should be sent to the MACE GUI
-    //!
-    bool m_positionTimeoutOccured;
 
     //!
-    //! \brief m_attitudeTimeoutOccured Timeout flag to check if new attitude data should be sent to the MACE GUI
+    //! \brief m_udpConfig UDP configuration for UDP comms
     //!
-    bool m_attitudeTimeoutOccured;
+    CommsMACE::UdpConfiguration m_udpConfig;
 
     //!
-    //! \brief m_modeTimeoutOccured Timeout flag to check if new mode data should be sent to the MACE GUI
+    //! \brief m_udpLink UDP comms link object
     //!
-    bool m_modeTimeoutOccured;
+    std::shared_ptr<CommsMACE::UdpLink> m_udpLink;
 
     //!
-    //! \brief m_fuelTimeoutOccured Timeout flag to check if new fuel data should be sent to the MACE GUI
+    //! \brief m_logger spdlog logging object
     //!
-    bool m_fuelTimeoutOccured;
+    std::shared_ptr<spdlog::logger> m_logger;
 
 };
 

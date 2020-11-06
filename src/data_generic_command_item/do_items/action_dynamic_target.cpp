@@ -56,8 +56,10 @@ Action_DynamicTarget::Action_DynamicTarget(const unsigned int &systemOrigin, con
 
 Action_DynamicTarget::~Action_DynamicTarget()
 {
-    if(m_Target != nullptr)
-        delete m_Target; m_Target = nullptr;
+    if(m_Target != nullptr) {
+        delete m_Target;
+        m_Target = nullptr;
+    }
 }
 
 void Action_DynamicTarget::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const

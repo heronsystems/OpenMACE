@@ -98,10 +98,12 @@ int main(int argc, char *argv[])
     }
 
     bool addedGroundStation = false;
+    bool addedMLStation = false;
     bool addedPathPlanning = false;
     bool addedROS = false;
     bool addedGlobalRTA = false;
     bool addedSensors = false;
+    bool addedAdept = false;
     int numVehicles = 1;
 
     // If a static address is given in config then distribute out
@@ -114,7 +116,10 @@ int main(int argc, char *argv[])
         throw std::runtime_error("No Mace instance ID is given.");
         //MTB - Unimplimented funcationalty. If no ID is given MACE can determine an ID to use. This would require coordination to avoid conflicts.
     }
-    core.setMaceInstanceID(hostMaceInstance);
+
+    core.setGlobalConfiguration(parser.GetGlobalConfiguration()); // Send global parameters to mace_core for setup
+
+    core.setMaceInstanceID(hostMaceInstance);//to be removed?
 
     std::map<std::shared_ptr<MaceCore::ModuleBase>, std::string > modules = parser.GetCreatedModules();
     std::vector<std::thread*> threads;
@@ -201,6 +206,17 @@ int main(int argc, char *argv[])
             addedGroundStation = true;
             break;
         }
+        case  MaceCore::ModuleClasses::ML_STATION:
+        {
+            if(addedMLStation == true)
+            {
+                std::cerr << "Only one ML Station module can be added" << std::endl;
+                return 1;
+            }
+            core.AddMLStationModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandMLStation>(module));
+            addedMLStation = true;
+            break;
+        }
         case MaceCore::ModuleClasses::SENSORS:
         {
             if(addedSensors == true)
@@ -210,6 +226,17 @@ int main(int argc, char *argv[])
             }
             core.AddSensorsModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandSensors>(module));
             addedSensors = true;
+            break;
+        }
+        case MaceCore::ModuleClasses::ADEPT:
+        {
+            if(addedAdept == true)
+            {
+                std::cerr << "Only one adept module can be added" << std::endl;
+                return 1;
+            }
+            core.AddAdeptModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandAdept>(module));
+            addedAdept = true;
             break;
         }
         case MaceCore::ModuleClasses::PATH_PLANNING:

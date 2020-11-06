@@ -76,6 +76,11 @@ public:
 
     }
 
+    virtual ~MACEDigiMeshWrapper()
+    {
+        // TODO: Anything to be done here?
+    }
+
 
     void RequestRemoteResources() const
     {

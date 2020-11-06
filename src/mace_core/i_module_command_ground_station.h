@@ -8,6 +8,7 @@
 #include "i_module_events_ground_station.h"
 
 #include "data_generic_command_item/command_item_components.h"
+#include "data_generic_item/data_generic_item_components.h"
 
 #include "base/pose/cartesian_position_3D.h"
 
@@ -25,7 +26,8 @@ enum class GroundStationCommands
     GENERIC_MODULE_VEHICLE_LISTENER_ENUMS,
     NEWLY_AVAILABLE_CURRENT_MISSION,
     NEW_MISSION_EXE_STATE,
-    NEWLY_AVAILABLE_HOME_POSITION
+    NEWLY_AVAILABLE_HOME_POSITION,
+    NEWLY_AVAILABLE_VEHICLE_PARAMETERS
 };
 
 class MACE_CORESHARED_EXPORT IModuleCommandGroundStation :
@@ -62,6 +64,11 @@ public:
             UNUSED(sender);
             NewlyUpdatedGlobalOrigin(position);
         });
+
+        AddCommandLogic<std::map<std::string, DataGenericItem::DataGenericItem_ParamValue>>(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE_PARAMETERS, [this](const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &paramValues, const OptionalParameter<ModuleCharacteristic> &sender){
+            UNUSED(sender);
+            NewlyAvailableParameterList(paramValues, sender);
+        });
     }
 
     virtual ModuleClasses ModuleClass() const
@@ -95,6 +102,12 @@ public:
     //! \param position New global origin position
     //!
     virtual void NewlyUpdatedGlobalOrigin(const mace::pose::GeodeticPosition_3D &position) = 0;
+
+    //!
+    //! \brief NewlyAvailableParameterList
+    //! \param params
+    //!
+    virtual void NewlyAvailableParameterList(const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params, const OptionalParameter<ModuleCharacteristic> &sender) = 0;
 
     //!
     //! \brief StartTCPServer Start module TCP server for GUI communications

@@ -22,8 +22,13 @@ installPrereqs() {
     apt-get install -y nano
     apt-get install -y tmux
     apt-get install -y git
+    apt-get install -y wget
     apt-get update
     apt-get install -y qt5-default
+    # wget http://download.qt.io/official_releases/qt/5.14/5.14.0/qt-opensource-linux-x64-5.14.0.run
+    # chmod +x qt-opensource-linux-x64-5.14.0.run
+    # ./qt-opensource-linux-x64-5.14.0.run
+
     apt-get install -y libqt5serialport5-dev
     apt-get install -y build-essential
     apt-get install -y libboost-system-dev
@@ -39,11 +44,16 @@ installPrereqs() {
         apt-get install -y liblz4-dev
     fi
 
-    apt-get install apt-transport-https
+    apt-get install -y apt-transport-https
+
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    apt install -y nodejs
+
+    apt remove -y cmdtest
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
     apt-get update
-    apt-get install yarn
+    apt-get install -y yarn
 }
 
 installROS() {
@@ -57,16 +67,16 @@ installROS() {
     sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
     apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
     apt-get update
-    apt-get install -y ros-kinetic-desktop-full
+    apt-get install -y ros-melodic-desktop-full
     rosdep init
     rosdep update
-    echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+    echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
     source ~/.bashrc
     apt-get install -y python-rosinstall
     apt-get install -y python-rosinstall-generator
     apt-get install -y python-wstool
-    apt-get install -y ros-kinetic-octomap*
-    apt-get install -y ros-kinetic-tf*
+    apt-get install -y ros-melodic-octomap*
+    apt-get install -y ros-melodic-tf*
     apt-get install -y python-rospkg
     pip install rospkg
 }
@@ -91,7 +101,7 @@ done
 # If toggled, install prerequisites
 installPrereqs
 
-# If toggled, install ROS kinetic
+# If toggled, install ROS melodic
 if [ "$installROS" = "1" ]; then
     installROS
 fi

@@ -54,6 +54,20 @@ command_item::AbstractCommandItemPtr MissionItemFactory::generateAbstractCommand
         newMissionItem = std::make_shared<command_item::SpatialWaypoint>();
         newMissionItem->fromMACECOMMS_MissionItem(maceItem);
         break;
+    case COMMANDTYPE::CI_NAV_HOME:
+    case COMMANDTYPE::CI_ACT_ARM:
+    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    case COMMANDTYPE::CI_ACT_MISSIONCMD:
+    case COMMANDTYPE::CI_ACT_MOTORTEST:
+    case COMMANDTYPE::CI_ACT_TARGET:
+    case COMMANDTYPE::CI_ACT_MSG_INTERVAL:
+    case COMMANDTYPE::CI_ACT_MSG_REQUEST:
+    case COMMANDTYPE::CI_ACT_SET_GLOBAL_ORIGIN:
+    case COMMANDTYPE::CI_ACT_HOME_POSITION:
+    case COMMANDTYPE::COMMANDITEMEND:
+    default:
+        break;
     }
 
     if(newMissionItem != nullptr)

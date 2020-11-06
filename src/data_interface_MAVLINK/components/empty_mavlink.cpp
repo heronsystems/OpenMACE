@@ -14,7 +14,7 @@ MaceCore::TopicDatagram EmptyMAVLINK::GenerateDatagram() const {
 }
 
 void EmptyMAVLINK::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
-
+    UNUSED(datagram);
 }
 
 EmptyMAVLINK::EmptyMAVLINK()

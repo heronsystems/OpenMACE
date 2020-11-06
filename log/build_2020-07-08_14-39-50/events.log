@@ -1,0 +1,507 @@
+[0.000000] (-) TimerEvent: {}
+[0.000126] (Eigen) JobQueued: {'identifier': 'Eigen', 'dependencies': OrderedDict()}
+[0.000156] (Eigen3) JobQueued: {'identifier': 'Eigen3', 'dependencies': OrderedDict()}
+[0.000176] (Eigen_Unsupported) JobQueued: {'identifier': 'Eigen_Unsupported', 'dependencies': OrderedDict()}
+[0.000192] (device) JobQueued: {'identifier': 'device', 'dependencies': OrderedDict()}
+[0.000207] (kernel) JobQueued: {'identifier': 'kernel', 'dependencies': OrderedDict()}
+[0.000222] (mavlink) JobQueued: {'identifier': 'mavlink', 'dependencies': OrderedDict()}
+[0.000235] (pymavlink) JobQueued: {'identifier': 'pymavlink', 'dependencies': OrderedDict()}
+[0.000249] (src) JobQueued: {'identifier': 'src', 'dependencies': OrderedDict()}
+[0.000263] (MACE) JobQueued: {'identifier': 'MACE', 'dependencies': OrderedDict([('Eigen3', '/home/aaron/Software/OpenMACE/install/Eigen3')])}
+[0.000279] (Eigen3) JobStarted: {'identifier': 'Eigen3'}
+[0.014443] (Eigen) JobStarted: {'identifier': 'Eigen'}
+[0.017379] (Eigen_Unsupported) JobStarted: {'identifier': 'Eigen_Unsupported'}
+[0.023423] (device) JobStarted: {'identifier': 'device'}
+[0.036137] (kernel) JobStarted: {'identifier': 'kernel'}
+[0.037804] (mavlink) JobStarted: {'identifier': 'mavlink'}
+[0.043543] (pymavlink) JobStarted: {'identifier': 'pymavlink'}
+[0.047450] (src) JobStarted: {'identifier': 'src'}
+[0.051880] (Eigen3) JobProgress: {'identifier': 'Eigen3', 'progress': 'cmake'}
+[0.052017] (Eigen3) Command: {'cmd': ['/usr/bin/cmake', '/home/aaron/Software/OpenMACE/Eigen/EigenFull', '-DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/Eigen3'], 'cwd': '/home/aaron/Software/OpenMACE/build/Eigen3', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aaron'), ('TEXTDOMAIN', 'im-config'), ('OSPL_INFOFILE', '<stdout>'), ('XDG_SEAT', 'seat0'), ('SSH_AGENT_PID', '2593'), ('XDG_SESSION_TYPE', 'x11'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib'), ('SHLVL', '1'), ('OLDPWD', '/home/aaron/Software'), ('OSPL_URI', 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml'), ('QT4_IM_MODULE', 'xim'), ('HOME', '/home/aaron'), ('DESKTOP_SESSION', 'ubuntu'), ('NVM_BIN', '/home/aaron/.nvm/versions/node/v14.5.0/bin'), ('OSPL_VERBOSITY', '2'), ('NDDSHOME', '/opt/rti.com/rti_connext_dds-5.3.1'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1001/bus'), ('OSPL_TMPL_PATH', '/usr/etc/opensplice/idlpp'), ('COLORTERM', 'truecolor'), ('NVM_DIR', '/home/aaron/.nvm'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '2'), ('ROS_DISTRO', 'dashing'), ('LOGNAME', 'aaron'), ('GTK_IM_MODULE', 'ibus'), ('_', '/usr/bin/colcon'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('ROS_VERSION', '2'), ('GAZEBO_MODEL_PATH', ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models'), ('USERNAME', 'aaron'), ('XDG_SESSION_ID', '2'), ('TERM', 'xterm-256color'), ('OSPL_ERRORFILE', '<stderr>'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest'), ('SESSION_MANAGER', 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898'), ('XDG_RUNTIME_DIR', '/run/user/1001'), ('DISPLAY', ':1'), ('MACE_DIGIMESH_WRAPPER', '/Documents/MACEDigiWrapper'), ('LANG', 'en_us.UTF-8'), ('OSPL_HOME', '/usr'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('RMW_IMPLEMENTATION', 'rmw_opensplice_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XMODIFIERS', '@im=ibus'), ('GNOME_TERMINAL_SERVICE', ':1.85'), ('XAUTHORITY', '/run/user/1001/gdm/Xauthority'), ('AMENT_PREFIX_PATH', '/opt/ros/dashing'), ('SSH_AUTH_SOCK', '/run/user/1001/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('TEXTDOMAINDIR', '/usr/share/locale/'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GPG_AGENT_INFO', '/run/user/1001/gnupg/S.gpg-agent:0:1'), ('XDG_VTNR', '2'), ('QT_IM_MODULE', 'ibus'), ('LC_ALL', 'en_US.UTF-8'), ('PWD', '/home/aaron/Software/OpenMACE/build/Eigen3'), ('CLUTTER_IM_MODULE', 'xim'), ('NVM_CD_FLAGS', ''), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('PYTHONPATH', '/opt/ros/dashing/lib/python3.6/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '5202')]), 'shell': False}
+[0.056977] (Eigen) JobProgress: {'identifier': 'Eigen', 'progress': 'cmake'}
+[0.058237] (Eigen) Command: {'cmd': ['/usr/bin/cmake', '/home/aaron/Software/OpenMACE/Eigen/include/eigen3/Eigen', '-DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/Eigen'], 'cwd': '/home/aaron/Software/OpenMACE/build/Eigen', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aaron'), ('TEXTDOMAIN', 'im-config'), ('OSPL_INFOFILE', '<stdout>'), ('XDG_SEAT', 'seat0'), ('SSH_AGENT_PID', '2593'), ('XDG_SESSION_TYPE', 'x11'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib'), ('SHLVL', '1'), ('OLDPWD', '/home/aaron/Software'), ('OSPL_URI', 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml'), ('QT4_IM_MODULE', 'xim'), ('HOME', '/home/aaron'), ('DESKTOP_SESSION', 'ubuntu'), ('NVM_BIN', '/home/aaron/.nvm/versions/node/v14.5.0/bin'), ('OSPL_VERBOSITY', '2'), ('NDDSHOME', '/opt/rti.com/rti_connext_dds-5.3.1'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1001/bus'), ('OSPL_TMPL_PATH', '/usr/etc/opensplice/idlpp'), ('COLORTERM', 'truecolor'), ('NVM_DIR', '/home/aaron/.nvm'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '2'), ('ROS_DISTRO', 'dashing'), ('LOGNAME', 'aaron'), ('GTK_IM_MODULE', 'ibus'), ('_', '/usr/bin/colcon'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('ROS_VERSION', '2'), ('GAZEBO_MODEL_PATH', ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models'), ('USERNAME', 'aaron'), ('XDG_SESSION_ID', '2'), ('TERM', 'xterm-256color'), ('OSPL_ERRORFILE', '<stderr>'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest'), ('SESSION_MANAGER', 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898'), ('XDG_RUNTIME_DIR', '/run/user/1001'), ('DISPLAY', ':1'), ('MACE_DIGIMESH_WRAPPER', '/Documents/MACEDigiWrapper'), ('LANG', 'en_us.UTF-8'), ('OSPL_HOME', '/usr'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('RMW_IMPLEMENTATION', 'rmw_opensplice_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XMODIFIERS', '@im=ibus'), ('GNOME_TERMINAL_SERVICE', ':1.85'), ('XAUTHORITY', '/run/user/1001/gdm/Xauthority'), ('AMENT_PREFIX_PATH', '/opt/ros/dashing'), ('SSH_AUTH_SOCK', '/run/user/1001/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('TEXTDOMAINDIR', '/usr/share/locale/'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GPG_AGENT_INFO', '/run/user/1001/gnupg/S.gpg-agent:0:1'), ('XDG_VTNR', '2'), ('QT_IM_MODULE', 'ibus'), ('LC_ALL', 'en_US.UTF-8'), ('PWD', '/home/aaron/Software/OpenMACE/build/Eigen'), ('CLUTTER_IM_MODULE', 'xim'), ('NVM_CD_FLAGS', ''), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('PYTHONPATH', '/opt/ros/dashing/lib/python3.6/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '5202')]), 'shell': False}
+[0.061591] (Eigen_Unsupported) JobProgress: {'identifier': 'Eigen_Unsupported', 'progress': 'cmake'}
+[0.061770] (Eigen_Unsupported) Command: {'cmd': ['/usr/bin/cmake', '/home/aaron/Software/OpenMACE/Eigen/include/eigen3/Eigen_Unsupported', '-DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/Eigen_Unsupported'], 'cwd': '/home/aaron/Software/OpenMACE/build/Eigen_Unsupported', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aaron'), ('TEXTDOMAIN', 'im-config'), ('OSPL_INFOFILE', '<stdout>'), ('XDG_SEAT', 'seat0'), ('SSH_AGENT_PID', '2593'), ('XDG_SESSION_TYPE', 'x11'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib'), ('SHLVL', '1'), ('OLDPWD', '/home/aaron/Software'), ('OSPL_URI', 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml'), ('QT4_IM_MODULE', 'xim'), ('HOME', '/home/aaron'), ('DESKTOP_SESSION', 'ubuntu'), ('NVM_BIN', '/home/aaron/.nvm/versions/node/v14.5.0/bin'), ('OSPL_VERBOSITY', '2'), ('NDDSHOME', '/opt/rti.com/rti_connext_dds-5.3.1'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1001/bus'), ('OSPL_TMPL_PATH', '/usr/etc/opensplice/idlpp'), ('COLORTERM', 'truecolor'), ('NVM_DIR', '/home/aaron/.nvm'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '2'), ('ROS_DISTRO', 'dashing'), ('LOGNAME', 'aaron'), ('GTK_IM_MODULE', 'ibus'), ('_', '/usr/bin/colcon'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('ROS_VERSION', '2'), ('GAZEBO_MODEL_PATH', ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models'), ('USERNAME', 'aaron'), ('XDG_SESSION_ID', '2'), ('TERM', 'xterm-256color'), ('OSPL_ERRORFILE', '<stderr>'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest'), ('SESSION_MANAGER', 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898'), ('XDG_RUNTIME_DIR', '/run/user/1001'), ('DISPLAY', ':1'), ('MACE_DIGIMESH_WRAPPER', '/Documents/MACEDigiWrapper'), ('LANG', 'en_us.UTF-8'), ('OSPL_HOME', '/usr'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('RMW_IMPLEMENTATION', 'rmw_opensplice_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XMODIFIERS', '@im=ibus'), ('GNOME_TERMINAL_SERVICE', ':1.85'), ('XAUTHORITY', '/run/user/1001/gdm/Xauthority'), ('AMENT_PREFIX_PATH', '/opt/ros/dashing'), ('SSH_AUTH_SOCK', '/run/user/1001/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('TEXTDOMAINDIR', '/usr/share/locale/'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GPG_AGENT_INFO', '/run/user/1001/gnupg/S.gpg-agent:0:1'), ('XDG_VTNR', '2'), ('QT_IM_MODULE', 'ibus'), ('LC_ALL', 'en_US.UTF-8'), ('PWD', '/home/aaron/Software/OpenMACE/build/Eigen_Unsupported'), ('CLUTTER_IM_MODULE', 'xim'), ('NVM_CD_FLAGS', ''), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('PYTHONPATH', '/opt/ros/dashing/lib/python3.6/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '5202')]), 'shell': False}
+[0.065793] (device) JobProgress: {'identifier': 'device', 'progress': 'cmake'}
+[0.065995] (device) Command: {'cmd': ['/usr/bin/cmake', '/home/aaron/Software/OpenMACE/MATLAB/UMD_TaskGeneration/external/goxel-0.8.0/ext_src/cycles/src/device', '-DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/device'], 'cwd': '/home/aaron/Software/OpenMACE/build/device', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aaron'), ('TEXTDOMAIN', 'im-config'), ('OSPL_INFOFILE', '<stdout>'), ('XDG_SEAT', 'seat0'), ('SSH_AGENT_PID', '2593'), ('XDG_SESSION_TYPE', 'x11'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib'), ('SHLVL', '1'), ('OLDPWD', '/home/aaron/Software'), ('OSPL_URI', 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml'), ('QT4_IM_MODULE', 'xim'), ('HOME', '/home/aaron'), ('DESKTOP_SESSION', 'ubuntu'), ('NVM_BIN', '/home/aaron/.nvm/versions/node/v14.5.0/bin'), ('OSPL_VERBOSITY', '2'), ('NDDSHOME', '/opt/rti.com/rti_connext_dds-5.3.1'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1001/bus'), ('OSPL_TMPL_PATH', '/usr/etc/opensplice/idlpp'), ('COLORTERM', 'truecolor'), ('NVM_DIR', '/home/aaron/.nvm'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '2'), ('ROS_DISTRO', 'dashing'), ('LOGNAME', 'aaron'), ('GTK_IM_MODULE', 'ibus'), ('_', '/usr/bin/colcon'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('ROS_VERSION', '2'), ('GAZEBO_MODEL_PATH', ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models'), ('USERNAME', 'aaron'), ('XDG_SESSION_ID', '2'), ('TERM', 'xterm-256color'), ('OSPL_ERRORFILE', '<stderr>'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest'), ('SESSION_MANAGER', 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898'), ('XDG_RUNTIME_DIR', '/run/user/1001'), ('DISPLAY', ':1'), ('MACE_DIGIMESH_WRAPPER', '/Documents/MACEDigiWrapper'), ('LANG', 'en_us.UTF-8'), ('OSPL_HOME', '/usr'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('RMW_IMPLEMENTATION', 'rmw_opensplice_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XMODIFIERS', '@im=ibus'), ('GNOME_TERMINAL_SERVICE', ':1.85'), ('XAUTHORITY', '/run/user/1001/gdm/Xauthority'), ('AMENT_PREFIX_PATH', '/opt/ros/dashing'), ('SSH_AUTH_SOCK', '/run/user/1001/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('TEXTDOMAINDIR', '/usr/share/locale/'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GPG_AGENT_INFO', '/run/user/1001/gnupg/S.gpg-agent:0:1'), ('XDG_VTNR', '2'), ('QT_IM_MODULE', 'ibus'), ('LC_ALL', 'en_US.UTF-8'), ('PWD', '/home/aaron/Software/OpenMACE/build/device'), ('CLUTTER_IM_MODULE', 'xim'), ('NVM_CD_FLAGS', ''), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('PYTHONPATH', '/opt/ros/dashing/lib/python3.6/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '5202')]), 'shell': False}
+[0.070749] (kernel) JobProgress: {'identifier': 'kernel', 'progress': 'cmake'}
+[0.071869] (kernel) Command: {'cmd': ['/usr/bin/cmake', '/home/aaron/Software/OpenMACE/MATLAB/UMD_TaskGeneration/external/goxel-0.8.0/ext_src/cycles/src/kernel', '-DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/kernel'], 'cwd': '/home/aaron/Software/OpenMACE/build/kernel', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aaron'), ('TEXTDOMAIN', 'im-config'), ('OSPL_INFOFILE', '<stdout>'), ('XDG_SEAT', 'seat0'), ('SSH_AGENT_PID', '2593'), ('XDG_SESSION_TYPE', 'x11'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib'), ('SHLVL', '1'), ('OLDPWD', '/home/aaron/Software'), ('OSPL_URI', 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml'), ('QT4_IM_MODULE', 'xim'), ('HOME', '/home/aaron'), ('DESKTOP_SESSION', 'ubuntu'), ('NVM_BIN', '/home/aaron/.nvm/versions/node/v14.5.0/bin'), ('OSPL_VERBOSITY', '2'), ('NDDSHOME', '/opt/rti.com/rti_connext_dds-5.3.1'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1001/bus'), ('OSPL_TMPL_PATH', '/usr/etc/opensplice/idlpp'), ('COLORTERM', 'truecolor'), ('NVM_DIR', '/home/aaron/.nvm'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '2'), ('ROS_DISTRO', 'dashing'), ('LOGNAME', 'aaron'), ('GTK_IM_MODULE', 'ibus'), ('_', '/usr/bin/colcon'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('ROS_VERSION', '2'), ('GAZEBO_MODEL_PATH', ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models'), ('USERNAME', 'aaron'), ('XDG_SESSION_ID', '2'), ('TERM', 'xterm-256color'), ('OSPL_ERRORFILE', '<stderr>'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest'), ('SESSION_MANAGER', 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898'), ('XDG_RUNTIME_DIR', '/run/user/1001'), ('DISPLAY', ':1'), ('MACE_DIGIMESH_WRAPPER', '/Documents/MACEDigiWrapper'), ('LANG', 'en_us.UTF-8'), ('OSPL_HOME', '/usr'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('RMW_IMPLEMENTATION', 'rmw_opensplice_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XMODIFIERS', '@im=ibus'), ('GNOME_TERMINAL_SERVICE', ':1.85'), ('XAUTHORITY', '/run/user/1001/gdm/Xauthority'), ('AMENT_PREFIX_PATH', '/opt/ros/dashing'), ('SSH_AUTH_SOCK', '/run/user/1001/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('TEXTDOMAINDIR', '/usr/share/locale/'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GPG_AGENT_INFO', '/run/user/1001/gnupg/S.gpg-agent:0:1'), ('XDG_VTNR', '2'), ('QT_IM_MODULE', 'ibus'), ('LC_ALL', 'en_US.UTF-8'), ('PWD', '/home/aaron/Software/OpenMACE/build/kernel'), ('CLUTTER_IM_MODULE', 'xim'), ('NVM_CD_FLAGS', ''), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('PYTHONPATH', '/opt/ros/dashing/lib/python3.6/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '5202')]), 'shell': False}
+[0.076995] (mavlink) JobProgress: {'identifier': 'mavlink', 'progress': 'cmake'}
+[0.077088] (mavlink) Command: {'cmd': ['/usr/bin/cmake', '/home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink', '-DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/mavlink'], 'cwd': '/home/aaron/Software/OpenMACE/build/mavlink', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aaron'), ('TEXTDOMAIN', 'im-config'), ('OSPL_INFOFILE', '<stdout>'), ('XDG_SEAT', 'seat0'), ('SSH_AGENT_PID', '2593'), ('XDG_SESSION_TYPE', 'x11'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib'), ('SHLVL', '1'), ('OLDPWD', '/home/aaron/Software'), ('OSPL_URI', 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml'), ('QT4_IM_MODULE', 'xim'), ('HOME', '/home/aaron'), ('DESKTOP_SESSION', 'ubuntu'), ('NVM_BIN', '/home/aaron/.nvm/versions/node/v14.5.0/bin'), ('OSPL_VERBOSITY', '2'), ('NDDSHOME', '/opt/rti.com/rti_connext_dds-5.3.1'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1001/bus'), ('OSPL_TMPL_PATH', '/usr/etc/opensplice/idlpp'), ('COLORTERM', 'truecolor'), ('NVM_DIR', '/home/aaron/.nvm'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '2'), ('ROS_DISTRO', 'dashing'), ('LOGNAME', 'aaron'), ('GTK_IM_MODULE', 'ibus'), ('_', '/usr/bin/colcon'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('ROS_VERSION', '2'), ('GAZEBO_MODEL_PATH', ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models'), ('USERNAME', 'aaron'), ('XDG_SESSION_ID', '2'), ('TERM', 'xterm-256color'), ('OSPL_ERRORFILE', '<stderr>'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest'), ('SESSION_MANAGER', 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898'), ('XDG_RUNTIME_DIR', '/run/user/1001'), ('DISPLAY', ':1'), ('MACE_DIGIMESH_WRAPPER', '/Documents/MACEDigiWrapper'), ('LANG', 'en_us.UTF-8'), ('OSPL_HOME', '/usr'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('RMW_IMPLEMENTATION', 'rmw_opensplice_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XMODIFIERS', '@im=ibus'), ('GNOME_TERMINAL_SERVICE', ':1.85'), ('XAUTHORITY', '/run/user/1001/gdm/Xauthority'), ('AMENT_PREFIX_PATH', '/opt/ros/dashing'), ('SSH_AUTH_SOCK', '/run/user/1001/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('TEXTDOMAINDIR', '/usr/share/locale/'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GPG_AGENT_INFO', '/run/user/1001/gnupg/S.gpg-agent:0:1'), ('XDG_VTNR', '2'), ('QT_IM_MODULE', 'ibus'), ('LC_ALL', 'en_US.UTF-8'), ('PWD', '/home/aaron/Software/OpenMACE/build/mavlink'), ('CLUTTER_IM_MODULE', 'xim'), ('NVM_CD_FLAGS', ''), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('PYTHONPATH', '/opt/ros/dashing/lib/python3.6/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '5202')]), 'shell': False}
+[0.099133] (-) TimerEvent: {}
+[0.199648] (-) TimerEvent: {}
+[0.300480] (-) TimerEvent: {}
+[0.372945] (pymavlink) Command: {'cmd': ['/usr/bin/python3', 'setup.py', 'egg_info', '--egg-base', '/home/aaron/Software/OpenMACE/build/pymavlink', 'build', '--build-base', '/home/aaron/Software/OpenMACE/build/pymavlink/build', 'install', '--prefix', '/home/aaron/Software/OpenMACE/install/pymavlink', '--record', '/home/aaron/Software/OpenMACE/build/pymavlink/install.log', '--single-version-externally-managed'], 'cwd': '/home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/pymavlink-mace', 'env': {'GJS_DEBUG_TOPICS': 'JS ERROR;JS LOG', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'aaron', 'TEXTDOMAIN': 'im-config', 'OSPL_INFOFILE': '<stdout>', 'XDG_SEAT': 'seat0', 'SSH_AGENT_PID': '2593', 'XDG_SESSION_TYPE': 'x11', 'LD_LIBRARY_PATH': '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib', 'SHLVL': '1', 'OLDPWD': '/home/aaron/Software', 'OSPL_URI': 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml', 'QT4_IM_MODULE': 'xim', 'HOME': '/home/aaron', 'DESKTOP_SESSION': 'ubuntu', 'NVM_BIN': '/home/aaron/.nvm/versions/node/v14.5.0/bin', 'OSPL_VERBOSITY': '2', 'NDDSHOME': '/opt/rti.com/rti_connext_dds-5.3.1', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1001/bus', 'OSPL_TMPL_PATH': '/usr/etc/opensplice/idlpp', 'COLORTERM': 'truecolor', 'NVM_DIR': '/home/aaron/.nvm', 'MANDATORY_PATH': '/usr/share/gconf/ubuntu.mandatory.path', 'IM_CONFIG_PHASE': '2', 'ROS_DISTRO': 'dashing', 'LOGNAME': 'aaron', 'GTK_IM_MODULE': 'ibus', '_': '/usr/bin/colcon', 'DEFAULTS_PATH': '/usr/share/gconf/ubuntu.default.path', 'ROS_VERSION': '2', 'GAZEBO_MODEL_PATH': ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models', 'USERNAME': 'aaron', 'XDG_SESSION_ID': '2', 'TERM': 'xterm-256color', 'OSPL_ERRORFILE': '<stderr>', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'WINDOWPATH': '2', 'PATH': '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest', 'SESSION_MANAGER': 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497', 'XDG_MENU_PREFIX': 'gnome-', 'GNOME_TERMINAL_SCREEN': '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898', 'XDG_RUNTIME_DIR': '/run/user/1001', 'DISPLAY': ':1', 'MACE_DIGIMESH_WRAPPER': '/Documents/MACEDigiWrapper', 'LANG': 'en_us.UTF-8', 'OSPL_HOME': '/usr', 'XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'RMW_IMPLEMENTATION': 'rmw_opensplice_cpp', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XMODIFIERS': '@im=ibus', 'GNOME_TERMINAL_SERVICE': ':1.85', 'XAUTHORITY': '/run/user/1001/gdm/Xauthority', 'AMENT_PREFIX_PATH': '/opt/ros/dashing', 'SSH_AUTH_SOCK': '/run/user/1001/keyring/ssh', 'ROS_DOMAIN_ID': '30', 'SHELL': '/bin/bash', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'TEXTDOMAINDIR': '/usr/share/locale/', 'GJS_DEBUG_OUTPUT': 'stderr', 'GPG_AGENT_INFO': '/run/user/1001/gnupg/S.gpg-agent:0:1', 'XDG_VTNR': '2', 'QT_IM_MODULE': 'ibus', 'LC_ALL': 'en_US.UTF-8', 'PWD': '/home/aaron/Software/OpenMACE/build/pymavlink', 'CLUTTER_IM_MODULE': 'xim', 'NVM_CD_FLAGS': '', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'PYTHONPATH': '/home/aaron/Software/OpenMACE/install/pymavlink/lib/python3.6/site-packages:/opt/ros/dashing/lib/python3.6/site-packages', 'COLCON': '1', 'VTE_VERSION': '5202'}, 'shell': False}
+[0.377403] (src) JobProgress: {'identifier': 'src', 'progress': 'cmake'}
+[0.377541] (src) Command: {'cmd': ['/usr/bin/cmake', '/home/aaron/Software/OpenMACE/catkin_sim_environment/src', '-DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/src'], 'cwd': '/home/aaron/Software/OpenMACE/build/src', 'env': OrderedDict([('GJS_DEBUG_TOPICS', 'JS ERROR;JS LOG'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'aaron'), ('TEXTDOMAIN', 'im-config'), ('OSPL_INFOFILE', '<stdout>'), ('XDG_SEAT', 'seat0'), ('SSH_AGENT_PID', '2593'), ('XDG_SESSION_TYPE', 'x11'), ('LD_LIBRARY_PATH', '/usr/lib/x86_64-linux-gnu/gazebo-9/plugins:/opt/ros/dashing/opt/yaml_cpp_vendor/lib:/opt/ros/dashing/opt/rviz_ogre_vendor/lib:/usr/lib:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/ros/dashing/lib'), ('SHLVL', '1'), ('OLDPWD', '/home/aaron/Software'), ('OSPL_URI', 'file:///opt/ros/dashing/share/opensplice_cmake_module/config/ros_ospl.xml'), ('QT4_IM_MODULE', 'xim'), ('HOME', '/home/aaron'), ('DESKTOP_SESSION', 'ubuntu'), ('NVM_BIN', '/home/aaron/.nvm/versions/node/v14.5.0/bin'), ('OSPL_VERBOSITY', '2'), ('NDDSHOME', '/opt/rti.com/rti_connext_dds-5.3.1'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1001/bus'), ('OSPL_TMPL_PATH', '/usr/etc/opensplice/idlpp'), ('COLORTERM', 'truecolor'), ('NVM_DIR', '/home/aaron/.nvm'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '2'), ('ROS_DISTRO', 'dashing'), ('LOGNAME', 'aaron'), ('GTK_IM_MODULE', 'ibus'), ('_', '/usr/bin/colcon'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('ROS_VERSION', '2'), ('GAZEBO_MODEL_PATH', ':/home/aaron/turtlebot3_ws/src/turtlebot3/turtlebot3_simulations/turtlebot3_gazebo/models'), ('USERNAME', 'aaron'), ('XDG_SESSION_ID', '2'), ('TERM', 'xterm-256color'), ('OSPL_ERRORFILE', '<stderr>'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('WINDOWPATH', '2'), ('PATH', '/home/aaron/.nvm/versions/node/v14.5.0/bin:/usr/lib/ccache:/opt/rti.com/rti_connext_dds-5.3.1/lib/x64Linux3gcc5.4.0:/opt/rti.com/rti_connext_dds-5.3.1/bin:/opt/ros/dashing/bin:/home/aaron/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/aaron/Documents/MACEDigiWrapper/lib:/home/aaron/Documents/ardupilot/Tools/autotest'), ('SESSION_MANAGER', 'local/aramis:@/tmp/.ICE-unix/2497,unix/aramis:/tmp/.ICE-unix/2497'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/d6707571_57e4_468b_bd67_8bda54905898'), ('XDG_RUNTIME_DIR', '/run/user/1001'), ('DISPLAY', ':1'), ('MACE_DIGIMESH_WRAPPER', '/Documents/MACEDigiWrapper'), ('LANG', 'en_us.UTF-8'), ('OSPL_HOME', '/usr'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('RMW_IMPLEMENTATION', 'rmw_opensplice_cpp'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XMODIFIERS', '@im=ibus'), ('GNOME_TERMINAL_SERVICE', ':1.85'), ('XAUTHORITY', '/run/user/1001/gdm/Xauthority'), ('AMENT_PREFIX_PATH', '/opt/ros/dashing'), ('SSH_AUTH_SOCK', '/run/user/1001/keyring/ssh'), ('ROS_DOMAIN_ID', '30'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('TEXTDOMAINDIR', '/usr/share/locale/'), ('GJS_DEBUG_OUTPUT', 'stderr'), ('GPG_AGENT_INFO', '/run/user/1001/gnupg/S.gpg-agent:0:1'), ('XDG_VTNR', '2'), ('QT_IM_MODULE', 'ibus'), ('LC_ALL', 'en_US.UTF-8'), ('PWD', '/home/aaron/Software/OpenMACE/build/src'), ('CLUTTER_IM_MODULE', 'xim'), ('NVM_CD_FLAGS', ''), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('PYTHONPATH', '/opt/ros/dashing/lib/python3.6/site-packages'), ('COLCON', '1'), ('VTE_VERSION', '5202')]), 'shell': False}
+[0.380447] (Eigen3) StdoutLine: {'line': b'-- The C compiler identification is GNU 7.5.0\n'}
+[0.380974] (Eigen3) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 7.5.0\n'}
+[0.381128] (Eigen3) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.381269] (Eigen3) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.381383] (Eigen3) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.381499] (Eigen3) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.381619] (Eigen3) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.381731] (Eigen) StdoutLine: {'line': b'-- The C compiler identification is GNU 7.5.0\n'}
+[0.381869] (Eigen) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 7.5.0\n'}
+[0.381985] (Eigen) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.382104] (Eigen) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.382215] (Eigen) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.382346] (Eigen) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.382758] (Eigen) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.382909] (Eigen_Unsupported) StdoutLine: {'line': b'-- The C compiler identification is GNU 7.5.0\n'}
+[0.383052] (Eigen_Unsupported) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 7.5.0\n'}
+[0.383170] (Eigen_Unsupported) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.383287] (Eigen_Unsupported) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.383866] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.384173] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.384262] (device) StdoutLine: {'line': b'-- The C compiler identification is GNU 7.5.0\n'}
+[0.384344] (device) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 7.5.0\n'}
+[0.384405] (device) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.384494] (device) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.384572] (device) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.384635] (device) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.384693] (device) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.385504] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.386484] (kernel) StdoutLine: {'line': b'-- The C compiler identification is GNU 7.5.0\n'}
+[0.386658] (kernel) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 7.5.0\n'}
+[0.386770] (kernel) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.386872] (kernel) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.386983] (kernel) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.387077] (kernel) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.390126] (kernel) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.390430] (mavlink) StdoutLine: {'line': b'-- The C compiler identification is GNU 7.5.0\n'}
+[0.390527] (mavlink) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 7.5.0\n'}
+[0.390592] (mavlink) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.390653] (mavlink) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.390711] (mavlink) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.390768] (mavlink) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.390824] (mavlink) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.400600] (-) TimerEvent: {}
+[0.454111] (src) StdoutLine: {'line': b'-- The C compiler identification is GNU 7.5.0\n'}
+[0.500678] (-) TimerEvent: {}
+[0.527107] (src) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 7.5.0\n'}
+[0.531415] (src) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc\n'}
+[0.600793] (-) TimerEvent: {}
+[0.603908] (Eigen) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.609831] (Eigen) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.611698] (Eigen3) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.615946] (Eigen3) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.616252] (device) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.618110] (src) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc -- works\n'}
+[0.618350] (mavlink) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.622114] (device) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.622921] (src) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[0.624472] (mavlink) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.633521] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.633740] (kernel) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.637844] (Eigen_Unsupported) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.638090] (kernel) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[0.671043] (pymavlink) StdoutLine: {'line': b'running egg_info\n'}
+[0.671689] (pymavlink) StdoutLine: {'line': b'creating /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info\n'}
+[0.671905] (pymavlink) StdoutLine: {'line': b'writing /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/PKG-INFO\n'}
+[0.672257] (pymavlink) StdoutLine: {'line': b'writing dependency_links to /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/dependency_links.txt\n'}
+[0.672466] (pymavlink) StdoutLine: {'line': b'writing requirements to /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/requires.txt\n'}
+[0.672580] (pymavlink) StdoutLine: {'line': b'writing top-level names to /home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/top_level.txt\n'}
+[0.672725] (pymavlink) StdoutLine: {'line': b"writing manifest file '/home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/SOURCES.txt'\n"}
+[0.681273] (pymavlink) StdoutLine: {'line': b"reading manifest file '/home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/SOURCES.txt'\n"}
+[0.682350] (pymavlink) StdoutLine: {'line': b"writing manifest file '/home/aaron/Software/OpenMACE/build/pymavlink/pymavlink.egg-info/SOURCES.txt'\n"}
+[0.682577] (pymavlink) StdoutLine: {'line': b'running build\n'}
+[0.682697] (pymavlink) StdoutLine: {'line': b'running build_py\n'}
+[0.700883] (-) TimerEvent: {}
+[0.702128] (src) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[0.711167] (Eigen) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.711416] (src) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[0.711990] (Eigen) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.715121] (device) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.715754] (device) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.716396] (Eigen3) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.717358] (Eigen3) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.722931] (mavlink) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.723609] (mavlink) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.728217] (pymavlink) StderrLine: {'line': b'Traceback (most recent call last):\n'}
+[0.728429] (pymavlink) StderrLine: {'line': b'  File "setup.py", line 158, in <module>\n'}
+[0.728511] (pymavlink) StderrLine: {'line': b'    ext_modules = extensions\n'}
+[0.728580] (pymavlink) StderrLine: {'line': b'  File "/usr/lib/python3/dist-packages/setuptools/__init__.py", line 129, in setup\n'}
+[0.729001] (pymavlink) StderrLine: {'line': b'    return distutils.core.setup(**attrs)\n'}
+[0.729208] (pymavlink) StderrLine: {'line': b'  File "/usr/lib/python3.6/distutils/core.py", line 148, in setup\n'}
+[0.729287] (pymavlink) StderrLine: {'line': b'    dist.run_commands()\n'}
+[0.729355] (pymavlink) StderrLine: {'line': b'  File "/usr/lib/python3.6/distutils/dist.py", line 955, in run_commands\n'}
+[0.729539] (pymavlink) StderrLine: {'line': b'    self.run_command(cmd)\n'}
+[0.729654] (pymavlink) StderrLine: {'line': b'  File "/usr/lib/python3.6/distutils/dist.py", line 974, in run_command\n'}
+[0.729762] (pymavlink) StderrLine: {'line': b'    cmd_obj.run()\n'}
+[0.729828] (pymavlink) StderrLine: {'line': b'  File "/usr/lib/python3.6/distutils/command/build.py", line 135, in run\n'}
+[0.729949] (pymavlink) StderrLine: {'line': b'    self.run_command(cmd_name)\n'}
+[0.730028] (pymavlink) StderrLine: {'line': b'  File "/usr/lib/python3.6/distutils/cmd.py", line 313, in run_command\n'}
+[0.730167] (pymavlink) StderrLine: {'line': b'    self.distribution.run_command(command)\n'}
+[0.730244] (pymavlink) StderrLine: {'line': b'  File "/usr/lib/python3.6/distutils/dist.py", line 974, in run_command\n'}
+[0.730359] (pymavlink) StderrLine: {'line': b'    cmd_obj.run()\n'}
+[0.730606] (pymavlink) StderrLine: {'line': b'  File "setup.py", line 93, in run\n'}
+[0.730686] (pymavlink) StderrLine: {'line': b'    generate_content()\n'}
+[0.730755] (pymavlink) StderrLine: {'line': b'  File "setup.py", line 21, in generate_content\n'}
+[0.730822] (pymavlink) StderrLine: {'line': b'    from generator import mavgen, mavparse\n'}
+[0.730896] (pymavlink) StderrLine: {'line': b'  File "/home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/pymavlink-mace/generator/mavgen.py", line 12, in <module>\n'}
+[0.730977] (pymavlink) StderrLine: {'line': b'    from future import standard_library\n'}
+[0.731142] (pymavlink) StderrLine: {'line': b"ModuleNotFoundError: No module named 'future'\n"}
+[0.732753] (Eigen_Unsupported) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.732975] (kernel) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[0.733644] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.733796] (kernel) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[0.768055] (pymavlink) CommandEnded: {'returncode': 1}
+[0.768722] (pymavlink) JobEnded: {'identifier': 'pymavlink', 'rc': 1}
+[0.801051] (-) TimerEvent: {}
+[0.807107] (Eigen) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.815397] (device) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.817371] (Eigen3) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.818484] (Eigen) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.823015] (kernel) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.825530] (Eigen3) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.826234] (mavlink) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.826723] (device) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.831060] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[0.833558] (kernel) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.834669] (mavlink) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.839629] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[0.901142] (-) TimerEvent: {}
+[0.962392] (src) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[0.966453] (src) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++\n'}
+[1.001288] (-) TimerEvent: {}
+[1.057905] (src) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ -- works\n'}
+[1.058432] (src) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[1.101407] (-) TimerEvent: {}
+[1.154029] (src) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[1.166065] (src) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[1.201528] (-) TimerEvent: {}
+[1.203648] (Eigen) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.204328] (Eigen) StderrLine: {'line': b'CMake Error at CMakeLists.txt:1 (include):\n'}
+[1.204649] (Eigen) StderrLine: {'line': b'  include could not find load file:\n'}
+[1.204770] (Eigen) StderrLine: {'line': b'\n'}
+[1.204878] (Eigen) StderrLine: {'line': b'    RegexUtils\n'}
+[1.205037] (Eigen) StderrLine: {'line': b'\n'}
+[1.205146] (Eigen) StderrLine: {'line': b'\n'}
+[1.205244] (Eigen) StderrLine: {'line': b'CMake Error at CMakeLists.txt:2 (test_escape_string_as_regex):\n'}
+[1.205338] (Eigen) StderrLine: {'line': b'  Unknown CMake command "test_escape_string_as_regex".\n'}
+[1.205430] (Eigen) StderrLine: {'line': b'\n'}
+[1.205518] (Eigen) StderrLine: {'line': b'\n'}
+[1.205605] (Eigen) StderrLine: {'line': b'CMake Warning (dev) in CMakeLists.txt:\n'}
+[1.205690] (Eigen) StderrLine: {'line': b'  No cmake_minimum_required command is present.  A line of code such as\n'}
+[1.205781] (Eigen) StderrLine: {'line': b'\n'}
+[1.205864] (Eigen) StderrLine: {'line': b'    cmake_minimum_required(VERSION 3.10)\n'}
+[1.205956] (Eigen) StderrLine: {'line': b'\n'}
+[1.206048] (Eigen) StderrLine: {'line': b'  should be added at the top of the file.  The version specified may be lower\n'}
+[1.206143] (Eigen) StderrLine: {'line': b'  if you wish to support older CMake versions for this project.  For more\n'}
+[1.206240] (Eigen) StderrLine: {'line': b'  information run "cmake --help-policy CMP0000".\n'}
+[1.206330] (Eigen) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.206439] (Eigen) StderrLine: {'line': b'\n'}
+[1.206527] (Eigen) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[1.206622] (Eigen) StdoutLine: {'line': b'See also "/home/aaron/Software/OpenMACE/build/Eigen/CMakeFiles/CMakeOutput.log".\n'}
+[1.207942] (Eigen) JobEnded: {'identifier': 'Eigen', 'rc': 'SIGINT'}
+[1.219302] (kernel) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.220049] (kernel) StderrLine: {'line': b'CMake Error at CMakeLists.txt:1 (remove_extra_strict_flags):\n'}
+[1.220311] (kernel) StderrLine: {'line': b'  Unknown CMake command "remove_extra_strict_flags".\n'}
+[1.220433] (kernel) StderrLine: {'line': b'\n'}
+[1.220543] (kernel) StderrLine: {'line': b'\n'}
+[1.220655] (kernel) StderrLine: {'line': b'CMake Warning (dev) in CMakeLists.txt:\n'}
+[1.220828] (kernel) StderrLine: {'line': b'  No cmake_minimum_required command is present.  A line of code such as\n'}
+[1.220951] (kernel) StderrLine: {'line': b'\n'}
+[1.221049] (kernel) StderrLine: {'line': b'    cmake_minimum_required(VERSION 3.10)\n'}
+[1.221147] (kernel) StderrLine: {'line': b'\n'}
+[1.221238] (kernel) StderrLine: {'line': b'  should be added at the top of the file.  The version specified may be lower\n'}
+[1.221323] (kernel) StderrLine: {'line': b'  if you wish to support older CMake versions for this project.  For more\n'}
+[1.221413] (kernel) StderrLine: {'line': b'  information run "cmake --help-policy CMP0000".\n'}
+[1.221499] (kernel) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.221599] (kernel) StderrLine: {'line': b'\n'}
+[1.221695] (kernel) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[1.221799] (kernel) StdoutLine: {'line': b'See also "/home/aaron/Software/OpenMACE/build/kernel/CMakeFiles/CMakeOutput.log".\n'}
+[1.223364] (kernel) JobEnded: {'identifier': 'kernel', 'rc': 'SIGINT'}
+[1.226664] (device) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.227422] (device) StderrLine: {'line': b'CMake Warning (dev) at CMakeLists.txt:21 (add_definitions):\n'}
+[1.227531] (device) StderrLine: {'line': b'  Policy CMP0005 is not set: Preprocessor definition values are now escaped\n'}
+[1.227597] (device) StderrLine: {'line': b'  automatically.  Run "cmake --help-policy CMP0005" for policy details.  Use\n'}
+[1.227672] (device) StderrLine: {'line': b'  the cmake_policy command to set the policy and suppress this warning.\n'}
+[1.227801] (device) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.227888] (device) StderrLine: {'line': b'\n'}
+[1.227984] (device) StderrLine: {'line': b'CMake Error at CMakeLists.txt:80 (cycles_add_library):\n'}
+[1.228085] (device) StderrLine: {'line': b'  Unknown CMake command "cycles_add_library".\n'}
+[1.228178] (device) StderrLine: {'line': b'\n'}
+[1.228273] (device) StderrLine: {'line': b'\n'}
+[1.228378] (device) StderrLine: {'line': b'CMake Warning (dev) in CMakeLists.txt:\n'}
+[1.228484] (device) StderrLine: {'line': b'  No cmake_minimum_required command is present.  A line of code such as\n'}
+[1.228587] (device) StderrLine: {'line': b'\n'}
+[1.228687] (device) StderrLine: {'line': b'    cmake_minimum_required(VERSION 3.10)\n'}
+[1.228785] (device) StderrLine: {'line': b'\n'}
+[1.228889] (device) StderrLine: {'line': b'  should be added at the top of the file.  The version specified may be lower\n'}
+[1.229005] (device) StderrLine: {'line': b'  if you wish to support older CMake versions for this project.  For more\n'}
+[1.229110] (device) StderrLine: {'line': b'  information run "cmake --help-policy CMP0000".\n'}
+[1.229254] (device) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.229361] (device) StderrLine: {'line': b'\n'}
+[1.229424] (device) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[1.229490] (device) StdoutLine: {'line': b'See also "/home/aaron/Software/OpenMACE/build/device/CMakeFiles/CMakeOutput.log".\n'}
+[1.230162] (device) JobEnded: {'identifier': 'device', 'rc': 'SIGINT'}
+[1.232947] (Eigen_Unsupported) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.233760] (Eigen_Unsupported) StderrLine: {'line': b'CMake Error at CMakeLists.txt:32 (add_subdirectory):\n'}
+[1.233865] (Eigen_Unsupported) StderrLine: {'line': b'  add_subdirectory given source "CXX11" which is not an existing directory.\n'}
+[1.233929] (Eigen_Unsupported) StderrLine: {'line': b'\n'}
+[1.233988] (Eigen_Unsupported) StderrLine: {'line': b'\n'}
+[1.234100] (Eigen_Unsupported) StderrLine: {'line': b'CMake Warning (dev) in CMakeLists.txt:\n'}
+[1.234156] (Eigen_Unsupported) StderrLine: {'line': b'  No cmake_minimum_required command is present.  A line of code such as\n'}
+[1.234212] (Eigen_Unsupported) StderrLine: {'line': b'\n'}
+[1.234266] (Eigen_Unsupported) StderrLine: {'line': b'    cmake_minimum_required(VERSION 3.10)\n'}
+[1.234321] (Eigen_Unsupported) StderrLine: {'line': b'\n'}
+[1.234383] (Eigen_Unsupported) StderrLine: {'line': b'  should be added at the top of the file.  The version specified may be lower\n'}
+[1.234442] (Eigen_Unsupported) StderrLine: {'line': b'  if you wish to support older CMake versions for this project.  For more\n'}
+[1.234497] (Eigen_Unsupported) StderrLine: {'line': b'  information run "cmake --help-policy CMP0000".\n'}
+[1.234552] (Eigen_Unsupported) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[1.234607] (Eigen_Unsupported) StderrLine: {'line': b'\n'}
+[1.234663] (mavlink) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.234728] (Eigen_Unsupported) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[1.234786] (Eigen_Unsupported) StdoutLine: {'line': b'See also "/home/aaron/Software/OpenMACE/build/Eigen_Unsupported/CMakeFiles/CMakeOutput.log".\n'}
+[1.234920] (Eigen3) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.235861] (Eigen_Unsupported) JobEnded: {'identifier': 'Eigen_Unsupported', 'rc': 'SIGINT'}
+[1.248565] (mavlink) StderrLine: {'line': b'** Finding libraries\n'}
+[1.252053] (Eigen3) StdoutLine: {'line': b'-- Performing Test standard_math_library_linked_to_automatically\n'}
+[1.259933] (mavlink) StdoutLine: {'line': b'-- Found PythonInterp: /usr/bin/python (found version "2.7.17") \n'}
+[1.260242] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/ardupilotmega.xml\n'}
+[1.260425] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/common.xml\n'}
+[1.260644] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/minimal.xml\n'}
+[1.260744] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/slugs.xml\n'}
+[1.260878] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/test.xml\n'}
+[1.260988] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/ualberta.xml\n'}
+[1.261085] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/ASLUAV.xml\n'}
+[1.261165] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/ardupilotmega.xml\n'}
+[1.261240] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/autoquad.xml\n'}
+[1.261299] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/common.xml\n'}
+[1.261375] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/matrixpilot.xml\n'}
+[1.261452] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/minimal.xml\n'}
+[1.261533] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/paparazzi.xml\n'}
+[1.261616] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/python_array_test.xml\n'}
+[1.261720] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/slugs.xml\n'}
+[1.261822] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/test.xml\n'}
+[1.261930] (mavlink) StdoutLine: {'line': b'-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/ualberta.xml\n'}
+[1.272658] (mavlink) StdoutLine: {'line': b'-- Configuring done\n'}
+[1.281393] (mavlink) StdoutLine: {'line': b'-- Generating done\n'}
+[1.283047] (mavlink) StdoutLine: {'line': b'-- Build files have been written to: /home/aaron/Software/OpenMACE/build/mavlink\n'}
+[1.284950] (mavlink) JobEnded: {'identifier': 'mavlink', 'rc': 'SIGINT'}
+[1.301637] (-) TimerEvent: {}
+[1.343570] (Eigen3) StdoutLine: {'line': b'-- Performing Test standard_math_library_linked_to_automatically - Success\n'}
+[1.343859] (Eigen3) StdoutLine: {'line': b'-- Standard libraries to link to explicitly: none\n'}
+[1.347104] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_WERROR\n'}
+[1.401759] (-) TimerEvent: {}
+[1.409495] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_WERROR - Success\n'}
+[1.413233] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_pedantic\n'}
+[1.475402] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_pedantic - Success\n'}
+[1.478192] (src) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.479409] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wall\n'}
+[1.501847] (-) TimerEvent: {}
+[1.541588] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wall - Success\n'}
+[1.545501] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wextra\n'}
+[1.601985] (-) TimerEvent: {}
+[1.608894] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wextra - Success\n'}
+[1.613292] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wundef\n'}
+[1.670942] (src) StderrLine: {'line': b'CMake Error at CMakeLists.txt:59 (message):\n'}
+[1.671166] (src) StderrLine: {'line': b'  find_package(catkin) failed.  catkin was neither found in the workspace nor\n'}
+[1.671303] (src) StderrLine: {'line': b'  in the CMAKE_PREFIX_PATH.  One reason may be that no ROS setup.sh was\n'}
+[1.671365] (src) StderrLine: {'line': b'  sourced before.\n'}
+[1.671591] (src) StderrLine: {'line': b'\n'}
+[1.671679] (src) StderrLine: {'line': b'\n'}
+[1.671744] (src) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[1.671811] (src) StdoutLine: {'line': b'See also "/home/aaron/Software/OpenMACE/build/src/CMakeFiles/CMakeOutput.log".\n'}
+[1.673741] (src) JobEnded: {'identifier': 'src', 'rc': 'SIGINT'}
+[1.683773] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wundef - Success\n'}
+[1.687305] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wcastalign\n'}
+[1.702104] (-) TimerEvent: {}
+[1.750559] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wcastalign - Success\n'}
+[1.753963] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wcharsubscripts\n'}
+[1.802258] (-) TimerEvent: {}
+[1.819523] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wcharsubscripts - Success\n'}
+[1.823081] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnonvirtualdtor\n'}
+[1.887372] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnonvirtualdtor - Success\n'}
+[1.890906] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wunusedlocaltypedefs\n'}
+[1.902343] (-) TimerEvent: {}
+[1.955015] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wunusedlocaltypedefs - Success\n'}
+[1.958460] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wpointerarith\n'}
+[2.002468] (-) TimerEvent: {}
+[2.022604] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wpointerarith - Success\n'}
+[2.026112] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wwritestrings\n'}
+[2.090650] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wwritestrings - Success\n'}
+[2.094924] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wformatsecurity\n'}
+[2.102591] (-) TimerEvent: {}
+[2.162140] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wformatsecurity - Success\n'}
+[2.165804] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wshorten64to32\n'}
+[2.186436] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wshorten64to32 - Failed\n'}
+[2.189885] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wlogicalop\n'}
+[2.202704] (-) TimerEvent: {}
+[2.256061] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wlogicalop - Success\n'}
+[2.259575] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wenumconversion\n'}
+[2.280280] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wenumconversion - Failed\n'}
+[2.283969] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wcpp11extensions\n'}
+[2.302838] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wcpp11extensions - Failed\n'}
+[2.303019] (-) TimerEvent: {}
+[2.306430] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wdoublepromotion\n'}
+[2.371372] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wdoublepromotion - Success\n'}
+[2.374935] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnopsabi\n'}
+[2.403152] (-) TimerEvent: {}
+[2.439955] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnopsabi - Success\n'}
+[2.443467] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnovariadicmacros\n'}
+[2.503260] (-) TimerEvent: {}
+[2.507799] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnovariadicmacros - Success\n'}
+[2.511331] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnolonglong\n'}
+[2.574948] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Wnolonglong - Success\n'}
+[2.578370] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_fnochecknew\n'}
+[2.603404] (-) TimerEvent: {}
+[2.641622] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_fnochecknew - Success\n'}
+[2.645116] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_fnocommon\n'}
+[2.703483] (-) TimerEvent: {}
+[2.709633] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_fnocommon - Success\n'}
+[2.713239] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_fstrictaliasing\n'}
+[2.778619] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_fstrictaliasing - Success\n'}
+[2.782170] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_wd981\n'}
+[2.799267] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_wd981 - Failed\n'}
+[2.802762] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_wd2304\n'}
+[2.803542] (-) TimerEvent: {}
+[2.822669] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_wd2304 - Failed\n'}
+[2.826171] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_STRICTANSI\n'}
+[2.844361] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_STRICTANSI - Failed\n'}
+[2.847891] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Qunusedarguments\n'}
+[2.867677] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_Qunusedarguments - Failed\n'}
+[2.871194] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_ansi\n'}
+[2.903665] (-) TimerEvent: {}
+[2.935374] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_ansi - Success\n'}
+[2.939225] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_OPENMP\n'}
+[3.003352] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_OPENMP - Success\n'}
+[3.003727] (-) TimerEvent: {}
+[3.026868] (Eigen3) StdoutLine: {'line': b'-- Performing Test EIGEN_COMPILER_SUPPORT_CPP11\n'}
+[3.092041] (Eigen3) StdoutLine: {'line': b'-- Performing Test EIGEN_COMPILER_SUPPORT_CPP11 - Success\n'}
+[3.097533] (Eigen3) StderrLine: {'line': b"qmake: could not find a Qt installation of ''\n"}
+[3.099204] (Eigen3) StdoutLine: {'line': b'-- Found unsuitable Qt version "" from NOTFOUND\n'}
+[3.103830] (-) TimerEvent: {}
+[3.198494] (Eigen3) StdoutLine: {'line': b'-- Performing Test EIGEN_COMPILER_SUPPORT_CXX11\n'}
+[3.203930] (-) TimerEvent: {}
+[3.260161] (Eigen3) StdoutLine: {'line': b'-- Performing Test EIGEN_COMPILER_SUPPORT_CXX11 - Success\n'}
+[3.304078] (-) TimerEvent: {}
+[3.404330] (-) TimerEvent: {}
+[3.490354] (Eigen3) StdoutLine: {'line': b'-- The Fortran compiler identification is unknown\n'}
+[3.504437] (-) TimerEvent: {}
+[3.511622] (Eigen3) StdoutLine: {'line': b'-- Looking for sgemm_\n'}
+[3.583952] (Eigen3) StdoutLine: {'line': b'-- Looking for sgemm_ - found\n'}
+[3.584114] (Eigen3) StdoutLine: {'line': b'-- A library with BLAS API found.\n'}
+[3.595762] (Eigen3) StdoutLine: {'line': b'-- Looking for cheev_\n'}
+[3.604555] (-) TimerEvent: {}
+[3.668729] (Eigen3) StdoutLine: {'line': b'-- Looking for cheev_ - found\n'}
+[3.668897] (Eigen3) StdoutLine: {'line': b'-- A library with LAPACK API found.\n'}
+[3.674033] (Eigen3) StdoutLine: {'line': b'-- Found CHOLMOD: /usr/include/suitesparse  \n'}
+[3.678097] (Eigen3) StdoutLine: {'line': b'-- Found UMFPACK: /usr/include/suitesparse  \n'}
+[3.684521] (Eigen3) StdoutLine: {'line': b'-- Performing Test SUPERLU_HAS_GLOBAL_MEM_USAGE_T\n'}
+[3.704678] (-) TimerEvent: {}
+[3.758369] (Eigen3) StdoutLine: {'line': b'-- Performing Test SUPERLU_HAS_GLOBAL_MEM_USAGE_T - Success\n'}
+[3.758677] (Eigen3) StdoutLine: {'line': b'-- Performing Test SUPERLU_HAS_CLEAN_ENUMS\n'}
+[3.804814] (-) TimerEvent: {}
+[3.824610] (Eigen3) StdoutLine: {'line': b'-- Performing Test SUPERLU_HAS_CLEAN_ENUMS - Success\n'}
+[3.824924] (Eigen3) StdoutLine: {'line': b'-- Performing Test SUPERLU_HAS_GLOBALLU_T\n'}
+[3.901955] (Eigen3) StdoutLine: {'line': b'-- Performing Test SUPERLU_HAS_GLOBALLU_T - Success\n'}
+[3.903190] (Eigen3) StdoutLine: {'line': b'-- Found SUPERLU: /usr/include/superlu (found version "5.0") \n'}
+[3.904906] (-) TimerEvent: {}
+[3.905047] (Eigen3) StdoutLine: {'line': b'-- Could NOT find PASTIX (missing: PASTIX_INCLUDES PASTIX_LIBRARIES) \n'}
+[3.906690] (Eigen3) StdoutLine: {'line': b'-- Could NOT find SCOTCH (missing: SCOTCH_INCLUDES SCOTCH_LIBRARIES) \n'}
+[3.908483] (Eigen3) StdoutLine: {'line': b'-- Could NOT find METIS (missing: METIS_INCLUDES METIS_LIBRARIES) \n'}
+[3.910684] (Eigen3) StdoutLine: {'line': b'-- Found SPQR: /usr/include/suitesparse  \n'}
+[3.914509] (Eigen3) StderrLine: {'line': b"qmake: could not find a Qt installation of ''\n"}
+[3.916264] (Eigen3) StdoutLine: {'line': b'-- Found unsuitable Qt version "" from NOTFOUND\n'}
+[4.005045] (-) TimerEvent: {}
+[4.105307] (-) TimerEvent: {}
+[4.157624] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_FASTMATH\n'}
+[4.205398] (-) TimerEvent: {}
+[4.219792] (Eigen3) StdoutLine: {'line': b'-- Performing Test COMPILER_SUPPORT_FASTMATH - Success\n'}
+[4.262142] (Eigen3) StdoutLine: {'line': b'-- Boost version: 1.65.1\n'}
+[4.305521] (-) TimerEvent: {}
+[4.346532] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread.h\n'}
+[4.400601] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread.h - found\n'}
+[4.402065] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread_create\n'}
+[4.405617] (-) TimerEvent: {}
+[4.466045] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread_create - not found\n'}
+[4.466249] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads\n'}
+[4.505738] (-) TimerEvent: {}
+[4.521381] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread_create in pthreads - not found\n'}
+[4.521634] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread_create in pthread\n'}
+[4.605840] (-) TimerEvent: {}
+[4.609189] (Eigen3) StdoutLine: {'line': b'-- Looking for pthread_create in pthread - found\n'}
+[4.610981] (Eigen3) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[4.613905] (Eigen3) StdoutLine: {'line': b'-- Could NOT find GOOGLEHASH (missing: GOOGLEHASH_INCLUDES GOOGLEHASH_COMPILE) \n'}
+[4.616825] (Eigen3) StdoutLine: {'line': b'-- Could NOT find ADOLC (missing: ADOLC_INCLUDES ADOLC_LIBRARIES) \n'}
+[4.649806] (Eigen3) StdoutLine: {'line': b'-- Could NOT find MPFR (missing: MPFR_INCLUDES MPFR_LIBRARIES MPFR_VERSION_OK) (Required is at least version "2.3.0")\n'}
+[4.651216] (Eigen3) StdoutLine: {'line': b'-- Could NOT find GMP (missing: GMP_INCLUDES GMP_LIBRARIES) \n'}
+[4.658323] (Eigen3) StdoutLine: {'line': b'-- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.1") \n'}
+[4.664213] (Eigen3) StdoutLine: {'line': b'-- Could NOT find FFTW (missing: FFTW_INCLUDES FFTW_LIBRARIES) \n'}
+[4.669219] (Eigen3) StdoutLine: {'line': b'-- Found OpenGL: /usr/lib/x86_64-linux-gnu/libOpenGL.so   \n'}
+[4.672156] (Eigen3) StdoutLine: {'line': b'-- Found GLUT: /usr/lib/x86_64-linux-gnu/libglut.so  \n'}
+[4.705959] (-) TimerEvent: {}
+[4.711300] (Eigen3) StdoutLine: {'line': b'-- Found CUDA: /usr/local/cuda (found suitable version "10.2", minimum required is "7.0") \n'}
+[4.717334] (Eigen3) StderrLine: {'line': b"qmake: could not find a Qt installation of ''\n"}
+[4.719020] (Eigen3) StdoutLine: {'line': b'-- Found unsuitable Qt version "" from NOTFOUND\n'}
+[4.719202] (Eigen3) StdoutLine: {'line': b'-- Qt4 not found, so disabling the mandelbrot and opengl demos\n'}
+[4.726694] (Eigen3) StdoutLine: {'line': b'-- Could NOT find PASTIX (missing: PASTIX_INCLUDES PASTIX_LIBRARIES) \n'}
+[4.728039] (Eigen3) StdoutLine: {'line': b'-- Could NOT find SCOTCH (missing: SCOTCH_INCLUDES SCOTCH_LIBRARIES) \n'}
+[4.729617] (Eigen3) StdoutLine: {'line': b'-- Could NOT find METIS (missing: METIS_INCLUDES METIS_LIBRARIES) \n'}
+[4.730450] (Eigen3) StdoutLine: {'line': b'-- ************************************************************\n'}
+[4.730712] (Eigen3) StdoutLine: {'line': b"-- ***    Eigen's unit tests configuration summary          ***\n"}
+[4.730931] (Eigen3) StdoutLine: {'line': b'-- ************************************************************\n'}
+[4.730999] (Eigen3) StdoutLine: {'line': b'-- \n'}
+[4.731058] (Eigen3) StdoutLine: {'line': b'-- Build type:        Release\n'}
+[4.731113] (Eigen3) StdoutLine: {'line': b'-- Build site:        aramis\n'}
+[4.731168] (Eigen3) StdoutLine: {'line': b'-- Build string:      linux-4.15.0-109-generic-_-7.5.0-sse2-64bit\n'}
+[4.731221] (Eigen3) StdoutLine: {'line': b'-- Enabled backends:  Cholmod,  UmfPack,  SuperLU,  SPQR,  Boost.Multiprecision, \n'}
+[4.731276] (Eigen3) StdoutLine: {'line': b'-- Disabled backends: PaStiX,  METIS,  Qt4 support,  GoogleHash,  Adolc,  MPFR C++,  fftw,  OpenGL, \n'}
+[4.731330] (Eigen3) StdoutLine: {'line': b'-- Default order:     Column-major\n'}
+[4.731384] (Eigen3) StdoutLine: {'line': b'-- Maximal matrix/vector size: 320\n'}
+[4.731436] (Eigen3) StdoutLine: {'line': b'-- SSE2:              Using architecture defaults\n'}
+[4.731488] (Eigen3) StdoutLine: {'line': b'-- SSE3:              Using architecture defaults\n'}
+[4.731541] (Eigen3) StdoutLine: {'line': b'-- SSSE3:             Using architecture defaults\n'}
+[4.731593] (Eigen3) StdoutLine: {'line': b'-- SSE4.1:            Using architecture defaults\n'}
+[4.731645] (Eigen3) StdoutLine: {'line': b'-- SSE4.2:            Using architecture defaults\n'}
+[4.731813] (Eigen3) StdoutLine: {'line': b'-- AVX:               Using architecture defaults\n'}
+[4.731902] (Eigen3) StdoutLine: {'line': b'-- FMA:               Using architecture defaults\n'}
+[4.731961] (Eigen3) StdoutLine: {'line': b'-- AVX512:            Using architecture defaults\n'}
+[4.732020] (Eigen3) StdoutLine: {'line': b'-- Altivec:           Using architecture defaults\n'}
+[4.732074] (Eigen3) StdoutLine: {'line': b'-- VSX:               Using architecture defaults\n'}
+[4.732126] (Eigen3) StdoutLine: {'line': b'-- ARM NEON:          Using architecture defaults\n'}
+[4.732178] (Eigen3) StdoutLine: {'line': b'-- ARMv8 NEON:        Using architecture defaults\n'}
+[4.732230] (Eigen3) StdoutLine: {'line': b'-- S390X ZVECTOR:     Using architecture defaults\n'}
+[4.732283] (Eigen3) StdoutLine: {'line': b'-- C++11:             OFF\n'}
+[4.732336] (Eigen3) StdoutLine: {'line': b'-- SYCL:              OFF\n'}
+[4.732389] (Eigen3) StdoutLine: {'line': b'-- CUDA:              OFF\n'}
+[4.732441] (Eigen3) StdoutLine: {'line': b'-- \n'}
+[4.732494] (Eigen3) StdoutLine: {'line': b'CXX:               /usr/bin/c++\n'}
+[4.732546] (Eigen3) StdoutLine: {'line': b' CXX_VERSION:       c++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0\n'}
+[4.732600] (Eigen3) StdoutLine: {'line': b' CXX_FLAGS:          -pedantic -Wall -Wextra -Wundef -Wcast-align -Wchar-subscripts -Wnon-virtual-dtor -Wunused-local-typedefs -Wpointer-arith -Wwrite-strings -Wformat-security -Wlogical-op -Wdouble-promotion -Wno-psabi -Wno-variadic-macros -Wno-long-long -fno-check-new -fno-common -fstrict-aliasing -ansi\n'}
+[4.732662] (Eigen3) StdoutLine: {'line': b' Sparse lib flags:   ;/usr/lib/x86_64-linux-gnu/libcholmod.so;/usr/lib/x86_64-linux-gnu/libamd.so;/usr/lib/x86_64-linux-gnu/libcolamd.so;/usr/lib/x86_64-linux-gnu/libcamd.so;/usr/lib/x86_64-linux-gnu/libccolamd.so;eigen_blas;eigen_lapack;/usr/lib/x86_64-linux-gnu/libumfpack.so;/usr/lib/x86_64-linux-gnu/libcolamd.so;/usr/lib/x86_64-linux-gnu/libamd.so;/usr/lib/x86_64-linux-gnu/libcholmod.so;eigen_blas;/usr/lib/x86_64-linux-gnu/libsuperlu.so;eigen_blas;/usr/lib/x86_64-linux-gnu/libspqr.so;/usr/lib/x86_64-linux-gnu/libcholmod.so;/usr/lib/x86_64-linux-gnu/libcholmod.so;/usr/lib/x86_64-linux-gnu/libamd.so;/usr/lib/x86_64-linux-gnu/libcolamd.so;/usr/lib/x86_64-linux-gnu/libcamd.so;/usr/lib/x86_64-linux-gnu/libccolamd.so;eigen_lapack;eigen_blas;/usr/lib/x86_64-linux-gnu/liblapack.so\n'}
+[4.732721] (Eigen3) StdoutLine: {'line': b'\n'}
+[4.732775] (Eigen3) StdoutLine: {'line': b'-- ************************************************************\n'}
+[4.732827] (Eigen3) StdoutLine: {'line': b'-- \n'}
+[4.732880] (Eigen3) StdoutLine: {'line': b'-- Configured Eigen 3.3.3\n'}
+[4.732937] (Eigen3) StdoutLine: {'line': b'-- \n'}
+[4.732997] (Eigen3) StdoutLine: {'line': b'-- Some things you can do now:\n'}
+[4.733058] (Eigen3) StdoutLine: {'line': b'-- --------------+--------------------------------------------------------------\n'}
+[4.733118] (Eigen3) StdoutLine: {'line': b'-- Command       |   Description\n'}
+[4.733178] (Eigen3) StdoutLine: {'line': b'-- --------------+--------------------------------------------------------------\n'}
+[4.733237] (Eigen3) StdoutLine: {'line': b'-- make install  | Install Eigen. Headers will be installed to:\n'}
+[4.733298] (Eigen3) StdoutLine: {'line': b'--               |     <CMAKE_INSTALL_PREFIX>/<INCLUDE_INSTALL_DIR>\n'}
+[4.733357] (Eigen3) StdoutLine: {'line': b'--               |   Using the following values:\n'}
+[4.733416] (Eigen3) StdoutLine: {'line': b'--               |     CMAKE_INSTALL_PREFIX: /home/aaron/Software/OpenMACE/install/Eigen3\n'}
+[4.733474] (Eigen3) StdoutLine: {'line': b'--               |     INCLUDE_INSTALL_DIR:  include/eigen3\n'}
+[4.733533] (Eigen3) StdoutLine: {'line': b'--               |   Change the install location of Eigen headers using:\n'}
+[4.733592] (Eigen3) StdoutLine: {'line': b'--               |     cmake . -DCMAKE_INSTALL_PREFIX=yourprefix\n'}
+[4.733651] (Eigen3) StdoutLine: {'line': b'--               |   Or:\n'}
+[4.733710] (Eigen3) StdoutLine: {'line': b'--               |     cmake . -DINCLUDE_INSTALL_DIR=yourdir\n'}
+[4.733769] (Eigen3) StdoutLine: {'line': b'-- make doc      | Generate the API documentation, requires Doxygen & LaTeX\n'}
+[4.733828] (Eigen3) StdoutLine: {'line': b'-- make check    | Build and run the unit-tests. Read this page:\n'}
+[4.733886] (Eigen3) StdoutLine: {'line': b'--               |   http://eigen.tuxfamily.org/index.php?title=Tests\n'}
+[4.733945] (Eigen3) StdoutLine: {'line': b'-- make blas     | Build BLAS library (not the same thing as Eigen)\n'}
+[4.734003] (Eigen3) StdoutLine: {'line': b'-- make uninstall| Removes files installed by make install\n'}
+[4.734061] (Eigen3) StdoutLine: {'line': b'-- --------------+--------------------------------------------------------------\n'}
+[4.734121] (Eigen3) StdoutLine: {'line': b'-- \n'}
+[4.741589] (Eigen3) StdoutLine: {'line': b'-- Configuring done\n'}
+[4.806164] (-) TimerEvent: {}
+[4.906484] (-) TimerEvent: {}
+[5.006762] (-) TimerEvent: {}
+[5.052881] (Eigen3) JobEnded: {'identifier': 'Eigen3', 'rc': 'SIGINT'}
+[5.064434] (MACE) JobSkipped: {'identifier': 'MACE'}
+[5.064545] (-) EventReactorShutdown: {}

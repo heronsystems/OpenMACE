@@ -10,6 +10,8 @@ namespace ExternalLink {
     //!
     bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_mission_request_list_t &cmd, MissionItem::MissionKey &queueObj)
     {
+        UNUSED(target);
+
         queueObj = data;
 
         cmd.mission_creator = static_cast<uint8_t>(data.m_creatorID);
@@ -140,14 +142,14 @@ namespace ExternalLink {
 
         if(m_MissionsUploading.find(sender) == m_MissionsUploading.cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
             return false;
         }
         if(m_MissionsUploading.at(sender).find(key) == m_MissionsUploading.at(sender).cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item from a mission which keys dont match the contained.");
             return false;
         }
 
@@ -155,13 +157,13 @@ namespace ExternalLink {
         if(index >= m_MissionsUploading.at(sender)[key].getQueueSize())
         {
             //this indicates that RX system requested something OOR
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + " which is greater than the size of the list contained.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + " which is greater than the size of the list contained.");
             return false;
         }
 
-        if(CONTROLLER_MISSION_TYPE::mLog)
-            CONTROLLER_MISSION_TYPE::mLog->info("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + ".");
+//        if(CONTROLLER_MISSION_TYPE::mLog)
+//            CONTROLLER_MISSION_TYPE::mLog->info("MissionController_ExternalLink has been told to transmit a mission item with index " + std::to_string(index) + ".");
 
         std::shared_ptr<command_item::AbstractCommandItem> ptrItem = this->m_MissionsUploading.at(sender)[key].getMissionItem(index);
 
@@ -196,8 +198,8 @@ namespace ExternalLink {
         //check if mission item received is part of a mission we are activly downloading
         if(this->m_MissionsBeingFetching.find(key) == m_MissionsBeingFetching.cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
             return false;
         }
 
@@ -205,8 +207,8 @@ namespace ExternalLink {
         if(seqReceived > (m_MissionsBeingFetching[key].mission.getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Mission download Error: received a mission item with an index greater than available in the queue" << std::endl;
-            if(CONTROLLER_MISSION_TYPE::mLog)
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
+//            if(CONTROLLER_MISSION_TYPE::mLog)
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
             return false;
         }
         //execution will only continue if not last item
@@ -262,19 +264,19 @@ namespace ExternalLink {
         //check if mission item received is part of a mission we are activly downloading
         if(this->m_MissionsBeingFetching.find(key) == m_MissionsBeingFetching.cend())
         {
-            if(CONTROLLER_MISSION_TYPE::mLog) {
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
-            }
+//            if(CONTROLLER_MISSION_TYPE::mLog) {
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with a key that is not equal to the one we were originally told.");
+//            }
             return false;
         }
 
-        int seqReceived = missionItem.seq;
+        uint seqReceived = missionItem.seq;
         if(seqReceived > (m_MissionsBeingFetching[key].mission.getQueueSize() - 1)) //this should never happen
         {
             std::cout << "Mission download Error: received a mission item with an index greater than available in the queue" << std::endl;
-            if(CONTROLLER_MISSION_TYPE::mLog) {
-                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
-            }
+//            if(CONTROLLER_MISSION_TYPE::mLog) {
+//                CONTROLLER_MISSION_TYPE::mLog->error("Mission controller received a mission item with an index greater than available in the queue.");
+//            }
             return false;
         }
 
@@ -293,12 +295,12 @@ namespace ExternalLink {
             throw std::runtime_error("Reached end of request but missions are not completed");
         }
 
-        if(CONTROLLER_MISSION_TYPE::mLog)
-        {
-            std::stringstream buffer;
-            buffer << key;
-            CONTROLLER_MISSION_TYPE::mLog->info("Mission Controller has received the entire mission of " + std::to_string(m_MissionsBeingFetching[key].mission.getQueueSize()) + " for mission " + buffer.str() + ".");
-        }
+//        if(CONTROLLER_MISSION_TYPE::mLog)
+//        {
+//            std::stringstream buffer;
+//            buffer << key;
+//            CONTROLLER_MISSION_TYPE::mLog->info("Mission Controller has received the entire mission of " + std::to_string(m_MissionsBeingFetching[key].mission.getQueueSize()) + " for mission " + buffer.str() + ".");
+//        }
 
         ackMission.mission_system = static_cast<uint8_t>(key.m_systemID);
         ackMission.mission_creator = static_cast<uint8_t>(key.m_creatorID);
@@ -435,6 +437,10 @@ namespace ExternalLink {
 
     bool ControllerMission::BuildData_Send(const mace_mission_request_list_generic_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_mission_ack_t &response, MaceCore::ModuleCharacteristic &vehicleObj, MissionItem::MissionKey &receiveQueueObj, MissionItem::MissionKey &respondQueueObj)
     {
+        UNUSED(sender);
+        UNUSED(receiveQueueObj);
+        UNUSED(respondQueueObj);
+
         MissionItem::MISSIONSTATE state = static_cast<MissionItem::MISSIONSTATE>(msg.mission_state);
         if(state == MissionItem::MISSIONSTATE::CURRENT)
         {
@@ -482,6 +488,8 @@ namespace ExternalLink {
 
     bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_new_onboard_mission_t &msg, MaceCore::ModuleCharacteristic &queue)
     {
+        UNUSED(sender);
+
         queue = target;
 
         msg.mission_creator = static_cast<uint8_t>(data.m_creatorID);

@@ -1,0 +1,36 @@
+-- The C compiler identification is GNU 7.5.0
+-- The CXX compiler identification is GNU 7.5.0
+-- Check for working C compiler: /usr/bin/cc
+-- Check for working C compiler: /usr/bin/cc -- works
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ -- works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+** Finding libraries
+-- Found PythonInterp: /usr/bin/python (found version "2.7.17") 
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/ardupilotmega.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/common.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/minimal.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/slugs.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/test.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v0.9/ualberta.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/ASLUAV.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/ardupilotmega.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/autoquad.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/common.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/matrixpilot.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/minimal.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/paparazzi.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/python_array_test.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/slugs.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/test.xml
+-- processing: /home/aaron/Software/OpenMACE/mavlink_cpp/mace_mavlink_generator/mavlink/message_definitions/v1.0/ualberta.xml
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/aaron/Software/OpenMACE/build/mavlink

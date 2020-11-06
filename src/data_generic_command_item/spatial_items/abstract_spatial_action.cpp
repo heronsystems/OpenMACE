@@ -99,6 +99,7 @@ void AbstractSpatialAction::populateCommandItem(mace_command_long_t &obj) const
             mace::pose::GeodeticPosition_3D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_3D>();
             obj.param5 = static_cast<float>(tmpPos->getLongitude()); obj.param6 = static_cast<float>(tmpPos->getLatitude()); obj.param7 = static_cast<float>(tmpPos->getAltitude());
         }
+        break;
     }
     case CoordinateSystemTypes::CARTESIAN:
     {
@@ -161,8 +162,10 @@ void AbstractSpatialAction::transferTo_ExecuteSpatialAction(const mace_command_l
 void AbstractSpatialAction::populatePositionObject(const mace::CoordinateFrameTypes &explicitFrame, const uint8_t &dim, const uint16_t &mask,
                                 const double &x, const double &y, const double &z)
 {
-    if(position != nullptr)
-        delete position; position = nullptr;
+    if(position != nullptr) {
+        delete position;
+        position = nullptr;
+    }
 
     CoordinateSystemTypes currentSystemType = mace::getCoordinateSystemType(explicitFrame);
 
@@ -187,6 +190,7 @@ void AbstractSpatialAction::populatePositionObject(const mace::CoordinateFrameTy
             tmpPos->updatePosition(y,x,z);
             tmpPos->setDimensionMask(mask);
         }
+        break;
     }
     case CoordinateSystemTypes::CARTESIAN:
     {

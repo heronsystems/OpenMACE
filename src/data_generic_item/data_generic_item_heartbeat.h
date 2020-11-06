@@ -11,10 +11,13 @@
 #include "data/comms_protocol.h"
 #include "data/system_type.h"
 #include "data/mission_execution_state.h"
+#include "data/mace_hsm_state.h"
+
+#include "data/jsonconverter.h"
 
 namespace DataGenericItem {
 
-class DataGenericItem_Heartbeat
+class DataGenericItem_Heartbeat : JSONConverter
 {
 public:
     DataGenericItem_Heartbeat();
@@ -50,6 +53,11 @@ public:
         this->mavlinkID = ID;
     }
 
+    void setHSMState(const Data::MACEHSMState &currentState)
+    {
+        this->currentHSMState = currentState;
+    }
+
 public:
     Data::CommsProtocol getProtocol() const
     {
@@ -77,9 +85,14 @@ public:
         return this->mavlinkID;
     }
 
+    Data::MACEHSMState getHSMState() const
+    {
+        return this->currentHSMState;
+    }
+
     mace_heartbeat_t getMACECommsObject() const;
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
-
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
 public:
     void operator = (const DataGenericItem_Heartbeat &rhs)
     {
@@ -89,6 +102,7 @@ public:
         this->missionState = rhs.missionState;
         this->maceCompanion = rhs.maceCompanion;
         this->mavlinkID = rhs.mavlinkID;
+        this->currentHSMState = rhs.currentHSMState;
     }
 
     bool operator == (const DataGenericItem_Heartbeat &rhs) {
@@ -110,6 +124,9 @@ public:
         if(this->mavlinkID != rhs.mavlinkID) {
             return false;
         }
+        if(this->currentHSMState != rhs.currentHSMState) {
+            return false;
+        }
         return true;
     }
 
@@ -125,6 +142,7 @@ protected:
     Data::MissionExecutionState missionState;
     bool maceCompanion;
     uint8_t mavlinkID;
+    Data::MACEHSMState currentHSMState;
 };
 
 } //end of namespace DataGenericItem

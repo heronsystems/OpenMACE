@@ -16,18 +16,22 @@
 
 #include "i_module_command_external_link.h"
 #include "i_module_command_ground_station.h"
+#include "i_module_command_ml_station.h"
 #include "i_module_command_path_planning.h"
 #include "i_module_command_ROS.h"
 #include "i_module_command_RTA.h"
 #include "i_module_command_sensors.h"
 #include "i_module_command_vehicle.h"
+#include "i_module_command_adept.h"
 
 #include "i_module_events_external_link.h"
 #include "i_module_events_ground_station.h"
+#include "i_module_events_ml_station.h"
 #include "i_module_events_path_planning.h"
 #include "i_module_events_ROS.h"
 #include "i_module_events_rta.h"
 #include "i_module_events_sensors.h"
+#include "i_module_events_adept.h"
 #include "i_module_events_vehicle.h"
 
 #include "i_module_topic_events.h"
@@ -38,6 +42,7 @@
 #include "octomap/OcTree.h"
 
 #include "data_generic_command_item/command_item_components.h"
+#include "data_generic_item/data_generic_item_components.h"
 
 #include <common/logging/macelog.h>
 
@@ -49,10 +54,12 @@ class MACE_CORESHARED_EXPORT MaceCore :
         virtual public IModuleTopicEvents,
         virtual public IModuleEventsVehicle,
         virtual public IModuleEventsSensors,
+        virtual public IModuleEventsAdept,
         virtual public IModuleEventsRTA,
         virtual public IModuleEventsPathPlanning,
         virtual public IModuleEventsROS,
         virtual public IModuleEventsGroundStation,
+        virtual public IModuleEventsMLStation,
         virtual public IModuleEventsExternalLink
 {
 
@@ -72,6 +79,12 @@ public:
     //! \param dataFusion Data fusion to add
     //!
     void AddDataFusion(const std::shared_ptr<MaceData> dataFusion);
+
+    //!
+    //! \brief setGlobalConfiguration Assign global parameters obtained from parsing
+    //! \param globalParams Input parameters
+    //!
+    void setGlobalConfiguration(std::shared_ptr<ModuleParameterValue> globalParams);
 
 
     //!
@@ -105,6 +118,11 @@ public: //The following functions add specific modules to connect to mace core
     //!
     void AddGroundStationModule(const std::shared_ptr<IModuleCommandGroundStation> &groundStation);
 
+    //!
+    //! \brief AddMLStationModule Add ML station module
+    //! \param mlStation ML station module setup
+    //!
+    void AddMLStationModule(const std::shared_ptr<IModuleCommandMLStation> &mlStation);
 
     //!
     //! \brief AddExternalLink Add external link module
@@ -158,6 +176,11 @@ public: //The following functions add specific modules to connect to mace core
     //!
     void AddSensorsModule(const std::shared_ptr<IModuleCommandSensors> &sensors);
 
+    //!
+    //! \brief AddAdeptModule Add adept module
+    //! \param adept Adept module setup
+    //!
+    void AddAdeptModule(const std::shared_ptr<IModuleCommandAdept> &adept);
 
 public:
 
@@ -386,13 +409,19 @@ public:
     /// GENERAL VEHICLE EVENTS: These events are associated from IModuleEventsGeneralVehicle
     ////////////////////////////////////////////////////////////////////////////////////////
 
-
     //!
     //! \brief GVEvents_NewHomePosition New home position
     //! \param sender Sender module
     //! \param vehicleHome New vehicle home
     //!
     virtual void GVEvents_NewHomePosition(const ModuleBase *sender, const command_item::SpatialHome &vehicleHome);
+
+    //!
+    //! \brief GVEvents_NewParameterValue New parameters pertinent for the vehicle
+    //! \param sender Sender module
+    //! \param vehicleParams New vehicle parameters
+    //!
+    virtual void GVEvents_NewParameterValue(const ModuleBase *sender, const DataGenericItem::DataGenericItem_ParamValue &vehicleParam);
 
     //!
     //! \brief GVEvents_MissionExeStateUpdated New mission EXE state event
@@ -670,6 +699,14 @@ public:
     //! \param orientation Orientation of sensor
     //!
     void ROS_NewLaserScan(const octomap::Pointcloud &obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) override;
+
+
+    //!
+    //! \brief ROS_NewVisionPoseEstimate
+    //! \param pose
+    //!
+    void ROS_NewVisionPoseEstimate(const unsigned int &vehicleID, const mace::pose::Pose &pose) override;
+
 public:
 
     /////////////////////////////////////////////////////////////////////////
@@ -701,14 +738,7 @@ private:
                 {
                     continue;
                 }
-                /*
-                T *Copy = new T(data);
-                if(((CommandItem::std::shared_ptr<AbstractCommandItem>)Copy)->getTargetSystem() == 0)
-                {
-                    int ID = it->second->GetCharacteristic().ID;
-                    ((CommandItem::std::shared_ptr<AbstractCommandItem>)Copy)->setTargetSystem(ID);
-                }
-                */
+
                 it->second->MarshalCommand(vehicleCommand, data, sender);
             }
 
@@ -791,9 +821,11 @@ private:
     std::map<int, IModuleCommandExternalLink*> m_ExternalLinkIDToPort;
 
     std::shared_ptr<IModuleCommandGroundStation> m_GroundStation;
+    std::shared_ptr<IModuleCommandMLStation> m_MLStation;
     std::shared_ptr<IModuleCommandPathPlanning> m_PathPlanning;
     std::shared_ptr<IModuleCommandROS> m_ROS;
     std::shared_ptr<IModuleCommandSensors> m_Sensors;
+    std::shared_ptr<IModuleCommandAdept> m_Adept;
     std::shared_ptr<IModuleCommandRTA> m_GlobalRTA;
     std::vector<std::shared_ptr<IModuleCommandRTA>> m_SpecailizedRTA;
 
@@ -803,7 +835,6 @@ private:
     bool m_MaceInstanceIDSet;
 
     std::vector<int> m_ReservedModuleIDs;
-
     std::shared_ptr<MaceData> m_DataFusion;
 };
 

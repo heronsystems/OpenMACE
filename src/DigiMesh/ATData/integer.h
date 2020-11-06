@@ -2,6 +2,7 @@
 #define INTEGER_H
 
 #include "I_AT_data.h"
+#include <string>
 
 namespace ATData
 {

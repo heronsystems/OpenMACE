@@ -23,14 +23,16 @@ public:
     virtual void CreateFromDatagram(const MaceCore::TopicDatagram &datagram);
 public:    
     VehicleTargetTopic();
-    VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* m_targetPosition);
+    VehicleTargetTopic(const unsigned int &vehicleID, const mace::pose::Position* targetPosition, const double &distanceToTarget);
     VehicleTargetTopic(const VehicleTargetTopic &copy);
     VehicleTargetTopic(const mace_guided_target_stats_t &obj);
 
     ~VehicleTargetTopic()
     {
-        if(m_targetPosition)
-            delete m_targetPosition; m_targetPosition = nullptr;
+        if(m_targetPosition) {
+            delete m_targetPosition;
+            m_targetPosition = nullptr;
+        }
     }
 
 public:
@@ -50,6 +52,7 @@ public:
     {
         this->systemID = rhs.systemID;
         this->m_targetPosition = rhs.m_targetPosition;
+        this->m_distanceToTarget = rhs.m_distanceToTarget;
     }
 
     bool operator == (const VehicleTargetTopic &rhs) {
@@ -60,6 +63,11 @@ public:
         }
 
         if(this->m_targetPosition != rhs.m_targetPosition)
+        {
+            return false;
+        }
+
+        if(this->m_distanceToTarget != rhs.m_distanceToTarget)
         {
             return false;
         }
@@ -77,6 +85,7 @@ private:
 
 public:
     mace::pose::Position* m_targetPosition;
+    double m_distanceToTarget;
 };
 } //end of namespace MissionTopic
 #endif // VEHICLE_TARGET_TOPIC_H

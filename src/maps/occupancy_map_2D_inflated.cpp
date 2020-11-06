@@ -49,7 +49,7 @@ void OccupancyMap_2DInflated::updateMapInflation(const std::map<unsigned int, Oc
             {
                 //KEN: Check this
                 //const unsigned int indexPosition = *circleIt;
-                OccupancyInflationStructure* ptr = this->inflatedMap->getCellByIndex(*circleIt);
+//                OccupancyInflationStructure* ptr = this->inflatedMap->getCellByIndex(*circleIt);
                 //*ptr = (*ptr <= 0) ? 0 : *ptr--;
             }
             //Since we know this explicit cell is not occupied, we can mark it as such and clear count

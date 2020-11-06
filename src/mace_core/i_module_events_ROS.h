@@ -4,6 +4,7 @@
 #include "i_module_events_general.h"
 #include "i_module_events_path_planning.h"
 
+#include "base/pose/pose.h"
 #include "base/pose/rotation_3D.h"
 #include "base/pose/cartesian_position_3D.h"
 
@@ -29,6 +30,11 @@ public:
     //!
     virtual void ROS_NewLaserScan(const octomap::Pointcloud& obj, const mace::pose::CartesianPosition_3D &position, const mace::pose::Rotation_3D &orientation) = 0;
 
+    //!
+    //! \brief ROS_NewVisionPoseEstimate
+    //! \param pose
+    //!
+    virtual void ROS_NewVisionPoseEstimate(const unsigned int &vehicleID, const mace::pose::Pose &pose) = 0;
 };
 
 } //End MaceCore Namespace

@@ -17,6 +17,7 @@
 #include "data_generic_command_item/do_items/action_dynamic_target.h"
 
 #include "data_generic_command_item/target_items/dynamic_target_orientation.h"
+#include "base/pose/rotation_3D.h"
 
 namespace MAVLINKUXVControllers {
 
@@ -78,7 +79,7 @@ protected:
 
         targetItem.target_component =0;
         targetItem.target_system = 0;
-        targetItem.type_mask = 65535; //by default we want to ignore all of the values
+        targetItem.type_mask = (uint8_t)65535; //by default we want to ignore all of the values
         return targetItem;
     }
 

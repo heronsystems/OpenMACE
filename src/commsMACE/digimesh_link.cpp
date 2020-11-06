@@ -15,6 +15,7 @@ namespace CommsMACE
 char MACE_INSTANCE_STR[] = "MaceInstance";
 char VEHICLE_STR[] = "Vehicle";
 char GROUNDSTATION_STR[] = "GroundStation";
+char MLSTATION_STR[] = "MLStation";
 char RTA_STR[] = "RTA";
 char EXTERNAL_LINK_STR[] = "ExternalLink";
 
@@ -45,7 +46,7 @@ void DigiMeshLink::WriteBytes(const char *bytes, int length, const OptionalParam
 {
     //pack into std::vector
     std::vector<uint8_t> data;
-    for(size_t i = 0 ; i < length ; i++) {
+    for(int i = 0 ; i < length ; i++) {
         data.push_back(bytes[i]);
     }
 
@@ -139,7 +140,7 @@ uint64_t DigiMeshLink::getConnectionSpeed() const
 
 bool DigiMeshLink::Connect()
 {
-    m_Link = new MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR, RTA_STR, EXTERNAL_LINK_STR>(_config.portName(), _config.baud());
+    m_Link = new MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR,MLSTATION_STR, RTA_STR, EXTERNAL_LINK_STR>(_config.portName(), _config.baud());
 
     m_Link->AddHandler_NewRemoteComponentItem_Generic([this](const ResourceKey &resourceKey, const ResourceValue &resourceValue, uint64_t addr){
         UNUSED(addr);

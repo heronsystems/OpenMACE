@@ -20,6 +20,12 @@ MaceCore::TopicDatagram DataGenericItemTopic_FlightMode::GenerateDatagram() cons
 void DataGenericItemTopic_FlightMode::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
     flightModeString = datagram.GetTerminal<std::string>("systemModeString");
 }
+QJsonObject DataGenericItemTopic_FlightMode::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    json["mode"] = QString::fromStdString(getFlightModeString());
+    return json;
+}
 
 DataGenericItemTopic_FlightMode::DataGenericItemTopic_FlightMode()
     :DataGenericItem::DataGenericItem_FlightMode()

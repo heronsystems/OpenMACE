@@ -4,7 +4,6 @@
 #include "mace_core/module_factory.h"
 
 
-#include "module_ground_station/module_ground_station.h"
 
 
 ConfigurationReader_XML::ConfigurationReader_XML(const MaceCore::ModuleFactory *factory) :
@@ -222,6 +221,8 @@ ConfigurationParseResult ConfigurationReader_XML::Parse(const std::string &filen
         m_MaceInstanceIDSet = true;
     }
 
+    pugi::xml_node globalParamModule = moduleConfigurationsNode.child("GlobalParams");
+    m_globalParameters = ParseParameters(globalParamModule, GetGlobalParamStructure(), parseProgress);
 
     for (pugi::xml_node module = moduleConfigurationsNode.child("Module"); module; module = module.next_sibling("Module"))
     {
@@ -283,17 +284,25 @@ ConfigurationParseResult ConfigurationReader_XML::Parse(const std::string &filen
 
 
 
+//!
+//! \brief Confirm that MACE Instance ID has been set
+//! \return True if ID has been set
+//!
 bool ConfigurationReader_XML::HasStaticMaceInstanceID() const
 {
     return m_MaceInstanceIDSet;
 }
 
 
-
+//!
+//! \brief Get MACE instance ID
+//! \return MACE instance ID
+//!
 uint32_t ConfigurationReader_XML::GetStaticMaceInstanceID() const
 {
     return m_MaceInstance;
 }
+
 
 
 //!
@@ -321,3 +330,40 @@ std::shared_ptr<MaceCore::ModuleParameterValue> ConfigurationReader_XML::GetModu
 {
     return m_Parameters.at(module);
 }
+
+//!
+//! \brief Get the global configuration parameters after parse
+//!
+//! Must be called after Parse is called and returns with a value of true
+//! \param module Pointer to module to get configuration of
+//! \return Global Configuration
+//!
+std::shared_ptr<MaceCore::ModuleParameterValue> ConfigurationReader_XML::GetGlobalConfiguration()
+{
+    return m_globalParameters;
+}
+
+//!
+//! \brief Describes the structure of the global parameters
+//! \return Global Parameter Structure
+//!
+std::shared_ptr<MaceCore::ModuleParameterStructure> ConfigurationReader_XML::GetGlobalParamStructure()
+{
+    MaceCore::ModuleParameterStructure globalStructure;
+    std::shared_ptr<MaceCore::ModuleParameterStructure> originSettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+    originSettings->AddTerminalParameters("Latitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    originSettings->AddTerminalParameters("Longitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    originSettings->AddTerminalParameters("Altitude", MaceCore::ModuleParameterTerminalTypes::DOUBLE, true);
+    globalStructure.AddNonTerminal("GlobalOrigin", originSettings, false);
+
+    std::shared_ptr<MaceCore::ModuleParameterStructure> boundarySettings = std::make_shared<MaceCore::ModuleParameterStructure>();
+    std::vector<std::string> allowableTypes={"hard", "soft"}    ;
+    boundarySettings->AddTerminalParameters("Vertices",MaceCore::ModuleParameterTerminalTypes::LATLNG,true);
+    boundarySettings->AddTerminalParameters("Type",MaceCore::ModuleParameterTerminalTypes::STRING,false, "hard", allowableTypes);
+    boundarySettings->AddTerminalParameters("Name",MaceCore::ModuleParameterTerminalTypes::STRING,false, "Nameless");
+    globalStructure.AddNonTerminal("EnvironmentBoundary", boundarySettings, false);
+
+    globalStructure.AddTerminalParameters("maceID", MaceCore::ModuleParameterTerminalTypes::INT, false);
+    return std::make_shared<MaceCore::ModuleParameterStructure>(globalStructure);
+}
+

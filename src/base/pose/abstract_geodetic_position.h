@@ -9,6 +9,7 @@
 
 #include "abstract_position.h"
 #include "position_interface.h"
+#include "data/jsonconverter.h"
 
 namespace mace {
 namespace pose {
@@ -17,7 +18,7 @@ MACE_CLASS_FORWARD(Abstract_GeodeticPosition);
 MACE_CLASS_FORWARD(GeodeticPosition_2D);
 MACE_CLASS_FORWARD(GeodeticPosition_3D);
 
-class Abstract_GeodeticPosition : public Position, public PositionInterface<Abstract_GeodeticPosition>
+class Abstract_GeodeticPosition : public JSONConverter, public Position, public PositionInterface<Abstract_GeodeticPosition>
 {
 public:
     Abstract_GeodeticPosition(const GeodeticFrameTypes &explicitFrame, const std::string &posName = "Position Object");
@@ -32,10 +33,19 @@ public:
 
     bool areEquivalentGeodeticFrames(const Abstract_GeodeticPosition &obj) const;
 
+    /** Interface imposed via Position*/
+public:
+    PositionTypes getPositionalType() const
+    {
+        return PositionTypes::TRANSLATIONAL;
+    }
+
+    /** End of interface imposed via Position */
+
 public:
 
 //    virtual Eigen::VectorXd getDataVector() const = 0; //This function remains virtual from the base class of position since this class is Abstract
-
+    virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
     //!
     //! \brief setLatitude
     //! \param latitude

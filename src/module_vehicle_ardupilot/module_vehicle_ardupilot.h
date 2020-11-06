@@ -6,8 +6,6 @@
 #include <map>
 #include <condition_variable>
 
-#include "spdlog/spdlog.h"
-
 #include "data/mission_command.h"
 
 #include "module_vehicle_ardupilot_global.h"
@@ -19,19 +17,11 @@
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
-#include "ardupilot_states/ardupilot_hsm.h"
-#include "ardupilot_states/state_components.h"
-#include "vehicle_object/ardupilot_vehicle_object.h"
+#include "flight_states/ardupilot_hsm.h"
+#include "flight_states/ardupilot_state_components.h"
+#include "vehicle_object/vehicle_object_ardupilot.h"
 
 #include "mace_core/abstract_module_base.h"
-
-//__________________
-#include "controllers/I_controller.h"
-#include "controllers/I_message_notifier.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_msg_request.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
-#include "module_vehicle_MAVLINK/controllers/controller_mission.h"
-#include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
 
 using namespace std::placeholders;
 
@@ -56,15 +46,14 @@ public:
     //!
     void createLog(const int &systemID);
 
-    //!
-    //! \brief MissionAcknowledgement Generate acknowledgement based on mission result
-    //! \param missionResult Mission result
-    //! \param publishResult Acknowledgement to publish out
-    //!
-    void MissionAcknowledgement(const MAV_MISSION_RESULT &missionResult, const bool &publishResult);
-
 public:
     void UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue) override;
+
+    //!
+    //! \brief TransmitVisionPoseEstimate
+    //! \param pose
+    //!
+    void TransmitVisionPoseEstimate(const mace::pose::Pose &pose) override;
 
 public:
     //!
@@ -321,48 +310,8 @@ public:
     //!
     virtual void RequestDummyFunction(const int &vehicleID) override
     {
-        /*
         UNUSED(vehicleID);
-        command_item::Action_DynamicTarget newCommand;
-        newCommand.setTargetSystem(1);
-        newCommand.setOriginatingSystem(255);
-        command_target::DynamicTarget_Kinematic newTarget;
-//        mace::pose::GeodeticPosition_3D currentPositionTarget;
-//        currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
-//        currentPositionTarget.updateTranslationalComponents(-35.3621531, 149.1650811);
-//        currentPositionTarget.setAltitude(10.0);
-//        newTarget.setPosition(&currentPositionTarget);
-        mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
-        currentVelocityTarget.setXVelocity(5.0);
-        currentVelocityTarget.setYVelocity(0.0);
-        currentVelocityTarget.setZVelocity(0.0);
-        newTarget.setVelocity(&currentVelocityTarget);
-        newCommand.setDynamicTarget(newTarget);
-
-        ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
-        AbstractCommandItemPtr currentCommand = std::make_shared<command_item::Action_DynamicTarget>(newCommand);
-        outerState->handleCommand(currentCommand);
-        ProgressStateMachineStates();
-        */
     }
-
-private:
-    void handleHomePositionController(const command_item::SpatialHome &commandObj);
-    std::mutex m_mutex_HomePositionController;
-    std::condition_variable m_condition_HomePositionController;
-    bool m_oldHomePositionControllerShutdown = false;
-
-private:
-    void handleGlobalOriginController(const Action_SetGlobalOrigin &originObj);
-    std::mutex m_mutex_GlobalOriginController;
-    std::condition_variable m_condition_GlobalOriginController;
-    bool m_oldGlobalOriginControllerShutdown = false;
-
-private:
-    void prepareMissionController();
-    std::mutex m_mutex_MissionController;
-    std::condition_variable m_condition_MissionController;
-    bool m_oldMissionControllerShutdown = false;
 
 private:
     static void staticCallbackFunction_VehicleTarget(void *p, MissionTopic::VehicleTargetTopic &target)
@@ -383,23 +332,18 @@ private:
     //!
     void ProgressStateMachineStates();
 
-    void TransformDynamicMissionQueue();
-
-private:
-    std::shared_ptr<spdlog::logger> mLogs;
+    unsigned int count = 0;
 
 private:
     std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<ArdupilotVehicleObject> vehicleData;
+    std::shared_ptr<VehicleObject_Ardupilot> vehicleData;
 
 private:
     std::mutex m_Mutex_StateMachine;
     hsm::StateMachine* stateMachine; /**< Member variable containing a pointer to the state
  machine. This state machine evolves the state per event updates and/or external commands. */
 
-    std::unordered_map<std::string, Controllers::IController<mavlink_message_t, int>*> m_TopicToControllers;
 
-    TransmitQueue *m_TransmissionQueue;
 };
 
 #endif // MODULE_VEHICLE_ARDUPILOT_H

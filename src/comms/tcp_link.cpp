@@ -129,8 +129,8 @@ bool TcpLink::Connect(void)
 {
     Disconnect();
 
-    QTcpSocket::SocketError error;
-    QString errorString;
+//    QTcpSocket::SocketError error;
+//    QString errorString;
 
     this->StartTCPServer();
     /*
@@ -224,6 +224,8 @@ bool TcpLink::StartTCPServer()
 /// @return success/fail
 bool TcpLink::_hardwareConnect(QAbstractSocket::SocketError &error, QString& errorString)
 {
+    UNUSED(error);
+    UNUSED(errorString);
     /*
     if (tcpClient) {
         std::cout << "TcpLink:" << QString::number((long)this, 16).toStdString() << "closing port" << std::endl;

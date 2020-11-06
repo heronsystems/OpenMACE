@@ -61,6 +61,9 @@ INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/V2/common
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base/release/ -lbase
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base/debug/ -lbase
 else:unix:!macx: LIBS += -L$$OUT_PWD/../base/ -lbase
@@ -116,12 +119,12 @@ DEPENDPATH += $$PWD/../maps
 
 
 #unix {
-#    exists(/opt/ros/kinetic/lib/) {
+#    exists(/opt/ros/melodic/lib/) {
 #        DEFINES += ROS_EXISTS
-#        INCLUDEPATH += /opt/ros/kinetic/include
-#        INCLUDEPATH += /opt/ros/kinetic/lib
-#        LIBS += -L/opt/ros/kinetic/lib -loctomath
-#        LIBS += -L/opt/ros/kinetic/lib -loctomap
+#        INCLUDEPATH += /opt/ros/melodic/include
+#        INCLUDEPATH += /opt/ros/melodic/lib
+#        LIBS += -L/opt/ros/melodic/lib -loctomath
+#        LIBS += -L/opt/ros/melodic/lib -loctomap
 #    } else {
 #        INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 #        LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath

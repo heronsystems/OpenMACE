@@ -1,0 +1,138 @@
+{
+  "name": "OpenMACE_Frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "build": "parcel build ./src/index.html -d build/ --public-url ./",
+    "copy-files": "mkdir -p build/icons && cp -r ./src/assets/* build/icons",
+    "react-build": "parcel build ./src/index.html --out-dir build --public-url ./",
+    "react-start": "yarn copy-files && parcel -p 3000 ./src/index.html --no-cache --out-dir build",
+    "postinstall": "electron-builder install-app-deps",
+    "start": "run-p start-socket-server react-start",
+    "start:app": "rm -rf .cache && concurrently \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electron . \"",
+    "start-socket-server": "node src/util/socket-server.ts",
+    "test": "jest --notify --detectOpenHandles",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "electron": "electron .",
+    "electron-build:mwl": "electron-builder -mwl",
+    "electron-build:windows": "yarn clean-build && yarn build && yarn copy-files && electron-builder -w",
+    "electron-build": "yarn clean-build && yarn build && yarn copy-files && electron-builder",
+    "clean-build": "rm -rf build/ .cache dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heronsystems/OpenMACE.git"
+  },
+  "homepage": "./",
+  "email": "bobby.holtzner@heronsystems.com",
+  "keywords": [],
+  "author": "Bobby Holtzner <bobby.holtzner@heronsystems.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/heronsystems/OpenMACE/issues"
+  },
+  "dependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "@babel/preset-react": "^7.8.3",
+    "@types/recharts": "^1.8.5",
+    "animate.css": "^3.7.2",
+    "electron-is-dev": "^1.1.0",
+    "jest": "^25.1.0",
+    "leaflet": "^1.1.0",
+    "lodash": "^4.17.19",
+    "moment": "^2.24.0",
+    "npm-run-all": "^4.1.5",
+    "prop-types": "^15.5.7",
+    "react": "^15.5.x || ^16.x",
+    "react-collapse": "^5.0.1",
+    "react-dom": "^15.5.x || ^16.x",
+    "react-flight-indicators": "^1.0.1",
+    "react-icons": "^3.9.0",
+    "react-leaflet": "^2.6.1",
+    "react-leaflet-animated-marker": "^1.0.2",
+    "react-leaflet-markercluster": "^1.1.8",
+    "react-lineicons": "^1.0.0",
+    "react-loading": "^2.0.3",
+    "react-modal": "^3.11.2",
+    "react-new-window": "^0.1.2",
+    "react-notifications-component": "^2.3.0",
+    "react-onclickoutside": "^6.9.0",
+    "react-resizable": "^1.10.1",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
+    "react-select": "^3.1.0",
+    "react-toggle": "^4.1.1",
+    "react-tooltip": "^4.2.7",
+    "react-transition-group": "^4.3.0",
+    "recharts": "^2.0.0-beta.1",
+    "websocket": "^1.0.31",
+    "ws": "^7.2.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.1",
+    "@types/lodash": "^4.14.157",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
+    "@types/react-leaflet": "^2.5.0",
+    "@types/react-router": "^5.1.4",
+    "concurrently": "^5.1.0",
+    "cross-env": "^7.0.0",
+    "electron": "^8.0.3",
+    "electron-builder": "^22.3.2",
+    "identity-obj-proxy": "^3.0.0",
+    "parcel-bundler": "^1.12.4",
+    "ts-jest": "^25.2.0",
+    "tslint": "^6.0.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.5",
+    "wait-on": "^4.0.0"
+  },
+  "build": {
+    "appId": "com.heronsystems.open_mace",
+    "productName": "OpenMACE",
+    "copyright": "2019 Heron Systems Inc. All Rights Reserved.",
+    "files": [
+      "main.js",
+      "build/*",
+      "build/icons/*",
+      "socket-server.js",
+      "package.json",
+      "preload.js"
+    ],
+    "extraResources": [
+      {
+        "from": "./src/assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "./src/config",
+        "to": "config",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icons/mace-icon.png"
+    },
+    "linux": {
+      "target": [
+        "appimage"
+      ],
+      "icon": "build/icons/mace-icon.png",
+      "category": "Development",
+      "description": "GUI for OpenMACE"
+    }
+  }
+}

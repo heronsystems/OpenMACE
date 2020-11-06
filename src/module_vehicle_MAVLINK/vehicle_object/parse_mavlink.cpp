@@ -20,7 +20,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         battery.setBatteryVoltage(decodedMSG.voltage_battery/1000.0);
         battery.setBatteryCurrent(decodedMSG.current_battery/100.0);
         battery.setBatteryRemaining(decodedMSG.battery_remaining);
-        if(state->vehicleFuel.set(battery))
+        if(status->vehicleFuel.set(battery))
         {
             std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Battery> ptrBattery = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Battery>(battery);
             if(this->m_CB)
@@ -38,9 +38,9 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         systemTime.setTimeSinceBoot(decodedMSG.time_boot_ms);
 
         // Check the GPS fix is greater than 3D before updating system time
-        DataGenericItem::DataGenericItem_GPS gpsItem = state->vehicleGPSStatus.get();
+        DataGenericItem::DataGenericItem_GPS gpsItem = status->vehicleGPSStatus.get();
         // Check our system time is different from prior data before setting system time:
-        if(gpsItem.is3DorGreater() && (state->vehicleSystemTime.set(systemTime))) {
+        if(gpsItem.is3DorGreater() && (status->vehicleSystemTime.set(systemTime))) {
             std::shared_ptr<DataGenericItem::DataGenericItem_SystemTime> ptrSystemTime = std::make_shared<DataGenericItem::DataGenericItem_SystemTime>(systemTime);
             if(this->m_CB){
                 this->m_CB->cbi_VehicleSystemTime(systemID, ptrSystemTime);
@@ -48,6 +48,11 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         }
 
         break;
+    }
+    case MAVLINK_MSG_ID_PARAM_VALUE:
+    {
+        //This is message definition 22
+        //A controller should be handling this in the event it was requested
     }
     case MAVLINK_MSG_ID_GPS_RAW_INT:
     {
@@ -92,7 +97,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
             break;
         }
 
-        if(state->vehicleGPSStatus.set(gpsItem))
+        if(status->vehicleGPSStatus.set(gpsItem))
         {
             std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_GPS> ptrGPSStatus = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_GPS>(gpsItem);
             if(this->m_CB)
@@ -111,7 +116,14 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                               static_cast<double>(decodedMSG.pitch),
                                               static_cast<double>(decodedMSG.yaw));
 
-        //attitude.setAttitudeRates(decodedMSG.rollspeed,decodedMSG.pitchspeed,decodedMSG.yawspeed);
+        mace::pose::Velocity_Rotation3D agentRotationalRate;
+        agentRotationalRate.data = Eigen::Vector3d(static_cast<double>(decodedMSG.rollspeed),
+                                                   static_cast<double>(decodedMSG.pitchspeed),
+                                                   static_cast<double>(decodedMSG.yawspeed));
+
+        Data::EnvironmentTime currentTime;
+        Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+        prevAttitude = currentTime;
 
         if(state->vehicleAttitude.set(agentAttitude))
         {
@@ -119,6 +131,15 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
             if(this->m_CB)
                 this->m_CB->cbi_VehicleStateData(systemID,ptrAttitude);
         }
+
+        if(state->vehicleRotationalVelocity.set(agentRotationalRate))
+        {
+            std::shared_ptr<mace::pose_topics::Topic_RotationalVelocity> ptrAttitudeRate = std::make_shared<mace::pose_topics::Topic_RotationalVelocity>(agentRotationalRate);
+            if(this->m_CB)
+                this->m_CB->cbi_VehicleStateData(systemID,ptrAttitudeRate);
+        }
+
+
         break;
     }
     case MAVLINK_MSG_ID_LOCAL_POSITION_NED:
@@ -135,16 +156,20 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                        AltitudeReferenceTypes::REF_ALT_RELATIVE,
                                                        static_cast<double>(decodedMSG.z));
 
-        mace::pose::Cartesian_Velocity3D localVelocity(CartesianFrameTypes::CF_BODY_NED);
+        mace::pose::Velocity_Cartesian3D localVelocity(CartesianFrameTypes::CF_BODY_NED);
         localVelocity.setXVelocity(static_cast<double>(decodedMSG.vx));
         localVelocity.setYVelocity(static_cast<double>(decodedMSG.vy));
         localVelocity.setZVelocity(static_cast<double>(decodedMSG.vz));
 
+        Data::EnvironmentTime currentTime;
+        Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+        prevPosition = currentTime;
+
         if(state->vehicleLocalPosition.set(localPosition))
         {
             //Before publishing the topic we need to transform it
-            localPosition.applyTransformation(state->getTransform_VehicleHomeTOSwarm());
-            if(!state->shouldTransformLocalAltitude())
+            localPosition.applyTransformation(environment->getTransform_VehicleHomeTOSwarm());
+            if(!environment->shouldTransformLocalAltitude())
                 localPosition.setAltitude(decodedMSG.z);
 
             std::shared_ptr<mace::pose_topics::Topic_CartesianPosition> ptrPosition = std::make_shared<mace::pose_topics::Topic_CartesianPosition>(&localPosition);
@@ -271,7 +296,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
             break;
         }
 
-        state->vehicleTextAlert.set(statusText);
+        status->vehicleTextAlert.set(statusText);
 
         std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> ptrStatusText = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Text>(statusText);
         if(this->m_CB)
@@ -361,7 +386,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         currentHome.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
 
         //check that something has actually changed
-        if(state->vehicleGlobalHome.set(currentHome))
+        if(environment->vehicleGlobalHome.set(currentHome))
         {
             command_item::SpatialHome spatialHome;
             spatialHome.setPosition(&currentHome);
@@ -384,7 +409,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                        AltitudeReferenceTypes::REF_ALT_RELATIVE,
                                                        static_cast<double>(decodedMSG.alt), "Target Position");
 
-        MissionTopic::VehicleTargetTopic vehicleTarget(systemID, &targetPosition);
+        MissionTopic::VehicleTargetTopic vehicleTarget(systemID, &targetPosition, -1); // TODO-PAT/KEN: Add distance to target.
         std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrMissionTopic = std::make_shared<MissionTopic::VehicleTargetTopic>(vehicleTarget);
 
         if(this->m_CB != nullptr)
@@ -420,10 +445,10 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         mace::pose::GeodeticPosition_3D currentOrigin(decodedMSG.latitude / power,
                                                       decodedMSG.longitude / power,
                                                       decodedMSG.altitude / 1000.0);
-        std::cout<<"The new GPS global origin is: "<<currentOrigin<<std::endl;
-        currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_INT);
+
+        currentOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_AMSL);
         currentOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
-        state->vehicleGlobalOrigin.set(currentOrigin);
+        environment->vehicleGlobalOrigin.set(currentOrigin);
 
         break;
     }
@@ -434,10 +459,15 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         std::cout<<"This is an interesting one."<<std::endl;
         break;
     }
+
+    case MAVLINK_MSG_ID_CONTROL_SYSTEM_STATE:
+    {
+        std::cout<<"I have seen a new control system state."<<std::endl;
+        break;
+    }
     default:
     {
         consumed = false;
-        //std::cout<<"I received an unknown supported message with the ID "<<(int)msg->msgid<<std::endl;
     }
     } //end of switch statement
     return consumed;

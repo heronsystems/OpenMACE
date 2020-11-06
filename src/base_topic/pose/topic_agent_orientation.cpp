@@ -24,8 +24,10 @@ MaceCore::TopicDatagram Topic_AgentOrientation::GenerateDatagram() const {
 
 void Topic_AgentOrientation::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
 
-    if(m_RotationObj)
-        delete this->m_RotationObj; m_RotationObj = nullptr;
+    if(m_RotationObj) {
+        delete this->m_RotationObj;
+        m_RotationObj = nullptr;
+    }
 
     uint8_t dimension = datagram.GetTerminal<uint8_t>("Dimension");
 
@@ -60,10 +62,32 @@ Topic_AgentOrientation::Topic_AgentOrientation(const Topic_AgentOrientation &cop
     this->m_RotationObj = copy.m_RotationObj->getRotationalClone();
 }
 
+QJsonObject Topic_AgentOrientation::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+
+    uint8_t rotDOF = getRotationObj()->getDOF();
+
+    if(rotDOF == 3)
+    {
+        mace::pose::Rotation_3D* castRotation = getRotationObj()->rotationAs<mace::pose::Rotation_3D>();
+        json["roll"] = castRotation->getRoll() * (180/M_PI);
+        json["pitch"] = castRotation->getPitch() * (180/M_PI);
+        json["yaw"] = (castRotation->getYaw() * (180/M_PI) < 0) ? (castRotation->getYaw() * (180/M_PI) + 360) : (castRotation->getYaw() * (180/M_PI));
+    }
+    else if(rotDOF == 2)
+    {
+
+    }
+    return json;
+}
+
 mace::pose::AbstractRotation* Topic_AgentOrientation::getRotationObj() const
 {
     return this->m_RotationObj;
 }
+
+
 
 } //end of namespace BaseTopic
 } //end of namespace pose

@@ -26,6 +26,7 @@ SOURCES += \
 
 HEADERS += data_global.h \
     i_topic_component_data_object.h \
+    mace_hsm_state.h \
     topic_data_object_collection.h \
     coordinate_frame.h \
     vehicle_command_types.h \
@@ -73,6 +74,9 @@ include(../headerinstall.pri)
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

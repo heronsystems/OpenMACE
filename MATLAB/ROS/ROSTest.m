@@ -5,17 +5,18 @@ close all
 clear all
 
 %% Setup Environmental Conditions
-should_setDatum = true;
-should_arm = true;
-should_takeoff = true;
+should_setDatum = false;
+should_setHome = true;
+should_arm = false;
+should_takeoff = false;
 
-test_PositionSequence_Local = true;
-test_VelocitySequence = true;
-test_PositionSequence_Global = true;
-test_AttitudeSequence_Euler = true;
-test_WaypointCommand = true;
+test_PositionSequence_Local = false;
+test_VelocitySequence = false;
+test_PositionSequence_Global = false;
+test_AttitudeSequence_Euler = false;
+test_WaypointCommand = false;
 
-should_land = true;
+should_land = false;
 
 %% Initialize the MATLAB/ROS Environment
 % Initialize ROS:
@@ -44,6 +45,7 @@ armClient = rossvcclient('command_arm');
 takeoffClient = rossvcclient('command_takeoff');
 landClient = rossvcclient('command_land');
 datumClient = rossvcclient('command_datum');
+homeClient = rossvcclient('command_home');
 dynamicTargetClient_Kinematic = rossvcclient('command_dynamic_target_kinematic');
 dynamicTargetClient_EOrientation = rossvcclient('command_dynamic_target_euler');
 dynamicTargetClient_QOrientation = rossvcclient('command_dynamic_target_quat');
@@ -77,6 +79,20 @@ if should_setDatum
 end
 
 
+
+%% Execute Datum Sequence
+if should_setHome
+    disp('Call set home command');
+
+    % Setup datum command:
+    homeRequest = rosmessage(homeClient);
+    homeRequest.Timestamp = rostime('now');
+    homeRequest.VehicleID = 0; % Not necessary for this
+    homeRequest.SetToCurrent = true; % TODO: Set command ID enum in MACE
+    
+    datumResponse = call(homeClient, homeRequest, 'Timeout', 5);
+    pause(5);
+end
 %% Execute Arm Command
 
 if should_arm

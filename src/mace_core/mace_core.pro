@@ -21,7 +21,13 @@ SOURCES += mace_core.cpp \
     module_command_initialization.cpp
 
 HEADERS += mace_core.h\
+    i_module_command_adept.h \
+    i_module_events_adept.h \
+    metadata_adept.h \
+    i_module_command_ml_station.h \
+    i_module_events_ml_station.h \
         mace_core_global.h \
+    metadata_ml_station.h \
     metadata_vehicle.h \
     metadata_ground_station.h \
     metadata_rta.h \
@@ -63,9 +69,12 @@ HEADERS += mace_core.h\
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../speedLog/
+INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+
+# Eigen Warning suppression:
+QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 # Unix lib Install
 unix:!symbian {
@@ -116,15 +125,24 @@ unix {
         INCLUDEPATH += /opt/ros/kinetic/lib
         LIBS += -L/opt/ros/kinetic/lib -loctomath
         LIBS += -L/opt/ros/kinetic/lib -loctomap
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/kinetic/include
     } else:exists(/opt/ros/melodic/lib/) {
         DEFINES += ROS_EXISTS
         INCLUDEPATH += /opt/ros/melodic/include
         INCLUDEPATH += /opt/ros/melodic/lib
         LIBS += -L/opt/ros/melodic/lib -loctomath
         LIBS += -L/opt/ros/melodic/lib -loctomap
+
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/melodic/include
     } else {
         INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
         LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+
+        # Octomap Warning suppression:
+        QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
     }
 }
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath

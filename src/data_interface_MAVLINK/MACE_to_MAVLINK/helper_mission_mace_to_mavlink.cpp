@@ -123,6 +123,8 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
 
 mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertHome(const command_item::SpatialHome &missionItem)
 {
+    UNUSED(missionItem);
+
     mavlink_mission_item_t item;
     initializeMAVLINKMissionItem(item);
     item.command = MAV_CMD_DO_SET_HOME;
@@ -253,6 +255,8 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertWaypoint(const comman
 
 void Helper_MissionMACEtoMAVLINK::updateMissionPosition(const mace::pose::Position* pos, mavlink_mission_item_t &item)
 {
+    UNUSED(item);
+
     if(pos == nullptr)
         return;
 
