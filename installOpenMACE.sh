@@ -71,10 +71,10 @@ installMACE() {
 
     echo "${MACE_ROOT}/lib" >> /etc/ld.so.conf.d/OpenMACE.conf
 
-    ROS_DIRECTORY="/opt/ros/kinetic"
+    ROS_DIRECTORY="/opt/ros/melodic"
     if [ "$installROS" = "1" ] || [ -d "$ROS_DIRECTORY" ]; then
         cd $MACE_ROOT/catkin_sim_environment
-        . /opt/ros/kinetic/setup.bash
+        . /opt/ros/melodic/setup.bash
         catkin_make
         catkin_make
         catkin_make
@@ -120,9 +120,8 @@ installGUI() {
     echo "Installing MACE GUI..."
     echo "************************************"
 
-    cd $MACE_ROOT/ElectronGUI
-    yarn install
-    yarn run build:prod
+    cd $MACE_ROOT/MACE_Frontend
+    yarn
 }
 
 
@@ -171,7 +170,7 @@ if [ "$installGUI" = "1" ]; then
 fi
 
 # Install MACE
-#installMACE
+installMACE
 
 cd $MACE_ROOT
 

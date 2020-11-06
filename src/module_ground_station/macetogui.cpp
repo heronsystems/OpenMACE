@@ -161,49 +161,49 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 //!
 void MACEtoGUI::sendVehicleParameterList(const int &vehicleID, const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params)
 {
-//    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
-    QJsonObject obj;
-    obj["agentID"] = std::to_string(vehicleID).c_str();;
-    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
+////    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
+//    QJsonObject obj;
+//    obj["agentID"] = std::to_string(vehicleID).c_str();;
+//    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
 
-    QJsonArray verticies;
-    for(auto&& param : params) {
-        QJsonObject obj;
-        obj["param_id"] = QString::fromStdString(param.second.getID());
-        obj["value"] = param.second.getValue();
+//    QJsonArray verticies;
+//    for(auto&& param : params) {
+//        QJsonObject obj;
+//        obj["param_id"] = QString::fromStdString(param.second.getID());
+//        obj["value"] = param.second.getValue();
 
-        verticies.push_back(obj);
-    }
+//        verticies.push_back(obj);
+//    }
 
-    obj["param_list"] = verticies;
+//    obj["param_list"] = verticies;
 
-    QJsonDocument doc(obj);
-    //    bool bytesWritten = writeTCPData(doc.toJson());
-    bool bytesWritten = writeUDPData(doc.toJson());
-    if(!bytesWritten){
-        std::cout << "Write parameter list failed..." << std::endl;
-    }
-
-
-    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << ": " << params.at("TKOFF_ALT").getValue() << std::endl;
+//    QJsonDocument doc(obj);
+//    //    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool bytesWritten = writeUDPData(doc.toJson());
+//    if(!bytesWritten){
+//        std::cout << "Write parameter list failed..." << std::endl;
+//    }
 
 
-    // Write out generic message to display on GUI:
-    QJsonObject textJson;
-    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
-    textJson["agentID"] = std::to_string(vehicleID).c_str();;
-    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(DataGenericItem::DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO));
-    std::string text = "TKOFF_ALT param set to " + std::to_string(params.at("TKOFF_ALT").getValue());
-    textJson["text"] = QString::fromStdString(text);
-    QJsonDocument textDoc(textJson);
-    //    bool bytesWritten = writeTCPData(doc.toJson());
-    bool textBytesWritten = writeUDPData(textDoc.toJson());
-    if(!textBytesWritten){
-        std::cout << "Write parameter list TEXT failed..." << std::endl;
-    }
+//    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << ": " << params.at("TKOFF_ALT").getValue() << std::endl;
 
-    // Log to file:
-    logToFile(doc);
+
+//    // Write out generic message to display on GUI:
+//    QJsonObject textJson;
+//    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
+//    textJson["agentID"] = std::to_string(vehicleID).c_str();;
+//    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(DataGenericItem::DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO));
+//    std::string text = "TKOFF_ALT param set to " + std::to_string(params.at("TKOFF_ALT").getValue());
+//    textJson["text"] = QString::fromStdString(text);
+//    QJsonDocument textDoc(textJson);
+//    //    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool textBytesWritten = writeUDPData(textDoc.toJson());
+//    if(!textBytesWritten){
+//        std::cout << "Write parameter list TEXT failed..." << std::endl;
+//    }
+
+//    // Log to file:
+//    logToFile(doc);
 }
 
 //!
