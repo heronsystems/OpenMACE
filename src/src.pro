@@ -40,7 +40,8 @@ SUBDIRS += \
     #commsExample \
     #example_vehicle_module \
     mace \
-    TestMaps
+    TestMaps \
+    trajectory_control
     #example \
     #Testing_CommsLink \
     #TestGraph \

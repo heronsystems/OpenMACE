@@ -6,8 +6,6 @@
 #include <cmath>
 #include <cstddef>
 
-namespace mace
-{
 namespace math
 {
 
@@ -81,7 +79,7 @@ inline T correctForAcuteAngle(const T &value)
 }
 
 template<class T>
-inline void correctSignFromPolar(T &xValue, T &yValue, const T &polarValue )
+inline T correctSignFromPolar(T &xValue, T &yValue, const T &polarValue )
 {
     if(polarValue <= M_PI_2)
     {
@@ -153,7 +151,5 @@ inline double convertRadiansToDegrees(const double &radians)
 }
 
 }  // End of math namespace
-}  // End of namespace
 
 #endif
-

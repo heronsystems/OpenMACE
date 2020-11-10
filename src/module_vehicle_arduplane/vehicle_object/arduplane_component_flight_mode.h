@@ -28,8 +28,12 @@ private:
         APFM_QLOITER       = 19,
         APFM_QLAND         = 20,
         APFM_QRTL          = 21,
-        APFM_UNKNOWN = 22,
-        APFM_NR = 23,
+        APFM_QAUTOTUNE     = 22,
+        QACRO              = 23,
+        THERMAL            = 24,
+        APFM_AIDEFL        = 30,
+        APFM_UNKNOWN = 50,
+        APFM_NR = 51,
     };
 
 public:
@@ -64,6 +68,10 @@ private:
                                                {static_cast<uint32_t>(Arduplane_FM::APFM_QLOITER),"QLOITER"},
                                                {static_cast<uint32_t>(Arduplane_FM::APFM_QLAND),"QLAND"},
                                                {static_cast<uint32_t>(Arduplane_FM::APFM_QRTL),"QRTL"},
+                                               {static_cast<uint32_t>(Arduplane_FM::APFM_QAUTOTUNE),"QAUTOTUNE"},
+                                               {static_cast<uint32_t>(Arduplane_FM::QACRO),"QACRO"},
+                                               {static_cast<uint32_t>(Arduplane_FM::THERMAL),"THERMAL"},
+                                               {static_cast<uint32_t>(Arduplane_FM::APFM_AIDEFL),"AI_DEFL"},
                                                {static_cast<uint32_t>(Arduplane_FM::APFM_UNKNOWN),"UNKNOWN"}};
 };
 

@@ -72,11 +72,14 @@ public:
 
     virtual bool handleCommand(const std::shared_ptr<AbstractCommandItem> command);
 
+
 public:
-    virtual void OnExit();
+    virtual void EventNotice_ModeChange(){}
 
 public:
     virtual void OnEnter(const std::shared_ptr<AbstractCommandItem> command) = 0;
+
+    virtual void OnExit();
 
 protected:
     void clearCommand();

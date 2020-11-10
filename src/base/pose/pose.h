@@ -3,58 +3,99 @@
 
 #include "data/environment_time.h"
 #include "cartesian_position_3D.h"
+#include "geodetic_position_3D.h"
 #include "rotation_3D.h"
 
 namespace mace{
 namespace pose{
 
-MACE_CLASS_FORWARD(Pose);
+MACE_CLASS_FORWARD(Altitude);
 
-class Pose
+class Altitude : public Abstract_Altitude, public Position
 {
-
 public:
-    Pose();
+    Altitude();
 
-    Pose(const Pose &copyObj);
+    Altitude(const Altitude &copy);
 
-    void setTimeNow();
-
-public:
-    Pose& operator = (const Pose &rhs)
+    CoordinateSystemTypes getCoordinateSystemType() const override
     {
-        this->m_Position = rhs.m_Position;
-        this->m_Rotation = rhs.m_Rotation;
-        this->m_UpdateTime = rhs.m_UpdateTime;
-        return *this;
-    }
-
-    bool operator == (const Pose &rhs) const
-    {
-
-        if(this->m_UpdateTime != rhs.m_UpdateTime){
-            return false;
-        }
-        if(this->m_Position != rhs.m_Position){
-            return false;
-        }
-        if(this->m_Rotation != rhs.m_Rotation){
-            return false;
-        }
-        return true;
-    }
-
-    bool operator !=(const Pose &rhs) const
-    {
-        return !(*this == rhs);
+        return CoordinateSystemTypes::NOT_IMPLIED;
     }
 
 
-public:
-    Data::EnvironmentTime m_UpdateTime;
+    CoordinateFrameTypes getExplicitCoordinateFrame() const override
+    {
+        return CoordinateFrameTypes::CF_NOT_RELEVANT;
+    }
 
-    CartesianPosition_3D m_Position;
-    Rotation_3D m_Rotation;
+    /**
+     * @brief getClone
+     * @return
+     */
+    Position* getPositionalClone() const override
+    {
+        return new Altitude(*this);
+    }
+
+    /**
+     * @brief getClone
+     * @param state
+     */
+    void getPositionalClone(Position** position) const override
+    {
+        *position = new Altitude(*this);
+    }
+
+    Eigen::VectorXd getDataVector() const override
+    {
+        Eigen::VectorXd newObject;
+        newObject << 0.0, 0.0, z;
+        return newObject;
+    }
+
+    void updateFromDataVector(const Eigen::VectorXd &vec) override
+    {
+        size_t rows = vec.rows();
+        if(rows == 3)
+        {
+            this->setAltitude(vec(3));
+        }
+    }
+
+public:
+    //!
+    //! \brief setAltitude
+    //! \param altitude
+    //!
+    void setAltitude(const double &altitude) override;
+
+    //!
+    //! \brief getAltitude
+    //! \return
+    //!
+    double getAltitude() const override;
+
+    /** Interface imposed via Position */
+public:
+    PositionTypes getPositionalType() const override
+    {
+        return PositionTypes::ELEVATION;
+    }
+
+    void applyTransformation(const Eigen::Transform<double,2,Eigen::Affine> &t) override;
+
+    void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) override;
+    /** End of interface imposed via Position */
+public:
+    //!
+    //! \brief printPositionalInfo
+    //! \return
+    //!
+    std::string printPositionalInfo() const override;
+
+private:
+    double z;
 
 };
 

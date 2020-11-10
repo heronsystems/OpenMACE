@@ -28,7 +28,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        planners.cpp \
+    planners.cpp \
     nearest_neighbor_linear.cpp \
     tsp_greedy_nearest_neighbor.cpp \
     tsp_2opt.cpp \
@@ -46,8 +46,8 @@ SOURCES += \
     fast_marching/thirdparty/reference/queue.cpp
 
 HEADERS += \
-        planners.h \
-        planners_global.h \ 
+    planners.h \
+    planners_global.h \
     nearest_neighbor_linear.h \
     tsp_greedy_nearest_neighbor.h \
     tsp_2opt.h \

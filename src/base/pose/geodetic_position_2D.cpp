@@ -56,9 +56,10 @@ GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_2D &copy):
 }
 
 GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_3D &copy):
-    Abstract_GeodeticPosition(copy), state_space::State(copy)
+    Abstract_GeodeticPosition(copy), state_space::State(copy), data(0.0,0.0)
 {
-    this->updateTranslationalComponents(copy.getLatitude(), copy.getLongitude());
+    data(0) = copy.data(0);
+    data(1) = copy.data(1);
 }
 
 bool GeodeticPosition_2D::hasLatitudeBeenSet() const

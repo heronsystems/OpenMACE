@@ -6,7 +6,6 @@
 
 #include "abstract_velocity.h"
 
-namespace mace{
 namespace pose{
 
 template<const CoordinateSystemTypes coordType, typename CFDATA, class DATA>
@@ -82,6 +81,16 @@ public:
     }
 
 public:
+
+    VelocityInterface_Translational& operator = (const VelocityInterface_Translational &rhs)
+    {
+        Velocity::operator=(rhs);
+        this->explicitType = rhs.explicitType;
+        this->explicitFrame = rhs.explicitFrame;
+        this->data = rhs.data;
+        return *this;
+    }
+
     bool operator == (const VelocityInterface_Translational &rhs) const
     {
         if(!Velocity::operator ==(rhs))
@@ -114,6 +123,5 @@ public:
 
 
 } // end of namespace pose
-} // end of namespace mace
 
 #endif // VELOCITY_INTERFACE_TRANSLATIONAL_H

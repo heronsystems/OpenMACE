@@ -10,3 +10,6 @@
 [submodule "tools/boost"]
 	path = tools/boost
 	url = https://github.com/boostorg/boost.git
+[submodule "tools/mavlink/ardupilot"]
+	path = tools/mavlink/ardupilot
+	url = https://github.com/heronsystems/mavlink.git

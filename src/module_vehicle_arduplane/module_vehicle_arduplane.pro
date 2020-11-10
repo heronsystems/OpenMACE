@@ -20,6 +20,10 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += module_vehicle_arduplane.cpp \
+    plane_flight_states/state_flight_AI.cpp \
+    plane_flight_states/state_flight_AI_deflection.cpp \
+    plane_flight_states/state_flight_AI_evalend.cpp \
+    plane_flight_states/state_flight_AI_initialize.cpp \
     vehicle_object/arduplane_component_flight_mode.cpp \
     vehicle_object/vehicle_object_arduplane.cpp \
     plane_flight_states/state_grounded_disarmed.cpp \
@@ -55,6 +59,10 @@ SOURCES += module_vehicle_arduplane.cpp \
 HEADERS += module_vehicle_arduplane.h\
         module_vehicle_arduplane_global.h \
     plane_flight_states/arduplane_state_components.h \
+  plane_flight_states/state_flight_AI.h \
+  plane_flight_states/state_flight_AI_deflection.h \
+  plane_flight_states/state_flight_AI_evalend.h \
+  plane_flight_states/state_flight_AI_initialize.h \
     vehicle_object/arduplane_component_flight_mode.h \
     vehicle_object/vehicle_object_arduplane.h \
     plane_flight_states/state_grounded_disarmed.h \

@@ -16,30 +16,41 @@ enum class MACEHSMState {
     STATE_GROUNDED_ARMED = 3, /**< */
     STATE_GROUNDED_DISARMING = 4, /**< */
     STATE_GROUNDED_DISARMED = 5, /**< */
+
     STATE_TAKEOFF = 6, /**< */
     STATE_TAKEOFF_CLIMBING = 7, /**< */
     STATE_TAKEOFF_TRANSITIONING = 8, /**< */
     STATE_TAKEOFF_COMPLETE = 9, /**< */
+
     STATE_FLIGHT = 10, /**< */
-    STATE_FLIGHT_LOITER = 11, /**< */
-    STATE_FLIGHT_MANUAL = 12, /**< */
-    STATE_FLIGHT_GUIDED = 13, /**< */
-    STATE_FLIGHT_GUIDED_IDLE = 14, /**< */
-    STATE_FLIGHT_GUIDED_SPATIALITEM = 15, /**< */
-    STATE_FLIGHT_GUIDED_QUEUE = 16, /**< */
-    STATE_FLIGHT_GUIDED_ATTTARGET = 17, /**< */
-    STATE_FLIGHT_GUIDED_GEOTARGET = 18, /**< */
-    STATE_FLIGHT_GUIDED_CARTARGET = 19, /**< */
-    STATE_FLIGHT_AUTO = 20, /**< */
-    STATE_FLIGHT_BRAKE= 21, /**< */
-    STATE_FLIGHT_RTL = 22, /**< */
-    STATE_FLIGHT_LAND = 23,
-    STATE_FLIGHT_UNKNOWN = 24,
-    STATE_LANDING= 25, /**< */
-    STATE_LANDING_TRANSITIONING = 26, /**< */
-    STATE_LANDING_DESCENDING = 27, /**< */
-    STATE_LANDING_COMPLETE = 28, /**< */
-    STATE_UNKNOWN = 29 /**< */
+    STATE_FLIGHT_AUTO = 12, /**< */
+    STATE_FLIGHT_BRAKE= 13, /**< */
+    STATE_FLIGHT_LAND = 14, /**< */
+    STATE_FLIGHT_LOITER = 15, /**< */
+    STATE_FLIGHT_MANUAL = 16, /**< */
+    STATE_FLIGHT_RTL = 17, /**< */
+    STATE_FLIGHT_UNKNOWN = 18, /**< */
+
+    STATE_LANDING= 20, /**< */
+    STATE_LANDING_TRANSITIONING = 21, /**< */
+    STATE_LANDING_DESCENDING = 22, /**< */
+    STATE_LANDING_COMPLETE = 23, /**< */
+
+    STATE_FLIGHT_GUIDED = 30, /**< */
+    STATE_FLIGHT_GUIDED_IDLE = 31, /**< */
+    STATE_FLIGHT_GUIDED_SPATIALITEM = 32, /**< */
+    STATE_FLIGHT_GUIDED_QUEUE = 33, /**< */
+    STATE_FLIGHT_GUIDED_ATTTARGET = 34, /**< */
+    STATE_FLIGHT_GUIDED_GEOTARGET = 35, /**< */
+    STATE_FLIGHT_GUIDED_CARTARGET = 36, /**< */
+
+    STATE_FLIGHT_AI = 40, /**< */
+    STATE_FLIGHT_AI_IDLE = 41, /**< */
+    STATE_FLIGHT_AI_INITIALIZE = 42, /**< */
+    STATE_FLIGHT_AI_DEFLECTION = 43, /**< */
+    STATE_FLIGHT_AI_EVALEND = 44, /**< */
+
+    STATE_UNKNOWN = 254, /**< */
 };
 
 
@@ -57,8 +68,7 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
         return "Grounded Disarming";
     case MACEHSMState::STATE_GROUNDED_DISARMED:
         return "Grounded Disarmed";
-    case MACEHSMState::STATE_FLIGHT:
-        return "Flight";
+
     case MACEHSMState::STATE_TAKEOFF:
         return "Flight Takeoff";
     case MACEHSMState::STATE_TAKEOFF_CLIMBING:
@@ -67,8 +77,33 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
         return "Flight Takeoff Transitioning";
     case MACEHSMState::STATE_TAKEOFF_COMPLETE:
         return "Flight Takeoff Complete";
+
+    case MACEHSMState::STATE_FLIGHT:
+        return "Flight";
+    case MACEHSMState::STATE_FLIGHT_AUTO:
+        return "Flight Auto";
+    case MACEHSMState::STATE_FLIGHT_BRAKE:
+        return "Flight Brake";
+    case MACEHSMState::STATE_FLIGHT_LAND:
+        return "Flight Land";
+    case MACEHSMState::STATE_FLIGHT_LOITER:
+        return "Flight Loiter";
     case MACEHSMState::STATE_FLIGHT_MANUAL:
         return "Flight Manual";
+    case MACEHSMState::STATE_FLIGHT_RTL:
+        return "Flight RTL";
+    case MACEHSMState::STATE_FLIGHT_UNKNOWN:
+        return "Flight Unknown";
+
+    case MACEHSMState::STATE_LANDING:
+        return "Flight Landing";
+    case MACEHSMState::STATE_LANDING_TRANSITIONING:
+        return "Flight Landing Transitioning";
+    case MACEHSMState::STATE_LANDING_DESCENDING:
+        return "Flight Landing Descent";
+    case MACEHSMState::STATE_LANDING_COMPLETE:
+        return "Flight Landing Complete";
+
     case MACEHSMState::STATE_FLIGHT_GUIDED:
         return "Flight Guided";
     case MACEHSMState::STATE_FLIGHT_GUIDED_IDLE:
@@ -83,26 +118,7 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
         return "Flight Guided GeoTarget";
     case MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET:
         return "Flight Guided CartTarget";
-    case MACEHSMState::STATE_FLIGHT_AUTO:
-        return "Flight Auto";
-    case MACEHSMState::STATE_FLIGHT_BRAKE:
-        return "Flight Brake";
-    case MACEHSMState::STATE_FLIGHT_RTL:
-        return "Flight RTL";
-    case MACEHSMState::STATE_FLIGHT_LOITER:
-        return "Flight Loiter";
-    case MACEHSMState::STATE_FLIGHT_LAND:
-        return "Flight Land";
-    case MACEHSMState::STATE_LANDING:
-        return "Flight Landing";
-    case MACEHSMState::STATE_LANDING_TRANSITIONING:
-        return "Flight Landing Transitioning";
-    case MACEHSMState::STATE_LANDING_DESCENDING:
-        return "Flight Landing Descent";
-    case MACEHSMState::STATE_LANDING_COMPLETE:
-        return "Flight Landing Complete";
-    case MACEHSMState::STATE_FLIGHT_UNKNOWN:
-        return "Flight Unknown";
+
     case MACEHSMState::STATE_UNKNOWN:
         return "Unknown";
     default:

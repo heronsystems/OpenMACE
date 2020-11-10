@@ -55,3 +55,5 @@ lib.path    = $$(MACE_ROOT)/lib
 win32:CONFIG(release, debug|release):       lib.files   += release/common.lib release/common.dll
 else:win32:CONFIG(debug, debug|release):    lib.files   += debug/common.lib debug/common.dll
 INSTALLS += lib
+
+

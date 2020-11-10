@@ -64,11 +64,14 @@ SOURCES += \
     pose/abstract_position.cpp \
     pose/rotation_2D.cpp \
     misc/kinematic_definitions.cpp \
-    pose/pose.cpp
+    pose/pose.cpp \
+    trajectory/dubins.cpp \
+    trajectory/trajectory_point.cpp
 
 HEADERS +=\
     base_global.h \
     math/helper_pi.h \
+    math/moving_average.h \
     pose/cartesian_position_2D.h \
     pose/cartesian_position_3D.h \
     geometry/base_polygon.h \
@@ -120,6 +123,9 @@ HEADERS +=\
     misc/kinematic_definitions.h \
     pose/base_altitude.h \
     geometry/abstract_polygon.h \
+    trajectory/dubins.h \
+    trajectory/queue_interface.h \
+    trajectory/trajectory_point.h \
     unit_tests/unittests_orientation.h \
     pose/rotation_3D.h \
     measurements/base_speed.h \

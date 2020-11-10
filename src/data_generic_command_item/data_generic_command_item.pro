@@ -30,11 +30,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ai_items/action_initialize_test_setup.cpp \
+    ai_items/action_write_to_vehicle_log.cpp \
     do_items/action_arm.cpp \
     do_items/action_change_mode.cpp \
     do_items/action_change_speed.cpp \
     do_items/action_motor_test.cpp \
     do_items/action_mission_command.cpp \
+    do_items/action_set_surface_deflection.cpp \
     spatial_items/spatial_home.cpp \
     spatial_items/spatial_land.cpp \
     spatial_items/spatial_loiter_time.cpp \
@@ -68,11 +71,14 @@ SOURCES += \
     target_items/abstract_dynamic_target.cpp \
     do_items/action_message_request.cpp
 HEADERS +=\
+    ai_items/action_initialize_test_setup.h \
+    ai_items/action_write_to_vehicle_log.h \
     boundary_items/environment_boundary.h \
     do_items/action_arm.h \
     do_items/action_change_mode.h \
     do_items/action_change_speed.h \
     do_items/action_motor_test.h\
+    do_items/action_set_surface_deflection.h \
     do_items/do_components.h \
     do_items/action_mission_command.h \
     mission_items/mission_ack.h \

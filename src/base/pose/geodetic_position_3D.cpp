@@ -81,9 +81,12 @@ GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticPosition_3D &copy):
 //! \param copy
 //!
 GeodeticPosition_3D::GeodeticPosition_3D(const GeodeticPosition_2D &copy):
-    Abstract_GeodeticPosition(copy), Abstract_Altitude(), state_space::State(copy)
+    Abstract_GeodeticPosition(copy), Abstract_Altitude(), state_space::State(copy), data(0.0,0.0,0.0)
 {
-    this->updateTranslationalComponents(copy.getLatitude(), copy.getLongitude());
+    this->dimension = 3;
+
+    data(0) = copy.data(0);
+    data(1) = copy.data(1);
 }
 
 

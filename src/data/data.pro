@@ -21,12 +21,14 @@ CONFIG += object_parallel_to_source
 SOURCES += \
     system_description.cpp \
     environment_time.cpp \
+    timer_lambda.cpp \
     topic_components/topic_component_string.cpp \
     topic_components/topic_component_void.cpp
 
 HEADERS += data_global.h \
     i_topic_component_data_object.h \
     mace_hsm_state.h \
+    timer_lambda.h \
     topic_data_object_collection.h \
     coordinate_frame.h \
     vehicle_command_types.h \

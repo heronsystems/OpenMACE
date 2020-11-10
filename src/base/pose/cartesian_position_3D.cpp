@@ -38,9 +38,12 @@ CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_3D &copy):
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_2D &copy):
-    Abstract_CartesianPosition(copy), Abstract_Altitude(), state_space::State(copy), data(copy.data(0), copy.data(1), 0.0)
+    Abstract_CartesianPosition(copy), Abstract_Altitude(), state_space::State(copy), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
+
+    data(0) = copy.data(0);
+    data(1) = copy.data(1);
 }
 
 bool CartesianPosition_3D::hasXBeenSet() const
