@@ -33,8 +33,9 @@ enum class COMMANDTYPE : uint8_t{
     CI_ACT_MSG_REQUEST = 16,
     CI_ACT_SET_GLOBAL_ORIGIN = 17,
     CI_ACT_HOME_POSITION = 18,
-    CI_UNKNOWN = 19,
-    COMMANDITEMEND = 20
+    CI_ACT_SET_SURFACE_DEFLECTION = 19,
+    CI_UNKNOWN = 20,
+    COMMANDITEMEND = 21
 };
 
 inline std::string CommandItemToString(const COMMANDTYPE &commandItemType) {

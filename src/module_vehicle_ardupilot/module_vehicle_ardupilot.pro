@@ -41,8 +41,16 @@ HEADERS += module_vehicle_ardupilot.h\
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+
+DEFINES += WITH_AI_SUPPORT
+  contains(DEFINES, WITH_AI_SUPPORT) {
+  message("module_vehicle_ardupilot: Compiling with AI support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI
+}else{
+  message("module_vehicle_ardupilot: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega
+}
 
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3

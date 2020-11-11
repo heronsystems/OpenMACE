@@ -9,11 +9,23 @@ AP_State_FlightAI_Deflection::AP_State_FlightAI_Deflection():
     std::cout<<"We are in the constructor of STATE_FLIGHT_AI_DEFLECTION"<<std::endl;
     currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_AI_DEFLECTION;
     desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AI_DEFLECTION;
+
+//    m_TimeoutController.connectTargetCallback(AP_State_FlightAI_Deflection::retransmitSurfaceDeflection, this);
+    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, previousTime);
+
 }
 
 void AP_State_FlightAI_Deflection::OnExit()
 {
+//    m_TimeoutController.stop();
 
+    AbstractStateArdupilot::OnExit();
+
+    Owner().state->vehicleGlobalPosition.RemoveNotifier(this);
+    if(Owner().ControllersCollection()->Exist("AI_SetSurfaceDeflection")){
+        MAVLINKUXVControllers::Controller_SetSurfaceDeflection* ptr = dynamic_cast<MAVLINKUXVControllers::Controller_SetSurfaceDeflection*>(Owner().ControllersCollection()->Remove("AI_SetSurfaceDeflection"));
+        delete ptr;
+    }
 }
 
 AbstractStateArdupilot* AP_State_FlightAI_Deflection::getClone() const
@@ -36,24 +48,14 @@ hsm::Transition AP_State_FlightAI_Deflection::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case Data::MACEHSMState::STATE_FLIGHT_AI_IDLE:
+        case Data::MACEHSMState::STATE_FLIGHT_AI_ABORT:
         {
             rtn = hsm::InnerTransition<AP_State_FlightAI_Deflection_Idle>(currentCommand);
             break;
         }
-        case Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE:
-        {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Deflection_Initialize>(currentCommand);
-            break;
-        }
         case Data::MACEHSMState::STATE_FLIGHT_AI_DEFLECTION:
         {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Deflection_Deflection>(currentCommand);
-            break;
-        }
-        case Data::MACEHSMState::STATE_FLIGHT_AI_END:
-        {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Deflection_EvalEnd>(currentCommand);
+            rtn = hsm::InnerTransition<AP_State_FlightAI_Deflection_Initialize>(currentCommand);
             break;
         }
         default:
@@ -68,7 +70,20 @@ bool AP_State_FlightAI_Deflection::handleCommand(const std::shared_ptr<AbstractC
 {
     bool success = false;
     switch (command->getCommandType()) {
+    case COMMANDTYPE::CI_ACT_SET_SURFACE_DEFLECTION:
+    {
+        //stop the current controllers target transmission if it is running
+//        m_TimeoutController.clearTarget();
 
+        //We want to keep this command in scope to perform the action
+        this->currentCommand = command->getClone();
+
+        //The command is a target, we therefore have to figure out what type of target it is
+        command_item::Action_SetSurfaceDeflection* cmd = currentCommand->as<command_item::Action_SetSurfaceDeflection>();
+        constructAndSendTarget(*cmd);
+
+        break;
+    }
     default:
         break;
 
@@ -84,47 +99,15 @@ void AP_State_FlightAI_Deflection::Update()
 
 void AP_State_FlightAI_Deflection::OnEnter()
 {
-    //This helps us based on the current conditions in the present moment
-    std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
-    if(currentModeString != "GUIDED") {
-        //check that the vehicle is truely armed and switch us into the guided mode
-        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-        controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
-            controllerSystemMode->Shutdown();
-            if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
-            else
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
-        });
-
-        controllerSystemMode->setLambda_Shutdown([this, collection]()
-        {
-            UNUSED(this);
-            auto ptr = collection->Remove("AP_State_FlightGuided_modeController");
-            delete ptr;
-        });
-
-        MavlinkEntityKey target = Owner().getMAVLINKID();
-        MavlinkEntityKey sender = 255;
-
-        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
-        commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("GUIDED");
-        controllerSystemMode->Send(commandMode,sender,target);
-        collection->Insert("AP_State_FlightGuided_modeController", controllerSystemMode);
-    }
-    else {
-        //We have no command and therefore are just in the guided mode, we can tranisition to idle
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
-    }
+    //This should never happen, if so we are going to transition back to a known state
 }
 
 void AP_State_FlightAI_Deflection::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
-    UNUSED(command);
-    //If we have a command we probably will be entering a state let us figure it out
-    this->OnEnter();
+    //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
+    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+    auto surfaceDeflectionController = new MAVLINKUXVControllers::Controller_SetSurfaceDeflection(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    collection->Insert("AI_SetSurfaceDeflection",surfaceDeflectionController);
 }
 
 } //end of namespace ardupilot

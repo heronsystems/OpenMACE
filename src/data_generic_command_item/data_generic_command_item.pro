@@ -73,6 +73,7 @@ SOURCES += \
 HEADERS +=\
     ai_items/action_initialize_test_setup.h \
     ai_items/action_write_to_vehicle_log.h \
+    ai_items/ai_components.h \
     boundary_items/environment_boundary.h \
     do_items/action_arm.h \
     do_items/action_change_mode.h \

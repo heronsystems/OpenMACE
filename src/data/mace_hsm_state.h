@@ -45,10 +45,12 @@ enum class MACEHSMState {
     STATE_FLIGHT_GUIDED_CARTARGET = 36, /**< */
 
     STATE_FLIGHT_AI = 40, /**< */
-    STATE_FLIGHT_AI_IDLE = 41, /**< */
-    STATE_FLIGHT_AI_INITIALIZE = 42, /**< */
-    STATE_FLIGHT_AI_DEFLECTION = 43, /**< */
-    STATE_FLIGHT_AI_EVALEND = 44, /**< */
+    STATE_FLIGHT_AI_ABORT = 41, /**< */
+    STATE_FLIGHT_AI_IDLE = 42, /**< */
+    STATE_FLIGHT_AI_INITIALIZE = 43, /**< */
+    STATE_FLIGHT_AI_TRANSITION = 44, /**< */
+    STATE_FLIGHT_AI_DEFLECTION = 45, /**< */
+    STATE_FLIGHT_AI_EVALEND = 46, /**< */
 
     STATE_UNKNOWN = 254, /**< */
 };

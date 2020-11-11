@@ -10,6 +10,8 @@
 
 #include "data_generic_command_item/command_item_components.h"
 
+#include "module_vehicle_MAVLINK/controllers/controller_set_surface_deflection.h"
+
 namespace ardupilot {
 namespace state{
 
@@ -36,6 +38,13 @@ public:
     void OnEnter() override;
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+
+public:
+    void constructAndSendTarget(const command_item::Action_SetSurfaceDeflection &command)
+    {
+        MavlinkEntityKey sender = 255;
+        static_cast<MAVLINKUXVControllers::Controller_SetSurfaceDeflection*>(Owner().ControllersCollection()->At("AttitudeTargetController"))->Broadcast(command, sender);
+    }
 };
 
 } //end of namespace state

@@ -37,6 +37,7 @@ SOURCES += \
 
 HEADERS += module_vehicle_mavlink.h\
     controllers/controller_parameter_request.h \
+  controllers/controller_set_surface_deflection.h \
   controllers/controller_vision_position_estimate.h \
         module_vehicle_mavlink_global.h \
     controllers/controller_system_mode.h \
@@ -64,8 +65,17 @@ HEADERS += module_vehicle_mavlink.h\
     controllers/commands/command_msg_request.h \
     controllers/commands/command_home_position.h
 
+
+DEFINES += WITH_AI_SUPPORT
+  contains(DEFINES, WITH_AI_SUPPORT) {
+  message("module_vehicle_mavlink: Compiling with AI support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI
+}else{
+  message("module_vehicle_mavlink: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega
+}
+
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega
 INCLUDEPATH += $$PWD/../../spdlog/
 
 # Unix lib Install
@@ -113,7 +123,7 @@ INSTALLS       += headers_vehicle_object
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
+INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
 # Eigen Warning suppression:

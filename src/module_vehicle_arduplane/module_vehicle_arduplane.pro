@@ -21,9 +21,14 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 SOURCES += module_vehicle_arduplane.cpp \
     plane_flight_states/state_flight_AI.cpp \
+    plane_flight_states/state_flight_AI_abort.cpp \
     plane_flight_states/state_flight_AI_deflection.cpp \
     plane_flight_states/state_flight_AI_evalend.cpp \
     plane_flight_states/state_flight_AI_initialize.cpp \
+    plane_flight_states/state_flight_AI_initialize_ABORT.cpp \
+    plane_flight_states/state_flight_AI_initialize_GUIDED.cpp \
+    plane_flight_states/state_flight_AI_initialize_ROUTE.cpp \
+    plane_flight_states/state_flight_AI_transition.cpp \
     vehicle_object/arduplane_component_flight_mode.cpp \
     vehicle_object/vehicle_object_arduplane.cpp \
     plane_flight_states/state_grounded_disarmed.cpp \
@@ -60,9 +65,11 @@ HEADERS += module_vehicle_arduplane.h\
         module_vehicle_arduplane_global.h \
     plane_flight_states/arduplane_state_components.h \
   plane_flight_states/state_flight_AI.h \
+  plane_flight_states/state_flight_AI_abort.h \
   plane_flight_states/state_flight_AI_deflection.h \
   plane_flight_states/state_flight_AI_evalend.h \
   plane_flight_states/state_flight_AI_initialize.h \
+  plane_flight_states/state_flight_AI_transition.h \
     vehicle_object/arduplane_component_flight_mode.h \
     vehicle_object/vehicle_object_arduplane.h \
     plane_flight_states/state_grounded_disarmed.h \
@@ -99,11 +106,18 @@ HEADERS += module_vehicle_arduplane.h\
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+DEFINES += WITH_AI_SUPPORT
+  contains(DEFINES, WITH_AI_SUPPORT) {
+  message("module_vehicle_arduplane: Compiling with AI support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI
+}else{
+  message("module_vehicle_arduplane: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega
+}
 
 # Unix lib Install
 unix:!symbian {
