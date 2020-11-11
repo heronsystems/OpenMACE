@@ -49,9 +49,7 @@ SUBDIRS += \
     #commsExample \
     #example_vehicle_module
 ​
-
-​digi_common.depends = common
-DigiMesh.depends = digi_common
+DigiMesh.depends = common digi_common
 MACEDigiMeshWrapper.depends = DigiMesh
 base.depends = common
 data.depends = common
