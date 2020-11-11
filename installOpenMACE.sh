@@ -167,7 +167,7 @@ installGUI() {
 # Set MACE_ROOT environment variable:
 setMACEPath=0
 if [[ -z "${MACE_ROOT}" ]]; then
-  setMACEPath = 1
+  setMACEPath=1
   currentMACEPath="$(pwd)"
   export MACE_ROOT=$currentMACEPath
   echo "MACE_ROOT is now set to: ${MACE_ROOT}"
