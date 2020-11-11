@@ -149,8 +149,8 @@ installMACE() {
 
     cd $MACE_ROOT/build
     qmake ../src/src.pro
-    make
-    make install
+    make -j
+    make install -j
     # ldconfig
 }
 
