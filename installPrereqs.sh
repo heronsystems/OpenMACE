@@ -61,22 +61,25 @@ installROS() {
     echo "Installing ROS..."
     echo "************************************"
 
+    echo "Enter your ROS version:"
+    read rosVersion
+
     # May not need this first apt-get update...
     apt-get update
     apt-get install -y lsb-release
     sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
     apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
     apt-get update
-    apt-get install -y ros-melodic-desktop-full
+    apt-get install -y ros-${rosVersion}-desktop-full
     rosdep init
     rosdep update
-    echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+    echo "source /opt/ros/${rosVersion}/setup.bash" >> ~/.bashrc
     source ~/.bashrc
     apt-get install -y python-rosinstall
     apt-get install -y python-rosinstall-generator
     apt-get install -y python-wstool
-    apt-get install -y ros-melodic-octomap*
-    apt-get install -y ros-melodic-tf*
+    apt-get install -y ros-${rosVersion}-octomap*
+    apt-get install -y ros-${rosVersion}-tf*
     apt-get install -y python-rospkg
     pip install rospkg
 }
@@ -101,7 +104,7 @@ done
 # If toggled, install prerequisites
 installPrereqs
 
-# If toggled, install ROS melodic
+# If toggled, install ROS
 if [ "$installROS" = "1" ]; then
     installROS
 fi
