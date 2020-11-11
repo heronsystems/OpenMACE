@@ -61,17 +61,16 @@ installTools() {
 
 requestROSExtension()
 {
-	echo "*******************************************"
+    echo "*******************************************"
     echo "Setting up the ROS_ROOT_DIR extension"
     echo "*******************************************"
 
     #There is no ROS_ROOT_DIR defined
-	echo "Enter your ROS version:"
-	read rosVersion
-	echo "export ROS_ROOT_DIR=/opt/ros/${rosVersion}" >> ~/.bashrc
+    echo "Enter your ROS version:"
+    read rosVersion
+    echo "export ROS_ROOT_DIR=/opt/ros/${rosVersion}" >> ~/.bashrc
+    echo "ROS_ROOT_DIR=/opt/ros/${rosVersion}" >> /etc/environment
     source ~/.bashrc
-
- 	echo "ROS_ROOT_DIR is already set to: $ROS_ROOT_DIR"
 }
 
 compileCatkin(){
@@ -94,10 +93,10 @@ compileCatkin(){
         catkin_make
         catkin_make
 		if [ "$sourceCatkin" = "1" ]; then
-        	echo "source ${MACE_ROOT}/catkin_sim_environment/devel/setup.bash" >> ~/.bashrc
-        	source ~/.bashrc
+        	  echo "source ${MACE_ROOT}/catkin_sim_environment/devel/setup.bash" >> ~/.bashrc
+        	  source ~/.bashrc
 		else
-			echo "The user has selected not to update the catkin_sim_environment path in the bashrc file!!!"
+		  echo "The user has selected not to update the catkin_sim_environment path in the bashrc file!!!"
 		fi
     fi
 
@@ -114,8 +113,8 @@ installMACE() {
     echo "Setting OpenMACE environment variables..."
 
 	if [ "$setMACEPath" = "1" ]; then
-	    echo "export MACE_ROOT=${MACE_ROOT}" >> ~/.bashrc
-    	source ~/.bashrc
+	  echo "export MACE_ROOT=${MACE_ROOT}" >> ~/.bashrc
+    	  source ~/.bashrc
 	fi
 
     echo "${MACE_ROOT}/lib" >> /etc/ld.so.conf.d/OpenMACE.conf
@@ -149,8 +148,8 @@ installMACE() {
 
     cd $MACE_ROOT/build
     qmake ../src/src.pro
-    make -j
-    make install -j
+    make
+    make install
     # ldconfig
 }
 
@@ -167,27 +166,29 @@ installGUI() {
 #### MAIN
 # Set MACE_ROOT environment variable:
 setMACEPath=0
-setROSPath=0
-
 if [[ -z "${MACE_ROOT}" ]]; then
   setMACEPath = 1
   currentMACEPath="$(pwd)"
   export MACE_ROOT=$currentMACEPath
-  echo "MACE_ROOT is set to: ${MACE_ROOT}"
-else
+  echo "MACE_ROOT is now set to: ${MACE_ROOT}"
+fi
+
+if [ "$setMACEPath" = "0" ]; then
   echo "MACE_ROOT is already set to: $MACE_ROOT"
   currentMACEPath="$(pwd)"
   bashMACEPath="${MACE_ROOT}"
   echo "The current path is $currentMACEPath"
   echo "The bash MACE path is $bashMACEPath"
-  setMACEPath=0
 fi
 
+setROSPath=0
 if [[ -z "${ROS_ROOT_DIR}" ]]; then
-  setROSPath = 1
-else
-  echo "ROS_ROOT_DIR is already set to: $ROS_ROOT_DIR"
-  setROSPath=0
+  setROSPath=1
+  echo "ROS_ROOT_DIR has not been found, will be setting this up!!!"
+fi
+
+if [ "$setROSPath" == "0" ]; then
+  echo "ROS_ROOT_DIR is already set to: ${ROS_ROOT_DIR}"
 fi
 
 USERNAME=$(logname)
