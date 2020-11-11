@@ -69,7 +69,8 @@ requestROSExtension()
     echo "Enter your ROS version:"
     read rosVersion
     echo "export ROS_ROOT_DIR=/opt/ros/${rosVersion}" >> ~/.bashrc
-    echo "ROS_ROOT_DIR=/opt/ros/${rosVersion}" >> /etc/environment
+    _ROS_ROOT_DIR="/opt/ros/${rosVersion}"
+    echo "ROS_ROOT_DIR=\"${_ROS_ROOT_DIR}\"" >> /etc/environment
     source ~/.bashrc
 }
 
