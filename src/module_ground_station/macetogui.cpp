@@ -1,4 +1,4 @@
-#include "macetogui.h"
+﻿#include "macetogui.h"
 
 
 MACEtoGUI::MACEtoGUI() :
@@ -20,7 +20,26 @@ MACEtoGUI::MACEtoGUI(const QHostAddress &sendAddress, const int &sendPort) :
 }
 
 MACEtoGUI::~MACEtoGUI() {
+    m_logger->flush();
+}
 
+//!
+//! \brief initiateLogs Start log files and logging for the Ground Station module
+//!
+void MACEtoGUI::initiateLogs(const std::string &loggerName, const std::string &loggingPath)
+{
+    try
+    {
+        m_logger = spdlog::basic_logger_mt<spdlog::async_factory>(loggerName, loggingPath);
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Log initialization failed: " << ex.what() << std::endl;
+    }
+
+    // Flush logger every 2 seconds:
+//    spdlog::flush_every(std::chrono::seconds(2));
+    m_logger->flush_on(spdlog::level::info);      // flush when "info" or higher message is logged
 }
 
 //!
@@ -39,6 +58,7 @@ void MACEtoGUI::setSendPort(const int &sendPort) {
     m_sendPort = sendPort;
 }
 
+
 //!
 //! \brief sendCurrentMissionItem Send vehicle mission to the MACE GUI
 //! \param vehicleID Vehicle ID with the new vehicle mission
@@ -54,6 +74,9 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
     if(!bytesWritten){
         std::cout << "Write current mission item failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -102,6 +125,9 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<Mi
     if(!bytesWritten){
         std::cout << "Write vehicle target failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -122,8 +148,10 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
         if(!bytesWritten){
             std::cout << "Write Home position failed..." << std::endl;
         }
-    }
 
+        // Log to file:
+        logToFile(doc);
+    }
 }
 
 //!
@@ -133,46 +161,49 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 //!
 void MACEtoGUI::sendVehicleParameterList(const int &vehicleID, const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params)
 {
-//    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
-    QJsonObject obj;
-    obj["agentID"] = std::to_string(vehicleID).c_str();;
-    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
+////    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
+//    QJsonObject obj;
+//    obj["agentID"] = std::to_string(vehicleID).c_str();;
+//    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
 
-    QJsonArray verticies;
-    for(auto&& param : params) {
-        QJsonObject obj;
-        obj["param_id"] = QString::fromStdString(param.second.getID());
-        obj["value"] = param.second.getValue();
+//    QJsonArray verticies;
+//    for(auto&& param : params) {
+//        QJsonObject obj;
+//        obj["param_id"] = QString::fromStdString(param.second.getID());
+//        obj["value"] = param.second.getValue();
 
-        verticies.push_back(obj);
-    }
+//        verticies.push_back(obj);
+//    }
 
-    obj["param_list"] = verticies;
+//    obj["param_list"] = verticies;
 
-    QJsonDocument doc(obj);
-    //    bool bytesWritten = writeTCPData(doc.toJson());
-    bool bytesWritten = writeUDPData(doc.toJson());
-    if(!bytesWritten){
-        std::cout << "Write parameter list failed..." << std::endl;
-    }
-
-
-    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << ": " << params.at("TKOFF_ALT").getValue() << std::endl;
+//    QJsonDocument doc(obj);
+//    //    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool bytesWritten = writeUDPData(doc.toJson());
+//    if(!bytesWritten){
+//        std::cout << "Write parameter list failed..." << std::endl;
+//    }
 
 
-    // Write out generic message to display on GUI:
-    QJsonObject textJson;
-    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
-    textJson["agentID"] = std::to_string(vehicleID).c_str();;
-    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(DataGenericItem::DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO));
-    std::string text = "TKOFF_ALT param set to " + std::to_string(params.at("TKOFF_ALT").getValue());
-    textJson["text"] = QString::fromStdString(text);
-    QJsonDocument textDoc(textJson);
-    //    bool bytesWritten = writeTCPData(doc.toJson());
-    bool textBytesWritten = writeUDPData(textDoc.toJson());
-    if(!textBytesWritten){
-        std::cout << "Write parameter list TEXT failed..." << std::endl;
-    }
+//    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << ": " << params.at("TKOFF_ALT").getValue() << std::endl;
+
+
+//    // Write out generic message to display on GUI:
+//    QJsonObject textJson;
+//    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
+//    textJson["agentID"] = std::to_string(vehicleID).c_str();;
+//    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(DataGenericItem::DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO));
+//    std::string text = "TKOFF_ALT param set to " + std::to_string(params.at("TKOFF_ALT").getValue());
+//    textJson["text"] = QString::fromStdString(text);
+//    QJsonDocument textDoc(textJson);
+//    //    bool bytesWritten = writeTCPData(doc.toJson());
+//    bool textBytesWritten = writeUDPData(textDoc.toJson());
+//    if(!textBytesWritten){
+//        std::cout << "Write parameter list TEXT failed..." << std::endl;
+//    }
+
+//    // Log to file:
+//    logToFile(doc);
 }
 
 //!
@@ -193,6 +224,9 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
         if(!bytesWritten){
             std::cout << "Write global origin failed..." << std::endl;
         }
+
+        // Log to file:
+        logToFile(doc);
     }
 }
 
@@ -213,6 +247,9 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
         if(!bytesWritten){
             std::cout << "Write Position Data failed..." << std::endl;
         }
+
+        // Log to file:
+        logToFile(doc);
     }
 }
 
@@ -231,6 +268,9 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
     if(!bytesWritten){
         std::cout << "Write Attitude Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -247,6 +287,9 @@ void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measuremen
         if(!bytesWritten){
             std::cout << "Write vehicle airspeed Data failed..." << std::endl;
         }
+
+        // Log to file:
+        logToFile(doc);
 }
 
 //!
@@ -264,6 +307,9 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
     if(!bytesWritten){
         std::cout << "Write Fuel Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -280,6 +326,9 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
     if(!bytesWritten){
         std::cout << "Write Vehicle Mode Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -296,6 +345,9 @@ void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<Data
     if(!bytesWritten){
         std::cout << "Write Vehicle Text Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -312,6 +364,9 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
     if(!bytesWritten){
         std::cout << "Write Vehicle GPS Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -328,6 +383,9 @@ void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataG
     if(!bytesWritten){
         std::cout << "Write vehicle arm failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -344,6 +402,9 @@ void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_p
     if(!bytesWritten){
         std::cout << "Write mission item reached failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -360,6 +421,9 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
     if(!bytesWritten){
         std::cout << "Write vehicle heartbeat failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -385,12 +449,18 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
         std::cout << "Write Vehicle Mission Data failed..." << std::endl;
     }
 
+    // Log to file:
+    logToFile(docMission);
+
 //    bytesWritten = writeTCPData(docPath.toJson());
     bytesWritten = writeUDPData(docPath.toJson());
 
     if(!bytesWritten){
         std::cout << "Write Vehicle Path Data failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(docPath);
 }
 
 //!
@@ -407,6 +477,9 @@ void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<
     if(!bytesWritten){
         std::cout << "Write vehicle sensor footprint failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 //!
@@ -438,6 +511,9 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
     if(!bytesWritten){
         std::cout << "Write environment boundary failed..." << std::endl;
     }
+
+    // Log to file:
+    logToFile(doc);
 }
 
 void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems,QJsonArray &path)
@@ -572,17 +648,16 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
 bool MACEtoGUI::writeTCPData(QByteArray data)
 {
     std::shared_ptr<QTcpSocket> tcpSocket = std::make_shared<QTcpSocket>();
-    tcpSocket->connectToHost(m_sendAddress, static_cast<quint16>(m_sendPort));
+    tcpSocket->connectToHost(m_sendAddress, m_sendPort);
     tcpSocket->waitForConnected();
     if(tcpSocket->state() == QAbstractSocket::ConnectedState)
     {
         tcpSocket->write(data); //write the data itself
         tcpSocket->flush();
         tcpSocket->waitForBytesWritten();
+
         return true;
-    }
-    else
-    {
+    } else {
         std::cout << "TCP socket not connected MACE TO GUI" << std::endl;
         tcpSocket->close();
         return false;

@@ -5,7 +5,7 @@ usage() {
     This is an install script for OpenMACE. Pass in flags to choose which pieces to install.
 
     ${bold}Options:${reset}
-    -r, --ros           Toggle install ROS flag
+	-s, --catkin		Toggle the compilation of the catkin environment within the OpenMACE repository
     -t, --tools         Toggle install OpenMACE tools flag (typically done for initial installs from scratch)
     -c, --clean         Toggle clean first before building OpenMACE
     -h, --help          Display this help and exit
@@ -59,6 +59,51 @@ installTools() {
     cd $MACE_ROOT
 }
 
+requestROSExtension()
+{
+    echo "*******************************************"
+    echo "Setting up the ROS_ROOT_DIR extension"
+    echo "*******************************************"
+
+    #There is no ROS_ROOT_DIR defined
+    echo "Enter your ROS version:"
+    read rosVersion
+    echo "export ROS_ROOT_DIR=/opt/ros/${rosVersion}" >> ~/.bashrc
+    echo "ROS_ROOT_DIR=/opt/ros/${rosVersion}" >> /etc/environment
+    source ~/.bashrc
+}
+
+compileCatkin(){
+    echo "*******************************************"
+    echo "Compiling the catkin environment directory"
+    echo "*******************************************"
+
+	ROS_DIRECTORY="${ROS_ROOT_DIR}"
+    if [ ! -d "$ROS_DIRECTORY" ]; then
+		requestROSExtension
+    fi
+	
+    if [ -d "$ROS_DIRECTORY" ]; then
+		rosBasePath=`dirname "$ROS_DIRECTORY"`
+		rosVersion=`basename "$ROS_DIRECTORY"`
+
+        cd $MACE_ROOT/catkin_sim_environment
+        . /opt/ros/$rosVersion/setup.bash
+        catkin_make
+        catkin_make
+        catkin_make
+		if [ "$sourceCatkin" = "1" ]; then
+        	  echo "source ${MACE_ROOT}/catkin_sim_environment/devel/setup.bash" >> ~/.bashrc
+        	  source ~/.bashrc
+		else
+		  echo "The user has selected not to update the catkin_sim_environment path in the bashrc file!!!"
+		fi
+    fi
+
+    echo "*****************************************"
+	echo "FINISHED COMPILING THE CATKIN DIRECTORY"
+    echo "*****************************************"
+}
 
 installMACE() {
     echo "************************************"
@@ -66,21 +111,14 @@ installMACE() {
     echo "************************************"
 
     echo "Setting OpenMACE environment variables..."
-    echo "export MACE_ROOT=${MACE_ROOT}" >> ~/.bashrc
-    source ~/.bashrc
+
+	if [ "$setMACEPath" = "1" ]; then
+	  echo "export MACE_ROOT=${MACE_ROOT}" >> ~/.bashrc
+    	  source ~/.bashrc
+	fi
 
     echo "${MACE_ROOT}/lib" >> /etc/ld.so.conf.d/OpenMACE.conf
 
-    ROS_DIRECTORY="/opt/ros/kinetic"
-    if [ "$installROS" = "1" ] || [ -d "$ROS_DIRECTORY" ]; then
-        cd $MACE_ROOT/catkin_sim_environment
-        . /opt/ros/kinetic/setup.bash
-        catkin_make
-        catkin_make
-        catkin_make
-        echo "source ${MACE_ROOT}/catkin_sim_environment/devel/setup.bash" >> ~/.bashrc
-        source ~/.bashrc
-    fi
 
     cd $MACE_ROOT
     if [ "$cleanFirst" = "1" ]; then
@@ -120,30 +158,50 @@ installGUI() {
     echo "Installing MACE GUI..."
     echo "************************************"
 
-    cd $MACE_ROOT/ElectronGUI
-    yarn install
-    yarn run build:prod
+    cd $MACE_ROOT/MACE_Frontend
+    yarn
 }
 
 
 #### MAIN
 # Set MACE_ROOT environment variable:
-maceRootPath="$(pwd)"
-export MACE_ROOT=$maceRootPath
-echo "MACE_ROOT is set to: ${MACE_ROOT}"
+setMACEPath=0
+if [[ -z "${MACE_ROOT}" ]]; then
+  setMACEPath = 1
+  currentMACEPath="$(pwd)"
+  export MACE_ROOT=$currentMACEPath
+  echo "MACE_ROOT is now set to: ${MACE_ROOT}"
+fi
 
+if [ "$setMACEPath" = "0" ]; then
+  echo "MACE_ROOT is already set to: $MACE_ROOT"
+  currentMACEPath="$(pwd)"
+  bashMACEPath="${MACE_ROOT}"
+  echo "The current path is $currentMACEPath"
+  echo "The bash MACE path is $bashMACEPath"
+fi
+
+setROSPath=0
+if [[ -z "${ROS_ROOT_DIR}" ]]; then
+  setROSPath=1
+  echo "ROS_ROOT_DIR has not been found, will be setting this up!!!"
+fi
+
+if [ "$setROSPath" == "0" ]; then
+  echo "ROS_ROOT_DIR is already set to: ${ROS_ROOT_DIR}"
+fi
 
 USERNAME=$(logname)
 echo "Non-root username to install MACE: ${USERNAME}"
 
 installGUI=
-installROS=
+cmpCatkin=
 installTools=
 cleanFirst=
 
 while [ "$1" != "" ]; do
     case $1 in
-        -r | --ros )     installROS=1
+        -s | --catkin )  cmpCatkin=1
                          ;;
         -g | --gui )     installGUI=1
                          ;;
@@ -160,9 +218,20 @@ while [ "$1" != "" ]; do
     shift
 done
 
+
+# If toggled, there is no ROS Path
+if [ "$setROSPath" = "1" ]; then
+    requestROSExtension
+fi
+
 # If toggled, install Tools as non-root user
 if [ "$installTools" = "1" ]; then
     installTools
+fi
+
+# If toggled, compile the catkin environment
+if [ "$cmpCatkin" = "1" ]; then
+    compileCatkin
 fi
 
 # If toggled, install GUI
@@ -171,7 +240,7 @@ if [ "$installGUI" = "1" ]; then
 fi
 
 # Install MACE
-#installMACE
+installMACE
 
 cd $MACE_ROOT
 

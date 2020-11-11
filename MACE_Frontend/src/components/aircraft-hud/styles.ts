@@ -9,11 +9,13 @@ export default {
     zIndex: 999,
     // backgroundColor: "rgba(255,255,255,.6)",
     width: 300,
-    overflowY: "scroll" as "scroll"
+    display: "flex",
+    // overflowY: "scroll" as "scroll",
   },
   searchContainer: {
     marginBottom: 12,
-    position: "relative" as "relative"
+    position: "relative" as "relative",
+    display: "flex",
   },
   searchInput: {
     width: 300,
@@ -21,7 +23,7 @@ export default {
     borderRadius: 4,
     border: "none",
     paddingLeft: 36,
-    paddingRight: 8
+    paddingRight: 8,
   },
   searchIcon: {
     position: "absolute" as "absolute",
@@ -30,7 +32,7 @@ export default {
     bottom: 0,
     marginTop: "auto",
     marginBottom: "auto",
-    color: colors.gray[700]
+    color: colors.gray[700],
   },
   clearIcon: {
     position: "absolute" as "absolute",
@@ -40,7 +42,7 @@ export default {
     marginTop: "auto",
     marginBottom: "auto",
     color: colors.gray[700],
-    cursor: "pointer" as "pointer"
+    cursor: "pointer" as "pointer",
   },
   noResultsContainer: {
     width: 300,
@@ -50,12 +52,12 @@ export default {
     backgroundColor: colors.white,
     display: "flex",
     paddingTop: 16,
-    paddingBottom: 16
+    paddingBottom: 16,
   },
   noResultsText: {
     fontSize: 14,
     textAlign: "center" as "center",
-    color: colors.gray[700]
+    color: colors.gray[700],
   },
   commandsContainer: {
     marginBottom: 12,
@@ -63,30 +65,30 @@ export default {
     backgroundColor: colors.gray[700],
     padding: 16,
     borderTopLeftRadius: 4,
-    borderTopRightRadius: 4
+    borderTopRightRadius: 4,
   },
   commandButtons: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 12
+    marginTop: 12,
   },
   title: {
     fontSize: 16,
     fontWeight: 500 as 500,
-    color: colors.blue[100]
+    color: colors.blue[100],
   },
   centerButton: {
     backgroundColor: "transparent",
     border: "none",
     boxShadow: "none",
     display: "flex",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   singleSettingContainer: {
     display: "flex",
     flexDirection: "column" as "column",
-    marginBottom: 16
+    marginBottom: 16,
   },
   input: {
     borderWidth: 1,
@@ -95,15 +97,30 @@ export default {
     padding: "8px 4px",
     borderRadius: 2,
     backgroundColor: colors.gray[100],
-    marginTop: 4
+    marginTop: 4,
   },
   inputLabel: {
     fontSize: 12,
     // textTransform: "uppercase" as "uppercase",
-    color: colors.gray[600]
+    color: colors.gray[600],
   },
   tooltipButtons: {
     display: "flex",
-    alignItems: "left"
-  }
+    alignItems: "left",
+  },
+  fixedContainer: {
+    position: "relative" as "relative",
+    marginBottom: 250,
+    display: "flex",
+    height: 175,
+  },
+  fixedElements: {
+    position: "absolute" as "absolute",
+    maxWidth: 300,
+  },
+  hudScrollContainer: {
+    flex: 1,
+    overflowY: "scroll" as "scroll",
+    marginTop: 175,
+  },
 };

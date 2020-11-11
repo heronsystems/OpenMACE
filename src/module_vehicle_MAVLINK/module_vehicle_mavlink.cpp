@@ -47,7 +47,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
     if(parameterController)
     {
         parameterController->AddLambda_Finished(this, [this, parameterController](const bool completed, const MAVLINKUXVControllers::ParameterRequestResult &data){
-            UNUSED(data);
             if (completed)
                 printf("Parameter Download Completed\n");
             else

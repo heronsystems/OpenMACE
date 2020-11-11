@@ -17,10 +17,27 @@ type Props = {
   onToggleSelect: (agentID: string[]) => void;
 };
 
+const lastUpdateObj = {}
 
+// const checkIfTimeToUpdate = (props: Props) => {
+//   const {agentID} = props.data
+//   let preventUpdate = true
+//   const now = Date.now()
+//   if (!lastUpdateObj[agentID]) {
+//     lastUpdateObj[agentID] = Date.now()
+//     preventUpdate = false
+//   }
+//   else {
+//     const diff = now - lastUpdateObj[agentID]
+//     if (diff > 100) {
+//       preventUpdate = false
+//       lastUpdateObj[agentID] = Date.now()
+//     }
+//   }
+//   return preventUpdate
+// };
 
 export default React.memo((props: Props) => {
-  
   const selectAircraft = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     props.onToggleSelect([props.data.agentID]);
   }
@@ -64,4 +81,5 @@ export default React.memo((props: Props) => {
       })}
     />
   );
+// }, checkIfTimeToUpdate);
 });

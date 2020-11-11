@@ -3,7 +3,6 @@
 
 #ifdef ROS_EXISTS
 #include <ros/ros.h>
-
 #include <mace_matlab_msgs/CMD_ARM.h>
 #include <mace_matlab_msgs/CMD_DATUM.h>
 #include <mace_matlab_msgs/CMD_HOME.h>

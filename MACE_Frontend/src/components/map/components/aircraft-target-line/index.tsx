@@ -14,7 +14,20 @@ type Props = {
   data: Types.Aircraft.TargetPayload;
 };
 
-const TargetLine = (props: Props) => {
+let lastUpdate = Date.now()
+
+// const checkIfTimeToUpdate = () => {
+//   let preventUpdate = true
+//   const now = Date.now()
+//   const diff = now - lastUpdate
+//   if (diff > 100) {
+//     preventUpdate = false
+//     lastUpdate = now
+//   }
+//   return preventUpdate
+// };
+
+const TargetLine = React.memo((props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);
   const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
   if (aircraft === undefined) {
@@ -29,7 +42,8 @@ const TargetLine = (props: Props) => {
 
     );
   }
-};
+// }, checkIfTimeToUpdate);
+});
 
 
 export default TargetLine;

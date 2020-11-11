@@ -18,7 +18,7 @@
         <Parameter Name="maceID">1</Parameter>
     </GlobalParams>
 
-  <Module Class="VehicleComms" Type="Arduplane">
+  <Module Class="VehicleComms" Type="Arducopter">
     <Parameter Name="ID">1</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>
@@ -43,7 +43,7 @@
     </Parameter>
   </Module>
 
-  <Module Class="VehicleComms" Type="Arduplane">
+   <Module Class="VehicleComms" Type="Arducopter">
     <Parameter Name="ID">2</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>
@@ -67,7 +67,8 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
-  <!-- <Module Class="VehicleComms" Type="Arduplane">
+
+    <Module Class="VehicleComms" Type="Arducopter">
     <Parameter Name="ID">3</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>
@@ -91,7 +92,9 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
-  <Module Class="VehicleComms" Type="Arduplane">
+
+<!--
+    <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">4</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>
@@ -115,6 +118,7 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
+
   <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">5</Parameter>
     <Parameter Name="ProtocolParameters">
@@ -139,6 +143,7 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
+
   <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">6</Parameter>
     <Parameter Name="ProtocolParameters">
@@ -163,6 +168,7 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
+
   <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">7</Parameter>
     <Parameter Name="ProtocolParameters">
@@ -187,6 +193,7 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
+
   <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">8</Parameter>
     <Parameter Name="ProtocolParameters">
@@ -211,6 +218,7 @@
       <Parameter Name="Altitude">0.0</Parameter>
     </Parameter>
   </Module>
+
   <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">9</Parameter>
     <Parameter Name="ProtocolParameters">
@@ -236,7 +244,7 @@
     </Parameter>
   </Module> -->
 
-  <!--<Module Class="VehicleComms" Type="Arduplane">
+  <!-- <Module Class="VehicleComms" Type="Arduplane">
     <Parameter Name="ID">10</Parameter>
     <Parameter Name="ProtocolParameters">
       <Parameter Name="Name">Mavlink</Parameter>
@@ -269,4 +277,10 @@
 		<Parameter Name="SendPort">8080</Parameter>
 	</Parameter>
    </Module>
+
+    
+
+   <Module Class="Adept" Type="ACE"> </Module>
+    
+
 </ModuleConfigurations>

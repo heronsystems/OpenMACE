@@ -10,21 +10,48 @@ import ReactTooltip from "react-tooltip";
 import colors from "../../util/colors";
 import * as Types from "../../data-types/index";
 
-
 type Props = {
   addNotification: (notification: Types.Notification) => void;
   onRequestCenter: (LatLng) => void;
   aircrafts: Types.Aircraft.AircraftPayload[];
-  onCommand: (command: string, filteredAircrafts: Types.Aircraft.AircraftPayload[], payload: string[]) => void;
-  onUpdateGoHerePts: (point: Types.Vertex & {agentID: string}) => void;
+  onCommand: (
+    command: string,
+    filteredAircrafts: Types.Aircraft.AircraftPayload[],
+    payload: string[]
+  ) => void;
+  onUpdateGoHerePts: (point: Types.Vertex & { agentID: string }) => void;
   toggleGoHerePt: (show: boolean, agentID: string) => void;
   target: Types.Vertex;
   defaultAltitude: number;
   onToggleSelect: (agentIDs: string[], show?: boolean) => void;
-  showTargetFlags?: {agentID: string; showGoHere: boolean}[];
+  showTargetFlags?: { agentID: string; showGoHere: boolean }[];
 };
 
-export default React.memo((props: Props) => {
+const ref = React.createRef<HTMLDivElement>();
+const scrollContainerRef = React.createRef<HTMLDivElement>();
+let scroll_listener = null;
+
+export default (props: Props) => {
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+  const [
+    hudScrollContainerHeight,
+    setHudScrollContainerHeight,
+  ] = React.useState(0);
+  if (
+    scrollContainerRef?.current &&
+    scrollContainerRef.current.clientHeight !== hudScrollContainerHeight
+  ) {
+    setHudScrollContainerHeight(scrollContainerRef.current.clientHeight);
+  }
+  if (scroll_listener === null && scrollContainerRef?.current) {
+    scroll_listener = scrollContainerRef.current.addEventListener(
+      "scroll",
+      (e) => {
+        /// @ts-ignore This is fine, TS is dumb
+        setScrollPosition(e.target.scrollTop);
+      }
+    );
+  }
   const [search, setSearch] = React.useState("");
   const [altitude, setAltitude] = React.useState(props.defaultAltitude);
   const [target, setTarget] = React.useState(props.target);
@@ -41,8 +68,8 @@ export default React.memo((props: Props) => {
       setFilteredAircrafts(props.aircrafts);
     }
   }, [props.aircrafts]);
-//   console.log(filteredAircrafts);
-//   console.log(props.aircrafts);
+  //   console.log(filteredAircrafts);
+  //   console.log(props.aircrafts);
   const updateSearch = (value: string) => {
     setSearch(value);
     filterAircrafts(value);
@@ -69,37 +96,43 @@ export default React.memo((props: Props) => {
   };
 
   const takeoff = () => {
-      let command: string = "TAKEOFF";
-      let payloadArray = [];
-      let altitudesSafe = true;
-      filteredAircrafts.forEach((a) => {
-            let payload = {
-                takeoffPosition: {
-                    alt: altitude
-                },
-                latLonFlag: false
-            };
-          payloadArray.push(JSON.stringify(payload));
+    let command: string = "TAKEOFF";
+    let payloadArray = [];
+    let altitudesSafe = true;
+    filteredAircrafts.forEach((a) => {
+      let payload = {
+        takeoffPosition: {
+          alt: altitude,
+        },
+        latLonFlag: false,
+      };
+      payloadArray.push(JSON.stringify(payload));
 
-          let tkoffAlt = a.param_list.filter(function(p) { return p.param_id === 'TKOFF_ALT'; });
-          if(tkoffAlt[0].value < altitude) {
-            altitudesSafe = false;
-            props.addNotification({
-                title: "Takeoff Failed!",
-                message: "Takeoff higher than TKOFF_ALT=" + tkoffAlt[0].value + " for Vehicle " + a.agentID,
-                type: "danger"
-            });
-          }
+      let tkoffAlt = a.param_list.filter(function (p) {
+        return p.param_id === "TKOFF_ALT";
       });
-
-      if(altitudesSafe) {
-        props.onCommand(command, filteredAircrafts, payloadArray);
+      if (tkoffAlt[0].value < altitude) {
+        altitudesSafe = false;
+        props.addNotification({
+          title: "Takeoff Failed!",
+          message:
+            "Takeoff higher than TKOFF_ALT=" +
+            tkoffAlt[0].value +
+            " for Vehicle " +
+            a.agentID,
+          type: "danger",
+        });
       }
+    });
+
+    if (altitudesSafe) {
+      props.onCommand(command, filteredAircrafts, payloadArray);
+    }
   };
   const land = () => {
-      let command: string = "LAND";
-      let payload = [];
-      props.onCommand(command, filteredAircrafts, payload);
+    let command: string = "LAND";
+    let payload = [];
+    props.onCommand(command, filteredAircrafts, payload);
   };
   const startMission = () => {
     //   let command: string = "START_MISSION";
@@ -108,27 +141,26 @@ export default React.memo((props: Props) => {
     //   // command = "GET_VEHICLE_MISSION";
     //   // props.onCommand(command, filteredAircrafts, payload);
 
-        
     // TODO: Figure out smarter way to do mission start. Not intuitive on GUI for UMD, so changing to GUIDED on this button push for now:
     let command: string = "SET_VEHICLE_MODE";
     let payload = [];
-    filteredAircrafts.forEach(element => {
-        let modeObj = {
-            mode: "GUIDED"
-        }
-        payload.push(JSON.stringify(modeObj));
+    filteredAircrafts.forEach((element) => {
+      let modeObj = {
+        mode: "GUIDED",
+      };
+      payload.push(JSON.stringify(modeObj));
     });
     props.onCommand(command, filteredAircrafts, payload);
   };
   const pauseMission = () => {
-      let command: string = "PAUSE_MISSION";
-      let payload = [];
-      props.onCommand(command, filteredAircrafts, payload);
+    let command: string = "PAUSE_MISSION";
+    let payload = [];
+    props.onCommand(command, filteredAircrafts, payload);
   };
   const returnToLaunch = () => {
-      let command: string = "RTL";
-      let payload = [];
-      props.onCommand(command, filteredAircrafts, payload);
+    let command: string = "RTL";
+    let payload = [];
+    props.onCommand(command, filteredAircrafts, payload);
   };
   const updateAltitude = (e) => {
     const { name, value } = e.target;
@@ -136,97 +168,125 @@ export default React.memo((props: Props) => {
   };
 
   const toggleShowHidePaths = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setShowPaths(!showPaths);
-      let agentIDs = [];
-      filteredAircrafts.forEach(aircraft => {
-          agentIDs.push(aircraft.agentID);
-      });
-      
-      props.onToggleSelect(agentIDs, event.target.checked);
-  }
+    setShowPaths(!showPaths);
+    let agentIDs = [];
+    filteredAircrafts.forEach((aircraft) => {
+      agentIDs.push(aircraft.agentID);
+    });
+
+    props.onToggleSelect(agentIDs, event.target.checked);
+  };
+
+  const onRequestCenter = (agentID: string) => {
+    props.onRequestCenter(agentID);
+  };
 
   return props.aircrafts && props.aircrafts.length > 0 ? (
     <div style={styles.container}>
-      <div style={styles.searchContainer}>
-        <input
-          style={styles.searchInput}
-          value={search}
-          onChange={(e) => updateSearch(e.target.value)}
-          placeholder="Filter by Agent ID"
-        />
-        <FiSearch style={styles.searchIcon} />
-        {search !== "" && (
-          <FiX style={styles.clearIcon} onClick={() => updateSearch("")} />
-        )}
-      </div>
+      <div style={styles.fixedContainer}>
+        <div style={styles.fixedElements}>
+          <div style={styles.searchContainer}>
+            <input
+              style={styles.searchInput}
+              value={search}
+              onChange={(e) => updateSearch(e.target.value)}
+              placeholder="Filter by Agent ID"
+            />
+            <FiSearch style={styles.searchIcon} />
+            {search !== "" && (
+              <FiX style={styles.clearIcon} onClick={() => updateSearch("")} />
+            )}
+          </div>
 
-      <div style={styles.commandsContainer}>
-        <span style={styles.title}>Commands for all filtered agents:</span>
-        <div style={styles.commandButtons}>
-            <button style={styles.centerButton}>
-                <MdFlightTakeoff data-tip='custom show' data-event='click' color={TEAL_ICON_COLOR} size={20} />
-            </button>
-            <ReactTooltip place='left' globalEventOff='click' clickable={true} backgroundColor={colors.white}>
+          <div style={styles.commandsContainer}>
+            <span style={styles.title}>Commands for all filtered agents:</span>
+            <div style={styles.commandButtons}>
+              <button style={styles.centerButton}>
+                <MdFlightTakeoff
+                  data-tip="custom show"
+                  data-event="click"
+                  color={TEAL_ICON_COLOR}
+                  size={20}
+                />
+              </button>
+              <ReactTooltip
+                place="left"
+                globalEventOff="click"
+                clickable={true}
+                backgroundColor={colors.white}
+              >
                 <div style={styles.singleSettingContainer}>
-                    <label style={styles.inputLabel}>Takeoff Alt (m):</label>
-                    <input
-                        id="takeoff-tooltip-input"
-                        type="number"
-                        min={0}
-                        defaultValue={10}
-                        onChange={updateAltitude}
-                        name={"alt"}
-                        style={styles.input}
-                    />
+                  <label style={styles.inputLabel}>Takeoff Alt (m):</label>
+                  <input
+                    id="takeoff-tooltip-input"
+                    type="number"
+                    min={0}
+                    defaultValue={props.defaultAltitude}
+                    onChange={updateAltitude}
+                    name={"alt"}
+                    style={styles.input}
+                  />
                 </div>
                 <div style={styles.tooltipButtons}>
-                    <button style={styles.centerButton}>
-                        <FiX color={GRAY_ICON_COLOR} size={20} />                        
-                    </button>
-                    <button style={styles.centerButton} onClick={takeoff}>
-                        <MdFlightTakeoff color={GRAY_ICON_COLOR} size={20} />                        
-                    </button>
+                  <button style={styles.centerButton}>
+                    <FiX color={GRAY_ICON_COLOR} size={20} />
+                  </button>
+                  <button style={styles.centerButton} onClick={takeoff}>
+                    <MdFlightTakeoff color={GRAY_ICON_COLOR} size={20} />
+                  </button>
                 </div>
-            </ReactTooltip>
+              </ReactTooltip>
 
-            <button style={styles.centerButton} onClick={land}>
+              <button style={styles.centerButton} onClick={land}>
                 <MdFlightLand color={TEAL_ICON_COLOR} size={20} />
-            </button>
-            <button style={styles.centerButton} onClick={startMission}>
+              </button>
+              <button style={styles.centerButton} onClick={startMission}>
                 <FiPlay color={TEAL_ICON_COLOR} size={20} />
-            </button>
-            <button style={styles.centerButton} onClick={pauseMission}>
+              </button>
+              <button style={styles.centerButton} onClick={pauseMission}>
                 <FiPause color={TEAL_ICON_COLOR} size={20} />
-            </button>
-            <button style={styles.centerButton} onClick={returnToLaunch}>
+              </button>
+              <button style={styles.centerButton} onClick={returnToLaunch}>
                 <FiHome color={TEAL_ICON_COLOR} size={20} />
-            </button>
-        </div>
-        <div>
-            <input type="checkbox" checked={showPaths} onChange={(event: React.ChangeEvent<HTMLInputElement>) => toggleShowHidePaths(event)} />
-            <label style={styles.inputLabel}>Show/hide vehile paths</label>
+              </button>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                checked={showPaths}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  toggleShowHidePaths(event)
+                }
+              />
+              <label style={styles.inputLabel}>Show/hide vehile paths</label>
+            </div>
+          </div>
         </div>
       </div>
-
-
       {filteredAircrafts.length ? (
-        filteredAircrafts.map((a) => {
-          return (
+        <div style={styles.hudScrollContainer} ref={scrollContainerRef}>
+          {filteredAircrafts.map((a) => (
             <AircraftHUD
               data={a}
               onRequestCenter={props.onRequestCenter}
               key={a.agentID}
               onCommand={props.onCommand}
               onUpdateGoHerePts={props.onUpdateGoHerePts}
-              toggleGoHerePt = {props.toggleGoHerePt}
+              toggleGoHerePt={props.toggleGoHerePt}
               target={props.target}
-              defaultAltitude={a.param_list.filter(function(p) { return p.param_id === 'TKOFF_ALT'; })[0].value}
+              defaultAltitude={
+                a.param_list.filter(function (p) {
+                  return p.param_id === "TKOFF_ALT";
+                })[0].value
+              }
               onToggleSelect={props.onToggleSelect}
               addNotification={props.addNotification}
               showTargetFlags={props.showTargetFlags}
+              parentScrollPosition={scrollPosition}
+              parentHeight={hudScrollContainerHeight}
             />
-          );
-        })
+          ))}
+        </div>
       ) : (
         <div style={styles.noResultsContainer}>
           <span style={styles.noResultsText}>No matching vehicles</span>
@@ -234,4 +294,4 @@ export default React.memo((props: Props) => {
       )}
     </div>
   ) : null;
-});
+};

@@ -114,7 +114,12 @@ std::vector<MaceCore::TopicCharacteristic> ModuleGroundStation::GetEmittedTopics
 //!
 void ModuleGroundStation::initiateLogs()
 {
+    std::string loggerName = "mace_to_gui";
+    std::string loggerPath = this->loggingPath + "/gcs_logs/GCS.txt";
+    m_toGUIHandler->initiateLogs(loggerName, loggerPath);
 
+    loggerName = "gui_to_mace";
+    m_toMACEHandler->initiateLogs(loggerName, loggerPath);
 }
 
 //!
@@ -132,6 +137,7 @@ bool ModuleGroundStation::StartTCPServer()
     // For some reason, listening on any other specific address (i.e. not Any) fails.
     //      - As a workaround, I check the incoming connection below for equality with the guiHostAddress before parsing
     m_TcpServer->listen(QHostAddress::Any, m_listenPort);
+
 //    m_TcpServer->listen(m_guiHostAddress, m_listenPort);
 
     m_TcpServer->moveToThread(m_ListenThread);
@@ -223,6 +229,7 @@ std::shared_ptr<MaceCore::ModuleParameterStructure> ModuleGroundStation::ModuleC
     maceCommsParams->AddTerminalParameters("ListenPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
     maceCommsParams->AddTerminalParameters("SendPort", MaceCore::ModuleParameterTerminalTypes::INT, false);
     structure.AddNonTerminal("MACEComms", maceCommsParams, false);
+
     structure.AddTerminalParameters("ID", MaceCore::ModuleParameterTerminalTypes::INT, false);
 
     return std::make_shared<MaceCore::ModuleParameterStructure>(structure);
@@ -253,6 +260,7 @@ void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::Module
         }
     }
 
+
     if(params->HasTerminal("ID"))
     {
         this->SetID(params->GetTerminalValue<int>("ID"));
@@ -260,11 +268,13 @@ void ModuleGroundStation::ConfigureModule(const std::shared_ptr<MaceCore::Module
 
     m_guiHostAddress = guiHostAddress;
     m_listenPort = listenPort;
-  
+
     m_toGUIHandler->setSendAddress(guiHostAddress);
     m_toGUIHandler->setSendPort(sendPort);
+
     m_toMACEHandler->setSendAddress(guiHostAddress);
     m_toMACEHandler->setSendPort(sendPort);
+
 }
 
 //!

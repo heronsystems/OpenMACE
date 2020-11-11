@@ -20,7 +20,8 @@ const GLOBAL_HEIGHT = 48;
 type Props = {
   data: Types.Aircraft.TargetPayload;
 };
-const Target = (props: Props) => {
+
+export default React.memo((props: Props) => {
   const { aircrafts } = useContext<Context>(AppContext);
   const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
   const scope = props.data.is_global ? "global" : "local";
@@ -81,7 +82,7 @@ const Target = (props: Props) => {
           iconAnchor: L.point(width / 2, height, true)
         })}
       >
-        {!props.data.is_global && (
+        {/* {!props.data.is_global && (
           <Tooltip
             direction="right"
             offset={[16, -height / 2]}
@@ -96,10 +97,8 @@ const Target = (props: Props) => {
               </div>
             </div>
           </Tooltip>
-        )}
+        )} */}
       </Marker>
     );
   }
-};
-
-export default Target;
+});

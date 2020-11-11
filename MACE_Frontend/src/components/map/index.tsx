@@ -177,6 +177,7 @@ export default class MapView extends React.Component<Props, State> {
         onZoomEnd={this.setZoom}
         animate={true}
         oncontextmenu={this.handleContextMenu}
+        preferCanvas={true}
       >
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

@@ -43,7 +43,7 @@ include(../headerinstall.pri)
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/include
-INCLUDEPATH += $$PWD/../../speedLog/
+INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
