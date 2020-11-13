@@ -69,6 +69,9 @@ HEADERS += module_vehicle_arduplane.h\
   plane_flight_states/state_flight_AI_deflection.h \
   plane_flight_states/state_flight_AI_evalend.h \
   plane_flight_states/state_flight_AI_initialize.h \
+  plane_flight_states/state_flight_AI_initialize_ABORT.h \
+  plane_flight_states/state_flight_AI_initialize_GUIDED.h \
+  plane_flight_states/state_flight_AI_initialize_ROUTE.h \
   plane_flight_states/state_flight_AI_transition.h \
     vehicle_object/arduplane_component_flight_mode.h \
     vehicle_object/vehicle_object_arduplane.h \
