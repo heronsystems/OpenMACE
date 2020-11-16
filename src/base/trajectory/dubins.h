@@ -23,7 +23,7 @@
 #define DUBINS_H
 
 #include <iostream>
-#include "planning/trajectory_point.h"
+#include "trajectory_point.h"
 
 typedef enum 
 {

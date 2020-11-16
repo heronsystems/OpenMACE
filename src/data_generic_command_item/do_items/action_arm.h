@@ -61,7 +61,7 @@ public: //The logic behind this is that every command item can be used to genera
     void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
 
     void generateMACEMSG_CommandItem(mace_message_t &msg) const override;
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+/** End of interface imposed via AbstractCommandItem */
 
 public:
     ActionArm();

@@ -13,10 +13,11 @@
 namespace ardupilot {
 namespace state{
 
-class AP_State_FlightAI_Initialize : public AbstractStateArdupilot
+
+class AP_State_FlightAI_Initialize_ROUTE : public AbstractStateArdupilot
 {
 public:
-    AP_State_FlightAI_Initialize();
+    AP_State_FlightAI_Initialize_ROUTE();
 
     void OnExit() override;
 

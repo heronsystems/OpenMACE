@@ -13,6 +13,12 @@
 namespace ardupilot {
 namespace state{
 
+class AP_State_FlightAI_Abort;
+class AP_State_FlightAI_Deflection;
+class AP_State_FlightAI_EvalEnd;
+class AP_State_FlightAI_Initialize_ABORT;
+class AP_State_FlightAI_Initialize_ROUTE;
+
 class AP_State_FlightAI_Initialize : public AbstractStateArdupilot
 {
 public:

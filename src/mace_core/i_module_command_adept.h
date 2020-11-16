@@ -25,6 +25,7 @@ class MACE_CORESHARED_EXPORT IModuleCommandAdept :
         public IModuleGenericVehicleListener
 {
     friend class MaceCore;
+
     public:
 
         static ModuleClasses moduleClass;

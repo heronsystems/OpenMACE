@@ -12,7 +12,7 @@
 #include "common/common.h"
 #include "common/class_forward.h"
 
-CLASS_FORWARD(TrajectoryPoint);
+MACE_CLASS_FORWARD(TrajectoryPoint);
 
 typedef std::deque<TrajectoryPoint> VectorStateQueue;
 
@@ -31,7 +31,7 @@ public:
 public:
     void setFromYaw(double yaw)
     {
-        _orientation = Eigen::Quaterniond(Eigen::AngleAxisd(yaw, Eigen::Vector3d::UnitZ()));;
+        _orientation = Eigen::Quaterniond(Eigen::AngleAxisd(yaw, Eigen::Vector3d::UnitZ()));
     }
 
 public:

@@ -317,7 +317,7 @@ public:
     /// have the vehicle module inherit this type of data structure
     /////////////////////////////////////////////////////////////////////////////
 
-    virtual void NewCommand_InitializationCriteria(const command_item::Action_InitializeAITestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
+    virtual void NewCommand_InitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
     {
         UNUSED(initialization);
         UNUSED(sender);

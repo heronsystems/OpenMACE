@@ -27,7 +27,8 @@ public:
     enum getORset
     {
         GET_COMMAND,
-        SET_COMMAND
+        SET_COMMAND,
+        EXECUTE_COMMAND
     };
 
 public:

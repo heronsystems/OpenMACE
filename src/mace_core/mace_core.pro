@@ -22,7 +22,9 @@ SOURCES += mace_core.cpp \
 
 HEADERS += mace_core.h\
     i_module_command_adept.h \
+    i_module_command_ai_support.h \
     i_module_events_adept.h \
+    i_module_events_ai_support.h \
     metadata_adept.h \
     i_module_command_ml_station.h \
     i_module_events_ml_station.h \

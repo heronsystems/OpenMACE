@@ -36,24 +36,24 @@ hsm::Transition AP_State_FlightAI_Initialize::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case Data::MACEHSMState::STATE_FLIGHT_AI_IDLE:
+        case Data::MACEHSMState::STATE_FLIGHT_AI_ABORT:
         {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Initialize_Idle>(currentCommand);
-            break;
-        }
-        case Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE:
-        {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Initialize_Initialize>(currentCommand);
+            rtn = hsm::InnerTransition<AP_State_FlightAI_Initialize_ABORT>(currentCommand);
             break;
         }
         case Data::MACEHSMState::STATE_FLIGHT_AI_DEFLECTION:
         {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Initialize_Deflection>(currentCommand);
+            rtn = hsm::InnerTransition<AP_State_FlightAI_Deflection>(currentCommand);
             break;
         }
-        case Data::MACEHSMState::STATE_FLIGHT_AI_END:
+        case Data::MACEHSMState::STATE_FLIGHT_AI_EVAL_END:
         {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Initialize_EvalEnd>(currentCommand);
+            rtn = hsm::InnerTransition<AP_State_FlightAI_EvalEnd>(currentCommand);
+            break;
+        }
+        case Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ROUTE:
+        {
+            rtn = hsm::InnerTransition<AP_State_FlightAI_Initialize_ROUTE>(currentCommand);
             break;
         }
         default:
@@ -79,7 +79,10 @@ bool AP_State_FlightAI_Initialize::handleCommand(const std::shared_ptr<AbstractC
 
 void AP_State_FlightAI_Initialize::Update()
 {
-
+    if(this->IsInState<AP_State_FlightAI_Initialize_ABORT>())
+    {
+        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AI_ABORT;
+    }
 }
 
 void AP_State_FlightAI_Initialize::OnEnter()
@@ -93,9 +96,9 @@ void AP_State_FlightAI_Initialize::OnEnter()
         controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
             controllerSystemMode->Shutdown();
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
+                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ROUTE;
             else
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
+                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AI_ABORT;
         });
 
         controllerSystemMode->setLambda_Shutdown([this, collection]()
@@ -130,10 +133,10 @@ void AP_State_FlightAI_Initialize::OnEnter(const std::shared_ptr<AbstractCommand
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "plane_flight_states/state_flight_guided_idle.h"
-#include "plane_flight_states/state_flight_guided_spatial_item.h"
-#include "plane_flight_states/state_flight_guided_queue.h"
-#include "plane_flight_states/state_flight_guided_target_att.h"
-#include "plane_flight_states/state_flight_guided_target_car.h"
-#include "plane_flight_states/state_flight_guided_target_geo.h"
+#include "plane_flight_states/state_flight_AI_abort.h"
+#include "plane_flight_states/state_flight_AI_deflection.h"
+#include "plane_flight_states/state_flight_AI_evalend.h"
+
+#include "plane_flight_states/state_flight_AI_initialize_ABORT.h"
+#include "plane_flight_states/state_flight_AI_initialize_ROUTE.h"
 

@@ -5,25 +5,16 @@
 
 #include <iostream>
 
-#include "data/timer.h"
-
-
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
-
-#include "module_vehicle_ardupilot/ardupilot_target_progess.h"
-
 #include "data_generic_command_item/command_item_components.h"
-
-#include "data_generic_mission_item_topic/mission_item_reached_topic.h"
 
 
 namespace ardupilot {
 
 namespace state{
 
-class AP_State_FlightAI_Idle;
+class AP_State_FlightAI_Abort;
 class AP_State_FlightAI_Initialize;
-class AP_State_FlightAI_Deflection;
 class AP_State_FlightAI_EvalEnd;
 
 class AP_State_FlightAI : public AbstractStateArdupilot
@@ -49,8 +40,6 @@ public:
     void OnEnter() override;
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
-
-
 
 private:
 
