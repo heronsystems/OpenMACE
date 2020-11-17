@@ -354,57 +354,62 @@ bool GUItoMACE::issuedCommand(const std::string &command, const int &vehicleID, 
 void GUItoMACE::testFunction1(const int &vehicleID)
 {
 
-    command_item::Action_DynamicTarget newCommand;
-    newCommand.setTargetSystem(vehicleID);
-    newCommand.setOriginatingSystem(255);
-    command_target::DynamicTarget_Kinematic newTarget;
-    mace::pose::CartesianPosition_3D currentPositionTarget;
-    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_OFFSET_NED);
-    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
-    currentPositionTarget.updatePosition(10,0,0);
-    newTarget.setPosition(&currentPositionTarget);
-//    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
-//    currentVelocityTarget.setXVelocity(5.0);
-//    currentVelocityTarget.setYVelocity(0.0);
-//    currentVelocityTarget.setZVelocity(0.0);
-//    newTarget.setVelocity(&currentVelocityTarget);
+    std::cout << "Test function 1 with vehicle ID: " << vehicleID << std::endl;
 
-    mace::pose::Rotation_2D yaw;
-    yaw.setPhi(M_PI_4);
-    newTarget.setYaw(&yaw);
+//    command_item::Action_DynamicTarget newCommand;
+//    newCommand.setTargetSystem(vehicleID);
+//    newCommand.setOriginatingSystem(255);
+//    command_target::DynamicTarget_Kinematic newTarget;
+//    mace::pose::CartesianPosition_3D currentPositionTarget;
+//    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_LOCAL_OFFSET_NED);
+//    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+//    currentPositionTarget.updatePosition(10,0,0);
+//    newTarget.setPosition(&currentPositionTarget);
+////    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+////    currentVelocityTarget.setXVelocity(5.0);
+////    currentVelocityTarget.setYVelocity(0.0);
+////    currentVelocityTarget.setZVelocity(0.0);
+////    newTarget.setVelocity(&currentVelocityTarget);
 
-    newCommand.setDynamicTarget(&newTarget);
-    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
-    });
+//    mace::pose::Rotation_2D yaw;
+//    yaw.setPhi(M_PI_4);
+//    newTarget.setYaw(&yaw);
+
+//    newCommand.setDynamicTarget(&newTarget);
+//    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
+//        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
+//    });
 
 }
 
 void GUItoMACE::testFunction2(const int &vehicleID)
 {
-    command_item::Action_DynamicTarget newCommand;
-    newCommand.setTargetSystem(vehicleID);
-    newCommand.setOriginatingSystem(255);
-    command_target::DynamicTarget_Kinematic newTarget;
-    mace::pose::CartesianPosition_3D currentPositionTarget;
-    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_BODY_OFFSET_NED);
-    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
-    currentPositionTarget.updatePosition(10,0,0);
-    newTarget.setPosition(&currentPositionTarget);
-//    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
-//    currentVelocityTarget.setXVelocity(5.0);
-//    currentVelocityTarget.setYVelocity(0.0);
-//    currentVelocityTarget.setZVelocity(0.0);
-//    newTarget.setVelocity(&currentVelocityTarget);
 
-    mace::pose::Rotation_2D yaw;
-    yaw.setPhi(M_PI_4);
-    newTarget.setYaw(&yaw);
+    std::cout << "Test function 2 with vehicle ID: " << vehicleID << std::endl;
 
-    newCommand.setDynamicTarget(&newTarget);
-    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
-    });
+//    command_item::Action_DynamicTarget newCommand;
+//    newCommand.setTargetSystem(vehicleID);
+//    newCommand.setOriginatingSystem(255);
+//    command_target::DynamicTarget_Kinematic newTarget;
+//    mace::pose::CartesianPosition_3D currentPositionTarget;
+//    currentPositionTarget.setCoordinateFrame(CartesianFrameTypes::CF_BODY_OFFSET_NED);
+//    currentPositionTarget.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
+//    currentPositionTarget.updatePosition(10,0,0);
+//    newTarget.setPosition(&currentPositionTarget);
+////    mace::pose::Cartesian_Velocity3D currentVelocityTarget(CartesianFrameTypes::CF_LOCAL_NED);
+////    currentVelocityTarget.setXVelocity(5.0);
+////    currentVelocityTarget.setYVelocity(0.0);
+////    currentVelocityTarget.setZVelocity(0.0);
+////    newTarget.setVelocity(&currentVelocityTarget);
+
+//    mace::pose::Rotation_2D yaw;
+//    yaw.setPhi(M_PI_4);
+//    newTarget.setYaw(&yaw);
+
+//    newCommand.setDynamicTarget(&newTarget);
+//    m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
+//        ptr->EventPP_ExecuteDynamicTarget(m_parent, newCommand);
+//    });
 }
 
 
@@ -560,15 +565,7 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
     else if (command == "GET_CONNECTED_VEHICLES")
     {
         getConnectedVehicles();
-    }
-    else if (command == "TEST_FUNCTION1")
-    {
-        testFunction1(vehicleID);
-    }
-    else if (command == "TEST_FUNCTION2")
-    {
-        testFunction2(vehicleID);
-    }
+    }    
     else if (command == "GET_ENVIRONMENT_BOUNDARY")
     {
         getEnvironmentBoundary();
@@ -618,6 +615,14 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
             else if (command == "GET_VEHICLE_HOME")
             {
                 getVehicleHome(vehicleID);
+            }
+            else if (command == "TEST_FUNCTION1")
+            {
+                testFunction1(vehicleID);
+            }
+            else if (command == "TEST_FUNCTION2")
+            {
+                testFunction2(vehicleID);
             }
             else {
                 std::cout << "Command " << command << " not recognized." << std::endl;
