@@ -69,7 +69,11 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
         parameterRequest.parameterName = "TKOFF_ALT";
         parameterController->Send(parameterRequest, sender, target);
     }
+
+    this->prepareModeController();
+    this->prepareOnboardLoggingController();
 }
+
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleHomePositionController(const command_item::SpatialHome &commandObj)
 {
@@ -223,6 +227,7 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleGlobalOrig
         globalOriginController->Send(originCopy, sender, target);
     }
 }
+
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionController()
 {
@@ -276,6 +281,7 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMissionCo
     });
     m_ControllersCollection.Insert("missionController",missionController);
 }
+
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareParameterController()
 {
@@ -310,4 +316,76 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareParameter
         m_condition_ParameterController.notify_one();
     });
     m_ControllersCollection.Insert("parameterController", parameterController);
+}
+
+template <typename ...VehicleTopicAdditionalComponents>
+void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareModeController()
+{
+    //If there is an old mode controller still running, allow us to shut it down
+    if(m_ControllersCollection.Exist("modeController"))
+    {
+        auto modeControllerOld = static_cast<MAVLINKUXVControllers::ControllerSystemMode*>(m_ControllersCollection.At("modeController"));
+        if(modeControllerOld != nullptr)
+        {
+            std::cout << "Shutting down previous mode controller, which was still active" << std::endl;
+            modeControllerOld->Shutdown();
+            // Need to wait for the old controller to be shutdown.
+            std::unique_lock<std::mutex> controllerLock(m_mutex_ModeController);
+            while (!m_oldModeControllerShutdown)
+                m_condition_ModeController.wait(controllerLock);
+            m_oldModeControllerShutdown = false;
+            controllerLock.unlock();
+        }
+    }
+    //create "stateless" mode controller that exists within the module itself
+    auto parameterController = new MAVLINKUXVControllers::Controller_ParameterRequest(m_SystemData, m_TransmissionQueue, m_LinkChan);
+    parameterController->setLambda_Shutdown([this, parameterController]() mutable
+    {
+        auto ptr = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("modeController"));
+        if (ptr != nullptr)
+        {
+            auto ptr = m_ControllersCollection.Remove("modeController");
+            delete ptr;
+        }
+        std::lock_guard<std::mutex> guard(m_mutex_ModeController);
+        m_oldModeControllerShutdown = true;
+        m_condition_ModeController.notify_one();
+    });
+    m_ControllersCollection.Insert("modeController", parameterController);
+}
+
+template <typename ...VehicleTopicAdditionalComponents>
+void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareOnboardLoggingController()
+{
+    //If there is an old onboard logging controller still running, allow us to shut it down
+    if(m_ControllersCollection.Exist("onboardLoggingController"))
+    {
+        auto onboardLoggingControllerOld = static_cast<MAVLINKUXVControllers::Controller_WriteEventToLog*>(m_ControllersCollection.At("onboardLoggingController"));
+        if(onboardLoggingControllerOld != nullptr)
+        {
+            std::cout << "Shutting down previous onboard logging controller, which was still active" << std::endl;
+            onboardLoggingControllerOld->Shutdown();
+            // Need to wait for the old controller to be shutdown.
+            std::unique_lock<std::mutex> controllerLock(m_mutex_OnboardLoggingController);
+            while (!m_oldOnboardLoggingControllerShutdown)
+                m_condition_OnboardLoggingController.wait(controllerLock);
+            m_oldOnboardLoggingControllerShutdown = false;
+            controllerLock.unlock();
+        }
+    }
+    //create "stateless" onboard logging controller that exists within the module itself
+    auto parameterController = new MAVLINKUXVControllers::Controller_ParameterRequest(m_SystemData, m_TransmissionQueue, m_LinkChan);
+    parameterController->setLambda_Shutdown([this, parameterController]() mutable
+    {
+        auto ptr = static_cast<MAVLINKUXVControllers::Controller_ParameterRequest*>(m_ControllersCollection.At("onboardLoggingController"));
+        if (ptr != nullptr)
+        {
+            auto ptr = m_ControllersCollection.Remove("parameterController");
+            delete ptr;
+        }
+        std::lock_guard<std::mutex> guard(m_mutex_OnboardLoggingController);
+        m_oldOnboardLoggingControllerShutdown = true;
+        m_condition_OnboardLoggingController.notify_one();
+    });
+    m_ControllersCollection.Insert("modeController", parameterController);
 }

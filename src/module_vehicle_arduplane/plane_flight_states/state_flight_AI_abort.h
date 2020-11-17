@@ -5,12 +5,10 @@
 
 #include <iostream>
 
-
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
-
 #include "data_generic_command_item/command_item_components.h"
 
-#include "module_vehicle_MAVLINK/controllers/controller_set_surface_deflection.h"
+#include "module_vehicle_MAVLINK/controllers/controller_write_event_to_log.h"
 
 namespace ardupilot {
 namespace state{

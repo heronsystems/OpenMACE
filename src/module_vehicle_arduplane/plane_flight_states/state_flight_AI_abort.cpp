@@ -46,6 +46,7 @@ hsm::Transition AP_State_FlightAI_Abort::GetTransition()
 
 bool AP_State_FlightAI_Abort::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+    //Within the abort state we do not want to handle any further commands related to the system under test
     bool success = false;
     switch (command->getCommandType()) {
 
@@ -64,46 +65,16 @@ void AP_State_FlightAI_Abort::Update()
 
 void AP_State_FlightAI_Abort::OnEnter()
 {
-    //This should never happen, if so we are going to transition back to a known state
+    //This should never happen, but if it does, we will handle it with an empty descriptor
+
 }
 
 void AP_State_FlightAI_Abort::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
-    //This helps us based on the current conditions in the present moment
-    std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
-    if(currentModeString != "AI_DEFL") {
-        //check that the vehicle is truely armed and switch us into the guided mode
-        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-        controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
-            controllerSystemMode->Shutdown();
-            if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
-            else
 
-        });
-
-        controllerSystemMode->setLambda_Shutdown([this, collection]()
-        {
-            UNUSED(this);
-            auto ptr = collection->Remove("AP_State_AIDeflection_modeController");
-            delete ptr;
-        });
-
-        MavlinkEntityKey target = Owner().getMAVLINKID();
-        MavlinkEntityKey sender = 255;
-
-        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
-        commandMode.targetID = Owner().getMAVLINKID();
-        commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("AI_DEFL");
-        controllerSystemMode->Send(commandMode,sender,target);
-        collection->Insert("AP_State_AIDeflection_modeController", controllerSystemMode);
-    }
-    else { //we are already in the current mode, therefore just pass on the command
-        //We have no command and therefore are just in the guided mode, we can tranisition to idle
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
-    }
 }
+
+
 
 } //end of namespace ardupilot
 } //end of namespace state

@@ -39,6 +39,7 @@ HEADERS += module_vehicle_mavlink.h\
     controllers/controller_parameter_request.h \
   controllers/controller_set_surface_deflection.h \
   controllers/controller_vision_position_estimate.h \
+  controllers/controller_write_event_to_log.h \
         module_vehicle_mavlink_global.h \
     controllers/controller_system_mode.h \
     controllers/commands/command_arm.h \

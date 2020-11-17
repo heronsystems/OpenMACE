@@ -8,6 +8,8 @@
 #include "data_generic_command_item/abstract_command_item.h"
 
 #include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+#include "module_vehicle_MAVLINK/controllers/controller_write_event_to_log.h"
+
 #include "data/mace_hsm_state.h"
 
 #include "../vehicle_object/vehicle_object_ardupilot.h"

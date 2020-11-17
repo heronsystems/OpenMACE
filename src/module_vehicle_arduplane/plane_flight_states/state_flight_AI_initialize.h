@@ -42,8 +42,6 @@ public:
     void OnEnter() override;
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
-
-    bool _isInGuided = false;
 };
 
 } //end of namespace state

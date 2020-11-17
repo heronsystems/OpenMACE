@@ -36,11 +36,6 @@ hsm::Transition AP_State_FlightAI::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (desiredStateEnum) {
-        case Data::MACEHSMState::STATE_FLIGHT_AI_ABORT:
-        {
-            rtn = hsm::InnerTransition<AP_State_FlightAI_Abort>(currentCommand);
-            break;
-        }
         case Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE:
         {
             rtn = hsm::InnerTransition<AP_State_FlightAI_Initialize>(currentCommand);
@@ -63,7 +58,21 @@ bool AP_State_FlightAI::handleCommand(const std::shared_ptr<AbstractCommandItem>
 {
     bool success = false;
     switch (command->getCommandType()) {
-
+    case COMMANDTYPE::CI_ACT_TEST_INITIALIZATION:
+    {
+        if(this->IsInState<AP_State_FlightAI_Initialize>())
+        {
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            success = currentInnerState->handleCommand(command);
+        }
+        else
+        {
+            currentCommand = command->getClone();
+            desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE;
+            success = true;
+        }
+        break;
+    }
     default:
         break;
 

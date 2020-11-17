@@ -39,6 +39,7 @@
 #include "module_vehicle_MAVLINK/controllers/controller_parameter_request.h"
 #include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
 #include "module_vehicle_MAVLINK/controllers/controller_vision_position_estimate.h"
+#include "module_vehicle_MAVLINK/controllers/controller_write_event_to_log.h"
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
@@ -414,6 +415,18 @@ protected:
     std::mutex m_mutex_ParameterController;
     std::condition_variable m_condition_ParameterController;
     bool m_oldParameterControllerShutdown = false;
+
+protected:
+    void prepareModeController();
+    std::mutex m_mutex_ModeController;
+    std::condition_variable m_condition_ModeController;
+    bool m_oldModeControllerShutdown = false;
+
+protected:
+    void prepareOnboardLoggingController();
+    std::mutex m_mutex_OnboardLoggingController;
+    std::condition_variable m_condition_OnboardLoggingController;
+    bool m_oldOnboardLoggingControllerShutdown = false;
 
 protected:
     virtual void handleFirstConnectionSetup();

@@ -1,4 +1,4 @@
-#include "state_flight_AI_initialize.h"
+#include "state_flight_AI_initialize_ABORT.h"
 
 namespace ardupilot {
 namespace state{
@@ -65,14 +65,27 @@ void AP_State_FlightAI_Initialize_ABORT::Update()
 
 void AP_State_FlightAI_Initialize_ABORT::OnEnter()
 {
-
+    //This really shouldn't happen
+    OnEnter("");
 }
 
 void AP_State_FlightAI_Initialize_ABORT::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
+    //This really shouldn't happen
     UNUSED(command);
-
+    OnEnter("");
 }
+
+void AP_State_FlightAI_Initialize_ABORT::OnEnter(const std::string &descriptor)
+{
+    MAVLINKUXVControllers::LogDetails writeDetail;
+    writeDetail.type = AI_EVENT_TYPE::AI_ABORTED_TEST;
+    writeDetail.details = descriptor;
+
+    MavlinkEntityKey sender = 255;
+    static_cast<MAVLINKUXVControllers::Controller_WriteEventToLog*>(Owner().ControllersCollection()->At("onboardLoggingController"))->Broadcast(writeDetail, sender);
+}
+
 
 } //end of namespace ardupilot
 } //end of namespace state

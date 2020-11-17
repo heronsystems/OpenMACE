@@ -1,22 +1,19 @@
 #ifndef AP_STATE_FLIGHT_AI_INITIALIZE_ABORT_H
 #define AP_STATE_FLIGHT_AI_INITIALIZE_ABORT_H
 
+#include <iostream>
 #include <mavlink.h>
 
-#include <iostream>
-
-
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
-
 #include "data_generic_command_item/command_item_components.h"
 
 namespace ardupilot {
 namespace state{
 
-class AP_State_FlightAI_Initialize : public AbstractStateArdupilot
+class AP_State_FlightAI_Initialize_ABORT : public AbstractStateArdupilot
 {
 public:
-    AP_State_FlightAI_Initialize();
+    AP_State_FlightAI_Initialize_ABORT();
 
     void OnExit() override;
 
@@ -37,7 +34,8 @@ public:
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 
-    bool _isInGuided = false;
+    void OnEnter(const std::string &descriptor);
+
 };
 
 } //end of namespace state

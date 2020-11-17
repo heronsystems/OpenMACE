@@ -59,17 +59,18 @@ bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<AbstractCommand
     {
         Controllers::ControllerCollection<mavlink_message_t, int> *collection = Owner().ControllersCollection();
         auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-        controllerSystemMode->AddLambda_Finished(this, [this, controllerSystemMode](const bool completed, const uint8_t finishCode){
-            UNUSED(completed); UNUSED(finishCode); UNUSED(this);
-            controllerSystemMode->Shutdown();
-        });
 
-        controllerSystemMode->setLambda_Shutdown([this, collection]()
-        {
-            UNUSED(this);
-            auto ptr = collection->Remove("modeController");
-            delete ptr;
-        });
+//        controllerSystemMode->AddLambda_Finished(this, [this, controllerSystemMode](const bool completed, const uint8_t finishCode){
+//            UNUSED(completed); UNUSED(finishCode); UNUSED(this);
+//            controllerSystemMode->Shutdown();
+//        });
+
+//        controllerSystemMode->setLambda_Shutdown([this, collection]()
+//        {
+//            UNUSED(this);
+//            auto ptr = collection->Remove("modeController");
+//            delete ptr;
+//        });
 
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
