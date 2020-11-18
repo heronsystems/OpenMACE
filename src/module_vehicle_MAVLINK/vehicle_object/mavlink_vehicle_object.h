@@ -117,10 +117,14 @@ private:
     static const uint16_t IGNORE_VEL_TYPE_MASK = POSITION_TARGET_TYPEMASK_VX_IGNORE|POSITION_TARGET_TYPEMASK_VY_IGNORE|POSITION_TARGET_TYPEMASK_VZ_IGNORE;
 
 public:
+    Data::DataGetSetNotifier<Data::MACEHSMState> _currentHSMState;
+
+public:
     StateData_MAVLINK *state;
     EnvironmentData_MAVLINK *environment;
     StatusData_MAVLINK *status;
     MissionData_MAVLINK *mission;
+
 protected:
     int mavlinkID;
     MaceCore::ModuleCharacteristic m_module;

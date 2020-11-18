@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_Takeoff::AP_State_Takeoff():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_TAKEOFF)
 {
-    std::cout<<"We are in the constructor of STATE_TAKEOFF"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
-    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
+
 }
 
 AbstractStateArdupilot* AP_State_Takeoff::getClone() const

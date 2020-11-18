@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_Unknown::State_Unknown():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_UNKNOWN)
 {
-    std::cout<<"We are in the constructor of STATE_UNKNOWN"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_UNKNOWN;
-    desiredStateEnum = Data::MACEHSMState::STATE_UNKNOWN;
+
 }
 
 AbstractStateArdupilot* State_Unknown::getClone() const

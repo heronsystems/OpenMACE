@@ -4,10 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_Grounded::State_Grounded():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_GROUNDED)
 {
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+
 }
 
 AbstractStateArdupilot* State_Grounded::getClone() const

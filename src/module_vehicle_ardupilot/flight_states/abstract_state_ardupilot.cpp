@@ -8,6 +8,17 @@ AbstractStateArdupilot::AbstractStateArdupilot() :
     currentCommandSet(false)
 
 {
+
+}
+
+AbstractStateArdupilot::AbstractStateArdupilot(const Data::MACEHSMState &enteredState):
+    currentCommand(nullptr),
+    currentCommandSet(false)
+
+{
+    setCurrentStateEnum(enteredState);
+    setDesiredStateEnum(enteredState);
+    updateOwner_ProgressionOfHSM();
 }
 
 AbstractStateArdupilot::AbstractStateArdupilot(const AbstractStateArdupilot &copy)
@@ -94,46 +105,14 @@ bool AbstractStateArdupilot::handleMAVLINKMessage(const mavlink_message_t &msg)
 {
     UNUSED(msg);
     throw std::runtime_error("States should no longer handle mavlink messages");
-
-    /*
-    int systemID = msg.sysid;
-
-    MaceCore::ModuleCharacteristic sender;
-    sender.ModuleID = systemID;
-    sender.Class = MaceCore::ModuleClasses::VEHICLE_COMMS;
-
-    bool consumed = false;
-    std::unordered_map<std::string, Controllers::IController<mavlink_message_t>*>::iterator it;
-
-    m_ControllerFactory->controllerMutex.lock();
-    for(it=m_ControllerFactory->controllers.begin(); it!=m_ControllerFactory->controllers.end(); ++it)
-    {
-        Controllers::IController<mavlink_message_t>* obj = it->second;
-        consumed = obj->ReceiveMessage(&msg, sender);
-    }
-    m_ControllerFactory->controllerMutex.unlock();
-
-
-    if(!consumed)
-    {
-        State* innerState = GetImmediateInnerState();
-        if(innerState == this)
-        {
-            printf("!!!!!! WARNING: Immediate Inner State is equal to the outer state. This is a non-op that will result in infinte recursion. Ignoring but it probably points to a larger bug\n");
-            return consumed;
-        }
-
-        if(innerState != nullptr)
-        {
-            ardupilot::state::AbstractStateArdupilot* castChild = static_cast<ardupilot::state::AbstractStateArdupilot*>(innerState);
-            consumed = castChild->handleMAVLINKMessage(msg);
-        }
-
-    }
-    return consumed;
-    */
     return false;
 }
+
+void AbstractStateArdupilot::updateOwner_ProgressionOfHSM()
+{
+    Owner()._currentHSMState.set(currentStateEnum);
+}
+
 
 } //end of namespace state
 } //end of namespace ardupilot

@@ -25,6 +25,8 @@ class AbstractStateArdupilot : public hsm::StateWithOwner<VehicleObject_Ardupilo
 public:
     AbstractStateArdupilot();
 
+    AbstractStateArdupilot(const Data::MACEHSMState &enteredState);
+
     AbstractStateArdupilot(const AbstractStateArdupilot &copy);
 
     /**
@@ -76,11 +78,14 @@ public:
     virtual void OnExit();
 
 public:
+    virtual void OnEnter() override;
+
     virtual void OnEnter(const std::shared_ptr<AbstractCommandItem> command) = 0;
 
 protected:
     void clearCommand();
 
+    virtual void updateOwner_ProgressionOfHSM();
 protected:
 
     std::shared_ptr<command_item::AbstractCommandItem> currentCommand;

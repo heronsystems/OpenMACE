@@ -33,9 +33,6 @@ public:
     void OnEnter() override;
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
-
-private:
-    bool armingCheck;
 };
 
 } //end of namespace ardupilot

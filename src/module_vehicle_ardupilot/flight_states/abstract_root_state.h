@@ -21,6 +21,8 @@ class AbstractRootState : public AbstractStateArdupilot
 public:
     AbstractRootState();
 
+    AbstractRootState(const Data::MACEHSMState &enteredState);
+
     AbstractRootState(const AbstractRootState &copy);
 
     /**

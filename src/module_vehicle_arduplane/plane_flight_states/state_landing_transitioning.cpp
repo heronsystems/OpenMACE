@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_LandingTransitioning::AP_State_LandingTransitioning():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_LANDING_TRANSITIONING)
 {
     guidedProgress = ArdupilotTargetProgess(1,10,10);
-    std::cout<<"We are in the constructor of STATE_LANDING_TRANSITIONING"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
-    desiredStateEnum = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
 }
 
 void AP_State_LandingTransitioning::OnExit()

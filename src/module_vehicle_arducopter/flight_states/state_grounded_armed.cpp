@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_GroundedArmed::State_GroundedArmed():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_GROUNDED_ARMED)
 {
-    std::cout<<"We are in the constructor of STATE_GROUNDED_ARMED"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
+
 }
 
 AbstractStateArdupilot* State_GroundedArmed::getClone() const

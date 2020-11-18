@@ -7,6 +7,11 @@ AbstractRootState::AbstractRootState():
 {
 
 }
+AbstractRootState::AbstractRootState(const Data::MACEHSMState &enteredState):
+    AbstractStateArdupilot(enteredState)
+{
+
+}
 
 AbstractRootState::AbstractRootState(const AbstractRootState &copy):
     AbstractStateArdupilot(copy)

@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_FlightGuided::AP_State_FlightGuided():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
+
 }
 
 void AP_State_FlightGuided::OnExit()

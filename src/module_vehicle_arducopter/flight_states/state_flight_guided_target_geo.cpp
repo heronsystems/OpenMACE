@@ -4,14 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_FlightGuided_GeoTarget::State_FlightGuided_GeoTarget():
-    AbstractStateArdupilot(), m_TimeoutController(500)
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET), m_TimeoutController(500)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_GEOTARGET"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET;
-
     m_TimeoutController.connectTargetCallback(State_FlightGuided_GeoTarget::retransmitGuidedCommand, this);
-
 }
 
 void State_FlightGuided_GeoTarget::OnExit()

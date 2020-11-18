@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_FlightGuided_SpatialItem::State_FlightGuided_SpatialItem():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_SPATIALITEM"<<std::endl;
     guidedProgress = ArdupilotTargetProgess(1,10,10);
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM;
 }
 
 void State_FlightGuided_SpatialItem::OnExit()

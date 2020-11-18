@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_LandingComplete::AP_State_LandingComplete():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_LANDING_COMPLETE)
 {
-    std::cout<<"We are in the constructor of STATE_LANDING_COMPLETE"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_LANDING_COMPLETE;
-    desiredStateEnum = Data::MACEHSMState::STATE_LANDING_COMPLETE;
+
 }
 
 AbstractStateArdupilot* AP_State_LandingComplete::getClone() const

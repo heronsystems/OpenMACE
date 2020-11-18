@@ -4,11 +4,9 @@ namespace ardupilot{
 namespace state{
 
 State_Flight::State_Flight():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_FLIGHT)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+
 }
 
 void State_Flight::OnExit()

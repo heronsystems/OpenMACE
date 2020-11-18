@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_TakeoffClimbing::State_TakeoffClimbing():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_TAKEOFF_CLIMBING)
 {
-    std::cout<<"We are in the constructor of STATE_TAKEOFF_CLIMBING"<<std::endl;
     guidedProgress = ArdupilotTargetProgess(1,10,10);
-    currentStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
-    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
 }
 
 void State_TakeoffClimbing::OnExit()

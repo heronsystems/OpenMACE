@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_FlightLoiter::State_FlightLoiter():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_LOITER)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_LOITER"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_LOITER;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_LOITER;
+
 }
 
 AbstractStateArdupilot* State_FlightLoiter::getClone() const

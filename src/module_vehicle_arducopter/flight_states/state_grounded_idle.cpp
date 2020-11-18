@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state {
 
 State_GroundedIdle::State_GroundedIdle():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_GROUNDED_IDLE)
 {
-    std::cout<<"We are in the constructor of STATE_GROUNDED_IDLE"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
+
 }
 
 AbstractStateArdupilot* State_GroundedIdle::getClone() const
