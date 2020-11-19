@@ -78,8 +78,6 @@ public:
     virtual void OnExit();
 
 public:
-    virtual void OnEnter() override;
-
     virtual void OnEnter(const std::shared_ptr<AbstractCommandItem> command) = 0;
 
 protected:

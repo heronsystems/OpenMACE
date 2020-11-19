@@ -4,7 +4,7 @@ namespace ardupilot {
 namespace state{
 
 AP_State_FlightManual::AP_State_FlightManual():
-    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_MANUA)
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_MANUAL)
 {
 
 }
