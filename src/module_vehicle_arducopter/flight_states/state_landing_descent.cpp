@@ -170,8 +170,16 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
 
 void State_LandingDescent::Update()
 {
-    if(!Owner().status->vehicleArm.get().getSystemArm())
+    StatusData_MAVLINK* vehicleStatus = Owner().status;
+
+    if(!vehicleStatus->vehicleArm.get().getSystemArm())
         desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
+
+
+    std::string modeStr = vehicleStatus->vehicleMode.get().getFlightModeString();
+    if(modeStr == "BRAKE" || modeStr == "LOITER") {
+        desiredStateEnum = Data::MACEHSMState::STATE_LANDING_COMPLETE;
+    }
 }
 
 void State_LandingDescent::OnEnter()

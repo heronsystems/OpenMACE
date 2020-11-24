@@ -159,7 +159,12 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
 
 void State_TakeoffClimbing::Update()
 {
+    StatusData_MAVLINK* vehicleStatus = Owner().status;
 
+    std::string modeStr = vehicleStatus->vehicleMode.get().getFlightModeString();
+    if(modeStr == "BRAKE" || modeStr == "LOITER") {
+        desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
+    }
 }
 
 void State_TakeoffClimbing::OnEnter()
