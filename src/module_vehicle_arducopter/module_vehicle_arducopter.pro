@@ -55,7 +55,7 @@ SOURCES += module_vehicle_arducopter.cpp \
 
 HEADERS += module_vehicle_arducopter.h\
     flight_states/state_grounded_disarmed.h \
-        module_vehicle_arducopter_global.h \
+    module_vehicle_arducopter_global.h \
     flight_states/arducopter_state_components.h \
     flight_states/state_flight_guided.h \
     flight_states/state_grounded.h \
@@ -89,11 +89,18 @@ HEADERS += module_vehicle_arducopter.h\
     vehicle_object/arducopter_component_flight_mode.h \
     vehicle_object/vehicle_object_arducopter.h
 
+DEFINES += WITH_AI_SUPPORT
+  contains(DEFINES, WITH_AI_SUPPORT) {
+  message("module_vehicle_arduplane: Compiling with AI support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI
+}else{
+  message("module_vehicle_arduplane: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega
+}
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$PWD/../../spdlog/
 INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 
 # Eigen Warning suppression:

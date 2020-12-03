@@ -150,6 +150,16 @@ public:
         vehicleIDs = m_AvailableVehicles;        
     }
 
+    //!
+    //! \brief GetAvailableVehicles Get a list of vehicle IDs this instance has knowledge of
+    //! \param vehicleIDs Vector of vehicle IDs
+    //!
+    void GetAvailableMLVehicles(std::vector<std::string> &vehicleIDs) const
+    {
+        std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
+        vehicleIDs = m_AvailableMLVehicles;
+    }
+
     void GetVehicleFlightMode(const int &vehicleID, std::string &vehicleMode) const
     {
 //        ModuleCharacteristic module = GetVehicleFromMAVLINKID(vehicleID);
@@ -209,6 +219,15 @@ public:
         return m_MAVLINKIDtoModule.at(MAVLINKID);
     }
 
+    //!
+    //! \brief GetMLModuleFromMAVLINKID
+    //! \param MAVLINKID
+    //! \return
+    //!
+    ModuleCharacteristic GetMLModuleFromMAVLINKID(const unsigned int MAVLINKID) const
+    {
+        return m_MAVLINKIDtoMLModule.at(MAVLINKID);
+    }
 
     bool getMavlinkIDFromModule(const ModuleCharacteristic &characterstic, uint8_t &vehicleID) const
     {
@@ -311,6 +330,16 @@ public:
 
 private:
 
+    //!
+    //! \brief AddMLVehicle Add a new vehicle to the list of available ML vehicles
+    //! \param vehicleID Vehicle ID to add
+    //!
+    void AddMLVehicle(const std::string &vehicleID, const ModuleCharacteristic &module)
+    {
+        std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
+        m_AvailableMLVehicles.push_back(vehicleID);
+        m_MAVLINKIDtoMLModule.insert({std::stoi(vehicleID), module});
+    }
 
     //!
     //! \brief AddAvailableVehicle Add a new vehicle to the list of available vehicles
@@ -911,7 +940,9 @@ private:
     mutable std::mutex m_AvailableVehicleMutex;
     std::vector<unsigned int> m_AvailableVehicles;
     std::vector<unsigned int> m_LocalVehicles;
+    std::vector<std::string> m_AvailableMLVehicles;
     std::unordered_map<unsigned int, ModuleCharacteristic> m_MAVLINKIDtoModule;
+    std::unordered_map<unsigned int, ModuleCharacteristic> m_MAVLINKIDtoMLModule;
 
     mutable std::mutex m_VehicleFlightModeMutex;
     std::unordered_map<unsigned int, std::string> m_VehicleFlightModeMap;

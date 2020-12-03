@@ -31,6 +31,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     data_generic_item_topic_flightmode.cpp \
     data_generic_item_topic_GPS.cpp \
+    data_generic_item_topic_ml_test.cpp \
     data_generic_item_topic_param_value.cpp \
     data_generic_item_topic_text.cpp \
     data_generic_item_topic_battery.cpp \
@@ -40,9 +41,11 @@ SOURCES += \
 
 HEADERS +=\
         data_generic_item_topic_global.h \
+    data_generic_item_topic_adepttest.h \
     data_generic_item_topic_components.h \
     data_generic_item_topic_flightmode.h \
     data_generic_item_topic_GPS.h \
+    data_generic_item_topic_ml_test.h \
     data_generic_item_topic_param_value.h \
     data_generic_item_topic_text.h \
     data_generic_item_topic_battery.h \

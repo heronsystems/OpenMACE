@@ -53,6 +53,7 @@ HEADERS += data_global.h \
     topic_components/mission_key.h \
     mission_type.h \
     mission_state.h \
+    adept_terminate_types.h \
     loiter_direction.h
 
 # Unix lib Install

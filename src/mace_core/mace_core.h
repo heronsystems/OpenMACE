@@ -576,6 +576,32 @@ public:
 public:
 
     /////////////////////////////////////////////////////////////////////////
+    /// ML STATION EVENTS
+    /////////////////////////////////////////////////////////////////////////
+
+    //!
+    //! \brief Event_StartRound Event to trigger and new testing round
+    //! \param sender Sender module
+    //! \param command test setup information
+    //!
+    virtual void Event_StartRound(const ModuleBase* sender, const DataGenericItem::DataGenericItem_MLTest &testInfo) override;
+
+    //!
+    //! \brief Event_EndRound Event to stop a running testing round
+    //! \param sender Sender module
+    //!
+    virtual void Event_EndRound(const ModuleBase* sender) override;
+
+    //!
+    //! \brief Event_MarkTime Event to mark a timestamp on a test log for a particular vehicle
+    //! \param sender Sender module
+    //! \param command vehicle and timestamp
+    //!
+    virtual void Event_MarkTime(const ModuleBase* sender, std::string vehicleID, const std::string &timestamp) override;
+
+public:
+
+    /////////////////////////////////////////////////////////////////////////
     /// PATH PLANNING EVENTS
     /////////////////////////////////////////////////////////////////////////
 
@@ -766,6 +792,50 @@ private:
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    /// ADEPT MODULE EVENTS
+    /////////////////////////////////////////////////////////////////////////
+
+private:
+
+    /**
+     * @brief This function marshals a command to be sent to a vehicle
+     *
+     * The vehicle can either be attached locally or through external module
+     * @param vehicleID ID of vehicle, if zero then message is to be broadcast to all vehicles.
+     * @param vehicleCommand Command if vehicle attached locally
+     * @param externalCommand Command if vehicle attached remotly
+     * @param data Data to send to given vehicle
+     */
+    template <typename T>
+    void MarshalCommandToAdept(std::vector<std::string> vehicles, const AdeptCommands &command, const T& data, OptionalParameter<ModuleCharacteristic> sender = OptionalParameter<ModuleCharacteristic>())
+    {
+        if(command == AdeptCommands::STARTTEST) {
+
+            for(auto it = m_AdeptIDToPtr.begin() ; it != m_AdeptIDToPtr.end() ; ++it)
+            {
+
+                if (std::find(vehicles.begin(),vehicles.end(),it->first) != vehicles.end()){
+                    it->second->MarshalCommand(command, data, sender);
+                }
+            }
+
+        }
+        else if (command == AdeptCommands::ENDTEST) {
+            for(auto it = m_AdeptIDToPtr.begin() ; it != m_AdeptIDToPtr.end() ; ++it)
+            {
+                    it->second->MarshalCommand(command, data, sender);
+            }
+        }
+        else if (command == AdeptCommands::MARKTIME) {
+            for(auto it = m_AdeptIDToPtr.begin() ; it != m_AdeptIDToPtr.end() ; ++it)
+            {
+                if (std::find(vehicles.begin(),vehicles.end(),it->first) != vehicles.end()){
+                    it->second->MarshalCommand(command, data, sender);
+                }
+            }
+        }
+    }
 
 public:
 
@@ -816,6 +886,9 @@ private:
 
     std::map<std::string, IModuleCommandVehicle*> m_VehicleIDToPtr;
     std::map<IModuleCommandVehicle*, std::string> m_VehiclePTRToID;
+
+    std::map<std::string, IModuleCommandAdept*> m_AdeptIDToPtr;
+    std::map<IModuleCommandAdept*, std::string> m_AdeptPTRToID;
 
     std::list<std::shared_ptr<IModuleCommandExternalLink>> m_ExternalLink;
     std::map<int, IModuleCommandExternalLink*> m_ExternalLinkIDToPort;

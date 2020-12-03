@@ -3,18 +3,24 @@
 
 MLMACEtoGUI::MLMACEtoGUI() :
     m_sendAddress(QHostAddress::LocalHost),
-    m_sendPort(1234)
+    m_sendPort(1234),
+    m_udpConfig("127.0.0.1", 5678, "127.0.0.1", 9080)
 {
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
 }
 
 MLMACEtoGUI::MLMACEtoGUI(const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
-    m_sendPort(sendPort)
+    m_sendPort(sendPort),
+    m_udpConfig("127.0.0.1", 5678, sendAddress.toString().toStdString(), sendPort)
 {
+    m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
+    m_udpLink->Connect();
 }
 
 MLMACEtoGUI::~MLMACEtoGUI() {
-
+    m_logger->flush();
 }
 
 //!
@@ -33,7 +39,23 @@ void MLMACEtoGUI::setSendPort(const int &sendPort) {
     m_sendPort = sendPort;
 }
 
+void MLMACEtoGUI::initiateLogs(const std::string &loggerName, const std::string &loggingPath)
+{
+    try
+    {
+        m_logger = spdlog::basic_logger_mt<spdlog::async_factory>(loggerName, loggingPath);
+    }
+    catch (const spdlog::spdlog_ex& ex)
+    {
+        std::cout << "Log initialization failed: " << ex.what() << std::endl;
+    }
 
+
+    // Flush logger every 2 seconds:
+//    spdlog::flush_every(std::chrono::seconds(2));
+    m_logger->flush_on(spdlog::level::info);      // flush when "info" or higher message is logged
+
+}
 
 
 //!
@@ -60,7 +82,7 @@ void MLMACEtoGUI::sendVehicleParameterList(const int &vehicleID, const std::map<
     obj["param_list"] = verticies;
 
     QJsonDocument doc(obj);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
     if(!bytesWritten){
         std::cout << "Write parameter list failed..." << std::endl;
     }
@@ -79,12 +101,12 @@ void MLMACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<m
     {
 
         QJsonDocument doc(component->toJSON(vehicleID,MLMessageString(MLMessageTypes::VEHICLE_POSITION)));
-        bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
         if(!bytesWritten){
             std::cout << "Write Position Data failed..." << std::endl;
         }
-
+        logToFile(doc);
     }
 }
 
@@ -97,11 +119,12 @@ void MLMACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<m
 {
     QJsonDocument doc(component->toJSON(vehicleID,MLMessageString(MLMessageTypes::VEHICLE_ATTITUDE)));
 
-    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write Attitude Data failed..." << std::endl;
     }
+    logToFile(doc);
 }
 
 //!
@@ -112,11 +135,12 @@ void MLMACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<m
 void MLMACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measurement_topics::Topic_AirSpeedPtr &component)
 {
         QJsonDocument doc(component->toJSON(vehicleID,MLMessageString(MLMessageTypes::VEHICLE_AIRSPEED)));
-        bool bytesWritten = writeTCPData(doc.toJson());
+        bool bytesWritten = writeUDPData(doc.toJson());
 
         if(!bytesWritten){
             std::cout << "Write vehicle airspeed Data failed..." << std::endl;
         }
+        logToFile(doc);
 }
 
 //!
@@ -128,11 +152,12 @@ void MLMACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Da
 {
 
     QJsonDocument doc(component->toJSON(vehicleID,MLMessageString(MLMessageTypes::VEHICLE_FUEL)));
-    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write Fuel Data failed..." << std::endl;
     }
+    logToFile(doc);
 
 }
 
@@ -160,7 +185,7 @@ void MLMACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::Geodetic
     json["environmentBoundary"] = verticies;
 
     QJsonDocument doc(json);
-    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
         std::cout << "Write environment boundary failed..." << std::endl;
@@ -190,3 +215,22 @@ bool MLMACEtoGUI::writeTCPData(QByteArray data)
     }
 }
 
+//!
+//! \brief writeUDPData Write data to the MACE GUI via UDP
+//! \param data Data to be sent to the MACE GUI
+//! \return True: success / False: failure
+//!
+bool MLMACEtoGUI::writeUDPData(QByteArray data)
+{
+    // TODO: implement
+    // Use UdpLink
+    if(m_udpLink->isConnected()) {
+        m_udpLink->WriteBytes(data, data.length());
+    }
+    else {
+        std::cout << "UDP Link not connected..." << std::endl;
+        return false;
+    }
+
+    return true;
+}

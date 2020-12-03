@@ -50,7 +50,7 @@ QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::s
     json["vehicle_type"] = QString::fromStdString(Data::SystemTypeToString(getType()));
     json["companion"] = getCompanion();
     json["protocol"] = QString::fromStdString(Data::CommsProtocolToString(getProtocol()));
-    json["mission_state"] = (uint8_t)getMissionState();
+    json["mission_state"] = QString::fromStdString(Data::MissionExecutionStateToString(getMissionState()));
     json["mavlink_id"] = getMavlinkID();
 
     // TODO: Populate:
@@ -60,4 +60,40 @@ QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::s
     return json;
 }
 
+void DataGenericItem_Heartbeat::fromJSON(const std::string &inputJSON)
+{
+    //Pull Values from JSON string
+    size_t s = inputJSON.find("autopilot")+12;
+    std::string autopilot = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+    s = inputJSON.find("vehicle_type")+15;
+    std::string vehicletype = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+    s = inputJSON.find("companion")+11;
+    std::string companion = inputJSON.substr(s, inputJSON.find(",", s) - s );
+    s = inputJSON.find("protocol")+11;
+    std::string protocol = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+    s = inputJSON.find("mission_state")+16;
+    std::string missionstate = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+    s = inputJSON.find("mavlink_id")+12;
+    std::string mavlinkid = inputJSON.substr(s, inputJSON.find(",", s) - s );
+    s = inputJSON.find("vehicle_state")+16;
+    std::string vehiclestate = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+
+    //Set Values
+    this->setAutopilot(Data::AutopilotTypeFromString(autopilot));
+    this->setType(Data::SystemTypeFromString(vehicletype));
+    if (companion == "true")
+        this->setCompanion(true);
+    if (companion == "false")
+        this->setCompanion(false);
+    this->setProtocol(Data::CommsProtocolFromString(protocol));
+    this->setExecutionState(Data::MissionExecutionStateFromString(missionstate));
+    this->setMavlinkID(std::stoi(mavlinkid));
+    this->setHSMState(Data::MACEHSMStateFromString(vehiclestate));
+}
+
+std::string DataGenericItem_Heartbeat::toCSV() const
+{
+    std::string newline = Data::AutopilotTypeToString(getAutopilot()) + "; " + Data::SystemTypeToString(getType())+ "; " + (getCompanion() ? "true" : "false")  + "; " + Data::CommsProtocolToString(getProtocol()) + "; " + Data::MissionExecutionStateToString(getMissionState()) + "; " + std::to_string(getMavlinkID()) + "; " + Data::MACEHSMStateToString(getHSMState()) + "; ";
+    return newline;
+}
 } //end of namespace DataGenericItem

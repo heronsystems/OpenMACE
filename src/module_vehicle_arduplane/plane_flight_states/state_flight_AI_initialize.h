@@ -1,10 +1,9 @@
 #ifndef AP_STATE_FLIGHT_AI_INITIALIZE_H
 #define AP_STATE_FLIGHT_AI_INITIALIZE_H
 
-#include <mavlink.h>
-
 #include <iostream>
 
+#include <mavlink.h>
 
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
 
@@ -16,6 +15,7 @@ namespace state{
 class AP_State_FlightAI_Abort;
 class AP_State_FlightAI_Deflection;
 class AP_State_FlightAI_EvalEnd;
+
 class AP_State_FlightAI_Initialize_ABORT;
 class AP_State_FlightAI_Initialize_ROUTE;
 

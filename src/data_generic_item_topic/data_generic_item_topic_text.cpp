@@ -30,6 +30,19 @@ QJsonObject DataGenericItemTopic_Text::toJSON(const int &vehicleID, const std::s
     return json;
 }
 
+void DataGenericItemTopic_Text::fromJSON(const std::string &inputJSON)
+{
+    //Pull Values from JSON string
+    size_t s = inputJSON.find("\"text")+8;
+    std::string text = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+    this->setText(text);
+}
+
+std::string DataGenericItemTopic_Text::toCSV() const
+{
+    std::string newline = getText() + ";";
+    return newline;
+}
 DataGenericItemTopic_Text::DataGenericItemTopic_Text()
     :DataGenericItem::DataGenericItem_Text()
 {

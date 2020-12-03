@@ -70,6 +70,31 @@ public:
         return json;
     }
 
+    virtual void fromJSON(const std::string &inputJSON)
+    {
+        //Pull Values from JSON string
+        size_t s = inputJSON.find("lat")+5;
+        std::string lat = inputJSON.substr(s, inputJSON.find(",", s) - s );
+        s = inputJSON.find("lng")+5;
+        std::string lng = inputJSON.substr(s, inputJSON.find(",", s) - s );
+        s = inputJSON.find("alt")+5;
+        std::string alt = inputJSON.substr(s, inputJSON.find(",", s) - s );
+        s = inputJSON.find("name")+7;
+        std::string name = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+
+        //Copy and reassign position
+        mace::pose::GeodeticPosition_3D* tmpObj = position->positionAs<mace::pose::GeodeticPosition_3D>();
+        tmpObj->updatePosition(std::stod(lat),std::stod(lng),std::stod(alt));
+        this->position = tmpObj;
+        this->m_name = name;
+    }
+
+    virtual std::string toCSV() const
+    {
+        const mace::pose::GeodeticPosition_3D* castPosition = position->positionAs<mace::pose::GeodeticPosition_3D>();
+        std::string newline = m_name + "; " + std::to_string(castPosition->getLatitude()) + "; " + std::to_string(castPosition->getLongitude()) + "; " + std::to_string(castPosition->getAltitude()) + "; ";
+        return newline;
+    }
     virtual bool hasSpatialInfluence() const override
     {
         return true;
@@ -205,6 +230,11 @@ public:
     //! \brief position
     //!
     mace::pose::Position* position;
+
+    //!
+    //! \brief name
+    //!
+    std::string m_name;
 };
 
 } //end of namespace CommandItem

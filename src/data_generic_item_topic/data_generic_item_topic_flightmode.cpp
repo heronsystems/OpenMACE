@@ -27,6 +27,20 @@ QJsonObject DataGenericItemTopic_FlightMode::toJSON(const int &vehicleID, const 
     return json;
 }
 
+void DataGenericItemTopic_FlightMode::fromJSON(const std::string &inputJSON)
+{
+    //Pull Values from JSON string
+    size_t s = inputJSON.find("\"mode")+8;
+    std::string mode = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+    this->setFlightMode(mode);
+}
+
+std::string DataGenericItemTopic_FlightMode::toCSV() const
+{
+    std::string newline = getFlightModeString() + "; " ;
+    return newline;
+}
+
 DataGenericItemTopic_FlightMode::DataGenericItemTopic_FlightMode()
     :DataGenericItem::DataGenericItem_FlightMode()
 {

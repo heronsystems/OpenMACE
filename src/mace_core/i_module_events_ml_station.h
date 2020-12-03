@@ -20,6 +20,25 @@ public:
     //!
     virtual void RequestDummyFunction(const void* sender, const int &vehicleID) = 0;
 
+    //!
+    //! \brief Event_StartRound Event to trigger and new testing round
+    //! \param sender Sender module
+    //! \param command test setup information
+    //!
+    virtual void Event_StartRound(const ModuleBase* sender, const DataGenericItem::DataGenericItem_MLTest &testInfo) = 0;
+
+    //!
+    //! \brief Event_EndRound Event to stop a running testing round
+    //! \param sender Sender module
+    //!
+    virtual void Event_EndRound(const ModuleBase* sender) = 0;
+
+    //!
+    //! \brief Event_MarkTime Event to mark a timestamp on a test log for a particular vehicle
+    //! \param sender Sender module
+    //! \param command vehicle and timestamp
+    //!
+    virtual void Event_MarkTime(const ModuleBase* sender, std::string vehicleID, const std::string &timestamp) = 0;
 };
 
 } //End MaceCore Namespace

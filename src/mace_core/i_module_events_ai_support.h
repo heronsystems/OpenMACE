@@ -24,7 +24,7 @@ public:
 
 public:
 
-    virtual void EventAI_InitializeTest(const ModuleBase* sender, const command_item::Action_InitializeAITestSetup &obj) = 0;
+    virtual void EventAI_InitializeTest(const ModuleBase* sender, const command_item::Action_InitializeTestSetup &obj) = 0;
 
 };
 

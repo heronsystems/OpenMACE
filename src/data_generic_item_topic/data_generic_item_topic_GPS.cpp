@@ -39,6 +39,30 @@ QJsonObject DataGenericItemTopic_GPS::toJSON(const int &vehicleID, const std::st
     return json;
 }
 
+void DataGenericItemTopic_GPS::fromJSON(const std::string &inputJSON)
+{
+    //Pull Values from JSON string
+    size_t s = inputJSON.find("visible_sats")+14;
+    std::string sats = inputJSON.substr(s, inputJSON.find("}", s) - s );
+    s = inputJSON.find("gps_fix")+10;
+    std::string gps = inputJSON.substr(s, inputJSON.find("\"", s) - s );
+    s = inputJSON.find("hdop")+6;
+    std::string hdop = inputJSON.substr(s, inputJSON.find(",", s) - s );
+    s = inputJSON.find("vdop")+6;
+    std::string vdop = inputJSON.substr(s, inputJSON.find(",", s) - s );
+
+    this->setSatVisible(std::stod(sats));
+    this->setGPSFix(GPSFixTypeFromString(gps));
+    this->setHDOP(std::stod(hdop));
+    this->setVDOP(std::stod(vdop));
+}
+
+std::string DataGenericItemTopic_GPS::toCSV() const
+{
+    std::string newline = std::to_string(getSatVisible()) + "; " + DataGenericItem::DataGenericItem_GPS::GPSFixTypeToString(getGPSFix()) + "; " + std::to_string(getHDOP()) + "; "+ std::to_string(getVDOP()) + "; ";
+    return newline;
+}
+
 DataGenericItemTopic_GPS::DataGenericItemTopic_GPS()
     :DataGenericItem::DataGenericItem_GPS()
 {

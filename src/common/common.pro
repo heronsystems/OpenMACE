@@ -21,10 +21,13 @@ SOURCES +=
 
 HEADERS += common.h\
     enum_class_hash.h \
+    logging/adeptterminatetypes.h \
+    logging/adepttest.h \
     publisher.h \
     class_forward.h \
     optional_parameter.h \
     pointer_collection.h \
+    test_key.h \
     transmit_queue.h \
     thread_manager.h \
     chain_inheritance.h \
@@ -55,5 +58,3 @@ lib.path    = $$(MACE_ROOT)/lib
 win32:CONFIG(release, debug|release):       lib.files   += release/common.lib release/common.dll
 else:win32:CONFIG(debug, debug|release):    lib.files   += debug/common.lib debug/common.dll
 INSTALLS += lib
-
-

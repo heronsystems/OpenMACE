@@ -289,6 +289,11 @@ int main(int argc, char *argv[])
 
             break;
         }
+        case MaceCore::ModuleClasses::ADEPT:
+        {
+            core.AddAdeptModule(std::dynamic_pointer_cast<MaceCore::IModuleCommandAdept>(module));
+            break;
+        }
         case MaceCore::ModuleClasses::VEHICLE_COMMS:
         {
             core.AddLocalModule_Vehicle(std::to_string(numVehicles), std::dynamic_pointer_cast<MaceCore::IModuleCommandVehicle>(module));

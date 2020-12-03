@@ -40,6 +40,22 @@ QJsonObject DataGenericItemTopic_Battery::toJSON(const int &vehicleID, const std
     return json;
 }
 
+void DataGenericItemTopic_Battery::fromJSON(const std::string &inputJSON)
+{
+    //Pull Values from JSON string
+    size_t s = inputJSON.find("remaining")+11;
+    setBatteryRemaining(std::stod(inputJSON.substr(s, inputJSON.find(",", s) - s )));
+    s = inputJSON.find("current")+9;
+    setBatteryCurrent(std::stod(inputJSON.substr(s, inputJSON.find(",", s) - s )));
+    s = inputJSON.find("voltage")+9;
+    setBatteryVoltage(std::stod(inputJSON.substr(s, inputJSON.find(",", s) - s )));
+}
+
+std::string DataGenericItemTopic_Battery::toCSV() const
+{
+    std::string newline = std::to_string(getBatteryRemaining()) + "; " + std::to_string(getBatteryCurrent()) + "; " + std::to_string(getBatteryVoltage()) + "; ";
+    return newline;
+}
 DataGenericItemTopic_Battery::DataGenericItemTopic_Battery(const DataGenericItem::DataGenericItem_Battery &copyObj):
     DataGenericItem::DataGenericItem_Battery(copyObj)
 {

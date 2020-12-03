@@ -11,6 +11,7 @@
 #include "base/pose/pose_components.h"
 #include "data/controller_state.h"
 
+
 namespace MissionTopic{
 
 extern const char VehicleTargetTopic_name[];
@@ -46,6 +47,10 @@ public:
 
     mace_guided_target_stats_t getMACECommsObject() const;
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+
+    void fromJSON(const std::string &inputJSON) ;
+
+    std::string toCSV() const;
 
 public:
     void operator = (const VehicleTargetTopic &rhs)

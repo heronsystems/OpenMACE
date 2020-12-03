@@ -69,7 +69,8 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
         return "Grounded Disarming";
     case MACEHSMState::STATE_GROUNDED_DISARMED:
         return "Grounded Disarmed";
-
+    case MACEHSMState::STATE_FLIGHT:
+        return "Flight";
     case MACEHSMState::STATE_TAKEOFF:
         return "Flight Takeoff";
     case MACEHSMState::STATE_TAKEOFF_CLIMBING:

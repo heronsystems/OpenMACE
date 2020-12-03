@@ -13,6 +13,7 @@
 namespace ardupilot {
 namespace state{
 
+class AP_State_FlightAI_Abort;
 
 class AP_State_FlightAI_Initialize_ROUTE : public AbstractStateArdupilot
 {
@@ -37,8 +38,6 @@ public:
     void OnEnter() override;
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
-
-    bool _isInGuided = false;
 };
 
 } //end of namespace state

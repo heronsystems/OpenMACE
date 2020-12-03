@@ -11,7 +11,7 @@ AP_State_FlightAI_Deflection::AP_State_FlightAI_Deflection():
     desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AI_DEFLECTION;
 
 //    m_TimeoutController.connectTargetCallback(AP_State_FlightAI_Deflection::retransmitSurfaceDeflection, this);
-    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, previousTime);
+//    Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, previousTime);
 
 }
 

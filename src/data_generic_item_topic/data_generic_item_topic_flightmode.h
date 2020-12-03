@@ -20,6 +20,10 @@ public:
     
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
 
+    virtual void fromJSON(const std::string &inputJSON) ;
+
+    virtual std::string toCSV() const;
+
     DataGenericItemTopic_FlightMode();
     DataGenericItemTopic_FlightMode(const DataGenericItem::DataGenericItem_FlightMode &copyObj);
 };

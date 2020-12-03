@@ -93,6 +93,11 @@ public:
     mace_heartbeat_t getMACECommsObject() const;
     mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
+
+    virtual void fromJSON(const std::string &inputJSON) ;
+
+    virtual std::string toCSV() const;
+
 public:
     void operator = (const DataGenericItem_Heartbeat &rhs)
     {

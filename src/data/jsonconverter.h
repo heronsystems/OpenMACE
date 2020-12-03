@@ -22,6 +22,9 @@ public:
         json["agentID"] = std::to_string(vehicleID).c_str();;
         return json;
     }
+
+//    virtual void fromJSON(const std::string &inputJSON) const = 0;
+//    virtual std::string toCSV() const = 0;
 };
 
 #endif

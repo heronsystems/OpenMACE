@@ -27,6 +27,24 @@ QJsonObject DataGenericItemTopic_SystemArm::toJSON(const int &vehicleID, const s
     return json;
 }
 
+void DataGenericItemTopic_SystemArm::fromJSON(const std::string &inputJSON)
+{
+    //Pull Values from JSON string
+    size_t s = inputJSON.find("armed")+7;
+    std::string armed = inputJSON.substr(s, inputJSON.find(",", s) - s );
+    if (armed == "true")
+        this->setSystemArm(true);
+    if (armed == "false")
+        this->setSystemArm(false);
+
+}
+
+std::string DataGenericItemTopic_SystemArm::toCSV() const
+{
+    std::string newline = getSystemArm() ? "true" : "false";
+    newline +=  + "; ";
+    return newline;
+}
 DataGenericItemTopic_SystemArm::DataGenericItemTopic_SystemArm()
     :DataGenericItem::DataGenericItem_SystemArm()
 {

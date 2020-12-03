@@ -15,7 +15,10 @@ namespace MaceCore
 enum class AdeptCommands
 {
     BASE_MODULE_LISTENER_ENUMS,
-    GENERIC_MODULE_VEHICLE_LISTENER_ENUMS
+    GENERIC_MODULE_VEHICLE_LISTENER_ENUMS,
+    STARTTEST,
+    ENDTEST,
+    MARKTIME
 };
 
 class MaceCore;
@@ -33,8 +36,20 @@ class MACE_CORESHARED_EXPORT IModuleCommandAdept :
     IModuleCommandAdept():
         AbstractModule_EventListeners()
     {
-        IModuleGenericVehicleListener::SetUp<Metadata_Adept, IModuleEventsAdept, AdeptCommands>(this);
+        AddCommandLogic<DataGenericItem::DataGenericItem_MLTest>(AdeptCommands::STARTTEST, [this](const DataGenericItem::DataGenericItem_MLTest &test, const OptionalParameter<ModuleCharacteristic> &sender){
+            UNUSED(sender);
+            NewlyAvailableTestStart(test);
+        });
 
+        AddCommandLogic<int>(AdeptCommands::ENDTEST, [this](const int value,const OptionalParameter<ModuleCharacteristic> &sender){
+            UNUSED(value), UNUSED(sender);
+            NewlyAvailableTestEnd();
+        });
+
+        AddCommandLogic<std::string>(AdeptCommands::MARKTIME, [this](const std::string &time, const OptionalParameter<ModuleCharacteristic> &sender){
+            UNUSED(sender);
+            NewlyAvailableTimeMark(time);
+        });
     }
 
     virtual ModuleClasses ModuleClass() const
@@ -44,9 +59,25 @@ class MACE_CORESHARED_EXPORT IModuleCommandAdept :
 
 public:
 
+    //!
+    //! \brief NewlyAvailableTestStart New test available subscriber
+    //! \param test Test parameters
+    //! \param sender Sender module
+    //!
+    virtual void NewlyAvailableTestStart(const DataGenericItem::DataGenericItem_MLTest &test) = 0;
 
+    //!
+    //! \brief NewlyAvailableTestEnd New test end signal available subscriber
+    //! \param sender Sender module
+    //!
+    virtual void NewlyAvailableTestEnd() = 0;
 
-
+    //!
+    //! \brief NewlyAvailableTimeMark New Time mark available for this agent's log
+    //! \param time Time to be marked
+    //! \param sender Sender module
+    //!
+    virtual void NewlyAvailableTimeMark(const std::string &time) = 0;
 };
 
 

@@ -107,7 +107,7 @@ void MaceCore::AddLocalModule(const std::shared_ptr<ModuleBase> &module)
         }
     }
 
-    module->setPararentMaceInstanceID(getMaceInstanceID());
+    module->setParentMaceInstanceID(getMaceInstanceID());
     module->SetID(moduleID);
 
     std::vector<TopicCharacteristic> topics = module->GetEmittedTopics();
@@ -374,11 +374,18 @@ void MaceCore::AddSensorsModule(const std::shared_ptr<IModuleCommandSensors> &se
 //!
 void MaceCore::AddAdeptModule(const std::shared_ptr<IModuleCommandAdept> &adept)
 {
+    std::lock_guard<std::mutex> guard(m_VehicleMutex);
+
     adept->addListener(this);
     adept->addTopicListener(this);
-    m_Adept = adept;
+    std::string ID = std::to_string(adept->GetID());
+    if(m_AdeptIDToPtr.find(ID) != m_AdeptIDToPtr.cend())
+        throw std::runtime_error("Adept ID already exists");
 
+    m_AdeptIDToPtr.insert({ID, adept.get()});
+    m_AdeptPTRToID.insert({adept.get(), ID});
     AddLocalModule(adept);
+    m_DataFusion->AddMLVehicle(ID,adept->GetCharacteristic());
 }
 
 //This ends the functions adding appropriate modules
@@ -496,9 +503,12 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
     //throw std::runtime_error("Deprecated");
 
     std::vector<std::string> components = value.ListNonTerminals();
-
-    ModuleCharacteristic senderModule = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
-
+    ModuleCharacteristic senderModule;
+    if (moduleFrom->ModuleClass() == ModuleClasses::ADEPT){
+        senderModule = m_DataFusion->GetMLModuleFromMAVLINKID(senderID);
+    } else {
+        senderModule = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
+    }
     m_DataFusion->setTopicDatagram(topicName, senderModule, time, value);
 
     ModuleCharacteristic sender = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
@@ -517,7 +527,7 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
         for(std::vector<ModuleBase*>::const_iterator it = m_TopicNotifier.at(topicName).cbegin() ; it != m_TopicNotifier.at(topicName).cend() ; ++it) {
             ModuleBase *caller = *it;
             if(caller == moduleFrom) continue;
-            caller->NewTopicSpooled(topicName, sender, components);
+            caller->NewTopicSpooled(topicName, senderModule, components);
         }
     }
     m_TopicNotifierMutex.unlock();
@@ -706,6 +716,37 @@ void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const command_it
 //    m_DataFusion->updateVehicleFlightMode(command.getTargetSystem(), command.getRequestMode());
 
     MarshalCommandToVehicle<command_item::ActionChangeMode>(vehicleID, VehicleCommands::CHANGE_VEHICLE_MODE, ExternalLinkCommands::CHANGE_VEHICLE_MODE, command, sender->GetCharacteristic());
+}
+
+//!
+//! \brief Event_StartRound Event to trigger and new testing round
+//! \param sender Sender module
+//! \param command test setup information
+//!
+void MaceCore::Event_StartRound(const ModuleBase* sender, const DataGenericItem::DataGenericItem_MLTest &testInfo)
+{
+    MarshalCommandToAdept<DataGenericItem::DataGenericItem_MLTest>(testInfo.getAgentIDs(), AdeptCommands::STARTTEST, testInfo, sender->GetCharacteristic());
+}
+
+//!
+//! \brief Event_EndRound Event to stop a running testing round
+//! \param sender Sender module
+//!
+void MaceCore::Event_EndRound(const ModuleBase* sender)
+{
+    std::vector<std::string> IDs = {"0"};
+    MarshalCommandToAdept<int>(IDs, AdeptCommands::ENDTEST, 0, sender->GetCharacteristic());
+}
+
+//!
+//! \brief Event_MarkTime Event to mark a timestamp on a test log for a particular vehicle
+//! \param sender Sender module
+//! \param command vehicle and timestamp
+//!
+void MaceCore::Event_MarkTime(const ModuleBase* sender, std::string vehicleID, const std::string &timestamp)
+{
+    std::vector<std::string> ID = {vehicleID};
+    MarshalCommandToAdept<std::string>(ID, AdeptCommands::MARKTIME, timestamp, sender->GetCharacteristic());
 }
 
 //!

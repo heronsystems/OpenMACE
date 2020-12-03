@@ -186,6 +186,31 @@ mace_message_t VehicleTargetTopic::getMACEMsg(const uint8_t systemID, const uint
     return msg;
 }
 
+void VehicleTargetTopic::fromJSON(const std::string &inputJSON)
+{
+    //Pull Values from JSON string
+    size_t s = inputJSON.find("to_target")+11;
+    std::string distance = inputJSON.substr(s, inputJSON.find(",", s) - s );
+    s = inputJSON.find("lat")+5;
+    std::string lat = inputJSON.substr(s, inputJSON.find(",", s) - s );
+    s = inputJSON.find("lng")+5;
+    std::string lng = inputJSON.substr(s, inputJSON.find(",", s) - s );
+    s = inputJSON.find("alt")+5;
+    std::string alt = inputJSON.substr(s, inputJSON.find("}", s) - s );
+
+    //Copy and reassign position
+    mace::pose::GeodeticPosition_3D* tmpObj = m_targetPosition->positionAs<mace::pose::GeodeticPosition_3D>();
+    tmpObj->updatePosition(std::stod(lat),std::stod(lng),std::stod(alt));
+    this->m_targetPosition = tmpObj;
+    this->m_distanceToTarget = std::stod(distance);
+}
+
+std::string VehicleTargetTopic::toCSV() const
+{
+    mace::pose::GeodeticPosition_3D* castPosition = m_targetPosition->positionAs<mace::pose::GeodeticPosition_3D>();
+    std::string newline = std::to_string(m_distanceToTarget) + "; " + std::to_string(castPosition->getLatitude()) + "; " + std::to_string(castPosition->getLongitude()) + "; " + std::to_string(castPosition->getAltitude()) + "; ";
+    return newline;
+}
 std::ostream& operator<<(std::ostream& os, const VehicleTargetTopic& t)
 {
     UNUSED(t);

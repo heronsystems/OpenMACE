@@ -78,7 +78,6 @@ void AP_State_FlightAI_Initialize_ABORT::OnEnter(const std::shared_ptr<AbstractC
 
 void AP_State_FlightAI_Initialize_ABORT::OnEnter(const std::string &descriptor)
 {
-
     MAVLINKUXVControllers::LogDetails writeDetail;
     writeDetail.type = AI_EVENT_TYPE::AI_ABORTED_TEST;
     writeDetail.details = descriptor;
