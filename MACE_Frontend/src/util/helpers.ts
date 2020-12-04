@@ -469,6 +469,7 @@ const defaultButtonStatus = {
 
 export const getShowButton = (vehicleState: string, vehicleType: string) => {
     let buttons = defaultButtonStatus;
+    // console.log(vehicleState);
     switch (vehicleState) {
         case "Grounded":
         case "Grounded Idle":
@@ -511,10 +512,10 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
         case "Flight Takeoff Climbing":
         case "Flight Takeoff Transitioning":
             buttons.takeoff = { show: false, disabled: true};
-            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : true};
-            buttons.startmission = { show: true, disabled: true};
-            buttons.pausemission = { show: true, disabled: true};
-            buttons.rtl = { show: true, disabled: true};
+            buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.startmission = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.pausemission = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.rtl = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
             buttons.setgohere = { show: true, disabled: true};
 
             buttons.arm = { show: false, disabled: true};
@@ -590,8 +591,8 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
         case "Flight Landing Descent":
             buttons.takeoff = { show: false, disabled: true};
             buttons.land = { show: true, disabled: vehicleType === "FIXED_WING" ? true : true};
-            buttons.startmission = { show: false, disabled: true};
-            buttons.pausemission = { show: true, disabled: true};
+            buttons.startmission = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
+            buttons.pausemission = { show: true, disabled: vehicleType === "FIXED_WING" ? true : false};
             buttons.rtl = { show: true, disabled: true};
             buttons.setgohere = { show: true, disabled: true};
 

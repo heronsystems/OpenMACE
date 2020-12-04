@@ -229,9 +229,16 @@ export default React.memo((props: Props) => {
     props.onCommand(command, [props.data], [JSON.stringify(payload)]);
   };
   const pauseMission = () => {
-    let command: string = "PAUSE_MISSION";
-    let payload = [];
-    props.onCommand(command, [props.data], payload);
+    // let command: string = "PAUSE_MISSION";
+    // let payload = [];
+    // props.onCommand(command, [props.data], payload);
+        
+    // TODO: Figure out smarter way to do mission pause. Not intuitive on GUI for UMD, so changing to GUIDED on this button push for now:
+    let command: string = "SET_VEHICLE_MODE";
+    let payload = {
+        mode: props.data.vehicle_type === "FIXED_WING" ? "LOITER" : "BRAKE"
+    };
+    props.onCommand(command, [props.data], [JSON.stringify(payload)]);
   };
   const returnToLaunch = () => {
     let command: string = "RTL";
