@@ -1,1 +1,0 @@
-Invoking command in '/home/aaron/Software/OpenMACE/build/src': /usr/bin/cmake /home/aaron/Software/OpenMACE/catkin_sim_environment/src -DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/src
