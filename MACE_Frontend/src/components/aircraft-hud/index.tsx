@@ -153,12 +153,13 @@ export default (props: Props) => {
     props.onCommand(command, filteredAircrafts, payload);
   };
   const pauseMission = () => {
-    // let command: string = "PAUSE_MISSION";
+        // let command: string = "PAUSE_MISSION";
     // let payload = [];
     // props.onCommand(command, filteredAircrafts, payload);
 
     let command: string = "SET_VEHICLE_MODE";
     let payload = [];
+    props.onCommand(command, filteredAircrafts, payload);
     filteredAircrafts.forEach((element) => {
       let modeObj = {
         mode: element.vehicle_type === "FIXED_WING" ? "LOITER" : "BRAKE"

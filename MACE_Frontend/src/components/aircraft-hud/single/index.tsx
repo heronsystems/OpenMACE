@@ -232,7 +232,7 @@ export default React.memo((props: Props) => {
     // let command: string = "PAUSE_MISSION";
     // let payload = [];
     // props.onCommand(command, [props.data], payload);
-        
+
     // TODO: Figure out smarter way to do mission pause. Not intuitive on GUI for UMD, so changing to GUIDED on this button push for now:
     let command: string = "SET_VEHICLE_MODE";
     let payload = {

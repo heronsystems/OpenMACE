@@ -320,12 +320,6 @@ void ModuleExternalLink::TransmitMessage(const mavlink_message_t &msg, const Opt
             r.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::GROUNDSTATION_STR>(target().MaceInstance, target().ModuleID);
             m_LinkMarshaler->SendMACEMessage<mavlink_message_t>(m_LinkName, msg, r);
         }
-        else if(type == MaceCore::ModuleClasses::ML_STATION)
-        {
-            CommsMACE::Resource r;
-            r.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::MLSTATION_STR>(target().MaceInstance, target().ModuleID);
-            m_LinkMarshaler->SendMACEMessage<mavlink_message_t>(m_LinkName, msg, r);
-        }
         else if(type == MaceCore::ModuleClasses::RTA)
         {
             CommsMACE::Resource r;

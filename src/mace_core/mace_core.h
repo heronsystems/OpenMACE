@@ -16,9 +16,9 @@
 
 #include "i_module_command_external_link.h"
 #include "i_module_command_ground_station.h"
-#include "i_module_command_ml_station.h"
 #include "i_module_command_path_planning.h"
 #include "i_module_command_ROS.h"
+#include "i_module_command_RTA.h"
 #include "i_module_command_sensors.h"
 #include "i_module_command_vehicle.h"
 
@@ -553,23 +553,6 @@ public:
     //! \param vehicleMode New vehicle mode string
     //!
     virtual void CommandNewVehicleMode(const std::string &vehicleMode);
-
-
-public:
-
-    /////////////////////////////////////////////////////////////////////////
-    /// ML STATION / ADEPT EVENTS
-    /////////////////////////////////////////////////////////////////////////
-
-    void EventAI_EventTag(const ModuleBase* sender, const command_item::Action_EventTag &obj) override;
-
-    void EventAI_ExecuteTestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj) override;
-
-    void EventAI_InitializeTestConditions(const ModuleBase* sender, const command_item::Action_InitializeTestSetup &obj) override;
-
-    void EventAI_NewEvaluationTrial(const ModuleBase* sender, const DataGenericItem::AI_TestParameterization &obj) override;
-
-    void EventAI_SetSurfaceDeflection(const ModuleBase* sender, const command_item::Action_SetSurfaceDeflection &obj) override;
 
 public:
 

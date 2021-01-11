@@ -14,9 +14,6 @@
 #include "data/system_type.h"
 
 #include "data_generic_command_item/command_item_components.h"
-#include "data_interface_MACE/generic/helper_previous_command_mace.h"
-
-using namespace DataInterface_MACE;
 
 namespace ExternalLink {
 

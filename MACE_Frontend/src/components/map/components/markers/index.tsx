@@ -105,7 +105,7 @@ export default React.memo((props: Props) => {
             />
           );
         })}
-        {/* {paths.map((path: Types.Aircraft.PathPayload, index) => {
+        {paths.map((path: Types.Aircraft.PathPayload, index) => {
           const acIndex = aircrafts.findIndex(
                 (a) => path.agentID === a.agentID
           );
@@ -115,7 +115,7 @@ export default React.memo((props: Props) => {
                 return <AircraftPath key={`path-${path.agentID}`} data={path} />;
             }
           }
-        })} */}
+        })}
         {targets.map((target: Types.Aircraft.TargetPayload, index) => {
             const acIndex = aircrafts.findIndex(
                 (a) => target.agentID === a.agentID

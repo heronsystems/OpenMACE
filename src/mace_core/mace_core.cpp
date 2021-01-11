@@ -452,11 +452,9 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 
     std::vector<std::string> components = value.ListNonTerminals();
     ModuleCharacteristic senderModule;
-    if (moduleFrom->ModuleClass() == ModuleClasses::ADEPT){
-        senderModule = m_DataFusion->GetMLModuleFromMAVLINKID(senderID);
-    } else {
-        senderModule = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
-    }
+
+    senderModule = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
+
     m_DataFusion->setTopicDatagram(topicName, senderModule, time, value);
 
     ModuleCharacteristic sender = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
@@ -660,39 +658,6 @@ void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const command_it
 //    m_DataFusion->updateVehicleFlightMode(command.getTargetSystem(), command.getRequestMode());
 
     MarshalCommandToVehicle<command_item::ActionChangeMode>(vehicleID, VehicleCommands::CHANGE_VEHICLE_MODE, ExternalLinkCommands::CHANGE_VEHICLE_MODE, command, sender->ModuleClass(), sender->GetCharacteristic());
-}
-
-/////////////////////////////////////////////////////////////////////////
-/// AI SUPPORT EVENTS
-/////////////////////////////////////////////////////////////////////////
-
-void MaceCore::EventAI_EventTag(const ModuleBase* sender, const command_item::Action_EventTag &obj)
-{
-    UNUSED(sender);
-    UNUSED(obj);
-}
-
-void MaceCore::EventAI_ExecuteTestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj)
-{
-    UNUSED(sender);
-    UNUSED(obj);
-}
-
-void MaceCore::EventAI_InitializeTestConditions(const ModuleBase* sender, const command_item::Action_InitializeTestSetup &obj)
-{
-    m_VehicleIDToPtr.at(std::to_string(obj.getTargetSystem()))->MarshalCommand(VehicleCommands::INITIALIZE_TEST_CONDITIONS,obj, sender->GetCharacteristic());
-}
-
-void MaceCore::EventAI_NewEvaluationTrial(const ModuleBase* sender, const DataGenericItem::AI_TestParameterization &obj)
-{
-    UNUSED(sender);
-    UNUSED(obj);
-}
-
-void MaceCore::EventAI_SetSurfaceDeflection(const ModuleBase* sender, const command_item::Action_SetSurfaceDeflection &obj)
-{
-    UNUSED(sender);
-    UNUSED(obj);
 }
 
 
