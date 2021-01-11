@@ -240,10 +240,6 @@ void ModuleExternalLink::ExternalModuleAdded(const CommsMACE::Resource &resource
     {
         type = MaceCore::ModuleClasses::GROUND_STATION;
     }
-    else if(strcmp(moduleTypeName, CommsMACE::MLSTATION_STR) == 0)
-    {
-        type = MaceCore::ModuleClasses::ML_STATION;
-    }
     else if(strcmp(moduleTypeName, CommsMACE::RTA_STR) == 0)
     {
         type = MaceCore::ModuleClasses::RTA;
@@ -1014,10 +1010,6 @@ void ModuleExternalLink::NewlyAvailableModule(const MaceCore::ModuleCharacterist
     if(type == MaceCore::ModuleClasses::GROUND_STATION)
     {
         resource.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::GROUNDSTATION_STR>(module.MaceInstance, module.ModuleID);
-    }
-    if(type == MaceCore::ModuleClasses::ML_STATION)
-    {
-        resource.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::MLSTATION_STR>(module.MaceInstance, module.ModuleID);
     }
     if(type == MaceCore::ModuleClasses::RTA)
     {

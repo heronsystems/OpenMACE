@@ -19,10 +19,8 @@
 #include "i_module_command_ml_station.h"
 #include "i_module_command_path_planning.h"
 #include "i_module_command_ROS.h"
-#include "i_module_command_RTA.h"
 #include "i_module_command_sensors.h"
 #include "i_module_command_vehicle.h"
-#include "i_module_command_adept.h"
 
 #include "i_module_events_external_link.h"
 #include "i_module_events_ground_station.h"
@@ -30,7 +28,6 @@
 #include "i_module_events_ROS.h"
 #include "i_module_events_rta.h"
 #include "i_module_events_sensors.h"
-#include "i_module_events_adept.h"
 #include "i_module_events_vehicle.h"
 
 #include "i_module_topic_events.h"

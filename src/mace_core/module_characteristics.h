@@ -11,12 +11,10 @@ enum class ModuleClasses
     VEHICLE_COMMS = 0,
     EXTERNAL_LINK,
     GROUND_STATION,
-    ML_STATION,
     PATH_PLANNING,
     ROS,
     RTA,
     SENSORS,
-    ADEPT,
     NR_TYPES
 };
 
