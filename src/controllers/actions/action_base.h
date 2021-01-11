@@ -3,7 +3,7 @@
 
 #include <functional>
 
-#include "mace.h"
+#include <mavlink.h>
 
 #include "mace_core/module_characteristics.h"
 

@@ -82,6 +82,16 @@ public:
     }
 
 public:
+
+    VelocityInterface_Translational& operator = (const VelocityInterface_Translational &rhs)
+    {
+        Velocity::operator=(rhs);
+        this->explicitType = rhs.explicitType;
+        this->explicitFrame = rhs.explicitFrame;
+        this->data = rhs.data;
+        return *this;
+    }
+
     bool operator == (const VelocityInterface_Translational &rhs) const
     {
         if(!Velocity::operator ==(rhs))

@@ -13,15 +13,15 @@ class CommandItemACK
 {
 public:
     CommandItemACK();
-    CommandItemACK(const COMMANDTYPE &cmdType, const Data::CommandACKType &codeType);
-    CommandItemACK(const int &systemOrigin, const COMMANDTYPE &cmdType, const Data::CommandACKType &codeType, const int &systemTarget = 0);
+    CommandItemACK(const MAV_CMD &cmdType, const  MAV_CMD_ACK &codeType);
+    CommandItemACK(const int &systemOrigin, const MAV_CMD &cmdType, const MAV_CMD_ACK &codeType, const int &systemTarget = 0);
 
 public:
-    COMMANDTYPE getCommandType() const
+    MAV_CMD getCommandType() const
     {
         return this->cmd;
     }
-    Data::CommandACKType getACKType() const
+     MAV_CMD_ACK getACKType() const
     {
         return this->code;
     }
@@ -36,11 +36,11 @@ public:
     }
 
 public:
-    void setCommandType(const COMMANDTYPE &cmdType)
+    void setCommandType(const MAV_CMD &cmdType)
     {
         this->cmd = cmdType;
     }
-    void setACKType(const Data::CommandACKType &ackType)
+    void setACKType(const  MAV_CMD_ACK &ackType)
     {
         this->code = ackType;
     }
@@ -85,8 +85,8 @@ public:
 
 public:
     //KEN TODO: add and originating component in order to direct this information rather than broadcast
-    COMMANDTYPE cmd;
-    Data::CommandACKType code;
+    MAV_CMD cmd;
+    MAV_CMD_ACK code;
     int originatingSystem;
     int targetSystem;
 };

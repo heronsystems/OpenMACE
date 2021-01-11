@@ -26,7 +26,6 @@
 
 #include "i_module_events_external_link.h"
 #include "i_module_events_ground_station.h"
-#include "i_module_events_ml_station.h"
 #include "i_module_events_path_planning.h"
 #include "i_module_events_ROS.h"
 #include "i_module_events_rta.h"
@@ -54,12 +53,10 @@ class MACE_CORESHARED_EXPORT MaceCore :
         virtual public IModuleTopicEvents,
         virtual public IModuleEventsVehicle,
         virtual public IModuleEventsSensors,
-        virtual public IModuleEventsAdept,
         virtual public IModuleEventsRTA,
         virtual public IModuleEventsPathPlanning,
         virtual public IModuleEventsROS,
         virtual public IModuleEventsGroundStation,
-        virtual public IModuleEventsMLStation,
         virtual public IModuleEventsExternalLink
 {
 
@@ -119,12 +116,6 @@ public: //The following functions add specific modules to connect to mace core
     void AddGroundStationModule(const std::shared_ptr<IModuleCommandGroundStation> &groundStation);
 
     //!
-    //! \brief AddMLStationModule Add ML station module
-    //! \param mlStation ML station module setup
-    //!
-    void AddMLStationModule(const std::shared_ptr<IModuleCommandMLStation> &mlStation);
-
-    //!
     //! \brief AddExternalLink Add external link module
     //! \param externalLink External link module setup
     //!
@@ -175,12 +166,6 @@ public: //The following functions add specific modules to connect to mace core
     //! \param sensors Sensors module setup
     //!
     void AddSensorsModule(const std::shared_ptr<IModuleCommandSensors> &sensors);
-
-    //!
-    //! \brief AddAdeptModule Add adept module
-    //! \param adept Adept module setup
-    //!
-    void AddAdeptModule(const std::shared_ptr<IModuleCommandAdept> &adept);
 
 public:
 
@@ -576,6 +561,22 @@ public:
 public:
 
     /////////////////////////////////////////////////////////////////////////
+    /// ML STATION / ADEPT EVENTS
+    /////////////////////////////////////////////////////////////////////////
+
+    void EventAI_EventTag(const ModuleBase* sender, const command_item::Action_EventTag &obj) override;
+
+    void EventAI_ExecuteTestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj) override;
+
+    void EventAI_InitializeTestConditions(const ModuleBase* sender, const command_item::Action_InitializeTestSetup &obj) override;
+
+    void EventAI_NewEvaluationTrial(const ModuleBase* sender, const DataGenericItem::AI_TestParameterization &obj) override;
+
+    void EventAI_SetSurfaceDeflection(const ModuleBase* sender, const command_item::Action_SetSurfaceDeflection &obj) override;
+
+public:
+
+    /////////////////////////////////////////////////////////////////////////
     /// PATH PLANNING EVENTS
     /////////////////////////////////////////////////////////////////////////
 
@@ -726,15 +727,16 @@ private:
      * @param data Data to send to given vehicle
      */
     template <typename T>
-    void MarshalCommandToVehicle(int vehicleID, VehicleCommands vehicleCommand, ExternalLinkCommands externalCommand, const T& data, OptionalParameter<ModuleCharacteristic> sender = OptionalParameter<ModuleCharacteristic>())
+    void MarshalCommandToVehicle(int vehicleID, VehicleCommands vehicleCommand, ExternalLinkCommands externalCommand, const T& data, const ModuleClasses &senderType = ModuleClasses::NR_TYPES, OptionalParameter<ModuleCharacteristic> sender = OptionalParameter<ModuleCharacteristic>())
     {
         //transmit to all
         if(vehicleID == 0) {
 
             for(auto it = m_VehicleIDToPort.begin() ; it != m_VehicleIDToPort.end() ; ++it)
             {
+
                 //don't resend to sender.
-                if(sender.IsSet() && it->second->GetCharacteristic() == sender())
+                if((sender.IsSet()) && (senderType == ModuleClasses::VEHICLE_COMMS) && (it->second->GetCharacteristic() == sender()))
                 {
                     continue;
                 }
@@ -765,7 +767,6 @@ private:
             }
         }
     }
-
 
 public:
 
@@ -821,11 +822,9 @@ private:
     std::map<int, IModuleCommandExternalLink*> m_ExternalLinkIDToPort;
 
     std::shared_ptr<IModuleCommandGroundStation> m_GroundStation;
-    std::shared_ptr<IModuleCommandMLStation> m_MLStation;
     std::shared_ptr<IModuleCommandPathPlanning> m_PathPlanning;
     std::shared_ptr<IModuleCommandROS> m_ROS;
     std::shared_ptr<IModuleCommandSensors> m_Sensors;
-    std::shared_ptr<IModuleCommandAdept> m_Adept;
     std::shared_ptr<IModuleCommandRTA> m_GlobalRTA;
     std::vector<std::shared_ptr<IModuleCommandRTA>> m_SpecailizedRTA;
 

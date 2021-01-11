@@ -97,12 +97,12 @@ void MavlinkProtocol::SetChannel(ILink *link, uint8_t channel)
 //! \param link Link to put message onto
 //! \param message Message to send
 //!
-void MavlinkProtocol::SendProtocolMessage(ILink *link, const mace_message_t &message, const OptionalParameter<Resource> &target)
+void MavlinkProtocol::SendProtocolMessage(ILink *link, const mavlink_message_t &message, const OptionalParameter<Resource> &target)
 {
     // Create buffer
-    static uint8_t buffer[MACE_MAX_PACKET_LEN];
+    static uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
     // Write message into buffer, prepending start sign
-    int len = mace_msg_to_send_buffer(buffer, &message);
+    int len = mavlink_msg_to_send_buffer(buffer, &message);
     // If link is connected
     if (link->isConnected())
     {
@@ -124,10 +124,10 @@ void MavlinkProtocol::ReceiveData(ILink *link, const std::vector<uint8_t> &buffe
 //     std::cout << "MavlinkProtocol::ReceiveData " << std::endl;
     uint8_t mavlinkChannel = m_MavlinkChannels.at(link);
 
-    mace_message_t message;
+    mavlink_message_t message;
     message.seq = 0;
     message.compid = 0;
-    mace_status_t status;
+    mavlink_status_t status;
 
     static int mavlink09Count = 0;
     static int nonmavlinkCount = 0;
@@ -138,7 +138,7 @@ void MavlinkProtocol::ReceiveData(ILink *link, const std::vector<uint8_t> &buffe
 
     for(uint8_t c: buffer)
     {
-        unsigned int decodeState = mace_parse_char(mavlinkChannel, c, &message, &status);
+        unsigned int decodeState = mavlink_parse_char(mavlinkChannel, c, &message, &status);
 
         if (c == 0x55) mavlink09Count++;
         if ((mavlink09Count > 100) && !decodedFirstPacket && !warnedUser)
@@ -181,24 +181,24 @@ void MavlinkProtocol::ReceiveData(ILink *link, const std::vector<uint8_t> &buffe
         if (decodeState == 1)
         {
             decodedFirstPacket = true;
-            if(message.msgid == MACE_MSG_ID_PING)
+            if(message.msgid == MAVLINK_MSG_ID_PING)
             {
                 // process ping requests (tgt_system and tgt_comp must be zero)
-                mace_ping_t ping;
-                mace_msg_ping_decode(&message, &ping);
+                mavlink_ping_t ping;
+                mavlink_msg_ping_decode(&message, &ping);
                 if(!ping.target_system && !ping.target_component)
                 {
-                    mace_message_t msg;
-                    mace_msg_ping_pack(getSystemId(), getComponentId(), &msg, ping.time_usec, ping.seq, message.sysid, message.compid);
+                    mavlink_message_t msg;
+                    mavlink_msg_ping_pack(getSystemId(), getComponentId(), &msg, ping.time_usec, ping.seq, message.sysid, message.compid);
                     SendProtocolMessage(link, msg);
                 }
             }
 
-            if(message.msgid == MACE_MSG_ID_RADIO_STATUS)
+            if(message.msgid == MAVLINK_MSG_ID_RADIO_STATUS)
             {
                 // process telemetry status message
-                mace_radio_status_t rstatus;
-                mace_msg_radio_status_decode(&message, &rstatus);
+                mavlink_radio_status_t rstatus;
+                mavlink_msg_radio_status_decode(&message, &rstatus);
                 int rssi = rstatus.rssi,
                     remrssi = rstatus.remrssi;
                 // 3DR Si1k radio needs rssi fields to be converted to dBm
@@ -226,17 +226,17 @@ void MavlinkProtocol::ReceiveData(ILink *link, const std::vector<uint8_t> &buffe
 //            if (message.msgid == MACE_MSG_ID_HEARTBEAT)
 //            {
 //                mace_heartbeat_t heartbeat;
-//                mace_msg_heartbeat_decode(&message, &heartbeat);
+//                mavlink_msg_heartbeat_decode(&message, &heartbeat);
 //                Emit([&](const IProtocolMavlinkEvents* ptr){ptr->HeartbeatInfo(link, message.sysid, heartbeat);});
-//            }else if(message.msgid == MACE_MSG_ID_COMMAND_ACK)
+//            }else if(message.msgid == MAVLINK_MSG_ID_COMMAND_ACK)
 //            {
-//                mace_command_ack_t commandACK;
-//                mace_msg_command_ack_decode(&message, &commandACK);
+//                mavlink_command_ack_t commandACK;
+//                mavlink_msg_command_ack_decode(&message, &commandACK);
 //                Emit([&](const IProtocolMavlinkEvents* ptr){ptr->CommandACK(link, message.sysid, commandACK);});
 //            }else if(message.msgid == MACE_MSG_ID_VEHICLE_SYNC)
 //            {
 //                mace_vehicle_sync_t syncRequest;
-//                mace_msg_vehicle_sync_decode(&message, &syncRequest);
+//                mavlink_msg_vehicle_sync_decode(&message, &syncRequest);
 //                Emit([&](const IProtocolMavlinkEvents* ptr){ptr->SyncRequest(link, message.sysid, syncRequest);});
 //            }
 

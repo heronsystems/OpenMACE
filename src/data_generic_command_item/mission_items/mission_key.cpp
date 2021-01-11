@@ -8,12 +8,6 @@ MissionKey::MissionKey():
 
 }
 
-MissionKey::MissionKey(const unsigned int &systemID, const unsigned int &creatorID, const unsigned int &missionID, const MISSIONTYPE &missionType):
-    m_systemID(systemID),m_creatorID(creatorID),m_missionID(missionID),m_missionType(missionType),m_missionState(MISSIONSTATE::CURRENT)
-{
-
-}
-
 MissionKey::MissionKey(const unsigned int &systemID, const unsigned int &creatorID, const unsigned int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &missionState):
     m_systemID(systemID),m_creatorID(creatorID),m_missionID(missionID),m_missionType(missionType),m_missionState(missionState)
 {

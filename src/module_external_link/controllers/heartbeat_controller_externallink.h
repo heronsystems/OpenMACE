@@ -4,7 +4,8 @@
 #include <iostream>
 #include <QDate>
 
-#include "mace.h"
+#include <mavlink.h>
+
 #include "common/thread_manager.h"
 #include "data/timer.h"
 
@@ -22,7 +23,7 @@ namespace ExternalLink {
 class HeartbeatController_Interface
 {
 public:
-    virtual void cbiHeartbeatController_transmitCommand(const mace_heartbeat_t &heartbeat) = 0;
+    virtual void cbiHeartbeatController_transmitCommand(const mavlink_mace_heartbeat_t &heartbeat) = 0;
 };
 
 

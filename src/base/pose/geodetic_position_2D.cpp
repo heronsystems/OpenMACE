@@ -56,9 +56,10 @@ GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_2D &copy):
 }
 
 GeodeticPosition_2D::GeodeticPosition_2D(const GeodeticPosition_3D &copy):
-    Abstract_GeodeticPosition(copy), state_space::State(copy)
+    Abstract_GeodeticPosition(copy), state_space::State(copy), data(0.0,0.0)
 {
-    this->updateTranslationalComponents(copy.getLatitude(), copy.getLongitude());
+    data(0) = copy.data(0);
+    data(1) = copy.data(1);
 }
 
 bool GeodeticPosition_2D::hasLatitudeBeenSet() const
@@ -178,7 +179,7 @@ double GeodeticPosition_2D::compassBearingTo(const Abstract_GeodeticPosition* po
 //!
 void GeodeticPosition_2D::newPositionFromPolar(Abstract_GeodeticPosition* newObject, const double &distance, const double &bearing) const
 {
-    return newPositionFromCompass(newObject, distance, math::polarToCompassBearing(bearing));
+    newPositionFromCompass(newObject, distance, math::polarToCompassBearing(bearing));
 }
 
 //!
@@ -222,9 +223,9 @@ void GeodeticPosition_2D::applyPositionalShiftFromCompass(const double &distance
     this->setLongitude(tmpPosition.getLongitude());
 }
 
-mace_global_position_int_t GeodeticPosition_2D::getMACE_GlobalPositionInt() const
+mavlink_global_position_int_t GeodeticPosition_2D::getMACE_GlobalPositionInt() const
 {
-    mace_global_position_int_t posObj;
+    mavlink_global_position_int_t posObj;
     posObj.lat = static_cast<int32_t>((this->getLatitude() * pow(10,7)));
     posObj.lon = static_cast<int32_t>((this->getLongitude() * pow(10,7)));
     posObj.alt = 0;
@@ -234,11 +235,11 @@ mace_global_position_int_t GeodeticPosition_2D::getMACE_GlobalPositionInt() cons
     return posObj;
 }
 
-mace_message_t GeodeticPosition_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t GeodeticPosition_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_message_t msg;
-    mace_global_position_int_t positionObj = getMACE_GlobalPositionInt();
-    mace_msg_global_position_int_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    mavlink_message_t msg;
+    mavlink_global_position_int_t positionObj = getMACE_GlobalPositionInt();
+    mavlink_msg_global_position_int_encode_chan(systemID,compID,chan,&msg,&positionObj);
     return msg;
 }
 

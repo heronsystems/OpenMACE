@@ -5,8 +5,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include "mace.h"
-
 #include "common/common.h"
 #include "common/class_forward.h"
 
@@ -35,7 +33,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    COMMANDTYPE getCommandType() const override;
+    MAV_CMD getCommandType() const override;
 
     //!
     //! \brief getDescription
@@ -59,11 +57,9 @@ public:
 
     /** Interface imposed via AbstractCommandItem */
 public:
-    void populateCommandItem(mace_command_long_t &obj) const override;
+    void populateCommandItem(mavlink_command_long_t &obj) const override;
 
-    void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
-
-    void fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj) override;
+    void fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &obj) override;
 
     /** End of interface imposed via AbstractCommandItem */
 

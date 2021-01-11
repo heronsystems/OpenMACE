@@ -237,6 +237,7 @@ void ModuleROSUMD::NewlyAvailableVehicle(const int &vehicleID, const OptionalPar
 {
     UNUSED(sender);
 
+#ifdef ROS_EXISTS
     nav_msgs::Odometry* defaultOdom = new nav_msgs::Odometry();
     defaultOdom->child_frame_id = "odom";
     geometry_msgs::Quaternion defaultQuaternion;
@@ -244,6 +245,7 @@ void ModuleROSUMD::NewlyAvailableVehicle(const int &vehicleID, const OptionalPar
     defaultOdom->pose.pose.orientation = defaultQuaternion;
 
     this->m_vehiclePoseMap.insert(std::pair<int,nav_msgs::Odometry*>(vehicleID,defaultOdom));
+#endif
 }
 
 //!

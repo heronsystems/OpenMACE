@@ -12,7 +12,7 @@ TEMPLATE = lib
 
 DEFINES += COMMON_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -20,11 +20,15 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 SOURCES +=
 
 HEADERS += common.h\
+    adept_model_types.h \
     enum_class_hash.h \
+    hsm.h \
     publisher.h \
     class_forward.h \
     optional_parameter.h \
     pointer_collection.h \
+    string_methods.h \
+    test_key.h \
     transmit_queue.h \
     thread_manager.h \
     chain_inheritance.h \
@@ -43,6 +47,7 @@ include(../headerinstall.pri)
 
 
 INCLUDEPATH += $$(MACE_ROOT)/include
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
 # Unix lib Install
 unix:!symbian {

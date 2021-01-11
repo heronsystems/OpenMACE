@@ -21,7 +21,7 @@ namespace Controllers {
  *          MissionItem::MissionKey,                //Queue that followup message will belong to. Used to add followup transmission to queue
  *          mace_mission_request_item_t,            //Message type to receive
  *          MACE_MSG_ID_MISSION_REQUEST_ITEM,       //ID of received message
- *          mace_mission_item_t,                    //Message type to followup with
+ *          mavlink_mission_item_t,                    //Message type to followup with
  *          MACE_MSG_ID_MISSION_REQUEST_ITEM,       // List of message IDs that can unqueue the followup transmission
  *          MACE_MSG_ID_MISSION_ACK
  *      >;

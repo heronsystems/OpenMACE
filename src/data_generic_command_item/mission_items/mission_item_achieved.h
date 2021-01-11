@@ -1,9 +1,9 @@
 #ifndef MISSION_ITEM_ACHIEVED_H
 #define MISSION_ITEM_ACHIEVED_H
 
-#include "mission_key.h"
+#include <mavlink.h>
 
-#include "mace.h"
+#include "mission_key.h"
 
 namespace MissionItem {
 
@@ -12,7 +12,7 @@ class MissionItemAchieved
 public:
     MissionItemAchieved();
     MissionItemAchieved(const MissionKey &missionKey, const unsigned int &index);
-    MissionItemAchieved(const mace_mission_item_reached_t &obj);
+    MissionItemAchieved(const mavlink_mission_item_reached_t &obj);
 
 public:
     void setMissionKey(const MissionKey &missionKey){
@@ -32,8 +32,8 @@ public:
     }
 
 
-    mace_mission_item_reached_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+    mavlink_mission_item_reached_t getMACECommsObject() const;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
 
     void operator = (const MissionItemAchieved &rhs)
     {

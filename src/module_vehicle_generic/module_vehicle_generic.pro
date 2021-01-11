@@ -12,7 +12,7 @@ TEMPLATE = lib
 
 DEFINES += MODULE_VEHICLE_GENERIC_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -36,9 +36,17 @@ include(../headerinstall.pri)
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_vehicle_generic: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_vehicle_generic: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

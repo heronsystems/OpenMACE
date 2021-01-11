@@ -22,9 +22,11 @@
 #ifndef VEHICLE_OBJECT_ARDUPLANE_H
 #define VEHICLE_OBJECT_ARDUPLANE_H
 
+#include "arduplane_component_flight_mode.h"
+
 #include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
 
-#include "arduplane_component_flight_mode.h"
+#include "trajectory_control/tracking_simplified.h"
 
 //!
 //! \brief The VehicleObject_Arduplane class is the implementation of an explicit object inheriting the base vehicle object from the ardupilot code base.
@@ -38,6 +40,13 @@ public:
     VehicleObject_Arduplane(CommsMAVLINK* commsObj, const MaceCore::ModuleCharacteristic &module, const int &mavlinkID);
 
     ~VehicleObject_Arduplane();
+
+public:
+    void shutdownTargetTracking();
+
+    TrackingSimplified* m_TrackingManager;
+
+    VirtualTargetController* m_TargetController;
 };
 
 

@@ -2,14 +2,14 @@
 
 namespace ExternalLink {
 
-    CommandLand::CommandLand(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<command_item::SpatialLand, (uint8_t)command_item::COMMANDTYPE::CI_NAV_LAND>(cb, queue, linkChan)
+    CommandLand::CommandLand(const Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
+        Controller_GenericLongCommand<command_item::SpatialLand, MAV_CMD::MAV_CMD_NAV_LAND>(cb, queue, linkChan)
     {
 
     }
 
 
-    void CommandLand::FillCommand(const command_item::SpatialLand &commandItem, mace_command_long_t &cmd) const
+    void CommandLand::FillCommand(const command_item::SpatialLand &commandItem, mavlink_command_long_t &cmd) const
     {
         UNUSED(commandItem);
         UNUSED(cmd);
@@ -24,7 +24,7 @@ namespace ExternalLink {
 //        }
     }
 
-    void CommandLand::BuildCommand(const mace_command_long_t &message, command_item::SpatialLand &data) const
+    void CommandLand::BuildCommand(const mavlink_command_long_t &message, command_item::SpatialLand &data) const
     {
         UNUSED(message);
         UNUSED(data);

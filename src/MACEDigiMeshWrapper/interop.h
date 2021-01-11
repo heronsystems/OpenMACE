@@ -47,7 +47,7 @@ private:
         REMOVE_COMPONENT_ITEM = 0x04
     };
 
-    static const char NI_NAME_VEHICLE_DELIMETER = '|';
+    static const char NI_NAME_VEHICLE_delimiter = '|';
 
     void* m_Radio;
 

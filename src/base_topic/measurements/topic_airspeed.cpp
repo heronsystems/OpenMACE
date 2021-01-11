@@ -31,6 +31,18 @@ QJsonObject Topic_AirSpeed::toJSON(const int &vehicleID, const std::string &data
     return json;
 }
 
+void Topic_AirSpeed::fromJSON(const QJsonDocument &inputJSON)
+{
+    m_SpeedObj.setSpeed(inputJSON.object().value("airspeed").toDouble());
+}
+
+std::string Topic_AirSpeed::toCSV(const std::string &delimiter) const
+{
+    UNUSED(delimiter);
+    std::string newline = std::to_string(m_SpeedObj.getSpeed());
+    return newline;
+}
+
 Topic_AirSpeed::Topic_AirSpeed()
 {
 

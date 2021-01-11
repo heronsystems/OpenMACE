@@ -48,12 +48,12 @@ void Altitude::applyTransformation(const Eigen::Transform<double, 3, Eigen::Affi
     this->z = result.z();
 }
 
-mace_message_t Altitude::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t Altitude::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
     UNUSED(systemID);
     UNUSED(compID);
     UNUSED(chan);
-    mace_message_t msg;
+    mavlink_message_t msg;
     return msg;
 }
 

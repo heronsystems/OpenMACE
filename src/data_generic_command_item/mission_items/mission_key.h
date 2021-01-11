@@ -16,9 +16,7 @@ class MissionKey
 public:
     MissionKey();
 
-    MissionKey(const unsigned int &systemID, const unsigned int &creatorID, const unsigned int &missionID, const MISSIONTYPE &missionType);
-
-    MissionKey(const unsigned int &systemID, const unsigned int &creatorID, const unsigned int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &missionState);
+    MissionKey(const unsigned int &systemID, const unsigned int &creatorID, const unsigned int &missionID, const MISSIONTYPE &missionType, const MISSIONSTATE &missionState = MISSIONSTATE::UNKNWON);
 
     MissionKey(const MissionKey &obj);
 

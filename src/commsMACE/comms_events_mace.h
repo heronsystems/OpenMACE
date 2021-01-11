@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "mace.h"
+#include <mavlink.h>
 #include "common/common.h"
 
 namespace CommsMACE
@@ -82,27 +82,27 @@ public:
     //! \param linkName Name of link message received over
     //! \param msg Message received
     //!
-    virtual void MACEMessage(const std::string &linkName, const mace_message_t &msg)
+    virtual void MACEMessage(const std::string &linkName, const mavlink_message_t &msg)
     {
         UNUSED(linkName);
         UNUSED(msg);
     }
 
-    virtual void MACESyncMessage(const std::string &linkName, const int &systemID, const mace_vehicle_sync_t &syncMSG)
+    virtual void MACESyncMessage(const std::string &linkName, const int &systemID, const mavlink_vehicle_sync_t &syncMSG)
     {
         UNUSED(linkName);
         UNUSED(systemID);
         UNUSED(syncMSG);
     }
 
-    virtual void MACEHeartbeatInfo(const std::string &linkName, const int &systemID, const mace_heartbeat_t &heartbeatMSG)
+    virtual void MACEHeartbeatInfo(const std::string &linkName, const int &systemID, const mavlink_heartbeat_t &heartbeatMSG)
     {
         UNUSED(linkName);
         UNUSED(systemID);
         UNUSED(heartbeatMSG);
     }
 
-    virtual void MACECommandACK(const std::string &linkName, const int &systemID, const mace_command_ack_t &cmdACK)
+    virtual void MACECommandACK(const std::string &linkName, const int &systemID, const mavlink_command_ack_t &cmdACK)
     {
         UNUSED(linkName);
         UNUSED(systemID);

@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_GroundedDisarming::AP_State_GroundedDisarming():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_GROUNDED_DISARMING)
 {
-    std::cout<<"We are in the constructor of STATE_GROUNDED_DISARMING"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED_DISARMING;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_DISARMING;
+
 }
 
 AbstractStateArdupilot* AP_State_GroundedDisarming::getClone() const
@@ -25,19 +23,19 @@ hsm::Transition AP_State_GroundedDisarming::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_GROUNDED_DISARMED:
         {
             rtn = hsm::SiblingTransition<AP_State_GroundedDisarmed>();
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from AP_State_GroundedDisarming."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from AP_State_GroundedDisarming."<<std::endl;
             break;
         }
     }
@@ -48,9 +46,9 @@ bool AP_State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractCom
 {
     bool handledCommand = false;
 
-    COMMANDTYPE type = command->getCommandType();
+    MAV_CMD type = command->getCommandType();
     switch (type) {
-    case COMMANDTYPE::CI_ACT_ARM:
+    case MAV_CMD::MAV_CMD_COMPONENT_ARM_DISARM:
     {
         break;
     }
@@ -67,7 +65,7 @@ void AP_State_GroundedDisarming::Update()
 {
     if(Owner().status->vehicleArm.get().getSystemArm() == false)
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_DISARMED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_DISARMED;
     }
 }
 
@@ -81,7 +79,7 @@ void AP_State_GroundedDisarming::OnEnter()
     controllerArm->AddLambda_Finished(this, [this,controllerArm](const bool completed, const uint8_t finishCode){
         controllerArm->Shutdown();
         if(!completed || (finishCode != MAV_RESULT_ACCEPTED))
-            desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
+            _desiredState = Data::MACEHSMState::STATE_GROUNDED_ARMED;
     });
 
     controllerArm->setLambda_Shutdown([this, collection]()

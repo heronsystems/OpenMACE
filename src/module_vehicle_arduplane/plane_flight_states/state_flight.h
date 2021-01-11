@@ -10,6 +10,8 @@
 namespace ardupilot{
 namespace state{
 
+class AP_State_FlightAI;
+
 class AP_State_FlightAuto;
 class AP_State_FlightGuided;
 class AP_State_FlightLand;
@@ -46,9 +48,14 @@ public:
 
     void OnExit() override;
 
+public:
+    void initializeForTestEvaluation(const command_item::Action_InitializeTestSetup &initialization) override;
+
 private:
     void checkTransitionFromMode(const std::string &mode);
 
+private:
+    command_item::Action_InitializeTestSetup m_TestInitialization;
 };
 
 } //end of namespace ardupilot

@@ -45,7 +45,7 @@ public:
     }
     */
 
-    COMMANDTYPE getCommandType() const
+    MAV_CMD getCommandType() const
     {
         return commandItem->getCommandType();
     }

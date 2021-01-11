@@ -40,6 +40,8 @@ private:
 public:
     GuidedTimeoutController(const unsigned int &timeout, const int &levelTimeout = -1, const int &killTimeout = -1);
 
+    GuidedTimeoutController(const GuidedTimeoutController &copy);
+
     ~GuidedTimeoutController() override;
 
     void start() override;
@@ -75,23 +77,6 @@ private:
     Timer m_Timeout;
 
     unsigned int timeout, levelTimeout, abortTimeout;
-
-private:
-    std::list<std::function<void()>> m_LambdasToRun;
-
-    void clearPendingTasks()
-    {
-        m_LambdasToRun.clear();
-    }
-
-    void RunPendingTasks() {
-        while(m_LambdasToRun.size() > 0) {
-            auto lambda = m_LambdasToRun.front();
-            m_LambdasToRun.pop_front();
-            lambda();
-        }
-    }
-
 };
 
 } //end of namespace ardupilot_vehicle

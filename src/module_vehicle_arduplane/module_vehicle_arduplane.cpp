@@ -12,16 +12,10 @@ T CopyCommandAndInsertTarget(const command_item::AbstractCommandItem &item, int 
 }
 
 
-//ModuleVehicleArduplane::ModuleVehicleArduplane() :
-//    ModuleVehicleMAVLINK<DATA_VEHICLE_ARDUPLANE_TYPES>(),
-//    m_VehicleMissionTopic("vehicleMission"), m_AircraftController(nullptr), vehicleData(nullptr)
 ModuleVehicleArduplane::ModuleVehicleArduplane() :
-    ModuleVehicleArdupilot(),
-    stateMachine(nullptr)
+    ModuleVehicleArdupilot()
 {
-
     m_TransmissionQueue = new TransmitQueue(2000, 3);
-
 }
 
 ModuleVehicleArduplane::~ModuleVehicleArduplane()
@@ -54,7 +48,12 @@ void ModuleVehicleArduplane::ConfigureModule(const std::shared_ptr<MaceCore::Mod
 //!
 void ModuleVehicleArduplane::createLog(const int &systemID)
 {
-    std::string logname = this->loggingPath + "/VehicleModule_" + std::to_string(systemID) + ".txt";
+//    std::string logname = this->loggingPath + "/VehicleModule_" + std::to_string(systemID) + ".txt";
+
+    // Initiate logs:
+    std::string loggerName = "vehicle_arduplane_" + std::to_string(systemID);
+    std::string loggerPath = this->loggingPath + "/vehicle_logs/arduplane_" + std::to_string(systemID) + ".txt";
+    this->initiateLogs(loggerName, loggerPath);
 }
 
 //!
@@ -384,6 +383,24 @@ void ModuleVehicleArduplane::Command_ClearOnboardGuided(const int &targetSystem)
     UNUSED(targetSystem);
 }
 
+/////////////////////////////////////////////////////////////////////////
+/// EXPLICIT CONTROL EVENTS: These events are explicit overrides of the
+/// vehicle, often developed in tight coordination with the vehicle itself.
+/////////////////////////////////////////////////////////////////////////
+
+//!
+//! \brief Command_SetSurfaceDeflection
+//! \param action
+//!
+void ModuleVehicleArduplane::Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender)
+{
+    UNUSED(sender);
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    currentOuterState->handleCommand(action.getClone());
+    ProgressStateMachineStates();
+}
+
+
 //!
 //! \brief New Mavlink message received over a link
 //! \param linkName Name of link message received over
@@ -438,6 +455,7 @@ void ModuleVehicleArduplane::VehicleHeartbeatInfo(const std::string &linkName, c
         createLog(systemID);
         //this is the first time we have seen this heartbeat or the data was destroyed for some reason
         m_SystemData = new VehicleObject_Arduplane(this, this->GetCharacteristic(), systemID);
+        m_SystemData->linkToStatelessControllers(&m_ControllersCollection);
 
         m_SystemData->connectCallback(this);
         dynamic_cast<VehicleObject_Ardupilot*>(m_SystemData)->connectTargetCallback(ModuleVehicleArduplane::staticCallbackFunction_VehicleTarget, this);
@@ -500,7 +518,8 @@ void ModuleVehicleArduplane::VehicleHeartbeatInfo(const std::string &linkName, c
 
     // Set MACE HSM state:
     if(this->stateMachine->getCurrentState()) {
-        heartbeat.setHSMState(stateMachine->getCurrentState()->getCurrentStateEnum());
+        ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentState());
+        heartbeat.setHSMState(outerState->getCurrentStateEnum());
     }
 
     m_SystemData->status->vehicleHeartbeat.set(heartbeat);
@@ -593,18 +612,6 @@ void ModuleVehicleArduplane::NewTopicSpooled(const std::string &topicName, const
     }
 }
 
-
-//!
-//! \brief Cause the state machine to update it's states
-//!
-void ModuleVehicleArduplane::ProgressStateMachineStates()
-{
-    m_Mutex_StateMachine.lock();
-    stateMachine->ProcessStateTransitions();
-    stateMachine->UpdateStates();
-    m_Mutex_StateMachine.unlock();
-}
-
 void ModuleVehicleArduplane::TransmitVisionPoseEstimate(const mace::pose::Pose &pose)
 {
     UNUSED(pose);
@@ -614,6 +621,34 @@ void ModuleVehicleArduplane::TransmitVisionPoseEstimate(const mace::pose::Pose &
 void ModuleVehicleArduplane::UpdateDynamicMissionQueue(const command_target::DynamicMissionQueue &queue)
 {
     UNUSED(queue);
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+/// AI SUPPORT EVENTS: These events are explicit overrides in support of
+/// AI based autonomy.
+/////////////////////////////////////////////////////////////////////////
+
+void ModuleVehicleArduplane::NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(sender);
+    UNUSED(logEvent);
+}
+
+void ModuleVehicleArduplane::NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(sender);
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentState());
+    currentOuterState->handleTestProcedural(procedural);
+    ProgressStateMachineStates();
+}
+
+void ModuleVehicleArduplane::NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
+{
+    UNUSED(sender);
+    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
+    currentOuterState->initializeForTestEvaluation(initialization);
+    ProgressStateMachineStates();
 }
 
 

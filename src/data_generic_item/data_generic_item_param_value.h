@@ -1,10 +1,9 @@
 #ifndef DATAGENERICITEM_PARAMVALUE_H
 #define DATAGENERICITEM_PARAMVALUE_H
 
+#include <math.h>
 #include <iostream>
 #include <limits>
-
-#include "mace.h"
 
 #include "data/jsonconverter.h"
 #include "common/common.h"

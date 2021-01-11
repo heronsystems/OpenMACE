@@ -21,7 +21,7 @@ public:
 
     GeodeticPosition_3D(const double &latitude, const double &longitude, const double &altitude, const std::string &pointName = "Geodetic Point");
 
-    GeodeticPosition_3D(const mace_global_position_int_t &pos);
+    GeodeticPosition_3D(const mavlink_global_position_int_t &pos);
 
     void updateFromPosition(const GeodeticPosition_3D &copy);
 
@@ -45,11 +45,11 @@ public:
         *state = new GeodeticPosition_3D(*this);
     }
 public:
-    mace_global_position_int_t getMACE_GlobalPositionInt() const;
+    mavlink_global_position_int_t getMACE_GlobalPositionInt() const;
 
-    void fromMACEMsg(const mace_global_position_int_t &msg);
+    void fromMACEMsg(const mavlink_global_position_int_t &msg);
 
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
 public:
     Eigen::VectorXd getDataVector() const override

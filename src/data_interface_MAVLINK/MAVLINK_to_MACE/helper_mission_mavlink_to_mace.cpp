@@ -24,56 +24,56 @@ std::shared_ptr<command_item::AbstractCommandItem> Helper_MissionMAVLINKtoMACE::
 
     switch(mavlinkItem.command)
     {
-    case MAV_CMD_DO_CHANGE_SPEED:
+    case MAV_CMD::MAV_CMD_DO_CHANGE_SPEED:
     {
         command_item::ActionChangeSpeed missionItem;
         Helper_MissionMAVLINKtoMACE::convertChangespeed(sysID, mavlinkItem,missionItem);
         newMissionItem = std::make_shared<command_item::ActionChangeSpeed>(missionItem);
         break;
     }
-    case MAV_CMD_NAV_LAND:
+    case MAV_CMD::MAV_CMD_NAV_LAND:
     {
         command_item::SpatialLand missionItem;
         Helper_MissionMAVLINKtoMACE::convertLand(sysID, mavlinkItem,missionItem);
         newMissionItem = std::make_shared<command_item::SpatialLand>(missionItem);
         break;
     }
-    case MAV_CMD_NAV_LOITER_TIME:
+    case MAV_CMD::MAV_CMD_NAV_LOITER_TIME:
     {
         command_item::SpatialLoiter_Time missionItem;
         Helper_MissionMAVLINKtoMACE::convertLoiterTime(sysID, mavlinkItem,missionItem);
         newMissionItem = std::make_shared<command_item::SpatialLoiter_Time>(missionItem);
         break;
     }
-    case MAV_CMD_NAV_LOITER_TURNS:
+    case MAV_CMD::MAV_CMD_NAV_LOITER_TURNS:
     {
         command_item::SpatialLoiter_Turns missionItem;
         Helper_MissionMAVLINKtoMACE::convertLoiterTurns(sysID, mavlinkItem,missionItem);
         newMissionItem = std::make_shared<command_item::SpatialLoiter_Turns>(missionItem);
         break;
     }
-    case MAV_CMD_NAV_LOITER_UNLIM:
+    case MAV_CMD::MAV_CMD_NAV_LOITER_UNLIM:
     {
         command_item::SpatialLoiter_Unlimited missionItem;
         Helper_MissionMAVLINKtoMACE::convertLoiterUnlimted(sysID, mavlinkItem,missionItem);
         newMissionItem = std::make_shared<command_item::SpatialLoiter_Unlimited>(missionItem);
         break;
     }
-    case MAV_CMD_NAV_RETURN_TO_LAUNCH:
+    case MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH:
     {
         command_item::SpatialRTL missionItem;
         Helper_MissionMAVLINKtoMACE::convertRTL(sysID, mavlinkItem,missionItem);
         newMissionItem = std::make_shared<command_item::SpatialRTL>(missionItem);
         break;
     }
-    case MAV_CMD_NAV_TAKEOFF:
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
     {
         command_item::SpatialTakeoff missionItem;
         Helper_MissionMAVLINKtoMACE::convertTakeoff(sysID, mavlinkItem,missionItem);
         newMissionItem = std::make_shared<command_item::SpatialTakeoff>(missionItem);
         break;
     }
-    case MAV_CMD_NAV_WAYPOINT:
+    case MAV_CMD::MAV_CMD_NAV_WAYPOINT:
     {
         command_item::SpatialWaypoint missionItem;
         Helper_MissionMAVLINKtoMACE::convertWaypoint(sysID, mavlinkItem,missionItem);

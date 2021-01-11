@@ -45,23 +45,6 @@ void Topic_AgentOrientation::CreateFromDatagram(const MaceCore::TopicDatagram &d
     }
 }
 
-Topic_AgentOrientation::Topic_AgentOrientation():
-    m_RotationObj(nullptr)
-{
-
-}
-
-Topic_AgentOrientation::Topic_AgentOrientation(const mace::pose::AbstractRotation *obj)
-{
-    //copy the contents of that point to the current pointer object
-    m_RotationObj = obj->getRotationalClone();
-}
-
-Topic_AgentOrientation::Topic_AgentOrientation(const Topic_AgentOrientation &copy)
-{
-    this->m_RotationObj = copy.m_RotationObj->getRotationalClone();
-}
-
 QJsonObject Topic_AgentOrientation::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
@@ -81,6 +64,40 @@ QJsonObject Topic_AgentOrientation::toJSON(const int &vehicleID, const std::stri
     }
     return json;
 }
+
+void Topic_AgentOrientation::fromJSON(const QJsonDocument &inputJSON)
+{
+    mace::pose::Rotation_3D* tmpObj = getRotationObj()->getRotationalClone()->rotationAs<mace::pose::Rotation_3D>();
+    tmpObj->updateRoll(inputJSON.object().value("roll").toDouble()*(M_PI/180));
+    tmpObj->updatePitch(inputJSON.object().value("pitch").toDouble()*(M_PI/180));
+    tmpObj->updateYaw(inputJSON.object().value("yaw").toDouble()*(M_PI/180));
+    this->m_RotationObj = tmpObj;
+}
+
+std::string Topic_AgentOrientation::toCSV(const std::string &delimiter) const
+{
+    const mace::pose::Rotation_3D* castRotation = getRotationObj()->rotationAs<mace::pose::Rotation_3D>();
+    std::string newline = std::to_string(castRotation->getRoll()*(180/M_PI)) + delimiter + std::to_string(castRotation->getPitch()*(180/M_PI)) + delimiter + std::to_string((180/M_PI)*((castRotation->getYaw() < 0) ? (castRotation->getYaw()+2*M_PI) : (castRotation->getYaw())));
+    return newline;
+}
+
+Topic_AgentOrientation::Topic_AgentOrientation():
+    m_RotationObj(nullptr)
+{
+
+}
+
+Topic_AgentOrientation::Topic_AgentOrientation(const mace::pose::AbstractRotation *obj)
+{
+    //copy the contents of that point to the current pointer object
+    m_RotationObj = obj->getRotationalClone();
+}
+
+Topic_AgentOrientation::Topic_AgentOrientation(const Topic_AgentOrientation &copy)
+{
+    this->m_RotationObj = copy.m_RotationObj->getRotationalClone();
+}
+
 
 mace::pose::AbstractRotation* Topic_AgentOrientation::getRotationObj() const
 {

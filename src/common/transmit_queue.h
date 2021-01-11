@@ -105,8 +105,6 @@ public:
         m_ActiveTransmits.insert({num, TransmitTask(transmitAction, onFailure, execute)});
         m_ActiveTransmitsMutex.unlock();
 
-        printf("Added Transmision - Number active: %u\n", (uint)m_ActiveTransmits.size());
-
         return num;
     }
 
@@ -124,8 +122,6 @@ public:
             m_ActiveTransmits.erase(ID);
         }
         m_ActiveTransmitsMutex.unlock();
-
-        printf("Removed Transmission - Number active: %u\n", (uint)m_ActiveTransmits.size());
     }
 
 

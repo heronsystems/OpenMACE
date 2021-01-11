@@ -39,7 +39,7 @@ void HeartbeatController_ExternalLink::run()
             mTimer.stop();
             mTimer.start();
             //formulate the appropriate hearbeat message
-            mace_heartbeat_t heartbeat;
+            mavlink_mace_heartbeat_t heartbeat;
             heartbeat.autopilot = static_cast<uint8_t>(Data::AutopilotType::AUTOPILOT_TYPE_GENERIC);
             heartbeat.mace_companion = 1;
             heartbeat.mission_state = 0;

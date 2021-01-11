@@ -17,6 +17,7 @@
 #include "geodetic_position_3D.h"
 #include "pose.h"
 #include "position_interface.h"
+#include "pose_basic_state.h"
 #include "rotation_2D.h"
 #include "rotation_3D.h"
 #include "twist.h"

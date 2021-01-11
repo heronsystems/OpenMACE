@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include "mace.h"
+#include <mavlink.h>
 
 #include "common/common.h"
 #include "common/class_forward.h"
@@ -27,7 +27,8 @@ public:
     enum getORset
     {
         GET_COMMAND,
-        SET_COMMAND
+        SET_COMMAND,
+        EXECUTE_COMMAND
     };
 
 public:
@@ -77,7 +78,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    virtual COMMANDTYPE getCommandType() const = 0;
+    virtual MAV_CMD getCommandType() const = 0;
 
     //!
     //! \brief hasSpatialInfluence returns a boolean reflecting whether or not the commandItem has
@@ -143,19 +144,19 @@ public:
     }
 
 public: //The logic behind this is that every command item can be used to generate a mission item
-    virtual void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+    virtual void populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const
     {
         cmd.target_system = static_cast<uint8_t>(this->targetSystem);
     }
 
-    virtual void fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+    virtual void fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &cmd)
     {
         this->targetSystem = cmd.target_system;
     }
 
-    virtual void generateMACEMSG_MissionItem(mace_message_t &msg) const = 0;
+    virtual void generateMACEMSG_MissionItem(mavlink_message_t &msg) const = 0;
 
-    virtual void generateMACEMSG_CommandItem(mace_message_t &msg) const = 0; //we know that you must cast to the specific type to get something explicit based on the command
+    virtual void generateMACEMSG_CommandItem(mavlink_message_t &msg) const = 0; //we know that you must cast to the specific type to get something explicit based on the command
 
 public:
     /**

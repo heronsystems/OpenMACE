@@ -9,7 +9,7 @@
 #include <cmath>
 #include <unordered_map>
 
-#include "mavlink.h"
+#include <mavlink.h>
 #include "i_link.h"
 #include "i_protocol_mavlink_events.h"
 

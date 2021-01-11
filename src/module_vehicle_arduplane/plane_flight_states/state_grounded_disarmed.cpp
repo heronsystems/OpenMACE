@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_GroundedDisarmed::AP_State_GroundedDisarmed():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_GROUNDED_DISARMED)
 {
-    std::cout<<"We are in the constructor of STATE_GROUNDED_DISARMED"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED_DISARMED;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_DISARMED;
+
 }
 
 AbstractStateArdupilot* AP_State_GroundedDisarmed::getClone() const
@@ -25,19 +23,19 @@ hsm::Transition AP_State_GroundedDisarmed::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_GROUNDED_IDLE:
         {
             rtn = hsm::SiblingTransition<AP_State_GroundedIdle>();
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from AP_State_GroundedDisarmed."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from AP_State_GroundedDisarmed."<<std::endl;
             break;
         }
     }
@@ -56,7 +54,7 @@ void AP_State_GroundedDisarmed::Update()
 
 void AP_State_GroundedDisarmed::OnEnter()
 {
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
+    _desiredState = Data::MACEHSMState::STATE_GROUNDED_IDLE;
 }
 
 void AP_State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)

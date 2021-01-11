@@ -11,6 +11,10 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
     //////////////////////////////////////////////////////////////////////////////
 
     switch (msg->msgid) {
+    case MAVLINK_MSG_ID_MISSION_REQUEST_INT:
+    {
+        std::cout<<"We saw a mission request int!"<<std::endl;
+    }
     case MAVLINK_MSG_ID_SYS_STATUS:
     {
         mavlink_sys_status_t decodedMSG;
@@ -64,38 +68,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         gpsItem.setHDOP(decodedMSG.eph);
         gpsItem.setVDOP(decodedMSG.epv);
         gpsItem.setSatVisible(decodedMSG.satellites_visible);
-
-        using namespace DataGenericItem;
-        switch(decodedMSG.fix_type)
-        {
-        case GPS_FIX_TYPE_2D_FIX:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_2D_FIX);
-            break;
-        case GPS_FIX_TYPE_3D_FIX:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_3D_FIX);
-            break;
-        case GPS_FIX_TYPE_DGPS:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_DGPS);
-            break;
-        case GPS_FIX_TYPE_NO_FIX:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_NO_FIX);
-            break;
-        case GPS_FIX_TYPE_NO_GPS:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_NONE);
-            break;
-        case GPS_FIX_TYPE_RTK_FIXED:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_RTK_FIXED);
-            break;
-        case GPS_FIX_TYPE_RTK_FLOAT:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_RTK_FLOAT);
-            break;
-        case GPS_FIX_TYPE_STATIC:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_STATIC);
-            break;
-        default:
-            gpsItem.setGPSFix(DataGenericItem_GPS::GPSFixType::GPS_FIX_NO_FIX);
-            break;
-        }
+        gpsItem.setGPSFix(static_cast<GPS_FIX_TYPE>(decodedMSG.fix_type));
 
         if(status->vehicleGPSStatus.set(gpsItem))
         {
@@ -267,34 +240,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         using namespace DataGenericItem;
         DataGenericItem::DataGenericItem_Text statusText;
         statusText.setText(decodedMSG.text);
-        switch (decodedMSG.severity) {
-        case MAV_SEVERITY_EMERGENCY:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_EMERGENCY);
-            break;
-        case MAV_SEVERITY_ALERT:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_ALERT);
-            break;
-        case MAV_SEVERITY_CRITICAL:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_CRITICAL);
-            break;
-        case MAV_SEVERITY_ERROR:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_ERROR);
-            break;
-        case MAV_SEVERITY_WARNING:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_WARNING);
-            break;
-        case MAV_SEVERITY_NOTICE:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_NOTICE);
-            break;
-        case MAV_SEVERITY_INFO:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO);
-            break;
-        case MAV_SEVERITY_DEBUG:
-            statusText.setSeverity(DataGenericItem_Text::STATUS_SEVERITY::STATUS_DEBUG);
-            break;
-        default:
-            break;
-        }
+        statusText.setSeverity(static_cast<MAV_SEVERITY>(decodedMSG.severity));
 
         status->vehicleTextAlert.set(statusText);
 

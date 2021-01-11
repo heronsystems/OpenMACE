@@ -13,7 +13,7 @@ TEMPLATE = lib
 
 DEFINES += COMMS_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -49,8 +49,16 @@ HEADERS +=\
     tcp_link.h \
     tcp_configuration.h
 
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("base: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("base: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
 
 # Unix lib Install
 unix:!symbian {

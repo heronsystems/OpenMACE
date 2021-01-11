@@ -4,7 +4,7 @@
 #include <Eigen/Geometry>
 
 #include <string>
-#include "mace.h"
+#include <mavlink.h>
 
 #include "common/class_forward.h"
 
@@ -35,11 +35,11 @@ public:
     void setObjectName(const std::string &name);
 
 public:
-    virtual mace_attitude_quaternion_t getMACEQuaternion() const = 0;
+    virtual mavlink_attitude_quaternion_t getMACEQuaternion() const = 0;
 
-    virtual mace_attitude_t getMACEEuler() const = 0;
+    virtual mavlink_attitude_t getMACEEuler() const = 0;
 
-    virtual mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const = 0;
+    virtual mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const = 0;
 
 public:
     virtual void setQuaternion(const Eigen::Quaterniond &rot) = 0;

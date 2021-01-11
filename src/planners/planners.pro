@@ -12,7 +12,7 @@ TEMPLATE = lib
 
 DEFINES += PLANNERS_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 
 QMAKE_CXXFLAGS_WARN_ON += -Wno-unknown-pragmas
 
@@ -28,7 +28,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        planners.cpp \
+    planners.cpp \
     nearest_neighbor_linear.cpp \
     tsp_greedy_nearest_neighbor.cpp \
     tsp_2opt.cpp \
@@ -46,8 +46,8 @@ SOURCES += \
     fast_marching/thirdparty/reference/queue.cpp
 
 HEADERS += \
-        planners.h \
-        planners_global.h \ 
+    planners.h \
+    planners_global.h \
     nearest_neighbor_linear.h \
     tsp_greedy_nearest_neighbor.h \
     tsp_2opt.h \
@@ -115,14 +115,24 @@ INSTALLS += lib
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_vehicle_ardupilot: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_vehicle_ardupilot: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 # Octomap Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include3
 

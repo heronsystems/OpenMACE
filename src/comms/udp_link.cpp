@@ -170,7 +170,7 @@ bool UdpLink::_hardwareConnect(QAbstractSocket::SocketError &error, QString& err
 
 
     m_ListenThread = new ReceiverThread([&](){
-        if(m_socket->waitForReadyRead(300))
+        if(m_socket->waitForReadyRead(2))
             this->processPendingDatagrams();
 
         if(m_socket->errorString() != "")

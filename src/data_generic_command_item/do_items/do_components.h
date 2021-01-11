@@ -11,6 +11,6 @@
 #include "action_mission_command.h"
 #include "action_motor_test.h"
 #include "action_set_global_origin.h"
-
+#include "action_set_surface_deflection.h"
 
 #endif // DO_COMPONENTS_H

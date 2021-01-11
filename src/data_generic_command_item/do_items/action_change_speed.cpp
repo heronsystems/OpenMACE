@@ -2,9 +2,9 @@
 
 namespace command_item {
 
-COMMANDTYPE ActionChangeSpeed::getCommandType() const
+MAV_CMD ActionChangeSpeed::getCommandType() const
 {
-    return COMMANDTYPE::CI_ACT_CHANGESPEED;
+    return MAV_CMD::MAV_CMD_DO_CHANGE_SPEED;
 }
 
 std::string ActionChangeSpeed::getDescription() const
@@ -49,53 +49,53 @@ std::string ActionChangeSpeed::printCommandInfo() const
     return "";
 }
 
-/** Interface imposed via Interface_CommandItem<mace_command_short_t> */
-void ActionChangeSpeed::populateCommandItem(mace_command_short_t &obj) const
+/** Interface imposed via Interface_CommandItem<mavlink_command_long_t> */
+void ActionChangeSpeed::populateCommandItem(mavlink_command_long_t &obj) const
 {
     obj.target_system = static_cast<uint8_t>(this->targetSystem);
     obj.target_component = static_cast<uint8_t>(this->targetComponent);
-    obj.param = static_cast<float>(this->getDesiredSpeed());
+    obj.param1 = static_cast<float>(this->getDesiredSpeed());
     obj.command = static_cast<uint8_t>(this->getCommandType());
 }
 
-void ActionChangeSpeed::fromCommandItem(const mace_command_short_t &obj)
+void ActionChangeSpeed::fromCommandItem(const mavlink_command_long_t &obj)
 {
-    this->setDesiredSpeed(static_cast<double>(obj.param));
+    this->setDesiredSpeed(static_cast<double>(obj.param1));
 }
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+/** End of interface imposed via Interface_CommandItem<mavlink_command_int_t> */
 
 /** Interface imposed via AbstractCommandItem */
 
-void ActionChangeSpeed::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+void ActionChangeSpeed::populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const
 {
     AbstractCommandItem::populateMACECOMMS_MissionItem(cmd);
-    mace_command_short_t shortCommand;
+    mavlink_command_long_t shortCommand;
     this->populateCommandItem(shortCommand);
-    Interface_CommandHelper<mace_command_short_t>::transferToMissionItem(shortCommand, cmd);
+    Interface_CommandHelper<mavlink_command_long_t>::transferToMissionItem(shortCommand, cmd);
 }
 
-void ActionChangeSpeed::fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+void ActionChangeSpeed::fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &cmd)
 {
-    mace_command_short_t shortCommand;
-    Interface_CommandHelper<mace_command_short_t>::transferFromMissionItem(cmd, shortCommand);
-    fromCommandItem(shortCommand);
+    mavlink_command_long_t longCommand;
+    Interface_CommandHelper<mavlink_command_long_t>::transferFromMissionItem(cmd, longCommand);
+    fromCommandItem(longCommand);
 }
 
-void ActionChangeSpeed::generateMACEMSG_MissionItem(mace_message_t &msg) const
+void ActionChangeSpeed::generateMACEMSG_MissionItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
-    mace_mission_item_t missionItem;
+    mavlink_mace_mission_item_int_t missionItem;
     AbstractCommandItem::populateMACECOMMS_MissionItem(missionItem);
-    //mace_msg_mission_item_encode_chan();
+    //mavlink_msg_mission_item_encode_chan();
 }
 
-void ActionChangeSpeed::generateMACEMSG_CommandItem(mace_message_t &msg) const
+void ActionChangeSpeed::generateMACEMSG_CommandItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
-    mace_command_short_t shortCommand;
-    this->populateCommandItem(shortCommand);
-    //mace_msg_command_short_encode_chan();
+    mavlink_command_long_t longCommand;
+    this->populateCommandItem(longCommand);
 }
+
 /** End of interface imposed via AbstractCommandItem */
 
 

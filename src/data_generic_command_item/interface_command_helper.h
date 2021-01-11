@@ -1,7 +1,7 @@
 #ifndef INTERFACE_COMMAND_HELPER_H
 #define INTERFACE_COMMAND_HELPER_H
 
-#include "mace.h"
+#include <mavlink.h>
 #include "command_item_type.h"
 
 template<class T>
@@ -16,9 +16,9 @@ protected:
 
     virtual void fromCommandItem(const T &obj) = 0;
 
-    void transferToMissionItem(const T &cmdObj, mace_mission_item_t &misObj) const;
+    void transferToMissionItem(const T &cmdObj, mavlink_mace_mission_item_int_t &misObj) const;
 
-    void transferFromMissionItem(const mace_mission_item_t &misObj, T &cmdObj) const;
+    void transferFromMissionItem(const mavlink_mace_mission_item_int_t &misObj, T &cmdObj) const;
 
 };
 

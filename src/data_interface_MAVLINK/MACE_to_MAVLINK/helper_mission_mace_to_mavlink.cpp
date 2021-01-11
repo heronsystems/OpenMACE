@@ -52,7 +52,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
 {
     switch(missionItem->getCommandType())
     {
-    case(command_item::COMMANDTYPE::CI_ACT_CHANGESPEED):
+    case(MAV_CMD::MAV_CMD_DO_CHANGE_SPEED):
     {
         std::shared_ptr<command_item::ActionChangeSpeed> castItem = std::dynamic_pointer_cast<command_item::ActionChangeSpeed>(missionItem);
         command_item::ActionChangeSpeed baseItem = *castItem.get();
@@ -60,7 +60,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
         return true;
         break;
     }
-    case(command_item::COMMANDTYPE::CI_NAV_LAND):
+    case(MAV_CMD::MAV_CMD_NAV_LAND):
     {
         std::shared_ptr<command_item::SpatialLand> castItem = std::dynamic_pointer_cast<command_item::SpatialLand>(missionItem);
         command_item::SpatialLand baseItem = *castItem.get();
@@ -68,7 +68,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
         return true;
         break;
     }
-    case(command_item::COMMANDTYPE::CI_NAV_LOITER_TIME):
+    case(MAV_CMD::MAV_CMD_NAV_LOITER_TIME):
     {
         std::shared_ptr<command_item::SpatialLoiter_Time> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Time>(missionItem);
         command_item::SpatialLoiter_Time baseItem = *castItem.get();
@@ -76,7 +76,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
         return true;
         break;
     }
-    case(command_item::COMMANDTYPE::CI_NAV_LOITER_TURNS):
+    case(MAV_CMD::MAV_CMD_NAV_LOITER_TURNS):
     {
         std::shared_ptr<command_item::SpatialLoiter_Turns> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Turns>(missionItem);
         command_item::SpatialLoiter_Turns baseItem = *castItem.get();
@@ -84,7 +84,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
         return true;
         break;
     }
-    case(command_item::COMMANDTYPE::CI_NAV_LOITER_UNLIM):
+    case(MAV_CMD::MAV_CMD_NAV_LOITER_UNLIM):
     {
         std::shared_ptr<command_item::SpatialLoiter_Unlimited> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Unlimited>(missionItem);
         command_item::SpatialLoiter_Unlimited baseItem = *castItem.get();
@@ -92,7 +92,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
         return true;
         break;
     }
-    case(command_item::COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH):
+    case(MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH):
     {
         std::shared_ptr<command_item::SpatialRTL> castItem = std::dynamic_pointer_cast<command_item::SpatialRTL>(missionItem);
         command_item::SpatialRTL baseItem = *castItem.get();
@@ -100,7 +100,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
         return true;
         break;
     }
-    case(command_item::COMMANDTYPE::CI_NAV_TAKEOFF):
+    case(MAV_CMD::MAV_CMD_NAV_TAKEOFF):
     {
         std::shared_ptr<command_item::SpatialTakeoff> castItem = std::dynamic_pointer_cast<command_item::SpatialTakeoff>(missionItem);
         command_item::SpatialTakeoff baseItem = *castItem.get();
@@ -108,7 +108,7 @@ bool Helper_MissionMACEtoMAVLINK::MACEMissionToMAVLINKMission(std::shared_ptr<co
         return true;
         break;
     }
-    case(command_item::COMMANDTYPE::CI_NAV_WAYPOINT):
+    case(MAV_CMD::MAV_CMD_NAV_WAYPOINT):
     {
         std::shared_ptr<command_item::SpatialWaypoint> castItem = std::dynamic_pointer_cast<command_item::SpatialWaypoint>(missionItem);
         command_item::SpatialWaypoint baseItem = *castItem.get();
@@ -127,14 +127,15 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertHome(const command_it
 
     mavlink_mission_item_t item;
     initializeMAVLINKMissionItem(item);
-    item.command = MAV_CMD_DO_SET_HOME;
-//    if(missionItem.position->has2DPositionSet())
-//    {
-//        item.param1 = 0; //denotes to use specified location
-//        updateMissionPosition(missionItem.position,item);
-//    }
-//    else
-//        item.param1 = 1; //denotes to use current location
+    item.frame = MAV_FRAME_GLOBAL;
+    item.command = MAV_CMD_NAV_WAYPOINT;
+    if(missionItem.position->isAnyPositionValid())
+    {
+        item.param1 = 0; //denotes to use specified location
+        updateMissionPosition(missionItem.position,item);
+    }
+    else
+        item.param1 = 1; //denotes to use current location
 
     return item;
 }
@@ -255,26 +256,45 @@ mavlink_mission_item_t Helper_MissionMACEtoMAVLINK::convertWaypoint(const comman
 
 void Helper_MissionMACEtoMAVLINK::updateMissionPosition(const mace::pose::Position* pos, mavlink_mission_item_t &item)
 {
-    UNUSED(item);
-
     if(pos == nullptr)
         return;
 
-//    if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT){
-//        item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-//    }
-//    else if(pos.getCoordinateFrame() == Data::CoordinateFrameType::CF_LOCAL_ENU)
-//    {
-//        item.frame = MAV_FRAME_LOCAL_ENU;
-//    }
-//    else{
-//        //KEN FIX THIS
-//        item.frame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
-//    }
+    item.frame = static_cast<uint8_t>(pos->getExplicitCoordinateFrame());
 
-//    item.x = pos.getX();
-//    item.y = pos.getY();
-//    item.z = pos.getZ();
+    switch (pos->getCoordinateSystemType()) {
+    case CoordinateSystemTypes::CARTESIAN:
+    {
+        if(pos->is2D())
+        {
+            item.x = pos->positionAs<mace::pose::CartesianPosition_2D>()->getXPosition();
+            item.y = pos->positionAs<mace::pose::CartesianPosition_2D>()->getYPosition();
+        }
+        if(pos->is3D())
+        {
+            item.x = pos->positionAs<mace::pose::CartesianPosition_3D>()->getXPosition();
+            item.y = pos->positionAs<mace::pose::CartesianPosition_3D>()->getYPosition();
+            item.z = pos->positionAs<mace::pose::CartesianPosition_3D>()->getZPosition();
+        }
+        break;
+    }
+    case CoordinateSystemTypes::GEODETIC:
+    {
+        if(pos->is2D())
+        {
+            item.x = pos->positionAs<mace::pose::GeodeticPosition_3D>()->getLatitude();
+            item.y = pos->positionAs<mace::pose::GeodeticPosition_3D>()->getLongitude();
+        }
+        if(pos->is3D())
+        {
+            item.x = pos->positionAs<mace::pose::GeodeticPosition_3D>()->getLatitude();
+            item.y = pos->positionAs<mace::pose::GeodeticPosition_3D>()->getLongitude();
+            item.z = pos->positionAs<mace::pose::GeodeticPosition_3D>()->getAltitude();
+        }
+        break;
+    }
+    default:
+        break;
+    }
 }
 
 

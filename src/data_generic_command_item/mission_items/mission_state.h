@@ -13,7 +13,8 @@ enum class MISSIONSTATE : uint8_t
     ONBOARD = 1,
     PROPOSED = 2,
     RECEIVED = 3,
-    OUTDATED = 4
+    OUTDATED = 4,
+    UNKNWON = 5
 };
 
 inline std::string MissionStateToString(const MISSIONSTATE &cmdType) {

@@ -1,11 +1,8 @@
 #ifndef I_PROTOCOL_EVENTS_MACE_H
 #define I_PROTOCOL_EVENTS_MACE_H
 
-
 #include <string>
 #include <memory>
-
-#include "mace.h"
 
 #include "i_link_mace.h"
 

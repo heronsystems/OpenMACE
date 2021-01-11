@@ -15,7 +15,7 @@
     REQUEST_ONBOARD_GUIDED_MISSION, CLEAR_ONBOARD_GUIDED_MISSION, \
     REQUEST_VEHICLE_HOME, SET_VEHICLE_HOME, \
     FOLLOW_NEW_COMMANDS,FINISH_AND_FOLLOW_COMMANDS,COMMANDS_APPENDED, \
-    EXECUTE_DYNAMIC_TARGET
+    EXECUTE_DYNAMIC_TARGET, SET_SURFACE_DEFLECTION
 
 namespace MaceCore
 {
@@ -167,6 +167,15 @@ public:
             Command_SetHomePosition(vehicleHome, sender);
         });
 
+        /////////////////////////////////////////////////////////////////////////
+        /// EXPLICIT CONTROL EVENTS: These events are explicit overrides of the
+        /// vehicle, often developed in tight coordination with the vehicle itself.
+        /////////////////////////////////////////////////////////////////////////
+
+        this->template AddCommandLogic<command_item::Action_SetSurfaceDeflection>(CT::SET_SURFACE_DEFLECTION, [this](const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<ModuleCharacteristic> &sender){
+            Command_SetSurfaceDeflection(action, sender);
+        });
+
     }
 
 public:
@@ -312,6 +321,13 @@ public:
     //! \param vehicleHome New vehicle home position
     //!
     virtual void Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<ModuleCharacteristic>& = OptionalParameter<ModuleCharacteristic>()) = 0;
+
+
+    //!
+    //! \brief Command_SetSurfaceDeflection
+    //! \param action
+    //!
+    virtual void Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<ModuleCharacteristic>& = OptionalParameter<ModuleCharacteristic>()) = 0;
 
 
 };

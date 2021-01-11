@@ -76,7 +76,7 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -90,9 +90,9 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<Mi
     switch (component->m_targetPosition->getCoordinateSystemType()) {
     case CoordinateSystemTypes::GEODETIC:
     {
-        Abstract_GeodeticPosition* targetPosition;
-        targetPosition = dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition);
-        obj = targetPosition->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET));
+//        Abstract_GeodeticPosition* targetPosition;
+//        targetPosition = dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition);
+        obj = component->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET));
 
         break;
     }
@@ -114,7 +114,7 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<Mi
     }
 
 
-    obj["distance_to_target"] = component->m_distanceToTarget;
+//    obj["distance_to_target"] = component->m_distanceToTarget;
 
 
 
@@ -127,7 +127,7 @@ void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<Mi
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -150,7 +150,7 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
         }
 
         // Log to file:
-        logToFile(doc);
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
     }
 }
 
@@ -161,49 +161,46 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
 //!
 void MACEtoGUI::sendVehicleParameterList(const int &vehicleID, const std::map<std::string, DataGenericItem::DataGenericItem_ParamValue> &params)
 {
-////    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
-//    QJsonObject obj;
-//    obj["agentID"] = std::to_string(vehicleID).c_str();;
-//    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
+//    QJsonObject obj = home.toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_HOME));
+    QJsonObject obj;
+    obj["agentID"] = std::to_string(vehicleID).c_str();;
+    obj["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PARAM_LIST).c_str();
 
-//    QJsonArray verticies;
-//    for(auto&& param : params) {
-//        QJsonObject obj;
-//        obj["param_id"] = QString::fromStdString(param.second.getID());
-//        obj["value"] = param.second.getValue();
+    QJsonArray verticies;
+    for(auto&& param : params) {
+        QJsonObject obj;
+        obj["param_id"] = QString::fromStdString(param.second.getID());
+        obj["value"] = param.second.getValue();
 
-//        verticies.push_back(obj);
-//    }
+        verticies.push_back(obj);
+    }
 
-//    obj["param_list"] = verticies;
+    obj["param_list"] = verticies;
 
-//    QJsonDocument doc(obj);
-//    //    bool bytesWritten = writeTCPData(doc.toJson());
-//    bool bytesWritten = writeUDPData(doc.toJson());
-//    if(!bytesWritten){
-//        std::cout << "Write parameter list failed..." << std::endl;
-//    }
+    QJsonDocument doc(obj);
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool bytesWritten = writeUDPData(doc.toJson());
+    if(!bytesWritten){
+        std::cout << "Write parameter list failed..." << std::endl;
+    }
 
 
 //    std::cout << "Parameter TKOFF_ALT for Vehicle ID " << vehicleID << ": " << params.at("TKOFF_ALT").getValue() << std::endl;
 
 
-//    // Write out generic message to display on GUI:
-//    QJsonObject textJson;
-//    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
-//    textJson["agentID"] = std::to_string(vehicleID).c_str();;
-//    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(DataGenericItem::DataGenericItem_Text::STATUS_SEVERITY::STATUS_INFO));
-//    std::string text = "TKOFF_ALT param set to " + std::to_string(params.at("TKOFF_ALT").getValue());
-//    textJson["text"] = QString::fromStdString(text);
-//    QJsonDocument textDoc(textJson);
-//    //    bool bytesWritten = writeTCPData(doc.toJson());
-//    bool textBytesWritten = writeUDPData(textDoc.toJson());
-//    if(!textBytesWritten){
-//        std::cout << "Write parameter list TEXT failed..." << std::endl;
-//    }
-
-//    // Log to file:
-//    logToFile(doc);
+    // Write out generic message to display on GUI:
+    QJsonObject textJson;
+    textJson["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_TEXT).c_str();
+    textJson["agentID"] = std::to_string(vehicleID).c_str();;
+    textJson["severity"] =  QString::fromStdString(DataGenericItem::DataGenericItem_Text::StatusSeverityToString(MAV_SEVERITY::MAV_SEVERITY_INFO));
+    std::string text = "TKOFF_ALT param set to " /*+ std::to_string(params.at("TKOFF_ALT").getValue())*/;
+    textJson["text"] = QString::fromStdString(text);
+    QJsonDocument textDoc(textJson);
+    //    bool bytesWritten = writeTCPData(doc.toJson());
+    bool textBytesWritten = writeUDPData(textDoc.toJson());
+    if(!textBytesWritten){
+        std::cout << "Write parameter list TEXT failed..." << std::endl;
+    }
 }
 
 //!
@@ -226,7 +223,7 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
         }
 
         // Log to file:
-        logToFile(doc);
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
     }
 }
 
@@ -249,7 +246,7 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
         }
 
         // Log to file:
-        logToFile(doc);
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
     }
 }
 
@@ -270,7 +267,7 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -289,7 +286,7 @@ void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measuremen
         }
 
         // Log to file:
-        logToFile(doc);
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -309,7 +306,7 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -328,7 +325,7 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -347,7 +344,7 @@ void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<Data
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -366,7 +363,7 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -385,7 +382,7 @@ void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataG
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -404,7 +401,7 @@ void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_p
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -423,7 +420,7 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -450,7 +447,7 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
     }
 
     // Log to file:
-    logToFile(docMission);
+    logToFile(m_logger, docMission.toJson(QJsonDocument::Compact).toStdString());
 
 //    bytesWritten = writeTCPData(docPath.toJson());
     bytesWritten = writeUDPData(docPath.toJson());
@@ -460,7 +457,25 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
     }
 
     // Log to file:
-    logToFile(docPath);
+    logToFile(m_logger, docPath.toJson(QJsonDocument::Compact).toStdString());
+}
+
+void MACEtoGUI::sendVehiclePath(const int &vehicleID, const VehiclePath_Linear &waypointList)
+{
+    //    QJsonObject jsonPath = waypointList.toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_PATH));
+    QJsonObject jsonPath;
+    jsonPath["message_type"] = guiMessageString(GuiMessageTypes::VEHICLE_PATH).c_str();
+    jsonPath["agentID"] = std::to_string(vehicleID).c_str();;
+    QJsonArray path;
+    waypointListToJSON(waypointList.getVertices(), path);
+    jsonPath["vertices"] = path;
+    QJsonDocument docPath(jsonPath);
+    bool bytesWritten = writeUDPData(docPath.toJson());
+    if(!bytesWritten){
+        std::cout << "Write Vehicle Path Data failed..." << std::endl;
+    }
+    // Log to file:
+    logToFile(m_logger, docPath.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -479,7 +494,7 @@ void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
 }
 
 //!
@@ -513,7 +528,21 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
     }
 
     // Log to file:
-    logToFile(doc);
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+}
+
+void MACEtoGUI::waypointListToJSON(const std::vector<mace::pose::GeodeticPosition_3D> &waypointList, QJsonArray &path)
+{
+    for(size_t i = 0; i < waypointList.size(); i++)
+    {
+        QJsonObject obj;
+        obj["lat"] = waypointList[i].getLatitude();
+        obj["lng"] = waypointList[i].getLongitude();
+        if(waypointList[i].is3D()) {
+            obj["alt"] = waypointList[i].getAltitude();
+        }
+        path.push_back(obj);
+    }
 }
 
 void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems,QJsonArray &path)
@@ -528,21 +557,21 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
         obj["type"] = QString::fromStdString(command_item::CommandItemToString(missionItem->getCommandType()));
 
         switch (missionItem->getCommandType()) {
-        case command_item::COMMANDTYPE::CI_ACT_ARM:
+        case MAV_CMD::MAV_CMD_COMPONENT_ARM_DISARM:
         {
             std::shared_ptr<command_item::ActionArm> castItem = std::dynamic_pointer_cast<command_item::ActionArm>(missionItem);
             obj["positionalFrame"] = "global";
             UNUSED(castItem);
             break;
         }
-        case command_item::COMMANDTYPE::CI_ACT_CHANGEMODE:
+        case MAV_CMD::MAV_CMD_DO_SET_MODE:
         {
             std::shared_ptr<command_item::ActionChangeMode> castItem = std::dynamic_pointer_cast<command_item::ActionChangeMode>(missionItem);
             obj["positionalFrame"] = "global";
             UNUSED(castItem);
             break;
         }
-        case command_item::COMMANDTYPE::CI_NAV_LAND:
+        case MAV_CMD::MAV_CMD_NAV_LAND:
         {
             std::shared_ptr<command_item::SpatialLand> castItem = std::dynamic_pointer_cast<command_item::SpatialLand>(missionItem);
             obj["positionalFrame"] = "global";
@@ -550,14 +579,14 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
 
             break;
         }
-        case command_item::COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
+        case MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH:
         {
             std::shared_ptr<command_item::SpatialRTL> castItem = std::dynamic_pointer_cast<command_item::SpatialRTL>(missionItem);
             obj["positionalFrame"] = "global";
             UNUSED(castItem);
             break;
         }
-        case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
+        case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
         {
             std::shared_ptr<command_item::SpatialTakeoff> castItem = std::dynamic_pointer_cast<command_item::SpatialTakeoff>(missionItem);
             if(castItem->position->getCoordinateSystemType() == CoordinateSystemTypes::GEODETIC)
@@ -574,7 +603,7 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
 
             break;
         }
-        case command_item::COMMANDTYPE::CI_NAV_WAYPOINT:
+        case MAV_CMD::MAV_CMD_NAV_WAYPOINT:
         {
             std::shared_ptr<command_item::SpatialWaypoint> castItem = std::dynamic_pointer_cast<command_item::SpatialWaypoint>(missionItem);
             obj["positionalFrame"] = "global";
@@ -585,7 +614,7 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             path.push_back(waypoint);
             break;
         }
-        case command_item::COMMANDTYPE::CI_NAV_LOITER_TIME:
+        case MAV_CMD::MAV_CMD_NAV_LOITER_TIME:
         {
             std::shared_ptr<command_item::SpatialLoiter_Time> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Time>(missionItem);
             obj["positionalFrame"] = "global";
@@ -601,7 +630,7 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             }
             break;
         }
-        case command_item::COMMANDTYPE::CI_NAV_LOITER_TURNS:
+        case MAV_CMD::MAV_CMD_NAV_LOITER_TURNS:
         {
             std::shared_ptr<command_item::SpatialLoiter_Turns> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Turns>(missionItem);
             obj["positionalFrame"] = "global";
@@ -617,7 +646,7 @@ void MACEtoGUI::missionListToJSON(const MissionItem::MissionList &list, QJsonArr
             }
             break;
         }
-        case command_item::COMMANDTYPE::CI_NAV_LOITER_UNLIM:
+        case MAV_CMD::MAV_CMD_NAV_LOITER_UNLIM:
         {
             std::shared_ptr<command_item::SpatialLoiter_Unlimited> castItem = std::dynamic_pointer_cast<command_item::SpatialLoiter_Unlimited>(missionItem);
             obj["positionalFrame"] = "global";

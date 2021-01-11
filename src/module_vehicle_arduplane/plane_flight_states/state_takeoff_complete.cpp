@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_TakeoffComplete::AP_State_TakeoffComplete():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_TAKEOFF_COMPLETE)
 {
-    std::cout<<"We are in the constructor of STATE_TAKEOFF_COMPLETE"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
-    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
+
 }
 
 AbstractStateArdupilot* AP_State_TakeoffComplete::getClone() const
@@ -54,9 +52,9 @@ void AP_State_TakeoffComplete::OnEnter()
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
         controllerSystemMode->Shutdown();
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-            desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
+            _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
 //        else
-//            desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
+//            _desiredState = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
     });
 
     controllerSystemMode->setLambda_Shutdown([this, collection]()

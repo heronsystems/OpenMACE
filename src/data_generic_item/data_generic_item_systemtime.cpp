@@ -14,28 +14,28 @@ DataGenericItem_SystemTime::DataGenericItem_SystemTime(const DataGenericItem_Sys
     this->ms_since_system_boot = copyObj.getMillisecondsSinceBoot();
 }
 
-DataGenericItem_SystemTime::DataGenericItem_SystemTime(const mace_system_time_t &copyObj)
+DataGenericItem_SystemTime::DataGenericItem_SystemTime(const mavlink_system_time_t &copyObj)
 {
     this->usec_since_epoch = copyObj.time_unix_usec;
     this->ms_since_system_boot = copyObj.time_boot_ms;
 }
 
-mace_system_time_t DataGenericItem_SystemTime::getMACECommsObject() const
+mavlink_system_time_t DataGenericItem_SystemTime::getMACECommsObject() const
 {
-    mace_system_time_t rtnObj;
+    mavlink_system_time_t rtnObj;
     rtnObj.time_unix_usec = this->usec_since_epoch;
     rtnObj.time_boot_ms = this->ms_since_system_boot;
 
     return rtnObj;
 }
 
-mace_message_t DataGenericItem_SystemTime::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t DataGenericItem_SystemTime::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
     UNUSED(chan);
 
-    mace_message_t msg;
-    mace_system_time_t systemTime = getMACECommsObject();
-    mace_msg_system_time_encode(systemID, compID, &msg, &systemTime);
+    mavlink_message_t msg;
+    mavlink_system_time_t systemTime = getMACECommsObject();
+    mavlink_msg_system_time_encode(systemID, compID, &msg, &systemTime);
     return msg;
 }
 

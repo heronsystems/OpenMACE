@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_GroundedArmed::AP_State_GroundedArmed():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_GROUNDED_ARMED)
 {
-    std::cout<<"We are in the constructor of STATE_GROUNDED_ARMED"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
+
 }
 
 AbstractStateArdupilot* AP_State_GroundedArmed::getClone() const
@@ -25,12 +23,12 @@ hsm::Transition AP_State_GroundedArmed::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_GROUNDED_DISARMING:
         {
             return hsm::SiblingTransition<AP_State_GroundedDisarming>();
@@ -49,7 +47,7 @@ hsm::Transition AP_State_GroundedArmed::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_EStop."<<std::endl;
             break;
         }
     }
@@ -61,19 +59,19 @@ bool AP_State_GroundedArmed::handleCommand(const std::shared_ptr<AbstractCommand
     bool success = false;
     this->clearCommand();
     switch (command->getCommandType()) {
-    case command_item::COMMANDTYPE::CI_ACT_ARM:
+    case MAV_CMD::MAV_CMD_COMPONENT_ARM_DISARM:
     {
         if(command->as<command_item::ActionArm>()->getRequestArm() == false)
         {
-            desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_DISARMING;
+            _desiredState = Data::MACEHSMState::STATE_GROUNDED_DISARMING;
             success = true;
         }
         break;
     }
-    case command_item::COMMANDTYPE::CI_NAV_TAKEOFF:
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
-        GetImmediateOuterState()->setDesiredStateEnum(desiredStateEnum);
+        _desiredState = Data::MACEHSMState::STATE_TAKEOFF;
+        static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setDesiredStateEnum(_desiredState);
         static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setCurrentCommand(command);
         success = true;
         break;
@@ -88,13 +86,13 @@ bool AP_State_GroundedArmed::handleCommand(const std::shared_ptr<AbstractCommand
 void AP_State_GroundedArmed::Update()
 {
     if(!Owner().status->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_IDLE;
 }
 
 void AP_State_GroundedArmed::OnEnter()
 {
     //the command was obviously to arm however, we do not know what the user intent was next
-    GetImmediateOuterState()->setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT);
+    static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT);
 }
 
 void AP_State_GroundedArmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)

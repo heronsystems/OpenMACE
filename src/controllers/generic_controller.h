@@ -41,7 +41,7 @@ namespace Controllers {
 //! The FINISH_CODE is a templated ack-code that is specific on the controllers use.
 //!
 //!
-//! \template MESSAGETYPE The underlaying message type that is sent to the communication link. On MAVLINK: mavlink_message_t, In MACE: mace_message_t
+//! \template MESSAGETYPE The underlaying message type that is sent to the communication link. On MAVLINK: mavlink_message_t, In MACE: mavlink_message_t
 //! \template COMPONENT_KEY Key that identifies entities communicating on the communication link. On MAVLINK this is a vehicleID, in MACE this is set to ModuleCharacterstic.
 //! \template TransmitQueueType Type of TransmitQueueWithKeys indicating what objects this controller will use to queue transmissions with
 //! \template FINISH_CODE type that is to be returned when done
@@ -70,6 +70,8 @@ protected:
 
     std::mutex m_MutexFinishLambda;
     std::mutex m_MutexShutdownLambda;
+
+    bool _isControllerActive = false;
 
 public:
 
@@ -201,8 +203,12 @@ public:
 
     virtual bool ReceiveMessage(const MESSAGETYPE *message, const COMPONENT_KEY &sender)
     {
-        std::lock_guard<std::mutex> lock(m_MessageBehaviorsMutex);
+        std::lock_guard<std::mutex> lock(m_MessageBehaviorsMutex); 
         bool usedMessage = false;
+
+        if(!_isControllerActive)
+            return usedMessage;
+
         for(auto it = m_MessageBehaviors.cbegin() ; it != m_MessageBehaviors.cend() ; ++it)
         {
             bool criteraEvaluation = std::get<0>(*it)(sender, message);
@@ -268,9 +274,12 @@ public:
     template <typename T>
     void QueueTransmission(const T &key, const int &messageID, const COMPONENT_KEY &target, const std::function<void(const std::vector<COMPONENT_KEY> &unheard)> &transmitAction)
     {
+        _isControllerActive = true;
+
         auto lambda = [this](){
             onFinished(false);
         };
+
         TransmitQueueType::QueueTransmission(ObjectIntTuple<T>(key, messageID), {target}, transmitAction, lambda);
     }
 
@@ -287,9 +296,12 @@ public:
     template <typename T>
     void QueueTransmission(const T &key, const std::vector<int> &messagesID, const COMPONENT_KEY &target, const std::function<void(const std::vector<COMPONENT_KEY> &unheard)> &transmitAction)
     {
+        _isControllerActive = true;
+
         auto lambda = [this](){
             onFinished(false);
         };
+
         std::vector<ObjectIntTuple<T>> vec;
         for(auto it = messagesID.cbegin() ; it != messagesID.cend() ; ++it)
         {
@@ -310,6 +322,8 @@ public:
     template <typename T>
     void QueueReliableBroadcast(const T &key, const int &messageID, const std::vector<COMPONENT_KEY> &targets, const std::function<void(const std::vector<COMPONENT_KEY> &unheard)> &transmitAction)
     {
+        _isControllerActive = true;
+
         auto lambda = [this](){
             onFinished(false);
         };
@@ -331,6 +345,7 @@ public:
     template <typename T>
     void RemoveTransmission(const T &key, const int &messageID, OptionalParameter<COMPONENT_KEY> receivedFrom = OptionalParameter<COMPONENT_KEY>())
     {
+        _isControllerActive = false;
         TransmitQueueType::RemoveTransmission(ObjectIntTuple<T>(key, messageID), receivedFrom);
     }
 

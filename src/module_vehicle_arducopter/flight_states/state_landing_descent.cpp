@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_LandingDescent::State_LandingDescent():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_LANDING_DESCENDING)
 {
     guidedProgress = ArdupilotTargetProgess(0,10,10);
-    std::cout<<"We are in the constructor of STATE_LANDING_DESCENT"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
-    desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
 }
 
 void State_LandingDescent::OnExit()
@@ -33,12 +30,12 @@ hsm::Transition State_LandingDescent::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_LANDING_COMPLETE:
         {
             if(currentCommand == nullptr)
@@ -53,7 +50,7 @@ hsm::Transition State_LandingDescent::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_LANDING_DESCENT."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_LANDING_DESCENT."<<std::endl;
             break;
         }
     }
@@ -65,7 +62,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
     bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_NAV_LAND:
+    case MAV_CMD::MAV_CMD_NAV_LAND:
     {
         currentCommand = command->getClone();
         const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
@@ -88,7 +85,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {
                         this->clearCommand();
-                        desiredStateEnum = Data::MACEHSMState::STATE_LANDING_COMPLETE;
+                        _desiredState = Data::MACEHSMState::STATE_LANDING_COMPLETE;
                     }
                 });
                 break;
@@ -107,7 +104,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {
                         this->clearCommand();
-                        desiredStateEnum = Data::MACEHSMState::STATE_LANDING_COMPLETE;
+                        _desiredState = Data::MACEHSMState::STATE_LANDING_COMPLETE;
                     }
                 });
                 break;
@@ -132,7 +129,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
                 if(guidedState == Data::ControllerState::ACHIEVED)
                 {
                     this->clearCommand();
-                    desiredStateEnum = Data::MACEHSMState::STATE_LANDING_COMPLETE;
+                    _desiredState = Data::MACEHSMState::STATE_LANDING_COMPLETE;
                 }
             });
         }
@@ -142,7 +139,7 @@ bool State_LandingDescent::handleCommand(const std::shared_ptr<AbstractCommandIt
         auto controllerDescent = new MAVLINKUXVControllers::CommandLand(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerDescent->AddLambda_Finished(this, [this,controllerDescent](const bool completed, const uint8_t finishCode){
             if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
-                GetImmediateOuterState()->setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT);
+                static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT);
             controllerDescent->Shutdown();
         });
 
@@ -172,14 +169,13 @@ void State_LandingDescent::Update()
 {
     StatusData_MAVLINK* vehicleStatus = Owner().status;
 
-    if(!vehicleStatus->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
-
-
     std::string modeStr = vehicleStatus->vehicleMode.get().getFlightModeString();
     if(modeStr == "BRAKE" || modeStr == "LOITER") {
-        desiredStateEnum = Data::MACEHSMState::STATE_LANDING_COMPLETE;
+        _desiredState = Data::MACEHSMState::STATE_LANDING_COMPLETE;
     }
+
+    if(!vehicleStatus->vehicleArm.get().getSystemArm())
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_IDLE;
 }
 
 void State_LandingDescent::OnEnter()

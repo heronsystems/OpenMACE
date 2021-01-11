@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_FlightGuided::State_FlightGuided():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
+
 }
 
 void State_FlightGuided::OnExit()
@@ -30,12 +28,12 @@ hsm::Transition State_FlightGuided::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE:
         {
             rtn = hsm::InnerTransition<State_FlightGuided_Idle>(currentCommand);
@@ -67,7 +65,7 @@ hsm::Transition State_FlightGuided::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_FLIGHT_GUIDED."<<std::endl;
             break;
         }
     }
@@ -78,7 +76,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
 {
     bool success = false;
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    case MAV_CMD::MAV_CMD_USER_1:
     {
         if(this->IsInState<State_FlightGuided_SpatialItem>())
         {
@@ -88,12 +86,12 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
         else
         {
             currentCommand = command->getClone();
-            desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM;
+            _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM;
             success = true;
         }
         break;
     }
-    case COMMANDTYPE::CI_ACT_TARGET:
+    case MAV_CMD::MAV_CMD_USER_5:
     {
         currentCommand = command->getClone();
         command_item::Action_DynamicTarget* cmd = currentCommand->as<command_item::Action_DynamicTarget>();
@@ -118,7 +116,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
                     }
                     else
                     {
-                        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET;
+                        _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET;
                         success = true;
                     }
                 }
@@ -131,7 +129,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
                     }
                     else
                     {
-                        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET;
+                        _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET;
                         success = true;
                     }
                 }
@@ -145,7 +143,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
                 }
                 else
                 {
-                    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET;
+                    _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET;
                     success = true;
                 }
             }
@@ -160,7 +158,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
             }
             else
             {
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_ATTTARGET;
+                _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_ATTTARGET;
                 success = true;
             }
             break;
@@ -168,7 +166,7 @@ bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem
 
         } //end of switch statement for target type
         break;
-    } //end of case COMMANDTYPE::CI_ACT_TARGET
+    } //end of case MAV_CMD::MAV_CMD_USER_5
 
     default:
         break;
@@ -186,7 +184,7 @@ void State_FlightGuided::Update()
 void State_FlightGuided::OnEnter()
 {
     //We have no command and therefore are just in the guided mode, we can tranisition to idle
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
+    _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
 void State_FlightGuided::OnEnter(const std::shared_ptr<AbstractCommandItem> command)

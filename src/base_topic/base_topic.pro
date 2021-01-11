@@ -12,7 +12,7 @@ TEMPLATE = lib
 
 DEFINES += BASE_TOPIC_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -29,6 +29,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    measurements/topic_trackangle.cpp \
     pose/topic_geodetic_position.cpp \
     pose/topic_cartesian_position.cpp \
     pose/topic_cartesian_velocity.cpp \
@@ -36,18 +37,21 @@ SOURCES += \
     pose/topic_agent_orientation.cpp \
     measurements/topic_airspeed.cpp \
     measurements/topic_groundspeed.cpp \
-    pose/topic_rotational_velocity.cpp
+    pose/topic_rotational_velocity.cpp \
+    vehicle/vehicle_path_linear_topic.cpp
 
 HEADERS += \
     base_topic_global.h \
     base_topic_components.h \
+    measurements/topic_trackangle.h \
     pose/topic_geodetic_position.h \
     pose/topic_cartesian_position.h \
     pose/topic_cartesian_velocity.h \
     pose/topic_altitude.h \
     pose/topic_agent_orientation.h \
     measurements/topic_speed.h \
-    pose/topic_rotational_velocity.h
+    pose/topic_rotational_velocity.h \
+    vehicle/vehicle_path_linear_topic.h
 
 # Unix lib Install
 unix:!symbian {
@@ -68,9 +72,18 @@ INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("base_topic: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("base_topic: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

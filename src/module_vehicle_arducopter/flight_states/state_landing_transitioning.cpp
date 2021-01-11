@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_LandingTransitioning::State_LandingTransitioning():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_LANDING_TRANSITIONING)
 {
     guidedProgress = ArdupilotTargetProgess(1,10,10);
-    std::cout<<"We are in the constructor of STATE_LANDING_TRANSITIONING"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
-    desiredStateEnum = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
 }
 
 void State_LandingTransitioning::OnExit()
@@ -32,14 +29,14 @@ hsm::Transition State_LandingTransitioning::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_EStop."<<std::endl;
             break;
         }
     }
@@ -51,7 +48,7 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
     bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_NAV_LAND:
+    case MAV_CMD::MAV_CMD_NAV_LAND:
     {
         currentCommand = command->getClone();
         const command_item::SpatialLand* cmd = currentCommand->as<command_item::SpatialLand>();
@@ -72,7 +69,7 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 
                     if(guidedState == Data::ControllerState::ACHIEVED)
                     {
-                        desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
+                        _desiredState = Data::MACEHSMState::STATE_LANDING_DESCENDING;
                     }
                 });
                 success = true;
@@ -80,14 +77,14 @@ bool State_LandingTransitioning::handleCommand(const std::shared_ptr<AbstractCom
             }
             case(CoordinateSystemTypes::CARTESIAN):
             {
-                desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
+                _desiredState = Data::MACEHSMState::STATE_LANDING_DESCENDING;
                 success = true;
                 break;
             }
             case(CoordinateSystemTypes::UNKNOWN):
             case (CoordinateSystemTypes::NOT_IMPLIED):
             {
-                desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
+                _desiredState = Data::MACEHSMState::STATE_LANDING_DESCENDING;
                 success = true;
                 break;
             }

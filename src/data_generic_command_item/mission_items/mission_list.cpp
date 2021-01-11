@@ -82,7 +82,7 @@ MissionList::MissionListStatus MissionList::getMissionListStatus() const
 
 void MissionList::insertMissionItem(const std::shared_ptr<command_item::AbstractCommandItem> missionItem)
 {
-    missionQueue.push_back(missionItem);
+    missionQueue.push_back(missionItem->getClone());
 }
 
 void MissionList::replaceMissionItemAtIndex(const std::shared_ptr<command_item::AbstractCommandItem> missionItem, const unsigned int &index)

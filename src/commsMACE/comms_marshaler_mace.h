@@ -219,7 +219,7 @@ private:
     //! \param linkName Link identifier which generated call
     //! \param message Message that has been received
     //!
-    virtual void MessageReceived(const ILink* link_ptr, const mace_message_t &message) const;
+    virtual void MessageReceived(const ILink* link_ptr, const mavlink_message_t &message) const;
 
     //!
     //! \brief A new radio status packet received

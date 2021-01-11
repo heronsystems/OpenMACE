@@ -233,7 +233,7 @@ public:
     //! \brief Set the host MACE instance ID
     //! \param ID identifier for host MACE instance
     //!
-    void setPararentMaceInstanceID(const uint32_t &ID)
+    void setParentMaceInstanceID(const uint32_t &ID)
     {
         m_ParentMaceInstanceIDSet = true;
         m_ParentMaceInstanceID = ID;

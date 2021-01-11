@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_FlightGuided_Queue::AP_State_FlightGuided_Queue():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED_QUEUE)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_QUEUE"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_QUEUE;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_QUEUE;
+
 }
 
 void AP_State_FlightGuided_Queue::OnExit()
@@ -30,14 +28,14 @@ hsm::Transition AP_State_FlightGuided_Queue::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from AP_State_FlightGuided_Queue."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from AP_State_FlightGuided_Queue."<<std::endl;
             break;
         }
     }

@@ -269,7 +269,7 @@ void CommsMarshaler::SetProtocolForLink(const std::string &linkName, Protocols p
         bool channelSet = false;
         for (int i=0; i<32; i++) {
             if (!(m_MavlinkChannelsUsedBitMask & 1 << i)) {
-                mace_reset_channel_status(i);
+                mavlink_reset_channel_status(i);
                 protocolObj->SetChannel(link_ptr, i);
                 m_MavlinkChannelsUsedBitMask |= 1 << i;
                 channelSet = true;
@@ -519,7 +519,7 @@ void CommsMarshaler::ReceiveLossTotalChanged(const ILink* link_ptr, int uasId, i
 //! \param linkName Link identifier which generated call
 //! \param message Message that has been received
 //!
-void CommsMarshaler::MessageReceived(const ILink* link_ptr, const mace_message_t &message) const
+void CommsMarshaler::MessageReceived(const ILink* link_ptr, const mavlink_message_t &message) const
 {
 //    std::cout<< "CommsMarshaler::MessageReceived" << std::endl;
 
@@ -553,6 +553,6 @@ void CommsMarshaler::RadioStatusChanged(const ILink* link_ptr, unsigned rxerrors
 
 
 
-template void CommsMarshaler::SendMACEMessage<mace_message_t>(const std::string &, const mace_message_t&, const OptionalParameter<Resource> &target);
+template void CommsMarshaler::SendMACEMessage<mavlink_message_t>(const std::string &, const mavlink_message_t&, const OptionalParameter<Resource> &target);
 
 }//END Comms

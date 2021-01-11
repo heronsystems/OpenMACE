@@ -58,6 +58,32 @@ Topic_RotationalVelocity::Topic_RotationalVelocity(const Topic_RotationalVelocit
     this->m_VelocityObj = copy.m_VelocityObj;
 }
 
+QJsonObject Topic_RotationalVelocity::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    mace::pose::Velocity_Rotation3D castVelocity = getVelocityObj();
+        json["rollRate"] = castVelocity.getDataVector().x();
+        json["pitchRate"] = castVelocity.getDataVector().y();
+        json["yawRate"] = castVelocity.getDataVector().z();
+    return json;
+}
+
+void Topic_RotationalVelocity::fromJSON(const QJsonDocument &inputJSON)
+{
+    mace::pose::Velocity_Rotation3D* tmpObj = getVelocityObj().getVelocityClone()->velocityAs<mace::pose::Velocity_Rotation3D>();
+    Eigen::Vector3d data = tmpObj->getDataVector();
+    data.x()= inputJSON.object().value("rollRate").toDouble();
+    data.y()= inputJSON.object().value("pitchRate").toDouble();
+    data.z()= inputJSON.object().value("yawRate").toDouble();
+    tmpObj->updateDataVector(data);
+    this->m_VelocityObj = *tmpObj;
+}
+
+std::string Topic_RotationalVelocity::toCSV(const std::string &delimiter) const
+{
+    std::string newline = std::to_string(getVelocityObj().getDataVector().x()) + delimiter + std::to_string(getVelocityObj().getDataVector().y()) + delimiter + std::to_string(getVelocityObj().getDataVector().z());
+    return newline;
+}
 mace::pose::Velocity_Rotation3D Topic_RotationalVelocity::getVelocityObj() const
 {
     return this->m_VelocityObj;

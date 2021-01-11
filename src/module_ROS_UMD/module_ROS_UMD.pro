@@ -13,7 +13,7 @@ TEMPLATE = lib
 
 DEFINES += MODULE_ROS_UMD_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -47,14 +47,23 @@ include(../headerinstall.pri)
 
 
 INCLUDEPATH += $$PWD/../
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 INCLUDEPATH += $$(MACE_ROOT)/include
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-DEPENDPATH += $$PWD/../
 
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_ROS_UMD: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_ROS_UMD: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 # Octomap Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
 
@@ -146,4 +155,3 @@ unix {
       QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
       }
 }
-

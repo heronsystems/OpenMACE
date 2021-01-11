@@ -14,11 +14,11 @@ class MissionItemFactory
 public:
     MissionItemFactory() = default;
 
-    static command_item::AbstractCommandItemPtr generateAbstractCommandItem(const mace_mission_item_t &maceItem, const unsigned int &targetID, const unsigned int originatingID);
+    static command_item::AbstractCommandItemPtr generateAbstractCommandItem(const mavlink_mace_mission_item_int_t &maceItem, const unsigned int &targetID, const unsigned int originatingID);
 
-    static void generateMACEMissionItem(const command_item::AbstractCommandItemPtr maceItem, const unsigned int &itemIndex, mace_mission_item_t &missionItem);
+    static void generateMACEMissionItem(const command_item::AbstractCommandItemPtr maceItem, const unsigned int &itemIndex, mavlink_mace_mission_item_int_t &missionItem);
 
-    static void updateMissionKey(const MissionItem::MissionKey &key, mace_mission_item_t &missionItem);
+    static void updateMissionKey(const MissionItem::MissionKey &key, mavlink_mace_mission_item_int_t &missionItem);
 
 };
 

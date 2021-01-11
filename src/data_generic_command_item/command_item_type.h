@@ -1,106 +1,73 @@
 #ifndef COMMAND_ITEM_TYPE_H
 #define COMMAND_ITEM_TYPE_H
 
+#include <mavlink.h>
 #include <string>
 #include <stdexcept>
 
 namespace command_item
 {
 
-enum class COMMANDLENGTH : uint8_t
-{
-    CMD_LONG,
-    CMD_SHORT
-};
-
-enum class COMMANDTYPE : uint8_t{
-    CI_NAV_HOME = 0,
-    CI_NAV_LAND=1, /* Land at location |Abort Alt| Empty| Empty| Desired yaw angle. NaN for unchanged.| Latitude| Longitude| Altitude|  */
-    CI_NAV_LOITER_TIME=2, /* Loiter around this CISSION for X seconds |Seconds (decimal)| Empty| Radius around CISSION, in meters. If positive loiter clockwise, else counter-clockwise| Forward moving aircraft this sets exit xtrack location: 0 for center of loiter wp, 1 for exit location. Else, this is desired yaw angle| Latitude| Longitude| Altitude|  */
-    CI_NAV_LOITER_TURNS=3, /* Loiter around this CISSION for X turns |Turns| Empty| Radius around CISSION, in meters. If positive loiter clockwise, else counter-clockwise| Forward moving aircraft this sets exit xtrack location: 0 for center of loiter wp, 1 for exit location. Else, this is desired yaw angle| Latitude| Longitude| Altitude|  */
-    CI_NAV_LOITER_UNLIM=4, /* Loiter around this CISSION an unliCIted amount of time |Empty| Empty| Radius around CISSION, in meters. If positive loiter clockwise, else counter-clockwise| Desired yaw angle.| Latitude| Longitude| Altitude|  */
-    CI_NAV_RETURN_TO_LAUNCH=5, /* Return to launch location |Empty| Empty| Empty| Empty| Empty| Empty| Empty|  */
-    CI_NAV_TAKEOFF=6, /* Takeoff from ground / hand |CInimum pitch (if airspeed sensor present), desired pitch without sensor| Empty| Empty| Yaw angle (if magnetometer present), ignored without magnetometer. NaN for unchanged.| Latitude| Longitude| Altitude|  */
-    CI_NAV_WAYPOINT=7, /* Navigate to CISSION. |Hold time in decimal seconds. (ignored by fixed wing, time to stay at CISSION for rotary wing)| Acceptance radius in meters (if the sphere with this radius is hit, the CISSION counts as reached)| 0 to pass through the WP, if > 0 radius in meters to pass by WP. Positive value for clockwise orbit, negative value for counter-clockwise orbit. Allows trajectory control.| Desired yaw angle at CISSION (rotary wing). NaN for unchanged.| Latitude| Longitude| Altitude|  */
-    CI_ACT_ARM = 8,
-    CI_ACT_CHANGEMODE = 9,
-    CI_ACT_CHANGESPEED = 10,
-    CI_ACT_EXECUTE_SPATIAL_ITEM = 11,
-    CI_ACT_MISSIONCMD = 12,
-    CI_ACT_MOTORTEST = 13,
-    CI_ACT_TARGET = 14,
-    CI_ACT_MSG_INTERVAL = 15,
-    CI_ACT_MSG_REQUEST = 16,
-    CI_ACT_SET_GLOBAL_ORIGIN = 17,
-    CI_ACT_HOME_POSITION = 18,
-    CI_UNKNOWN = 19,
-    COMMANDITEMEND = 20
-};
-
-inline std::string CommandItemToString(const COMMANDTYPE &commandItemType) {
+inline std::string CommandItemToString(const MAV_CMD &commandItemType) {
     switch (commandItemType) {
-    case COMMANDTYPE::CI_NAV_LAND:
+    case MAV_CMD::MAV_CMD_NAV_LAND:
         return "CI_NAV_LAND";
-    case COMMANDTYPE::CI_NAV_LOITER_TIME:
+    case MAV_CMD::MAV_CMD_NAV_LOITER_TIME:
         return "CI_NAV_LOITER_TIME";
-    case COMMANDTYPE::CI_NAV_LOITER_TURNS:
+    case MAV_CMD::MAV_CMD_NAV_LOITER_TURNS:
         return "CI_NAV_LOITER_TURNS";
-    case COMMANDTYPE::CI_NAV_LOITER_UNLIM:
+    case MAV_CMD::MAV_CMD_NAV_LOITER_UNLIM:
         return "CI_NAV_LOITER_UNLIM";
-    case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
+    case MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH:
         return "CI_NAV_RETURN_TO_LAUNCH";
-    case COMMANDTYPE::CI_NAV_TAKEOFF:
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
         return "CI_NAV_TAKEOFF";
-    case COMMANDTYPE::CI_NAV_WAYPOINT:
+    case MAV_CMD::MAV_CMD_NAV_WAYPOINT:
         return "CI_NAV_WAYPOINT";
-    case COMMANDTYPE::CI_ACT_ARM:
+    case MAV_CMD::MAV_CMD_COMPONENT_ARM_DISARM:
         return "CI_ACT_ARM";
-    case COMMANDTYPE::CI_ACT_CHANGESPEED:
+    case MAV_CMD::MAV_CMD_DO_CHANGE_SPEED:
         return "CI_ACT_CHANGESPEED";
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
         return "CI_ACT_CHANGEMODE";
-    case COMMANDTYPE::CI_ACT_MOTORTEST:
+    case MAV_CMD::MAV_CMD_DO_MOTOR_TEST:
         return "CI_ACT_MOTORTEST";
-    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
-        return "CI_ACT_EXECUTE_SPATIAL_ITEM";
-    case COMMANDTYPE::CI_ACT_MISSIONCMD:
-        return "CI_ACT_MISSIONCMD";
-    case COMMANDTYPE::CI_UNKNOWN:
-        return "CI_UNKNOWN";
+    case MAV_CMD::MAV_CMD_USER_1:
+        return "MAV_CMD_USER_1";
+    case MAV_CMD::MAV_CMD_DO_PAUSE_CONTINUE:
+        return "CI_ACT_MISSIONPROCEDURAL";
     default:
         throw std::runtime_error("Unknown mission item enum seen");
     }
 }
 
-inline COMMANDTYPE CommandItemFromString(const std::string &str) {
+inline MAV_CMD CommandItemFromString(const std::string &str) {
     if(str == "CI_NAV_LAND")
-        return COMMANDTYPE::CI_NAV_LAND;
+        return MAV_CMD::MAV_CMD_NAV_LAND;
     if(str == "CI_NAV_LOITER_TIME")
-        return COMMANDTYPE::CI_NAV_LOITER_TIME;
+        return MAV_CMD::MAV_CMD_NAV_LOITER_TIME;
     if(str == "CI_NAV_LOITER_TURNS")
-        return COMMANDTYPE::CI_NAV_LOITER_TURNS;
+        return MAV_CMD::MAV_CMD_NAV_LOITER_TURNS;
     if(str == "CI_NAV_LOITER_UNLIM")
-        return COMMANDTYPE::CI_NAV_LOITER_UNLIM;
+        return MAV_CMD::MAV_CMD_NAV_LOITER_UNLIM;
     if(str == "CI_NAV_RETURN_TO_LAUNCH")
-        return COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH;
+        return MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH;
     if(str == "CI_NAV_TAKEOFF")
-        return COMMANDTYPE::CI_NAV_TAKEOFF;
+        return MAV_CMD::MAV_CMD_NAV_TAKEOFF;
     if(str == "CI_NAV_WAYPOINT")
-        return COMMANDTYPE::CI_NAV_WAYPOINT;
+        return MAV_CMD::MAV_CMD_NAV_WAYPOINT;
     if(str == "CI_ACT_ARM")
-        return COMMANDTYPE::CI_ACT_ARM;
+        return MAV_CMD::MAV_CMD_COMPONENT_ARM_DISARM;
     if(str == "CI_ACT_CHANGESPEED")
-        return COMMANDTYPE::CI_ACT_CHANGESPEED;
+        return MAV_CMD::MAV_CMD_DO_CHANGE_SPEED;
     if(str == "CI_ACT_CHANGEMODE")
-        return COMMANDTYPE::CI_ACT_CHANGEMODE;
+        return MAV_CMD::MAV_CMD_DO_SET_MODE;
     if(str == "CI_ACT_MOTORTEST")
-        return COMMANDTYPE::CI_ACT_MOTORTEST;
-    if(str == "CI_ACT_MISSIONCMD")
-        return COMMANDTYPE::CI_ACT_MISSIONCMD;
-    if(str == "CI_ACT_EXECUTE_SPATIAL_ITEM")
-        return COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM;
-    if(str == "CI_UNKNOWN")
-        return COMMANDTYPE::CI_UNKNOWN;
+        return MAV_CMD::MAV_CMD_DO_MOTOR_TEST;
+    if(str == "CI_ACT_MISSIONPROCEDURAL")
+        return MAV_CMD::MAV_CMD_DO_PAUSE_CONTINUE;
+    if(str == "MAV_CMD_USER_1")
+        return MAV_CMD::MAV_CMD_USER_1;
     throw std::runtime_error("Unknown mission item string seen");
 }
 

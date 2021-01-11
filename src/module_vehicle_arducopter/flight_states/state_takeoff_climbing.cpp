@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_TakeoffClimbing::State_TakeoffClimbing():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_TAKEOFF_CLIMBING)
 {
-    std::cout<<"We are in the constructor of STATE_TAKEOFF_CLIMBING"<<std::endl;
     guidedProgress = ArdupilotTargetProgess(1,10,10);
-    currentStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
-    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
 }
 
 void State_TakeoffClimbing::OnExit()
@@ -32,12 +29,12 @@ hsm::Transition State_TakeoffClimbing::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING:
         {
             rtn = hsm::SiblingTransition<State_TakeoffTransitioning>(currentCommand);
@@ -49,7 +46,7 @@ hsm::Transition State_TakeoffClimbing::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_EStop."<<std::endl;
             break;
         }
     }
@@ -61,7 +58,7 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
     bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_NAV_TAKEOFF:
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
     {
         currentCommand = command->getClone();
         double targetAltitude = 0.0;
@@ -111,11 +108,11 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
                 {
                     if(cmd->getPosition()->areTranslationalComponentsValid())
                     {
-                        desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING;
+                        _desiredState = Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING;
                     }
                     else
                     {
-                        desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
+                        _desiredState = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
                     }
                 }
             });
@@ -125,7 +122,7 @@ bool State_TakeoffClimbing::handleCommand(const std::shared_ptr<AbstractCommandI
             auto controllerClimb = new MAVLINKUXVControllers::CommandTakeoff(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             controllerClimb->AddLambda_Finished(this, [this,controllerClimb](const bool completed, const uint8_t finishCode){
                 if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
-                    GetImmediateOuterState()->setDesiredStateEnum(Data::MACEHSMState::STATE_GROUNDED);
+                    static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setDesiredStateEnum(Data::MACEHSMState::STATE_GROUNDED);
                 controllerClimb->Shutdown();
             });
 
@@ -161,9 +158,10 @@ void State_TakeoffClimbing::Update()
 {
     StatusData_MAVLINK* vehicleStatus = Owner().status;
 
+
     std::string modeStr = vehicleStatus->vehicleMode.get().getFlightModeString();
     if(modeStr == "BRAKE" || modeStr == "LOITER") {
-        desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
+        _desiredState = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
     }
 }
 

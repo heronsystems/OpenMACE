@@ -60,10 +60,6 @@ void Topic_GeodeticPosition::CreateFromDatagram(const MaceCore::TopicDatagram &d
     }
 }
 
-Topic_GeodeticPosition::Topic_GeodeticPosition():
-    m_PositionObject(nullptr)
-{
-}
 QJsonObject Topic_GeodeticPosition::toJSON(const int &vehicleID, const std::string &dataType) const
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
@@ -73,6 +69,27 @@ QJsonObject Topic_GeodeticPosition::toJSON(const int &vehicleID, const std::stri
     json["alt"] = castPosition->getAltitude();
     return json;
 }
+
+void Topic_GeodeticPosition::fromJSON(const QJsonDocument &inputJSON)
+{
+    mace::pose::GeodeticPosition_3D* tmpObj = m_PositionObject->getGeodeticClone()->positionAs<mace::pose::GeodeticPosition_3D>();
+    tmpObj->updatePosition(inputJSON.object().value("lat").toDouble(), inputJSON.object().value("lng").toDouble(), inputJSON.object().value("alt").toDouble());
+    this->m_PositionObject = tmpObj;
+}
+
+std::string Topic_GeodeticPosition::toCSV(const std::string &delimiter) const
+{
+    const mace::pose::GeodeticPosition_3D* castPosition = getPositionObj()->positionAs<mace::pose::GeodeticPosition_3D>();
+    std::string newline = std::to_string(castPosition->getLatitude()) + delimiter + std::to_string(castPosition->getLongitude()) + delimiter + std::to_string(castPosition->getAltitude());
+    return newline;
+}
+
+Topic_GeodeticPosition::Topic_GeodeticPosition():
+    m_PositionObject(nullptr)
+{
+}
+
+
 Topic_GeodeticPosition::Topic_GeodeticPosition(const mace::pose::Abstract_GeodeticPosition *posObj)
 {
     //copy the contents of that point to the current pointer object

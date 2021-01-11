@@ -5,85 +5,76 @@
 #include <string>
 #include <stdexcept>
 
-#include "mace.h"
+#include <mavlink.h>
 
 namespace DataGenericItem {
 
 class DataGenericItem_Text
 {
 public:
-    enum class STATUS_SEVERITY{
-        STATUS_EMERGENCY,
-        STATUS_ALERT,
-        STATUS_CRITICAL,
-        STATUS_ERROR,
-        STATUS_WARNING,
-        STATUS_NOTICE,
-        STATUS_INFO,
-        STATUS_DEBUG
-    };
 
-    static std::string StatusSeverityToString(const STATUS_SEVERITY &state) {
+    static std::string StatusSeverityToString(const MAV_SEVERITY &state) {
         switch (state) {
-        case STATUS_SEVERITY::STATUS_EMERGENCY:
+        case MAV_SEVERITY::MAV_SEVERITY_EMERGENCY:
             return "EMERGENCY";
-        case STATUS_SEVERITY::STATUS_ALERT:
+        case MAV_SEVERITY::MAV_SEVERITY_ALERT:
             return "ALERT";
-        case STATUS_SEVERITY::STATUS_CRITICAL:
+        case MAV_SEVERITY::MAV_SEVERITY_CRITICAL:
             return "CRITICAL";
-        case STATUS_SEVERITY::STATUS_ERROR:
+        case MAV_SEVERITY::MAV_SEVERITY_ERROR:
             return "ERROR";
-        case STATUS_SEVERITY::STATUS_WARNING:
+        case MAV_SEVERITY::MAV_SEVERITY_WARNING:
             return "WARNING";
-        case STATUS_SEVERITY::STATUS_NOTICE:
+        case MAV_SEVERITY::MAV_SEVERITY_NOTICE:
             return "NOTICE";
-        case STATUS_SEVERITY::STATUS_INFO:
+        case MAV_SEVERITY::MAV_SEVERITY_INFO:
             return "INFO";
-        case STATUS_SEVERITY::STATUS_DEBUG:
+        case MAV_SEVERITY::MAV_SEVERITY_DEBUG:
             return "DEBUG";
         default:
             throw std::runtime_error("Unknown status severity seen");
         }
     }
+
 public:
     DataGenericItem_Text();
 
     DataGenericItem_Text(const DataGenericItem_Text &copyObj);
 
-    DataGenericItem_Text(const mace_statustext_t &copyObj);
+    DataGenericItem_Text(const mavlink_statustext_t &copyObj);
 
 public:
 
     void setText(const std::string &dataString){
-        this->dataString = dataString;
+        this->_dataString = dataString;
     }
     std::string getText() const{
-        return dataString;
+        return _dataString;
     }
 
-    void setSeverity(const STATUS_SEVERITY &severity){
-        this->severity = severity;
+    void setSeverity(const MAV_SEVERITY &severity){
+        this->_severity = severity;
     }
 
-    STATUS_SEVERITY getSeverity() const{
-        return severity;
+    MAV_SEVERITY getSeverity() const{
+        return _severity;
     }
 
-    mace_statustext_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+    mavlink_statustext_t getMACECommsObject() const;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
 
 public:
     void operator = (const DataGenericItem_Text &rhs)
     {
-        this->severity = rhs.severity;
-        this->dataString = rhs.dataString;
+        this->_severity = rhs._severity;
+        this->_dataString = rhs._dataString;
     }
 
     bool operator == (const DataGenericItem_Text &rhs) {
-        if(this->severity != rhs.severity){
+        if(this->_severity != rhs._severity){
             return false;
         }
-        if(this->dataString != rhs.dataString){
+        if(this->_dataString != rhs._dataString){
             return false;
         }
         return true;
@@ -94,8 +85,8 @@ public:
     }
 
 protected:
-    STATUS_SEVERITY severity;
-    std::string dataString;
+    MAV_SEVERITY _severity;
+    std::string _dataString;
 };
 
 } //end of namespace DataGenericItem

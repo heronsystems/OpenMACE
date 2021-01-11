@@ -5,7 +5,6 @@
 #include <vector>
 
 
-
 namespace CommsMACE
 {
 

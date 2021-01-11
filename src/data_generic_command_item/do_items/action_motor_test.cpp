@@ -2,9 +2,9 @@
 
 namespace command_item {
 
-COMMANDTYPE ActionMotorTest::getCommandType() const
+MAV_CMD ActionMotorTest::getCommandType() const
 {
-    return COMMANDTYPE::CI_ACT_MOTORTEST;
+    return MAV_CMD::MAV_CMD_DO_MOTOR_TEST;
 }
 
 std::string ActionMotorTest::getDescription() const
@@ -49,8 +49,8 @@ std::string ActionMotorTest::printCommandInfo() const
     return "";
 }
 
-/** Interface imposed via Interface_CommandItem<mace_command_short_t> */
-void ActionMotorTest::populateCommandItem(mace_command_long_t &obj) const
+/** Interface imposed via Interface_CommandItem<mavlink_command_int_t> */
+void ActionMotorTest::populateCommandItem(mavlink_command_long_t &obj) const
 {
     obj.target_system = static_cast<uint8_t>(this->targetSystem);
     obj.target_component = static_cast<uint8_t>(this->targetComponent);
@@ -58,44 +58,44 @@ void ActionMotorTest::populateCommandItem(mace_command_long_t &obj) const
     obj.command = static_cast<uint8_t>(this->getCommandType());
 }
 
-void ActionMotorTest::fromCommandItem(const mace_command_long_t &obj)
+void ActionMotorTest::fromCommandItem(const mavlink_command_long_t &obj)
 {
     UNUSED(obj);
     //this->setVehicleArm(static_cast<bool>(obj.param));
 }
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+/** End of interface imposed via Interface_CommandItem<mavlink_command_int_t> */
 
 /** Interface imposed via AbstractCommandItem */
 
-void ActionMotorTest::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+void ActionMotorTest::populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const
 {
     AbstractCommandItem::populateMACECOMMS_MissionItem(cmd);
-    mace_command_long_t longCommand;
+    mavlink_command_long_t longCommand;
     this->populateCommandItem(longCommand);
-    Interface_CommandHelper<mace_command_long_t>::transferToMissionItem(longCommand, cmd);
+    Interface_CommandHelper<mavlink_command_long_t>::transferToMissionItem(longCommand, cmd);
 }
 
-void ActionMotorTest::fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+void ActionMotorTest::fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &cmd)
 {
-    mace_command_long_t longCommand;
-    Interface_CommandHelper<mace_command_long_t>::transferFromMissionItem(cmd, longCommand);
+    mavlink_command_long_t longCommand;
+    Interface_CommandHelper<mavlink_command_long_t>::transferFromMissionItem(cmd, longCommand);
     fromCommandItem(longCommand);
 }
 
-void ActionMotorTest::generateMACEMSG_MissionItem(mace_message_t &msg) const
+void ActionMotorTest::generateMACEMSG_MissionItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
-    mace_mission_item_t missionItem;
+    mavlink_mace_mission_item_int_t missionItem;
     AbstractCommandItem::populateMACECOMMS_MissionItem(missionItem);
-    //mace_msg_mission_item_encode_chan();
+    //mavlink_msg_mission_item_encode_chan();
 }
 
-void ActionMotorTest::generateMACEMSG_CommandItem(mace_message_t &msg) const
+void ActionMotorTest::generateMACEMSG_CommandItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
-    mace_command_long_t longCommand;
+    mavlink_command_long_t longCommand;
     this->populateCommandItem(longCommand);
-    //mace_msg_command_short_encode_chan();
+    //mavlink_msg_command_short_encode_chan();
 }
 /** End of interface imposed via AbstractCommandItem */
 

@@ -1,8 +1,6 @@
 #ifndef MODULE_VEHICLE_ARDUPILOT_H
 #define MODULE_VEHICLE_ARDUPILOT_H
 
-#include <mavlink.h>
-
 #include <map>
 #include <condition_variable>
 
@@ -17,7 +15,6 @@
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
-#include "flight_states/ardupilot_hsm.h"
 #include "flight_states/ardupilot_state_components.h"
 #include "vehicle_object/vehicle_object_ardupilot.h"
 
@@ -296,13 +293,53 @@ public:
     //! \brief Command_GetHomePosition Request a vehicle's home position
     //! \param vehicleID Vehicle ID corresponding to the home position
     //!
-    virtual void Command_GetHomePosition (const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic>& = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+    virtual void Command_GetHomePosition (const int &vehicleID, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
     //!
     //! \brief Command_SetHomePosition Set a vehicle's home position
     //! \param vehicleHome Vehicle home data
     //!
-    virtual void Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic>& = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+    virtual void Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+
+
+    /////////////////////////////////////////////////////////////////////////
+    /// EXPLICIT CONTROL EVENTS: These events are explicit overrides of the
+    /// vehicle, often developed in tight coordination with the vehicle itself.
+    /////////////////////////////////////////////////////////////////////////
+
+    //!
+    //! \brief Command_SetSurfaceDeflection
+    //! \param action
+    //!
+    virtual void Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
+    {
+        UNUSED(action);
+        UNUSED(sender);
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////
+    /// AI SUPPORT EVENTS: These events are explicit overrides in support of
+    /// AI based autonomy.
+    /////////////////////////////////////////////////////////////////////////
+
+    virtual void NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
+    {
+        UNUSED(sender);
+        UNUSED(logEvent);
+    }
+
+    virtual void NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
+    {
+        UNUSED(sender);
+        UNUSED(procedural);
+    }
+
+    virtual void NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
+    {
+        UNUSED(initialization);
+        UNUSED(sender);
+    }
 
     //!
     //! \brief RequestDummyFunction
@@ -313,7 +350,8 @@ public:
         UNUSED(vehicleID);
     }
 
-private:
+
+protected:
     static void staticCallbackFunction_VehicleTarget(void *p, MissionTopic::VehicleTargetTopic &target)
     {
         ((ModuleVehicleArdupilot *)p)->callbackFunction_VehicleTarget(target);
@@ -325,20 +363,17 @@ private:
         ModuleVehicleMAVLINK::cbi_VehicleMissionData(target.getVehicleID(),ptrTarget);
     }
 
-private:
+protected:
 
     //!
     //! \brief ProgressStateMachineStates Cause the state machine to update its states
     //!
     void ProgressStateMachineStates();
 
-    unsigned int count = 0;
-
-private:
+protected:
     std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<VehicleObject_Ardupilot> vehicleData;
 
-private:
+protected:
     std::mutex m_Mutex_StateMachine;
     hsm::StateMachine* stateMachine; /**< Member variable containing a pointer to the state
  machine. This state machine evolves the state per event updates and/or external commands. */

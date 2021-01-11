@@ -4,11 +4,9 @@ namespace ardupilot{
 namespace state{
 
 AP_State_Flight::AP_State_Flight():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_FLIGHT)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+
 }
 
 void AP_State_Flight::OnExit()
@@ -31,13 +29,24 @@ hsm::Transition AP_State_Flight::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
 
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
+        case Data::MACEHSMState::STATE_FLIGHT_AI:
+        {
+            if(currentCommand != nullptr && currentCommand->getCommandType() == MAV_CMD::SET_SURFACE_DEFLECTION_NORMALIZED)
+            {
+                command_item::Action_SetSurfaceDeflection castCommand = *currentCommand->as<command_item::Action_SetSurfaceDeflection>();
+                rtn = hsm::InnerTransition<AP_State_FlightAI>(castCommand);
+            }
+            else
+                rtn = hsm::InnerTransition<AP_State_FlightAI>(m_TestInitialization);
+            break;
+        }
         case Data::MACEHSMState::STATE_FLIGHT_AUTO:
         {
             rtn = hsm::InnerTransition<AP_State_FlightAuto>();
@@ -79,7 +88,7 @@ hsm::Transition AP_State_Flight::GetTransition()
             break;
         }
         default:
-            std::cout << "I dont know how we eneded up in this transition state from STATE_FLIGHT. State: " << MACEHSMStateToString(desiredStateEnum) << std::endl;
+            std::cout << "I dont know how we ended up in this transition state from STATE_FLIGHT. State: " << MACEHSMStateToString(_desiredState) << std::endl;
             break;
         }
     }
@@ -88,10 +97,11 @@ hsm::Transition AP_State_Flight::GetTransition()
 
 bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
+
     bool success = false;
-    COMMANDTYPE commandType = command->getCommandType();
+    MAV_CMD commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDTYPE::CI_ACT_MISSIONCMD:
+    case MAV_CMD::MAV_CMD_DO_PAUSE_CONTINUE:
     {
         int vehicleMode = 0;
         bool executeModeChange = false;
@@ -142,20 +152,20 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
         success = true;
         break;
     }
-    case COMMANDTYPE::CI_NAV_HOME:
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case MAV_CMD::MAV_CMD_DO_SET_HOME:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
         success = AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDTYPE::CI_NAV_LAND:
+    case MAV_CMD::MAV_CMD_NAV_LAND:
     {
         currentCommand = command;
-        desiredStateEnum = Data::MACEHSMState::STATE_LANDING;
+        _desiredState = Data::MACEHSMState::STATE_LANDING;
         success = true;
         break;
     }
-    case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
+    case MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH:
     {
         const command_item::SpatialRTL* cmd = command->as<command_item::SpatialRTL>();
 
@@ -163,7 +173,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
         auto controllerRTL = new MAVLINKUXVControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerRTL->AddLambda_Finished(this, [this,controllerRTL](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_RTL;
+                _desiredState = Data::MACEHSMState::STATE_FLIGHT_RTL;
             controllerRTL->Shutdown();
         });
 
@@ -181,7 +191,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
         success = true;
         break;
     }
-    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    case MAV_CMD::MAV_CMD_USER_1:
     {
         if(!this->IsInState<AP_State_FlightGuided>())
             std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
@@ -193,7 +203,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
 
         break;
     }
-    case COMMANDTYPE::CI_ACT_TARGET:
+    case MAV_CMD::MAV_CMD_USER_5:
     {
         if(!this->IsInState<AP_State_FlightGuided>())
             std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
@@ -205,6 +215,22 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
 
         break;
     }
+    case MAV_CMD::SET_SURFACE_DEFLECTION_NORMALIZED:
+    {
+        if(!this->IsInState<AP_State_FlightAI>())
+        {
+            std::cout<<"We are currently not in a state that is going to support the AI surface deflection commands. However, for now, let us bypass this."<<std::endl;
+            currentCommand = command;
+            _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI;
+        }
+        else
+        {
+            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+            success = currentInnerState->handleCommand(command);
+        }
+        break;
+    }
+
     default:
     {
         ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
@@ -221,7 +247,7 @@ void AP_State_Flight::Update()
     //mode changes are directly handled via add notifier events established in the OnEnter() method
 
     if(!Owner().status->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED;
 }
 
 void AP_State_Flight::OnEnter()
@@ -230,7 +256,14 @@ void AP_State_Flight::OnEnter()
     Owner().status->vehicleMode.AddNotifier(this,[this]
     {
         std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
-        checkTransitionFromMode(currentModeString);
+        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+        bool executeModeChange = true;
+
+        if(currentInnerState != nullptr)
+            currentInnerState->shouldExecuteModeTransition(Owner().m_ArdupilotMode->getFlightModeFromString(currentModeString));
+
+        if(executeModeChange)
+            checkTransitionFromMode(currentModeString);
     });
 
     //This helps us based on the current conditions in the present moment
@@ -247,51 +280,63 @@ void AP_State_Flight::OnEnter(const std::shared_ptr<AbstractCommandItem> command
     }
 }
 
+void AP_State_Flight::initializeForTestEvaluation(const command_item::Action_InitializeTestSetup &initialization)
+{
+    m_TestInitialization = initialization;
+    setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI);
+}
+
 void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
 {
     if(mode == "AUTO")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AUTO;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AUTO;
     }
     else if(mode == "GUIDED")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
     }
     else if(mode == "LAND")
     {
         //This event is handled differently than the land command issued from the GUI
         //A mode change we really have no way to track the progress of where we are
-        desiredStateEnum = Data::MACEHSMState::STATE_LANDING;
+        _desiredState = Data::MACEHSMState::STATE_LANDING;
     }
     else if(mode == "LOITER")
     {
         //This event is handled differently than the land command issued from the GUI
         //A mode change we really have no way to track the progress of where we are
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_LOITER;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_LOITER;
     }
     else if(mode == "STABILIZE")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_MANUAL;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_MANUAL;
     }
     else if(mode == "RTL")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_RTL;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_RTL;
     }
     else if(mode == "TAKEOFF")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT;
+    }
+    else if(mode == "AI_DEFL")
+    {
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI;
     }
     else if(mode == "INITIALIZING")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_UNKNOWN;
+        _desiredState = Data::MACEHSMState::STATE_UNKNOWN;
     }
     else{
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_UNKNOWN;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_UNKNOWN;
     }
 }
 
 } //end of namespace ardupilot
 } //end of namespace state
+
+#include "plane_flight_states/state_flight_AI.h"
 
 #include "plane_flight_states/state_flight_auto.h"
 #include "plane_flight_states/state_flight_guided.h"

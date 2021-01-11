@@ -19,6 +19,10 @@ public:
 
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
 
+    virtual void fromJSON(const QJsonDocument &inputJSON) ;
+
+    virtual std::string toCSV(const std::string &delimiter) const;
+
     DataGenericItemTopic_Text();
     DataGenericItemTopic_Text(const DataGenericItem::DataGenericItem_Text &copyObj);
 };

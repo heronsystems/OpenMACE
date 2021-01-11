@@ -1,9 +1,9 @@
 #ifndef MISSION_ITEM_CURRENT_H
 #define MISSION_ITEM_CURRENT_H
 
-#include "mission_key.h"
+#include <mavlink.h>
 
-#include "mace.h"
+#include "mission_key.h"
 
 namespace MissionItem {
 
@@ -12,7 +12,7 @@ class MissionItemCurrent
 public:
     MissionItemCurrent();
     MissionItemCurrent(const MissionKey &missionKey, const unsigned int &index);
-    MissionItemCurrent(const mace_mission_item_current_t &obj);
+    MissionItemCurrent(const mavlink_mission_current_t &obj);
 
 public:
     void setMissionKey(const MissionKey &missionKey){
@@ -31,8 +31,8 @@ public:
         return indexCurrent;
     }
 
-    mace_mission_item_current_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+    mavlink_mission_current_t getMACECommsObject() const;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
 
     void operator = (const MissionItemCurrent &rhs)
     {

@@ -123,16 +123,16 @@ VehicleTargetTopic::VehicleTargetTopic(const VehicleTargetTopic &copy)
     this->m_distanceToTarget = copy.m_distanceToTarget;
 }
 
-VehicleTargetTopic::VehicleTargetTopic(const mace_guided_target_stats_t &obj)
+VehicleTargetTopic::VehicleTargetTopic(const mavlink_guided_target_stats_t &obj)
 {
     UNUSED(obj);
     //Ken we need to reconstruct inside here
 }
 
-mace_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
+mavlink_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
 {
     //Ken we need to reconstruct inside here
-    mace_guided_target_stats_t rtn;
+    mavlink_guided_target_stats_t rtn;
     rtn.distance = this->m_distanceToTarget;
     rtn.coordinate_frame = static_cast<uint8_t>(this->m_targetPosition->getExplicitCoordinateFrame());
 
@@ -178,12 +178,38 @@ mace_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
     }
     return rtn;
 }
-mace_message_t VehicleTargetTopic::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t VehicleTargetTopic::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_guided_target_stats_t target = getMACECommsObject();
-    mace_message_t msg;
-    mace_msg_guided_target_stats_encode_chan(systemID,compID,chan,&msg,&target);
+    mavlink_guided_target_stats_t target = getMACECommsObject();
+    mavlink_message_t msg;
+    mavlink_msg_guided_target_stats_encode_chan(systemID,compID,chan,&msg,&target);
     return msg;
+}
+
+QJsonObject VehicleTargetTopic::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    QJsonObject location;
+    m_targetPosition->updateQJSONObject(location);
+    json["location"] = location;
+    json["distance_to_target"] = m_distanceToTarget;
+    return json;
+}
+
+void VehicleTargetTopic::fromJSON(const QJsonDocument &inputJSON)
+{
+    mace::pose::GeodeticPosition_3D* tmpObj = m_targetPosition->positionAs<mace::pose::GeodeticPosition_3D>();
+    QJsonObject locationObj = inputJSON.object().value("location").toObject();
+    tmpObj->updatePosition(locationObj["lat"].toDouble(), locationObj["lng"].toDouble(), locationObj["alt"].toDouble());
+    this->m_targetPosition = tmpObj;
+    this->m_distanceToTarget = inputJSON.object().value("distance_to_target").toDouble();
+}
+
+std::string VehicleTargetTopic::toCSV(const std::string &delimiter) const
+{
+    mace::pose::GeodeticPosition_3D* castPosition = m_targetPosition->positionAs<mace::pose::GeodeticPosition_3D>();
+    std::string newline = std::to_string(m_distanceToTarget) + delimiter + std::to_string(castPosition->getLatitude()) + delimiter + std::to_string(castPosition->getLongitude()) + delimiter + std::to_string(castPosition->getAltitude()) + delimiter;
+    return newline;
 }
 
 std::ostream& operator<<(std::ostream& os, const VehicleTargetTopic& t)

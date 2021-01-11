@@ -8,6 +8,7 @@
 
 #include "base/pose/pose_components.h"
 #include "base/measurements/base_speed.h"
+#include "base/vehicle/vehicle_state.h"
 
 #include "base_topic/base_topic_components.h"
 
@@ -16,13 +17,25 @@
 class StateData_MAVLINK
 {
 public:
-    StateData_MAVLINK();
+    StateData_MAVLINK(const std::string &ID = "");
 
     StateData_MAVLINK(const StateData_MAVLINK &copy) = delete;
 
     ~StateData_MAVLINK() = default;
 
     std::vector<std::shared_ptr<Data::ITopicComponentDataObject>> GetTopicData();
+
+public:
+  std::string getAgentID() const;
+
+private:
+  void callbackUpdateVehicleState();
+
+  Data::EnvironmentTime whenWasLastUpdate() const;
+
+public:
+    Data::DataGetSetNotifier<VehicleState_Geodetic3D> m_CompleteVehicleGeoState;
+    Data::DataGetSetNotifier<VehicleState_Cartesian3D> m_CompleteVehicleCarState;
 
 public:
     Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> vehicleGlobalPosition;
@@ -35,6 +48,9 @@ public:
 
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleAirspeed;
     Data::DataGetSetNotifier<mace::measurements::Speed> vehicleGroundSpeed;
+
+private:
+  std::string _agentID = "";
 };
 
 #endif // STATE_DATA_MAVLINK_H

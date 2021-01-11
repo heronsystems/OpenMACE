@@ -39,7 +39,10 @@ public:
     void setSpeedObj(const mace::measurements::Speed &speedObj);
 
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
-    
+
+    virtual void fromJSON(const QJsonDocument &inputJSON) ;
+
+    virtual std::string toCSV(const std::string &delimiter) const;
 private:
     mace::measurements::Speed m_SpeedObj;
 };

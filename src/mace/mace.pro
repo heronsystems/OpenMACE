@@ -1,12 +1,12 @@
 TEMPLATE = app
-CONFIG += console c++11
+CONFIG += console c++14
 CONFIG -= app_bundle
 QT += serialport
 QT += network
 QT -= gui
 
 TARGET = MACE
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -32,14 +32,21 @@ INSTALLS += target
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/include
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
-INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("mace: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("mace: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 # Octomap Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
 
@@ -187,6 +194,10 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
 else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/ -lMACEDigiMeshWrapper
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/release/ -ltrajectory_control
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/debug/ -ltrajectory_control
+else:unix:!macx: LIBS += -L$$OUT_PWD/../trajectory_control/ -ltrajectory_control
+
 win32: LIBS += -limagehlp
 
 unix: LIBS += -lboost_system
@@ -250,3 +261,4 @@ DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 
 # Flann Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$PWD/../../tools/flann/src/cpp
+

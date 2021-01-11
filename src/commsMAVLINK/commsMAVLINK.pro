@@ -8,7 +8,7 @@ QT += network
 QT      += core
 QT      -= gui
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -36,11 +36,17 @@ HEADERS += comms_mavlink.h\
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("commsMAVLINK: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("commsMAVLINK: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

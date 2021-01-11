@@ -14,12 +14,21 @@ TEMPLATE = lib
 
 DEFINES += MODULE_VEHICLE_ARDUPLANE_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += module_vehicle_arduplane.cpp \
+    plane_flight_states/state_flight_AI.cpp \
+    plane_flight_states/state_flight_AI_abort.cpp \
+    plane_flight_states/state_flight_AI_execute.cpp \
+    plane_flight_states/state_flight_AI_execute_abort.cpp \
+    plane_flight_states/state_flight_AI_execute_deflection.cpp \
+    plane_flight_states/state_flight_AI_execute_end.cpp \
+    plane_flight_states/state_flight_AI_initialize.cpp \
+    plane_flight_states/state_flight_AI_initialize_ABORT.cpp \
+    plane_flight_states/state_flight_AI_initialize_ROUTE.cpp \
     vehicle_object/arduplane_component_flight_mode.cpp \
     vehicle_object/vehicle_object_arduplane.cpp \
     plane_flight_states/state_grounded_disarmed.cpp \
@@ -53,8 +62,17 @@ SOURCES += module_vehicle_arduplane.cpp \
     plane_flight_states/state_flight_guided_target_att.cpp
 
 HEADERS += module_vehicle_arduplane.h\
-        module_vehicle_arduplane_global.h \
+    module_vehicle_arduplane_global.h \
     plane_flight_states/arduplane_state_components.h \
+    plane_flight_states/state_flight_AI.h \
+    plane_flight_states/state_flight_AI_abort.h \
+    plane_flight_states/state_flight_AI_execute.h \
+    plane_flight_states/state_flight_AI_execute_abort.h \
+    plane_flight_states/state_flight_AI_execute_deflection.h \
+    plane_flight_states/state_flight_AI_execute_end.h \
+    plane_flight_states/state_flight_AI_initialize.h \
+    plane_flight_states/state_flight_AI_initialize_ABORT.h \
+    plane_flight_states/state_flight_AI_initialize_ROUTE.h \
     vehicle_object/arduplane_component_flight_mode.h \
     vehicle_object/vehicle_object_arduplane.h \
     plane_flight_states/state_grounded_disarmed.h \
@@ -89,13 +107,20 @@ HEADERS += module_vehicle_arduplane.h\
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_vehicle_arduplane: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_vehicle_arduplane: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
 
 # Unix lib Install
 unix:!symbian {
@@ -175,15 +200,14 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVL
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/debug/ -ldata_interface_MAVLINK
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/ -ldata_interface_MAVLINK
 
-INCLUDEPATH += $$PWD/../data_interface_MAVLINK
-DEPENDPATH += $$PWD/../data_interface_MAVLINK
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base_topic/release/ -lbase_topic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base_topic/debug/ -lbase_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../base_topic/ -lbase_topic
 
-INCLUDEPATH += $$PWD/../base_topic
-DEPENDPATH += $$PWD/../base_topic
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/release/ -ltrajectory_control
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/debug/ -ltrajectory_control
+else:unix:!macx: LIBS += -L$$OUT_PWD/../trajectory_control/ -ltrajectory_control
+
 
 unix {
     exists($$(ROS_ROOT_DIR)/lib/) {

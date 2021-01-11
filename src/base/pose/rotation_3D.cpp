@@ -161,19 +161,19 @@ double Rotation_3D::getYaw() const
     return yaw;
 }
 
-mace_attitude_quaternion_t Rotation_3D::getMACEQuaternion() const
+mavlink_attitude_quaternion_t Rotation_3D::getMACEQuaternion() const
 {
-    mace_attitude_quaternion_t quat;
+    mavlink_attitude_quaternion_t quat;
 
     return quat;
 }
 
-mace_attitude_t Rotation_3D::getMACEEuler() const
+mavlink_attitude_t Rotation_3D::getMACEEuler() const
 {
     double roll = 0.0, pitch = 0.0, yaw = 0.0;
 
     this->getDiscreteEuler(roll,pitch,yaw);
-    mace_attitude_t euler;
+    mavlink_attitude_t euler;
     euler.roll = static_cast<float>(roll);
     euler.pitch = static_cast<float>(pitch);
     euler.yaw = static_cast<float>(yaw);
@@ -181,11 +181,11 @@ mace_attitude_t Rotation_3D::getMACEEuler() const
     return euler;
 }
 
-mace_message_t Rotation_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t Rotation_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_message_t msg;
-    mace_attitude_t attitude = getMACEEuler();
-    mace_msg_attitude_encode_chan(systemID,compID,chan,&msg,&attitude);
+    mavlink_message_t msg;
+    mavlink_attitude_t attitude = getMACEEuler();
+    mavlink_msg_attitude_encode_chan(systemID,compID,chan,&msg,&attitude);
     return msg;
 }
 
