@@ -18,7 +18,9 @@
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
 #include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
-#include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+//#include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+#include "common/hsm.h"
+#include "data/mace_hsm_state.h"
 #include "vehicle_object/vehicle_object_arduplane.h"
 
 #include "plane_flight_states/arduplane_state_components.h"
@@ -306,6 +308,30 @@ public:
     //!
     virtual void Command_SetHomePosition(const command_item::SpatialHome &vehicleHome, const OptionalParameter<MaceCore::ModuleCharacteristic>& = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
+    /////////////////////////////////////////////////////////////////////////
+    /// EXPLICIT CONTROL EVENTS: These events are explicit overrides of the
+    /// vehicle, often developed in tight coordination with the vehicle itself.
+    /////////////////////////////////////////////////////////////////////////
+
+    //!
+    //! \brief Command_SetSurfaceDeflection
+    //! \param action
+    //!
+    void Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+
+
+
+    /////////////////////////////////////////////////////////////////////////
+    /// AI SUPPORT EVENTS: These events are explicit overrides in support of
+    /// AI based autonomy.
+    /////////////////////////////////////////////////////////////////////////
+
+    void NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+
+    void NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+
+    void NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
+
     //!
     //! \brief RequestDummyFunction
     //! \param vehicleID
@@ -314,37 +340,6 @@ public:
     {
         UNUSED(vehicleID);
     }
-
-private:
-    static void staticCallbackFunction_VehicleTarget(void *p, MissionTopic::VehicleTargetTopic &target)
-    {
-        ((ModuleVehicleArduplane *)p)->callbackFunction_VehicleTarget(target);
-    }
-
-    void callbackFunction_VehicleTarget(const MissionTopic::VehicleTargetTopic &target)
-    {
-        std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrTarget = std::make_shared<MissionTopic::VehicleTargetTopic>(target);
-        ModuleVehicleMAVLINK::cbi_VehicleMissionData(target.getVehicleID(),ptrTarget);
-    }
-
-private:
-
-    //!
-    //! \brief ProgressStateMachineStates Cause the state machine to update its states
-    //!
-    void ProgressStateMachineStates();
-
-    unsigned int count = 0;
-
-private:
-    std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<VehicleObject_Ardupilot> vehicleData;
-
-private:
-    std::mutex m_Mutex_StateMachine;
-    hsm::StateMachine* stateMachine; /**< Member variable containing a pointer to the state
- machine. This state machine evolves the state per event updates and/or external commands. */
-
 
 };
 

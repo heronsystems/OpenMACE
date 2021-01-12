@@ -5,8 +5,6 @@
 #include <iomanip>
 #include <sstream>
 
-#include "mace.h"
-
 #include "abstract_spatial_action.h"
 
 #include "data_generic_command_item/abstract_command_item.h"
@@ -28,7 +26,7 @@ public:
     //! \brief getCommandType returns the type of the object that this command type is.
     //! \return Data::CommandType resolving the type of command this object is.
     //!
-    COMMANDTYPE getCommandType() const override;
+    MAV_CMD getCommandType() const override;
 
     //!
     //! \brief getDescription

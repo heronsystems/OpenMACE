@@ -38,7 +38,7 @@
 #include "spdlog/async.h" //support for async logging.
 #include "spdlog/sinks/basic_file_sink.h"
 
-class GUItoMACE
+class GUItoMACE : public MaceLog
 {
 public:
     GUItoMACE(const MaceCore::IModuleCommandGroundStation *ptrRef);
@@ -175,18 +175,6 @@ public:
     //! \return True: success / False: failure
     //!
     bool writeUDPData(QByteArray data);
-
-private:
-    //!
-    //! \brief logToFile Helper method to log JSON data to file:
-    //! \param doc
-    //!
-    void logToFile(const QJsonDocument &doc) {
-        if(m_logger) {
-            std::string str = doc.toJson(QJsonDocument::Compact).toStdString();
-            m_logger->error(str);
-        }
-    }
 
 private:
     //!

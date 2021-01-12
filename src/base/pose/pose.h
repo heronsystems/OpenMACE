@@ -60,4 +60,5 @@ public:
 
 } //end of namespace pose
 } //end of namespace mace
+
 #endif // POSE_H

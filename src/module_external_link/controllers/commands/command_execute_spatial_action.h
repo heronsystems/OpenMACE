@@ -2,6 +2,7 @@
 #define CONTROLLER_GOTO_H
 
 #include <iostream>
+#include <mavlink.h>
 
 #include "controllers/generic_controller.h"
 
@@ -19,39 +20,39 @@
 namespace ExternalLink {
 
 using ActionSend_CommandGoTo_Broadcast = Controllers::ActionBroadcast<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     BasicExternalLinkController_ModuleKeyed<command_item::Action_ExecuteSpatialItem>,
     command_item::Action_ExecuteSpatialItem,
-    mace_execute_spatial_action_t
+    mavlink_execute_spatial_action_t
 >;
 
 using ActionSend_CommandGoTo_TargedWithResponse = Controllers::ActionSend<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     BasicExternalLinkController_ModuleKeyed<command_item::Action_ExecuteSpatialItem>,
     MaceCore::ModuleCharacteristic,
     command_item::Action_ExecuteSpatialItem,
-    mace_execute_spatial_action_t,
-    MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK
+    mavlink_execute_spatial_action_t,
+    MAVLINK_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK
 >;
 
 using ActionSend_CommandGoTo_ReceiveRespond = Controllers::ActionFinalReceiveRespond<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     BasicExternalLinkController_ModuleKeyed<command_item::Action_ExecuteSpatialItem>,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
     command_item::Action_ExecuteSpatialItem,
-    mace_execute_spatial_action_t,
-    mace_execute_spatial_action_ack_t,
-    MACE_MSG_ID_EXECUTE_SPATIAL_ACTION
+    mavlink_execute_spatial_action_t,
+    mavlink_execute_spatial_action_ack_t,
+    MAVLINK_MSG_ID_EXECUTE_SPATIAL_ACTION
 >;
 
 using ActionFinish_CommandGoTo = Controllers::ActionFinish<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     BasicExternalLinkController_ModuleKeyed<command_item::Action_ExecuteSpatialItem>,
     MaceCore::ModuleCharacteristic,
     uint8_t,
-    mace_execute_spatial_action_ack_t,
-    MACE_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK
+    mavlink_execute_spatial_action_ack_t,
+    MAVLINK_MSG_ID_EXECUTE_SPATIAL_ACTION_ACK
 >;
 
 
@@ -63,7 +64,7 @@ class Controller_GoTo : public BasicExternalLinkController_ModuleKeyed<command_i
 {
 
 public:
-    Controller_GoTo(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic>* cb, TransmitQueue * queue, int linkChan);
+    Controller_GoTo(const Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic>* cb, TransmitQueue * queue, int linkChan);
 
 private:
 
@@ -71,14 +72,14 @@ private:
 
 protected:
 
-    void FillCommand(const command_item::Action_ExecuteSpatialItem &commandItem, mace_execute_spatial_action_t &cmd) const;
+    void FillCommand(const command_item::Action_ExecuteSpatialItem &commandItem, mavlink_execute_spatial_action_t &cmd) const;
 
-    void BuildCommand(const mace_execute_spatial_action_t &message, command_item::Action_ExecuteSpatialItem &data) const;
+    void BuildCommand(const mavlink_execute_spatial_action_t &message, command_item::Action_ExecuteSpatialItem &data) const;
 
 
 protected:
 
-    virtual void Construct_Broadcast(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, mace_execute_spatial_action_t &cmd)
+    virtual void Construct_Broadcast(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, mavlink_execute_spatial_action_t &cmd)
     {
         UNUSED(sender);
 
@@ -92,7 +93,7 @@ protected:
         FillCommand(data, cmd);
     }
 
-    virtual bool Construct_Send(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_execute_spatial_action_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Construct_Send(const command_item::Action_ExecuteSpatialItem &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mavlink_execute_spatial_action_t &cmd, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         queueObj = target;
@@ -115,7 +116,7 @@ protected:
     }
 
 
-    virtual bool Construct_FinalObjectAndResponse(const mace_execute_spatial_action_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_execute_spatial_action_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::Action_ExecuteSpatialItem &data, MaceCore::ModuleCharacteristic &moduleFor, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Construct_FinalObjectAndResponse(const mavlink_execute_spatial_action_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_execute_spatial_action_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::Action_ExecuteSpatialItem &data, MaceCore::ModuleCharacteristic &moduleFor, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
         moduleFor.MaceInstance = msg.target_system;
@@ -128,14 +129,14 @@ protected:
         this->BuildCommand(msg,data);
 
         //ack.command = data.getSpatialCommand()->getCommandType();
-        ack.result = static_cast<uint8_t>(Data::CommandACKType::CA_RECEIVED);
+        ack.result = MAV_CMD_ACK::MAV_CMD_ACK_OK;
 
         //sending acknowledgement of the goTo command
         return true;
     }
 
 
-    virtual bool Finish_Receive(const mace_execute_spatial_action_ack_t &msg, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Finish_Receive(const mavlink_execute_spatial_action_ack_t &msg, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::ModuleCharacteristic &queueObj)
     {
         if(m_CommandRequestedFrom.find(sender) != m_CommandRequestedFrom.cend())
         {
@@ -153,9 +154,9 @@ protected:
 
 public:
 
-    mace_execute_spatial_action_t initializeSpatialAction()
+    mavlink_execute_spatial_action_t initializeSpatialAction()
     {
-        mace_execute_spatial_action_t cmdSpatialAction;
+        mavlink_execute_spatial_action_t cmdSpatialAction;
         cmdSpatialAction.action = 0;
         cmdSpatialAction.frame = 0;
         cmdSpatialAction.param1 = 0.0;

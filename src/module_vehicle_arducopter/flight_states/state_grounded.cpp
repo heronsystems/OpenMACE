@@ -4,10 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_Grounded::State_Grounded():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_GROUNDED)
 {
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+
 }
 
 AbstractStateArdupilot* State_Grounded::getClone() const
@@ -24,12 +23,12 @@ hsm::Transition State_Grounded::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_GROUNDED_IDLE:
         {
             return hsm::InnerEntryTransition<State_GroundedIdle>();
@@ -69,7 +68,7 @@ hsm::Transition State_Grounded::GetTransition()
             return hsm::SiblingTransition<State_Flight>();
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_GROUNDED."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_GROUNDED."<<std::endl;
             break;
         }
     }
@@ -79,10 +78,10 @@ hsm::Transition State_Grounded::GetTransition()
 bool State_Grounded::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     bool success = false;
-    COMMANDTYPE commandType = command->getCommandType();
+    MAV_CMD commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
-    case COMMANDTYPE::CI_NAV_HOME:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
+    case MAV_CMD::MAV_CMD_DO_SET_HOME:
     {
         success = AbstractRootState::handleCommand(command);
         break;
@@ -109,16 +108,16 @@ void State_Grounded::OnEnter()
 
     if(Owner().status->vehicleArm.get().getSystemArm())
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_ARMED;
     }
     else if((Owner().status->vehicleArm.hasBeenSet()) && (!Owner().status->vehicleArm.get().getSystemArm())
             && (vehicleStatus->vehicleMode.get().getFlightModeString() != "STABILIZE"))
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_DISARMED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_DISARMED;
     }
     else
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_IDLE;
     }
 }
 

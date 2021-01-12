@@ -131,7 +131,7 @@ private:
         try
         {
             std::string opener = "(";
-            std::string delimeter = ",";
+            std::string delimiter = ",";
             std::string closer = ")";
             double lat;
             double lng;
@@ -143,11 +143,11 @@ private:
             }
 
             while (start != std::string::npos){
-                finish = string.find(delimeter,start);
+                finish = string.find(delimiter,start);
                 if (finish == std::string::npos)
                     throw std::runtime_error(errormsg );
                 lat = std::stod(string.substr(start + 1, finish - start - 1));
-                start = finish + delimeter.length();
+                start = finish + delimiter.length();
 
                 finish = string.find(closer,start);
                 if (finish == std::string::npos)

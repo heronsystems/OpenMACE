@@ -4,11 +4,9 @@ namespace ardupilot{
 namespace state{
 
 State_Flight::State_Flight():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_FLIGHT)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+
 }
 
 void State_Flight::OnExit()
@@ -31,13 +29,13 @@ hsm::Transition State_Flight::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
 
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_FLIGHT_AUTO:
         {
             rtn = hsm::InnerTransition<State_FlightAuto>();
@@ -84,7 +82,7 @@ hsm::Transition State_Flight::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_FLIGHT."<<std::endl;
             break;
         }
     }
@@ -94,9 +92,9 @@ hsm::Transition State_Flight::GetTransition()
 bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     bool success = false;
-    COMMANDTYPE commandType = command->getCommandType();
+    MAV_CMD commandType = command->getCommandType();
     switch (commandType) {
-    case COMMANDTYPE::CI_ACT_MISSIONCMD:
+    case MAV_CMD::MAV_CMD_DO_PAUSE_CONTINUE:
     {
         int vehicleMode = 0;
         bool executeModeChange = false;
@@ -155,20 +153,20 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         }
         break;
     }
-    case COMMANDTYPE::CI_NAV_HOME:
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case MAV_CMD::MAV_CMD_DO_SET_HOME:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
         success = AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDTYPE::CI_NAV_LAND:
+    case MAV_CMD::MAV_CMD_NAV_LAND:
     {
         currentCommand = command;
-        desiredStateEnum = Data::MACEHSMState::STATE_LANDING;
+        _desiredState = Data::MACEHSMState::STATE_LANDING;
         success = true;
         break;
     }
-    case COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH:
+    case MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH:
     {
         const command_item::SpatialRTL* cmd = command->as<command_item::SpatialRTL>();
 
@@ -176,7 +174,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         auto controllerRTL = new MAVLINKUXVControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerRTL->AddLambda_Finished(this, [this,controllerRTL](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_RTL;
+                _desiredState = Data::MACEHSMState::STATE_FLIGHT_RTL;
             controllerRTL->Shutdown();
         });
 
@@ -194,7 +192,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
         success = true;
         break;
     }
-    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    case MAV_CMD::MAV_CMD_USER_1:
     {
         if(!this->IsInState<State_FlightGuided>())
             std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
@@ -206,7 +204,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> comm
 
         break;
     }
-    case COMMANDTYPE::CI_ACT_TARGET:
+    case MAV_CMD::MAV_CMD_USER_5:
     {
         if(!this->IsInState<State_FlightGuided>())
             std::cout<<"We are currently not in a state of flight mode guided, and therefore the command cannot be accepted."<<std::endl;
@@ -234,7 +232,7 @@ void State_Flight::Update()
     //mode changes are directly handled via add notifier events established in the OnEnter() method
 
     if(!Owner().status->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED;
 }
 
 void State_Flight::OnEnter()
@@ -264,38 +262,38 @@ void State_Flight::checkTransitionFromMode(const std::string &mode)
 {
     if(mode == "AUTO")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_AUTO;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AUTO;
     }
     else if(mode == "BRAKE")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_BRAKE;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_BRAKE;
     }
     else if(mode == "GUIDED")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED;
     }
     else if(mode == "LAND")
     {
         //This event is handled differently than the land command issued from the GUI
         //A mode change we really have no way to track the progress of where we are
-        desiredStateEnum = Data::MACEHSMState::STATE_LANDING;
+        _desiredState = Data::MACEHSMState::STATE_LANDING;
     }
     else if(mode == "LOITER")
     {
         //This event is handled differently than the land command issued from the GUI
         //A mode change we really have no way to track the progress of where we are
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_LOITER;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_LOITER;
     }
     else if(mode == "STABILIZE")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_MANUAL;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_MANUAL;
     }
     else if(mode == "RTL")
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_RTL;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_RTL;
     }
     else{
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_UNKNOWN;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_UNKNOWN;
     }
 }
 

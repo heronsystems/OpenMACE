@@ -4,14 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_FlightGuided_GeoTarget::AP_State_FlightGuided_GeoTarget():
-    AbstractStateArdupilot(), m_TimeoutController(500)
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET), m_TimeoutController(500)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_GEOTARGET"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_GEOTARGET;
-
     m_TimeoutController.connectTargetCallback(AP_State_FlightGuided_GeoTarget::retransmitGuidedCommand, this);
-
 }
 
 void AP_State_FlightGuided_GeoTarget::OnExit()
@@ -39,14 +34,14 @@ hsm::Transition AP_State_FlightGuided_GeoTarget::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED_GEOTARGET."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_FLIGHT_GUIDED_GEOTARGET."<<std::endl;
             break;
         }
     }
@@ -59,7 +54,7 @@ bool AP_State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<Abstra
 
     switch (command->getCommandType()) {
 
-    case COMMANDTYPE::CI_ACT_TARGET:
+    case MAV_CMD::MAV_CMD_USER_5:
     {
         //stop the current controllers target transmission if it is running
         m_TimeoutController.clearTarget();
@@ -119,7 +114,7 @@ void AP_State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractComm
         return;
     }
 
-    if(command->getCommandType() != COMMANDTYPE::CI_ACT_TARGET)
+    if(command->getCommandType() != MAV_CMD::MAV_CMD_USER_5)
     {
         //we dont handle commands of this type in here
         return;

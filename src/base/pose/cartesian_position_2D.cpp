@@ -42,9 +42,12 @@ CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_2D &copy):
 }
 
 CartesianPosition_2D::CartesianPosition_2D(const CartesianPosition_3D &copy):
-    Abstract_CartesianPosition(copy), state_space::State(copy), data(copy.data(0),copy.data(1))
+    Abstract_CartesianPosition(copy), state_space::State(copy), data(0.0,0.0)
 {
     this->dimension = 2;
+
+    data(0) = copy.data(0);
+    data(1) = copy.data(1);
 }
 
 bool CartesianPosition_2D::hasXBeenSet() const
@@ -144,8 +147,10 @@ double CartesianPosition_2D::polarBearingTo(const Abstract_CartesianPosition* po
     double polarBearing = 0.0;
     if(pos->isGreaterThan1D())
     {
-        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
-        polarBearing = atan2(deltaY(*tmpPos),deltaX(*tmpPos));
+        Eigen::VectorXd posVector = pos->getDataVector();
+        double deltaY = posVector(1) - this->getYPosition();
+        double deltaX = posVector(0) - this->getXPosition();
+        polarBearing = atan2(deltaY,deltaX);
     }
 
     return polarBearing;
@@ -185,7 +190,7 @@ void CartesianPosition_2D::newPositionFromPolar(Abstract_CartesianPosition *newO
 //!
 void CartesianPosition_2D::newPositionFromCompass(Abstract_CartesianPosition* newObject, const double &distance, const double &bearing) const
 {
-    return newPositionFromPolar(newObject, distance, math::compassToPolarBearing(bearing));
+    newPositionFromPolar(newObject, distance, math::compassToPolarBearing(bearing));
 }
 
 void CartesianPosition_2D::applyPositionalShiftFromPolar(const double &distance, const double &bearing)
@@ -202,9 +207,9 @@ void CartesianPosition_2D::applyPositionalShiftFromCompass(const double &distanc
     applyPositionalShiftFromPolar(distance,polarBearing);
 }
 
-mace_local_position_ned_t CartesianPosition_2D::getMACE_CartesianPositionInt() const
+mavlink_local_position_ned_t CartesianPosition_2D::getMACE_CartesianPositionInt() const
 {
-    mace_local_position_ned_t posObj;
+    mavlink_local_position_ned_t posObj;
     posObj.x = static_cast<int32_t>((this->getXPosition() * pow(10,7)));
     posObj.y = static_cast<int32_t>((this->getYPosition() * pow(10,7)));
     posObj.z = 0.0;
@@ -212,11 +217,11 @@ mace_local_position_ned_t CartesianPosition_2D::getMACE_CartesianPositionInt() c
     return posObj;
 }
 
-mace_message_t CartesianPosition_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t CartesianPosition_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_message_t msg;
-    mace_local_position_ned_t positionObj = getMACE_CartesianPositionInt();
-    mace_msg_local_position_ned_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    mavlink_message_t msg;
+    mavlink_local_position_ned_t positionObj = getMACE_CartesianPositionInt();
+    mavlink_msg_local_position_ned_encode_chan(systemID,compID,chan,&msg,&positionObj);
     return msg;
 }
 

@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_TakeoffTransitioning::State_TakeoffTransitioning():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING)
 {
     guidedProgress = ArdupilotTargetProgess(1,10,10);
-    std::cout<<"We are in the constructor of STATE_TAKEOFF_TRANSITIONING"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING;
-    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_TRANSITIONING;
 }
 
 void State_TakeoffTransitioning::OnExit()
@@ -32,19 +29,19 @@ hsm::Transition State_TakeoffTransitioning::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_TAKEOFF_COMPLETE:
         {
             rtn = hsm::SiblingTransition<State_TakeoffComplete>(currentCommand);
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_TakeoffTransitioning."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_TakeoffTransitioning."<<std::endl;
             break;
         }
     }
@@ -56,7 +53,7 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
     bool success = false;
     clearCommand();
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_NAV_TAKEOFF:
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
     {
         this->currentCommand = command->getClone();
         const command_item::SpatialTakeoff* cmd = currentCommand->as<command_item::SpatialTakeoff>();
@@ -73,7 +70,7 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 //                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
-                    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
+                    _desiredState = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
             });
         }
         else if(cmd->getPosition()->getCoordinateSystemType() == CoordinateSystemTypes::CARTESIAN)
@@ -89,7 +86,7 @@ bool State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCom
 //                Owner().callTargetCallback(vehicleTarget);
 
                 if(guidedState == Data::ControllerState::ACHIEVED)
-                    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
+                    _desiredState = Data::MACEHSMState::STATE_TAKEOFF_COMPLETE;
             });
         }
 

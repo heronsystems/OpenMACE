@@ -50,7 +50,7 @@ struct BoundaryNotificationData
 namespace ExternalLink{
 
 using CONTROLLER_BOUNDARY_TYPE = Controllers::GenericController<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMaceMsgIDTuple<MaceCore::BoundaryIdentifierType>, ObjectMaceMsgIDTuple<ModuleBoundaryIdentifier>>,
     uint8_t,
     Controllers::DataItem<MaceCore::ModuleCharacteristic, BoundaryNotificationData>,
@@ -59,79 +59,79 @@ using CONTROLLER_BOUNDARY_TYPE = Controllers::GenericController<
 >;
 
 using SendBoundaryHelper_RequestDownload = Controllers::ActionSend<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     ModuleBoundaryIdentifier,
     uint8_t,
-    mace_boundary_request_list_t,
-    MACE_MSG_ID_BOUNDARY_COUNT
+    mavlink_boundary_request_list_t,
+    MAVLINK_MSG_ID_BOUNDARY_COUNT
 >;
 
 
 using BoundaryControllerAction_ReceiveUnsolicitedRequestList_SendCount = Controllers::ActionIntermediateUnsolicited<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     ModuleBoundaryIdentifier,
-    mace_boundary_request_list_t,
-    MACE_MSG_ID_BOUNDARY_REQUEST_LIST,
-    mace_boundary_count_t,
-    MACE_MSG_ID_BOUNDARY_REQUEST_ITEM
+    mavlink_boundary_request_list_t,
+    MAVLINK_MSG_ID_BOUNDARY_REQUEST_LIST,
+    mavlink_boundary_count_t,
+    MAVLINK_MSG_ID_BOUNDARY_REQUEST_ITEM
 >;
 
 
 using SendBoundaryHelper_ReceiveCountRespondItemRequest = Controllers::ActionIntermediate<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     ModuleBoundaryIdentifier,
     ModuleBoundaryIdentifier,
-    mace_boundary_count_t,
-    MACE_MSG_ID_BOUNDARY_COUNT,
-    mace_boundary_request_item_t,
-    MACE_MSG_ID_BOUNDARY_ITEM
+    mavlink_boundary_count_t,
+    MAVLINK_MSG_ID_BOUNDARY_COUNT,
+    mavlink_boundary_request_item_t,
+    MAVLINK_MSG_ID_BOUNDARY_ITEM
 >;
 
 
 using SendBoundaryHelper_RequestItem = Controllers::ActionIntermediate<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     ModuleBoundaryIdentifier,
     ModuleBoundaryIdentifier,
-    mace_boundary_request_item_t,
-    MACE_MSG_ID_BOUNDARY_REQUEST_ITEM,
-    mace_boundary_item_t,
-    MACE_MSG_ID_BOUNDARY_REQUEST_ITEM,
-    MACE_MSG_ID_BOUNDARY_ACK
+    mavlink_boundary_request_item_t,
+    MAVLINK_MSG_ID_BOUNDARY_REQUEST_ITEM,
+    mavlink_boundary_item_t,
+    MAVLINK_MSG_ID_BOUNDARY_REQUEST_ITEM,
+    MAVLINK_MSG_ID_BOUNDARY_ACK
 >;
 
 
 using SendBoundaryHelper_ReceiveItem = Controllers::ActionIntermediateReceive<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     ModuleBoundaryIdentifier,
     ModuleBoundaryIdentifier,
-    mace_boundary_item_t,
-    MACE_MSG_ID_BOUNDARY_ITEM,
-    mace_boundary_request_item_t
+    mavlink_boundary_item_t,
+    MAVLINK_MSG_ID_BOUNDARY_ITEM,
+    mavlink_boundary_request_item_t
 >;
 
 using SendBoundaryHelper_Final = Controllers::ActionFinalReceiveRespond<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     ModuleBoundaryIdentifier,
     ModuleBoundaryIdentifier,
     BoundaryItem::BoundaryList,
-    mace_boundary_item_t,
-    mace_boundary_ack_t,
-    MACE_MSG_ID_BOUNDARY_ITEM
+    mavlink_boundary_item_t,
+    mavlink_boundary_ack_t,
+    MAVLINK_MSG_ID_BOUNDARY_ITEM
 >;
 
 using SendBoundaryHelper_FinalFinal = Controllers::ActionFinish<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     ModuleBoundaryIdentifier,
     uint8_t,
-    mace_boundary_ack_t,
-    MACE_MSG_ID_BOUNDARY_ACK
+    mavlink_boundary_ack_t,
+    MAVLINK_MSG_ID_BOUNDARY_ACK
 >;
 
 
@@ -141,31 +141,31 @@ using SendBoundaryHelper_FinalFinal = Controllers::ActionFinish<
 
 
 using NewBoundaryNotification = Controllers::ActionBroadcastReliable_MultiPacket<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     BoundaryNotificationData,
     MaceCore::BoundaryIdentifierType,
-    mace_new_boundary_object_t,
-    MACE_MSG_ID_BOUNDARY_ACK
+    mavlink_new_boundary_object_t,
+    MAVLINK_MSG_ID_BOUNDARY_ACK
 >;
 
 using UsolicitedReceiveNewBoundaryNotification = Controllers::ActionUnsolicitedReceiveRespond<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     MaceCore::ModuleCharacteristic,
     BoundaryNotificationData,
-    mace_new_boundary_object_t,
-    mace_boundary_ack_t,
-    MACE_MSG_ID_NEW_BOUNDARY_OBJECT
+    mavlink_new_boundary_object_t,
+    mavlink_boundary_ack_t,
+    MAVLINK_MSG_ID_NEW_BOUNDARY_OBJECT
 >;
 
 using NewBoundaryNotification_AckReceive = Controllers::ActionFinish<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     CONTROLLER_BOUNDARY_TYPE,
     MaceCore::BoundaryIdentifierType,
     uint8_t,
-    mace_boundary_ack_t,
-    MACE_MSG_ID_BOUNDARY_ACK
+    mavlink_boundary_ack_t,
+    MAVLINK_MSG_ID_BOUNDARY_ACK
 >;
 
 
@@ -209,7 +209,7 @@ protected:
     //! \param queueObj Queue object to contruct identifitying this transmission
     //! \return True if transmission should continue
     //!
-    virtual bool Construct_Send(const uint8_t &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mace_boundary_request_list_t &cmd, ModuleBoundaryIdentifier &queueObj);
+    virtual bool Construct_Send(const uint8_t &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mavlink_boundary_request_list_t &cmd, ModuleBoundaryIdentifier &queueObj);
 
 
     //!
@@ -221,7 +221,7 @@ protected:
     //! \param respondQueueObj Object to to construct that indicates how the message should be queued
     //! \return True if transmission should continue
     //!
-    virtual bool IntermediateUnsolicitedReceive(const mace_boundary_request_list_t &cmd, const MaceCore::ModuleCharacteristic &sender, mace_boundary_count_t &rtn, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &respondQueueObj);
+    virtual bool IntermediateUnsolicitedReceive(const mavlink_boundary_request_list_t &cmd, const MaceCore::ModuleCharacteristic &sender, mavlink_boundary_count_t &rtn, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &respondQueueObj);
 
 
     //!
@@ -234,7 +234,7 @@ protected:
     //! \param respondQueueObj Object to set to queue next transmission
     //! \return True if message is to be used
     //!
-    virtual bool BuildData_Send(const mace_boundary_count_t &boundary, const MaceCore::ModuleCharacteristic &sender, mace_boundary_request_item_t &request, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &receiveQueueObj, ModuleBoundaryIdentifier &respondQueueObj);
+    virtual bool BuildData_Send(const mavlink_boundary_count_t &boundary, const MaceCore::ModuleCharacteristic &sender, mavlink_boundary_request_item_t &request, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &receiveQueueObj, ModuleBoundaryIdentifier &respondQueueObj);
 
 
     //!
@@ -247,7 +247,7 @@ protected:
     //! \param respondQueueObj Object to set to queue next transmission
     //! \return True if message should be used
     //!
-    virtual bool BuildData_Send(const mace_boundary_request_item_t &boundaryRequest, const MaceCore::ModuleCharacteristic &sender, mace_boundary_item_t &boundaryItem, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &receiveQueueObj, ModuleBoundaryIdentifier &respondQueueObj);
+    virtual bool BuildData_Send(const mavlink_boundary_request_item_t &boundaryRequest, const MaceCore::ModuleCharacteristic &sender, mavlink_boundary_item_t &boundaryItem, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &receiveQueueObj, ModuleBoundaryIdentifier &respondQueueObj);
 
 
     //!
@@ -262,7 +262,7 @@ protected:
     //! \param respondQueueObj Object to set to queue next transmission
     //! \return True if message should be used
     //!
-    virtual bool BuildData_Send(const mace_boundary_item_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, mace_boundary_request_item_t &request, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &receiveQueueObj, ModuleBoundaryIdentifier &respondQueueObj);
+    virtual bool BuildData_Send(const mavlink_boundary_item_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, mavlink_boundary_request_item_t &request, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &receiveQueueObj, ModuleBoundaryIdentifier &respondQueueObj);
 
 
     //!
@@ -277,7 +277,7 @@ protected:
     //! \param queueObj Object to set that will remove any queued transmission
     //! \return True if message should be used
     //!
-    virtual bool Construct_FinalObjectAndResponse(const mace_boundary_item_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, mace_boundary_ack_t &ackBoundary, ModuleBoundaryIdentifier &key, BoundaryItem::BoundaryList &finalList, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &queueObj);
+    virtual bool Construct_FinalObjectAndResponse(const mavlink_boundary_item_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, mavlink_boundary_ack_t &ackBoundary, ModuleBoundaryIdentifier &key, BoundaryItem::BoundaryList &finalList, MaceCore::ModuleCharacteristic &vehicleObj, ModuleBoundaryIdentifier &queueObj);
 
 
     //!
@@ -288,12 +288,12 @@ protected:
     //! \param queueObj Object to set that will remove any queued transmission
     //! \return
     //!
-    virtual bool Finish_Receive(const mace_boundary_ack_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, ModuleBoundaryIdentifier &queueObj);
+    virtual bool Finish_Receive(const mavlink_boundary_ack_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, ModuleBoundaryIdentifier &queueObj);
 
 
 
 
-    virtual void Construct_ReliableBroadcast_Vector(const BoundaryNotificationData &data, const MaceCore::ModuleCharacteristic &sender, std::vector<mace_new_boundary_object_t> &vec, MaceCore::BoundaryIdentifierType &queue);
+    virtual void Construct_ReliableBroadcast_Vector(const BoundaryNotificationData &data, const MaceCore::ModuleCharacteristic &sender, std::vector<mavlink_new_boundary_object_t> &vec, MaceCore::BoundaryIdentifierType &queue);
 
 
     //!
@@ -309,13 +309,13 @@ protected:
     //! \param data Data to return to local instance when boundary is fully received
     //! \return True if boundary is fully received, false otherwise
     //!
-    virtual bool Construct_FinalObjectAndResponse(const mace_new_boundary_object_t &msg, const MaceCore::ModuleCharacteristic &sender, mace_boundary_ack_t &ack, MaceCore::ModuleCharacteristic &module_from, MaceCore::ModuleCharacteristic &key, BoundaryNotificationData &data);
+    virtual bool Construct_FinalObjectAndResponse(const mavlink_new_boundary_object_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_boundary_ack_t &ack, MaceCore::ModuleCharacteristic &module_from, MaceCore::ModuleCharacteristic &key, BoundaryNotificationData &data);
 
-    virtual bool Finish_Receive(const mace_boundary_ack_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::BoundaryIdentifierType &queueObj);
+    virtual bool Finish_Receive(const mavlink_boundary_ack_t &boundaryItem, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::BoundaryIdentifierType &queueObj);
 
 public:
 
-    ControllerBoundary(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan);
+    ControllerBoundary(const Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan);
 
 
     //!

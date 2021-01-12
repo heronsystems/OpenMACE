@@ -1,1 +1,0 @@
-Invoking command in '/home/aaron/Software/OpenMACE/build/Eigen_Unsupported': /usr/bin/cmake /home/aaron/Software/OpenMACE/Eigen/include/eigen3/Eigen_Unsupported -DCMAKE_INSTALL_PREFIX=/home/aaron/Software/OpenMACE/install/Eigen_Unsupported

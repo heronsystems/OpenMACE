@@ -14,33 +14,33 @@ MissionItemAchieved::MissionItemAchieved(const MissionKey &missionKey, const uns
 }
 
 
-MissionItemAchieved::MissionItemAchieved(const mace_mission_item_reached_t &obj)
+MissionItemAchieved::MissionItemAchieved(const mavlink_mission_item_reached_t &obj)
 {
-    key.m_creatorID = obj.mission_creator;
-    key.m_missionID = obj.mission_id;
-    key.m_missionState = static_cast<MISSIONSTATE>(obj.mission_state);
-    key.m_missionType = static_cast<MISSIONTYPE>(obj.mission_type);
-    key.m_systemID = obj.mission_system;
+//    key.m_creatorID = obj.mission_creator;
+//    key.m_missionID = obj.mission_id;
+//    key.m_missionState = static_cast<MISSIONSTATE>(obj.mission_state);
+//    key.m_missionType = static_cast<MISSIONTYPE>(obj.mission_type);
+//    key.m_systemID = obj.mission_system;
     indexAchieved = obj.seq;
 }
 
-mace_mission_item_reached_t MissionItemAchieved::getMACECommsObject() const
+mavlink_mission_item_reached_t MissionItemAchieved::getMACECommsObject() const
 {
-    mace_mission_item_reached_t rtn;
-    rtn.mission_creator = static_cast<uint8_t>(key.m_creatorID);
-    rtn.mission_id = static_cast<uint8_t>(key.m_missionID);
-    rtn.mission_state = static_cast<uint8_t>(key.m_missionState);
-    rtn.mission_type = static_cast<uint8_t>(key.m_missionType);
-    rtn.mission_system = static_cast<uint8_t>(key.m_systemID);
+    mavlink_mission_item_reached_t rtn;
+//    rtn.mission_creator = static_cast<uint8_t>(key.m_creatorID);
+//    rtn.mission_id = static_cast<uint8_t>(key.m_missionID);
+//    rtn.mission_state = static_cast<uint8_t>(key.m_missionState);
+//    rtn.mission_type = static_cast<uint8_t>(key.m_missionType);
+//    rtn.mission_system = static_cast<uint8_t>(key.m_systemID);
     rtn.seq = static_cast<uint16_t>(indexAchieved);
     return rtn;
 }
 
-mace_message_t MissionItemAchieved::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t MissionItemAchieved::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_mission_item_reached_t reached = getMACECommsObject();
-    mace_message_t msg;
-    mace_msg_mission_item_reached_encode_chan(systemID, compID, chan, &msg, &reached);
+    mavlink_mission_item_reached_t reached = getMACECommsObject();
+    mavlink_message_t msg;
+    mavlink_msg_mission_item_reached_encode_chan(systemID, compID, chan, &msg, &reached);
     return msg;
 }
 

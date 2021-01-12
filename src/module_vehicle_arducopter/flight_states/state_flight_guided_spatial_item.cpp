@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_FlightGuided_SpatialItem::State_FlightGuided_SpatialItem():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_SPATIALITEM"<<std::endl;
     guidedProgress = ArdupilotTargetProgess(1,10,10);
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_SPATIALITEM;
 }
 
 void State_FlightGuided_SpatialItem::OnExit()
@@ -37,19 +34,19 @@ hsm::Transition State_FlightGuided_SpatialItem::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE:
         {
             rtn = hsm::SiblingTransition<State_FlightGuided_Idle>();
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED_SPATIALITEM."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_FLIGHT_GUIDED_SPATIALITEM."<<std::endl;
             break;
         }
     }
@@ -60,7 +57,7 @@ bool State_FlightGuided_SpatialItem::handleCommand(const std::shared_ptr<Abstrac
 {
     bool processedCommand = false;
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM:
+    case MAV_CMD::MAV_CMD_USER_1:
     {
         //We want to keep this command in scope to perform the action
         this->currentCommand = command->getClone();
@@ -71,7 +68,7 @@ bool State_FlightGuided_SpatialItem::handleCommand(const std::shared_ptr<Abstrac
              * we shall perform a preliminary check here to see if the command is of the correct type. If not,
              * the state shall return to a guided idle state.
              */
-        if(cmd->getSpatialAction()->getCommandType() != COMMANDTYPE::CI_NAV_WAYPOINT)
+        if(cmd->getSpatialAction()->getCommandType() != MAV_CMD::MAV_CMD_NAV_WAYPOINT)
         {
             break;
         }
@@ -100,7 +97,7 @@ void State_FlightGuided_SpatialItem::OnEnter()
 
 void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
-    if((command == nullptr) || (command->getCommandType() != COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM)) //if we are not executing a guided mission item this state doesnt care
+    if((command == nullptr) || (command->getCommandType() != MAV_CMD::MAV_CMD_USER_1)) //if we are not executing a guided mission item this state doesnt care
     {
         this->OnEnter();
         return;
@@ -114,11 +111,11 @@ void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractComma
         {
             //for some reason a timeout has occured, should we handle this differently
             std::cout<<"A timeout has occured when trying to send a goto command."<<std::endl;
-            desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
+            _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
         }else if(finishCode != MAV_MISSION_ACCEPTED)
         {
             std::cout<<"The autocopter says there is an error with the goTo command."<<std::endl;
-            desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
+            _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
         }
         else if(completed && (finishCode == MAV_MISSION_ACCEPTED))
         {
@@ -185,7 +182,7 @@ void State_FlightGuided_SpatialItem::processSpatialWaypoint()
     }
     case CoordinateSystemTypes::UNKNOWN:
     case CoordinateSystemTypes::NOT_IMPLIED:
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
         return;
     }
 

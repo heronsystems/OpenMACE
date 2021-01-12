@@ -7,7 +7,7 @@
 QT += serialport
 QT       -= gui
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 
 TARGET = DigiMesh
 TEMPLATE = lib
@@ -61,14 +61,7 @@ INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
 INCLUDEPATH += $$PWD/../
-
-#win32:CONFIG(release, debug|release):       copydata.commands   = $(MKDIR) $$PWD/../lib ; $(COPY_DIR) release/*.dll $$PWD/../lib/
-#else:win32:CONFIG(debug, debug|release):    copydata.commands   = $(MKDIR) $$PWD/../lib ; $(COPY_DIR) $$OUT_PWD/debug/*.dll $$PWD/../lib/
-#first.depends = $(first) copydata
-#export(first.depends)
-#export(copydata.commands)
-#QMAKE_EXTRA_TARGETS += first copydata
-
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
 # Unix lib Install
 unix:!symbian {
@@ -81,10 +74,6 @@ lib.path    = $$(MACE_ROOT)/lib
 win32:CONFIG(release, debug|release):       lib.files   += release/DigiMesh.lib release/DigiMesh.dll
 else:win32:CONFIG(debug, debug|release):    lib.files   += debug/DigiMesh.lib debug/DigiMesh.dll
 INSTALLS += lib
-
-
-#INCLUDEPATH += $$PWD/../digi_common
-#DEPENDPATH += $$PWD/../digi_common
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon

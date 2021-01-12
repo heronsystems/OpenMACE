@@ -1,12 +1,12 @@
 TEMPLATE = app
-CONFIG += console c++11
+CONFIG += console c++14
 CONFIG -= app_bundle
 QT += serialport
 QT += network
 QT -= gui
 
 TARGET = MACE
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -32,14 +32,21 @@ INSTALLS += target
 
 INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/include
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
-INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("mace: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("mace: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
 # Octomap Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
 
@@ -127,10 +134,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ground_stati
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ground_station/debug/ -lmodule_ground_station
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ground_station/ -lmodule_ground_station
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ml_station/release/ -lmodule_ml_station
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ml_station/debug/ -lmodule_ml_station
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ml_station/ -lmodule_ml_station
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/release/ -lmodule_resource_task_allocation
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/debug/ -lmodule_resource_task_allocation
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_resource_task_allocation/ -lmodule_resource_task_allocation
@@ -171,10 +174,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sens
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/debug/ -lmodule_vehicle_sensors
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_sensors/ -lmodule_vehicle_sensors
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/release/ -lmodule_vehicle_adept
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/debug/ -lmodule_vehicle_adept
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_adept/ -lmodule_vehicle_adept
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../planners/release/ -lplanners
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../planners/debug/ -lplanners
 else:unix:!macx: LIBS += -L$$OUT_PWD/../planners/ -lplanners
@@ -186,6 +185,10 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../DigiMesh/ -lDigiMesh
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/release/ -lMACEDigiMeshWrapper
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/debug/ -lMACEDigiMeshWrapper
 else:unix:!macx: LIBS += -L$$OUT_PWD/../MACEDigiMeshWrapper/ -lMACEDigiMeshWrapper
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/release/ -ltrajectory_control
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/debug/ -ltrajectory_control
+else:unix:!macx: LIBS += -L$$OUT_PWD/../trajectory_control/ -ltrajectory_control
 
 win32: LIBS += -limagehlp
 
@@ -250,3 +253,4 @@ DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 
 # Flann Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$PWD/../../tools/flann/src/cpp
+

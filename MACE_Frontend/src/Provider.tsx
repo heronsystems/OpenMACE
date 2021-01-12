@@ -3,8 +3,7 @@ import { store } from "react-notifications-component";
 import { Provider } from "./Context";
 import {
   areObjectsSame,
-  parseJson,
-  constructDefaultAircraft
+  parseJson
 } from "./util/helpers";
 import { cloneDeep, forEach } from 'lodash';
 import colors from "./util/colors";
@@ -516,7 +515,7 @@ export default class AppProvider extends React.Component<Props, State> {
             // aircrafts[existingIndex].lastUpdate = heartbeat.lastUpdate;
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length;);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = heartbeat.agentID;
             // tmpAC.autopilot = heartbeat.autopilot;
             tmpAC.vehicle_type = heartbeat.vehicle_type;
@@ -543,84 +542,84 @@ export default class AppProvider extends React.Component<Props, State> {
             this._aircraft_list.last_updated = Date.now();
         }
   };
-//   pickAircraftColor = (): Types.ColorObject => {
-//     let numAircraft = this._aircraft_list._aircrafts.length;
-//     while (numAircraft > 9) {
-//       numAircraft-=10;
-//     }
-//     switch (numAircraft) {
-//       case 0:
-//         return colors.blue;
-//       case 1:
-//         return colors.green;
-//       case 2:
-//         return colors.pink;
-//       case 3:
-//         return colors.orange;
-//       case 4:
-//         return colors.purple;
-//       case 5:
-//         return colors.red;
-//       case 6:
-//         return colors.yellow;
-//       case 7:
-//         return colors.teal;
-//       case 8:
-//         return colors.indigo;
-//       case 9:
-//         return colors.gray;
-//     }
-//   }
+  pickAircraftColor = (): Types.ColorObject => {
+    let numAircraft = this._aircraft_list._aircrafts.length;
+    while (numAircraft > 9) {
+      numAircraft-=10;
+    }
+    switch (numAircraft) {
+      case 0:
+        return colors.blue;
+      case 1:
+        return colors.green;
+      case 2:
+        return colors.pink;
+      case 3:
+        return colors.orange;
+      case 4:
+        return colors.purple;
+      case 5:
+        return colors.red;
+      case 6:
+        return colors.yellow;
+      case 7:
+        return colors.teal;
+      case 8:
+        return colors.indigo;
+      case 9:
+        return colors.gray;
+    }
+  }
 
-//   constructDefaultAircraft = (): Types.Aircraft.AircraftPayload => {
-//       // TODO-PAT: Commented out for spamming testing:
-//     // this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
+  constructDefaultAircraft = (): Types.Aircraft.AircraftPayload => {
+      // TODO-PAT: Commented out for spamming testing:
+    // this.sendToMACE("GET_ENVIRONMENT_BOUNDARY",[],[]);
 
-//     let now = new Date();
-//     let timestamp = now.getTime();
-//     return {
-//         agentID: "DEFAULT",
-//         selected: true,
-//         behavior_state: "",
-//         vehicle_state: "UNINITIALIZED",
-//         vehicle_type: "QUADROTOR",
-//         color: this.pickAircraftColor(),
-//         orientation: {
-//             pitch: 0.0,
-//             roll: 0.0,
-//             yaw: 0.0
-//         },
-//         location: {
-//             lat: 0.0,
-//             lng: 0.0,
-//             alt: 0.0
-//         },
-//         armed: false,
-//         visible_sats: 0.0,
-//         gps_fix: "",
-//         hdop: 0.0,
-//         vdop: 0.0,
-//         text: {
-//             textStr: "No messages",
-//             textSeverity: "",
-//             textTimestamp: timestamp
-//         },
-//         mode: "",
-//         battery_remaining: 0.0,
-//         battery_current: 0.0,
-//         battery_voltage: 0.0,
-//         param_list: [
-//             {
-//                 param_id: "TKOFF_ALT",
-//                 value: 50
-//             }
-//         ],
-//         airspeed: 0.0,
-//         distance_to_target: 0.0,
-//         flight_time: 0.0,
-//         lastUpdate: Date.now()
-//     }
-//   }
+    let now = new Date();
+    let timestamp = now.getTime();
+    return {
+        agentID: "DEFAULT",
+        selected: true,
+        behavior_state: "",
+        vehicle_state: "UNINITIALIZED",
+        vehicle_type: "QUADROTOR",
+        color: this.pickAircraftColor(),
+        orientation: {
+            pitch: 0.0,
+            roll: 0.0,
+            yaw: 0.0
+        },
+        location: {
+            lat: 0.0,
+            lng: 0.0,
+            alt: 0.0
+        },
+        armed: false,
+        visible_sats: 0.0,
+        gps_fix: "",
+        hdop: 0.0,
+        vdop: 0.0,
+        text: {
+            textStr: "No messages",
+            textSeverity: "",
+            textTimestamp: timestamp
+        },
+        mode: "",
+        battery_remaining: 0.0,
+        battery_current: 0.0,
+        battery_voltage: 0.0,
+        param_list: [
+            {
+                param_id: "TKOFF_ALT",
+                value: 100
+            }
+        ],
+        airspeed: 0.0,
+        distance_to_target: 0.0,
+        flight_time: 0.0,
+        lastUpdate: Date.now()
+    }
+  }
 
     updateAircraftPosition = (position: Types.Aircraft.PositionPayload) => {
         const { ...all } = location;
@@ -637,7 +636,7 @@ export default class AppProvider extends React.Component<Props, State> {
             }
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = position.agentID;
             tmpAC.location.lat = position.lat;
             tmpAC.location.lng = position.lng;
@@ -664,7 +663,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].orientation.yaw = attitude.yaw;
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = attitude.agentID;
             tmpAC.orientation.roll = attitude.roll;
             tmpAC.orientation.pitch = attitude.pitch;
@@ -688,7 +687,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].airspeed = airspeed.airspeed;
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = airspeed.agentID;
             tmpAC.airspeed = airspeed.airspeed;
             tmpAC.lastUpdate = Date.now();
@@ -710,7 +709,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].armed = armed.armed;
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = armed.agentID;
             tmpAC.armed = armed.armed;
             tmpAC.lastUpdate = Date.now();
@@ -735,7 +734,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].visible_sats = gps.visible_sats;
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = gps.agentID;
             tmpAC.gps_fix = gps.gps_fix;
             tmpAC.vdop = gps.vdop;
@@ -772,7 +771,7 @@ export default class AppProvider extends React.Component<Props, State> {
             };
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = text.agentID;
             tmpAC.text = {
                 textStr: text.text,
@@ -798,7 +797,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].mode = mode.mode;
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = mode.agentID;
             tmpAC.mode = mode.mode;
             tmpAC.lastUpdate = Date.now();
@@ -822,7 +821,7 @@ export default class AppProvider extends React.Component<Props, State> {
             aircrafts[existingIndex].battery_voltage = fuel.battery_voltage;
             aircrafts[existingIndex].lastUpdate = Date.now();
         } else {
-            let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+            let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
             tmpAC.agentID = fuel.agentID;
             tmpAC.battery_current = fuel.battery_current;
             tmpAC.battery_remaining = fuel.battery_remaining;
@@ -908,7 +907,7 @@ export default class AppProvider extends React.Component<Props, State> {
     if (existingIndex !== -1) {
         // aircrafts[existingIndex].battery_current = fuel.battery_current;
     } else {
-        let tmpAC: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this._aircraft_list._aircrafts.length);
+        let tmpAC: Types.Aircraft.AircraftPayload = this.constructDefaultAircraft();
         tmpAC.agentID = params.agentID;
         tmpAC.param_list = params.param_list;
         tmpAC.lastUpdate = Date.now();

@@ -18,6 +18,8 @@
 #include "status_data_mavlink.h"
 #include "mission_data_mavlink.h"
 
+#include "base/vehicle/vehicle_path_linear.h"
+
 #include "module_vehicle_MAVLINK/mavlink_entity_key.h"
 
 template <typename T, typename TT>
@@ -43,6 +45,7 @@ public:
     virtual void cbi_VehicleHome(const int &systemID, const command_item::SpatialHome &home) = 0;
     virtual void cbi_VehicleMission(const int &systemID, const MissionItem::MissionList &missionList) = 0;
     virtual void cbi_VehicleMissionItemCurrent(const MissionItem::MissionItemCurrent &current) const = 0;
+    virtual void cbi_VehicleTrajectory(const int &systemID, const VehiclePath_Linear &trjectory) const = 0;
 };
 
 class MavlinkVehicleObject : public Controllers::IMessageNotifier<mavlink_message_t, int>
@@ -99,6 +102,16 @@ public:
         return &m_ControllersCollection;
     }
 
+    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey>* GlobalControllersCollection()
+    {
+        return m_GlobalControllerCollection;
+    }
+
+    void linkToStatelessControllers(Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey>* controllerCollection)
+    {
+        m_GlobalControllerCollection = controllerCollection;
+    }
+
     TransmitQueue *GetControllerQueue()
     {
         return controllerQueue;
@@ -112,15 +125,21 @@ public:
 
     bool handleMAVLINKMessage(const mavlink_message_t &msg);
 
+
+
 private:
     static const uint16_t IGNORE_POS_TYPE_MASK = POSITION_TARGET_TYPEMASK_X_IGNORE|POSITION_TARGET_TYPEMASK_Y_IGNORE|POSITION_TARGET_TYPEMASK_Z_IGNORE;
     static const uint16_t IGNORE_VEL_TYPE_MASK = POSITION_TARGET_TYPEMASK_VX_IGNORE|POSITION_TARGET_TYPEMASK_VY_IGNORE|POSITION_TARGET_TYPEMASK_VZ_IGNORE;
+
+public:
+    Data::DataGetSetNotifier<Data::MACEHSMState> _currentHSMState;
 
 public:
     StateData_MAVLINK *state;
     EnvironmentData_MAVLINK *environment;
     StatusData_MAVLINK *status;
     MissionData_MAVLINK *mission;
+
 protected:
     int mavlinkID;
     MaceCore::ModuleCharacteristic m_module;
@@ -134,6 +153,7 @@ protected:
     TransmitQueue *controllerQueue;
 
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> m_ControllersCollection;
+    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey>* m_GlobalControllerCollection;
 
     Data::EnvironmentTime prevAttitude;
     Data::EnvironmentTime prevPosition;

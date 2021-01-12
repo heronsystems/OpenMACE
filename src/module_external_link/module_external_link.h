@@ -10,7 +10,7 @@
 #include <functional>
 #include <chrono>
 
-#include "mace.h"
+#include <mavlink.h>
 
 #include "common/common.h"
 
@@ -41,7 +41,7 @@
 #include "controllers/commands/command_rtl.h"
 #include "controllers/commands/command_takeoff.h"
 #include "controllers/commands/command_execute_spatial_action.h"
-#include "controllers/controller_system_mode.h"
+#include "controllers/commands/command_system_mode.h"
 #include "controllers/controller_home.h"
 #include "controllers/controller_mission.h"
 #include "controllers/controller_boundary.h"
@@ -61,7 +61,7 @@ class MODULE_EXTERNAL_LINKSHARED_EXPORT ModuleExternalLink :
         public MaceCore::IModuleCommandExternalLink,
         public CommsMACEHelper,
         public ExternalLink::HeartbeatController_Interface,
-        public Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic>
+        public Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic>
 {
 
 
@@ -135,7 +135,7 @@ public:
 
     std::string createLog(const unsigned int &systemID);
 
-    virtual void TransmitMessage(const mace_message_t &msg, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) const override;
+    virtual void TransmitMessage(const mavlink_message_t &msg, const OptionalParameter<MaceCore::ModuleCharacteristic> &target = OptionalParameter<MaceCore::ModuleCharacteristic>()) const override;
 
     virtual MaceCore::ModuleCharacteristic GetKeyFromSecondaryID(int ID) const override;
 
@@ -145,7 +145,7 @@ public:
     /// The following are public virtual functions imposed from the Heartbeat Controller
     /// Interface via callback functionality.
     ///////////////////////////////////////////////////////////////////////////////////////
-    void cbiHeartbeatController_transmitCommand(const mace_heartbeat_t &heartbeat) override;
+    void cbiHeartbeatController_transmitCommand(const mavlink_mace_heartbeat_t &heartbeat) override;
 
 
     void ReceivedMission(const MissionItem::MissionList &list);
@@ -167,7 +167,7 @@ public:
         return airborneInstance;
     }
 
-    void ParseForData(const mace_message_t* message);
+    void ParseForData(const mavlink_message_t* message);
 
 
     void PublishVehicleData(const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<Data::ITopicComponentDataObject> &component);
@@ -181,7 +181,7 @@ public:
     //! \param linkName Name of link message received over
     //! \param msg Message received
     //!
-    virtual void MACEMessage(const std::string &linkName, const mace_message_t &msg) override;
+    virtual void MACEMessage(const std::string &linkName, const mavlink_message_t &msg) override;
 
     //!
     //! \brief VehicleHeartbeatInfo
@@ -189,7 +189,7 @@ public:
     //! \param systemID
     //! \param heartbeatMSG
     //!
-    void HeartbeatInfo(const MaceCore::ModuleCharacteristic &sender, const mace_heartbeat_t &heartbeatMSG);
+    void HeartbeatInfo(const MaceCore::ModuleCharacteristic &sender, const mavlink_mace_heartbeat_t &heartbeatMSG);
 
 
     //!
@@ -381,6 +381,22 @@ public:
     //!
     virtual void Command_SetHomePosition(const command_item::SpatialHome &systemHome, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
+
+    /////////////////////////////////////////////////////////////////////////
+    /// EXPLICIT CONTROL EVENTS: These events are explicit overrides of the
+    /// vehicle, often developed in tight coordination with the vehicle itself.
+    /////////////////////////////////////////////////////////////////////////
+
+    //!
+    //! \brief Command_SetSurfaceDeflection
+    //! \param action
+    //!
+    virtual void Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
+    {
+        UNUSED(action);
+        UNUSED(sender);
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////
     /// The following are public virtual functions imposed from IModuleCommandExternalLink.
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -391,6 +407,22 @@ public:
     virtual void NewlyAvailableModule(const MaceCore::ModuleCharacteristic &module, const MaceCore::ModuleClasses &type) override;
     virtual void ReceivedMissionACK(const MissionItem::MissionACK &ack) override;
     virtual void Command_RequestBoundaryDownload(const std::tuple<MaceCore::ModuleCharacteristic, uint8_t> &remote, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
+
+    virtual void NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>())
+    {
+
+    }
+
+    virtual void NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>())
+    {
+
+    }
+
+    virtual void NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>())
+    {
+
+    }
+
 
 private:
 
@@ -447,7 +479,7 @@ private:
     ExternalLink::CommandRTL,
     ExternalLink::CommandTakeoff,
     ExternalLink::Controller_GoTo,
-    ExternalLink::ControllerSystemMode,
+    ExternalLink::ControllerCommand_SystemMode,
     ExternalLink::ControllerHome,
     ExternalLink::ControllerMission,
     ExternalLink::ControllerBoundary
@@ -472,7 +504,7 @@ private:
 protected:
     TransmitQueue *m_queue;
 
-    std::unordered_map<std::string, Controllers::IController<mace_message_t, MaceCore::ModuleCharacteristic>*> m_TopicToControllers;
+    std::unordered_map<std::string, Controllers::IController<mavlink_message_t, MaceCore::ModuleCharacteristic>*> m_TopicToControllers;
 
 private:
 

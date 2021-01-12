@@ -3,38 +3,38 @@
 namespace DataGenericItem {
 
 DataGenericItem_Text::DataGenericItem_Text() :
-    severity(STATUS_SEVERITY::STATUS_INFO), dataString("")
+    _severity(MAV_SEVERITY::MAV_SEVERITY_INFO), _dataString("")
 {
 
 }
 
 DataGenericItem_Text::DataGenericItem_Text(const DataGenericItem_Text &copyObj)
 {
-    this->severity = copyObj.getSeverity();
-    this->dataString = copyObj.getText();
+    this->_severity = copyObj.getSeverity();
+    this->_dataString = copyObj.getText();
 }
 
-DataGenericItem_Text::DataGenericItem_Text(const mace_statustext_t &copyObj)
+DataGenericItem_Text::DataGenericItem_Text(const mavlink_statustext_t &copyObj)
 {
-    this->severity = static_cast<STATUS_SEVERITY>(copyObj.severity);
-    this->dataString = copyObj.text;
+    this->_severity = static_cast<MAV_SEVERITY>(copyObj.severity);
+    this->_dataString = copyObj.text;
 }
 
-mace_statustext_t DataGenericItem_Text::getMACECommsObject() const
+mavlink_statustext_t DataGenericItem_Text::getMACECommsObject() const
 {
-    mace_statustext_t rtnObj;
+    mavlink_statustext_t rtnObj;
 
     strcpy(rtnObj.text,this->getText().c_str());
-    rtnObj.severity = (uint8_t)this->severity;
+    rtnObj.severity = (uint8_t)this->_severity;
 
     return rtnObj;
 }
 
-mace_message_t DataGenericItem_Text::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t DataGenericItem_Text::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_message_t msg;
-    mace_statustext_t text = getMACECommsObject();
-    mace_msg_statustext_encode_chan(systemID,compID,chan,&msg,&text);
+    mavlink_message_t msg;
+    mavlink_statustext_t text = getMACECommsObject();
+    mavlink_msg_statustext_encode_chan(systemID,compID,chan,&msg,&text);
     return msg;
 }
 

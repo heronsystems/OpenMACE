@@ -2,9 +2,9 @@
 
 namespace command_item {
 
-COMMANDTYPE Action_DynamicTarget::getCommandType() const
+MAV_CMD Action_DynamicTarget::getCommandType() const
 {
-    return COMMANDTYPE::CI_ACT_TARGET;
+    return MAV_CMD::MAV_CMD_USER_5;
 }
 
 std::string Action_DynamicTarget::getDescription() const
@@ -62,25 +62,25 @@ Action_DynamicTarget::~Action_DynamicTarget()
     }
 }
 
-void Action_DynamicTarget::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+void Action_DynamicTarget::populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const
 {
     UNUSED(cmd);
     throw std::runtime_error("");
 }
 
-void Action_DynamicTarget::fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+void Action_DynamicTarget::fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &cmd)
 {
     UNUSED(cmd);
     throw std::runtime_error("");
 }
 
-void Action_DynamicTarget::generateMACEMSG_MissionItem(mace_message_t &msg) const
+void Action_DynamicTarget::generateMACEMSG_MissionItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
     throw std::runtime_error("");
 }
 
-void Action_DynamicTarget::generateMACEMSG_CommandItem(mace_message_t &msg) const
+void Action_DynamicTarget::generateMACEMSG_CommandItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
     throw std::runtime_error("");

@@ -2,9 +2,9 @@
 
 namespace command_item {
 
-COMMANDTYPE SpatialRTL::getCommandType() const
+MAV_CMD SpatialRTL::getCommandType() const
 {
-    return COMMANDTYPE::CI_NAV_RETURN_TO_LAUNCH;
+    return MAV_CMD::MAV_CMD_NAV_RETURN_TO_LAUNCH;
 }
 
 std::string SpatialRTL::getDescription() const

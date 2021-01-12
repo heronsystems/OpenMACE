@@ -42,10 +42,30 @@ public:
 
     bool areEquivalentFrames(const CartesianPosition_3D &obj) const;
 
+public:
     Eigen::VectorXd getDataVector() const override
     {
         return this->data;
     }
+
+    void updateFromDataVector(const Eigen::VectorXd &vec) override
+    {
+        long rows = vec.rows();
+        if(rows >= 2)
+        {
+            this->setXPosition(vec(0));
+            this->setYPosition(vec(1));
+        }
+
+        if(rows == 3)
+            this->setAltitude(vec(2));
+    }
+
+    Eigen::Vector3d retrieveDataVector() const
+    {
+        return data;
+    }
+
 
 public:
     void updatePosition(const double &x, const double &y, const double &z)
@@ -245,9 +265,9 @@ public:
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing, const double &elevation);
 
 public:
-    mace_local_position_ned_t getMACE_CartesianPositionInt() const;
+    mavlink_local_position_ned_t getMACE_CartesianPositionInt() const;
 
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
     /** Assignment Operators */
 public:

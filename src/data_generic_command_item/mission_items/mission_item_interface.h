@@ -1,7 +1,7 @@
 #ifndef MISSION_ITEM_INTERFACE_H
 #define MISSION_ITEM_INTERFACE_H
 
-#include "mace.h"
+#include <mavlink.h>
 
 class Interface_MissionItem
 {
@@ -11,12 +11,12 @@ public:
     virtual ~Interface_MissionItem() = default;
 
 public:
-    virtual bool toMACEComms_MissionItem(mace_mission_item_t &obj) const = 0;
+    virtual bool toMACEComms_MissionItem(mavlink_mission_item_t &obj) const = 0;
 
-    virtual mace_message_t toMACEComms_MACEMsg(mace_mission_item_t &obj, const uint8_t &chan) const = 0;
+    virtual mavlink_message_t toMACEComms_MACEMsg(mavlink_mission_item_t &obj, const uint8_t &chan) const = 0;
 
 protected:
-    void initializeMissionItem(mace_mission_item_t &obj) const
+    void initializeMissionItem(mavlink_mission_item_t &obj) const
     {
         obj.param1 = 0.0;
         obj.param2 = 0.0;
@@ -31,11 +31,7 @@ protected:
         obj.command = 0;
 
         obj.target_system = 0;
-        obj.mission_system = 0;
-        obj.mission_creator = 0;
-        obj.mission_id = 0;
         obj.mission_type = 0;
-        obj.mission_state = 0;
         obj.frame = 3;
         obj.current = 0;
         obj.autocontinue = 1;

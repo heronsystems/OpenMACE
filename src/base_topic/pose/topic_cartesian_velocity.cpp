@@ -66,6 +66,32 @@ Topic_CartesianVelocity::Topic_CartesianVelocity(const Topic_CartesianVelocity &
     this->m_VelocityObj = copy.m_VelocityObj->getVelocityClone();
 }
 
+QJsonObject Topic_CartesianVelocity::toJSON(const int &vehicleID, const std::string &dataType) const
+{
+    QJsonObject json = toJSON_base(vehicleID, dataType);
+    mace::pose::Velocity* castVelocity = getVelocityObj()->velocityAs<mace::pose::Velocity_Cartesian3D>();
+        json["xVel"] = castVelocity->getDataVector().x();
+        json["yVel"] = castVelocity->getDataVector().y();
+        json["zVel"] = castVelocity->getDataVector().z();
+    return json;
+}
+
+void Topic_CartesianVelocity::fromJSON(const QJsonDocument &inputJSON)
+{
+    mace::pose::Velocity_Cartesian3D* tmpObj = getVelocityObj()->getVelocityClone()->velocityAs<mace::pose::Velocity_Cartesian3D>();
+    tmpObj->setXVelocity(inputJSON.object().value("xVel").toDouble());
+    tmpObj->setYVelocity(inputJSON.object().value("yVel").toDouble());
+    tmpObj->setZVelocity(inputJSON.object().value("zVel").toDouble());
+    this->m_VelocityObj = tmpObj;
+}
+
+std::string Topic_CartesianVelocity::toCSV(const std::string &delimiter) const
+{
+    const mace::pose::Velocity_Cartesian3D* castVelocity = getVelocityObj()->velocityAs<mace::pose::Velocity_Cartesian3D>();
+    std::string newline = std::to_string(castVelocity->getXVelocity()) + delimiter + std::to_string(castVelocity->getYVelocity()) + delimiter + std::to_string(castVelocity->getZVelocity());
+    return newline;
+}
+
 mace::pose::Velocity* Topic_CartesianVelocity::getVelocityObj() const
 {
     return this->m_VelocityObj;

@@ -2,9 +2,9 @@
 
 namespace command_item {
 
-COMMANDTYPE Action_ExecuteSpatialItem::getCommandType() const
+MAV_CMD Action_ExecuteSpatialItem::getCommandType() const
 {
-    return COMMANDTYPE::CI_ACT_EXECUTE_SPATIAL_ITEM;
+    return MAV_CMD::MAV_CMD_USER_1;
 }
 
 std::string Action_ExecuteSpatialItem::getDescription() const
@@ -51,25 +51,25 @@ Action_ExecuteSpatialItem::Action_ExecuteSpatialItem(const unsigned int &systemO
 
 }
 
-void Action_ExecuteSpatialItem::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+void Action_ExecuteSpatialItem::populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const
 {
     UNUSED(cmd);
     throw std::runtime_error("");
 }
 
-void Action_ExecuteSpatialItem::fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd)
+void Action_ExecuteSpatialItem::fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &cmd)
 {
     UNUSED(cmd);
     throw std::runtime_error("");
 }
 
-void Action_ExecuteSpatialItem::generateMACEMSG_MissionItem(mace_message_t &msg) const
+void Action_ExecuteSpatialItem::generateMACEMSG_MissionItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
     throw std::runtime_error("");
 }
 
-void Action_ExecuteSpatialItem::generateMACEMSG_CommandItem(mace_message_t &msg) const
+void Action_ExecuteSpatialItem::generateMACEMSG_CommandItem(mavlink_message_t &msg) const
 {
     UNUSED(msg);
     throw std::runtime_error("");

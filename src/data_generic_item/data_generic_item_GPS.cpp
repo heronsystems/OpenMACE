@@ -3,7 +3,7 @@
 namespace DataGenericItem {
 
 DataGenericItem_GPS::DataGenericItem_GPS() :
-    fixtype(GPSFixType::GPS_FIX_NO_FIX), satellitesVisible(0), HDOP(UINT16_MAX), VDOP(UINT16_MAX)
+    fixtype(GPS_FIX_TYPE::GPS_FIX_TYPE_NO_GPS), satellitesVisible(0), HDOP(UINT16_MAX), VDOP(UINT16_MAX)
 {
 
 }
@@ -16,17 +16,17 @@ DataGenericItem_GPS::DataGenericItem_GPS(const DataGenericItem_GPS &copyObj)
     this->VDOP = copyObj.getVDOP();
 }
 
-DataGenericItem_GPS::DataGenericItem_GPS(const mace_gps_raw_int_t &copyObj)
+DataGenericItem_GPS::DataGenericItem_GPS(const mavlink_gps_raw_int_t &copyObj)
 {
-    this->fixtype = static_cast<GPSFixType>(copyObj.fix_type);
+    this->fixtype = static_cast<GPS_FIX_TYPE>(copyObj.fix_type);
     this->satellitesVisible = copyObj.satellites_visible;
     this->HDOP = copyObj.eph;
     this->VDOP = copyObj.epv;
 }
 
-mace_gps_raw_int_t DataGenericItem_GPS::getMACECommsObject() const
+mavlink_gps_raw_int_t DataGenericItem_GPS::getMACECommsObject() const
 {
-    mace_gps_raw_int_t rtnObj;
+    mavlink_gps_raw_int_t rtnObj;
     rtnObj.fix_type = (uint8_t)this->fixtype;
     rtnObj.satellites_visible = this->satellitesVisible;
     rtnObj.eph = this->HDOP;
@@ -35,11 +35,11 @@ mace_gps_raw_int_t DataGenericItem_GPS::getMACECommsObject() const
     return rtnObj;
 }
 
-mace_message_t DataGenericItem_GPS::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t DataGenericItem_GPS::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_message_t msg;
-    mace_gps_raw_int_t gps = getMACECommsObject();
-    mace_msg_gps_raw_int_encode_chan(systemID,compID,chan,&msg,&gps);
+    mavlink_message_t msg;
+    mavlink_gps_raw_int_t gps = getMACECommsObject();
+    mavlink_msg_gps_raw_int_encode_chan(systemID,compID,chan,&msg,&gps);
     return msg;
 }
 

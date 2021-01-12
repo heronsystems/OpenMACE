@@ -12,6 +12,8 @@
 #include "mace_core/i_module_topic_events.h"
 #include "mace_core/i_module_command_ground_station.h"
 
+#include "base/vehicle/vehicle_path_linear.h"
+
 #include "data/i_topic_component_data_object.h"
 #include "data/topic_data_object_collection.h"
 
@@ -37,7 +39,7 @@
 #include "spdlog/async.h" //support for async logging.
 #include "spdlog/sinks/basic_file_sink.h"
 
-class MACEtoGUI
+class MACEtoGUI : public MaceLog
 {
 public:
     MACEtoGUI();
@@ -116,6 +118,15 @@ public:
     //! \param component Vehicle text component
     //!
     void sendVehicleText(const int &vehicleID, const std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> &component);
+
+
+
+    //!
+    //! \brief sendVehiclePath Send vehicle waypoint list to the MACE GUI
+    //! \param vehicleID Vehicle ID with the new mission available
+    //! \param waypointList List of waypoints
+    //!
+    void sendVehiclePath(const int &vehicleID, const VehiclePath_Linear &waypointList);
 
     //!
     //! \brief sendVehicleMission Send vehicle mission data to the MACE GUI
@@ -213,6 +224,7 @@ public:
     //!
     void sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component);
 
+
     // ============================================================================= //
     // ================================== Helpers ================================== //
     // ============================================================================= //
@@ -226,15 +238,11 @@ private:
     void missionListToJSON(const MissionItem::MissionList &list, QJsonArray &missionItems, QJsonArray &path);
 
     //!
-    //! \brief logToFile Helper method to log JSON data to file:
-    //! \param doc
+    //! \brief waypointListToJSON
+    //! \param waypointList
+    //! \param path
     //!
-    void logToFile(const QJsonDocument &doc) {
-        if(m_logger) {
-            std::string str = doc.toJson(QJsonDocument::Compact).toStdString();
-            m_logger->info(str);
-        }
-    }
+    void waypointListToJSON(const std::vector<mace::pose::GeodeticPosition_3D> &waypointList, QJsonArray &path);
 
 private:
     //!

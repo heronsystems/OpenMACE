@@ -21,7 +21,9 @@
 
 #include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
 #include "module_vehicle_ardupilot/module_vehicle_ardupilot.h"
-#include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+//#include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+#include "common/hsm.h"
+#include "data/mace_hsm_state.h"
 #include "vehicle_object/vehicle_object_arducopter.h"
 
 #include "mace_core/abstract_module_base.h"
@@ -315,37 +317,6 @@ public:
     {
         UNUSED(vehicleID);
     }
-
-private:
-    static void staticCallbackFunction_VehicleTarget(void *p, MissionTopic::VehicleTargetTopic &target)
-    {
-        ((ModuleVehicleArducopter *)p)->callbackFunction_VehicleTarget(target);
-    }
-
-    void callbackFunction_VehicleTarget(const MissionTopic::VehicleTargetTopic &target)
-    {
-        std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrTarget = std::make_shared<MissionTopic::VehicleTargetTopic>(target);
-        ModuleVehicleMAVLINK::cbi_VehicleMissionData(target.getVehicleID(),ptrTarget);
-    }
-
-private:
-
-    //!
-    //! \brief ProgressStateMachineStates Cause the state machine to update its states
-    //!
-    void ProgressStateMachineStates();
-
-    unsigned int count = 0;
-
-private:
-    std::mutex m_Mutex_VehicleData;
-    std::shared_ptr<VehicleObject_Ardupilot> vehicleData;
-
-private:
-    std::mutex m_Mutex_StateMachine;
-    hsm::StateMachine* stateMachine; /**< Member variable containing a pointer to the state
- machine. This state machine evolves the state per event updates and/or external commands. */
-
 
 };
 

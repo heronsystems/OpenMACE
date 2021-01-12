@@ -41,6 +41,10 @@ public:
     
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
 
+    virtual void fromJSON(const QJsonDocument &inputJSON) ;
+
+    virtual std::string toCSV(const std::string &delimiter) const;
+
 private:
     mace::pose::Abstract_GeodeticPosition* m_PositionObject;
 };

@@ -2,11 +2,11 @@
 
 namespace command_item {
 
-void AbstractSpatialAction::populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const
+void AbstractSpatialAction::populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const
 {
     AbstractCommandItem::populateMACECOMMS_MissionItem(cmd);
 
-    mace_command_long_t currentCommand;
+    mavlink_command_long_t currentCommand;
     initializeCommandItem(currentCommand);
 
     //update the target and origin components
@@ -21,7 +21,7 @@ void AbstractSpatialAction::populateMACECOMMS_MissionItem(mace_mission_item_t &c
 
 }
 
-void AbstractSpatialAction::fromMACECOMMS_MissionItem(const mace_mission_item_t &obj)
+void AbstractSpatialAction::fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &obj)
 {
     AbstractCommandItem::fromMACECOMMS_MissionItem(obj);
 
@@ -51,9 +51,9 @@ void AbstractSpatialAction::fromMACECOMMS_MissionItem(const mace_mission_item_t 
     }
 }
 
-void AbstractSpatialAction::generateMACEMSG_MissionItem(mace_message_t &msg) const
+void AbstractSpatialAction::generateMACEMSG_MissionItem(mavlink_message_t &msg) const
 {
-    mace_command_long_t currentCommand;
+    mavlink_command_long_t currentCommand;
     initializeCommandItem(currentCommand);
 
     //update the target and origin components
@@ -62,14 +62,14 @@ void AbstractSpatialAction::generateMACEMSG_MissionItem(mace_message_t &msg) con
     populateCommandItem(currentCommand);
 
     //transfer the existing command contents to a mission item
-    mace_mission_item_t currentMissionItem;
+    mavlink_mace_mission_item_int_t currentMissionItem;
     transferToMissionItem(currentCommand,currentMissionItem);
-    mace_msg_mission_item_encode_chan(0,0,0,&msg,&currentMissionItem);
+    mavlink_msg_mace_mission_item_int_encode_chan(0,0,0,&msg,&currentMissionItem);
 }
 
-void AbstractSpatialAction::generateMACEMSG_CommandItem(mace_message_t &msg) const
+void AbstractSpatialAction::generateMACEMSG_CommandItem(mavlink_message_t &msg) const
 {
-    mace_command_long_t currentCommand;
+    mavlink_command_long_t currentCommand;
     initializeCommandItem(currentCommand);
 
     //update the target and origin components
@@ -77,11 +77,11 @@ void AbstractSpatialAction::generateMACEMSG_CommandItem(mace_message_t &msg) con
     //populate via calling the virtual function imposed via the interface
     populateCommandItem(currentCommand);
 
-    mace_msg_command_long_encode_chan(0,0,0,&msg,&currentCommand);
+    mavlink_msg_command_long_encode_chan(0,0,0,&msg,&currentCommand);
 }
 
 
-void AbstractSpatialAction::populateCommandItem(mace_command_long_t &obj) const
+void AbstractSpatialAction::populateCommandItem(mavlink_command_long_t &obj) const
 {
     obj.target_system = static_cast<uint8_t>(this->targetSystem);
     obj.target_component = static_cast<uint8_t>(this->targetComponent);
@@ -120,43 +120,10 @@ void AbstractSpatialAction::populateCommandItem(mace_command_long_t &obj) const
     }
 }
 
-void AbstractSpatialAction::fromCommandItem(const mace_command_long_t &obj)
+void AbstractSpatialAction::fromCommandItem(const mavlink_command_long_t &obj)
 {
     UNUSED(obj);
     throw std::runtime_error("A request to generate a AbstractSpatialAction from a command long is not valid. Spatial items are never just a command.");
-}
-
-
-void AbstractSpatialAction::populateMACEComms_ExecuteSpatialAction(mace_execute_spatial_action_t &obj) const
-{
-    mace_command_long_t currentCommand;
-    populateCommandItem(currentCommand);
-
-    transferTo_ExecuteSpatialAction(currentCommand,obj);
-}
-
-void AbstractSpatialAction::fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj)
-{
-    this->targetSystem = obj.target_system;
-    this->targetComponent = obj.target_component;
-    //from here we need to populate the position object
-
-    this->populatePositionObject(static_cast<mace::CoordinateFrameTypes>(obj.frame), obj.dimension, obj.mask,
-                                 static_cast<double>(obj.param5), static_cast<double>(obj.param6), static_cast<double>(obj.param7));
-}
-
-void AbstractSpatialAction::transferTo_ExecuteSpatialAction(const mace_command_long_t &cmd, mace_execute_spatial_action_t &obj) const
-{
-    obj.target_system = cmd.target_system;
-    obj.target_component = cmd.target_component;
-
-    obj.param1 = cmd.param1;
-    obj.param2 = cmd.param2;
-    obj.param3 = cmd.param3;
-    obj.param4 = cmd.param4;
-    obj.param5 = cmd.param5;
-    obj.param6 = cmd.param6;
-    obj.param7 = cmd.param7;
 }
 
 void AbstractSpatialAction::populatePositionObject(const mace::CoordinateFrameTypes &explicitFrame, const uint8_t &dim, const uint16_t &mask,

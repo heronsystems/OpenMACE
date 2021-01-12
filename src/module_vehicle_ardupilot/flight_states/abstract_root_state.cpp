@@ -8,6 +8,12 @@ AbstractRootState::AbstractRootState():
 
 }
 
+AbstractRootState::AbstractRootState(const Data::MACEHSMState &enteredState):
+    AbstractStateArdupilot(enteredState)
+{
+
+}
+
 AbstractRootState::AbstractRootState(const AbstractRootState &copy):
     AbstractStateArdupilot(copy)
 {
@@ -18,20 +24,14 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
 {
     bool success = false;
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
-        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-        controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
-            UNUSED(this); UNUSED(controllerSystemMode); UNUSED(completed); UNUSED(finishCode);
-            controllerSystemMode->Shutdown();
-        });
 
-        controllerSystemMode->setLambda_Shutdown([this, collection]()
-        {
-            UNUSED(this);
-            auto ptr = collection->Remove("modeController");
-            delete ptr;
+        MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+
+        modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
+            UNUSED(this); UNUSED(completed); UNUSED(finishCode);
+            modeController->Shutdown();
         });
 
         MavlinkEntityKey target = Owner().getMAVLINKID();
@@ -40,13 +40,13 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
         MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
         commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
-        controllerSystemMode->Send(commandMode,sender,target);
-        collection->Insert("modeController",controllerSystemMode);
+        modeController->Send(commandMode,sender,target);
         success = true;
+
         break;
     }
 
-    case COMMANDTYPE::CI_NAV_HOME:
+    case MAV_CMD::MAV_CMD_DO_SET_HOME:
     {
         command_item::SpatialHome* cmd = new command_item::SpatialHome(*command->as<command_item::SpatialHome>());
 
@@ -78,6 +78,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem>
         break;
     }
     default:
+        success = AbstractStateArdupilot::handleCommand(command);
         break;
     }
 

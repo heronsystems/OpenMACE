@@ -4,11 +4,9 @@ namespace ardupilot{
 namespace state{
 
 AP_State_Landing::AP_State_Landing():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_LANDING)
 {
-    std::cout<<"We are in the constructor of STATE_LANDING"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_LANDING;
-    desiredStateEnum = Data::MACEHSMState::STATE_LANDING;
+
 }
 
 AbstractStateArdupilot* AP_State_Landing::getClone() const
@@ -25,7 +23,7 @@ hsm::Transition AP_State_Landing::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         if(IsInInnerState<AP_State_LandingComplete>())
         {
@@ -36,7 +34,7 @@ hsm::Transition AP_State_Landing::GetTransition()
             //this means we want to chage the state of the vehicle for some reason
             //this could be caused by a command, action sensed by the vehicle, or
             //for various other peripheral reasons
-            switch (desiredStateEnum) {
+            switch (_desiredState) {
             case Data::MACEHSMState::STATE_LANDING_TRANSITIONING:
             {
                 rtn = hsm::InnerEntryTransition<AP_State_LandingTransitioning>(currentCommand);
@@ -58,7 +56,7 @@ hsm::Transition AP_State_Landing::GetTransition()
                 break;
             }
             default:
-                std::cout<<"I dont know how we eneded up in this transition state from STATE_TAKEOFF."<<std::endl;
+                std::cout<<"I dont know how we ended up in this transition state from STATE_TAKEOFF."<<std::endl;
                 break;
             }
         }
@@ -74,13 +72,13 @@ bool AP_State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> 
 
     switch(command->getCommandType())
     {
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
-    case COMMANDTYPE::CI_NAV_HOME:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
+    case MAV_CMD::MAV_CMD_DO_SET_HOME:
     {
         success = AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDTYPE::CI_NAV_LAND:
+    case MAV_CMD::MAV_CMD_NAV_LAND:
     {
         this->currentCommand = command->getClone();
         //check that the vehicle is truely armed and switch us into the guided mode
@@ -90,9 +88,9 @@ bool AP_State_Landing::handleCommand(const std::shared_ptr<AbstractCommandItem> 
         controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
             controllerSystemMode->Shutdown();
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-                desiredStateEnum = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
+                _desiredState = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
             else
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+                _desiredState = Data::MACEHSMState::STATE_FLIGHT;
         });
 
         controllerSystemMode->setLambda_Shutdown([this, collection]()
@@ -127,18 +125,18 @@ void AP_State_Landing::Update()
     StatusData_MAVLINK* vehicleStatus = Owner().status;
 
     if(!vehicleStatus->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED;
     else
     {
         if(vehicleStatus->vehicleMode.get().getFlightModeString() == "GUIDED")
-            desiredStateEnum = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
+            _desiredState = Data::MACEHSMState::STATE_LANDING_TRANSITIONING;
     }
 }
 
 //this function would be called when issuing a mode change
 void AP_State_Landing::OnEnter()
 {
-    desiredStateEnum = Data::MACEHSMState::STATE_LANDING_DESCENDING;
+    _desiredState = Data::MACEHSMState::STATE_LANDING_DESCENDING;
 }
 
 //this function is only called from the GUI
@@ -147,7 +145,7 @@ void AP_State_Landing::OnEnter(const std::shared_ptr<AbstractCommandItem> comman
     if(command != nullptr)
     {
         switch (command->getCommandType()) {
-        case COMMANDTYPE::CI_NAV_LAND:
+        case MAV_CMD::MAV_CMD_NAV_LAND:
             if((command->as<command_item::SpatialLand>()->getPosition() != nullptr)
                     && (command->as<command_item::SpatialLand>()->getPosition()->areTranslationalComponentsValid()))
             {

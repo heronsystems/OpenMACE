@@ -11,7 +11,7 @@ TEMPLATE = lib
 
 DEFINES += DATA_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -19,14 +19,19 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 CONFIG += object_parallel_to_source
 
 SOURCES += \
+    event_tag.cpp \
     system_description.cpp \
     environment_time.cpp \
+    timer_lambda.cpp \
     topic_components/topic_component_string.cpp \
     topic_components/topic_component_void.cpp
 
 HEADERS += data_global.h \
+    dogfight_teams.h \
+    event_tag.h \
     i_topic_component_data_object.h \
     mace_hsm_state.h \
+    timer_lambda.h \
     topic_data_object_collection.h \
     coordinate_frame.h \
     vehicle_command_types.h \
@@ -73,8 +78,17 @@ include(../headerinstall.pri)
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("base: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("base: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

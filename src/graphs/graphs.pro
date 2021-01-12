@@ -5,7 +5,7 @@ TARGET = graphs
 TEMPLATE = lib
 DEFINES += GRAPHS_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -63,11 +63,19 @@ INSTALLS += lib
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
 
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("graphs: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("graphs: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

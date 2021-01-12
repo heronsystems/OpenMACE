@@ -194,6 +194,12 @@ private:
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
 
 
+    //!
+    //! \brief m_VehicleRoutingTopic Routing and trajectory topic collection
+    //!
+    Data::TopicDataObjectCollection<VEHICLE_ROUTING_TOPICS> m_VehicleRoutingTopic;
+
+
     // ============================================================================= //
     // ============================== Member Variables ============================= //
     // ============================================================================= //
@@ -248,10 +254,6 @@ private:
     double latitude;
     // END TESTING
 
-    //!
-    //! \brief m_logLevel Log level (e.g. trace, debug, info, warn, err, critical, off)
-    //!
-    std::string m_logLevel;
 };
 
 #endif // MODULE_GROUND_STATION_H

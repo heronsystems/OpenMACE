@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+#include "common/class_forward.h"
+
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
 #include "data_generic_command_item/interface_command_helper.h"
@@ -11,14 +13,16 @@
 
 namespace command_item {
 
-class ActionChangeMode : public AbstractCommandItem, public Interface_CommandHelper<mace_command_short_t>
+MACE_CLASS_FORWARD(ActionChangeMode);
+
+class ActionChangeMode : public AbstractCommandItem, public Interface_CommandHelper<mavlink_command_int_t>
 {
 public:
     /**
      * @brief getCommandType
      * @return
      */
-    COMMANDTYPE getCommandType() const override;
+    MAV_CMD getCommandType() const override;
 
     /**
      * @brief getDescription
@@ -44,25 +48,25 @@ public:
      */
     void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
 
-    /** Interface imposed via Interface_CommandItem<mace_command_short_t> */
+    /** Interface imposed via Interface_CommandItem<mavlink_command_int_t> */
 public:
-    void populateCommandItem(mace_command_short_t &obj) const override;
+    void populateCommandItem(mavlink_command_int_t &obj) const override;
 
-    void fromCommandItem(const mace_command_short_t &obj) override;
+    void fromCommandItem(const mavlink_command_int_t &obj) override;
 
-    /** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+    /** End of interface imposed via Interface_CommandItem<mavlink_command_int_t> */
 
 
     /** Interface imposed via AbstractCommandItem */
 public: //The logic behind this is that every command item can be used to generate a mission item
-    void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
+    void populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const override;
 
-    void fromMACECOMMS_MissionItem(const mace_mission_item_t &cmd) override;
+    void fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &cmd) override;
 
-    void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+    void generateMACEMSG_MissionItem(mavlink_message_t &msg) const override;
 
-    void generateMACEMSG_CommandItem(mace_message_t &msg) const override;
-/** End of interface imposed via Interface_CommandItem<mace_command_short_t> */
+    void generateMACEMSG_CommandItem(mavlink_message_t &msg) const override;
+/** End of interface imposed via AbstractCommandItem */
 
 public:
     ActionChangeMode();

@@ -5,14 +5,9 @@ import AircraftHUD from "../../components/aircraft-hud";
 const { createRef } = React;
 import { LatLng } from "leaflet";
 import { withAppContext, Context } from "../../Context";
-import { checkIfEqual, constructDefaultAircraft } from "../../util/helpers";
+import { checkIfEqual } from "../../util/helpers";
 import { Vertex } from "../../data-types";
-import styles from "./styles";
 import { cloneDeep } from "lodash";
-import colors from "../../util/colors";
-import { MdFilter1, MdFilter2, MdMenu } from "react-icons/md";
-import ReactTooltip from "react-tooltip";
-import * as Types from "../../data-types/index";
 const { ipcRenderer } = window.require("electron");
 
 type Props = {
@@ -23,8 +18,6 @@ type State = {
   showHUD?: boolean;
   showTarget?: { agentID: string; showGoHere: boolean }[];
   goHerePt?: Vertex;
-  testButtonID?: number;
-  showTestButtons?: boolean
 };
 
 class MapRoute extends React.Component<Props, State> {
@@ -40,8 +33,6 @@ class MapRoute extends React.Component<Props, State> {
         lng: 0,
         alt: 0,
       },
-      testButtonID: 0,
-      showTestButtons: false
     };
   }
   componentDidMount() {
@@ -143,66 +134,9 @@ class MapRoute extends React.Component<Props, State> {
       agentID: agentID,
     });
   };
-
-  testFunction = (num: number) => {
-      console.log("TEST_FUNCTION" + num.toString());
-      let command: string = "TEST_FUNCTION" + num.toString();
-      let payload = [];
-      let tmpAircraft: Types.Aircraft.AircraftPayload = constructDefaultAircraft(this.props.context.aircrafts.length);
-      tmpAircraft.agentID = this.state.testButtonID.toString();
-
-      this.props.context.sendToMACE(command, [tmpAircraft], payload);
-  }
-
-  updateTestButtonID = (e: any) => {
-    const { name, value } = e.target;
-    this.setState({ testButtonID: parseFloat(value) });
-  };
-
-  toggleShowTestButtons = () => {
-      this.setState({ showTestButtons: !this.state.showTestButtons })
-  }
-
   render() {
     return (
       <Layout>
-
-        <div style={styles.container}>
-                <button style={styles.centerButton} onClick={this.toggleShowTestButtons}>
-                    <MdMenu
-                        color={colors.white}
-                        size={20}
-                    />
-                </button>
-                {this.state.showTestButtons &&
-                    <div style={styles.tooltipContainer_abs}>
-                        <div style={styles.tooltipContentContainer}>
-                                <div style={styles.singleSettingContainer}>
-                                    <label style={styles.inputLabel}>Test agent ID:</label>
-                                    <input
-                                        id="takeoff-tooltip-input"
-                                        type="number"
-                                        min={0}
-                                        defaultValue={0}
-                                        onChange={this.updateTestButtonID}
-                                        name={"test-id"}
-                                        style={styles.input}
-                                    />
-                                </div>
-                                <div style={styles.tooltipButtons}>
-                                    <button style={styles.centerButton} onClick={() => this.testFunction(1)}>
-                                        <MdFilter1 color={colors.gray[700]} size={20} />
-                                    </button>
-                                    <button style={styles.centerButton} onClick={() => this.testFunction(2)}>
-                                        <MdFilter2 color={colors.gray[700]} size={20} />
-                                    </button>
-                                </div>
-                        </div>
-                    </div>
-                }
-        </div>
-        
-
         <MapView
           ref={this._map}
           context={this.props.context}

@@ -9,7 +9,7 @@
 #include <iostream>
 #include <exception>
 
-#include "mace.h"
+#include <mavlink.h>
 
 #include "common/common.h"
 #include "common/class_forward.h"
@@ -68,6 +68,16 @@ public:
 public:
     virtual Eigen::VectorXd getDataVector() const = 0;
 
+    virtual void updateFromDataVector(const Eigen::VectorXd &vec)
+    {
+        UNUSED(vec);
+    }
+
+    virtual void invalidatePositionObject()
+    {
+        dimensionMask = ignoreAllPositions;
+    }
+
     bool isAnyPositionValid() const
     {
         return (dimensionMask^ignoreAllPositions) > 0 ? true : false;
@@ -112,7 +122,7 @@ public:
     //!
     virtual CoordinateFrameTypes getExplicitCoordinateFrame() const = 0;
 
-    virtual mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const = 0;
+    virtual mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const = 0;
 
 public:
     /**

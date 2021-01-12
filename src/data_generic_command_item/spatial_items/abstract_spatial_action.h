@@ -4,10 +4,10 @@
 #include <iostream>
 #include <sstream>
 
+#include <mavlink.h>
+
 #include "common/common.h"
 #include "common/class_forward.h"
-
-#include "mace.h"
 
 #include "base/pose/cartesian_position_2D.h"
 #include "base/pose/cartesian_position_3D.h"
@@ -27,7 +27,7 @@ namespace command_item {
 
 MACE_CLASS_FORWARD(AbstractSpatialAction);
 
-class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mace_command_long_t>, public JSONConverter
+class AbstractSpatialAction : public AbstractCommandItem, public Interface_CommandHelper<mavlink_command_long_t>, public JSONConverter
 {
 public:
     AbstractSpatialAction():
@@ -70,6 +70,20 @@ public:
         return json;
     }
 
+    virtual void fromJSON(const QJsonDocument &inputJSON)
+    {
+        mace::pose::GeodeticPosition_3D* tmpObj = position->positionAs<mace::pose::GeodeticPosition_3D>();
+        tmpObj->updatePosition(inputJSON.object().value("lat").toDouble(), inputJSON.object().value("lng").toDouble(), inputJSON.object().value("alt").toDouble());
+        this->position = tmpObj;
+        this->m_name = inputJSON.object().value("name").toString().toStdString();
+    }
+
+    virtual std::string toCSV(const std::string &delimiter) const
+    {
+        const mace::pose::GeodeticPosition_3D* castPosition = position->positionAs<mace::pose::GeodeticPosition_3D>();
+        std::string newline = m_name + delimiter + std::to_string(castPosition->getLatitude()) + delimiter + std::to_string(castPosition->getLongitude()) + delimiter + std::to_string(castPosition->getAltitude());
+        return newline;
+    }
     virtual bool hasSpatialInfluence() const override
     {
         return true;
@@ -101,29 +115,20 @@ public:
 
     /** Interface imposed via AbstractCommandItem */
 public: //The logic behind this is that every command item can be used to generate a mission item
-    virtual void populateMACECOMMS_MissionItem(mace_mission_item_t &cmd) const override;
+    virtual void populateMACECOMMS_MissionItem(mavlink_mace_mission_item_int_t &cmd) const override;
 
-    virtual void fromMACECOMMS_MissionItem(const mace_mission_item_t &obj) override;
+    virtual void fromMACECOMMS_MissionItem(const mavlink_mace_mission_item_int_t &obj) override;
 
-    void generateMACEMSG_MissionItem(mace_message_t &msg) const override;
+    void generateMACEMSG_MissionItem(mavlink_message_t &msg) const override;
 
-    void generateMACEMSG_CommandItem(mace_message_t &msg) const override; //we know that you must cast to the specific type to get something explicit based on the command
+    void generateMACEMSG_CommandItem(mavlink_message_t &msg) const override; //we know that you must cast to the specific type to get something explicit based on the command
     /** End of interface imposed via AbstractCommandItem */
 
-    /** Interface imposed via Interface_CommandHelper<mace_command_long_t> */
-    virtual void populateCommandItem(mace_command_long_t &obj) const override;
+    /** Interface imposed via Interface_CommandHelper<mavlink_command_long_t> */
+    virtual void populateCommandItem(mavlink_command_long_t &obj) const override;
 
-    virtual void fromCommandItem(const mace_command_long_t &obj) override;
-    /** End of interface imposed via Interface_CommandHelper<mace_command_long_t> */
-
-    virtual void populateMACEComms_ExecuteSpatialAction(mace_execute_spatial_action_t &obj) const;
-
-    virtual void fromMACECOMMS_ExecuteSpatialAction(const mace_execute_spatial_action_t &obj);
-
-    //static AbstractSpatialActionPtr constructFromGoToCommand(const mace_command_goto_t &msg);
-
-protected:
-    void transferTo_ExecuteSpatialAction(const mace_command_long_t &cmd, mace_execute_spatial_action_t &obj) const;
+    virtual void fromCommandItem(const mavlink_command_long_t &obj) override;
+    /** End of interface imposed via Interface_CommandHelper<mavlink_command_long_t> */
 
 protected:
     void populatePositionObject(const mace::CoordinateFrameTypes &explicitFrame, const uint8_t &dim, const uint16_t &mask,
@@ -205,6 +210,11 @@ public:
     //! \brief position
     //!
     mace::pose::Position* position;
+
+    //!
+    //! \brief name
+    //!
+    std::string m_name;
 };
 
 } //end of namespace CommandItem

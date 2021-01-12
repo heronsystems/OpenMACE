@@ -56,6 +56,7 @@ ModuleGroundStation::ModuleGroundStation() :
     m_SensorFootprintDataTopic("sensorFootprint"),
     m_VehicleDataTopic("vehicleData"),
     m_MissionDataTopic("vehicleMission"),
+    m_VehicleRoutingTopic("vehicleTrajectory"),
     m_ListenThread(nullptr),
     m_guiHostAddress(QHostAddress::LocalHost),
     m_listenPort(5678)
@@ -305,7 +306,7 @@ void ModuleGroundStation::AttachedAsModule(MaceCore::IModuleTopicEvents *ptr)
     ptr->Subscribe(this, m_SensorDataTopic.Name());
     ptr->Subscribe(this, m_MissionDataTopic.Name());
     ptr->Subscribe(this, m_SensorFootprintDataTopic.Name());
-
+    ptr->Subscribe(this, m_VehicleRoutingTopic.Name());
 }
 
 
@@ -478,6 +479,18 @@ void ModuleGroundStation::NewTopicSpooled(const std::string &topicName, const Ma
 
                     // Write sensor footprint verticies to the GUI:
                     m_toGUIHandler->sendSensorFootprint(vehicleID, component);
+                }
+            }
+        }
+        else if(topicName == m_VehicleRoutingTopic.Name())
+        {
+            //get latest datagram from mace_data
+            MaceCore::TopicDatagram read_topicDatagram = this->getDataObject()->GetCurrentTopicDatagram(m_VehicleRoutingTopic.Name(), sender);
+            for(size_t i = 0 ; i < componentsUpdated.size() ; i++) {
+                if(componentsUpdated.at(i) == mace::topic::Vehicle_Path_Linear_Topic::Name()) {
+                    std::shared_ptr<mace::topic::Vehicle_Path_Linear_Topic> component = std::make_shared<mace::topic::Vehicle_Path_Linear_Topic>();
+                    m_VehicleRoutingTopic.GetComponent(component, read_topicDatagram);
+                    m_toGUIHandler->sendVehiclePath(vehicleID, component->getPath());
                 }
             }
         }

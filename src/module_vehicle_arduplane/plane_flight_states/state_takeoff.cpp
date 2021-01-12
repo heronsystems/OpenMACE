@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 AP_State_Takeoff::AP_State_Takeoff():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_TAKEOFF)
 {
-    std::cout<<"We are in the constructor of STATE_TAKEOFF"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
-    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
+
 }
 
 AbstractStateArdupilot* AP_State_Takeoff::getClone() const
@@ -25,7 +23,7 @@ hsm::Transition AP_State_Takeoff::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         if(IsInInnerState<AP_State_TakeoffComplete>())
         {
@@ -36,7 +34,7 @@ hsm::Transition AP_State_Takeoff::GetTransition()
             //this means we want to chage the state of the vehicle for some reason
             //this could be caused by a command, action sensed by the vehicle, or
             //for various other peripheral reasons
-            switch (desiredStateEnum) {
+            switch (_desiredState) {
             case Data::MACEHSMState::STATE_GROUNDED:
             {
                 rtn = hsm::SiblingTransition<AP_State_Grounded>(currentCommand);
@@ -58,7 +56,7 @@ hsm::Transition AP_State_Takeoff::GetTransition()
                 break;
             }
             default:
-                std::cout<<"I dont know how we eneded up in this transition state from STATE_TAKEOFF."<<std::endl;
+                std::cout<<"I dont know how we ended up in this transition state from STATE_TAKEOFF."<<std::endl;
                 break;
             }
         }
@@ -72,20 +70,20 @@ bool AP_State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> 
     this->clearCommand();
 
     switch(command->getCommandType()) {
-    case COMMANDTYPE::CI_NAV_HOME:
+    case MAV_CMD::MAV_CMD_DO_SET_HOME:
     {
         success = AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
-        success = AbstractStateArdupilot::handleCommand(command);
-        MAVLINKUXVControllers::ControllerSystemMode* modeController = (MAVLINKUXVControllers::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
+        MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+
         modeController->AddLambda_Finished(this, [this,modeController](const bool completed, const uint8_t finishCode){
-            if(completed && (finishCode == MAV_RESULT_ACCEPTED))
+            if((completed) && (finishCode == MAV_RESULT_ACCEPTED))
             {
                 //if a mode change was issued while in the takeoff sequence we may have to handle it in a specific way based on the conditions
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+                _desiredState = Data::MACEHSMState::STATE_FLIGHT;
             }
             else
             {
@@ -93,9 +91,18 @@ bool AP_State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> 
             }
             modeController->Shutdown();
         });
+
+        MavlinkEntityKey target = Owner().getMAVLINKID();
+        MavlinkEntityKey sender = 255;
+
+        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+        commandMode.targetID = Owner().getMAVLINKID();
+        commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
+        modeController->Send(commandMode,sender,target);
+        success = true;
         break;
     }
-    case COMMANDTYPE::CI_NAV_TAKEOFF:
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
     {
         currentCommand = command->getClone();
         success = true;
@@ -113,32 +120,27 @@ void AP_State_Takeoff::Update()
     StatusData_MAVLINK* vehicleStatus = Owner().status;
 
     if(!vehicleStatus->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED;
     else
     {
         if(vehicleStatus->vehicleMode.get().getFlightModeString() == "TAKEOFF")
-            desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
+            _desiredState = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
     }
 }
 
 void AP_State_Takeoff::OnEnter()
 {
     //check that the vehicle is truely armed and switch us into the guided mode
-    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-    controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
-        controllerSystemMode->Shutdown();
-        if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-            desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
-        else
-            desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
-    });
 
-    controllerSystemMode->setLambda_Shutdown([this, collection]()
-    {
-        UNUSED(this);
-        auto ptr = collection->Remove("AP_State_Takeoff_modeController");
-        delete ptr;
+    MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+
+    modeController->AddLambda_Finished(this, [this,modeController](const bool completed, const uint8_t finishCode){
+        if(completed && (finishCode == MAV_RESULT_ACCEPTED))
+            _desiredState = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
+        else
+            _desiredState = Data::MACEHSMState::STATE_GROUNDED;
+
+        modeController->Shutdown();
     });
 
     MavlinkEntityKey target = Owner().getMAVLINKID();
@@ -147,8 +149,7 @@ void AP_State_Takeoff::OnEnter()
     MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
     commandMode.targetID = Owner().getMAVLINKID();
     commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("TAKEOFF");
-    controllerSystemMode->Send(commandMode,sender,target);
-    collection->Insert("AP_State_Takeoff_modeController",controllerSystemMode);
+    modeController->Send(commandMode,sender,target);
 }
 
 

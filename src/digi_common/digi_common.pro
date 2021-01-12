@@ -30,20 +30,9 @@ HEADERS += \
     discovery_status_types.h
 
 
-#copydata.commands = $(MKDIR) $$PWD/../include ; $(COPY_DIR) $$PWD/*.h $$PWD/../include/
-#first.depends = $(first) copydata
-#export(first.depends)
-#export(copydata.commands)
-#QMAKE_EXTRA_TARGETS += first copydata
-
 #Header file copy
 INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET
 INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
-
-#headers.path    = $$PWD/../include
-#headers.files   += $$HEADERS
-#INSTALLS       += headers
-
 
 INCLUDEPATH += $$(MACE_ROOT)/include

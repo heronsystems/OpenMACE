@@ -69,11 +69,11 @@ public:
     }
 
 public:
-    mace_attitude_quaternion_t getMACEQuaternion() const override;
+    mavlink_attitude_quaternion_t getMACEQuaternion() const override;
 
-    mace_attitude_t getMACEEuler() const override;
+    mavlink_attitude_t getMACEEuler() const override;
 
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
 public:
     //!

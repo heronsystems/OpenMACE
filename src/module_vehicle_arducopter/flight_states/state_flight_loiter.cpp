@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_FlightLoiter::State_FlightLoiter():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_LOITER)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_LOITER"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_LOITER;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_LOITER;
+
 }
 
 AbstractStateArdupilot* State_FlightLoiter::getClone() const
@@ -25,14 +23,14 @@ hsm::Transition State_FlightLoiter::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_EStop."<<std::endl;
             break;
         }
     }

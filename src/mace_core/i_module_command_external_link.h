@@ -20,6 +20,7 @@
 #include "base/geometry/polygon_cartesian.h"
 
 #include "i_module_command_generic_boundaries.h"
+#include "i_module_command_ai_support.h"
 
 namespace MaceCore
 {
@@ -29,6 +30,8 @@ enum class ExternalLinkCommands
     BASE_MODULE_LISTENER_ENUMS,
     BASE_MODULE_VEHICLE_LISTENER_ENUMS,
     GENERIC_MODULE_BOUNDARY_LISTENER_ENUMS,
+    AI_SUPPORT_GENERAL_COMMAND_ENUMS,
+    AI_SUPPORT_VEHICLE_COMMAND_ENUMS,
     REQUEST_REMOTE_BOUNDARY,
     NEWLY_AVAILABLE_ONBOARD_MISSION,
     NEW_MISSION_EXE_STATE,
@@ -39,7 +42,7 @@ enum class ExternalLinkCommands
 
 class MACE_CORESHARED_EXPORT IModuleCommandExternalLink :
         public AbstractModule_VehicleListener<Metadata_GroundStation, IModuleEventsExternalLink, ExternalLinkCommands>,
-        public IModuleGenericBoundaries
+        public IModuleGenericBoundaries, public IModuleCommand_VehicleAISupport
 {
     friend class MaceCore;
 public:
@@ -47,9 +50,10 @@ public:
     static ModuleClasses moduleClass;
 
     IModuleCommandExternalLink():
-        AbstractModule_VehicleListener()
+        AbstractModule_VehicleListener(), IModuleCommand_VehicleAISupport()
     {
         IModuleGenericBoundaries::SetUp<Metadata_GroundStation, IModuleEventsExternalLink, ExternalLinkCommands>(this);
+        IModuleCommand_VehicleAISupport::SetUp<Metadata_GroundStation, IModuleEventsExternalLink, ExternalLinkCommands>(this);
 
 
         AddCommandLogic<MissionItem::MissionKey>(ExternalLinkCommands::NEWLY_AVAILABLE_ONBOARD_MISSION, [this](const MissionItem::MissionKey &key, const OptionalParameter<ModuleCharacteristic> &sender){

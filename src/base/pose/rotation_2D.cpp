@@ -58,25 +58,25 @@ Eigen::Quaterniond Rotation_2D::getQuaternion() const
     return Eigen::Quaterniond(rotation_vector);
 }
 
-mace_attitude_quaternion_t Rotation_2D::getMACEQuaternion() const
+mavlink_attitude_quaternion_t Rotation_2D::getMACEQuaternion() const
 {
-    mace_attitude_quaternion_t quat;
+    mavlink_attitude_quaternion_t quat;
 
     return quat;
 }
 
-mace_attitude_t Rotation_2D::getMACEEuler() const
+mavlink_attitude_t Rotation_2D::getMACEEuler() const
 {
-    mace_attitude_t euler;
+    mavlink_attitude_t euler;
     euler.yaw = static_cast<float>(this->getPhi());
     return euler;
 }
 
-mace_message_t Rotation_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t Rotation_2D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_message_t msg;
-    mace_attitude_t attitude = getMACEEuler();
-    mace_msg_attitude_encode_chan(systemID,compID,chan,&msg,&attitude);
+    mavlink_message_t msg;
+    mavlink_attitude_t attitude = getMACEEuler();
+    mavlink_msg_attitude_encode_chan(systemID,compID,chan,&msg,&attitude);
     return msg;
 }
 

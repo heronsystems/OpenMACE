@@ -2,9 +2,9 @@
 
 namespace command_item {
 
-COMMANDTYPE SpatialHome::getCommandType() const
+MAV_CMD SpatialHome::getCommandType() const
 {
-    return COMMANDTYPE::CI_NAV_HOME;
+    return MAV_CMD::MAV_CMD_DO_SET_HOME;
 }
 
 std::string SpatialHome::getDescription() const

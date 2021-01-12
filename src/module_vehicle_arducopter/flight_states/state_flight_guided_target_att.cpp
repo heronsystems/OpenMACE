@@ -4,15 +4,10 @@ namespace ardupilot {
 namespace state{
 
 State_FlightGuided_AttTarget::State_FlightGuided_AttTarget():
-    AbstractStateArdupilot(), m_TimeoutController(10)
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_GUIDED_ATTTARGET), m_TimeoutController(10)
 {
-    std::cout<<"We are in the constructor of STATE_FLIGHT_GUIDED_ATTTARGET"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_ATTTARGET;
-    desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT_GUIDED_ATTTARGET;
-
     m_TimeoutController.connectTargetCallback(State_FlightGuided_AttTarget::retransmitGuidedCommand, this);
     Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, previousTime);
-
 }
 
 void State_FlightGuided_AttTarget::OnExit()
@@ -46,14 +41,14 @@ hsm::Transition State_FlightGuided_AttTarget::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_FLIGHT_GUIDED_CARTARGET."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_FLIGHT_GUIDED_CARTARGET."<<std::endl;
             break;
         }
     }
@@ -65,7 +60,7 @@ bool State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<AbstractC
     bool commandHandled = false;
 
     switch (command->getCommandType()) {
-    case COMMANDTYPE::CI_ACT_TARGET:
+    case MAV_CMD::MAV_CMD_USER_5:
     {
         //stop the current controllers target transmission if it is running
         m_TimeoutController.clearTarget();
@@ -94,7 +89,7 @@ bool State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<AbstractC
         commandHandled = true;
         break;
     }
-    default: //The only command this state is responsible for addressing is COMMANDTYPE::CI_ACT_TARGET
+    default: //The only command this state is responsible for addressing is MAV_CMD::MAV_CMD_USER_5
         break;
     }
 
@@ -123,7 +118,7 @@ void State_FlightGuided_AttTarget::OnEnter(const std::shared_ptr<AbstractCommand
         return;
     }
 
-    if(command->getCommandType() != COMMANDTYPE::CI_ACT_TARGET)
+    if(command->getCommandType() != MAV_CMD::MAV_CMD_USER_5)
     {
         //we dont handle commands of this type in here
         return;

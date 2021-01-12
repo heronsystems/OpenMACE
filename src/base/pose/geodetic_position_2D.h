@@ -241,9 +241,9 @@ public:
     void applyPositionalShiftFromCompass(const double &distance, const double &bearing) override;
 
 public:
-    mace_global_position_int_t getMACE_GlobalPositionInt() const;
+    mavlink_global_position_int_t getMACE_GlobalPositionInt() const;
 
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
     /** Assignment Operators */
 public:

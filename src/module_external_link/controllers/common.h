@@ -16,7 +16,7 @@ using ObjectMaceMsgIDTuple = ObjectIntTuple<T>;
 
 template <typename T>
 using BasicExternalLinkController_ModuleKeyed = Controllers::GenericController<
-    mace_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t, MaceCore::ModuleCharacteristic,
     TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMaceMsgIDTuple<MaceCore::ModuleCharacteristic>>,
     uint8_t,
     Controllers::DataItem<MaceCore::ModuleCharacteristic, T>>;
@@ -25,8 +25,8 @@ using BasicExternalLinkController_ModuleKeyed = Controllers::GenericController<
 
 
 template<typename T>
-std::function<uint16_t(MaceCore::ModuleCharacteristic, uint8_t, mace_message_t*, const T*)> ModuleToSysIDCompIDConverter(const std::function<uint16_t(uint8_t, uint8_t, uint8_t, mace_message_t*, const T*)> &lambda){
-    return [lambda](MaceCore::ModuleCharacteristic sender, uint8_t chan, mace_message_t* msg, const T* data){
+std::function<uint16_t(MaceCore::ModuleCharacteristic, uint8_t, mavlink_message_t*, const T*)> ModuleToSysIDCompIDConverter(const std::function<uint16_t(uint8_t, uint8_t, uint8_t, mavlink_message_t*, const T*)> &lambda){
+    return [lambda](MaceCore::ModuleCharacteristic sender, uint8_t chan, mavlink_message_t* msg, const T* data){
         uint8_t sysID = sender.MaceInstance;
         uint8_t compID = sender.ModuleID;
         return lambda(sysID, compID, chan, msg, data);

@@ -12,12 +12,12 @@ const MaceCore::TopicComponentStructure DataGenericItemTopicSystemArm_structure 
 
 MaceCore::TopicDatagram DataGenericItemTopic_SystemArm::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
-    datagram.AddTerminal<bool>("armed", armed);
+    datagram.AddTerminal<bool>("armed", _armed);
     return datagram;
 }
 
 void DataGenericItemTopic_SystemArm::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
-    armed = datagram.GetTerminal<bool>("armed");
+    _armed = datagram.GetTerminal<bool>("armed");
 }
 
 QJsonObject DataGenericItemTopic_SystemArm::toJSON(const int &vehicleID, const std::string &dataType) const
@@ -27,6 +27,17 @@ QJsonObject DataGenericItemTopic_SystemArm::toJSON(const int &vehicleID, const s
     return json;
 }
 
+void DataGenericItemTopic_SystemArm::fromJSON(const QJsonDocument &inputJSON)
+{   
+    this->setSystemArm(inputJSON.object().value("armed").toBool());
+}
+
+std::string DataGenericItemTopic_SystemArm::toCSV(const std::string &delimiter) const
+{
+    UNUSED(delimiter);
+    std::string newline = (getSystemArm() ? "true" : "false");
+    return newline;
+}
 DataGenericItemTopic_SystemArm::DataGenericItemTopic_SystemArm()
     :DataGenericItem::DataGenericItem_SystemArm()
 {

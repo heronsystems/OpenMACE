@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 
-#include "mace.h"
+#include <mavlink.h>
 
 #include "i_link_mace.h"
 
@@ -26,7 +26,7 @@ public:
     //! \param linkName Link identifier which generated command
     //! \param message Message that has been received
     //!
-    virtual void MessageReceived(const ILink* link_ptr, const mace_message_t &message) const = 0;
+    virtual void MessageReceived(const ILink* link_ptr, const mavlink_message_t &message) const = 0;
 
     //!
     //! \brief A new radio status packet received

@@ -12,7 +12,7 @@ TEMPLATE = lib
 
 DEFINES += BASE_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -30,6 +30,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    measurements/trackangle.cpp \
+    math/ftf_frame_conversions.cpp \
+    math/ftf_quaternion_utils.cpp \
     pose/twist.cpp \
     pose/velocity_interface_translational.cpp \
     state_space/real_vector.cpp \
@@ -40,7 +43,6 @@ SOURCES += \
     state_space/state_space.cpp \
     state_space/cartesian_2D_space.cpp \
     math/random_number_generator.cpp \
-    math/cost.cpp \
     state_space/goal_state.cpp \
     state_space/space_information.cpp \
     state_space/motion_validity_check.cpp \
@@ -64,14 +66,27 @@ SOURCES += \
     pose/abstract_position.cpp \
     pose/rotation_2D.cpp \
     misc/kinematic_definitions.cpp \
-    pose/pose.cpp
+#    misc/data_1d.cpp \
+#    misc/data_2d.cpp \
+#    misc/data_3d.cpp \
+    pose/pose.cpp \
+    trajectory/agent_parameters.cpp \
+    trajectory/dubins.cpp \
+    trajectory/trajectory_point.cpp \
+    trajectory/trajectory_queue.cpp \
+  vehicle/vehicle_path_linear.cpp \
+    vehicle/vehicle_state.cpp
 
 HEADERS +=\
     base_global.h \
+    math/frame_tf.h \
     math/helper_pi.h \
+    measurements/trackangle.h \
+    math/moving_average.h \
     pose/cartesian_position_2D.h \
     pose/cartesian_position_3D.h \
     geometry/base_polygon.h \
+    pose/pose_basic_state.h \
     pose/twist.h \
     pose/velocity_interface_rotational.h \
     pose/velocity_interface_translational.h \
@@ -118,8 +133,18 @@ HEADERS +=\
     misc/altitude_coordinate_frames.h \
     misc/coordinate_frame_components.h \
     misc/kinematic_definitions.h \
+#    misc/abstract_data.h \
+#    misc/data_1d.h \
+#    misc/data_2d.h \
+#    misc/data_3d.h \
+    misc/data_forward_definition.h \
     pose/base_altitude.h \
     geometry/abstract_polygon.h \
+    trajectory/agent_parameters.h \
+    trajectory/dubins.h \
+    trajectory/queue_interface.h \
+    trajectory/trajectory_point.h \
+    trajectory/trajectory_queue.h \
     unit_tests/unittests_orientation.h \
     pose/rotation_3D.h \
     measurements/base_speed.h \
@@ -130,7 +155,12 @@ HEADERS +=\
     pose/velocity_helper.h \
     misc/dimension.h \
     pose/pose.h \
-    unit_tests/unittests_position.h
+    unit_tests/unittests_position.h \
+  vehicle/abstract_vehicle_path.h \
+  vehicle/vehicle_path_linear.h \
+    vehicle/vehicle_state.h \
+    ini_support/INIHelper.h \
+    ini_support/INIReader.h
 
 # Unix lib Install
 unix:!symbian {
@@ -152,13 +182,73 @@ include(../headerinstall.pri)
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("base: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("base: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+unix {
+      exists($$(ROS_ROOT_DIR)/lib/) {
+
+      DEFINES += ROS_EXISTSasdf
+      INCLUDEPATH += $$(ROS_ROOT_DIR)/include
+      INCLUDEPATH += $$(ROS_ROOT_DIR)/lib
+
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lroscpp
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lroscpp_serialization
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lrostime
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lxmlrpcpp
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lcpp_common
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lrosconsole_log4cxx
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lrosconsole_backend_interface
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lroslib
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lrospack
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lmessage_filters
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lclass_loader
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lconsole_bridge
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lrosconsole
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -limage_transport
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lcv_bridge
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -ltf
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -ltf2
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -ltf2_ros
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -lactionlib
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -loctomap_ros
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -loctomap
+      LIBS += -L$$(ROS_ROOT_DIR)/lib -loctomath
+
+
+      #LIBS += -L$$(MACE_ROOT)/catkin_sim_environment/devel/lib/ -lmace_matlab_msgs
+
+      INCLUDEPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
+      DEPENDPATH += $$(MACE_ROOT)/catkin_sim_environment/devel/include
+
+      # ROS Warning suppression:
+      QMAKE_CXXFLAGS += -isystem $$(ROS_ROOT_DIR)/include
+      QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/catkin_sim_environment/devel/include
+      } else {
+      message("ROS root" path has not been detected...)
+      INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
+      LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+
+      # Octomap Warning suppression:
+      QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
+      }
+}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../common/debug/ -lcommon
 else:unix:!macx: LIBS += -L$$OUT_PWD/../common/ -lcommon
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data/release/ -ldata
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data/debug/ -ldata
+else:unix:!macx: LIBS += -L$$OUT_PWD/../data/ -ldata

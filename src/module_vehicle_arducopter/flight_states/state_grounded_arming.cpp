@@ -4,12 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_GroundedArming::State_GroundedArming():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_GROUNDED_ARMING)
 {
-    std::cout<<"We are in the constructor of STATE_GROUNDED_ARMING"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMING;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMING;
-    armingCheck = false;
+
 }
 
 AbstractStateArdupilot* State_GroundedArming::getClone() const
@@ -26,12 +23,12 @@ hsm::Transition State_GroundedArming::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_GROUNDED_IDLE:
         {
             rtn = hsm::SiblingTransition<State_GroundedIdle>();
@@ -43,7 +40,7 @@ hsm::Transition State_GroundedArming::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_GROUNDED_ARMING."<<static_cast<int>(desiredStateEnum)<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_GROUNDED_ARMING."<<static_cast<int>(_desiredState)<<std::endl;
             break;
         }
     }
@@ -70,7 +67,7 @@ void State_GroundedArming::Update()
 
     if(Owner().status->vehicleArm.get().getSystemArm())
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_ARMED;
     }
 }
 
@@ -85,7 +82,7 @@ void State_GroundedArming::OnEnter()
     controllerArm->AddLambda_Finished(this, [this, controllerArm](const bool completed, const uint8_t finishCode){
         controllerArm->Shutdown();
         if(!completed || (finishCode != MAV_RESULT_ACCEPTED))
-            desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
+            _desiredState = Data::MACEHSMState::STATE_GROUNDED_IDLE;
     });
 
     controllerArm->setLambda_Shutdown([collection]()

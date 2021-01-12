@@ -5,65 +5,54 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "mace.h"
+#include "mavlink.h"
 
 namespace DataGenericItem {
 
 class DataGenericItem_GPS
 {
 public:
-    enum class GPSFixType : uint8_t
-    {
-        GPS_FIX_NONE=0, /* No GPS connected | */
-        GPS_FIX_NO_FIX=1, /* No position information, GPS is connected | */
-        GPS_FIX_2D_FIX=2, /* 2D position | */
-        GPS_FIX_3D_FIX=3, /* 3D position | */
-        GPS_FIX_DGPS=4, /* DGPS/SBAS aided 3D position | */
-        GPS_FIX_RTK_FLOAT=5, /* RTK float, 3D position | */
-        GPS_FIX_RTK_FIXED=6, /* RTK Fixed, 3D position | */
-        GPS_FIX_STATIC=7, /* Static fixed, typically used for base stations | */
-    };
 
-    static std::string GPSFixTypeToString(const GPSFixType &gpsFix) {
+    static std::string GPSFixTypeToString(const GPS_FIX_TYPE &gpsFix) {
         switch (gpsFix) {
-        case GPSFixType::GPS_FIX_NONE:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_NO_GPS:
             return "NO GPS";
-        case GPSFixType::GPS_FIX_NO_FIX:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_NO_FIX:
             return "GPS NO FIX";
-        case GPSFixType::GPS_FIX_2D_FIX:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_2D_FIX:
             return "GPS 2D";
-        case GPSFixType::GPS_FIX_3D_FIX:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_3D_FIX:
             return "GPS 3D";
-        case GPSFixType::GPS_FIX_DGPS:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_DGPS:
             return "GPS DGPS";
-        case GPSFixType::GPS_FIX_RTK_FLOAT:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_RTK_FLOAT:
             return "GPS RTK FLOAT";
-        case GPSFixType::GPS_FIX_RTK_FIXED:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_RTK_FIXED:
             return "GPS RTK FIXED";
-        case GPSFixType::GPS_FIX_STATIC:
+        case GPS_FIX_TYPE::GPS_FIX_TYPE_STATIC:
             return "GPS STATIC";
         default:
             throw std::runtime_error("Unknown gps fix seen");
         }
     }
 
-    static GPSFixType GPSFixTypeFromString(const std::string &str) {
+    static GPS_FIX_TYPE GPSFixTypeFromString(const std::string &str) {
         if(str == "NO GPS")
-            return GPSFixType::GPS_FIX_NONE;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_NO_GPS;
         if(str == "GPS NO FIX")
-            return GPSFixType::GPS_FIX_NO_FIX;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_NO_FIX;
         if(str == "GPS 2D")
-            return GPSFixType::GPS_FIX_2D_FIX;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_2D_FIX;
         if(str == "GPS 3D")
-            return GPSFixType::GPS_FIX_3D_FIX;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_3D_FIX;
         if(str == "GPS DGPS")
-            return GPSFixType::GPS_FIX_DGPS;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_DGPS;
         if(str == "GPS RTK FLOAT")
-            return GPSFixType::GPS_FIX_RTK_FLOAT;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_RTK_FLOAT;
         if(str == "GPS RTK FIXED")
-            return GPSFixType::GPS_FIX_RTK_FIXED;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_RTK_FIXED;
         if(str == "GPS STATIC")
-            return GPSFixType::GPS_FIX_STATIC;
+            return GPS_FIX_TYPE::GPS_FIX_TYPE_STATIC;
         throw std::runtime_error("Unknown gps fix seen");
     }
 
@@ -72,13 +61,14 @@ public:
 
     DataGenericItem_GPS(const DataGenericItem_GPS &copyObj);
 
-    DataGenericItem_GPS(const mace_gps_raw_int_t &copyObj);
+    DataGenericItem_GPS(const mavlink_gps_raw_int_t &copyObj);
 
 
-    void setGPSFix(const GPSFixType &fix){
+    void setGPSFix(const GPS_FIX_TYPE &fix){
         this->fixtype = fix;
     }
-    GPSFixType getGPSFix() const{
+
+    GPS_FIX_TYPE getGPSFix() const{
         return fixtype;
     }
 
@@ -104,14 +94,14 @@ public:
     }
 
     bool is3DorGreater() {
-        if(this->getGPSFix() >= GPSFixType::GPS_FIX_3D_FIX) {
+        if(this->getGPSFix() >= GPS_FIX_TYPE::GPS_FIX_TYPE_3D_FIX) {
             return true;
         }
         return false;
     }
 
-    mace_gps_raw_int_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+    mavlink_gps_raw_int_t getMACECommsObject() const;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
 
 public:
     void operator = (const DataGenericItem_GPS &rhs)
@@ -122,7 +112,7 @@ public:
         this->VDOP = rhs.VDOP;
     }
 
-    bool operator == (const DataGenericItem_GPS &rhs) {
+    bool operator == (const DataGenericItem_GPS &rhs) const {
         if(this->fixtype != rhs.fixtype){
             return false;
         }
@@ -138,7 +128,7 @@ public:
         return true;
     }
 
-    bool operator != (const DataGenericItem_GPS &rhs) {
+    bool operator != (const DataGenericItem_GPS &rhs) const{
         return !(*this == rhs);
     }
 
@@ -149,7 +139,7 @@ public:
     }
 
 protected:
-    GPSFixType fixtype;
+    GPS_FIX_TYPE fixtype;
     uint16_t satellitesVisible;
     uint16_t HDOP;
     uint16_t VDOP;

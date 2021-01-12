@@ -16,12 +16,10 @@ T CopyCommandAndInsertTarget(const command_item::AbstractCommandItem &item, int 
 //    ModuleVehicleMAVLINK<DATA_VEHICLE_ARDUCOPTER_TYPES>(),
 //    m_VehicleMissionTopic("vehicleMission"), m_AircraftController(nullptr), vehicleData(nullptr)
 ModuleVehicleArducopter::ModuleVehicleArducopter() :
-    ModuleVehicleArdupilot(),
-    stateMachine(nullptr)
+    ModuleVehicleArdupilot()
 {
 
     m_TransmissionQueue = new TransmitQueue(2000, 3);
-
 }
 
 ModuleVehicleArducopter::~ModuleVehicleArducopter()
@@ -54,7 +52,12 @@ void ModuleVehicleArducopter::ConfigureModule(const std::shared_ptr<MaceCore::Mo
 //!
 void ModuleVehicleArducopter::createLog(const int &systemID)
 {
-    std::string logname = this->loggingPath + "/VehicleModule_" + std::to_string(systemID) + ".txt";
+//    std::string logname = this->loggingPath + "/VehicleModule_" + std::to_string(systemID) + ".txt";
+
+    // Initiate logs:
+    std::string loggerName = "vehicle_arducopter_" + std::to_string(systemID);
+    std::string loggerPath = this->loggingPath + "/vehicle_logs/arducopter_" + std::to_string(systemID) + ".txt";
+    this->initiateLogs(loggerName, loggerPath);
 }
 
 //!
@@ -553,36 +556,6 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
         stateMachine = new hsm::StateMachine();
         stateMachine->Initialize<ardupilot::state::State_Unknown>(m_SystemData);
 
-//        MAVLINKUXVControllers::CommandMSGInterval* requestMessageController = new MAVLINKUXVControllers::CommandMSGInterval(m_SystemData, m_TransmissionQueue, m_LinkChan);
-//        requestMessageController->AddLambda_Finished(this, [this,requestMessageController](const bool completed, const uint8_t finishCode){
-//            std::cout<<"The response received here is: "<<std::to_string(finishCode)<<std::endl;
-//            if(!requestMessageController->removeCurrentAndTransmitNext())
-//                requestMessageController->Shutdown(); //This implies there is nothing left to do with this controller
-//        });
-
-//        requestMessageController->setLambda_Shutdown([this]() mutable
-//        {
-//            UNUSED(this);
-//            auto ptr = m_ControllersCollection.Remove("messaageRequestController");
-//            delete ptr;
-//        });
-
-//        MavlinkEntityKey target = systemID;
-//        MavlinkEntityKey sender = 255;
-//        command_item::ActionMessageInterval messageRequest;
-//        messageRequest.setTargetSystem(target);
-//        messageRequest.setOriginatingSystem(sender);
-//        messageRequest.setMessageID(32); //message 32 is local position NED, 30 is attitude, 31 is attitude quaternion
-//        messageRequest.setMessageInterval(25000);
-//        requestMessageController->addIntervalRequest(messageRequest);
-
-//        messageRequest.setMessageID(30);
-//        requestMessageController->addIntervalRequest(messageRequest);
-//        requestMessageController->Send(messageRequest, sender, target);
-//        m_ControllersCollection.Insert("messaageRequestController", requestMessageController);
-
-//        requestMessageController->transmitNextRequest();
-
         handleFirstConnectionSetup();
     } //end of if statement verifying that the current vehicle data is null
 
@@ -626,7 +599,8 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
 
     // Set MACE HSM state:
     if(this->stateMachine->getCurrentState()) {
-        heartbeat.setHSMState(stateMachine->getCurrentState()->getCurrentStateEnum());
+        ardupilot::state::AbstractStateArdupilot* outerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentState());
+        heartbeat.setHSMState(outerState->getCurrentStateEnum());
     }
 
     m_SystemData->status->vehicleHeartbeat.set(heartbeat);
@@ -715,18 +689,6 @@ void ModuleVehicleArducopter::NewTopicSpooled(const std::string &topicName, cons
             }
         }
     }
-}
-
-
-//!
-//! \brief Cause the state machine to update it's states
-//!
-void ModuleVehicleArducopter::ProgressStateMachineStates()
-{
-    m_Mutex_StateMachine.lock();
-    stateMachine->ProcessStateTransitions();
-    stateMachine->UpdateStates();
-    m_Mutex_StateMachine.unlock();
 }
 
 void ModuleVehicleArducopter::TransmitVisionPoseEstimate(const mace::pose::Pose &pose)

@@ -77,7 +77,7 @@ public:
     void applyTransformation(const Eigen::Transform<double,3,Eigen::Affine> &t) override;
     /** End of interface imposed via Position */
 public:
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const override;
 
 public:
     //!

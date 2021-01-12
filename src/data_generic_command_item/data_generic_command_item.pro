@@ -13,7 +13,7 @@ TEMPLATE = lib
 
 DEFINES += DATA_GENERIC_COMMAND_ITEM_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -35,6 +35,10 @@ SOURCES += \
     do_items/action_change_speed.cpp \
     do_items/action_motor_test.cpp \
     do_items/action_mission_command.cpp \
+    do_items/action_set_surface_deflection.cpp \
+    mace/ai_items/action_event_tag.cpp \
+    mace/ai_items/action_initialize_test_setup.cpp \
+    mace/ai_items/action_procedural_command.cpp \
     spatial_items/spatial_home.cpp \
     spatial_items/spatial_land.cpp \
     spatial_items/spatial_loiter_time.cpp \
@@ -67,14 +71,22 @@ SOURCES += \
     target_items/dynamic_target_orientation.cpp \
     target_items/abstract_dynamic_target.cpp \
     do_items/action_message_request.cpp
+
 HEADERS +=\
     boundary_items/environment_boundary.h \
     do_items/action_arm.h \
     do_items/action_change_mode.h \
     do_items/action_change_speed.h \
     do_items/action_motor_test.h\
+    do_items/action_set_surface_deflection.h \
     do_items/do_components.h \
     do_items/action_mission_command.h \
+    mace/ai_items/abstract_ai_command.h \
+    mace/ai_items/action_event_tag.h \
+    mace/ai_items/action_initialize_test_setup.h \
+    mace/ai_items/action_procedural_command.h \
+    mace/ai_items/ai_command_components.h \
+    mace/ai_items/ai_command_type.h \
     mission_items/mission_ack.h \
     mission_items/mission_list.h \
     spatial_items/spatial_components.h \
@@ -103,7 +115,6 @@ HEADERS +=\
     target_items/dynamic_target_list.h \
     target_items/dynamic_mission_queue.h \
     spatial_items/abstract_spatial_action.h \
-    spatial_items/spatial_action_factory.h \
     mission_items/typedef_mission_types.h \
     target_items/dynamic_target_state.h \
     mission_items/mission_item_interface.h \
@@ -138,10 +149,18 @@ include(../headerinstall.pri)
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("data_generic_command_item: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("data_generic_command_item: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
 
 # Eigen Warning suppression:
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../common/release/ -lcommon

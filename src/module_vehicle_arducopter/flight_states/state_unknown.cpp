@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_Unknown::State_Unknown():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_UNKNOWN)
 {
-    std::cout<<"We are in the constructor of STATE_UNKNOWN"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_UNKNOWN;
-    desiredStateEnum = Data::MACEHSMState::STATE_UNKNOWN;
+
 }
 
 AbstractStateArdupilot* State_Unknown::getClone() const
@@ -25,12 +23,12 @@ hsm::Transition State_Unknown::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_GROUNDED:
         {
             return hsm::SiblingTransition<State_Grounded>();
@@ -52,7 +50,7 @@ hsm::Transition State_Unknown::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from STATE_UNKNOWN."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from STATE_UNKNOWN."<<std::endl;
             break;
         }
     }
@@ -68,10 +66,10 @@ bool State_Unknown::handleCommand(const std::shared_ptr<AbstractCommandItem> com
 void State_Unknown::Update()
 {
     if(!Owner().status->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED; //This is a definite case condition
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED; //This is a definite case condition
     else
     {
-        desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT;
     }
 }
 

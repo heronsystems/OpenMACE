@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "mace.h"
+#include <mavlink.h>
 
 #include "common/common.h"
 
@@ -16,7 +16,7 @@ public:
 
     DataGenericItem_SystemTime(const DataGenericItem_SystemTime &copyObj);
 
-    DataGenericItem_SystemTime(const mace_system_time_t &copyObj);
+    DataGenericItem_SystemTime(const mavlink_system_time_t &copyObj);
 
     void setTimeSinceEpoch(const uint64_t &usec) {
         this->usec_since_epoch = usec;
@@ -34,8 +34,8 @@ public:
         return ms_since_system_boot;
     }
 
-    mace_system_time_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+    mavlink_system_time_t getMACECommsObject() const;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
 
 public:
     void operator = (const DataGenericItem_SystemTime &rhs)

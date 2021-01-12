@@ -39,6 +39,7 @@
 #include "module_vehicle_MAVLINK/controllers/controller_parameter_request.h"
 #include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
 #include "module_vehicle_MAVLINK/controllers/controller_vision_position_estimate.h"
+#include "module_vehicle_MAVLINK/controllers/controller_write_event_to_log.h"
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
@@ -48,6 +49,11 @@
 
 #include "controllers/I_controller.h"
 #include "controllers/I_message_notifier.h"
+
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
+
 
 /*
  *
@@ -75,7 +81,8 @@ template <typename ...VehicleTopicAdditionalComponents>
 class MODULE_VEHICLE_MAVLINKSHARED_EXPORT ModuleVehicleMAVLINK :
         public ModuleVehicleGeneric<VehicleTopicAdditionalComponents..., DATA_VEHICLE_MAVLINK_TYPES>,
         public CommsMAVLINK,
-        public CallbackInterface_MAVLINKVehicleObject
+        public CallbackInterface_MAVLINKVehicleObject,
+        public MaceLog
 {
 protected:
     typedef ModuleVehicleGeneric<VehicleTopicAdditionalComponents..., DATA_VEHICLE_MAVLINK_TYPES> ModuleVehicleMavlinkBase;
@@ -87,7 +94,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     ModuleVehicleMAVLINK():
         ModuleVehicleGeneric<VehicleTopicAdditionalComponents..., DataMAVLINK::EmptyMAVLINK>(),
-         m_IsAttachedMavlinkEntitySet(false), m_VehicleMissionTopic("vehicleMission"), m_SystemData(nullptr), airborneInstance(false)
+         m_IsAttachedMavlinkEntitySet(false), m_VehicleMissionTopic("vehicleMission"), m_VehicleRoutingTopic("vehicleTrajectory"), m_SystemData(nullptr), airborneInstance(false)
     {
 
     }
@@ -223,6 +230,10 @@ public:
     virtual bool MavlinkMessage(const std::string &linkName, const mavlink_message_t &message)
     {
         UNUSED(linkName);
+        if(message.msgid == MAVLINK_MSG_ID_MISSION_REQUEST)
+            std::cout<<"Atleast it got here"<<std::endl;
+        else if(message.msgid == MAVLINK_MSG_ID_COMMAND_ACK)
+            std::cout<<"Command was acknowledged"<<std::endl;
         return m_ControllersCollection.Receive(message, message.sysid);
     }
 
@@ -370,6 +381,27 @@ public:
         cbi_VehicleMissionData(current.getMissionKey().m_systemID, ptrMissionTopic);
     }
 
+    virtual void cbi_VehicleTrajectory(const int &systemID, const VehiclePath_Linear &trjectory) const
+    {
+
+//        MaceCore::TopicDatagram topicDatagram;
+//        this->m_VehicleDataTopic.SetComponent(data, topicDatagram);
+
+//        ModuleVehicleMavlinkBase::NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
+//            ptr->NewTopicDataValues(this, this->m_VehicleDataTopic.Name(), systemID, MaceCore::TIME(), topicDatagram);
+//        });
+
+        std::shared_ptr<mace::topic::Vehicle_Path_Linear_Topic> ptrTrajectory = std::make_shared<mace::topic::Vehicle_Path_Linear_Topic>(trjectory);
+
+        MaceCore::TopicDatagram topicDatagram;
+        this->m_VehicleRoutingTopic.SetComponent(ptrTrajectory, topicDatagram);
+
+        ModuleVehicleMavlinkBase::NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
+            ptr->NewTopicDataValues(this, m_VehicleRoutingTopic.Name(), systemID, MaceCore::TIME(), topicDatagram);
+        });
+
+    }
+
 public:
 
     void SetAttachedMavlinkEntity(const MavlinkEntityKey &key)
@@ -416,6 +448,17 @@ protected:
     bool m_oldParameterControllerShutdown = false;
 
 protected:
+    void prepareOnboardLoggingController();
+    std::mutex m_mutex_OnboardLoggingController;
+    std::condition_variable m_condition_OnboardLoggingController;
+    bool m_oldOnboardLoggingControllerShutdown = false;
+
+protected:
+    //!
+    //! \brief initiateLogs Start log files and logging for the MAVLINK vehicle modules
+    //!
+    void initiateLogs(const std::string &loggerName, const std::string &loggingPath);
+
     virtual void handleFirstConnectionSetup();
 
 protected:
@@ -425,6 +468,7 @@ protected:
 
 protected:
     Data::TopicDataObjectCollection<DATA_MISSION_GENERIC_TOPICS> m_VehicleMissionTopic;
+    Data::TopicDataObjectCollection<VEHICLE_ROUTING_TOPICS> m_VehicleRoutingTopic;
 
     MavlinkVehicleObject* m_SystemData;
 
@@ -446,6 +490,12 @@ protected:
     //! \brief m_ControllersCollection
     //!
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> m_ControllersCollection;
+
+
+    //!
+    //! \brief m_logger spdlog logging object
+    //!
+    std::shared_ptr<spdlog::logger> m_logger;
 
 };
 

@@ -14,7 +14,7 @@ TEMPLATE = lib
 
 DEFINES += MODULE_VEHICLE_ARDUCOPTER_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -55,7 +55,7 @@ SOURCES += module_vehicle_arducopter.cpp \
 
 HEADERS += module_vehicle_arducopter.h\
     flight_states/state_grounded_disarmed.h \
-        module_vehicle_arducopter_global.h \
+    module_vehicle_arducopter_global.h \
     flight_states/arducopter_state_components.h \
     flight_states/state_flight_guided.h \
     flight_states/state_grounded.h \
@@ -89,13 +89,18 @@ HEADERS += module_vehicle_arducopter.h\
     vehicle_object/arducopter_component_flight_mode.h \
     vehicle_object/vehicle_object_arducopter.h
 
-
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_vehicle_arducopter: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_vehicle_arducopter: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

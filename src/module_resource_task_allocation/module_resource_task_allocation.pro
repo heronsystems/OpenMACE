@@ -10,7 +10,7 @@ QT      -= gui
 TARGET = module_resource_task_allocation
 TEMPLATE = lib
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -63,10 +63,18 @@ include(../headerinstall.pri)
 
 #Necessary header includes
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/V2/common
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_resource_task_allocation: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_resource_task_allocation: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
@@ -124,24 +132,32 @@ else:unix:!macx: LIBS += -L$$OUT_PWD/../data_vehicle_sensors/ -ldata_vehicle_sen
 #else:unix:!macx: LIBS += -L$$OUT_PWD/../voropp/ -lvoropp
 
 unix {
-    exists($$(ROS_ROOT_DIR)/lib/) {
+    exists(/opt/ros/kinetic/lib/) {
+        DEFINES += ROS_EXISTS
+        INCLUDEPATH += /opt/ros/kinetic/include
+        INCLUDEPATH += /opt/ros/kinetic/lib
+        LIBS += -L/opt/ros/kinetic/lib -loctomath
+        LIBS += -L/opt/ros/kinetic/lib -loctomap
 
-      DEFINES += ROS_EXISTS
-      INCLUDEPATH += $$(ROS_ROOT_DIR)/include
-      INCLUDEPATH += $$(ROS_ROOT_DIR)/lib
-      LIBS += -L$$(ROS_ROOT_DIR)/lib -loctomath
-      LIBS += -L$$(ROS_ROOT_DIR)/lib -loctomap
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/kinetic/include
+    } else:exists(/opt/ros/melodic/lib/) {
+        DEFINES += ROS_EXISTS
+        INCLUDEPATH += /opt/ros/melodic/include
+        INCLUDEPATH += /opt/ros/melodic/lib
+        LIBS += -L/opt/ros/melodic/lib -loctomath
+        LIBS += -L/opt/ros/melodic/lib -loctomap
 
+        # ROS Warning suppression:
+        QMAKE_CXXFLAGS += -isystem /opt/ros/melodic/include
     } else {
-      message("ROS root" path has not been detected...)
-      INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
-      LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
+        INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
+        LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
 
-      # Octomap Warning suppression:
-      QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
+        # Octomap Warning suppression:
+        QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
     }
 }
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
 win32:INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include

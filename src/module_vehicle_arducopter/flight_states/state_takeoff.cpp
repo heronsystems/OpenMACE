@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state{
 
 State_Takeoff::State_Takeoff():
-    AbstractRootState()
+    AbstractRootState(Data::MACEHSMState::STATE_TAKEOFF)
 {
-    std::cout<<"We are in the constructor of STATE_TAKEOFF"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
-    desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF;
+
 }
 
 AbstractStateArdupilot* State_Takeoff::getClone() const
@@ -25,7 +23,7 @@ hsm::Transition State_Takeoff::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         if(IsInInnerState<State_TakeoffComplete>())
         {
@@ -36,7 +34,7 @@ hsm::Transition State_Takeoff::GetTransition()
             //this means we want to chage the state of the vehicle for some reason
             //this could be caused by a command, action sensed by the vehicle, or
             //for various other peripheral reasons
-            switch (desiredStateEnum) {
+            switch (_desiredState) {
             case Data::MACEHSMState::STATE_GROUNDED:
             {
                 rtn = hsm::SiblingTransition<State_Grounded>(currentCommand);
@@ -58,7 +56,7 @@ hsm::Transition State_Takeoff::GetTransition()
                 break;
             }
             default:
-                std::cout<<"I dont know how we eneded up in this transition state from STATE_TAKEOFF."<<std::endl;
+                std::cout<<"I dont know how we ended up in this transition state from STATE_TAKEOFF."<<std::endl;
                 break;
             }
         }
@@ -72,12 +70,12 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
     this->clearCommand();
 
     switch(command->getCommandType()) {
-    case COMMANDTYPE::CI_NAV_HOME:
+    case MAV_CMD::MAV_CMD_DO_SET_HOME:
     {
         success = AbstractRootState::handleCommand(command);
         break;
     }
-    case COMMANDTYPE::CI_ACT_CHANGEMODE:
+    case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
         success = AbstractStateArdupilot::handleCommand(command);
         MAVLINKUXVControllers::ControllerSystemMode* modeController = (MAVLINKUXVControllers::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
@@ -85,7 +83,7 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
             {
                 //if a mode change was issued while in the takeoff sequence we may have to handle it in a specific way based on the conditions
-                desiredStateEnum = Data::MACEHSMState::STATE_FLIGHT;
+                _desiredState = Data::MACEHSMState::STATE_FLIGHT;
             }
             else
             {
@@ -95,7 +93,7 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> com
         });
         break;
     }
-    case COMMANDTYPE::CI_NAV_TAKEOFF:
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
     {
         currentCommand = command->getClone();
         success = true;
@@ -113,11 +111,11 @@ void State_Takeoff::Update()
     StatusData_MAVLINK* vehicleStatus = Owner().status;
 
     if(!vehicleStatus->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED;
     else
     {
         if(vehicleStatus->vehicleMode.get().getFlightModeString() == "GUIDED")
-            desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
+            _desiredState = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
     }
 }
 
@@ -129,9 +127,9 @@ void State_Takeoff::OnEnter()
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
         controllerSystemMode->Shutdown();
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-            desiredStateEnum = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
+            _desiredState = Data::MACEHSMState::STATE_TAKEOFF_CLIMBING;
         else
-            desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED;
+            _desiredState = Data::MACEHSMState::STATE_GROUNDED;
     });
 
     controllerSystemMode->setLambda_Shutdown([this, collection]()

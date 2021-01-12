@@ -4,11 +4,9 @@ namespace ardupilot {
 namespace state {
 
 State_GroundedIdle::State_GroundedIdle():
-    AbstractStateArdupilot()
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_GROUNDED_IDLE)
 {
-    std::cout<<"We are in the constructor of STATE_GROUNDED_IDLE"<<std::endl;
-    currentStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
-    desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_IDLE;
+
 }
 
 AbstractStateArdupilot* State_GroundedIdle::getClone() const
@@ -25,12 +23,12 @@ hsm::Transition State_GroundedIdle::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
-    if(currentStateEnum != desiredStateEnum)
+    if(_currentState != _desiredState)
     {
         //this means we want to chage the state of the vehicle for some reason
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
-        switch (desiredStateEnum) {
+        switch (_desiredState) {
         case Data::MACEHSMState::STATE_GROUNDED_ARMING:
         {
             return hsm::SiblingTransition<State_GroundedArming>(currentCommand);
@@ -42,7 +40,7 @@ hsm::Transition State_GroundedIdle::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we eneded up in this transition state from State_GroundedIdle."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_GroundedIdle."<<std::endl;
             break;
         }
     }
@@ -52,22 +50,22 @@ hsm::Transition State_GroundedIdle::GetTransition()
 bool State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     bool success = false;
-    COMMANDTYPE type = command->getCommandType();
+    MAV_CMD type = command->getCommandType();
 
     switch (type) {
-    case COMMANDTYPE::CI_ACT_ARM: //This should cause a state transition to the grounded_arming state
+    case MAV_CMD::MAV_CMD_COMPONENT_ARM_DISARM: //This should cause a state transition to the grounded_arming state
     {
         if(command->as<command_item::ActionArm>()->getRequestArm())
         {
-            desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMING;
+            _desiredState = Data::MACEHSMState::STATE_GROUNDED_ARMING;
             success = true;
         }
         break;
     }
-    case COMMANDTYPE::CI_NAV_TAKEOFF: //This should cause a state transition to the grounded_arming state
+    case MAV_CMD::MAV_CMD_NAV_TAKEOFF: //This should cause a state transition to the grounded_arming state
     {
         //This is a case where we want to walk all the way through arming to takeoff
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMING;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_ARMING;
         this->clearCommand();
         currentCommand = command;
         success = true;
@@ -82,7 +80,7 @@ bool State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem
 void State_GroundedIdle::Update()
 {
     if(Owner().status->vehicleArm.get().getSystemArm())
-        desiredStateEnum = Data::MACEHSMState::STATE_GROUNDED_ARMED;
+        _desiredState = Data::MACEHSMState::STATE_GROUNDED_ARMED;
 }
 
 void State_GroundedIdle::OnEnter()

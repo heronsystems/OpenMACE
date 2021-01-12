@@ -14,7 +14,7 @@ TEMPLATE = lib
 
 DEFINES += MODULE_VEHICLE_ARDUPILOT_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -31,7 +31,6 @@ HEADERS += module_vehicle_ardupilot.h\
     vehicle_object/ardupilot_component_operating_mode.h \
     ardupilot_target_progess.h \
     guided_timeout_controller.h \
-    flight_states/ardupilot_hsm.h \
     flight_states/ardupilot_state_components.h \
     flight_states/abstract_root_state.h \
     flight_states/abstract_state_ardupilot.h \
@@ -39,11 +38,17 @@ HEADERS += module_vehicle_ardupilot.h\
 
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_vehicle_ardupilot: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_vehicle_ardupilot: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 
@@ -121,15 +126,13 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVL
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/debug/ -ldata_interface_MAVLINK
 else:unix:!macx: LIBS += -L$$OUT_PWD/../data_interface_MAVLINK/ -ldata_interface_MAVLINK
 
-INCLUDEPATH += $$PWD/../data_interface_MAVLINK
-DEPENDPATH += $$PWD/../data_interface_MAVLINK
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../base_topic/release/ -lbase_topic
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../base_topic/debug/ -lbase_topic
 else:unix:!macx: LIBS += -L$$OUT_PWD/../base_topic/ -lbase_topic
 
-INCLUDEPATH += $$PWD/../base_topic
-DEPENDPATH += $$PWD/../base_topic
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/release/ -ltrajectory_control
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../trajectory_control/debug/ -ltrajectory_control
+else:unix:!macx: LIBS += -L$$OUT_PWD/../trajectory_control/ -ltrajectory_control
 
 unix {
     exists($$(ROS_ROOT_DIR)/lib/) {

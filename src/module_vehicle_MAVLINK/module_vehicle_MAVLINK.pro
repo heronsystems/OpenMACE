@@ -14,7 +14,7 @@ TEMPLATE = lib
 
 DEFINES += MODULE_VEHICLE_MAVLINK_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -22,6 +22,7 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 SOURCES += \
     controllers/commands/command_msg_interval.cpp \
     controllers/controller_parameter_request.cpp \
+    controllers/controller_set_surface_deflection.cpp \
     module_vehicle_mavlink.cpp \
     vehicle_object/mavlink_vehicle_object.cpp \
     vehicle_object/state_data_mavlink.cpp \
@@ -36,9 +37,14 @@ SOURCES += \
     controllers/controller_guided_target_item_attitude.cpp
 
 HEADERS += module_vehicle_mavlink.h\
+    controllers/commands/command_change_speed.h \
+    controllers/commands/command_set_surface_deflection.h \
+    controllers/controller_guided_target_item_waypoint.h \
     controllers/controller_parameter_request.h \
-  controllers/controller_vision_position_estimate.h \
-        module_vehicle_mavlink_global.h \
+    controllers/controller_set_surface_deflection.h \
+    controllers/controller_vision_position_estimate.h \
+    controllers/controller_write_event_to_log.h \
+    module_vehicle_mavlink_global.h \
     controllers/controller_system_mode.h \
     controllers/commands/command_arm.h \
     controllers/commands/command_land.h \
@@ -64,9 +70,16 @@ HEADERS += module_vehicle_mavlink.h\
     controllers/commands/command_msg_request.h \
     controllers/commands/command_home_position.h
 
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega
-INCLUDEPATH += $$PWD/../../spdlog/
+
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
+
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_vehicle_mavlink: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_vehicle_mavlink: Using standard ardupilot libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
 
 # Unix lib Install
 unix:!symbian {
@@ -111,11 +124,9 @@ headers_vehicle_object.files   += \
 INSTALLS       += headers_vehicle_object
 
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MAVLINK_BASE/ardupilotmega/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

@@ -5,7 +5,7 @@
 #include <string>
 #include <stdint.h>
 
-#include "mace.h"
+#include <mavlink.h>
 
 #include "data/autopilot_types.h"
 #include "data/comms_protocol.h"
@@ -90,9 +90,14 @@ public:
         return this->currentHSMState;
     }
 
-    mace_heartbeat_t getMACECommsObject() const;
-    mace_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
+    mavlink_mace_heartbeat_t getMACECommsObject() const;
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
+
+    virtual void fromJSON(const QJsonDocument &inputJSON) ;
+
+    virtual std::string toCSV(const std::string &delimiter) const;
+
 public:
     void operator = (const DataGenericItem_Heartbeat &rhs)
     {

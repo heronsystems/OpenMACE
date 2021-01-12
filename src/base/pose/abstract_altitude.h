@@ -13,7 +13,7 @@ MACE_CLASS_FORWARD(Abstract_Altitude);
 class Abstract_Altitude : public AltitudeInterface<Abstract_Altitude>
 {
 public:
-    Abstract_Altitude(const AltitudeReferenceTypes &explicitFrame = AltitudeReferenceTypes::REF_ALT_UNKNOWN);
+    Abstract_Altitude(const AltitudeReferenceTypes &explicitFrame = AltitudeReferenceTypes::REF_ALT_RELATIVE);
 
     Abstract_Altitude(const Abstract_Altitude &copy);
 

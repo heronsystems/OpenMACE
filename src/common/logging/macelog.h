@@ -3,12 +3,31 @@
 
 #include "iostream"
 #include "termcolor.hpp"
+#include "spdlog/spdlog.h"
+#include "spdlog/async.h" //support for async logging.
+#include "spdlog/sinks/basic_file_sink.h"
 
 class MaceLog
 {
 public:
     MaceLog() {}
+    ~MaceLog() = default;
 
+    // **************************************************************** //
+    // Virtual logging methods:
+    // **************************************************************** //
+public:
+    virtual void logToFile(std::shared_ptr<spdlog::logger> logger, const std::string &str) {
+        if(logger) {
+            logger->info(str);
+        }
+    }
+
+
+    // **************************************************************** //
+    // In-line console logging with color support:
+    // **************************************************************** //
+public:
     // Message type wrappers:
     static void Error(const std::string &text) { std::cout << termcolor::red << text << termcolor::reset << std::endl; }
     static void Warning(const std::string &text) { std::cout << termcolor::yellow << text << termcolor::reset << std::endl; }
@@ -28,6 +47,17 @@ public:
     static void Magenta(const std::string &text) { std::cout << termcolor::magenta << text << termcolor::reset << std::endl; }
     static void Cyan(const std::string &text) { std::cout << termcolor::cyan << text << termcolor::reset << std::endl; }
     static void White(const std::string &text) { std::cout << termcolor::white << text << termcolor::reset << std::endl; }
+
+    // Foreground Color wrappers (inline):
+    static void Grey_no_newline(const std::string &text) { std::cout << termcolor::grey << text << termcolor::reset; }
+    static void Red_no_newline(const std::string &text) { std::cout << termcolor::red << text << termcolor::reset; }
+    static void Green_no_newline(const std::string &text) { std::cout << termcolor::green << text << termcolor::reset; }
+    static void Yellow_no_newline(const std::string &text) { std::cout << termcolor::yellow << text << termcolor::reset; }
+    static void Blue_no_newline(const std::string &text) { std::cout << termcolor::blue << text << termcolor::reset; }
+    static void Magenta_no_newline(const std::string &text) { std::cout << termcolor::magenta << text << termcolor::reset; }
+    static void Cyan_no_newline(const std::string &text) { std::cout << termcolor::cyan << text << termcolor::reset; }
+    static void White_no_newline(const std::string &text) { std::cout << termcolor::white << text << termcolor::reset; }
+
 
     // Background Color wrappers:
     static void bgGrey(const std::string &text) { std::cout << termcolor::on_grey << text << termcolor::reset << std::endl; }

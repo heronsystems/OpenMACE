@@ -12,6 +12,17 @@ GuidedTimeoutController::GuidedTimeoutController(const unsigned int &timeout, co
     this->abortTimeout = killTimeout;
 }
 
+GuidedTimeoutController::GuidedTimeoutController(const GuidedTimeoutController &copy)
+{
+    m_CBTarget = nullptr;
+    m_FunctionTarget = nullptr;
+
+    this->timeout = copy.timeout;
+    this->levelTimeout = copy.levelTimeout;
+    this->abortTimeout = copy.abortTimeout;
+}
+
+
 GuidedTimeoutController::~GuidedTimeoutController() {
     std::cout << "Destructor on guided timeout controller" << std::endl;
     this->stop();

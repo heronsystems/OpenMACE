@@ -7,20 +7,19 @@
 
 namespace ExternalLink {
 
-class CommandTakeoff : public Controller_GenericLongCommand<command_item::SpatialTakeoff, (uint8_t)command_item::COMMANDTYPE::CI_NAV_TAKEOFF>
+class CommandTakeoff : public Controller_GenericLongCommand<command_item::SpatialTakeoff, (uint8_t)MAV_CMD::MAV_CMD_NAV_TAKEOFF>
 {
 public:
 
-    CommandTakeoff(const Controllers::IMessageNotifier<mace_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan);
+    CommandTakeoff(const Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan);
 
 protected:
 
-    virtual void FillCommand(const command_item::SpatialTakeoff &commandItem, mace_command_long_t &cmd) const;
+    virtual void FillCommand(const command_item::SpatialTakeoff &commandItem, mavlink_command_long_t &cmd) const;
 
-    virtual void BuildCommand(const mace_command_long_t &message, command_item::SpatialTakeoff &data) const;
+    virtual void BuildCommand(const mavlink_command_long_t &message, command_item::SpatialTakeoff &data) const;
 
 };
-
 
 }
 

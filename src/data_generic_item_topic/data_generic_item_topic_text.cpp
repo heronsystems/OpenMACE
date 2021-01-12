@@ -5,21 +5,21 @@ namespace DataGenericItemTopic {
 const char DataGenericItemTopicText_name[] = "statusText";
 const MaceCore::TopicComponentStructure DataGenericItemTopicText_structure = []{
     MaceCore::TopicComponentStructure structure;
-    structure.AddTerminal<DataGenericItemTopic_Text::STATUS_SEVERITY>("severity");
+    structure.AddTerminal<MAV_SEVERITY>("severity");
     structure.AddTerminal<std::string>("text");
     return structure;
 }();
 
 MaceCore::TopicDatagram DataGenericItemTopic_Text::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
-    datagram.AddTerminal<STATUS_SEVERITY>("severity", severity);
-    datagram.AddTerminal<std::string>("text", dataString);
+    datagram.AddTerminal<MAV_SEVERITY>("severity", _severity);
+    datagram.AddTerminal<std::string>("text", _dataString);
     return datagram;
 }
 
 void DataGenericItemTopic_Text::CreateFromDatagram(const MaceCore::TopicDatagram &datagram) {
-    severity = datagram.GetTerminal<STATUS_SEVERITY>("severity");
-    dataString = datagram.GetTerminal<std::string>("text");
+    _severity = datagram.GetTerminal<MAV_SEVERITY>("severity");
+    _dataString = datagram.GetTerminal<std::string>("text");
 }
 
 QJsonObject DataGenericItemTopic_Text::toJSON(const int &vehicleID, const std::string &dataType) const
@@ -30,6 +30,18 @@ QJsonObject DataGenericItemTopic_Text::toJSON(const int &vehicleID, const std::s
     return json;
 }
 
+void DataGenericItemTopic_Text::fromJSON(const QJsonDocument &inputJSON)
+{
+    this->setText(inputJSON.object().value("text").toString().toStdString());
+}
+
+std::string DataGenericItemTopic_Text::toCSV(const std::string &delimiter) const
+{
+    UNUSED(delimiter);
+    std::string newline = getText();
+    std::replace(newline.begin(), newline.end(), ',', '-');
+    return newline;
+}
 DataGenericItemTopic_Text::DataGenericItemTopic_Text()
     :DataGenericItem::DataGenericItem_Text()
 {

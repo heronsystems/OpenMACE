@@ -31,16 +31,21 @@ CartesianPosition_3D::CartesianPosition_3D(const double &x, const double &y, con
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_3D &copy):
-    Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy), data(copy.data)
+    Abstract_CartesianPosition(copy), Abstract_Altitude(copy), state_space::State(copy), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
-    this->updatePosition(copy.getXPosition(), copy.getYPosition(), copy.getZPosition());
+    data(0) = copy.data(0);
+    data(1) = copy.data(1);
+    data(2) = copy.data(2);
 }
 
 CartesianPosition_3D::CartesianPosition_3D(const CartesianPosition_2D &copy):
-    Abstract_CartesianPosition(copy), Abstract_Altitude(), state_space::State(copy), data(copy.data(0), copy.data(1), 0.0)
+    Abstract_CartesianPosition(copy), Abstract_Altitude(), state_space::State(copy), data(0.0,0.0,0.0)
 {
     this->dimension = 3;
+
+    data(0) = copy.data(0);
+    data(1) = copy.data(1);
 }
 
 bool CartesianPosition_3D::hasXBeenSet() const
@@ -220,9 +225,9 @@ double CartesianPosition_3D::polarBearingTo(const Abstract_CartesianPosition* po
 
     if(pos->isGreaterThan1D())
     {
-        const CartesianPosition_2D* tmpPos = pos->positionAs<CartesianPosition_2D>();
-        double deltaY = tmpPos->getYPosition() - this->getYPosition();
-        double deltaX = tmpPos->getXPosition() - this->getXPosition();
+        Eigen::VectorXd posVector = pos->getDataVector();
+        double deltaY = posVector(1) - this->getYPosition();
+        double deltaX = posVector(0) - this->getXPosition();
         polarBearing = atan2(deltaY,deltaX);
     }
 
@@ -264,7 +269,7 @@ void CartesianPosition_3D::newPositionFromPolar(Abstract_CartesianPosition *newO
 //!
 void CartesianPosition_3D::newPositionFromCompass(Abstract_CartesianPosition* newObject, const double &distance, const double &bearing) const
 {
-    return newPositionFromPolar(newObject, distance,compassToPolarBearing(bearing));
+    newPositionFromPolar(newObject, distance, compassToPolarBearing(bearing));
 }
 
 void CartesianPosition_3D::applyPositionalShiftFromPolar(const double &distance, const double &bearing)
@@ -295,9 +300,9 @@ void CartesianPosition_3D::applyPositionalShiftFromCompass(const double &distanc
     applyPositionalShiftFromPolar(distance,compassToPolarBearing(bearing),elevation);
 }
 
-mace_local_position_ned_t CartesianPosition_3D::getMACE_CartesianPositionInt() const
+mavlink_local_position_ned_t CartesianPosition_3D::getMACE_CartesianPositionInt() const
 {
-    mace_local_position_ned_t posObj;
+    mavlink_local_position_ned_t posObj;
     posObj.x = static_cast<int32_t>((this->getXPosition() * pow(10,7)));
     posObj.y = static_cast<int32_t>((this->getYPosition() * pow(10,7)));
     posObj.z = static_cast<int32_t>((this->getZPosition() * pow(10,7)));
@@ -305,11 +310,11 @@ mace_local_position_ned_t CartesianPosition_3D::getMACE_CartesianPositionInt() c
     return posObj;
 }
 
-mace_message_t CartesianPosition_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+mavlink_message_t CartesianPosition_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
 {
-    mace_message_t msg;
-    mace_local_position_ned_t positionObj = getMACE_CartesianPositionInt();
-    mace_msg_local_position_ned_encode_chan(systemID,compID,chan,&msg,&positionObj);
+    mavlink_message_t msg;
+    mavlink_local_position_ned_t positionObj = getMACE_CartesianPositionInt();
+    mavlink_msg_local_position_ned_encode_chan(systemID,compID,chan,&msg,&positionObj);
     return msg;
 }
 

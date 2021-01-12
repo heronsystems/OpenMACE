@@ -184,4 +184,4 @@ private:
 } //end of namespace geometry
 } //end of namespace mace
 
-#endif // POLYGON_2DC_H
+#endif // POLYGON_2DG_H

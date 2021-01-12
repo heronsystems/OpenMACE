@@ -13,7 +13,7 @@ TEMPLATE = lib
 
 DEFINES += MODULE_EXTERNAL_LINK_LIBRARY
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++14
 DEFINES += EIGEN_DONT_VECTORIZE
 DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
@@ -21,13 +21,13 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += module_external_link.cpp \
+    controllers/commands/command_system_mode.cpp \
+    controllers/controller_home.cpp \
     parse_comms_message.cpp \
     parse_comms_command.cpp \
     controllers/heartbeat_controller_externallink.cpp \
-    controllers/controller_home.cpp \
     controllers/controller_boundary.cpp \
     controllers/controller_mission.cpp \
-    controllers/controller_system_mode.cpp \
     controllers/commands/command_arm.cpp \
     controllers/commands/command_land.cpp \
     controllers/commands/command_mission_item.cpp \
@@ -37,12 +37,12 @@ SOURCES += module_external_link.cpp \
     controllers/commands/command_execute_spatial_action.cpp
 
 HEADERS += module_external_link.h\
+    controllers/commands/command_system_mode.h \
+    controllers/controller_home.h \
         module_external_link_global.h \
     controllers/heartbeat_controller_externallink.h \
     controllers/controller_boundary.h \
-    controllers/controller_home.h \
     controllers/controller_mission.h \
-    controllers/controller_system_mode.h \
     controllers/commands/command_arm.h \
     controllers/commands/command_land.h \
     controllers/commands/command_mission_item.h \
@@ -73,13 +73,18 @@ INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET
 INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
-
-
 INCLUDEPATH += $$PWD/../
-INCLUDEPATH += $$PWD/../../spdlog/
-INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
-INCLUDEPATH += $$PWD/../../mavlink_cpp/MACE/mace_common/
+INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
+contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
+  message("module_external_link: Compiling with Heron support")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
+}else{
+  message("module_external_link: Using standard mavlink libraries")
+  INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/ardupilotmega/
+}
+
+INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
 

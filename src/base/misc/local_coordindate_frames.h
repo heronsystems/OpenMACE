@@ -6,17 +6,17 @@
 
 #include "altitude_coordinate_frames.h"
 
-#include "mace.h"
+#include "mavlink.h"
 
 namespace mace {
 
-#define LOCAL_FRAMES CF_LOCAL_UNKNOWN = UXV_FRAME::UXV_FRAME_LOCAL_UNKNOWN, /* Local coordinate frame is unknown | */ \
-CF_LOCAL_NED = UXV_FRAME::UXV_FRAME_LOCAL_NED, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
-CF_LOCAL_ENU = UXV_FRAME::UXV_FRAME_LOCAL_ENU, /* Local coordinate frame, Z-down (x: east, y: north, z: up) | */ \
-CF_LOCAL_OFFSET_NED = UXV_FRAME::UXV_FRAME_LOCAL_OFFSET_NED, /* Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position. | */ \
-CF_BODY_OFFSET_NED = UXV_FRAME::UXV_FRAME_BODY_OFFSET_NED, /* Offset to the current vehicle frame. Anything expressed in this frame should be added to the current local frame position. | */ \
-CF_BODY_NED = UXV_FRAME::UXV_FRAME_BODY_NED, /* Setpoint in body NED frame. This makes sense if all position control is externalized - e.g. useful to command 2 m/s^2 acceleration to the right. | */ \
-CF_BODY_ENU = UXV_FRAME::UXV_FRAME_BODY_ENU/* Offset in body NED frame. This makes sense if adding setpoints to the current flight path, to avoid an obstacle - e.g. useful to command 2 m/s^2 acceleration to the east. | */
+#define LOCAL_FRAMES CF_LOCAL_UNKNOWN = MAV_FRAME::MAV_FRAME_LOCAL_UNKNOWN, /* Local coordinate frame is unknown | */ \
+CF_LOCAL_NED = MAV_FRAME::MAV_FRAME_LOCAL_NED, /* Local coordinate frame, Z-up (x: north, y: east, z: down). | */ \
+CF_LOCAL_ENU = MAV_FRAME::MAV_FRAME_LOCAL_ENU, /* Local coordinate frame, Z-down (x: east, y: north, z: up) | */ \
+CF_LOCAL_OFFSET_NED = MAV_FRAME::MAV_FRAME_LOCAL_OFFSET_NED, /* Offset to the current local frame. Anything expressed in this frame should be added to the current local frame position. | */ \
+CF_BODY_OFFSET_NED = MAV_FRAME::MAV_FRAME_BODY_OFFSET_NED, /* Offset to the current vehicle frame. Anything expressed in this frame should be added to the current local frame position. | */ \
+CF_BODY_NED = MAV_FRAME::MAV_FRAME_BODY_NED, /* Setpoint in body NED frame. This makes sense if all position control is externalized - e.g. useful to command 2 m/s^2 acceleration to the right. | */ \
+CF_BODY_ENU = MAV_FRAME::MAV_FRAME_BODY_ENU/* Offset in body NED frame. This makes sense if adding setpoints to the current flight path, to avoid an obstacle - e.g. useful to command 2 m/s^2 acceleration to the east. | */
 
 
 enum class CartesianFrameTypes: uint8_t{
