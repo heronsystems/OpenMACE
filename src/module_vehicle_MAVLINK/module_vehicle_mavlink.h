@@ -33,6 +33,7 @@
 #include "module_vehicle_MAVLINK/controllers/commands/command_arm.h"
 #include "module_vehicle_MAVLINK/controllers/commands/command_rtl.h"
 #include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
+//#include "module_vehicle_MAVLINK/controllers/commands/command_msg_interval.h"
 #include "module_vehicle_MAVLINK/controllers/commands/command_msg_request.h"
 #include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
 #include "module_vehicle_MAVLINK/controllers/controller_mission.h"
@@ -452,6 +453,12 @@ protected:
     std::mutex m_mutex_OnboardLoggingController;
     std::condition_variable m_condition_OnboardLoggingController;
     bool m_oldOnboardLoggingControllerShutdown = false;
+
+protected:
+    void prepareMSGRateController();
+    std::mutex m_mutex_MSGRateController;
+    std::condition_variable m_condition_MSGRateController;
+    bool m_oldMSGRateControllerShutdown = false;
 
 protected:
     //!
