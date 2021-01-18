@@ -4,6 +4,7 @@
 #include "commsMAVLINK/comms_mavlink.h"
 
 #include "controllers/generic_controller.h"
+#include "data/timer.h"
 
 #include "../controllers/commands/command_arm.h"
 #include "../controllers/commands/command_land.h"

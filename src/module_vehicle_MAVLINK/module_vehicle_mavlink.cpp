@@ -82,32 +82,31 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
         parameterController->Send(parameterRequest, sender, target);
     }
 
-//    prepareMSGRateController();
-//    MAVLINKUXVControllers::CommandMSGInterval* MSGRateController = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
-//    if(MSGRateController)
-//    {
-//        MSGRateController->AddLambda_Finished(this, [MSGRateController](const bool completed, const uint8_t code){
-//            UNUSED(code);
-//            if (completed)
-//                printf("MSG Rate has been set\n");
-//            else
-//                printf("MSG Rate has failed to update.\n");
-//            //Ken Fix: We should handle stuff related to the completion and the code
-//            MSGRateController->RemoveAllTransmissions();
+    prepareMSGRateController();
+    MAVLINKUXVControllers::CommandMSGInterval* MSGRateController = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
+    if(MSGRateController)
+    {
+        MSGRateController->AddLambda_Finished(this, [MSGRateController](const bool completed, const uint8_t code){
+            UNUSED(code);
+            if (completed)
+                printf("MSG Rate has been set\n");
+            else
+                printf("MSG Rate has failed to update.\n");
+            //Ken Fix: We should handle stuff related to the completion and the code
 
-//            MSGRateController->Shutdown();
-//        });
+            MSGRateController->Shutdown();
+        });
 
-//        MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
-//        MavlinkEntityKey sender = 255;
+        MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
+        MavlinkEntityKey sender = 255;
 
-//        ActionMessageInterval msgInterval(sender,target);
-//        msgInterval.setMessageID(MAVLINK_MSG_ID_ATTITUDE);
-//        msgInterval.setMessageInterval(50000);
+        ActionMessageInterval msgInterval(sender,target);
+        msgInterval.setMessageID(MAVLINK_MSG_ID_ATTITUDE);
+        msgInterval.setMessageInterval(100000);
 
-//        MSGRateController->addIntervalRequest(msgInterval);
-//        MSGRateController->transmitNextRequest();
-//    }
+        MSGRateController->addIntervalRequest(msgInterval);
+        MSGRateController->transmitNextRequest();
+    }
 }
 
 template <typename ...VehicleTopicAdditionalComponents>
@@ -455,35 +454,35 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareOnboardLo
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMSGRateController()
 {
-//    //If there is an old onboard logging controller still running, allow us to shut it down
-//    if(m_ControllersCollection.Exist("MSGRateController"))
-//    {
-//        auto MSGRateControllerOld = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
-//        if(MSGRateControllerOld != nullptr)
-//        {
-//            std::cout << "Shutting down previous msg rate controller, which was still active" << std::endl;
-//            MSGRateControllerOld->Shutdown();
-//            // Need to wait for the old controller to be shutdown.
-//            std::unique_lock<std::mutex> controllerLock(m_mutex_MSGRateController);
-//            while (!m_oldMSGRateControllerShutdown)
-//                m_condition_MSGRateController.wait(controllerLock);
-//            m_oldMSGRateControllerShutdown = false;
-//            controllerLock.unlock();
-//        }
-//    }
-//    //create "stateless" onboard logging controller that exists within the module itself
-//    auto MSGRateController = new MAVLINKUXVControllers::CommandMSGInterval(m_SystemData, m_TransmissionQueue, m_LinkChan);
-//    MSGRateController->setLambda_Shutdown([this, MSGRateController]() mutable
-//    {
-//        auto ptr = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
-//        if (ptr != nullptr)
-//        {
-//            auto ptr = m_ControllersCollection.Remove("MSGRateController");
-//            delete ptr;
-//        }
-//        std::lock_guard<std::mutex> guard(m_mutex_MSGRateController);
-//        m_oldMSGRateControllerShutdown = true;
-//        m_condition_MSGRateController.notify_one();
-//    });
-//    m_ControllersCollection.Insert("MSGRateController", MSGRateController);
+    //If there is an old onboard logging controller still running, allow us to shut it down
+    if(m_ControllersCollection.Exist("MSGRateController"))
+    {
+        auto MSGRateControllerOld = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
+        if(MSGRateControllerOld != nullptr)
+        {
+            std::cout << "Shutting down previous msg rate controller, which was still active" << std::endl;
+            MSGRateControllerOld->Shutdown();
+            // Need to wait for the old controller to be shutdown.
+            std::unique_lock<std::mutex> controllerLock(m_mutex_MSGRateController);
+            while (!m_oldMSGRateControllerShutdown)
+                m_condition_MSGRateController.wait(controllerLock);
+            m_oldMSGRateControllerShutdown = false;
+            controllerLock.unlock();
+        }
+    }
+    //create "stateless" onboard logging controller that exists within the module itself
+    auto MSGRateController = new MAVLINKUXVControllers::CommandMSGInterval(m_SystemData, m_TransmissionQueue, m_LinkChan);
+    MSGRateController->setLambda_Shutdown([this, MSGRateController]() mutable
+    {
+        auto ptr = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
+        if (ptr != nullptr)
+        {
+            auto ptr = m_ControllersCollection.Remove("MSGRateController");
+            delete ptr;
+        }
+        std::lock_guard<std::mutex> guard(m_mutex_MSGRateController);
+        m_oldMSGRateControllerShutdown = true;
+        m_condition_MSGRateController.notify_one();
+    });
+    m_ControllersCollection.Insert("MSGRateController", MSGRateController);
 }

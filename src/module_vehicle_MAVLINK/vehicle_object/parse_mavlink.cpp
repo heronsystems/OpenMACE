@@ -96,6 +96,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         Data::EnvironmentTime currentTime;
         Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+//        std::cout<<"The elapsed currentTime is: "<<(static_cast<double>(currentTime - prevAttitude))/1000000.0<<std::endl;
         prevAttitude = currentTime;
 
         if(state->vehicleAttitude.set(agentAttitude))
