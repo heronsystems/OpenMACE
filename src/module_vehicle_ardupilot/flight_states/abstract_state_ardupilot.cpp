@@ -55,13 +55,13 @@ void AbstractStateArdupilot::clearCommand()
     currentCommandSet = false;
 }
 
-void AbstractStateArdupilot::setCurrentCommand(const std::shared_ptr<AbstractCommandItem> command)
+void AbstractStateArdupilot::setCurrentCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     clearCommand();
     this->currentCommand = command->getClone();
 }
 
-bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AbstractStateArdupilot::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool commandHandled = false;
     switch (command->getCommandType()) {

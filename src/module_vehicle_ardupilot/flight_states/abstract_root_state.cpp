@@ -20,7 +20,7 @@ AbstractRootState::AbstractRootState(const AbstractRootState &copy):
 
 }
 
-bool AbstractRootState::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AbstractRootState::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {

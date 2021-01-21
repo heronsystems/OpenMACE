@@ -53,7 +53,7 @@ hsm::Transition State_FlightGuided_SpatialItem::GetTransition()
     return rtn;
 }
 
-bool State_FlightGuided_SpatialItem::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightGuided_SpatialItem::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool processedCommand = false;
     switch (command->getCommandType()) {
@@ -95,7 +95,7 @@ void State_FlightGuided_SpatialItem::OnEnter()
      */
 }
 
-void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     if((command == nullptr) || (command->getCommandType() != MAV_CMD::MAV_CMD_USER_1)) //if we are not executing a guided mission item this state doesnt care
     {
@@ -132,7 +132,7 @@ void State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractComma
 void State_FlightGuided_SpatialItem::processSpatialWaypoint()
 {
     const command_item::Action_ExecuteSpatialItem* cmd = currentCommand->as<command_item::Action_ExecuteSpatialItem>();
-    AbstractSpatialActionPtr spatialCommand = cmd->getSpatialAction();
+    command_item::AbstractSpatialActionPtr spatialCommand = cmd->getSpatialAction();
 
     //We want to first assume that this command has not been currently accepted
     this->commandAccepted = false;

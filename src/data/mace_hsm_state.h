@@ -126,7 +126,7 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
     case MACEHSMState::STATE_FLIGHT_AI:
         return "Flight AI";
     case MACEHSMState::STATE_FLIGHT_AI_TESTEND:
-        return "Flight AI Abort";
+        return "Flight AI Test End";
     case MACEHSMState::STATE_FLIGHT_AI_EXECUTE:
         return "Flight AI Execute";
     case MACEHSMState::STATE_FLIGHT_AI_EXECUTE_ABORT:
@@ -211,9 +211,9 @@ inline MACEHSMState MACEHSMStateFromString(const std::string &str) {
         return MACEHSMState::STATE_LANDING_COMPLETE;
     if(str == "Flight AI")
         return MACEHSMState::STATE_FLIGHT_AI;
-    if(str == "Flight AI Abort")
-        return MACEHSMState::STATE_FLIGHT_AI_TESTEND;
     if(str == "Flight AI Test End")
+        return MACEHSMState::STATE_FLIGHT_AI_TESTEND;
+    if(str == "Flight AI Execute")
         return MACEHSMState::STATE_FLIGHT_AI_EXECUTE;
     if(str == "Flight AI Execute Abort")
         return MACEHSMState::STATE_FLIGHT_AI_EXECUTE_ABORT;

@@ -17,12 +17,12 @@ bool Action_SetGlobalOrigin::hasSpatialInfluence() const
     return false;
 }
 
-std::shared_ptr<AbstractCommandItem> Action_SetGlobalOrigin::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> Action_SetGlobalOrigin::getClone() const
 {
     return std::make_shared<Action_SetGlobalOrigin>(*this);
 }
 
-void Action_SetGlobalOrigin::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void Action_SetGlobalOrigin::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<Action_SetGlobalOrigin>(*this);
 }

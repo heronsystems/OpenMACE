@@ -183,13 +183,13 @@ public:
      * @brief getClone
      * @return
      */
-    virtual std::shared_ptr<AbstractCommandItem> getClone() const = 0;
+    virtual std::shared_ptr<command_item::AbstractCommandItem> getClone() const = 0;
 
     /**
      * @brief getClone
      * @param state
      */
-    virtual void getClone(std::shared_ptr<AbstractCommandItem> &command) const = 0;
+    virtual void getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const = 0;
 
 public:
 

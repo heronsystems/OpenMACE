@@ -10,10 +10,7 @@
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_finish.h"
 
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-
-#include "module_vehicle_MAVLINK/controllers/common.h"
-#include "module_vehicle_MAVLINK/mavlink_coordinate_frames.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 namespace MAVLINKUXVControllers {
 

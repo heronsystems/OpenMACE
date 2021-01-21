@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_VISION_POSITION_ESTIMATE_H
 #define CONTROLLER_VISION_POSITION_ESTIMATE_H
 
-#include <mavlink.h>
+#include "mavlink.h"
 
 #include "base/pose/pose.h"
 
@@ -11,10 +11,7 @@
 #include "controllers/actions/action_finish.h"
 #include "controllers/actions/action_broadcast.h"
 
-
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-
-#include "module_vehicle_MAVLINK/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 
 namespace MAVLINKUXVControllers {

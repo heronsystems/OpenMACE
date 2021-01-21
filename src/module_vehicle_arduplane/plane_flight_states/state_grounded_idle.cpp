@@ -47,7 +47,7 @@ hsm::Transition AP_State_GroundedIdle::GetTransition()
     return rtn;
 }
 
-bool AP_State_GroundedIdle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_GroundedIdle::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     MAV_CMD type = command->getCommandType();
@@ -94,7 +94,7 @@ void AP_State_GroundedIdle::OnExit()
     AbstractStateArdupilot::OnExit();
 }
 
-void AP_State_GroundedIdle::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_GroundedIdle::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     this->OnEnter();
 

@@ -1,5 +1,5 @@
-#ifndef MODULE_VEHICLE_MAVLINK_COMMAND_ARM_H
-#define MODULE_VEHICLE_MAVLINK_COMMAND_ARM_H
+#ifndef MAVLINK_CONTROLLER_COMMAND_ARM_H
+#define MAVLINK_CONTROLLER_COMMAND_ARM_H
 
 #include "generic_long_command.h"
 
@@ -37,4 +37,4 @@ protected:
 } //end of namespace MAVLINKVehicleControllers
 
 
-#endif // MODULE_VEHICLE_MAVLINK_COMMAND_ARM_H
+#endif // MAVLINK_CONTROLLER_COMMAND_ARM_H

@@ -72,7 +72,7 @@ hsm::Transition AP_State_FlightGuided::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightGuided::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -194,7 +194,7 @@ void AP_State_FlightGuided::OnEnter()
     }
 }
 
-void AP_State_FlightGuided::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightGuided::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     //If we have a command we probably will be entering a state let us figure it out

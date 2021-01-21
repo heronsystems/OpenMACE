@@ -8,16 +8,16 @@
 namespace ExternalLink{
 
 //!
-//! \brief ObjectMaceMsgIDTuple And class that wraps up some object with an integer identifying the mace message ID
+//! \brief ObjectMAVLINKMsgIDTuple And class that wraps up some object with an integer identifying the mace message ID
 //!
 template <typename T>
-using ObjectMaceMsgIDTuple = ObjectIntTuple<T>;
+using ObjectMAVLINKMsgIDTuple = ObjectIntTuple<T>;
 
 
 template <typename T>
 using BasicExternalLinkController_ModuleKeyed = Controllers::GenericController<
     mavlink_message_t, MaceCore::ModuleCharacteristic,
-    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMaceMsgIDTuple<MaceCore::ModuleCharacteristic>>,
+    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMAVLINKMsgIDTuple<MaceCore::ModuleCharacteristic>>,
     uint8_t,
     Controllers::DataItem<MaceCore::ModuleCharacteristic, T>>;
 

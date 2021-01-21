@@ -47,7 +47,7 @@ hsm::Transition State_GroundedArming::GetTransition()
     return rtn;
 }
 
-bool State_GroundedArming::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_GroundedArming::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     this->clearCommand();
     switch (command->getCommandType()) {
@@ -100,7 +100,7 @@ void State_GroundedArming::OnEnter()
     collection->Insert("armController", controllerArm);
 }
 
-void State_GroundedArming::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_GroundedArming::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     this->OnEnter();
     if(command != nullptr) {

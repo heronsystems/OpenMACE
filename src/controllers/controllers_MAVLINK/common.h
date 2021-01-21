@@ -1,18 +1,18 @@
 #ifndef MODULE_VEHICLE_MAVLINK_CONTROLLERS_COMMON_H
 #define MODULE_VEHICLE_MAVLINK_CONTROLLERS_COMMON_H
 
+#include "mavlink.h"
+
 #include "common/object_int_tuple.h"
 
 #include "controllers/generic_controller.h"
 
-#include "mavlink.h"
-
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
+#include "controllers/controllers_MAVLINK/mavlink_entity_key.h"
 
 namespace MAVLINKUXVControllers {
 
 //!
-//! \brief ObjectMaceMsgIDTuple And class that wraps up some object with an integer identifying the mace message ID
+//! \brief ObjectMAVLINKMsgIDTuple And class that wraps up some object with an integer identifying the mace message ID
 //!
 template <typename T>
 using ObjectMAVLINKMsgIDTuple = ObjectIntTuple<T>;

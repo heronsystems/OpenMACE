@@ -1,11 +1,9 @@
-#ifndef MODULE_VEHICLE_MAVLINK_COMMAND_LAND_H
-#define MODULE_VEHICLE_MAVLINK_COMMAND_LAND_H
+#ifndef MAVLINK_CONTROLLER_COMMAND_LAND_H
+#define MAVLINK_CONTROLLER_COMMAND_LAND_H
 
 #include "generic_long_command.h"
 
 #include "data_generic_command_item_topic/command_item_topic_components.h"
-
-#include "mavlink.h"
 
 namespace MAVLINKUXVControllers {
 
@@ -44,4 +42,4 @@ protected:
 
 }
 
-#endif // MODULE_VEHICLE_MAVLINK_COMMAND_LAND_H
+#endif // MAVLINK_CONTROLLER_COMMAND_LAND_H

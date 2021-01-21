@@ -59,7 +59,7 @@ hsm::Transition AP_State_FlightAI_Execute::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI_Execute::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI_Execute::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -107,7 +107,7 @@ void AP_State_FlightAI_Execute::OnEnter(const command_item::Action_SetSurfaceDef
     setupAIMode();
 }
 
-void AP_State_FlightAI_Execute::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI_Execute::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     //the command coming in should be something related to the initialization conditions
     if(command == nullptr)

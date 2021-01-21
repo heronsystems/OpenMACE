@@ -65,7 +65,6 @@ HEADERS += module_vehicle_arduplane.h\
     module_vehicle_arduplane_global.h \
     plane_flight_states/arduplane_state_components.h \
     plane_flight_states/state_flight_AI.h \
-    plane_flight_states/state_flight_AI_abort.h \
     plane_flight_states/state_flight_AI_execute.h \
     plane_flight_states/state_flight_AI_execute_abort.h \
     plane_flight_states/state_flight_AI_execute_deflection.h \
@@ -73,6 +72,7 @@ HEADERS += module_vehicle_arduplane.h\
     plane_flight_states/state_flight_AI_initialize.h \
     plane_flight_states/state_flight_AI_initialize_ABORT.h \
     plane_flight_states/state_flight_AI_initialize_ROUTE.h \
+    plane_flight_states/state_flight_AI_test_end.h \
     vehicle_object/arduplane_component_flight_mode.h \
     vehicle_object/vehicle_object_arduplane.h \
     plane_flight_states/state_grounded_disarmed.h \

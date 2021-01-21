@@ -12,12 +12,12 @@ std::string SpatialWaypoint::getDescription() const
     return "This is a waypoint mission item for a vehicle";
 }
 
-std::shared_ptr<AbstractCommandItem> SpatialWaypoint::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> SpatialWaypoint::getClone() const
 {
     return std::make_shared<SpatialWaypoint>(*this);
 }
 
-void SpatialWaypoint::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void SpatialWaypoint::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<SpatialWaypoint>(*this);
 }

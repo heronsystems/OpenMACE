@@ -50,7 +50,7 @@ hsm::Transition AP_State_FlightAI_ExecuteDeflection::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI_ExecuteDeflection::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI_ExecuteDeflection::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -83,7 +83,7 @@ void AP_State_FlightAI_ExecuteDeflection::OnEnter()
     //This should never happen, if so we are going to transition back to a known state
 }
 
-void AP_State_FlightAI_ExecuteDeflection::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI_ExecuteDeflection::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
 }

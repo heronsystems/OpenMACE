@@ -34,15 +34,15 @@ public:
     hsm::Transition GetTransition() override;
 
 public:
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command) override;
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void Update() override;
 
     void OnEnter() override;
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+    void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
-    void OnEnter(const Action_SetSurfaceDeflection &command);
+    void OnEnter(const command_item::Action_SetSurfaceDeflection &command);
 
     void OnEnter(const command_item::Action_InitializeTestSetup &initialization);
 

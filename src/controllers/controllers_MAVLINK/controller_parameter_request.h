@@ -3,12 +3,14 @@
 
 #include <iostream>
 #include <string.h>
+
+#include "mavlink.h"
 #include "common/common.h"
+
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_finish.h"
-#include "mavlink.h"
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-#include "module_vehicle_MAVLINK/controllers/common.h"
+
+#include "controllers/controllers_MAVLINK/common.h"
 
 namespace MAVLINKUXVControllers {
 struct ParameterRequestResult

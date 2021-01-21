@@ -12,12 +12,12 @@ std::string SpatialLoiter_Time::getDescription() const
     return "This causes the vehicle to loiter around this MISSION for X seconds";
 }
 
-std::shared_ptr<AbstractCommandItem> SpatialLoiter_Time::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> SpatialLoiter_Time::getClone() const
 {
     return std::make_shared<SpatialLoiter_Time>(*this);
 }
 
-void SpatialLoiter_Time::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void SpatialLoiter_Time::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<SpatialLoiter_Time>(*this);
 }

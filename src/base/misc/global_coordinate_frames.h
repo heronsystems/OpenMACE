@@ -21,6 +21,35 @@ enum class GeodeticFrameTypes : uint8_t{
     GLOBAL_FRAMES
 };
 
+inline MAV_FRAME getMAVLINKCoordinateFrame(const mace::GeodeticFrameTypes &frame)
+{
+    MAV_FRAME currentFrame = MAV_FRAME_GLOBAL_RELATIVE_ALT; //we are going to default to LOCAL_ENU
+
+    switch (frame) {
+    case mace::GeodeticFrameTypes::CF_GLOBAL_UNKNOWN:
+        break;
+    case mace::GeodeticFrameTypes::CF_GLOBAL_AMSL:
+        currentFrame = MAV_FRAME_GLOBAL;
+        break;
+    case mace::GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT:
+        currentFrame = MAV_FRAME_GLOBAL_RELATIVE_ALT;
+        break;
+    case mace::GeodeticFrameTypes::CF_GLOBAL_INT:
+        currentFrame = MAV_FRAME_GLOBAL_INT;
+        break;
+    case mace::GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT_INT:
+        currentFrame = MAV_FRAME_GLOBAL_RELATIVE_ALT_INT;
+        break;
+    case mace::GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT:
+        currentFrame = MAV_FRAME_GLOBAL_TERRAIN_ALT;
+        break;
+    case mace::GeodeticFrameTypes::CF_GLOBAL_TERRAIN_ALT_INT:
+        currentFrame = MAV_FRAME_GLOBAL_TERRAIN_ALT_INT;
+        break;
+    } //end of switch statement
+
+    return currentFrame;
+}
 
 inline AltitudeReferenceTypes getAltitudeReference(const GeodeticFrameTypes &frame)
 {

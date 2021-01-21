@@ -10,8 +10,8 @@
 #include "data_generic_command_item/abstract_command_item.h"
 #include "data_generic_command_item/command_item_type.h"
 
-#include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
+#include "controllers/controllers_MAVLINK/controller_system_mode.h"
+#include "controllers/controllers_MAVLINK/commands/command_home_position.h"
 
 namespace ardupilot{
 namespace state{
@@ -52,7 +52,7 @@ public:
 
 public:
 
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command);
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command);
 
 };
 

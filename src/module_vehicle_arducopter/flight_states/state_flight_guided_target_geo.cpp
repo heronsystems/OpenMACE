@@ -48,7 +48,7 @@ hsm::Transition State_FlightGuided_GeoTarget::GetTransition()
     return rtn;
 }
 
-bool State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightGuided_GeoTarget::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool commandHandled = false;
 
@@ -106,7 +106,7 @@ void State_FlightGuided_GeoTarget::OnEnter()
      */
 }
 
-void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightGuided_GeoTarget::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     if(command == nullptr)
     {

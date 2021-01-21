@@ -95,7 +95,7 @@ hsm::Transition AP_State_Flight::GetTransition()
     return rtn;
 }
 
-bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_Flight::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
 
     bool success = false;
@@ -217,17 +217,8 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> c
     }
     case MAV_CMD::SET_SURFACE_DEFLECTION_NORMALIZED:
     {
-        if(!this->IsInState<AP_State_FlightAI>())
-        {
-            std::cout<<"We are currently not in a state that is going to support the AI surface deflection commands. However, for now, let us bypass this."<<std::endl;
-            currentCommand = command;
-            _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI;
-        }
-        else
-        {
-            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
-            success = currentInnerState->handleCommand(command);
-        }
+        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+        success = currentInnerState->handleCommand(command);
         break;
     }
 
@@ -275,7 +266,7 @@ void AP_State_Flight::OnEnter()
     checkTransitionFromMode(currentModeString);
 }
 
-void AP_State_Flight::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_Flight::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     this->OnEnter();
     if(command != nullptr)

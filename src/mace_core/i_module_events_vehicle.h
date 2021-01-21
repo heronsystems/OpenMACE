@@ -35,7 +35,12 @@ public:
     //!
     virtual void EventVehicle_REJECTProposedMission(const void *sender, const MissionItem::MissionKey &key) = 0;
 
-    //virtual void EventVehicle_ACKProposedMissionWChanges(const void *sender, const MissionItem::MissionKey &originalKey, const Data::MissionACK &ackCode, const MissionItem::MissionKey &newKey) = 0;
+    //!
+    //! \brief EventAI_ExecuteTestProcedural
+    //! \param sender
+    //! \param obj
+    //!
+//    virtual void EventVehicle_ExecuteAITestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj) = 0;
 };
 
 } //End MaceCore Namespace

@@ -42,7 +42,7 @@ hsm::Transition AP_State_GroundedDisarmed::GetTransition()
     return rtn;
 }
 
-bool AP_State_GroundedDisarmed::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_GroundedDisarmed::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     return false;
@@ -57,7 +57,7 @@ void AP_State_GroundedDisarmed::OnEnter()
     _desiredState = Data::MACEHSMState::STATE_GROUNDED_IDLE;
 }
 
-void AP_State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_GroundedDisarmed::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     this->OnEnter();

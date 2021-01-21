@@ -37,7 +37,7 @@ hsm::Transition State_FlightLand::GetTransition()
     return rtn;
 }
 
-bool State_FlightLand::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightLand::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     return false;
@@ -53,7 +53,7 @@ void State_FlightLand::OnEnter()
 
 }
 
-void State_FlightLand::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightLand::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     this->OnEnter();

@@ -34,7 +34,7 @@ public:
     hsm::Transition GetTransition() override;
 
 public:
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command) override;
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void Update() override;
 
@@ -42,7 +42,7 @@ public:
 
     void OnEnter(const command_item::Action_SetSurfaceDeflection &command);
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+    void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
 public:
 
@@ -59,12 +59,12 @@ public:
         else if(currentInnerState != nullptr)
         {
             acceptTransition = currentInnerState->notifyOfImpendingModeChange(mode);
-        }
 
-        if(acceptTransition == false)
-        {
-            _impendingModeChange = static_cast<PLANE_MODE>(mode);
-            _flagFlightModeChange = true;
+            if(acceptTransition == false)
+            {
+                _impendingModeChange = static_cast<PLANE_MODE>(mode);
+                _flagFlightModeChange = true;
+            }
         }
         
         return acceptTransition;

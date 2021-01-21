@@ -54,7 +54,7 @@ hsm::Transition AP_State_GroundedArmed::GetTransition()
     return rtn;
 }
 
-bool AP_State_GroundedArmed::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_GroundedArmed::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     this->clearCommand();
@@ -95,7 +95,7 @@ void AP_State_GroundedArmed::OnEnter()
     static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT);
 }
 
-void AP_State_GroundedArmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_GroundedArmed::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     //When entering this case we will have already armed and therefore have no reason to enter the OnEnter() function
     if(command != nullptr)

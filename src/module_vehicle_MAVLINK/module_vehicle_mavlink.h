@@ -26,30 +26,19 @@
 
 #include "commsMAVLINK/comms_mavlink.h"
 
-#include "controllers/generic_controller.h"
-
-#include "module_vehicle_MAVLINK/controllers/commands/command_land.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_takeoff.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_arm.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_rtl.h"
-#include "module_vehicle_MAVLINK/controllers/controller_system_mode.h"
-//#include "module_vehicle_MAVLINK/controllers/commands/command_msg_interval.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_msg_request.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_home_position.h"
-#include "module_vehicle_MAVLINK/controllers/controller_mission.h"
-#include "module_vehicle_MAVLINK/controllers/controller_parameter_request.h"
-#include "module_vehicle_MAVLINK/controllers/controller_set_gps_global_origin.h"
-#include "module_vehicle_MAVLINK/controllers/controller_vision_position_estimate.h"
-#include "module_vehicle_MAVLINK/controllers/controller_write_event_to_log.h"
-
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 #include "vehicle_object/mavlink_vehicle_object.h"
 
-#include "mavlink_entity_key.h"
-
-#include "controllers/I_controller.h"
-#include "controllers/I_message_notifier.h"
+#include "controllers/controller_collection.h"
+#include "controllers/controllers_MAVLINK/mavlink_entity_key.h"
+#include "controllers/controllers_MAVLINK/commands/command_home_position.h"
+#include "controllers/controllers_MAVLINK/commands/command_msg_interval.h"
+#include "controllers/controllers_MAVLINK/commands/command_msg_request.h"
+#include "controllers/controllers_MAVLINK/controller_mission.h"
+#include "controllers/controllers_MAVLINK/controller_parameter_request.h"
+#include "controllers/controllers_MAVLINK/controller_set_gps_global_origin.h"
+#include "controllers/controllers_MAVLINK/controller_write_event_to_log.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/async.h" //support for async logging.
@@ -401,6 +390,16 @@ public:
             ptr->NewTopicDataValues(this, m_VehicleRoutingTopic.Name(), systemID, MaceCore::TIME(), topicDatagram);
         });
 
+    }
+
+    virtual void cbi_AIProceduralCommand(const int &systemID, const command_item::Action_ProceduralCommand &command) const
+    {
+        UNUSED(systemID);
+        MaceLog::Critical("In cbi_AIProceduralCommand");
+        // Notify listeners of new procedural
+        ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr){
+            ptr->EventVehicle_ExecuteAITestProcedural(this, command);
+        });
     }
 
 public:

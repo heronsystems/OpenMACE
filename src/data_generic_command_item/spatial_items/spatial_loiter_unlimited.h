@@ -47,13 +47,13 @@ public:
     //! \brief getClone
     //! \return
     //!
-    std::shared_ptr<AbstractCommandItem> getClone() const override;
+    std::shared_ptr<command_item::AbstractCommandItem> getClone() const override;
 
     /**
      * @brief getClone
      * @param state
      */
-    void getClone(std::shared_ptr<AbstractCommandItem> &command) const override;
+    void getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const override;
 
     /** Interface imposed via AbstractCommandItem */
 public:

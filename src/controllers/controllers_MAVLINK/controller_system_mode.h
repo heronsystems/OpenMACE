@@ -1,6 +1,8 @@
 #ifndef MODULE_VEHICLE_MAVLINK_CONTROLLER_SYSTEM_MODE_H
 #define MODULE_VEHICLE_MAVLINK_CONTROLLER_SYSTEM_MODE_H
 
+#include "mavlink.h"
+
 #include "common/common.h"
 
 #include "data_generic_command_item/do_items/action_change_mode.h"
@@ -8,9 +10,8 @@
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_finish.h"
 
-#include "mavlink.h"
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-#include "module_vehicle_MAVLINK/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
+
 
 namespace MAVLINKUXVControllers {
 

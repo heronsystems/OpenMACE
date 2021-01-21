@@ -12,12 +12,12 @@ std::string SpatialRTL::getDescription() const
     return "This causes the vehicle to return to the launch location";
 }
 
-std::shared_ptr<AbstractCommandItem> SpatialRTL::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> SpatialRTL::getClone() const
 {
     return std::make_shared<SpatialRTL>(*this);
 }
 
-void SpatialRTL::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void SpatialRTL::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<SpatialRTL>(*this);
 }

@@ -48,7 +48,7 @@ hsm::Transition AP_State_TakeoffTransitioning::GetTransition()
     return rtn;
 }
 
-bool AP_State_TakeoffTransitioning::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_TakeoffTransitioning::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     clearCommand();
@@ -136,7 +136,7 @@ void AP_State_TakeoffTransitioning::OnEnter()
     //By default I dont think there are any actions that we need to do
 }
 
-void AP_State_TakeoffTransitioning::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_TakeoffTransitioning::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     this->OnEnter();
     if(command != nullptr)

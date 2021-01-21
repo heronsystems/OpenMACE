@@ -10,7 +10,7 @@
 
 #include "data_generic_command_item/command_item_components.h"
 
-#include "module_vehicle_MAVLINK/controllers/controller_set_surface_deflection.h"
+#include "controllers/controllers_MAVLINK/controller_set_surface_deflection.h"
 
 namespace ardupilot {
 namespace state{
@@ -33,13 +33,13 @@ public:
     hsm::Transition GetTransition() override;
 
 public:
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command) override;
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void Update() override;
 
     void OnEnter() override;
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+    void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void OnEnter(const command_item::Action_SetSurfaceDeflection &command);
 

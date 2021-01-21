@@ -17,12 +17,12 @@ bool ActionMessageRequest::hasSpatialInfluence() const
     return false;
 }
 
-std::shared_ptr<AbstractCommandItem> ActionMessageRequest::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> ActionMessageRequest::getClone() const
 {
     return std::make_shared<ActionMessageRequest>(*this);
 }
 
-void ActionMessageRequest::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void ActionMessageRequest::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<ActionMessageRequest>(*this);
 }

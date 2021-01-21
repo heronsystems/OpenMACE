@@ -42,7 +42,7 @@ hsm::Transition State_GroundedDisarming::GetTransition()
     return rtn;
 }
 
-bool State_GroundedDisarming::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_GroundedDisarming::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool handledCommand = false;
 
@@ -99,7 +99,7 @@ void State_GroundedDisarming::OnEnter()
     collection->Insert("disarmController", controllerArm);
 }
 
-void State_GroundedDisarming::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_GroundedDisarming::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     this->OnEnter();
     if(command != nullptr)

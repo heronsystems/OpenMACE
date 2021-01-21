@@ -17,12 +17,12 @@ bool Action_SetSurfaceDeflection::hasSpatialInfluence() const
     return false;
 }
 
-std::shared_ptr<AbstractCommandItem> Action_SetSurfaceDeflection::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> Action_SetSurfaceDeflection::getClone() const
 {
     return std::make_shared<Action_SetSurfaceDeflection>(*this);
 }
 
-void Action_SetSurfaceDeflection::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void Action_SetSurfaceDeflection::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<Action_SetSurfaceDeflection>(*this);
 }

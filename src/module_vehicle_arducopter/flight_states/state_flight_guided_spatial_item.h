@@ -11,9 +11,9 @@
 
 #include "module_vehicle_ardupilot/ardupilot_target_progess.h"
 
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_local.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_mission_item.h"
+#include "controllers/controllers_MAVLINK/controller_guided_target_item_local.h"
+#include "controllers/controllers_MAVLINK/controller_guided_target_item_global.h"
+#include "controllers/controllers_MAVLINK/controller_guided_mission_item.h"
 
 #include "data_generic_command_item/command_item_components.h"
 
@@ -41,13 +41,13 @@ public:
     hsm::Transition GetTransition() override;
 
 public:
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command) override;
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void Update() override;
 
     void OnEnter() override;
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+    void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
 private:
     void processSpatialWaypoint();

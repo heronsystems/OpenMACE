@@ -5,7 +5,7 @@
 
 #include "module_vehicle_ardupilot/flight_states/abstract_root_state.h"
 
-#include "module_vehicle_MAVLINK/controllers/commands/command_rtl.h"
+#include "controllers/controllers_MAVLINK/commands/command_rtl.h"
 
 namespace ardupilot{
 namespace state{
@@ -36,13 +36,13 @@ public:
     hsm::Transition GetTransition() override;
 
 public:
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command) override;
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void Update() override;
 
     void OnEnter() override;
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+    void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void OnExit() override;
 

@@ -13,9 +13,9 @@
 #include "data_generic_command_item/command_item_components.h"
 
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_waypoint.h"
-#include "module_vehicle_MAVLINK/controllers/commands/command_change_speed.h"
-#include "module_vehicle_MAVLINK/controllers/controller_mission.h"
+#include "controllers/controllers_MAVLINK/controller_guided_target_item_waypoint.h"
+#include "controllers/controllers_MAVLINK/commands/command_change_speed.h"
+#include "controllers/controllers_MAVLINK/controller_mission.h"
 
 #include "module_vehicle_arduplane/vehicle_object/vehicle_object_arduplane.h"
 
@@ -40,13 +40,13 @@ public:
     hsm::Transition GetTransition() override;
 
 public:
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command) override;
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void Update() override;
 
     void OnEnter() override;
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+    void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void OnEnter(const command_item::Action_InitializeTestSetup &initialization);
 

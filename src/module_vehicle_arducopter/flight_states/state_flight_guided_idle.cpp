@@ -43,7 +43,7 @@ hsm::Transition State_FlightGuided_Idle::GetTransition()
     return rtn;
 }
 
-bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightGuided_Idle::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     switch (command->getCommandType()) {
 
@@ -64,7 +64,7 @@ void State_FlightGuided_Idle::OnEnter()
 
 }
 
-void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightGuided_Idle::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     this->OnEnter();

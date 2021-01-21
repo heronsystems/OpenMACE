@@ -15,7 +15,7 @@
 #include "controllers/actions/action_intermediate.h"
 #include "controllers/actions/action_unsolicited_receive.h"
 
-#include "module_external_link/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 namespace ExternalLink {
 

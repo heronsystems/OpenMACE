@@ -6,13 +6,7 @@
 #include "controllers/generic_controller.h"
 #include "data/timer.h"
 
-#include "../controllers/commands/command_arm.h"
-#include "../controllers/commands/command_land.h"
-#include "../controllers/commands/command_msg_interval.h"
-#include "../controllers/commands/command_takeoff.h"
-#include "../controllers/commands/command_rtl.h"
-#include "../controllers/controller_system_mode.h"
-#include "../controllers/controller_collection.h"
+#include "controllers/controller_collection.h"
 
 #include "state_data_mavlink.h"
 #include "../environment_object/environment_data_mavlink.h"
@@ -21,13 +15,13 @@
 
 #include "base/vehicle/vehicle_path_linear.h"
 
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
+#include "controllers/controllers_MAVLINK/mavlink_entity_key.h"
 
 template <typename T, typename TT>
 T* Helper_CreateAndSetUp(TT* obj, TransmitQueue *queue, uint8_t chan)
 {
     T* newController = new T(obj, queue, chan);
-    //newController->setLambda_DataReceived([obj](const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<AbstractCommandItem> &command){obj->ReceivedCommand(sender, command);});
+    //newController->setLambda_DataReceived([obj](const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<command_item::AbstractCommandItem> &command){obj->ReceivedCommand(sender, command);});
     //newController->setLambda_Finished(FinishedMAVLINKMessage);
     return newController;
 }
@@ -47,6 +41,8 @@ public:
     virtual void cbi_VehicleMission(const int &systemID, const MissionItem::MissionList &missionList) = 0;
     virtual void cbi_VehicleMissionItemCurrent(const MissionItem::MissionItemCurrent &current) const = 0;
     virtual void cbi_VehicleTrajectory(const int &systemID, const VehiclePath_Linear &trjectory) const = 0;
+
+    virtual void cbi_AIProceduralCommand(const int &systemID, const command_item::Action_ProceduralCommand &command) const = 0;
 };
 
 class MavlinkVehicleObject : public Controllers::IMessageNotifier<mavlink_message_t, int>

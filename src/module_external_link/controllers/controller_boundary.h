@@ -22,7 +22,7 @@
 #include "controllers/actions/action_unsolicited_receive.h"
 #include "controllers/actions/action_unsolicited_receive_respond.h"
 
-#include "module_external_link/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 #include "../pair_module_boundary_identifier.h"
 

@@ -18,12 +18,12 @@ bool Action_DynamicTarget::hasSpatialInfluence() const
     return true;
 }
 
-std::shared_ptr<AbstractCommandItem> Action_DynamicTarget::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> Action_DynamicTarget::getClone() const
 {
     return std::make_shared<Action_DynamicTarget>(*this);
 }
 
-void Action_DynamicTarget::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void Action_DynamicTarget::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<Action_DynamicTarget>(*this);
 }

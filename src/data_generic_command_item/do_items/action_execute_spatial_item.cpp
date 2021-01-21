@@ -17,12 +17,12 @@ bool Action_ExecuteSpatialItem::hasSpatialInfluence() const
     return true;
 }
 
-std::shared_ptr<AbstractCommandItem> Action_ExecuteSpatialItem::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> Action_ExecuteSpatialItem::getClone() const
 {
     return std::make_shared<Action_ExecuteSpatialItem>(*this);
 }
 
-void Action_ExecuteSpatialItem::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void Action_ExecuteSpatialItem::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<Action_ExecuteSpatialItem>(*this);
 }

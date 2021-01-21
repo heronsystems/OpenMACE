@@ -75,7 +75,7 @@ hsm::Transition State_Grounded::GetTransition()
     return rtn;
 }
 
-bool State_Grounded::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_Grounded::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     MAV_CMD commandType = command->getCommandType();
@@ -121,7 +121,7 @@ void State_Grounded::OnEnter()
     }
 }
 
-void State_Grounded::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_Grounded::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     this->OnEnter();

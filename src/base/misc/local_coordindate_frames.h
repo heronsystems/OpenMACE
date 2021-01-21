@@ -23,6 +23,35 @@ enum class CartesianFrameTypes: uint8_t{
     LOCAL_FRAMES
 };
 
+inline MAV_FRAME getMAVLINKCoordinateFrame(const mace::CartesianFrameTypes &frame)
+{
+    MAV_FRAME currentFrame = MAV_FRAME_LOCAL_ENU; //we are going to default to LOCAL_ENU
+
+    switch (frame) {
+    case mace::CartesianFrameTypes::CF_LOCAL_UNKNOWN:
+        break;
+    case mace::CartesianFrameTypes::CF_LOCAL_NED:
+        currentFrame = MAV_FRAME_LOCAL_NED;
+        break;
+    case mace::CartesianFrameTypes::CF_LOCAL_ENU:
+        currentFrame = MAV_FRAME_LOCAL_ENU;
+        break;
+    case mace::CartesianFrameTypes::CF_BODY_OFFSET_NED:
+        currentFrame = MAV_FRAME_BODY_OFFSET_NED;
+        break;
+    case mace::CartesianFrameTypes::CF_LOCAL_OFFSET_NED:
+        currentFrame = MAV_FRAME_LOCAL_OFFSET_NED;
+        break;
+    case mace::CartesianFrameTypes::CF_BODY_NED:
+        currentFrame = MAV_FRAME_BODY_NED;
+        break;
+    case mace::CartesianFrameTypes::CF_BODY_ENU:
+        throw std::logic_error("There is no coordinate frame that is equivalent within the mavlink definition set.");
+    } //end of switch statement
+
+    return currentFrame;
+}
+
 inline bool isInBodyFrame(const CartesianFrameTypes &frame)
 {
     bool isBody = false;

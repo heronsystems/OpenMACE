@@ -28,9 +28,44 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES +=
+SOURCES += \
+    controllers_MAVLINK/commands/command_msg_interval.cpp \
+    controllers_MAVLINK/controller_guided_mission_item.cpp \
+    controllers_MAVLINK/controller_guided_target_item_attitude.cpp \
+    controllers_MAVLINK/controller_guided_target_item_global.cpp \
+    controllers_MAVLINK/controller_guided_target_item_local.cpp \
+    controllers_MAVLINK/controller_parameter_request.cpp \
+    controllers_MAVLINK/controller_set_gps_global_origin.cpp \
+    controllers_MAVLINK/controller_set_surface_deflection.cpp
 
 HEADERS += \
+    controllers_MAVLINK/commands/command_arm.h \
+    controllers_MAVLINK/commands/command_change_speed.h \
+    controllers_MAVLINK/commands/command_home_position.h \
+    controllers_MAVLINK/commands/command_land.h \
+    controllers_MAVLINK/commands/command_msg_interval.h \
+    controllers_MAVLINK/commands/command_msg_request.h \
+    controllers_MAVLINK/commands/command_rtl.h \
+    controllers_MAVLINK/commands/command_set_surface_deflection.h \
+    controllers_MAVLINK/commands/command_takeoff.h \
+    controllers_MAVLINK/commands/generic_int_command.h \
+    controllers_MAVLINK/commands/generic_long_command.h \
+    controllers_MAVLINK/commands/mavlink_command_controller_components.h \
+    controllers_MAVLINK/common.h \
+    controllers_MAVLINK/controller_guided_mission_item.h \
+    controllers_MAVLINK/controller_guided_target_item_attitude.h \
+    controllers_MAVLINK/controller_guided_target_item_global.h \
+    controllers_MAVLINK/controller_guided_target_item_local.h \
+    controllers_MAVLINK/controller_guided_target_item_waypoint.h \
+    controllers_MAVLINK/controller_mission.h \
+    controllers_MAVLINK/controller_parameter_request.h \
+    controllers_MAVLINK/controller_set_gps_global_origin.h \
+    controllers_MAVLINK/controller_set_surface_deflection.h \
+    controllers_MAVLINK/controller_system_mode.h \
+    controllers_MAVLINK/controller_vision_position_estimate.h \
+    controllers_MAVLINK/controller_write_event_to_log.h \
+    controllers_MAVLINK/mavlink_controller_components.h \
+    controllers_MAVLINK/mavlink_entity_key.h \
     controllers_global.h \
     actions/action_base.h \
     actions/action_broadcast.h \

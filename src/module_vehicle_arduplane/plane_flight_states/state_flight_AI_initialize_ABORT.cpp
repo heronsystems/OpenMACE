@@ -43,7 +43,7 @@ hsm::Transition AP_State_FlightAI_Initialize_ABORT::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI_Initialize_ABORT::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI_Initialize_ABORT::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -67,7 +67,7 @@ void AP_State_FlightAI_Initialize_ABORT::OnEnter()
     OnEnter("");
 }
 
-void AP_State_FlightAI_Initialize_ABORT::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI_Initialize_ABORT::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     //This really shouldn't happen
     UNUSED(command);

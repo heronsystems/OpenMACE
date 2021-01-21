@@ -14,9 +14,8 @@
 
 #include "common/logging/macelog.h"
 
-#include "module_vehicle_MAVLINK/controllers/controller_write_event_to_log.h"
-
-//forward declaration of the class
+#include "controllers/controllers_MAVLINK/controller_system_mode.h"
+#include "controllers/controllers_MAVLINK/controller_write_event_to_log.h"
 
 namespace ardupilot{
 namespace state{
@@ -71,9 +70,9 @@ public:
 
     virtual bool handleMAVLINKMessage(const mavlink_message_t &msg);
 
-    void setCurrentCommand(const std::shared_ptr<AbstractCommandItem> command);
+    void setCurrentCommand(const std::shared_ptr<command_item::AbstractCommandItem> command);
 
-    virtual bool handleCommand(const std::shared_ptr<AbstractCommandItem> command);
+    virtual bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command);
 
 public:
     virtual void initializeForTestEvaluation(const command_item::Action_InitializeTestSetup &initialization)
@@ -90,7 +89,7 @@ public:
     virtual void OnExit();
 
 public:
-    virtual void OnEnter(const std::shared_ptr<AbstractCommandItem> command) = 0;
+    virtual void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) = 0;
 
 public:
 

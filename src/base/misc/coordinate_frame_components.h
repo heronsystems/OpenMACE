@@ -204,6 +204,20 @@ inline CoordinateFrameTypes CoordinateFrameFromString(const std::string &str) {
     throw std::runtime_error("Unknown coordinate system seen");
 }
 
+inline MAV_FRAME getMAVLINKCoordinateFrame(const mace::CoordinateFrameTypes &frame)
+{
+    MAV_FRAME currentFrame = MAV_FRAME_ENUM_END;
+
+    if(getCoordinateSystemType(frame) == CoordinateSystemTypes::GEODETIC)
+        currentFrame = getMAVLINKCoordinateFrame(mace::getGeodeticCoordinateFrame(frame));
+    else if(getCoordinateSystemType(frame) == CoordinateSystemTypes::CARTESIAN)
+        currentFrame = getMAVLINKCoordinateFrame(mace::getCartesianCoordinateFrame(frame));
+    else {
+        throw std::logic_error("There is no coordinate system type that can be parsed into a mavlink definition.");
+    }
+
+    return currentFrame;
+}
 
 } //end of namespace mace
 

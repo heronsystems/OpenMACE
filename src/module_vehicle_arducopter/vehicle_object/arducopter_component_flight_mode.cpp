@@ -3,13 +3,13 @@
 ARDUCOPTERComponent_FlightMode::ARDUCOPTERComponent_FlightMode():
     ARDUPILOTComponent_OperatingMode()
 {
-    _currentMode = static_cast<uint32_t>(Arducopter_FM::ACFM_UNKNOWN);
+    _currentMode = static_cast<uint32_t>(COPTER_MODE::COPTER_MODE_ENUM_END);
 }
 
 uint32_t ARDUCOPTERComponent_FlightMode::getFlightModeFromString(const std::string &modeString) const
 {
     std::map<uint32_t,std::string>::const_iterator it;
-    uint32_t vehicleModeID = static_cast<uint32_t>(Arducopter_FM::ACFM_UNKNOWN);
+    uint32_t vehicleModeID = static_cast<uint32_t>(COPTER_MODE::COPTER_MODE_ENUM_END);
     for (it=arducopterFM.begin(); it != arducopterFM.end(); it++)
     {
         if(it->second == modeString)

@@ -52,7 +52,7 @@ hsm::Transition AP_State_FlightAI::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -80,7 +80,7 @@ void AP_State_FlightAI::OnEnter()
 
 }
 
-void AP_State_FlightAI::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     //This OnEnter state should never happen
     UNUSED(command);

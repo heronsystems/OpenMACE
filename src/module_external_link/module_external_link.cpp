@@ -91,7 +91,7 @@ void ModuleExternalLink::ReceivedCommand(const MaceCore::ModuleCharacteristic &m
         }
     }
 
-    std::shared_ptr<AbstractCommandItem> copy = command.getClone();
+    std::shared_ptr<command_item::AbstractCommandItem> copy = command.getClone();
 
     copy->setTargetSystem(mavlinkID);
 

@@ -72,7 +72,7 @@ hsm::Transition State_FlightGuided::GetTransition()
     return rtn;
 }
 
-bool State_FlightGuided::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightGuided::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -187,7 +187,7 @@ void State_FlightGuided::OnEnter()
     _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
 }
 
-void State_FlightGuided::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightGuided::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     //If we have a command we probably will be entering a state let us figure it out

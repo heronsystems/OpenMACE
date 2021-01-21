@@ -1,16 +1,16 @@
-#ifndef GENERIC_INT_COMMAND_H
-#define GENERIC_INT_COMMAND_H
+#ifndef MAVLINK_CONTROLLER_BASE_INT_COMMAND_H
+#define MAVLINK_CONTROLLER_BASE_INT_COMMAND_H
 
 #include "common/common.h"
+
+#include "mavlink.h"
 
 #include "controllers/actions/action_broadcast.h"
 #include "controllers/actions/action_send.h"
 #include "controllers/actions/action_final_receive_respond.h"
 #include "controllers/actions/action_finish.h"
 
-#include "mavlink.h"
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-#include "module_vehicle_MAVLINK/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 namespace MAVLINKUXVControllers {
 
@@ -115,4 +115,4 @@ public:
 
 }
 
-#endif // GENERIC_INT_COMMAND_H
+#endif // MAVLINK_CONTROLLER_BASE_INT_COMMAND_H

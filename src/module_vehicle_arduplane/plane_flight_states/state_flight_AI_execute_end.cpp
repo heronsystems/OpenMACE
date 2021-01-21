@@ -43,7 +43,7 @@ hsm::Transition AP_State_FlightAI_ExecuteEnd::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI_ExecuteEnd::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI_ExecuteEnd::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -99,7 +99,7 @@ void AP_State_FlightAI_ExecuteEnd::OnEnter()
     }
 }
 
-void AP_State_FlightAI_ExecuteEnd::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI_ExecuteEnd::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     //If we have a command we probably will be entering a state let us figure it out

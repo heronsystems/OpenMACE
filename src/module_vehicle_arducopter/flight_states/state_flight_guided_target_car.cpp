@@ -48,7 +48,7 @@ hsm::Transition State_FlightGuided_CarTarget::GetTransition()
     return rtn;
 }
 
-bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_FlightGuided_CarTarget::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool commandHandled = false;
 
@@ -107,7 +107,7 @@ void State_FlightGuided_CarTarget::OnEnter()
      */
 }
 
-void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_FlightGuided_CarTarget::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     if(command == nullptr)
     {

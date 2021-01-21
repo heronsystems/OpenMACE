@@ -20,55 +20,21 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 
 SOURCES += \
-    controllers/commands/command_msg_interval.cpp \
-    controllers/controller_parameter_request.cpp \
-    controllers/controller_set_surface_deflection.cpp \
     module_vehicle_mavlink.cpp \
     vehicle_object/mavlink_vehicle_object.cpp \
     vehicle_object/state_data_mavlink.cpp \
     vehicle_object/parse_mavlink.cpp \
     vehicle_object/status_data_mavlink.cpp \
     environment_object/environment_data_mavlink.cpp \
-    controllers/controller_guided_mission_item.cpp \
-    vehicle_object/mission_data_mavlink.cpp \
-    controllers/controller_guided_target_item_local.cpp \
-    controllers/controller_guided_target_item_global.cpp \
-    controllers/controller_set_gps_global_origin.cpp \
-    controllers/controller_guided_target_item_attitude.cpp
+    vehicle_object/mission_data_mavlink.cpp
 
 HEADERS += module_vehicle_mavlink.h\
-    controllers/commands/command_change_speed.h \
-    controllers/commands/command_set_surface_deflection.h \
-    controllers/controller_guided_target_item_waypoint.h \
-    controllers/controller_parameter_request.h \
-    controllers/controller_set_surface_deflection.h \
-    controllers/controller_vision_position_estimate.h \
-    controllers/controller_write_event_to_log.h \
     module_vehicle_mavlink_global.h \
-    controllers/controller_system_mode.h \
-    controllers/commands/command_arm.h \
-    controllers/commands/command_land.h \
-    controllers/commands/command_rtl.h \
-    controllers/commands/command_takeoff.h \
-    controllers/commands/generic_long_command.h \
     vehicle_object/mavlink_vehicle_object.h \
     vehicle_object/state_data_mavlink.h \
     vehicle_object/status_data_mavlink.h \
     environment_object/environment_data_mavlink.h \
-    controllers/controller_mission.h \
-    controllers/controller_guided_mission_item.h \
-    vehicle_object/mission_data_mavlink.h \
-    controllers/commands/generic_int_command.h \
-    mavlink_entity_key.h \
-    controllers/controller_guided_target_item_local.h \
-    controllers/controller_guided_target_item_global.h \
-    controllers/common.h \
-    controllers/commands/command_msg_interval.h \
-    mavlink_coordinate_frames.h \
-    controllers/controller_set_gps_global_origin.h \
-    controllers/controller_guided_target_item_attitude.h \
-    controllers/commands/command_msg_request.h \
-    controllers/commands/command_home_position.h
+    vehicle_object/mission_data_mavlink.h
 
 
 INCLUDEPATH += $$(MACE_ROOT)/spdlog/
@@ -99,28 +65,19 @@ INSTALL_PREFIX = $$(MACE_ROOT)/include/$$TARGET
 INSTALL_HEADERS = $$HEADERS
 include(../headerinstall.pri)
 
-
 #Header file copy
-headers_controllers.path    = $$(MACE_ROOT)/include/module_vehicle_MAVLINK/controllers
-headers_controllers.files   += \
-    controllers/controller_system_mode.h
+headers_environment.path    = $$(MACE_ROOT)/include/module_vehicle_MAVLINK/environment_object
+headers_environment.files   += \
+    environment_object/environment_data_mavlink.h
 INSTALLS       += headers_controllers
-
-#Header file copy
-headers_controller_commands.path    = $$(MACE_ROOT)/include/module_vehicle_MAVLINK/controllers/commands
-headers_controller_commands.files   += \
-    controllers/commands/command_arm.h \
-    controllers/commands/command_land.h \
-    controllers/commands/command_rtl.h \
-    controllers/commands/command_takeoff.h \
-    controllers/commands/generic_long_command.h
-INSTALLS       += headers_controller_commands
 
 #Header file copy
 headers_vehicle_object.path    = $$(MACE_ROOT)/include/module_vehicle_MAVLINK/vehicle_object
 headers_vehicle_object.files   += \
     vehicle_object/mavlink_vehicle_object.h \
-    vehicle_object/state_data_mavlink.h
+    vehicle_object/mission_data_mavlink.h \
+    vehicle_object/state_data_mavlink.h \
+    vehicle_object/status_data_mavlink.h
 INSTALLS       += headers_vehicle_object
 
 INCLUDEPATH += $$PWD/../

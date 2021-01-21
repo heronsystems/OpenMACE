@@ -89,7 +89,7 @@ hsm::Transition State_Flight::GetTransition()
     return rtn;
 }
 
-bool State_Flight::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_Flight::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     MAV_CMD commandType = command->getCommandType();
@@ -249,7 +249,7 @@ void State_Flight::OnEnter()
     checkTransitionFromMode(currentModeString);
 }
 
-void State_Flight::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_Flight::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     this->OnEnter();
     if(command != nullptr)

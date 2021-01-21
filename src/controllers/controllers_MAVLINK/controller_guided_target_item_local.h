@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_GUIDED_TARGET_ITEM_LOCAL_H
 #define CONTROLLER_GUIDED_TARGET_ITEM_LOCAL_H
 
-#include <mavlink.h>
+#include "mavlink.h"
 
 #include "common/common.h"
 
@@ -9,17 +9,11 @@
 #include "controllers/actions/action_finish.h"
 #include "controllers/actions/action_broadcast.h"
 
-#include "mavlink.h"
-
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-
-#include "module_vehicle_MAVLINK/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 #include "data_generic_command_item/do_items/action_dynamic_target.h"
 
 #include "data_generic_command_item/target_items/dynamic_target_kinematic.h"
-
-#include "../mavlink_coordinate_frames.h"
 
 using namespace mace::pose;
 

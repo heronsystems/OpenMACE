@@ -12,8 +12,9 @@
 #include "mavlink.h"
 #include "data_interface_MAVLINK/MAVLINK_to_MACE/helper_mission_mavlink_to_mace.h"
 #include "data_interface_MAVLINK/MACE_to_MAVLINK/helper_mission_mace_to_mavlink.h"
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-#include "module_vehicle_MAVLINK/controllers/common.h"
+
+#include "controllers/controllers_MAVLINK/common.h"
+
 namespace MAVLINKUXVControllers {
 /// Data that is to be downloaded from mission
 using MissionDownloadResult = std::tuple<command_item::SpatialHome, MissionItem::MissionList>;

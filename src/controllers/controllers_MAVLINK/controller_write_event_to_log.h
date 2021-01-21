@@ -9,8 +9,7 @@
 
 #include "controllers/actions/action_broadcast.h"
 
-#include "module_vehicle_MAVLINK/mavlink_entity_key.h"
-#include "module_vehicle_MAVLINK/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 #include "data_generic_command_item/mace/ai_items/action_event_tag.h"
 

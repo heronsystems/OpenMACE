@@ -12,12 +12,12 @@ std::string SpatialTakeoff::getDescription() const
     return "This causes the vehicle to perform a takeoff action";
 }
 
-std::shared_ptr<AbstractCommandItem> SpatialTakeoff::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> SpatialTakeoff::getClone() const
 {
     return std::make_shared<SpatialTakeoff>(*this);
 }
 
-void SpatialTakeoff::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void SpatialTakeoff::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<SpatialTakeoff>(*this);
 }

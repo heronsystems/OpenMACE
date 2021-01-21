@@ -12,12 +12,12 @@ std::string SpatialHome::getDescription() const
     return "This stores the home location for a vehicle";
 }
 
-std::shared_ptr<AbstractCommandItem> SpatialHome::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> SpatialHome::getClone() const
 {
     return std::make_shared<SpatialHome>(*this);
 }
 
-void SpatialHome::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void SpatialHome::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<SpatialHome>(*this);
 }

@@ -11,7 +11,7 @@
 
 #include "module_vehicle_ardupilot/guided_timeout_controller.h"
 
-#include "module_vehicle_MAVLINK/controllers/controller_guided_target_item_global.h"
+#include "controllers/controllers_MAVLINK/controller_guided_target_item_global.h"
 
 #include "data_generic_command_item/command_item_components.h"
 
@@ -37,13 +37,13 @@ public:
     hsm::Transition GetTransition() override;
 
 public:
-    bool handleCommand(const std::shared_ptr<AbstractCommandItem> command) override;
+    bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
     void Update() override;
 
     void OnEnter() override;
 
-    void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+    void OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command) override;
 
 private:
     static void retransmitGuidedCommand(void *p, command_item::Action_DynamicTarget &commandTarget)

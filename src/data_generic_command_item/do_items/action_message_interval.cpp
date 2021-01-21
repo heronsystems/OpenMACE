@@ -17,12 +17,12 @@ bool ActionMessageInterval::hasSpatialInfluence() const
     return false;
 }
 
-std::shared_ptr<AbstractCommandItem> ActionMessageInterval::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> ActionMessageInterval::getClone() const
 {
     return std::make_shared<ActionMessageInterval>(*this);
 }
 
-void ActionMessageInterval::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void ActionMessageInterval::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<ActionMessageInterval>(*this);
 }

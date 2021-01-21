@@ -42,7 +42,7 @@ hsm::Transition State_GroundedDisarmed::GetTransition()
     return rtn;
 }
 
-bool State_GroundedDisarmed::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool State_GroundedDisarmed::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     return false;
@@ -82,7 +82,7 @@ void State_GroundedDisarmed::OnEnter()
     collection->Insert("State_GroundedDisarmed_modeController",controllerSystemMode);
 }
 
-void State_GroundedDisarmed::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void State_GroundedDisarmed::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
 

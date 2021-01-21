@@ -53,7 +53,7 @@ hsm::Transition AP_State_FlightGuided_SpatialItem::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightGuided_SpatialItem::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightGuided_SpatialItem::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool processedCommand = false;
     switch (command->getCommandType()) {
@@ -95,7 +95,7 @@ void AP_State_FlightGuided_SpatialItem::OnEnter()
      */
 }
 
-void AP_State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     if((command == nullptr) || (command->getCommandType() != MAV_CMD::MAV_CMD_USER_1)) //if we are not executing a guided mission item this state doesnt care
     {

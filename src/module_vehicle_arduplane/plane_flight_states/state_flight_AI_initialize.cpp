@@ -64,7 +64,7 @@ hsm::Transition AP_State_FlightAI_Initialize::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI_Initialize::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI_Initialize::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     switch (command->getCommandType()) {
@@ -98,7 +98,7 @@ void AP_State_FlightAI_Initialize::OnEnter()
     setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND);
 }
 
-void AP_State_FlightAI_Initialize::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI_Initialize::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     //the command coming in should be something related to the initialization conditions
     if(command == nullptr)

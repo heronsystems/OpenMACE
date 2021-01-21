@@ -21,12 +21,14 @@
 
 #include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
 #include "module_vehicle_ardupilot/module_vehicle_ardupilot.h"
-//#include "module_vehicle_ardupilot/flight_states/ardupilot_hsm.h"
+
 #include "common/hsm.h"
 #include "data/mace_hsm_state.h"
 #include "vehicle_object/vehicle_object_arducopter.h"
 
 #include "mace_core/abstract_module_base.h"
+
+#include "controllers/controllers_MAVLINK/controller_vision_position_estimate.h"
 
 using namespace std::placeholders;
 

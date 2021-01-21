@@ -64,7 +64,7 @@ hsm::Transition AP_State_Takeoff::GetTransition()
     return rtn;
 }
 
-bool AP_State_Takeoff::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_Takeoff::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
     this->clearCommand();
@@ -154,7 +154,7 @@ void AP_State_Takeoff::OnEnter()
 
 
 
-void AP_State_Takeoff::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_Takeoff::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     if(command != nullptr)
     {

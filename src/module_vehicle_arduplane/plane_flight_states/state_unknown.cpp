@@ -57,7 +57,7 @@ hsm::Transition AP_State_Unknown::GetTransition()
     return rtn;
 }
 
-bool AP_State_Unknown::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_Unknown::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     return false;
@@ -77,7 +77,7 @@ void AP_State_Unknown::OnEnter()
 {
 }
 
-void AP_State_Unknown::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_Unknown::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     this->OnEnter();

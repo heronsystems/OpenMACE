@@ -12,12 +12,12 @@ std::string SpatialLand::getDescription() const
     return "This causes the vehicle to land either at the current location or prescribed location";
 }
 
-std::shared_ptr<AbstractCommandItem> SpatialLand::getClone() const
+std::shared_ptr<command_item::AbstractCommandItem> SpatialLand::getClone() const
 {
     return std::make_shared<SpatialLand>(*this);
 }
 
-void SpatialLand::getClone(std::shared_ptr<AbstractCommandItem> &command) const
+void SpatialLand::getClone(std::shared_ptr<command_item::AbstractCommandItem> &command) const
 {
     command = std::make_shared<SpatialLand>(*this);
 }

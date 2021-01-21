@@ -14,7 +14,7 @@
 #include "controllers/actions/action_request.h"
 #include "controllers/actions/action_unsolicited_receive_respond.h"
 
-#include "module_external_link/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 #include "data_generic_mission_item_topic/mission_item_topic_components.h"
 
@@ -26,7 +26,7 @@ namespace ExternalLink {
 using CONTROLLER_MISSION_TYPE = Controllers::GenericController<
     mavlink_message_t,
     MaceCore::ModuleCharacteristic,
-    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMaceMsgIDTuple<MaceCore::ModuleCharacteristic>, ObjectMaceMsgIDTuple<MissionItem::MissionKey>>,
+    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMAVLINKMsgIDTuple<MaceCore::ModuleCharacteristic>, ObjectMAVLINKMsgIDTuple<MissionItem::MissionKey>>,
     uint8_t,
     Controllers::DataItem<MaceCore::ModuleCharacteristic, MissionKey>,
     Controllers::DataItem<MissionKey, MissionList>

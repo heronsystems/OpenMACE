@@ -55,7 +55,7 @@ hsm::Transition AP_State_FlightGuided_AttTarget::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightGuided_AttTarget::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool commandHandled = false;
 
@@ -110,7 +110,7 @@ void AP_State_FlightGuided_AttTarget::OnEnter()
      */
 }
 
-void AP_State_FlightGuided_AttTarget::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightGuided_AttTarget::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     if(command == nullptr)
     {

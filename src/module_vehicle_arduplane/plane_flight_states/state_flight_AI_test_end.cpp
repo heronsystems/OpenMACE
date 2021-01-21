@@ -42,7 +42,7 @@ hsm::Transition AP_State_FlightAI_TestEnd::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI_TestEnd::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI_TestEnd::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     //Within the abort state we do not want to handle any further commands related to the system under test
     bool success = false;
@@ -85,15 +85,21 @@ void AP_State_FlightAI_TestEnd::OnEnter()
 
 void AP_State_FlightAI_TestEnd::OnEnter(const PLANE_MODE &mode)
 {
+    // Send out AI Abort command to other modules:
+    command_item::Action_ProceduralCommand abortCommand;
+    abortCommand.setDescriptor("Test ended by ML GUI");
+    abortCommand.setProcedural(AI_PROCEDURAL_COMMANDS::STOP);
+    MaceLog::Critical("Send cbi_AIProceduralCommand");
+//    Owner().getCallbackInterface()->cbi_AIProceduralCommand(Owner().getMAVLINKID(), abortCommand);
     //We got into this state because externally the test has already ended and the mode has transitioned.
-    //We just need to catch up to the current state. 
+    //We just need to catch up to the current state.
     UNUSED(mode); //For right now I would rather have the outer state machine check where to appropriately transition
     static_cast<ardupilot::state::AbstractStateArdupilot*>(GetOutermostState())->checkForDelayedTransition(mode);
     // ardupilot::state::AP_State_Flight* currentOuterState = GetState<ardupilot::state::AP_State_Flight>();
     // currentOuterState->checkForDelayedTransition(mode);
 }
 
-void AP_State_FlightAI_TestEnd::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI_TestEnd::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
 
