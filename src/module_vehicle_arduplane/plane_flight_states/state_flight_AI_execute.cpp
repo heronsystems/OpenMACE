@@ -34,9 +34,16 @@ hsm::Transition AP_State_FlightAI_Execute::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (_desiredState) {
-        case Data::MACEHSMState::STATE_FLIGHT_AI_ABORT:
+        case Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND:
         {
-            rtn = hsm::SiblingTransition<AP_State_FlightAI_Abort>();
+            if(_flagFlightModeChange)
+            {
+                rtn = hsm::SiblingTransition<AP_State_FlightAI_TestEnd>(_impendingModeChange);
+            }
+            else
+            {
+                rtn = hsm::SiblingTransition<AP_State_FlightAI_TestEnd>();    
+            }
             break;
         }
         case Data::MACEHSMState::STATE_FLIGHT_AI_EXECUTE_DEFLECTION:
@@ -83,7 +90,7 @@ void AP_State_FlightAI_Execute::Update()
 {
     if(this->IsInState<AP_State_FlightAI_ExecuteAbort>())
     {
-        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_ABORT;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND;
     }
 }
 
@@ -126,7 +133,7 @@ void AP_State_FlightAI_Execute::setupAIMode()
             }
             else
             {
-                _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_ABORT;
+                _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND;
             }
             modeController->Shutdown();
         });
@@ -147,7 +154,7 @@ void AP_State_FlightAI_Execute::setupAIMode()
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "plane_flight_states/state_flight_AI_abort.h"
+#include "plane_flight_states/state_flight_AI_test_end.h"
 
 #include "plane_flight_states/state_flight_AI_execute_abort.h"
 #include "plane_flight_states/state_flight_AI_execute_deflection.h"

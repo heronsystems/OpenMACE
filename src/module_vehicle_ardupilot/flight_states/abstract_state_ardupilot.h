@@ -116,13 +116,18 @@ public:
     }
 
 public:
-    virtual bool shouldExecuteModeTransition(const uint8_t &mode)
+    virtual bool notifyOfImpendingModeChange(const uint8_t &mode)
     {
         UNUSED(mode);
 
         return true;
     }
 
+    virtual void checkForDelayedTransition(const uint8_t &mode)
+    {
+        UNUSED(mode);
+    }
+    
 protected:
     void clearCommand();
 

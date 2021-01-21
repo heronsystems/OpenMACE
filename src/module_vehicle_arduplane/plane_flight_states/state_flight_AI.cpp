@@ -105,7 +105,7 @@ void AP_State_FlightAI::OnEnter(const command_item::Action_InitializeTestSetup &
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "plane_flight_states/state_flight_AI_abort.h"
+#include "plane_flight_states/state_flight_AI_test_end.h"
 #include "plane_flight_states/state_flight_AI_execute.h"
 #include "plane_flight_states/state_flight_AI_execute_end.h"
 #include "plane_flight_states/state_flight_AI_initialize.h"

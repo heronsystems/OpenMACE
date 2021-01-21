@@ -34,9 +34,16 @@ hsm::Transition AP_State_FlightAI_Initialize::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (_desiredState) {
-        case Data::MACEHSMState::STATE_FLIGHT_AI_ABORT:
+        case Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND:
         {
-            rtn = hsm::SiblingTransition<AP_State_FlightAI_Abort>();
+            if(_flagFlightModeChange)
+            {
+                rtn = hsm::SiblingTransition<AP_State_FlightAI_TestEnd>(_impendingModeChange);
+            }
+            else
+            {
+                rtn = hsm::SiblingTransition<AP_State_FlightAI_TestEnd>();    
+            }
             break;
         }
         case Data::MACEHSMState::STATE_FLIGHT_AI_EXECUTE:
@@ -81,14 +88,14 @@ void AP_State_FlightAI_Initialize::Update()
 {
     if(this->IsInState<AP_State_FlightAI_Initialize_ABORT>())
     {
-        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_ABORT;
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND;
     }
 }
 
 void AP_State_FlightAI_Initialize::OnEnter()
 {
     //If we have no commands, this is an odd state to have been entered. We are therefore going to transition to the the abort condition.
-    setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_ABORT);
+    setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND);
 }
 
 void AP_State_FlightAI_Initialize::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
@@ -121,7 +128,7 @@ void AP_State_FlightAI_Initialize::setupGuidedMode()
 //        controllerSystemMode->AddLambda_Finished(this, [this](const bool completed, const uint8_t finishCode){
 //            if(completed && (finishCode == MAV_RESULT_ACCEPTED))
 //            else
-//                _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_ABORT;
+//                _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND;
 //        });
 //        MavlinkEntityKey target = Owner().getMAVLINKID();
 //        MavlinkEntityKey sender = 255;
@@ -141,7 +148,7 @@ void AP_State_FlightAI_Initialize::setupGuidedMode()
 } //end of namespace ardupilot
 } //end of namespace state
 
-#include "plane_flight_states/state_flight_AI_abort.h"
+#include "plane_flight_states/state_flight_AI_test_end.h"
 #include "plane_flight_states/state_flight_AI_execute.h"
 
 #include "plane_flight_states/state_flight_AI_initialize_ABORT.h"

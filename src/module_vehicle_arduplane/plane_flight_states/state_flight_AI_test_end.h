@@ -1,5 +1,5 @@
-#ifndef AP_STATE_FLIGHT_AI_ABORT_H
-#define AP_STATE_FLIGHT_AI_ABORT_H
+#ifndef AP_STATE_FLIGHT_AI_TEST_END_H
+#define AP_STATE_FLIGHT_AI_TEST_END_H
 
 #include <mavlink.h>
 
@@ -13,10 +13,10 @@
 namespace ardupilot {
 namespace state{
 
-class AP_State_FlightAI_Abort : public AbstractStateArdupilot
+class AP_State_FlightAI_TestEnd : public AbstractStateArdupilot
 {
 public:
-    AP_State_FlightAI_Abort();
+    AP_State_FlightAI_TestEnd();
 
     void OnExit() override;
 
@@ -36,9 +36,12 @@ public:
     void OnEnter() override;
 
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
+
+    void OnEnter(const PLANE_MODE &mode);
+
 };
 
 } //end of namespace state
 } //end of namespace ardupilot
 
-#endif // AP_STATE_FLIGHT_AI_ABORT_H
+#endif // AP_STATE_FLIGHT_AI_TEST_END_H

@@ -1,30 +1,30 @@
-#include "state_flight_AI_abort.h"
+#include "state_flight_AI_test_end.h"
 
 namespace ardupilot {
 namespace state{
 
-AP_State_FlightAI_Abort::AP_State_FlightAI_Abort():
-    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_AI_ABORT)
+AP_State_FlightAI_TestEnd::AP_State_FlightAI_TestEnd():
+    AbstractStateArdupilot(Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND)
 {
 
 }
 
-void AP_State_FlightAI_Abort::OnExit()
+void AP_State_FlightAI_TestEnd::OnExit()
 {
 
 }
 
-AbstractStateArdupilot* AP_State_FlightAI_Abort::getClone() const
+AbstractStateArdupilot* AP_State_FlightAI_TestEnd::getClone() const
 {
-    return (new AP_State_FlightAI_Abort(*this));
+    return (new AP_State_FlightAI_TestEnd(*this));
 }
 
-void AP_State_FlightAI_Abort::getClone(AbstractStateArdupilot** state) const
+void AP_State_FlightAI_TestEnd::getClone(AbstractStateArdupilot** state) const
 {
-    *state = new AP_State_FlightAI_Abort(*this);
+    *state = new AP_State_FlightAI_TestEnd(*this);
 }
 
-hsm::Transition AP_State_FlightAI_Abort::GetTransition()
+hsm::Transition AP_State_FlightAI_TestEnd::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
 
@@ -42,7 +42,7 @@ hsm::Transition AP_State_FlightAI_Abort::GetTransition()
     return rtn;
 }
 
-bool AP_State_FlightAI_Abort::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
+bool AP_State_FlightAI_TestEnd::handleCommand(const std::shared_ptr<AbstractCommandItem> command)
 {
     //Within the abort state we do not want to handle any further commands related to the system under test
     bool success = false;
@@ -56,12 +56,12 @@ bool AP_State_FlightAI_Abort::handleCommand(const std::shared_ptr<AbstractComman
     return success;
 }
 
-void AP_State_FlightAI_Abort::Update()
+void AP_State_FlightAI_TestEnd::Update()
 {
 
 }
 
-void AP_State_FlightAI_Abort::OnEnter()
+void AP_State_FlightAI_TestEnd::OnEnter()
 {
     //This should never happen, but if it does, we will handle it with an empty descriptor
     MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
@@ -69,7 +69,7 @@ void AP_State_FlightAI_Abort::OnEnter()
     modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
         {
-            std::cout<<"The abort is tranisioning to RTL!"<<std::endl;
+            std::cout<<"The abort is tranistioning to RTL!"<<std::endl;
         }
         modeController->Shutdown();
     });
@@ -83,15 +83,21 @@ void AP_State_FlightAI_Abort::OnEnter()
     modeController->Send(commandMode,sender,target);
 }
 
-void AP_State_FlightAI_Abort::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
+void AP_State_FlightAI_TestEnd::OnEnter(const PLANE_MODE &mode)
+{
+    //We got into this state because externally the test has already ended and the mode has transitioned.
+    //We just need to catch up to the current state. 
+    UNUSED(mode); //For right now I would rather have the outer state machine check where to appropriately transition
+    static_cast<ardupilot::state::AbstractStateArdupilot*>(GetOutermostState())->checkForDelayedTransition(mode);
+    // ardupilot::state::AP_State_Flight* currentOuterState = GetState<ardupilot::state::AP_State_Flight>();
+    // currentOuterState->checkForDelayedTransition(mode);
+}
+
+void AP_State_FlightAI_TestEnd::OnEnter(const std::shared_ptr<AbstractCommandItem> command)
 {
     UNUSED(command);
 
 }
 
-
-
 } //end of namespace ardupilot
 } //end of namespace state
-
-

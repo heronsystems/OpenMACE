@@ -44,6 +44,17 @@ public:
     void OnEnter(const command_item::Action_SetSurfaceDeflection &command);
 
 public:
+
+    bool notifyOfImpendingModeChange(const uint8_t &mode) override
+    {   
+        UNUSED(mode);
+                 
+        setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_EXECUTE_ABORT);
+
+        return false;
+    }
+
+public:
     void handleTestProcedural(const command_item::Action_ProceduralCommand &command) override;
 
 public:

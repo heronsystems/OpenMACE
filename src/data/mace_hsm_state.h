@@ -46,7 +46,7 @@ enum class MACEHSMState {
     STATE_FLIGHT_GUIDED_CARTARGET = 36, /**< */
 
     STATE_FLIGHT_AI = 40, /**< */
-    STATE_FLIGHT_AI_ABORT = 41, /**< */
+    STATE_FLIGHT_AI_TESTEND = 41, /**< */
     STATE_FLIGHT_AI_EXECUTE= 42, /**< */
     STATE_FLIGHT_AI_EXECUTE_ABORT= 43, /**< */
     STATE_FLIGHT_AI_EXECUTE_DEFLECTION = 44, /**< */
@@ -125,7 +125,7 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
 
     case MACEHSMState::STATE_FLIGHT_AI:
         return "Flight AI";
-    case MACEHSMState::STATE_FLIGHT_AI_ABORT:
+    case MACEHSMState::STATE_FLIGHT_AI_TESTEND:
         return "Flight AI Abort";
     case MACEHSMState::STATE_FLIGHT_AI_EXECUTE:
         return "Flight AI Execute";
@@ -212,8 +212,8 @@ inline MACEHSMState MACEHSMStateFromString(const std::string &str) {
     if(str == "Flight AI")
         return MACEHSMState::STATE_FLIGHT_AI;
     if(str == "Flight AI Abort")
-        return MACEHSMState::STATE_FLIGHT_AI_ABORT;
-    if(str == "Flight AI Execute")
+        return MACEHSMState::STATE_FLIGHT_AI_TESTEND;
+    if(str == "Flight AI Test End")
         return MACEHSMState::STATE_FLIGHT_AI_EXECUTE;
     if(str == "Flight AI Execute Abort")
         return MACEHSMState::STATE_FLIGHT_AI_EXECUTE_ABORT;

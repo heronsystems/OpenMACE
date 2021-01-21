@@ -547,6 +547,7 @@ struct State
     template <typename StateType>
     const StateType* GetState() const;
 
+    State* GetOutermostState();
     State* GetImmediateOuterState();
 
 	// Searches for state on stack starting from immediate outer to outermost, returns nullptr if not found
@@ -996,6 +997,11 @@ template <typename StateType>
 hsm_bool State::IsInState() const
 {
 	return GetStateMachine().IsInState<StateType>();
+}
+
+inline State* State::GetOutermostState()
+{
+    return GetStateMachine().GetStateAtDepth(0);
 }
 
 inline State* State::GetImmediateOuterState()

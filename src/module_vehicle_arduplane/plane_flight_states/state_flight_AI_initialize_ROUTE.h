@@ -71,12 +71,13 @@ private:
 
 public:
 
-    bool shouldExecuteModeTransition(const uint8_t &mode) override
-    {
-        if(mode == PLANE_MODE::PLANE_MODE_AUTO)
-            return false;
-        else
-            return true;
+    bool notifyOfImpendingModeChange(const uint8_t &mode) override
+    {       
+        UNUSED(mode);
+     
+        setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ABORT);
+
+        return false;
     }
 
 private:

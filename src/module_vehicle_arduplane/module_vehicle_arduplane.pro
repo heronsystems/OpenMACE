@@ -21,7 +21,7 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
 SOURCES += module_vehicle_arduplane.cpp \
     plane_flight_states/state_flight_AI.cpp \
-    plane_flight_states/state_flight_AI_abort.cpp \
+    plane_flight_states/state_flight_AI_test_end.cpp \
     plane_flight_states/state_flight_AI_execute.cpp \
     plane_flight_states/state_flight_AI_execute_abort.cpp \
     plane_flight_states/state_flight_AI_execute_deflection.cpp \

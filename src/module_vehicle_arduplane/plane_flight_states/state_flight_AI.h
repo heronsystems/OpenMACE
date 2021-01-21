@@ -13,7 +13,7 @@ namespace ardupilot {
 
 namespace state{
 
-class AP_State_FlightAI_Abort;
+class AP_State_FlightAI_TestEnd;
 class AP_State_FlightAI_Initialize;
 class AP_State_FlightAI_Execute;
 class AP_State_FlightAI_EvalEnd;
@@ -47,18 +47,19 @@ public:
     void OnEnter(const command_item::Action_InitializeTestSetup &initialization);
 
 public:
-    bool shouldExecuteModeTransition(const uint8_t &mode) override
+    bool notifyOfImpendingModeChange(const uint8_t &mode) override
     {
         ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+        
         if(currentInnerState == nullptr)
             return true;
-        return currentInnerState->shouldExecuteModeTransition(mode);
+        return currentInnerState->notifyOfImpendingModeChange(mode);
     }
 
 private:
     command_item::Action_SetSurfaceDeflection m_SurfaceDeflection;
 
-    command_item::Action_InitializeTestSetup m_InitializationConditions;
+    command_item::Action_InitializeTestSetup m_InitializationConditions;    
 };
 
 } //end of namespace state

@@ -260,10 +260,14 @@ void AP_State_Flight::OnEnter()
         bool executeModeChange = true;
 
         if(currentInnerState != nullptr)
-            currentInnerState->shouldExecuteModeTransition(Owner().m_ArdupilotMode->getFlightModeFromString(currentModeString));
+        {
+            executeModeChange = currentInnerState->notifyOfImpendingModeChange(Owner().m_ArdupilotMode->getFlightModeFromString(currentModeString));
+        }
 
         if(executeModeChange)
+        {
             checkTransitionFromMode(currentModeString);
+        }
     });
 
     //This helps us based on the current conditions in the present moment
@@ -284,6 +288,13 @@ void AP_State_Flight::initializeForTestEvaluation(const command_item::Action_Ini
 {
     m_TestInitialization = initialization;
     setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI);
+}
+
+void AP_State_Flight::checkForDelayedTransition(const uint8_t &mode)
+{
+    UNUSED(mode); //For now we are going to allow whatever MACE believes it is
+    std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
+    checkTransitionFromMode(currentModeString);
 }
 
 void AP_State_Flight::checkTransitionFromMode(const std::string &mode)

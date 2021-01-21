@@ -12,7 +12,7 @@
 namespace ardupilot {
 namespace state{
 
-class AP_State_FlightAI_Abort;
+class AP_State_FlightAI_TestEnd;
 
 class AP_State_FlightAI_ExecuteAbort;
 class AP_State_FlightAI_ExecuteDeflection;
@@ -45,21 +45,31 @@ public:
     void OnEnter(const std::shared_ptr<AbstractCommandItem> command) override;
 
 public:
-    bool shouldExecuteModeTransition(const uint8_t &mode) override
+
+    bool notifyOfImpendingModeChange(const uint8_t &mode) override
     {
+        bool acceptTransition = true;
+
+        ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
+
         if(mode == PLANE_MODE::PLANE_MODE_AI_DEFLECTION)
         {
-            return false;
+            acceptTransition = false;
         }
-        else
+        else if(currentInnerState != nullptr)
         {
-            ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
-            if(currentInnerState == nullptr)
-                return true;
-            else
-                return currentInnerState->shouldExecuteModeTransition(mode);
+            acceptTransition = currentInnerState->notifyOfImpendingModeChange(mode);
         }
+
+        if(acceptTransition == false)
+        {
+            _impendingModeChange = static_cast<PLANE_MODE>(mode);
+            _flagFlightModeChange = true;
+        }
+        
+        return acceptTransition;
     }
+
 
 private:
     void setupAIMode();
@@ -67,6 +77,12 @@ private:
 private:
     command_item::Action_SetSurfaceDeflection m_SurfaceDeflection;
 
+
+    /* The following member variables are to deal with the transitioning elements of the mode changes that may occur 
+    while running a test but not yet commanded via Adept. For example, the remote or the GUI. */
+    bool _flagFlightModeChange = false;
+    PLANE_MODE _impendingModeChange = PLANE_MODE_RTL;
+    
 };
 
 } //end of namespace state

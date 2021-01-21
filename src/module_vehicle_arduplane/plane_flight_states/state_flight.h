@@ -51,6 +51,8 @@ public:
 public:
     void initializeForTestEvaluation(const command_item::Action_InitializeTestSetup &initialization) override;
 
+    void checkForDelayedTransition(const uint8_t &mode) override;
+    
 private:
     void checkTransitionFromMode(const std::string &mode);
 

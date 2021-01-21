@@ -1037,6 +1037,11 @@ hsm_bool State::IsInState() const
 	return GetStateMachine().IsInState<StateType>();
 }
 
+inline State* State::GetOutermostState()
+{
+    return GetStateMachine().GetStateAtDepth(0);
+}
+
 inline State* State::GetImmediateOuterState()
 {
     return GetStateMachine().GetStateAtDepth(mStackDepth - 1);
