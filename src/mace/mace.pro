@@ -134,10 +134,6 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ground_stati
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ground_station/debug/ -lmodule_ground_station
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ground_station/ -lmodule_ground_station
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ml_station/release/ -lmodule_ml_station
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ml_station/debug/ -lmodule_ml_station
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ml_station/ -lmodule_ml_station
-
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/release/ -lmodule_resource_task_allocation
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/debug/ -lmodule_resource_task_allocation
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_resource_task_allocation/ -lmodule_resource_task_allocation
@@ -177,10 +173,6 @@ else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/ -lmodule_vehicle_MAVLI
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/release/ -lmodule_vehicle_sensors
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/debug/ -lmodule_vehicle_sensors
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_sensors/ -lmodule_vehicle_sensors
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/release/ -lmodule_vehicle_adept
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/debug/ -lmodule_vehicle_adept
-else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_adept/ -lmodule_vehicle_adept
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../planners/release/ -lplanners
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../planners/debug/ -lplanners

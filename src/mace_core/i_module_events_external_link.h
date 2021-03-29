@@ -4,7 +4,6 @@
 #include "i_module_events_general.h"
 #include "i_module_events_vehicle.h"
 #include "i_module_events_general_vehicle.h"
-#include "i_module_events_ai_support.h"
 
 #include "i_module_events_boundary_generator.h"
 
@@ -34,7 +33,7 @@ public:
     BoundaryItem::BoundaryCharacterisic Characteistic;
 };
 
-class IModuleEventsExternalLink : virtual public IModuleEventsGeneral, virtual public IModuleEventsGeneralVehicle, virtual public IModuleEventsBoundaryGenerator, virtual public IModuleEvents_AISupport{
+class IModuleEventsExternalLink : virtual public IModuleEventsGeneral, virtual public IModuleEventsGeneralVehicle {
 
 public:
 

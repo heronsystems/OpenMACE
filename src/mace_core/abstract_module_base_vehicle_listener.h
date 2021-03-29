@@ -6,8 +6,6 @@
 
 #include "data_generic_command_item/command_item_components.h"
 
-#include "data_generic_item/mace/ai_test_parameterization.h"
-
 #define BASE_MODULE_VEHICLE_LISTENER_ENUMS EMIT_HEARTBEAT, ISSUE_GENERAL_COMMAND, \
     EXECUTE_ACTION_SPATIALITEM, \
     CHANGE_VEHICLE_ARM, REQUEST_VEHICLE_TAKEOFF, REQUEST_VEHICLE_LAND, REQUEST_VEHICLE_RTL, CHANGE_VEHICLE_MODE, \

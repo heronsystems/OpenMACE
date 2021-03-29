@@ -38,7 +38,6 @@
 #include "controllers/controllers_MAVLINK/controller_mission.h"
 #include "controllers/controllers_MAVLINK/controller_parameter_request.h"
 #include "controllers/controllers_MAVLINK/controller_set_gps_global_origin.h"
-#include "controllers/controllers_MAVLINK/controller_write_event_to_log.h"
 #include "controllers/controllers_MAVLINK/controller_timesync.h"
 
 #include "spdlog/spdlog.h"
@@ -416,16 +415,6 @@ public:
 
     }
 
-    virtual void cbi_AIProceduralCommand(const int &systemID, const command_item::Action_ProceduralCommand &command) const
-    {
-        UNUSED(systemID);
-        MaceLog::Critical("In cbi_AIProceduralCommand");
-        // Notify listeners of new procedural
-        ModuleVehicleMavlinkBase::NotifyListeners([&](MaceCore::IModuleEventsVehicle* ptr){
-            ptr->EventVehicle_ExecuteAITestProcedural(this, command);
-        });
-    }
-
 public:
 
     void SetAttachedMavlinkEntity(const MavlinkEntityKey &key)
@@ -470,12 +459,6 @@ protected:
     std::mutex m_mutex_ParameterController;
     std::condition_variable m_condition_ParameterController;
     bool m_oldParameterControllerShutdown = false;
-
-protected:
-    void prepareOnboardLoggingController();
-    std::mutex m_mutex_OnboardLoggingController;
-    std::condition_variable m_condition_OnboardLoggingController;
-    bool m_oldOnboardLoggingControllerShutdown = false;
 
 protected:
     void prepareMSGRateController();

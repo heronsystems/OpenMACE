@@ -3,7 +3,6 @@
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConnectionSetup()
 {
-    this->prepareOnboardLoggingController();
     this->prepareTimesyncController();
     MAVLINKUXVControllers::ControllerTimesync* timesyncController = static_cast<MAVLINKUXVControllers::ControllerTimesync*>(m_ControllersCollection.At("timesyncController"));
     if(timesyncController)
@@ -416,42 +415,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareParameter
         m_condition_ParameterController.notify_one();
     });
     m_ControllersCollection.Insert("parameterController", parameterController);
-}
-
-template <typename ...VehicleTopicAdditionalComponents>
-void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareOnboardLoggingController()
-{
-    //If there is an old onboard logging controller still running, allow us to shut it down
-    if(m_ControllersCollection.Exist("onboardLoggingController"))
-    {
-        auto onboardLoggingControllerOld = static_cast<MAVLINKUXVControllers::Controller_WriteEventToLog*>(m_ControllersCollection.At("onboardLoggingController"));
-        if(onboardLoggingControllerOld != nullptr)
-        {
-            std::cout << "Shutting down previous onboard logging controller, which was still active" << std::endl;
-            onboardLoggingControllerOld->Shutdown();
-            // Need to wait for the old controller to be shutdown.
-            std::unique_lock<std::mutex> controllerLock(m_mutex_OnboardLoggingController);
-            while (!m_oldOnboardLoggingControllerShutdown)
-                m_condition_OnboardLoggingController.wait(controllerLock);
-            m_oldOnboardLoggingControllerShutdown = false;
-            controllerLock.unlock();
-        }
-    }
-    //create "stateless" onboard logging controller that exists within the module itself
-    auto onboardLoggingController = new MAVLINKUXVControllers::Controller_WriteEventToLog(m_SystemData, m_TransmissionQueue, m_LinkChan);
-    onboardLoggingController->setLambda_Shutdown([this, onboardLoggingController]() mutable
-    {
-        auto ptr = static_cast<MAVLINKUXVControllers::Controller_WriteEventToLog*>(m_ControllersCollection.At("onboardLoggingController"));
-        if (ptr != nullptr)
-        {
-            auto ptr = m_ControllersCollection.Remove("onboardLoggingController");
-            delete ptr;
-        }
-        std::lock_guard<std::mutex> guard(m_mutex_OnboardLoggingController);
-        m_oldOnboardLoggingControllerShutdown = true;
-        m_condition_OnboardLoggingController.notify_one();
-    });
-    m_ControllersCollection.Insert("onboardLoggingController", onboardLoggingController);
 }
 
 template <typename ...VehicleTopicAdditionalComponents>

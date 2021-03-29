@@ -616,34 +616,4 @@ void ModuleVehicleArduplane::UpdateDynamicMissionQueue(const command_target::Dyn
 }
 
 
-/////////////////////////////////////////////////////////////////////////
-/// AI SUPPORT EVENTS: These events are explicit overrides in support of
-/// AI based autonomy.
-/////////////////////////////////////////////////////////////////////////
-
-void ModuleVehicleArduplane::NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
-{
-    UNUSED(sender);
-    UNUSED(logEvent);
-}
-
-void ModuleVehicleArduplane::NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
-{
-    UNUSED(sender);
-    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentState());
-    currentOuterState->handleTestProcedural(procedural);
-
-    std::cout << "Test procedural made it to vehicle: " << AICommandItemToString(procedural.getCommandType()) << std::endl;
-
-    ProgressStateMachineStates();
-}
-
-void ModuleVehicleArduplane::NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
-{
-    UNUSED(sender);
-    ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentOuterState());
-    currentOuterState->initializeForTestEvaluation(initialization);
-    ProgressStateMachineStates();
-}
-
 

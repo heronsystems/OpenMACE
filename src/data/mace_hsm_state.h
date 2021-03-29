@@ -47,16 +47,6 @@ enum class MACEHSMState {
     STATE_FLIGHT_GUIDED_GEOTARGET = 35, /**< */
     STATE_FLIGHT_GUIDED_CARTARGET = 36, /**< */
 
-    STATE_FLIGHT_AI = 40, /**< */
-    STATE_FLIGHT_AI_TESTEND = 41, /**< */
-    STATE_FLIGHT_AI_EXECUTE= 42, /**< */
-    STATE_FLIGHT_AI_EXECUTE_ABORT= 43, /**< */
-    STATE_FLIGHT_AI_EXECUTE_DEFLECTION = 44, /**< */
-    STATE_FLIGHT_AI_EXECUTE_END= 45, /**< */
-    STATE_FLIGHT_AI_INITIALIZE = 46, /**< */
-    STATE_FLIGHT_AI_INITIALIZE_ABORT = 47, /**< */
-    STATE_FLIGHT_AI_INITIALIZE_ROUTE = 48, /**< */
-
     STATE_UNKNOWN = 254, /**< */
 };
 
@@ -128,25 +118,6 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
         return "Flight Guided GeoTarget";
     case MACEHSMState::STATE_FLIGHT_GUIDED_CARTARGET:
         return "Flight Guided CartTarget";
-
-    case MACEHSMState::STATE_FLIGHT_AI:
-        return "Flight AI";
-    case MACEHSMState::STATE_FLIGHT_AI_TESTEND:
-        return "Flight AI Test End";
-    case MACEHSMState::STATE_FLIGHT_AI_EXECUTE:
-        return "Flight AI Execute";
-    case MACEHSMState::STATE_FLIGHT_AI_EXECUTE_ABORT:
-        return "Flight AI Execute Abort";
-    case MACEHSMState::STATE_FLIGHT_AI_EXECUTE_DEFLECTION:
-        return "Flight AI Execute Deflection";
-    case MACEHSMState::STATE_FLIGHT_AI_EXECUTE_END:
-        return "Flight AI Execute End";
-    case MACEHSMState::STATE_FLIGHT_AI_INITIALIZE:
-        return "Flight AI Initialize";
-    case MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ABORT:
-        return "Flight AI Initialize Abort";
-    case MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ROUTE:
-        return "Flight AI Initialize Route";
         
     case MACEHSMState::STATE_UNKNOWN:
         return "Unknown";
@@ -219,24 +190,7 @@ inline MACEHSMState MACEHSMStateFromString(const std::string &str) {
         return MACEHSMState::STATE_LANDING_DESCENDING;
     if(str == "Flight Landing Complete")
         return MACEHSMState::STATE_LANDING_COMPLETE;
-    if(str == "Flight AI")
-        return MACEHSMState::STATE_FLIGHT_AI;
-    if(str == "Flight AI Test End")
-        return MACEHSMState::STATE_FLIGHT_AI_TESTEND;
-    if(str == "Flight AI Execute")
-        return MACEHSMState::STATE_FLIGHT_AI_EXECUTE;
-    if(str == "Flight AI Execute Abort")
-        return MACEHSMState::STATE_FLIGHT_AI_EXECUTE_ABORT;
-    if(str == "Flight AI Execute Deflection")
-        return MACEHSMState::STATE_FLIGHT_AI_EXECUTE_DEFLECTION;
-    if(str == "Flight AI Execute End")
-        return MACEHSMState::STATE_FLIGHT_AI_EXECUTE_END;
-    if(str == "Flight AI Initialize")
-        return MACEHSMState::STATE_FLIGHT_AI_INITIALIZE;
-    if(str == "Flight AI Initialize Abort")
-        return MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ABORT;
-    if(str == "Flight AI Initialize Route")
-        return MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ROUTE;
+
     if(str == "Flight Unknown")
         return MACEHSMState::STATE_FLIGHT_UNKNOWN;
     if(str == "Unknown")

@@ -171,9 +171,11 @@ export default (props: Props) => {
     // props.onCommand(command, filteredAircrafts, payload);
   };
   const returnToLaunch = () => {
-    let command: string = "RTL";
-    let payload = [];
-    props.onCommand(command, filteredAircrafts, payload);
+    let command: string = "SET_VEHICLE_MODE";
+    let payload = {
+      mode: "RTL"
+    };
+    props.onCommand(command, filteredAircrafts, [JSON.stringify(payload)]);
   };
   const updateAltitude = (e) => {
     const { name, value } = e.target;

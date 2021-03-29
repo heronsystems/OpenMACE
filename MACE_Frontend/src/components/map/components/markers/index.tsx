@@ -6,6 +6,7 @@ import AppContext, { Context } from "../../../../Context";
 import { getCentroid, getDisplayTargetAndPath } from "../../../../util/helpers";
 import Aircraft from "../aircraft";
 import AircraftPath from "../aircraft-path";
+import AircraftMission from "../aircraft-mission";
 import AircraftTarget from "../aircraft-target";
 import TargetLine from "../aircraft-target-line";
 import Boundary from "../boundary";
@@ -42,6 +43,7 @@ export default React.memo((props: Props) => {
     localTargets,
     globalTargets,
     paths,
+    missions,
     updateSelectedAircraft
     
   } = useContext<Context>(AppContext);
@@ -111,8 +113,19 @@ export default React.memo((props: Props) => {
           );
           if(acIndex !== -1) {
             if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
-                console.log(path.agentID);
+                // console.log(path.agentID);
                 return <AircraftPath key={`path-${path.agentID}`} data={path} />;
+            }
+          }
+        })}
+        {missions.map((mission: Types.Aircraft.MissionPayload, index) => {
+          const acIndex = aircrafts.findIndex(
+                (a) => mission.agentID === a.agentID
+          );
+          if(acIndex !== -1) {
+            if(getDisplayTargetAndPath(aircrafts[acIndex].mode)){
+                // console.log(path.agentID);
+                return <AircraftMission key={`mission-${mission.agentID}`} data={mission} />;
             }
           }
         })}

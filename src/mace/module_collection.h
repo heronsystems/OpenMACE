@@ -3,7 +3,6 @@
 #include "module_external_link/module_external_link.h"
 
 #include "module_ground_station/module_ground_station.h"
-#include "module_ml_station/module_ml_station.h"
 
 #include "module_path_planning_NASAPhase2/module_path_planning_nasaphase2.h"
 #include "module_resource_task_allocation/module_rta.h"
@@ -13,7 +12,6 @@
 #include "module_vehicle_sensors/module_vehicle_sensors.h"
 #include "module_vehicle_arducopter/module_vehicle_arducopter.h"
 #include "module_vehicle_arduplane/module_vehicle_arduplane.h"
-#include "module_vehicle_adept/module_vehicle_adept.h"
 
 #include "mace_core/module_factory.h"
 
@@ -27,7 +25,6 @@ public:
         MaceCore::ModuleFactory* factory = new MaceCore::ModuleFactory();
         Register<ModuleExternalLink>(factory, "Ardupilot");
         Register<ModuleGroundStation>(factory, "NASAPhase2");
-        Register<ModuleMLStation>(factory, "SubScale");
         Register<ModulePathPlanningNASAPhase2>(factory, "NASAPhase2");
         Register<ModuleROS>(factory, "NASAPhase2");
         Register<ModuleROSUMD>(factory, "OFFSET_Auctioneer");
@@ -35,7 +32,6 @@ public:
         Register<ModuleVehicleSensors>(factory, "NASAPhase2");
         Register<ModuleVehicleArducopter>(factory, "Arducopter");
         Register<ModuleVehicleArduplane>(factory, "Arduplane");
-        Register<ModuleVehicleAdept>(factory,"ACE");
 
         return factory;
     }

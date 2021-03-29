@@ -20,7 +20,6 @@ DEFINES += EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 SOURCES +=
 
 HEADERS += common.h\
-    adept_model_types.h \
     enum_class_hash.h \
     hsm.h \
     publisher.h \
@@ -28,7 +27,6 @@ HEADERS += common.h\
     optional_parameter.h \
     pointer_collection.h \
     string_methods.h \
-    test_key.h \
     transmit_queue.h \
     thread_manager.h \
     chain_inheritance.h \

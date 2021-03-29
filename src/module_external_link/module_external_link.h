@@ -45,10 +45,7 @@
 #include "controllers/controller_mission.h"
 #include "controllers/controller_boundary.h"
 
-#include "controllers/controllers_MAVLINK/TE_Controllers/command_test_procedural.h"
-#include "controllers/controllers_MAVLINK/TE_Controllers/distribute_test_parameterization.h"
 #include "controllers/controllers_MAVLINK/TE_Controllers/command_set_surface_deflection.h"
-#include "controllers/controllers_MAVLINK/TE_Controllers/command_write_event_to_logs.h"
 
 
 #include "mace_core/module_characteristics.h"
@@ -179,10 +176,6 @@ public:
     void PublishVehicleData(const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<Data::ITopicComponentDataObject> &component);
 
     void PublishMissionData(const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<Data::ITopicComponentDataObject> &component);
-
-    void PublishTestProcedural(const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<Data::ITopicComponentDataObject> &component);
-
-    void PublishTestParameterization(const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<Data::ITopicComponentDataObject> &component);
 
 
 
@@ -415,15 +408,6 @@ public:
     virtual void Command_RequestBoundaryDownload(const std::tuple<MaceCore::ModuleCharacteristic, uint8_t> &remote, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
 
 
-
-    ///////////////////////////////////////////////////////////////////////////////////////
-    /// The following are public virtual functions imposed from IModuleCommandAISupport.
-    ///////////////////////////////////////////////////////////////////////////////////////
-    void NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
-    void NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
-    void NewAICommand_NewEvaluationTrial(const DataGenericItem::AI_TestParameterization &obj, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
-
-
 private:
 
 
@@ -479,10 +463,7 @@ private:
     MAVLINKUXVControllers::ModuleController::CommandRTL,
     MAVLINKUXVControllers::ModuleController::CommandTakeoff,
     MAVLINKUXVControllers::ModuleController::ControllerSystemMode,
-    MAVLINKUXVControllers::ModuleController::Command_TestProcedural,
-    MAVLINKUXVControllers::ModuleController::Distribute_TestParameterization,
     MAVLINKUXVControllers::ModuleController::ControllerCommand_SetSurfaceDeflection,
-    MAVLINKUXVControllers::ModuleController::ControllerCommand_WriteEventToLog,
     ExternalLink::ControllerHome,
     ExternalLink::ControllerMission,
     ExternalLink::ControllerBoundary,

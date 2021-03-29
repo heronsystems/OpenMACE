@@ -1,7 +1,6 @@
 #ifndef COMMAND_ITEM_COMPONENTS_H
 #define COMMAND_ITEM_COMPONENTS_H
 
-#include "data_generic_command_item/mace/ai_items/ai_command_components.h"
 
 #include "data_generic_command_item/boundary_items/boundary_key.h"
 #include "data_generic_command_item/boundary_items/boundary_type.h"

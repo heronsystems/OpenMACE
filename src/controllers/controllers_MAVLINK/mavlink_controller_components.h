@@ -14,7 +14,6 @@
 #include "controller_set_surface_deflection.h"
 #include "controller_system_mode.h"
 #include "controller_vision_position_estimate.h"
-#include "controller_write_event_to_log.h"
 #include "controller_timesync.h"
 
 #endif // MAVLINK_CONTROLLER_COMPONENTS_H

@@ -36,17 +36,6 @@ hsm::Transition AP_State_Flight::GetTransition()
         //this could be caused by a command, action sensed by the vehicle, or
         //for various other peripheral reasons
         switch (_desiredState) {
-        case Data::MACEHSMState::STATE_FLIGHT_AI:
-        {
-            if(currentCommand != nullptr && currentCommand->getCommandType() == MAV_CMD::SET_SURFACE_DEFLECTION_NORMALIZED)
-            {
-                command_item::Action_SetSurfaceDeflection castCommand = *currentCommand->as<command_item::Action_SetSurfaceDeflection>();
-                rtn = hsm::InnerTransition<AP_State_FlightAI>(castCommand);
-            }
-            else
-                rtn = hsm::InnerTransition<AP_State_FlightAI>(m_TestInitialization);
-            break;
-        }
         case Data::MACEHSMState::STATE_FLIGHT_AUTO:
         {
             rtn = hsm::InnerTransition<AP_State_FlightAuto>();
@@ -292,12 +281,6 @@ void AP_State_Flight::OnEnter(const std::shared_ptr<command_item::AbstractComman
     }
 }
 
-void AP_State_Flight::initializeForTestEvaluation(const command_item::Action_InitializeTestSetup &initialization)
-{
-    m_TestInitialization = initialization;
-    setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI);
-}
-
 void AP_State_Flight::checkForDelayedTransition(const uint8_t &mode)
 {
     UNUSED(mode); //For now we are going to allow whatever MACE believes it is
@@ -347,10 +330,6 @@ void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
     {
         _desiredState = Data::MACEHSMState::STATE_FLIGHT;
     }
-    else if(mode == "AI_DEFL")
-    {
-        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI;
-    }
     else if(mode == "INITIALIZING")
     {
         _desiredState = Data::MACEHSMState::STATE_UNKNOWN;
@@ -362,8 +341,6 @@ void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
 
 } //end of namespace ardupilot
 } //end of namespace state
-
-#include "plane_flight_states/state_flight_AI.h"
 
 #include "plane_flight_states/state_flight_auto.h"
 #include "plane_flight_states/state_flight_guided.h"

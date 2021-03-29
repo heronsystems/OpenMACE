@@ -367,13 +367,6 @@ private:
             m_LocalVehicles.push_back(vehicleID);
             m_LocalVehicles.erase( unique( m_LocalVehicles.begin(), m_LocalVehicles.end() ), m_LocalVehicles.end() );
         }
-
-
-        // TODO-AARON: Vehicle added in adept doesn't take into account remote vehicle:
-        ModuleCharacteristic adeptCharacteristic;
-        adeptCharacteristic.MaceInstance = 1;
-        adeptCharacteristic.ModuleID = 2;
-        AddMLVehicle("1", adeptCharacteristic);
     }
 
 

@@ -467,9 +467,9 @@ const defaultButtonStatus = {
     }
 }
 
-export const getShowButton = (vehicleState: string, vehicleType: string) => {
+export const getShowButton = (vehicleState: string, vehicleType: string, vehicleAltitude: number) => {
     let buttons = defaultButtonStatus;
-    // console.log(vehicleState);
+    // console.log(vehicleState + " , " + vehicleType);
     switch (vehicleState) {
         case "Grounded":
         case "Grounded Idle":
@@ -505,7 +505,7 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
             buttons.setgohere = { show: true, disabled: true};
 
             buttons.arm = { show: false, disabled: true};
-            buttons.disarm = { show: true, disabled: true};
+            buttons.disarm = { show: true, disabled: false};
             break;
         case "Flight":
         case "Flight Takeoff":
@@ -519,7 +519,7 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
             buttons.setgohere = { show: true, disabled: true};
 
             buttons.arm = { show: false, disabled: true};
-            buttons.disarm = { show: true, disabled: true};
+            buttons.disarm = { show: true, disabled: false};
             break;
         case "Flight Manual":
             buttons.takeoff = { show: false, disabled: true};
@@ -530,7 +530,7 @@ export const getShowButton = (vehicleState: string, vehicleType: string) => {
             buttons.setgohere = { show: true, disabled: true};
 
             buttons.arm = { show: false, disabled: true};
-            buttons.disarm = { show: true, disabled: true};
+            buttons.disarm = { show: true, disabled: vehicleAltitude < 2 ? false : true};
             break;
         case "Flight Takeoff Complete":
         case "Flight Guided":

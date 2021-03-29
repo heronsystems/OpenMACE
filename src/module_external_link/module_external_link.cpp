@@ -87,47 +87,6 @@ ModuleExternalLink::ModuleExternalLink() :
     });
     m_Controllers.Add(missionController);
 
-    MAVLINKUXVControllers::ModuleController::Command_TestProcedural* controllerTestProcedurals= new MAVLINKUXVControllers::ModuleController::Command_TestProcedural(this, m_queue, m_LinkChan);
-    controllerTestProcedurals->setLambda_DataReceived([this](const MaceCore::ModuleCharacteristic &sender, const Action_ProceduralCommand &command)
-    {
-        std::cout<<"I saw a new test procedural."<<std::endl;
-        ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsExternalLink* ptr){
-            ptr->EventAI_ExecuteTestProcedural(this, command);
-        });
-
-    });
-    m_Controllers.Add(controllerTestProcedurals);
-
-    MAVLINKUXVControllers::ModuleController::Distribute_TestParameterization* controllerTestParameterization= new MAVLINKUXVControllers::ModuleController::Distribute_TestParameterization(this, m_queue, m_LinkChan);
-    controllerTestParameterization->setLambda_DataReceived([this](const MaceCore::ModuleCharacteristic &sender, const DataGenericItem::AI_TestParameterization &item)
-    {
-        std::cout<<"I saw a new test parameterization."<<std::endl;
-        ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsExternalLink* ptr){
-            ptr->EventAI_NewEvaluationTrial(this, item);
-        });
-    });
-    m_Controllers.Add(controllerTestParameterization);
-
-    MAVLINKUXVControllers::ModuleController::ControllerCommand_SetSurfaceDeflection* controllerSurfaceDeflection= new MAVLINKUXVControllers::ModuleController::ControllerCommand_SetSurfaceDeflection(this, m_queue, m_LinkChan);
-    controllerSurfaceDeflection->setLambda_DataReceived([this](const MaceCore::ModuleCharacteristic &sender, const Action_SetSurfaceDeflection &item)
-    {
-//        std::cout<<"I saw a new surface deflection"<<std::endl;
-        ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsExternalLink* ptr){
-            ptr->EventAI_SetSurfaceDeflection(this,item);
-        });
-    });
-    m_Controllers.Add(controllerSurfaceDeflection);
-
-    MAVLINKUXVControllers::ModuleController::ControllerCommand_WriteEventToLog* controllerEventTag= new MAVLINKUXVControllers::ModuleController::ControllerCommand_WriteEventToLog(this, m_queue, m_LinkChan);
-    controllerEventTag->setLambda_DataReceived([this](const MaceCore::ModuleCharacteristic &sender, const Action_EventTag &item)
-    {
-        std::cout<<"I saw a new event tag"<<std::endl;
-        ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsExternalLink* ptr){
-            ptr->EventAI_EventTag(this,item);
-        });
-    });
-    m_Controllers.Add(controllerEventTag);
-
 }
 
 void ModuleExternalLink::ReceivedCommand(const MaceCore::ModuleCharacteristic &moduleFor, const AbstractCommandItem &command)
@@ -192,49 +151,6 @@ void ModuleExternalLink::AttachedAsModule(MaceCore::IModuleTopicEvents* ptr)
 {
     ptr->Subscribe(this, m_VehicleDataTopic.Name());
     ptr->Subscribe(this, m_MissionDataTopic.Name());
-
-
-    // TODO-PAT: Add external module added method calls for each module on the opposite side of the XML file
-    // On air side, add ground station and ml station (do I need to add EL??)
-    // On ground side, add vehicle comms and adept (do I need to add EL??)
-     // Call ExternalModuleAdded(resource)
-
-    // TODO-PAT: REMOVE ABOVE COMMENT AND BELOW HARD-CODED EXTERNAL RESOURCES AFTER SERIAL LINK FIX IS VALIDATED FOR EXTERNAL LINK
-
-    if(airborneInstance) {
-        // GCS:
-        CommsMACE::Resource groundStationResource;
-        groundStationResource.Set<CommsMACE::MACE_INSTANCE_STR>(2);
-        char* gcs_name = CommsMACE::GROUNDSTATION_STR;
-        uint32_t gcs_ID = 244;
-        groundStationResource.Add(gcs_name, gcs_ID);
-        this->ExternalModuleAdded(groundStationResource);
-
-        // ML Station:
-        CommsMACE::Resource mlStationResource;
-        mlStationResource.Set<CommsMACE::MACE_INSTANCE_STR>(2);
-        char* ml_name = CommsMACE::MLSTATION_STR;
-        uint32_t ml_ID = 245;
-        mlStationResource.Add(ml_name, ml_ID);
-        this->ExternalModuleAdded(mlStationResource);
-    }
-    else {
-        // Vehicle comms:
-        CommsMACE::Resource vehicleResource;
-        vehicleResource.Set<CommsMACE::MACE_INSTANCE_STR>(1);
-        char* vehicle_name = CommsMACE::VEHICLE_STR;
-        uint32_t vehicle_ID = 1;
-        vehicleResource.Add(vehicle_name, vehicle_ID);
-        this->ExternalModuleAdded(vehicleResource);
-
-        // Adept:
-        CommsMACE::Resource adeptResource;
-        adeptResource.Set<CommsMACE::MACE_INSTANCE_STR>(1);
-        char* adept_name = CommsMACE::ADEPT_STR;
-        uint32_t adept_ID = 1;
-        adeptResource.Add(adept_name, adept_ID);
-        this->ExternalModuleAdded(adeptResource);
-    }
 }
 
 //!
@@ -331,10 +247,6 @@ void ModuleExternalLink::ExternalModuleAdded(const CommsMACE::Resource &resource
     {
         type = MaceCore::ModuleClasses::GROUND_STATION;
     }
-    else if(strcmp(moduleTypeName, CommsMACE::MLSTATION_STR) == 0)
-    {
-        type = MaceCore::ModuleClasses::ML_STATION;
-    }
     else if(strcmp(moduleTypeName, CommsMACE::RTA_STR) == 0)
     {
         type = MaceCore::ModuleClasses::RTA;
@@ -342,10 +254,6 @@ void ModuleExternalLink::ExternalModuleAdded(const CommsMACE::Resource &resource
     else if(strcmp(moduleTypeName, CommsMACE::EXTERNAL_LINK_STR) == 0)
     {
         type = MaceCore::ModuleClasses::EXTERNAL_LINK;
-    }
-    else if(strcmp(moduleTypeName, CommsMACE::ADEPT_STR) == 0)
-    {
-        type = MaceCore::ModuleClasses::ADEPT;
     }
     else {
         //        printf("%s\n", CommsMACE::GROUNDSTATION_STR);
@@ -419,12 +327,6 @@ void ModuleExternalLink::TransmitMessage(const mavlink_message_t &msg, const Opt
             r.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::GROUNDSTATION_STR>(target().MaceInstance, target().ModuleID);
             m_LinkMarshaler->SendMACEMessage<mavlink_message_t>(m_LinkName, msg, r);
         }
-        else if(type == MaceCore::ModuleClasses::ML_STATION)
-        {
-            CommsMACE::Resource r;
-            r.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::MLSTATION_STR>(target().MaceInstance, target().ModuleID);
-            m_LinkMarshaler->SendMACEMessage<mavlink_message_t>(m_LinkName, msg, r);
-        }
         else if(type == MaceCore::ModuleClasses::RTA)
         {
             CommsMACE::Resource r;
@@ -435,12 +337,6 @@ void ModuleExternalLink::TransmitMessage(const mavlink_message_t &msg, const Opt
         {
             CommsMACE::Resource r;
             r.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::EXTERNAL_LINK_STR>(target().MaceInstance, target().ModuleID);
-            m_LinkMarshaler->SendMACEMessage<mavlink_message_t>(m_LinkName, msg, r);
-        }
-        else if(type == MaceCore::ModuleClasses::ADEPT)
-        {
-            CommsMACE::Resource r;
-            r.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::ADEPT_STR>(target().MaceInstance, target().ModuleID);
             m_LinkMarshaler->SendMACEMessage<mavlink_message_t>(m_LinkName, msg, r);
         }
         else {
@@ -762,30 +658,6 @@ void ModuleExternalLink::PublishMissionData(const MaceCore::ModuleCharacteristic
     });
 }
 
-
-void ModuleExternalLink::PublishTestProcedural(const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<Data::ITopicComponentDataObject> &component)
-{
-    //    //construct datagram
-    //    MaceCore::TopicDatagram topicDatagram;
-    //    m_MissionDataTopic.SetComponent(component, topicDatagram);
-
-    //    //notify listeners of topic
-    //    ModuleExternalLink::NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
-    //        ptr->NewTopicDataValues(this, m_MissionDataTopic.Name(), sender, MaceCore::TIME(), topicDatagram);
-    //    });
-}
-
-void ModuleExternalLink::PublishTestParameterization(const MaceCore::ModuleCharacteristic &sender, const std::shared_ptr<Data::ITopicComponentDataObject> &component)
-{
-    //    //construct datagram
-    //    MaceCore::TopicDatagram topicDatagram;
-    //    m_MissionDataTopic.SetComponent(component, topicDatagram);
-
-    //    //notify listeners of topic
-    //    ModuleExternalLink::NotifyListenersOfTopic([&](MaceCore::IModuleTopicEvents* ptr){
-    //        ptr->NewTopicDataValues(this, m_MissionDataTopic.Name(), sender, MaceCore::TIME(), topicDatagram);
-    //    });
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// The following are public virtual functions imposed from IModuleCommandExternalLink.
@@ -1173,10 +1045,6 @@ void ModuleExternalLink::NewlyAvailableModule(const MaceCore::ModuleCharacterist
     {
         resource.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::GROUNDSTATION_STR>(module.MaceInstance, module.ModuleID);
     }
-    if(type == MaceCore::ModuleClasses::ML_STATION)
-    {
-        resource.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::MLSTATION_STR>(module.MaceInstance, module.ModuleID);
-    }
     if(type == MaceCore::ModuleClasses::RTA)
     {
         resource.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::RTA_STR>(module.MaceInstance, module.ModuleID);
@@ -1184,10 +1052,6 @@ void ModuleExternalLink::NewlyAvailableModule(const MaceCore::ModuleCharacterist
     if(type == MaceCore::ModuleClasses::EXTERNAL_LINK)
     {
         resource.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::EXTERNAL_LINK_STR>(module.MaceInstance, module.ModuleID);
-    }
-    if(type == MaceCore::ModuleClasses::ADEPT)
-    {
-        resource.Set<CommsMACE::MACE_INSTANCE_STR, CommsMACE::ADEPT_STR>(module.MaceInstance, module.ModuleID);
     }
 
 
@@ -1544,23 +1408,6 @@ void ModuleExternalLink::CheckAndAddVehicle(const MaceCore::ModuleCharacteristic
 
         //Request_FullDataSync(systemID);
     }
-}
-
-
-void ModuleExternalLink::NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
-{
-    m_Controllers.Retreive<MAVLINKUXVControllers::ModuleController::ControllerCommand_WriteEventToLog>()->Broadcast(logEvent, sender());
-}
-
-
-void ModuleExternalLink::NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
-{
-    m_Controllers.Retreive<MAVLINKUXVControllers::ModuleController::Command_TestProcedural>()->Broadcast(procedural, sender());
-}
-
-void ModuleExternalLink::NewAICommand_NewEvaluationTrial(const DataGenericItem::AI_TestParameterization &obj, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
-{
-    m_Controllers.Retreive<MAVLINKUXVControllers::ModuleController::Distribute_TestParameterization>()->Broadcast(obj, sender());
 }
 
 void ModuleExternalLink::Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)

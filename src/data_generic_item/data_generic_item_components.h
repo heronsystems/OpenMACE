@@ -4,7 +4,6 @@
 #include "data_generic_item_battery.h"
 #include "data_generic_item_relative_pose.h"
 #include "data_generic_item_weather.h"
-#include "data_generic_item_test_descriptor.h"
 #include "data_generic_item_flightmode.h"
 #include "data_generic_item_GPS.h"
 #include "data_generic_item_param_value.h"

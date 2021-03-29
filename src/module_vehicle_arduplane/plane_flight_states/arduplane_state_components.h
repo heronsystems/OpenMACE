@@ -33,12 +33,4 @@
 
 #include "module_vehicle_arduplane/plane_flight_states/state_unknown.h"
 
-#include "module_vehicle_arduplane/plane_flight_states/state_flight_AI.h"
-#include "module_vehicle_arduplane/plane_flight_states/state_flight_AI_test_end.h"
-#include "module_vehicle_arduplane/plane_flight_states/state_flight_AI_execute_deflection.h"
-#include "module_vehicle_arduplane/plane_flight_states/state_flight_AI_execute_end.h"
-#include "module_vehicle_arduplane/plane_flight_states/state_flight_AI_initialize.h"
-#include "module_vehicle_arduplane/plane_flight_states/state_flight_AI_initialize_ABORT.h"
-#include "module_vehicle_arduplane/plane_flight_states/state_flight_AI_initialize_ROUTE.h"
-
 #endif // ARDUPLANE_STATE_COMPONENTS_H
