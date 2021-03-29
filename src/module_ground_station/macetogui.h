@@ -42,8 +42,8 @@
 class MACEtoGUI : public MaceLog
 {
 public:
-    MACEtoGUI();
-    MACEtoGUI(const QHostAddress &sendAddress, const int &sendPort);
+    MACEtoGUI(const MaceCore::IModuleCommandGroundStation *ptrRef);
+    MACEtoGUI(const MaceCore::IModuleCommandGroundStation *ptrRef, const QHostAddress &sendAddress, const int &sendPort);
 
     ~MACEtoGUI();
 
@@ -245,6 +245,11 @@ private:
     void waypointListToJSON(const std::vector<mace::pose::GeodeticPosition_3D> &waypointList, QJsonArray &path);
 
 private:
+    //!
+    //! \brief m_parent Reference to parent object
+    //!
+    const MaceCore::IModuleCommandGroundStation* m_parent;
+
     //!
     //! \brief m_sendAddress TCP send address for MACE-to-GUI connection
     //!

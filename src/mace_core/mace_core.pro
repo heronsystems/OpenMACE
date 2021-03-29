@@ -21,10 +21,14 @@ SOURCES += mace_core.cpp \
     module_command_initialization.cpp
 
 HEADERS += mace_core.h\
+    i_module_command_adept.h \
     i_module_command_ai_support.h \
     i_module_events_adept.h \
     i_module_events_ai_support.h \
+    metadata_adept.h \
+    i_module_command_ml_station.h \
         mace_core_global.h \
+    metadata_ml_station.h \
     metadata_vehicle.h \
     metadata_ground_station.h \
     metadata_rta.h \
@@ -70,7 +74,7 @@ INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
 
 contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
-  message("mace_core: Compiling with Heron support")
+  message("mace_core: Compiling with AI support")
   INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 }else{
   message("mace_core: Using standard mavlink libraries")

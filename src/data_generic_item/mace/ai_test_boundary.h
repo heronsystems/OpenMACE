@@ -100,7 +100,7 @@ public:
     // Boundary:
     mace::geometry::Polygon_2DG _boundary;
 
-private:
+public:
     double _ceiling = 400;
     double _floor = 20;
 };

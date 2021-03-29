@@ -72,6 +72,16 @@ hsm::Transition AP_State_Flight::GetTransition()
             rtn = hsm::InnerTransition<AP_State_FlightManual>();
             break;
         }
+        case Data::MACEHSMState::STATE_FLIGHT_FBW:
+        {
+            rtn = hsm::InnerTransition<AP_State_FlightFBW>();
+            break;
+        }
+        case Data::MACEHSMState::STATE_FLIGHT_STABILIZE:
+        {
+            rtn = hsm::InnerTransition<AP_State_FlightStabilize>();
+            break;
+        }
         case Data::MACEHSMState::STATE_FLIGHT_RTL:
         {
             rtn = hsm::InnerTransition<AP_State_FlightRTL>();
@@ -97,9 +107,12 @@ hsm::Transition AP_State_Flight::GetTransition()
 
 bool AP_State_Flight::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
+    if(command == nullptr)
+        return true;
 
     bool success = false;
     MAV_CMD commandType = command->getCommandType();
+
     switch (commandType) {
     case MAV_CMD::MAV_CMD_DO_PAUSE_CONTINUE:
     {
@@ -123,7 +136,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<command_item::Abstract
         if(executeModeChange)
         {
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-            auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            auto controllerSystemMode = new MAVLINKUXVControllers::VehicleController::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             controllerSystemMode->AddLambda_Finished(this, [controllerSystemMode](const bool completed, const uint8_t finishCode){
                 UNUSED(completed); UNUSED(finishCode);
                 controllerSystemMode->Shutdown();
@@ -138,7 +151,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<command_item::Abstract
             MavlinkEntityKey target = Owner().getMAVLINKID();
             MavlinkEntityKey sender = 255;
 
-            MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+            MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
             commandMode.targetID = Owner().getMAVLINKID();
             commandMode.vehicleMode = vehicleMode;
             controllerSystemMode->Send(commandMode,sender,target);
@@ -170,7 +183,7 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<command_item::Abstract
         const command_item::SpatialRTL* cmd = command->as<command_item::SpatialRTL>();
 
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerRTL = new MAVLINKUXVControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        auto controllerRTL = new MAVLINKUXVControllers::VehicleController::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerRTL->AddLambda_Finished(this, [this,controllerRTL](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
                 _desiredState = Data::MACEHSMState::STATE_FLIGHT_RTL;
@@ -225,7 +238,10 @@ bool AP_State_Flight::handleCommand(const std::shared_ptr<command_item::Abstract
     default:
     {
         ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
-        currentInnerState->handleCommand(command);
+        
+        if(currentInnerState != nullptr){
+            currentInnerState->handleCommand(command);
+        }
         break;
     }
 } //end of switch statement
@@ -263,6 +279,7 @@ void AP_State_Flight::OnEnter()
 
     //This helps us based on the current conditions in the present moment
     std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
+    std::cout << "Current mode string: " << currentModeString << std::endl;
     checkTransitionFromMode(currentModeString);
 }
 
@@ -310,9 +327,17 @@ void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
         //A mode change we really have no way to track the progress of where we are
         _desiredState = Data::MACEHSMState::STATE_FLIGHT_LOITER;
     }
-    else if(mode == "STABILIZE")
+    else if(mode == "MANUAL")
     {
         _desiredState = Data::MACEHSMState::STATE_FLIGHT_MANUAL;
+    }
+    else if(mode == "STABILIZE")
+    {
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_STABILIZE;
+    }
+    else if(mode == "FBWA" || mode == "FBWB")
+    {
+        _desiredState = Data::MACEHSMState::STATE_FLIGHT_FBW;
     }
     else if(mode == "RTL")
     {
@@ -345,6 +370,8 @@ void AP_State_Flight::checkTransitionFromMode(const std::string &mode)
 #include "plane_flight_states/state_flight_land.h"
 #include "plane_flight_states/state_flight_loiter.h"
 #include "plane_flight_states/state_flight_manual.h"
+#include "plane_flight_states/state_flight_stabilize.h"
+#include "plane_flight_states/state_flight_fbw.h"
 #include "plane_flight_states/state_flight_rtl.h"
 #include "plane_flight_states/state_flight_unknown.h"
 

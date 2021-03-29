@@ -68,7 +68,7 @@ INCLUDEPATH += $$PWD/../../tools/flann/src/cpp
 
 
 contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
-  message("graphs: Compiling with Heron support")
+  message("graphs: Compiling with AI support")
   INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 }else{
   message("graphs: Using standard mavlink libraries")

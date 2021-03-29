@@ -21,36 +21,72 @@ MaceCore::TopicDatagram VehicleTargetTopic::GenerateDatagram() const {
     MaceCore::TopicDatagram datagram;
     datagram.AddTerminal<int>("systemID",systemID);
 
-    datagram.AddTerminal<std::string>("Position Name", m_targetPosition->getName());
-    datagram.AddTerminal<double>("Distance to Target", m_distanceToTarget);
-    datagram.AddTerminal<CoordinateSystemTypes>("Coordinate System", m_targetPosition->getCoordinateSystemType());
-    datagram.AddTerminal<mace::CoordinateFrameTypes>("Explicit Frame", m_targetPosition->getExplicitCoordinateFrame());
-    datagram.AddTerminal<uint8_t>("Dimension", m_targetPosition->getDimension());
-    datagram.AddTerminal<Eigen::VectorXd>("Data", m_targetPosition->getDataVector());
-
-    if(m_targetPosition->is3D())
+    if(m_targetPosition != nullptr)
     {
-        switch (m_targetPosition->getCoordinateSystemType()) {
-        case CoordinateSystemTypes::GEODETIC:
+        datagram.AddTerminal<std::string>("Position Name", m_targetPosition->getName());
+        datagram.AddTerminal<double>("Distance to Target", m_distanceToTarget);
+        datagram.AddTerminal<CoordinateSystemTypes>("Coordinate System", m_targetPosition->getCoordinateSystemType());
+        datagram.AddTerminal<mace::CoordinateFrameTypes>("Explicit Frame", m_targetPosition->getExplicitCoordinateFrame());
+        datagram.AddTerminal<uint8_t>("Dimension", m_targetPosition->getDimension());
+        datagram.AddTerminal<Eigen::VectorXd>("Data", m_targetPosition->getDataVector());
+        if(m_targetPosition->is3D())
         {
-            datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", m_targetPosition->positionAs<mace::pose::GeodeticPosition_3D>()->getAltitudeReferenceFrame());
-            break;
+            switch (m_targetPosition->getCoordinateSystemType()) {
+            case CoordinateSystemTypes::GEODETIC:
+            {
+                datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", m_targetPosition->positionAs<mace::pose::GeodeticPosition_3D>()->getAltitudeReferenceFrame());
+                break;
+            }
+            case CoordinateSystemTypes::CARTESIAN:
+            {
+                datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", m_targetPosition->positionAs<mace::pose::CartesianPosition_3D>()->getAltitudeReferenceFrame());
+                break;
+            }
+            case CoordinateSystemTypes::UNKNOWN:
+            case CoordinateSystemTypes::NOT_IMPLIED:
+                datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", mace::AltitudeReferenceTypes::REF_ALT_UNKNOWN);
+                break;
+            }
         }
-        case CoordinateSystemTypes::CARTESIAN:
+        else
         {
-            datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", m_targetPosition->positionAs<mace::pose::CartesianPosition_3D>()->getAltitudeReferenceFrame());
-            break;
         }
-        case CoordinateSystemTypes::UNKNOWN:
-        case CoordinateSystemTypes::NOT_IMPLIED:
+        if(m_targetPosition->is3D())
+        {
+            switch (m_targetPosition->getCoordinateSystemType()) {
+            case CoordinateSystemTypes::GEODETIC:
+            {
+                datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", m_targetPosition->positionAs<mace::pose::GeodeticPosition_3D>()->getAltitudeReferenceFrame());
+                break;
+            }
+            case CoordinateSystemTypes::CARTESIAN:
+            {
+                datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", m_targetPosition->positionAs<mace::pose::CartesianPosition_3D>()->getAltitudeReferenceFrame());
+                break;
+            }
+            case CoordinateSystemTypes::UNKNOWN:
+            case CoordinateSystemTypes::NOT_IMPLIED:
+                datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", mace::AltitudeReferenceTypes::REF_ALT_UNKNOWN);
+                break;
+            }
+        }
+        else
+        {
             datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", mace::AltitudeReferenceTypes::REF_ALT_UNKNOWN);
-            break;
         }
     }
     else
     {
+        datagram.AddTerminal<std::string>("Position Name", "");
+        datagram.AddTerminal<double>("Distance to Target", 0.0);
+        datagram.AddTerminal<CoordinateSystemTypes>("Coordinate System", CoordinateSystemTypes::UNKNOWN);
+        datagram.AddTerminal<mace::CoordinateFrameTypes>("Explicit Frame", mace::CoordinateFrameTypes::CF_UNKNOWN);
+        datagram.AddTerminal<uint8_t>("Dimension", 0);
+        Eigen::Vector3d dummyVector = Eigen::Vector3d::Zero();
+        datagram.AddTerminal<Eigen::VectorXd>("Data", dummyVector);
         datagram.AddTerminal<mace::AltitudeReferenceTypes>("Explicit Altitude Frame", mace::AltitudeReferenceTypes::REF_ALT_UNKNOWN);
     }
+
 
     return datagram;
 }
@@ -125,8 +161,27 @@ VehicleTargetTopic::VehicleTargetTopic(const VehicleTargetTopic &copy)
 
 VehicleTargetTopic::VehicleTargetTopic(const mavlink_guided_target_stats_t &obj)
 {
-    UNUSED(obj);
-    //Ken we need to reconstruct inside here
+    this->m_distanceToTarget = obj.distance;
+    this->setVehicleID(obj.systemID);
+
+    CoordinateSystemTypes systemType = mace::getCoordinateSystemType(static_cast<mace::CoordinateFrameTypes>(obj.coordinate_frame));
+    switch (systemType) {
+    case CoordinateSystemTypes::CARTESIAN:
+    {
+        mace::pose::CartesianPosition_3D targetPosition(obj.x,obj.y,obj.z);
+        m_targetPosition = targetPosition.getPositionalClone();
+        break;
+    }
+    case CoordinateSystemTypes::GEODETIC:
+    {
+        mace::pose::GeodeticPosition_3D targetPosition(obj.y,obj.x,obj.z);
+        m_targetPosition = targetPosition.getPositionalClone();
+        break;
+    }
+    default:
+        break;
+    }
+
 }
 
 mavlink_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
@@ -135,6 +190,7 @@ mavlink_guided_target_stats_t VehicleTargetTopic::getMACECommsObject() const
     mavlink_guided_target_stats_t rtn;
     rtn.distance = this->m_distanceToTarget;
     rtn.coordinate_frame = static_cast<uint8_t>(this->m_targetPosition->getExplicitCoordinateFrame());
+    rtn.systemID = this->getVehicleID();
 
     switch (this->m_targetPosition->getCoordinateSystemType()) {
     case CoordinateSystemTypes::CARTESIAN:

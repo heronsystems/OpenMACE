@@ -92,7 +92,7 @@ protected:
     }
 public:
     Controller_ParameterRequest(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        CONTROLLER_PARAMETERREQUEST_TYPE(cb, queue, linkChan),
+        CONTROLLER_PARAMETERREQUEST_TYPE(cb, queue, linkChan, "ParameterRequest"),
         ParameterRequestSend(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_param_request_read_t>(mavlink_msg_param_request_read_encode_chan)),
         ParameterRequestFinish(this, mavlink_msg_param_value_decode)
     {

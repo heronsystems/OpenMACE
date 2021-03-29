@@ -16,11 +16,13 @@
 
 #include "i_module_command_external_link.h"
 #include "i_module_command_ground_station.h"
+#include "i_module_command_ml_station.h"
 #include "i_module_command_path_planning.h"
 #include "i_module_command_ROS.h"
 #include "i_module_command_RTA.h"
 #include "i_module_command_sensors.h"
 #include "i_module_command_vehicle.h"
+#include "i_module_command_adept.h"
 
 #include "i_module_events_external_link.h"
 #include "i_module_events_ground_station.h"
@@ -28,6 +30,7 @@
 #include "i_module_events_ROS.h"
 #include "i_module_events_rta.h"
 #include "i_module_events_sensors.h"
+#include "i_module_events_adept.h"
 #include "i_module_events_vehicle.h"
 
 #include "i_module_topic_events.h"
@@ -50,10 +53,12 @@ class MACE_CORESHARED_EXPORT MaceCore :
         virtual public IModuleTopicEvents,
         virtual public IModuleEventsVehicle,
         virtual public IModuleEventsSensors,
+        virtual public IModuleEventsAdept,
         virtual public IModuleEventsRTA,
         virtual public IModuleEventsPathPlanning,
         virtual public IModuleEventsROS,
         virtual public IModuleEventsGroundStation,
+        virtual public IModuleEventsMLStation,
         virtual public IModuleEventsExternalLink
 {
 
@@ -113,6 +118,12 @@ public: //The following functions add specific modules to connect to mace core
     void AddGroundStationModule(const std::shared_ptr<IModuleCommandGroundStation> &groundStation);
 
     //!
+    //! \brief AddMLStationModule Add ML station module
+    //! \param mlStation ML station module setup
+    //!
+    void AddMLStationModule(const std::shared_ptr<IModuleCommandMLStation> &mlStation);
+
+    //!
     //! \brief AddExternalLink Add external link module
     //! \param externalLink External link module setup
     //!
@@ -163,6 +174,12 @@ public: //The following functions add specific modules to connect to mace core
     //! \param sensors Sensors module setup
     //!
     void AddSensorsModule(const std::shared_ptr<IModuleCommandSensors> &sensors);
+
+    //!
+    //! \brief AddAdeptModule Add adept module
+    //! \param adept Adept module setup
+    //!
+    void AddAdeptModule(const std::shared_ptr<IModuleCommandAdept> &adept);
 
 public:
 
@@ -387,6 +404,8 @@ public:
 
 //    virtual void EventVehicle_ACKProposedMissionWChanges(const void *sender, const MissionItem::MissionKey &originalKey, const Data::MissionACK &ackCode, const MissionItem::MissionKey &newKey);
 
+    virtual void EventVehicle_ExecuteAITestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj);
+
     ////////////////////////////////////////////////////////////////////////////////////////
     /// GENERAL VEHICLE EVENTS: These events are associated from IModuleEventsGeneralVehicle
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -553,6 +572,23 @@ public:
     //! \param vehicleMode New vehicle mode string
     //!
     virtual void CommandNewVehicleMode(const std::string &vehicleMode);
+
+
+public:
+
+    /////////////////////////////////////////////////////////////////////////
+    /// ML STATION / ADEPT EVENTS
+    /////////////////////////////////////////////////////////////////////////
+
+    void EventAI_EventTag(const ModuleBase* sender, const command_item::Action_EventTag &obj) override;
+
+    void EventAI_ExecuteTestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj) override;
+
+    void EventAI_InitializeTestConditions(const ModuleBase* sender, const command_item::Action_InitializeTestSetup &obj) override;
+
+    void EventAI_NewEvaluationTrial(const ModuleBase* sender, const DataGenericItem::AI_TestParameterization &obj) override;
+
+    void EventAI_SetSurfaceDeflection(const ModuleBase* sender, const command_item::Action_SetSurfaceDeflection &obj) override;
 
 public:
 
@@ -748,6 +784,75 @@ private:
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    /// ADEPT MODULE EVENTS
+    /////////////////////////////////////////////////////////////////////////
+
+private:
+
+    /**
+     * @brief This function marshals a command to be sent to an Adept vehicle
+     *
+     * The vehicle can either be attached locally or through external module
+     * @param vehicleID ID of vehicle, if zero then message is to be broadcast to all vehicles.
+     * @param AdeptCommand Command if vehicle attached locally
+     * @param externalCommand Command if vehicle attached remotly
+     * @param data Data to send to given vehicle
+     */
+    template <typename T>
+    void MarshalCommandToAdept(const unsigned int &adeptID, const AdeptCommands &command, const T& data, ModuleClasses senderType, OptionalParameter<ModuleCharacteristic> sender = OptionalParameter<ModuleCharacteristic>())
+    {
+
+        //transmit to all
+        if(adeptID == 0) {
+
+            for(auto it = m_AdeptIDToPtr.begin() ; it != m_AdeptIDToPtr.end() ; ++it)
+            {
+                //don't resend to sender.
+                if(sender.IsSet() && senderType == ModuleClasses::ADEPT && it->second->GetCharacteristic() == sender())
+                {
+                    continue;
+                }
+
+                it->second->MarshalCommand(command, data, sender);
+            }
+        }
+        else {
+            if(m_AdeptIDToPtr.find(std::to_string(adeptID)) != m_AdeptIDToPtr.cend()){
+                m_AdeptIDToPtr.at(std::to_string(adeptID))->MarshalCommand(command, data, sender);
+            }
+            else {
+                throw std::runtime_error("Unknown adept module reference.");
+            }
+        }
+
+        /*
+        if(command == AdeptCommands::STARTTEST) {
+
+            for(auto it = m_AdeptIDToPtr.begin() ; it != m_AdeptIDToPtr.end() ; ++it)
+            {
+                if (std::find(vehicles.begin(),vehicles.end(),it->first) != vehicles.end()){
+                    it->second->MarshalCommand(command, data, sender);
+                }
+            }
+        }
+        else if (command == AdeptCommands::ENDTEST) {
+            for(auto it = m_AdeptIDToPtr.begin() ; it != m_AdeptIDToPtr.end() ; ++it)
+            {
+                    it->second->MarshalCommand(command, data, sender);
+            }
+        }
+        else if (command == AdeptCommands::MARKTIME) {
+            for(auto it = m_AdeptIDToPtr.begin() ; it != m_AdeptIDToPtr.end() ; ++it)
+            {
+                if (std::find(vehicles.begin(),vehicles.end(),it->first) != vehicles.end()){
+                    it->second->MarshalCommand(command, data, sender);
+                }
+            }
+        }
+        */
+    }
+
 public:
 
     //!
@@ -798,15 +903,20 @@ private:
     std::map<std::string, IModuleCommandVehicle*> m_VehicleIDToPtr;
     std::map<IModuleCommandVehicle*, std::string> m_VehiclePTRToID;
 
+    std::map<std::string, IModuleCommandAdept*> m_AdeptIDToPtr;
+    std::map<IModuleCommandAdept*, std::string> m_AdeptPTRToID;
+
     std::list<std::shared_ptr<IModuleCommandExternalLink>> m_ExternalLink;
     std::map<int, IModuleCommandExternalLink*> m_ExternalLinkIDToPort;
 
     std::shared_ptr<IModuleCommandGroundStation> m_GroundStation;
+    std::shared_ptr<IModuleCommandMLStation> m_MLStation;
     std::shared_ptr<IModuleCommandPathPlanning> m_PathPlanning;
     std::shared_ptr<IModuleCommandROS> m_ROS;
     std::shared_ptr<IModuleCommandSensors> m_Sensors;
     std::shared_ptr<IModuleCommandRTA> m_GlobalRTA;
     std::vector<std::shared_ptr<IModuleCommandRTA>> m_SpecailizedRTA;
+    std::shared_ptr<IModuleCommandAdept> m_Adept;
 
     //! Map of modules and the local key to identiy them.
     std::unordered_map<uint32_t, std::shared_ptr<ModuleBase>> m_Modules;

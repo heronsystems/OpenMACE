@@ -27,7 +27,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<command_item::Abstra
     case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
 
-        MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+        MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
 
         modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
             UNUSED(this); UNUSED(completed); UNUSED(finishCode);
@@ -37,7 +37,7 @@ bool AbstractRootState::handleCommand(const std::shared_ptr<command_item::Abstra
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
 
-        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+        MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
         commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
         modeController->Send(commandMode,sender,target);

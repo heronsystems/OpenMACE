@@ -39,6 +39,7 @@ SOURCES += \
     data_generic_item_heartbeat.cpp \
     data_generic_item_system_arm.cpp \
     data_generic_item_systemtime.cpp \
+    data_generic_item_timesync.cpp \
     data_generic_item_weather.cpp \
     mace/ai_agent_parameters.cpp \
     mace/ai_test_boundary.cpp \
@@ -60,6 +61,7 @@ HEADERS +=\
     data_generic_item_heartbeat.h \
     data_generic_item_system_arm.h \
     data_generic_item_systemtime.h \
+    data_generic_item_timesync.h \
     data_generic_item_weather.h \
     mace/ai_agent_parameters.h \
     mace/ai_test_boundary.h \
@@ -90,7 +92,7 @@ INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
 contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
-  message("data_generic_item: Compiling with Heron support")
+  message("data_generic_item: Compiling with AI support")
   INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 }else{
   message("data_generic_item: Using standard ardupilot libraries")

@@ -43,6 +43,8 @@ public:
     virtual void cbi_VehicleTrajectory(const int &systemID, const VehiclePath_Linear &trjectory) const = 0;
 
     virtual void cbi_AIProceduralCommand(const int &systemID, const command_item::Action_ProceduralCommand &command) const = 0;
+
+    virtual void cbi_Timesync(const int &systemID, const std::shared_ptr<DataGenericItem::DataGenericItem_Timesync> &timesync) const = 0;
 };
 
 class MavlinkVehicleObject : public Controllers::IMessageNotifier<mavlink_message_t, int>

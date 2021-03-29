@@ -70,6 +70,8 @@ public:
                         ((Controllers::DataItem<FINAL_KEY, FINAL_TYPE>*)BASE::m_Controller)->onDataReceived(finalKey, finalObj);
                         BASE::m_Controller->template EncodeMessage(BaseEncode<COMPONENT_KEY, MESSAGE_TYPE, ACK_TYPE>::m_EncodeChanFunc, ack, componentResponding, target);
                     }
+
+                    return valid;
                 }
         );
     }

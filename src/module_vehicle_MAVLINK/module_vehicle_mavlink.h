@@ -1,4 +1,4 @@
-#ifndef MODULE_VEHICLE_MAVLINK_H
+﻿#ifndef MODULE_VEHICLE_MAVLINK_H
 #define MODULE_VEHICLE_MAVLINK_H
 
 #include "module_vehicle_mavlink_global.h"
@@ -39,6 +39,7 @@
 #include "controllers/controllers_MAVLINK/controller_parameter_request.h"
 #include "controllers/controllers_MAVLINK/controller_set_gps_global_origin.h"
 #include "controllers/controllers_MAVLINK/controller_write_event_to_log.h"
+#include "controllers/controllers_MAVLINK/controller_timesync.h"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/async.h" //support for async logging.
@@ -287,6 +288,29 @@ public:
     }
 
     //!
+    //! \brief cbi_Timesync Callback tied to vehicle timesync updates
+    //! \param systemID Vehicle ID generating the timesync offset
+    //! \param timesync Offset in milliseconds between MACE computer and autopilot
+    //!
+    virtual void cbi_Timesync(const int &systemID, const std::shared_ptr<DataGenericItem::DataGenericItem_Timesync> &timesync) const
+    {
+        UNUSED(systemID);
+        MaceLog::Critical("In cbi_Timesync");
+
+//        MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
+//        MavlinkEntityKey sender = 255;
+
+//        command_item::Action_Timesync actionTimesync(sender, target);
+//        actionTimesync.fromMACECOMMS_Timesync(timesync->getMACECommsObject());
+
+//        // TODO-PAT: Maybe switch to a unsolicited_receive_respond
+
+//        if(m_SystemData->ControllersCollection()->Exist("timesyncController")) {
+//            static_cast<MAVLINKUXVControllers::Controller_Timesync*>(m_SystemData->ControllersCollection()->At("timesyncController"))->Broadcast(actionTimesync, sender);
+//        }
+    }
+
+    //!
     //! \brief cbi_VehicleMissionData Callback tied to Vehicle Mission data updates
     //! \param systemID Vehicle ID generating the mission data
     //! \param data Mission data
@@ -458,6 +482,12 @@ protected:
     std::mutex m_mutex_MSGRateController;
     std::condition_variable m_condition_MSGRateController;
     bool m_oldMSGRateControllerShutdown = false;
+
+protected:
+    void prepareTimesyncController();
+    std::mutex m_mutex_TimesyncController;
+    std::condition_variable m_condition_TimesyncController;
+    bool m_oldTimesyncControllerShutdown = false;
 
 protected:
     //!

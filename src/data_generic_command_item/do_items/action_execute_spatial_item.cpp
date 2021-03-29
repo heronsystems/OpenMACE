@@ -75,6 +75,41 @@ void Action_ExecuteSpatialItem::generateMACEMSG_CommandItem(mavlink_message_t &m
     throw std::runtime_error("");
 }
 
+
+/** Functional commands that populate the execute spatial action commands */
+void Action_ExecuteSpatialItem::populateMACECOMMS_SpatialActionCommand(mavlink_execute_spatial_action_t &act) const
+{
+    if(m_SpatialAction == nullptr)
+        return;
+
+    act.target_system = static_cast<uint8_t>(getTargetSystem());
+    act.target_component = static_cast<uint8_t>(getTargetComponent());
+    act.action = m_SpatialAction->getCommandType();
+
+    m_SpatialAction->populateMACECOMMS_SpatialActionCommand(act);
+
+}
+
+void Action_ExecuteSpatialItem::fromMACECOMMS_SpatialActionCommand(const mavlink_execute_spatial_action_t &obj)
+{
+    setTargetSystem(static_cast<unsigned int>(obj.target_system));
+    setTargetComponent(static_cast<unsigned int>(obj.target_component));
+
+    switch (obj.action) {
+        case MAV_CMD::MAV_CMD_NAV_WAYPOINT:
+    {
+        m_SpatialAction = std::make_shared<command_item::SpatialWaypoint>();
+        m_SpatialAction->fromMACECOMMS_SpatialActionCommand(obj);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+//we know that you must cast to the specific type to get something explicit based on the command
+/** End of functional commands related to executing spatial action commands */
+
 std::string Action_ExecuteSpatialItem::printCommandInfo() const
 {
     return "TODO: IMPLEMENT printCommandInfo";

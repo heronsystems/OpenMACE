@@ -48,7 +48,7 @@ void AP_State_TakeoffComplete::OnEnter()
 {
     //check that the vehicle is truely armed and switch us into the guided mode
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto controllerSystemMode = new MAVLINKUXVControllers::VehicleController::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
         controllerSystemMode->Shutdown();
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
@@ -67,7 +67,7 @@ void AP_State_TakeoffComplete::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+    MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
     commandMode.targetID = Owner().getMAVLINKID();
     commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("GUIDED");
     controllerSystemMode->Send(commandMode,sender,target);

@@ -71,7 +71,7 @@ INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
 
 contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
-  message("data_generic_mission_item_topic: Compiling with Heron support")
+  message("data_generic_mission_item_topic: Compiling with AI support")
   INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 }else{
   message("data_generic_mission_item_topic: Using standard mavlink libraries")

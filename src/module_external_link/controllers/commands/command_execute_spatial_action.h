@@ -15,7 +15,7 @@
 #include "data_generic_command_item_topic/command_item_topic_components.h"
 
 
-#include "module_external_link/controllers/common.h"
+#include "controllers/controllers_MAVLINK/common.h"
 
 namespace ExternalLink {
 
@@ -72,9 +72,15 @@ private:
 
 protected:
 
-    void FillCommand(const command_item::Action_ExecuteSpatialItem &commandItem, mavlink_execute_spatial_action_t &cmd) const;
+    void FillCommand(const command_item::Action_ExecuteSpatialItem &commandItem, mavlink_execute_spatial_action_t &cmd) const
+    {
+        commandItem.populateMACECOMMS_SpatialActionCommand(cmd);
+    }
 
-    void BuildCommand(const mavlink_execute_spatial_action_t &message, command_item::Action_ExecuteSpatialItem &data) const;
+    void BuildCommand(const mavlink_execute_spatial_action_t &message, command_item::Action_ExecuteSpatialItem &data) const
+    {
+        data.fromMACECOMMS_SpatialActionCommand(message);
+    }
 
 
 protected:
@@ -105,7 +111,7 @@ protected:
 
         if(m_CommandRequestedFrom.find(target) != m_CommandRequestedFrom.cend())
         {
-            printf("Command already issued, Ignoring\n");
+            printf("Execute spatial action command already issued, Ignoring\n");
             return false;
         }
         m_CommandRequestedFrom.insert({target, sender});
@@ -116,21 +122,15 @@ protected:
     }
 
 
-    virtual bool Construct_FinalObjectAndResponse(const mavlink_execute_spatial_action_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_execute_spatial_action_ack_t &ack, MaceCore::ModuleCharacteristic &key, command_item::Action_ExecuteSpatialItem &data, MaceCore::ModuleCharacteristic &moduleFor, MaceCore::ModuleCharacteristic &queueObj)
+    virtual bool Construct_FinalObjectAndResponse(const mavlink_execute_spatial_action_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_execute_spatial_action_ack_t &ack, MaceCore::ModuleCharacteristic &dataKey, command_item::Action_ExecuteSpatialItem &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
     {
         UNUSED(sender);
-        moduleFor.MaceInstance = msg.target_system;
-        moduleFor.ModuleID = msg.target_component;
-
-        queueObj = moduleFor;
-
-        key = moduleFor;
-
+        vehicleObj = this->GetKeyFromSecondaryID(msg.target_system);
+        queueObj = vehicleObj;
+        dataKey = vehicleObj;
         this->BuildCommand(msg,data);
-
         //ack.command = data.getSpatialCommand()->getCommandType();
         ack.result = MAV_CMD_ACK::MAV_CMD_ACK_OK;
-
         //sending acknowledgement of the goTo command
         return true;
     }
@@ -151,6 +151,7 @@ protected:
             return false;
         }
     }
+
 
 public:
 

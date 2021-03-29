@@ -17,12 +17,15 @@ class AP_State_FlightGuided;
 class AP_State_FlightLand;
 class AP_State_FlightLoiter;
 class AP_State_FlightManual;
+class AP_State_FlightStabilize;
+class AP_State_FlightFBW;
 class AP_State_FlightRTL;
 class AP_State_FlightUnknown;
 class AP_State_Unknown;
 
 class AP_State_Landing;
 class AP_State_Grounded;
+class AP_State_GroundedDisarming;
 
 class AP_State_Flight : public AbstractRootState
 {

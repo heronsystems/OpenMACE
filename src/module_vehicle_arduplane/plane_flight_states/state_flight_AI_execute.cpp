@@ -65,7 +65,6 @@ bool AP_State_FlightAI_Execute::handleCommand(const std::shared_ptr<command_item
     switch (command->getCommandType()) {
     case MAV_CMD::SET_SURFACE_DEFLECTION_NORMALIZED:
     {
-        std::cout<<"We are seeing more commands!"<<std::endl;
         if(this->IsInState<AP_State_FlightAI_ExecuteDeflection>())
         {
             ardupilot::state::AbstractStateArdupilot* currentInnerState = static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateInnerState());
@@ -125,7 +124,7 @@ void AP_State_FlightAI_Execute::setupAIMode()
 
     if(currentModeString != "AI_DEFL") {
 
-        MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+        MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
         modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
             {
@@ -140,7 +139,7 @@ void AP_State_FlightAI_Execute::setupAIMode()
 
         MavlinkEntityKey sender = 255;
         MavlinkEntityKey target = Owner().getMAVLINKID();
-        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+        MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
         commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
         commandMode.vehicleMode = static_cast<uint8_t>(PLANE_MODE::PLANE_MODE_AI_DEFLECTION);
         modeController->Send(commandMode,sender,target);

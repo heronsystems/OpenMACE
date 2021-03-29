@@ -60,7 +60,7 @@ protected:
 
     std::vector<std::tuple<
         std::function<bool(COMPONENT_KEY, const MESSAGETYPE*)>,
-        std::function<void(COMPONENT_KEY, const MESSAGETYPE*)>
+        std::function<bool(COMPONENT_KEY, const MESSAGETYPE*)>
     >> m_MessageBehaviors;
 
     std::mutex m_MessageBehaviorsMutex;
@@ -72,6 +72,9 @@ protected:
     std::mutex m_MutexShutdownLambda;
 
     bool _isControllerActive = false;
+    bool _monitorActive = true;
+
+    std::string _controllerName = "GenericController";
 
 public:
 
@@ -81,9 +84,11 @@ public:
     //! \param queue Pointer to queue object, A single queue should be shared among all controllers
     //! \param linkChan Chanel communication's are to operate on.
     //!
-    GenericController(const IMessageNotifier<MESSAGETYPE, COMPONENT_KEY>* cb, TransmitQueue* queue, int linkChan) :
+    GenericController(const IMessageNotifier<MESSAGETYPE, COMPONENT_KEY>* cb, TransmitQueue* queue, int linkChan, const std::string &controllerName, const bool &monitorActive = true) :
         m_LinkChan(linkChan),
-        m_CB(cb)
+        m_CB(cb),
+        _controllerName(controllerName),
+        _monitorActive(monitorActive)
     {
         TransmitQueueType::SetQueue(queue);
     }
@@ -199,6 +204,14 @@ public:
         thread.detach();
     }
 
+    void ClearTransmissions()
+    {
+        std::thread thread([this](){
+            this->RemoveAllTransmissions();
+        });
+        thread.detach();
+    }
+
 public:
 
     virtual bool ReceiveMessage(const MESSAGETYPE *message, const COMPONENT_KEY &sender)
@@ -206,7 +219,7 @@ public:
         std::lock_guard<std::mutex> lock(m_MessageBehaviorsMutex); 
         bool usedMessage = false;
 
-        if(!_isControllerActive)
+        if(_monitorActive && !_isControllerActive)
             return usedMessage;
 
         for(auto it = m_MessageBehaviors.cbegin() ; it != m_MessageBehaviors.cend() ; ++it)
@@ -214,8 +227,10 @@ public:
             bool criteraEvaluation = std::get<0>(*it)(sender, message);
             if(criteraEvaluation)
             {
-                std::get<1>(*it)(sender, message);
-                usedMessage = true;
+                usedMessage = std::get<1>(*it)(sender, message);
+                if(usedMessage) {
+                    break;
+                }
             }
         }
 
@@ -280,7 +295,7 @@ public:
             onFinished(false);
         };
 
-        TransmitQueueType::QueueTransmission(ObjectIntTuple<T>(key, messageID), {target}, transmitAction, lambda);
+        TransmitQueueType::QueueTransmission(ObjectIntTuple<T>(key, messageID), {target}, transmitAction, lambda, _controllerName);
     }
 
 
@@ -307,7 +322,7 @@ public:
         {
             vec.push_back(ObjectIntTuple<T>(key, *it));
         }
-        TransmitQueueType::QueueTransmission(vec, {target}, transmitAction, lambda);
+        TransmitQueueType::QueueTransmission(vec, {target}, transmitAction, lambda, _controllerName);
     }
 
 
@@ -328,7 +343,7 @@ public:
             onFinished(false);
         };
 
-        TransmitQueueType::QueueTransmission(ObjectIntTuple<T>(key, messageID), targets, transmitAction, lambda);
+        TransmitQueueType::QueueTransmission(ObjectIntTuple<T>(key, messageID), targets, transmitAction, lambda, _controllerName);
     }
 
 
@@ -370,13 +385,13 @@ public:
     //! \param action Action to partake with message.
     //!
     template <const int I, typename DECODE_TYPE, typename DECODE_FUNC>
-    void AddTriggeredLogic(DECODE_FUNC func, const std::function<void(const DECODE_TYPE &msg, const COMPONENT_KEY &sender)> &action)
+    void AddTriggeredLogic(DECODE_FUNC func, const std::function<bool(const DECODE_TYPE &msg, const COMPONENT_KEY &sender)> &action)
     {
 
         auto newItem = std::make_tuple(MaceMessageIDEq<I>(),
                                        MaceProcessFSMState<DECODE_TYPE>(func, [this, action](const DECODE_TYPE &msg, const COMPONENT_KEY &sender)
                                         {
-                                            action(msg, sender);
+                                            return action(msg, sender);
                                         }));
 
         std::lock_guard<std::mutex> lock(m_MessageBehaviorsMutex);
@@ -408,14 +423,14 @@ private:
     }
 
     template <typename DECODE_TYPE, typename DECODE_FUNC>
-    static std::function<void(COMPONENT_KEY, const MESSAGETYPE*)> MaceProcessFSMState(DECODE_FUNC decode_func, const std::function<void(const DECODE_TYPE &msg, const COMPONENT_KEY &sender)> &func)
+    static std::function<bool(COMPONENT_KEY, const MESSAGETYPE*)> MaceProcessFSMState(DECODE_FUNC decode_func, const std::function<bool(const DECODE_TYPE &msg, const COMPONENT_KEY &sender)> &func)
     {
         return [decode_func, func](COMPONENT_KEY sender, const MESSAGETYPE* message)
         {
             DECODE_TYPE decodedMSG;
             decode_func(message, &decodedMSG);
 
-            func(decodedMSG, sender);
+            return func(decodedMSG, sender);
         };
     }
 

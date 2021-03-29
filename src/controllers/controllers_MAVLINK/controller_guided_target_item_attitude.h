@@ -83,7 +83,7 @@ protected:
 
 public:
     ControllerGuidedTargetItem_Attitude(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>(cb, queue, linkChan),
+        BasicMavlinkController_ModuleKeyed<command_item::Action_DynamicTarget>(cb, queue, linkChan, "GuidedTargetItem_Attitude"),
         GuidedTGTAttBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_attitude_target_t>(mavlink_msg_set_attitude_target_encode_chan))
     {
 

@@ -13,7 +13,7 @@ class Command_HomePositionSet : public Controller_GenericLongCommand<command_ite
 {
 public:
     Command_HomePositionSet(const Controllers::IMessageNotifier<mavlink_message_t, int> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<command_item::SpatialHome, MAV_CMD_DO_SET_HOME>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::SpatialHome, MAV_CMD_DO_SET_HOME>(cb, queue, linkChan, "HomePositionSet")
     {
 
     }
@@ -53,7 +53,12 @@ protected:
 
     void BuildCommand(const mavlink_command_long_t &message, command_item::SpatialHome &data) const override
     {
-        UNUSED(message); UNUSED(data);
+        data.setTargetSystem(message.target_system);
+        mace::pose::GeodeticPosition_3D pos;
+        pos.setLatitude(message.param5);
+        pos.setLongitude(message.param6);
+        pos.setAltitude(message.param7);
+        data.setPosition(&pos);
     }
 };
 
@@ -61,7 +66,7 @@ class Command_HomePositionGet : public Controller_GenericLongCommand<command_ite
 {
 public:
     Command_HomePositionGet(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<command_item::SpatialHome, MAV_CMD_GET_HOME_POSITION>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::SpatialHome, MAV_CMD_GET_HOME_POSITION>(cb, queue, linkChan, "HomePositionSet")
     {
 
     }
@@ -70,12 +75,14 @@ public:
 
     void FillCommand(const command_item::SpatialHome &commandItem, mavlink_command_long_t &cmd) const override
     {
-        UNUSED(commandItem); UNUSED(cmd);
+        UNUSED(commandItem);
+        UNUSED(cmd);
     }
 
     void BuildCommand(const mavlink_command_long_t &message, command_item::SpatialHome &data) const override
     {
-        UNUSED(message); UNUSED(data);
+        UNUSED(message);
+        UNUSED(data);
     }
 };
 

@@ -10,6 +10,8 @@ namespace ExternalLink {
 //!
 bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mavlink_mission_request_list_t &cmd, MissionItem::MissionKey &queueObj)
 {
+    MaceLog::Green("In Construct_Send (mission key), (mission request list)");
+
     UNUSED(target);
 
     queueObj = data;
@@ -96,6 +98,8 @@ bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, cons
 
 bool ControllerMission::BuildData_Send(const mavlink_mace_mission_count_t &mission, const MaceCore::ModuleCharacteristic &sender, mavlink_mace_mission_request_int_t &request, MaceCore::ModuleCharacteristic &moduleFor, MissionItem::MissionKey &receiveQueueObj, MissionItem::MissionKey &respondQueueObj)
 {
+    MaceLog::Green("In BuildData_Send (mission count)");
+
     UNUSED(sender);
     MissionItem::MissionKey key(mission.target_system, mission.mission_creator, mission.mission_id, static_cast<MissionItem::MISSIONTYPE>(mission.mission_type));
     receiveQueueObj = key;
@@ -126,6 +130,9 @@ bool ControllerMission::BuildData_Send(const mavlink_mace_mission_count_t &missi
 
 bool ControllerMission::BuildData_Send(const mavlink_mace_mission_request_int_t &missionRequest, const MaceCore::ModuleCharacteristic &sender, mavlink_mace_mission_item_int_t &missionItem, MaceCore::ModuleCharacteristic &moduleFrom, MissionItem::MissionKey &receiveQueueObj, MissionItem::MissionKey &respondQueueObj)
 {
+
+    MaceLog::Green("In BuildData_Send (mission request int)");
+
     UNUSED(sender);
     MissionItem::MissionKey key(missionRequest.target_system,missionRequest.mission_creator,missionRequest.mission_id,static_cast<MissionItem::MISSIONTYPE>(missionRequest.mission_type));
     receiveQueueObj = key;
@@ -171,6 +178,8 @@ bool ControllerMission::BuildData_Send(const mavlink_mace_mission_request_int_t 
 
 bool ControllerMission::BuildData_Send(const mavlink_mace_mission_item_int_t &missionItem, const MaceCore::ModuleCharacteristic &sender, mavlink_mace_mission_request_int_t &request, MaceCore::ModuleCharacteristic &moduleFor, MissionItem::MissionKey &receiveQueueObj, MissionItem::MissionKey &respondQueueObj)
 {
+    MaceLog::Green("In BuildData_Send (mission item int)");
+
     UNUSED(sender);
     //MTB this isn't quite right, but I think it only effects more or less data fields that are not used.
     MaceCore::ModuleCharacteristic target;
@@ -231,6 +240,9 @@ bool ControllerMission::BuildData_Send(const mavlink_mace_mission_item_int_t &mi
 
 bool ControllerMission::Construct_FinalObjectAndResponse(const mavlink_mace_mission_item_int_t &missionItem, const MaceCore::ModuleCharacteristic &sender, mavlink_mace_mission_ack_t &ackMission, MissionItem::MissionKey &finalKey, MissionItem::MissionList &finalList, MaceCore::ModuleCharacteristic &moduleFor, MissionItem::MissionKey &queueObj)
 {
+
+    MaceLog::Green("In Construct_FinalObjectAndResponse");
+
     UNUSED(sender);
     //MTB this isn't quite right, but I think it only effects more or less data fields that are not used.
     MaceCore::ModuleCharacteristic target;
@@ -310,6 +322,8 @@ bool ControllerMission::Construct_FinalObjectAndResponse(const mavlink_mace_miss
 
 bool ControllerMission::Finish_Receive(const mavlink_mace_mission_ack_t &missionItem, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MissionItem::MissionKey &queueObj)
 {
+    MaceLog::Green("In Finish_Receive (mission key)");
+
     MissionItem::MissionKey key(missionItem.target_system, missionItem.mission_creator, missionItem.mission_id, static_cast<MissionItem::MISSIONTYPE>(missionItem.mission_type));
 
     //if we aren't uploading a mission then there is nothing to ack.
@@ -334,6 +348,8 @@ bool ControllerMission::Finish_Receive(const mavlink_mace_mission_ack_t &mission
 
 void ControllerMission::Request_Construct(const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mavlink_mission_request_list_t &msg, MaceCore::ModuleCharacteristic &queueObj)
 {
+    MaceLog::Green("In Request_Construct");
+
     throw std::runtime_error("No Longer supported, need to pull the correct mission_system");
     UNUSED(sender);
     msg.target_system = static_cast<uint8_t>(target.ModuleID);
@@ -349,6 +365,9 @@ void ControllerMission::Request_Construct(const MaceCore::ModuleCharacteristic &
 
 bool ControllerMission::BuildData_Send(const mavlink_mission_request_list_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_mace_mission_count_t &response, MaceCore::ModuleCharacteristic &vehicleObj, MissionItem::MissionKey &receiveQueueObj, MissionItem::MissionKey &responseQueueObj)
 {
+
+    MaceLog::Green("In BuildData_Send (mission request list), (mission count)");
+
     MissionItem::MISSIONSTATE state = MissionItem::MISSIONSTATE::CURRENT;
     if(state == MissionItem::MISSIONSTATE::CURRENT)
     {
@@ -381,7 +400,12 @@ bool ControllerMission::BuildData_Send(const mavlink_mission_request_list_t &msg
             receiveQueueObj = key;
             responseQueueObj = key;
 
-            if(m_MissionsUploading.find(sender) != m_MissionsUploading.cend())
+            // TODO-PAT: Added this if statement to insert a blank mission over EL. Is this valid?
+            if(m_MissionsUploading.find(sender) == m_MissionsUploading.cend())
+            {
+                m_MissionsUploading.insert({sender, {}});
+            }
+            else if(m_MissionsUploading.find(sender) != m_MissionsUploading.cend())
             {
                 if(m_MissionsUploading.at(sender).find(key) != m_MissionsUploading.at(sender).cend())
                 {
@@ -399,7 +423,7 @@ bool ControllerMission::BuildData_Send(const mavlink_mission_request_list_t &msg
             response.mission_id = static_cast<uint8_t>(key.m_missionID);
             response.mission_type = static_cast<uint8_t>(key.m_missionType);
 
-            std::cout << "Mission Controller: Sending Mission Count" << " S_ID: " << (int)key.m_systemID << " M_ID: " << (int)key.m_missionID << std::endl;
+            std::cout << "Mission Controller: Sending Mission Count of " << response.count << " for S_ID: " << (int)key.m_systemID << " M_ID: " << (int)key.m_missionID << std::endl;
 
             return true;
         }
@@ -414,6 +438,8 @@ bool ControllerMission::BuildData_Send(const mavlink_mission_request_list_t &msg
 
 bool ControllerMission::BuildData_Send(const mavlink_mission_request_list_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_mace_mission_ack_t &response, MaceCore::ModuleCharacteristic &vehicleObj, MissionItem::MissionKey &receiveQueueObj, MissionItem::MissionKey &respondQueueObj)
 {
+    MaceLog::Green("In BuildData_Send (mission request list), (mission ack)");
+
     UNUSED(sender);
     UNUSED(receiveQueueObj);
     UNUSED(respondQueueObj);
@@ -464,6 +490,8 @@ bool ControllerMission::BuildData_Send(const mavlink_mission_request_list_t &msg
 
 bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, const MaceCore::ModuleCharacteristic &sender, const MaceCore::ModuleCharacteristic &target, mavlink_new_onboard_mission_t &msg, MaceCore::ModuleCharacteristic &queue)
 {
+    MaceLog::Green("In Construct_Send (mission key), (new onboard mission)");
+
     UNUSED(sender);
 
     queue = target;
@@ -482,6 +510,8 @@ bool ControllerMission::Construct_Send(const MissionItem::MissionKey &data, cons
 
 bool ControllerMission::Construct_FinalObjectAndResponse(const mavlink_new_onboard_mission_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_mace_mission_ack_t &ack, MaceCore::ModuleCharacteristic &module_from, MaceCore::ModuleCharacteristic &dataKey, MissionKey &data)
 {
+    MaceLog::Green("In Construct_FinalObjectAndResponse (new onboard mission)");
+
     MissionItem::MissionKey key(msg.mission_system, msg.mission_creator, msg.mission_id, static_cast<MissionItem::MISSIONTYPE>(msg.mission_type), static_cast<MissionItem::MISSIONSTATE>(msg.mission_state));
 
     module_from = this->GetHostKey();
@@ -503,6 +533,7 @@ bool ControllerMission::Construct_FinalObjectAndResponse(const mavlink_new_onboa
 
 bool ControllerMission::Finish_Receive(const mavlink_mace_mission_ack_t &missionItem, const MaceCore::ModuleCharacteristic &sender, uint8_t & ack, MaceCore::ModuleCharacteristic &queueObj)
 {
+    MaceLog::Green("In Finish_Receive (module characteristic)");
     MissionItem::MissionKey key(missionItem.target_system, missionItem.mission_creator, missionItem.mission_id, static_cast<MissionItem::MISSIONTYPE>(missionItem.mission_type));
 
     //The final mission upload, and notificaiton of received mission notification use the same message
@@ -526,7 +557,7 @@ bool ControllerMission::Finish_Receive(const mavlink_mace_mission_ack_t &mission
 }
 
 ControllerMission::ControllerMission(const Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
-    CONTROLLER_MISSION_TYPE(cb, queue, linkChan),
+    CONTROLLER_MISSION_TYPE(cb, queue, linkChan, "Mission"),
     SendHelper_RequestMissionDownload(this, ModuleToSysIDCompIDConverter<mavlink_mission_request_list_t>(mavlink_msg_mission_request_list_encode_chan)),
     SendHelper_RequestList(this, mavlink_msg_mission_request_list_decode, ModuleToSysIDCompIDConverter<mavlink_mace_mission_count_t>(mavlink_msg_mace_mission_count_encode_chan)),
     SendHelper_ReceiveCountRespondItemRequest(this, mavlink_msg_mace_mission_count_decode, ModuleToSysIDCompIDConverter<mavlink_mace_mission_request_int_t>(mavlink_msg_mace_mission_request_int_encode_chan)),

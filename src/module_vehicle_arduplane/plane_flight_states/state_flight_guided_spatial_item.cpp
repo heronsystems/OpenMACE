@@ -132,7 +132,7 @@ void AP_State_FlightGuided_SpatialItem::OnEnter(const std::shared_ptr<command_it
 void AP_State_FlightGuided_SpatialItem::processSpatialWaypoint()
 {
     const command_item::Action_ExecuteSpatialItem* cmd = currentCommand->as<command_item::Action_ExecuteSpatialItem>();
-    AbstractSpatialActionPtr spatialCommand = cmd->getSpatialAction();
+    command_item::AbstractSpatialActionPtr spatialCommand = cmd->getSpatialAction();
 
     //We want to first assume that this command has not been currently accepted
     this->commandAccepted = false;

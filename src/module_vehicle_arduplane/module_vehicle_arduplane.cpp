@@ -446,6 +446,10 @@ void ModuleVehicleArduplane::VehicleHeartbeatInfo(const std::string &linkName, c
         return;
     }
 
+    if(heartbeatMSG.type != MAV_TYPE::MAV_TYPE_FIXED_WING) {
+        return;
+    }
+
     UNUSED(linkName);
     if(m_SystemData == nullptr)
     {
@@ -496,25 +500,13 @@ void ModuleVehicleArduplane::VehicleHeartbeatInfo(const std::string &linkName, c
     }
 
     DataGenericItem::DataGenericItem_Heartbeat heartbeat;
-    heartbeat.setAutopilot(Data::AutopilotType::AUTOPILOT_TYPE_ARDUPILOTMEGA);
+    heartbeat.setAutopilot(MAV_AUTOPILOT::MAV_AUTOPILOT_ARDUPILOTMEGA);
     heartbeat.setCompanion(this->airborneInstance);
     heartbeat.setProtocol(Data::CommsProtocol::COMMS_MAVLINK);
     heartbeat.setMavlinkID(systemID);
-
-    switch(heartbeatMSG.type)
-    {
-    case MAV_TYPE_TRICOPTER:
-    case MAV_TYPE_QUADROTOR:
-    case MAV_TYPE_HEXAROTOR:
-    case MAV_TYPE_OCTOROTOR:
-        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_QUADROTOR);
-        break;
-    case MAV_TYPE_FIXED_WING:
-        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_FIXED_WING);
-        break;
-    default:
-        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_GENERIC);
-    }
+    heartbeat.setType(static_cast<MAV_TYPE>(heartbeatMSG.type));
+    heartbeat.setFlightMode(heartbeatMSG.custom_mode);
+    heartbeat.setArmed(arm.getSystemArm());
 
     // Set MACE HSM state:
     if(this->stateMachine->getCurrentState()) {
@@ -640,6 +632,9 @@ void ModuleVehicleArduplane::NewAICommand_ExecuteProcedural(const command_item::
     UNUSED(sender);
     ardupilot::state::AbstractStateArdupilot* currentOuterState = static_cast<ardupilot::state::AbstractStateArdupilot*>(stateMachine->getCurrentState());
     currentOuterState->handleTestProcedural(procedural);
+
+    std::cout << "Test procedural made it to vehicle: " << AICommandItemToString(procedural.getCommandType()) << std::endl;
+
     ProgressStateMachineStates();
 }
 

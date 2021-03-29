@@ -18,19 +18,22 @@ void AP_State_FlightAI_Initialize_ROUTE::OnExit()
         MAVLINKUXVControllers::Command_ChangeSpeed* speedController = static_cast<MAVLINKUXVControllers::Command_ChangeSpeed*>(Owner().ControllersCollection()->At("TestInitialization_SpeedController"));
         speedController->Shutdown();
     }
-    if(m_GeodeticCommsController)
-        delete m_GeodeticCommsController;
-    AbstractStateArdupilot::OnExit();
+//    if(m_GeodeticCommsController)
+//        delete m_GeodeticCommsController;
 
+    AbstractStateArdupilot::OnExit();
 }
+
 AbstractStateArdupilot* AP_State_FlightAI_Initialize_ROUTE::getClone() const
 {
     return (new AP_State_FlightAI_Initialize_ROUTE(*this));
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::getClone(AbstractStateArdupilot** state) const
 {
     *state = new AP_State_FlightAI_Initialize_ROUTE(*this);
 }
+
 hsm::Transition AP_State_FlightAI_Initialize_ROUTE::GetTransition()
 {
     hsm::Transition rtn = hsm::NoTransition();
@@ -52,6 +55,7 @@ hsm::Transition AP_State_FlightAI_Initialize_ROUTE::GetTransition()
     }
     return rtn;
 }
+
 bool AP_State_FlightAI_Initialize_ROUTE::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     bool success = false;
@@ -61,90 +65,108 @@ bool AP_State_FlightAI_Initialize_ROUTE::handleCommand(const std::shared_ptr<com
     } //end of switch statement command type
     return success;
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::Update()
 {
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::OnEnter()
 {
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     UNUSED(command);
     //If we have a command we probably will be entering a state let us figure it out
     this->OnEnter();
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::OnEnter(const command_item::Action_InitializeTestSetup &initialization)
 {
     m_SetupConditions = initialization;
-    setupTrackingControllers();
-    setupAircraftSpeed();
-    setupAircraftRoute();
+//    setupTrackingControllers();
+//    setupAircraftSpeed();
+//    setupAircraftRoute();
+      setupForAutoMission();
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::setupTrackingControllers()
 {
     //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
-    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    m_GeodeticCommsController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_WP(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-    collection->Insert("TestInitialization_PositionController",m_GeodeticCommsController);
-    dynamic_cast<VehicleObject_Arduplane*>(&Owner())->m_TargetController->connectVehicleTargetCallback(AP_State_FlightAI_Initialize_ROUTE::staticCallbackFunction_VehicleTarget, this);
+//    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+//    m_GeodeticCommsController = new MAVLINKUXVControllers::ControllerGuidedTargetItem_WP(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+//    collection->Insert("TestInitialization_PositionController",m_GeodeticCommsController);
+//    dynamic_cast<VehicleObject_Arduplane*>(&Owner())->m_TargetController->connectVehicleTargetCallback(AP_State_FlightAI_Initialize_ROUTE::staticCallbackFunction_VehicleTarget, this);
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::setupAircraftSpeed()
 {
-    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
-    MAVLINKUXVControllers::Command_ChangeSpeed* speedCommsController = new MAVLINKUXVControllers::Command_ChangeSpeed(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
-    speedCommsController->AddLambda_Finished(this, [this, speedCommsController](const bool completed, const uint8_t finishCode){
-        UNUSED(completed);
-        UNUSED(finishCode);
-        speedCommsController->Shutdown();
-    });
-    speedCommsController->setLambda_Shutdown([this]()
-    {
-        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto ptr = collection->Remove("TestInitialization_SpeedController");
-        delete ptr;
-    });
-    collection->Insert("TestInitialization_SpeedController",speedCommsController);
-    MavlinkEntityKey target = Owner().getMAVLINKID();
-    MavlinkEntityKey sender = 255;
-    command_item::ActionChangeSpeed commandSpeed(static_cast<unsigned int>(sender),static_cast<unsigned int>(target));
-    commandSpeed.setDesiredSpeed(m_SetupConditions.m_InitialConditions.getSpeed());
-    speedCommsController->Send(commandSpeed, sender, target);
+//    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+//    //Insert a new controller only one time in the guided state to manage the entirity of the commands that are of the dynamic target type
+//    MAVLINKUXVControllers::Command_ChangeSpeed* speedCommsController = new MAVLINKUXVControllers::Command_ChangeSpeed(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+//    speedCommsController->AddLambda_Finished(this, [this, speedCommsController](const bool completed, const uint8_t finishCode){
+//        UNUSED(completed);
+//        UNUSED(finishCode);
+//        speedCommsController->Shutdown();
+//    });
+//    speedCommsController->setLambda_Shutdown([this]()
+//    {
+//        Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
+//        auto ptr = collection->Remove("TestInitialization_SpeedController");
+//        delete ptr;
+//    });
+//    collection->Insert("TestInitialization_SpeedController",speedCommsController);
+//    MavlinkEntityKey target = Owner().getMAVLINKID();
+//    MavlinkEntityKey sender = 255;
+//    command_item::ActionChangeSpeed commandSpeed(static_cast<unsigned int>(sender),static_cast<unsigned int>(target));
+//    commandSpeed.setDesiredSpeed(m_SetupConditions.m_InitialConditions.getSpeed());
+//    speedCommsController->Send(commandSpeed, sender, target);
 }
+
 void AP_State_FlightAI_Initialize_ROUTE::setupAircraftRoute()
 {
-    MissionItem::MissionList flightProfile = routeViaDubinsSpline();
-//    Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().GlobalControllersCollection();
-//    if(collection->Exist("missionController"))
-//    {
-//        mace::pose::GeodeticPosition_3D currentHome = Owner().environment->vehicleGlobalHome.get();
-//        command_item::SpatialHome routeHome(Owner().getMAVLINKID(),Owner().getMAVLINKID());
-//        routeHome.setPosition(&currentHome);
-//        MAVLINKUXVControllers::ControllerMission* missionController = static_cast<MAVLINKUXVControllers::ControllerMission*>(collection->At("missionController"));
-//        missionController->AddLambda_Finished(this, [this, routeHome, flightProfile](const bool completed, const uint8_t &code){
-//            if(completed && (code == MAV_MISSION_RESULT::MAV_MISSION_ACCEPTED))
-//            {
-//                //////////////////////////////
-//                ///Update about Home position
-//                //////////////////////////////
-//                Owner().publishVehicleHome(Owner().getMAVLINKID(), routeHome);
-//                //////////////////////////////
-//                ///Update about mission list
-//                //////////////////////////////
-//                Owner().publishVehicleAutoMission(Owner().getMAVLINKID(), flightProfile);
-//                //Now we can start tracking
-//            }
-//            else
-//            {
-//                //the upload failed, we are going to abort this run
-//                setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ABORT);
-//            }
-//        });
-//        missionController->UploadMission(flightProfile,routeHome,Owner().getMAVLINKID());
-//    }
+//    MissionItem::MissionList flightProfile = routeViaDubinsSpline();
+
 }
+
+void AP_State_FlightAI_Initialize_ROUTE::setupForAutoMission()
+{
+    runInAutoMode = true;
+
+//    //This helps us based on the current conditions in the present moment
+    std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
+
+    if(currentModeString != "AUTO") {
+
+        MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+        modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
+            if(completed && (finishCode == MAV_RESULT_ACCEPTED))
+            {
+                std::cout<<"We are going to change into auto mode to support the ai initialization"<<std::endl;
+            }
+            else
+            {
+                setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ABORT);
+            }
+            modeController->Shutdown();
+        });
+
+        MavlinkEntityKey sender = 255;
+        MavlinkEntityKey target = Owner().getMAVLINKID();
+        MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
+        commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
+        commandMode.vehicleMode = static_cast<uint8_t>(PLANE_MODE::PLANE_MODE_AUTO);
+        modeController->Send(commandMode,sender,target);
+    }
+    else
+    {
+        std::cout<<"There is no need to change into auto mode to support AI because we are already there"<<std::endl;
+    }
+}
+
 MissionItem::MissionList AP_State_FlightAI_Initialize_ROUTE::routeViaDubinsSpline()
 {
+    std::cout << "BEGIN ROUTE CONSTRUCTION" << std::endl;
     MissionItem::MissionList setupMission(Owner().getMAVLINKID(),Owner().getMAVLINKID(),MISSIONTYPE::AUTO, MISSIONSTATE::CURRENT);
     command_item::SpatialWaypointPtr wpTarget = std::make_shared<command_item::SpatialWaypoint>(Owner().getMAVLINKID(),Owner().getMAVLINKID());
     //Setup the vehicle input into the dubins spline
@@ -162,11 +184,15 @@ MissionItem::MissionList AP_State_FlightAI_Initialize_ROUTE::routeViaDubinsSplin
     //First let us setup the target position
     pose::GeodeticPosition_3D targetGeoPosition = m_SetupConditions.m_InitialConditions.getPosition();
     double targetAlt = targetGeoPosition.getAltitude();
+    std::cout << "TARGET GEO IS " << targetGeoPosition << std::endl;
     //Grab the local reference origin for the aircraft
     pose::GeodeticPosition_3D referenceOrigin = Owner().environment->vehicleGlobalOrigin.get();
     referenceOrigin.setCoordinateFrame(GeodeticFrameTypes::CF_GLOBAL_RELATIVE_ALT);
     referenceOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_RELATIVE);
     referenceOrigin.setAltitude(0.0);
+
+    std::cout << "REFERENCE ORIGIN IS " << referenceOrigin << std::endl;
+
 
     //Generate the target cartesian position from the geodetic target coordinates
     pose::CartesianPosition_3D targetENUCarPosition, projectedTarget;
@@ -181,11 +207,13 @@ MissionItem::MissionList AP_State_FlightAI_Initialize_ROUTE::routeViaDubinsSplin
                 ftf::transform_orientation_ned_enu(targetNEDOrientation));
     double targetOrientation_yaw = ftf::quaternion_get_yaw(targetENUOrientation);
     double revTargetOrientation_yaw = math::reverseBearing(targetOrientation_yaw);
+    std::cout << "TARGET IS " << projectedTarget << std::endl;
 
     //Third, let us project the target state to be 5x the target speed of the aircraft behind. This should alot 2 seconds
     //of straight and level fight to runup into the target state
     projectedTarget.applyPositionalShiftFromPolar(5*m_SetupConditions.m_InitialConditions.getSpeed(),revTargetOrientation_yaw); //behind the target
     double q1[] = { projectedTarget.getXPosition(), projectedTarget.getYPosition(), targetOrientation_yaw};
+    std::cout << "PROJECTED TARGET IS " << projectedTarget << std::endl;
 
     DubinsPath path;
     VectorStateQueue targetQueue;
@@ -195,6 +223,7 @@ MissionItem::MissionList AP_State_FlightAI_Initialize_ROUTE::routeViaDubinsSplin
 
     dubins_shortest_path( &path, q0, q1, Owner().m_AgentParams.getTurningRadius());
     dubins_path_sample_many(&path, Owner().m_AgentParams.getSamplingDistance(), targetQueue, targetAlt);
+    std::cout << "BUILDING PATH" << std::endl;
 
     for(size_t i = 0; i < targetQueue.size(); i++)
     {
@@ -205,6 +234,7 @@ MissionItem::MissionList AP_State_FlightAI_Initialize_ROUTE::routeViaDubinsSplin
         wpTarget->setPosition(&transformedPoint);
         setupMission.insertMissionItem(wpTarget);
     }
+    std::cout << "SUCCESSFULLY BUILT PATH" << std::endl;
 
     //Lastly, add the actual target to the appended list
     TrajectoryPoint trajPoint;
@@ -227,9 +257,15 @@ MissionItem::MissionList AP_State_FlightAI_Initialize_ROUTE::routeViaDubinsSplin
 
     linearPath.setVertices(pathGeo);
 
+    std::cout << "ADDED TARGET TO PATH" << std::endl;
+
     Owner().publishVehicleTrajectory(Owner().getMAVLINKID(), linearPath);
 
+    std::cout << "PUBLISHED TRAJECTORY" << std::endl;
+
     dynamic_cast<VehicleObject_Arduplane*>(&Owner())->m_TrackingManager->receivedNewTrajectory(targetQueue);
+
+    std::cout << "FINISHED ROUTE CONSTRUCTION" << std::endl;
 
     return setupMission;
 }
@@ -289,7 +325,9 @@ void AP_State_FlightAI_Initialize_ROUTE::callbackFunction_VehicleTarget(const po
     MavlinkEntityKey sender = 255;
     command_item::SpatialWaypoint targetWaypoint(static_cast<unsigned int>(sender), static_cast<unsigned int>(target));
     targetWaypoint.setPosition(&projection);
-    m_GeodeticCommsController->Broadcast(targetWaypoint, sender);
+    std::cout<<"The projected target in space is"<<projection<<std::endl;
+
+//    m_GeodeticCommsController->Broadcast(targetWaypoint, sender);
 }
 void AP_State_FlightAI_Initialize_ROUTE::executeFrameComparison()
 {

@@ -63,12 +63,13 @@ void AP_State_FlightAI_ExecuteEnd::Update()
 
 void AP_State_FlightAI_ExecuteEnd::OnEnter()
 {
+    /*
     //This helps us based on the current conditions in the present moment
     std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
     if(currentModeString != "GUIDED") {
         //check that the vehicle is truely armed and switch us into the guided mode
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        auto controllerSystemMode = new MAVLINKUXVControllers::VehicleController::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
             controllerSystemMode->Shutdown();
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
@@ -87,7 +88,7 @@ void AP_State_FlightAI_ExecuteEnd::OnEnter()
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
 
-        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+        MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
         commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("GUIDED");
         controllerSystemMode->Send(commandMode,sender,target);
@@ -97,6 +98,7 @@ void AP_State_FlightAI_ExecuteEnd::OnEnter()
         //We have no command and therefore are just in the guided mode, we can tranisition to idle
         _desiredState = Data::MACEHSMState::STATE_FLIGHT_GUIDED_IDLE;
     }
+    */
 }
 
 void AP_State_FlightAI_ExecuteEnd::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)

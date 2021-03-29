@@ -5,13 +5,13 @@
 
 typedef enum class AdeptModelType : uint8_t
 {
-    ZOMBIE,
-    CIRCLE,
-    STATIC,
-    FALCO,
-    TALON,
-    MANUAL,
-    UNKNOWN
+    ZOMBIE=0,
+    CIRCLE=1,
+    STATIC=2,
+    FALCO=3,
+    TALON=4,
+    MANUAL=5,
+    UNKNOWN=6
 } AdeptModelType;
 
 /*!

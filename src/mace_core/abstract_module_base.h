@@ -42,6 +42,8 @@ public:
             return "ExternalLink";
         case ModuleClasses::GROUND_STATION:
             return "GroundStation";
+        case ModuleClasses::ML_STATION:
+            return "MLStation";
         case ModuleClasses::PATH_PLANNING:
             return "PathPlanning";
         case ModuleClasses::ROS:
@@ -52,6 +54,8 @@ public:
             return "Sensors";
         case ModuleClasses::VEHICLE_COMMS:
             return "VehicleComms";
+        case ModuleClasses::ADEPT:
+            return "Adept";
         default:
             throw std::runtime_error("Unknown module type");
         }
@@ -68,6 +72,8 @@ public:
             return ModuleClasses::EXTERNAL_LINK;
         if(string == "GroundStation")
             return ModuleClasses::GROUND_STATION;
+        if(string == "MLStation")
+            return ModuleClasses::ML_STATION;
         if(string == "PathPlanning")
             return ModuleClasses::PATH_PLANNING;
         if(string == "ROS")
@@ -76,6 +82,8 @@ public:
             return ModuleClasses::RTA;
         if(string == "Sensors")
             return ModuleClasses::SENSORS;
+        if(string == "Adept")
+            return ModuleClasses::ADEPT;
         if(string == "VehicleComms")
             return ModuleClasses::VEHICLE_COMMS;
         throw std::runtime_error("Unknown module type");

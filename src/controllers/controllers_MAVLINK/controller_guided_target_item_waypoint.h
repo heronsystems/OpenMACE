@@ -105,7 +105,7 @@ protected:
 
 public:
     ControllerGuidedTargetItem_WP(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<command_item::SpatialWaypoint>(cb, queue, linkChan),
+        BasicMavlinkController_ModuleKeyed<command_item::SpatialWaypoint>(cb, queue, linkChan, "GuidedTArgetItem_WP"),
         GuidedTGTWPBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_mission_item_t>(mavlink_msg_mission_item_encode_chan))
     {
 

@@ -51,7 +51,7 @@ namespace ExternalLink{
 
 using CONTROLLER_BOUNDARY_TYPE = Controllers::GenericController<
     mavlink_message_t, MaceCore::ModuleCharacteristic,
-    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMaceMsgIDTuple<MaceCore::BoundaryIdentifierType>, ObjectMaceMsgIDTuple<ModuleBoundaryIdentifier>>,
+    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, MAVLINKUXVControllers::ObjectMAVLINKMsgIDTuple<MaceCore::BoundaryIdentifierType>, MAVLINKUXVControllers::ObjectMAVLINKMsgIDTuple<ModuleBoundaryIdentifier>>,
     uint8_t,
     Controllers::DataItem<MaceCore::ModuleCharacteristic, BoundaryNotificationData>,
     Controllers::DataItem<ModuleBoundaryIdentifier, BoundaryItem::BoundaryList>

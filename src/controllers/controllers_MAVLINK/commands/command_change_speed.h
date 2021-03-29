@@ -12,7 +12,7 @@ class Command_ChangeSpeed : public Controller_GenericLongCommand<command_item::A
 {
 public:
     Command_ChangeSpeed(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<command_item::ActionChangeSpeed, MAV_CMD_DO_CHANGE_SPEED>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::ActionChangeSpeed, MAV_CMD_DO_CHANGE_SPEED>(cb, queue, linkChan, "ChangeSpeed")
     {
 
     }
@@ -33,8 +33,9 @@ protected:
 
     virtual void BuildCommand(const mavlink_command_long_t &message, command_item::ActionChangeSpeed &data) const
     {
-        UNUSED(message);
-        UNUSED(data);
+        data.setTargetSystem(message.target_system);
+        data.setSpeedFrame(Data::SpeedFrame::AIRSPEED); // param
+        data.setDesiredSpeed(message.param2);
     }
 };
 

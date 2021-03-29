@@ -63,6 +63,9 @@ private:
 
     void setupAircraftRoute();
 
+    void setupForAutoMission();
+    bool runInAutoMode = false;
+
     void executeFrameComparison();
 
     MissionList routeViaDubinsSpline();
@@ -72,10 +75,15 @@ private:
 public:
 
     bool notifyOfImpendingModeChange(const uint8_t &mode) override
-    {       
+    {
         UNUSED(mode);
-     
-        setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ABORT);
+        if((mode == PLANE_MODE::PLANE_MODE_AUTO) && (runInAutoMode))
+        {
+            //If the plane has moved to auto, this was intentional by this state and therefore nothing should be done.
+            return false;
+        }
+        else
+            setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ABORT);
 
         return false;
     }

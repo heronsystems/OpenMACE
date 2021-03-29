@@ -60,7 +60,7 @@ protected:
 
 public:
     Controller_WriteEventToLog(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<command_item::Action_EventTag>(cb, queue, linkChan),
+        BasicMavlinkController_ModuleKeyed<command_item::Action_EventTag>(cb, queue, linkChan, "WriteEventToLog"),
         WriteToLogBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_write_event_to_log_t>(mavlink_msg_write_event_to_log_encode_chan))
     {
 

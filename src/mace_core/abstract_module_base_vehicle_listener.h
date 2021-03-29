@@ -6,6 +6,8 @@
 
 #include "data_generic_command_item/command_item_components.h"
 
+#include "data_generic_item/mace/ai_test_parameterization.h"
+
 #define BASE_MODULE_VEHICLE_LISTENER_ENUMS EMIT_HEARTBEAT, ISSUE_GENERAL_COMMAND, \
     EXECUTE_ACTION_SPATIALITEM, \
     CHANGE_VEHICLE_ARM, REQUEST_VEHICLE_TAKEOFF, REQUEST_VEHICLE_LAND, REQUEST_VEHICLE_RTL, CHANGE_VEHICLE_MODE, \
@@ -15,7 +17,7 @@
     REQUEST_ONBOARD_GUIDED_MISSION, CLEAR_ONBOARD_GUIDED_MISSION, \
     REQUEST_VEHICLE_HOME, SET_VEHICLE_HOME, \
     FOLLOW_NEW_COMMANDS,FINISH_AND_FOLLOW_COMMANDS,COMMANDS_APPENDED, \
-    EXECUTE_DYNAMIC_TARGET, SET_SURFACE_DEFLECTION
+    EXECUTE_DYNAMIC_TARGET, SET_SURFACE_DEFLECTION, TIMESYNC
 
 namespace MaceCore
 {
@@ -80,7 +82,6 @@ public:
             UNUSED(sender);
             Command_IssueGeneralCommand(command);
         });
-
 
         this->template AddCommandLogic<command_item::ActionChangeMode>(CT::CHANGE_VEHICLE_MODE, [this](const command_item::ActionChangeMode &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_ChangeSystemMode(command, sender);

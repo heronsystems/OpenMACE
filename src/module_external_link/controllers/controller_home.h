@@ -21,7 +21,8 @@ namespace ExternalLink {
 
 
 using CONTROLLER_HOME_TYPE = Controllers::GenericController<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectIntTuple<MaceCore::ModuleCharacteristic>>,
     uint8_t,
     Controllers::DataItem<MaceCore::ModuleCharacteristic, command_item::SpatialHome>
@@ -37,7 +38,8 @@ using ControllerHome_Step_BroadcastHome = Controllers::ActionBroadcast<
 
 //Receive a broadcasted home position, accept and finish (no response)
 using ControllerHome_Step_ReceiveBroadcastedHome = Controllers::ActionUnsolicitedReceive<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     command_item::SpatialHome,
@@ -47,7 +49,8 @@ using ControllerHome_Step_ReceiveBroadcastedHome = Controllers::ActionUnsolicite
 
 //Request a home position, wait to receive the home position
 using ControllerHome_Step_RequestHome = Controllers::ActionRequest<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     mavlink_request_home_position_t,
@@ -56,7 +59,8 @@ using ControllerHome_Step_RequestHome = Controllers::ActionRequest<
 
 //Receive a request for home, send out the home position, and wait to receive ack
 using ControllerHome_Step_ReceiveHomeRequest = Controllers::ActionIntermediate<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
@@ -68,7 +72,8 @@ using ControllerHome_Step_ReceiveHomeRequest = Controllers::ActionIntermediate<
 
 //Receive home position after requesting for it, send ack out upon reception
 using ControllerHome_Step_ReceiveHomePositionSendAck = Controllers::ActionFinalReceiveRespond<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,
@@ -80,7 +85,8 @@ using ControllerHome_Step_ReceiveHomePositionSendAck = Controllers::ActionFinalR
 
 //Receive ack of home position received after sending it
 using ControllerHome_Step_ReceiveFinishingAck = Controllers::ActionFinish<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     uint8_t,
@@ -90,7 +96,8 @@ using ControllerHome_Step_ReceiveFinishingAck = Controllers::ActionFinish<
 
 //Set a home position on another controller
 using ControllerHome_Step_SendHomePosition = Controllers::ActionSend<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     command_item::SpatialHome,
@@ -100,7 +107,8 @@ using ControllerHome_Step_SendHomePosition = Controllers::ActionSend<
 
 //Receive the set home and send an ack out.
 using ControllerHome_Step_ReceiveSetHomeSendACK = Controllers::ActionFinalReceiveRespond<
-    mavlink_message_t, MaceCore::ModuleCharacteristic,
+    mavlink_message_t,
+    MaceCore::ModuleCharacteristic,
     CONTROLLER_HOME_TYPE,
     MaceCore::ModuleCharacteristic,
     MaceCore::ModuleCharacteristic,

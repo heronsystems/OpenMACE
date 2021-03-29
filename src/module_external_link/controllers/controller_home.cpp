@@ -7,20 +7,25 @@ void ControllerHome::Construct_Broadcast(const command_item::SpatialHome &data, 
     UNUSED(sender);
     UNUSED(data);
     UNUSED(msg);
-    //        msg.latitude = data.position->getX() * pow(10,7);
-    //        msg.longitude = data.position->getY()* pow(10,7);
-    //        msg.altitude = data.position->getZ() * 1000.0;
-    //        msg.x = 0;
-    //        msg.y = 0;
-    //        msg.z = 0;
-    //        msg.q[0] = 0;
-    //        msg.q[1] = 0;
-    //        msg.q[2] = 0;
-    //        msg.q[3] = 0;
-    //        msg.approach_x = 0;
-    //        msg.approach_y = 0;
-    //        msg.approach_z = 0;
-    //        msg.validity = 0;
+    const mace::pose::Position* homePosition = data.getPosition();
+
+    switch (homePosition->getCoordinateSystemType()) {
+    case CoordinateSystemTypes::CARTESIAN:
+    {
+        std::cout<<"We are asking to transmit a local home position, this is not currently supported."<<std::endl;
+        break;
+    }
+    case CoordinateSystemTypes::GEODETIC:
+    {
+        const mace::pose::GeodeticPosition_3D* currentPosition = homePosition->positionAs<mace::pose::GeodeticPosition_3D>();
+        msg.latitude = currentPosition->getLatitude() * pow(10,7);
+        msg.longitude = currentPosition->getLongitude() * pow(10,7);
+        msg.altitude = currentPosition->getAltitude() * pow(10,3);
+        break;
+    }
+    default:
+        break;
+    }
 
     std::cout << "Home Controller: Broadcasting Home" << std::endl;
 }
@@ -34,7 +39,6 @@ void ControllerHome::Construct_Broadcast(const command_item::SpatialHome &data, 
 bool ControllerHome::Construct_FinalObject(const mavlink_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data)
 {
     UNUSED(msg);
-    UNUSED(data);
 
     //If we have requested home position received module then don't do anything.
     // (Because this handles broadcast, let other method handle this case)
@@ -44,10 +48,8 @@ bool ControllerHome::Construct_FinalObject(const mavlink_home_position_t &msg, c
     }
 
     key = sender;
-    //        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-    //        data.position->setX(msg.latitude / pow(10,7));
-    //        data.position->setY(msg.longitude / pow(10,7));
-    //        data.position->setZ(msg.altitude / pow(10,3));
+    mace::pose::GeodeticPosition_3D currentPosition(msg.latitude/pow(10,7), msg.longitude/pow(10,7), msg.altitude/pow(10,3));
+    data.setPosition(&currentPosition);
 
     std::cout << "Home Controller: Received broadcasted home" << std::endl;
 
@@ -69,8 +71,6 @@ void ControllerHome::Request_Construct(const MaceCore::ModuleCharacteristic &sen
 
 bool ControllerHome::BuildData_Send(const mavlink_request_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_home_position_t &rsp, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &receiveQueueObj, MaceCore::ModuleCharacteristic &respondQueueObj)
 {
-    UNUSED(rsp);
-
     receiveQueueObj = sender;
     respondQueueObj = receiveQueueObj;
 
@@ -81,9 +81,28 @@ bool ControllerHome::BuildData_Send(const mavlink_request_home_position_t &msg, 
     this->FetchDataFromKey(vehicleObj, homes);
 
     command_item::SpatialHome homeToSend = std::get<1>(homes.at(0));
-    //        rsp.latitude = homeToSend.position->getX() * pow(10,7);
-    //        rsp.longitude = homeToSend.position->getY() * pow(10,7);
-    //        rsp.altitude = homeToSend.position->getZ() * pow(10,3);
+
+
+    const mace::pose::Position* homePosition = homeToSend.getPosition();
+
+    switch (homePosition->getCoordinateSystemType()) {
+    case CoordinateSystemTypes::CARTESIAN:
+    {
+        std::cout<<"We are asking to build the data send a local position which is not currently supported."<<std::endl;
+        break;
+    }
+    case CoordinateSystemTypes::GEODETIC:
+    {
+        const mace::pose::GeodeticPosition_3D* currentPosition = homePosition->positionAs<mace::pose::GeodeticPosition_3D>();
+        rsp.latitude = currentPosition->getLatitude() * pow(10,7);
+        rsp.longitude = currentPosition->getLongitude() * pow(10,7);
+        rsp.altitude = currentPosition->getAltitude() * pow(10,3);
+
+        break;
+    }
+    default:
+        break;
+    }
 
     std::cout << "Home Controller: Receive home request, sending home position" << std::endl;
 
@@ -92,8 +111,6 @@ bool ControllerHome::BuildData_Send(const mavlink_request_home_position_t &msg, 
 
 bool ControllerHome::Construct_FinalObjectAndResponse(const mavlink_home_position_t &msg, const MaceCore::ModuleCharacteristic &sender, mavlink_home_position_ack_t &response, MaceCore::ModuleCharacteristic &key, command_item::SpatialHome &data, MaceCore::ModuleCharacteristic &vehicleObj, MaceCore::ModuleCharacteristic &queueObj)
 {
-    UNUSED(msg);
-
     //Only continue if we have requested a home posiiton from this module.
     if(m_ModulesRequestedFrom.find(sender) == m_ModulesRequestedFrom.cend())
     {
@@ -105,11 +122,9 @@ bool ControllerHome::Construct_FinalObjectAndResponse(const mavlink_home_positio
     queueObj = sender;
 
     key = sender;
-    //        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-    //        data.position->setX(msg.latitude / pow(10,7));
-    //        data.position->setY(msg.longitude / pow(10,7));
-    //        data.position->setZ(msg.altitude / pow(10,3));
 
+    mace::pose::GeodeticPosition_3D currentPosition(msg.latitude/pow(10,7), msg.longitude/pow(10,7), msg.altitude/pow(10,3));
+    data.setPosition(&currentPosition);
 
     data.setTargetSystem(sender.ModuleID);
     data.setOriginatingSystem(sender.ModuleID);
@@ -124,7 +139,6 @@ bool ControllerHome::Construct_FinalObjectAndResponse(const mavlink_home_positio
 
 bool ControllerHome::Finish_Receive(const mavlink_home_position_ack_t &ack, const MaceCore::ModuleCharacteristic &sender, uint8_t &ack_code, MaceCore::ModuleCharacteristic &queueObj)
 {
-    UNUSED(ack);
     queueObj = sender;
     ack_code = ack.ack;
 
@@ -138,14 +152,16 @@ bool ControllerHome::Construct_Send(const command_item::SpatialHome &data, const
 {
     UNUSED(sender);
     UNUSED(target);
-    UNUSED(msg);
 
-    //std::cout << "DEBUG: Sending SetHomePosition. Raw XYZ Values: " << data.position->getX() << " " << data.position->getY() << " " << data.position->getZ() << std::endl;
-
-    //        msg.target_system = data.getTargetSystem();
-    //        msg.latitude = data.position->getX() * pow(10,7);
-    //        msg.longitude = data.position->getY()* pow(10,7);
-    //        msg.altitude = data.position->getZ() * 1000.0;
+    const mace::pose::Position* homePosition = data.getPosition();
+    msg.target_system = data.getTargetSystem();
+    if(homePosition != nullptr)
+    {
+        const mace::pose::GeodeticPosition_3D* currentPosition = homePosition->positionAs<mace::pose::GeodeticPosition_3D>();
+        msg.latitude = currentPosition->getLatitude() * pow(10,7);
+        msg.longitude = currentPosition->getLongitude() * pow(10,7);
+        msg.altitude = currentPosition->getAltitude() * pow(10,3);
+    }
 
     queueObj = GetKeyFromSecondaryID(data.getTargetSystem());
 
@@ -161,10 +177,11 @@ bool ControllerHome::Construct_FinalObjectAndResponse(const mavlink_set_home_pos
     queueObj = sender;
 
     key = sender;
-    //        data.position->setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
-    //        data.position->setX(msg.latitude / pow(10,7));
-    //        data.position->setY(msg.longitude / pow(10,7));
-    //        data.position->setZ(msg.altitude / pow(10,3));
+    data.setOriginatingSystem(sender.ModuleID);
+
+    mace::pose::GeodeticPosition_3D currentPosition(msg.latitude/pow(10,7), msg.longitude/pow(10,7), msg.altitude/pow(10,3));
+    data.setPosition(&currentPosition);
+
     data.setTargetSystem(msg.target_system);
     data.setOriginatingSystem(msg.target_system);
 
@@ -178,7 +195,7 @@ bool ControllerHome::Construct_FinalObjectAndResponse(const mavlink_set_home_pos
 }
 
 ControllerHome::ControllerHome(const Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue * queue, int linkChan) :
-    CONTROLLER_HOME_TYPE(cb, queue, linkChan),
+    CONTROLLER_HOME_TYPE(cb, queue, linkChan, "Home", false),
     ControllerHome_Step_BroadcastHome(this, ModuleToSysIDCompIDConverter<mavlink_home_position_t>(mavlink_msg_home_position_encode_chan)),
     ControllerHome_Step_ReceiveBroadcastedHome(this, mavlink_msg_home_position_decode),
     ControllerHome_Step_RequestHome(this, ModuleToSysIDCompIDConverter<mavlink_request_home_position_t>(mavlink_msg_request_home_position_encode_chan)),
@@ -192,4 +209,3 @@ ControllerHome::ControllerHome(const Controllers::IMessageNotifier<mavlink_messa
 }
 
 }
-

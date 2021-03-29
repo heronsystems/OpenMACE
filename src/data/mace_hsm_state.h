@@ -29,13 +29,15 @@ enum class MACEHSMState {
     STATE_FLIGHT_LAND = 14, /**< */
     STATE_FLIGHT_LOITER = 15, /**< */
     STATE_FLIGHT_MANUAL = 16, /**< */
-    STATE_FLIGHT_RTL = 17, /**< */
-    STATE_FLIGHT_UNKNOWN = 18, /**< */
+    STATE_FLIGHT_STABILIZE = 17, /**< */
+    STATE_FLIGHT_RTL = 18, /**< */
+    STATE_FLIGHT_FBW = 19, /**< */
+    STATE_FLIGHT_UNKNOWN = 20, /**< */
 
-    STATE_LANDING= 20, /**< */
-    STATE_LANDING_TRANSITIONING = 21, /**< */
-    STATE_LANDING_DESCENDING = 22, /**< */
-    STATE_LANDING_COMPLETE = 23, /**< */
+    STATE_LANDING= 21, /**< */
+    STATE_LANDING_TRANSITIONING = 22, /**< */
+    STATE_LANDING_DESCENDING = 23, /**< */
+    STATE_LANDING_COMPLETE = 24, /**< */
 
     STATE_FLIGHT_GUIDED = 30, /**< */
     STATE_FLIGHT_GUIDED_IDLE = 31, /**< */
@@ -94,8 +96,12 @@ inline std::string MACEHSMStateToString(const MACEHSMState &type) {
         return "Flight Loiter";
     case MACEHSMState::STATE_FLIGHT_MANUAL:
         return "Flight Manual";
+    case MACEHSMState::STATE_FLIGHT_STABILIZE:
+        return "Flight Stabilize";
     case MACEHSMState::STATE_FLIGHT_RTL:
         return "Flight RTL";
+    case MACEHSMState::STATE_FLIGHT_FBW:
+        return "Flight FBW";
     case MACEHSMState::STATE_FLIGHT_UNKNOWN:
         return "Flight Unknown";
 
@@ -175,6 +181,8 @@ inline MACEHSMState MACEHSMStateFromString(const std::string &str) {
         return MACEHSMState::STATE_TAKEOFF_COMPLETE;
     if(str == "Flight Manual")
         return MACEHSMState::STATE_FLIGHT_MANUAL;
+    if(str == "Flight Stabilize")
+        return MACEHSMState::STATE_FLIGHT_STABILIZE;
     if(str == "Flight Guided")
         return MACEHSMState::STATE_FLIGHT_GUIDED;
     if(str == "Flight Guided Idle")
@@ -199,6 +207,8 @@ inline MACEHSMState MACEHSMStateFromString(const std::string &str) {
         return MACEHSMState::STATE_FLIGHT_LOITER;
     if(str == "Flight Brake")
         return MACEHSMState::STATE_FLIGHT_BRAKE;
+    if(str == "Flight FBW")
+        return MACEHSMState::STATE_FLIGHT_FBW;
     if(str == "Flight Land")
         return MACEHSMState::STATE_FLIGHT_LAND;
     if(str == "Flight Landing")

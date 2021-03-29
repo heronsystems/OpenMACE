@@ -29,7 +29,8 @@ SOURCES += module_vehicle_arduplane.cpp \
     plane_flight_states/state_flight_AI_initialize.cpp \
     plane_flight_states/state_flight_AI_initialize_ABORT.cpp \
     plane_flight_states/state_flight_AI_initialize_ROUTE.cpp \
-    vehicle_object/arduplane_component_flight_mode.cpp \
+    plane_flight_states/state_flight_fbw.cpp \
+    plane_flight_states/state_flight_stablize.cpp \
     vehicle_object/vehicle_object_arduplane.cpp \
     plane_flight_states/state_grounded_disarmed.cpp \
     plane_flight_states/state_takeoff_climbing.cpp \
@@ -73,7 +74,8 @@ HEADERS += module_vehicle_arduplane.h\
     plane_flight_states/state_flight_AI_initialize_ABORT.h \
     plane_flight_states/state_flight_AI_initialize_ROUTE.h \
     plane_flight_states/state_flight_AI_test_end.h \
-    vehicle_object/arduplane_component_flight_mode.h \
+    plane_flight_states/state_flight_fbw.h \
+    plane_flight_states/state_flight_stabilize.h \
     vehicle_object/vehicle_object_arduplane.h \
     plane_flight_states/state_grounded_disarmed.h \
     plane_flight_states/state_flight_guided.h \

@@ -364,7 +364,7 @@ void ModuleROSUMD::updatePositionData(const int &vehicleID, const std::shared_pt
         {
             currentObject->header.stamp = ros::Time::now();
             currentObject->pose.pose.position.x = castPosition->getXPosition();
-            currentObject->pose.pose.position.y = castPosition->getXPosition();
+            currentObject->pose.pose.position.y = castPosition->getYPosition();
         }
     }
 
@@ -637,7 +637,7 @@ bool ModuleROSUMD::publishVehicleHeartbeat(const int &vehicleID, const std::shar
 {
     mace_matlab_msgs::UPDATE_HEARTBEAT heartbeat;
     heartbeat.vehicleID = vehicleID;
-    heartbeat.aircraftType = Data::SystemTypeToString(component->getType());
+    heartbeat.aircraftType = Data::MAVTypeToString(component->getType());
     heartbeat.autopilot = Data::AutopilotTypeToString(component->getAutopilot());
     heartbeat.isCompanion = component->getCompanion();
     heartbeat.missionState = Data::MissionExecutionStateToString(component->getMissionState());

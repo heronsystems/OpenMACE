@@ -105,6 +105,22 @@ public:
         return targetSystem;
     }
 
+
+    //!
+    //! \brief setTargetComponent
+    //! \param componentID
+    //!
+    void setTargetComponent(const unsigned int &componentID){
+        targetComponent = componentID;
+    }
+
+    //!
+    //! \brief getTargetComponent
+    //! \return
+    //!
+    unsigned int getTargetComponent() const{
+        return targetComponent;
+    }
     //!
     //! \brief setOriginatingSystem sets the originatingSystem of the commandItem object.
     //! \param systemID int value of the originatingSystem member object.

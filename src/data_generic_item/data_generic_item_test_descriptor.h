@@ -41,6 +41,14 @@ public:
     //!
     void setKeyModel(const Data::DogfightTeam &team, const AdeptModelType &model);
 
+    //!
+    //! \brief setTestKey Assign the test key based on key data from mavlink message
+    //! \param testID Test ID (unique per MACE instance)
+    //! \param blueType Blue type, converted to AdeptModelType in method
+    //! \param redType Red type, converted to AdeptModelType in method
+    //!
+    void setTestKey(const uint8_t &testID, const uint8_t &blueType, const uint8_t &redType);
+
     //!///////////////////////////////////////////////
     //! Get Methods
     //!//////////////////////////////////////////////

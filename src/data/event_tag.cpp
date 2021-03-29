@@ -19,7 +19,7 @@ EventTag::EventTag(const EventTag &copy)
 QJsonObject EventTag::toJSON(const int &vehicleID, const std::string &dataType) const{
     QJsonObject json = toJSON_base(vehicleID,dataType);
     json["event"] = LoggingEventToString(get_EventTag()).c_str();
-    json["time"] = _time.ToQTDateTime().toString(Qt::ISODateWithMs);
+    json["time"] = _time.ToString().toStdString().c_str(); //  .ToQTDateTime().toString(Qt::ISODateWithMs);
     json["text"] = get_LoggingText().c_str();
     return json;
 }

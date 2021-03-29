@@ -55,7 +55,7 @@ void  Action_SetSurfaceDeflection::setTime(){
 
 QJsonObject Action_SetSurfaceDeflection::toJSON(const int &vehicleID, const std::string &dataType) const{
     QJsonObject json = toJSON_base(vehicleID,dataType);
-    json["timestamp"] = _time.ToQTDateTime().toString(Qt::ISODateWithMs);
+    json["timestamp"] = _time.ToString().toStdString().c_str(); //.ToQTDateTime().toString(Qt::ISODateWithMs);
     json["aileron"] = this->_surfaceDeflection._aileron;
     json["elevator"] = this->_surfaceDeflection._elevator;
     json["rudder"] = this->_surfaceDeflection._rudder;

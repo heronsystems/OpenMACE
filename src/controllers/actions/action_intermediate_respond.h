@@ -36,6 +36,7 @@ protected:
     {
 
         std::vector<int> expectedResponses { { MESSAGE_ACK_ID... } };
+
         BASE::m_Controller-> template QueueTransmission<QUEUE_TYPE>(queueObj, expectedResponses, target, [this, cmd, sender](const std::vector<COMPONENT_KEY> &targets){
 
             if(targets.size() != 1)

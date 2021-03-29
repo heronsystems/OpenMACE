@@ -577,25 +577,13 @@ void ModuleVehicleArducopter::VehicleHeartbeatInfo(const std::string &linkName, 
     }
 
     DataGenericItem::DataGenericItem_Heartbeat heartbeat;
-    heartbeat.setAutopilot(Data::AutopilotType::AUTOPILOT_TYPE_ARDUPILOTMEGA);
+    heartbeat.setAutopilot(MAV_AUTOPILOT::MAV_AUTOPILOT_ARDUPILOTMEGA);
     heartbeat.setCompanion(this->airborneInstance);
     heartbeat.setProtocol(Data::CommsProtocol::COMMS_MAVLINK);
     heartbeat.setMavlinkID(systemID);
+    heartbeat.setType(static_cast<MAV_TYPE>(heartbeatMSG.type));
+    heartbeat.setFlightMode(heartbeatMSG.custom_mode);
 
-    switch(heartbeatMSG.type)
-    {
-    case MAV_TYPE_TRICOPTER:
-    case MAV_TYPE_QUADROTOR:
-    case MAV_TYPE_HEXAROTOR:
-    case MAV_TYPE_OCTOROTOR:
-        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_QUADROTOR);
-        break;
-    case MAV_TYPE_FIXED_WING:
-        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_FIXED_WING);
-        break;
-    default:
-        heartbeat.setType(Data::SystemType::SYSTEM_TYPE_GENERIC);
-    }
 
     // Set MACE HSM state:
     if(this->stateMachine->getCurrentState()) {

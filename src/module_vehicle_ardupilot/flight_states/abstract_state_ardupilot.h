@@ -133,7 +133,7 @@ protected:
     virtual void updateOwner_ProgressionOfHSM();
 
 protected:
-    MAVLINKUXVControllers::ControllerSystemMode* prepareModeController();
+    MAVLINKUXVControllers::VehicleController::ControllerSystemMode* prepareModeController(const std::string controllerName = "modeController");
     std::mutex m_mutex_ModeController;
     std::condition_variable m_condition_ModeController;
     bool m_oldModeControllerShutdown = false;

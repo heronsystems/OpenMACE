@@ -63,6 +63,10 @@ public:
         MavlinkEntityKey sender = 255;
         if(m_ControllerSurfaceDeflection != nullptr)
         {
+            Data::EnvironmentTime now;
+            Data::EnvironmentTime::CurrentTime(Data::SYSTEMCLOCK, now);
+//            std::cout << "PRIOR TO VEHICLE SEND: " << now.ToString().toStdString() << std::endl;
+
             m_ControllerSurfaceDeflection->Broadcast(command, sender);
         }
     }

@@ -1,7 +1,11 @@
 #ifndef AI_TESTPARAMETERIZATION_H
 #define AI_TESTPARAMETERIZATION_H
 
+#include "mavlink.h"
+
 #include <iostream>
+#include <string>
+
 #include <map>
 
 #include <QJsonObject>
@@ -52,6 +56,17 @@ public:
     {
         return _pauseAfterLoad;
     }
+
+    //!///////////////////////////////////////////////
+    //! TO/FROM MAVLINK Definitions
+    //!//////////////////////////////////////////////
+public:
+    void populateMACECOMMS_TestParameterization(mavlink_ai_test_parameterization_t &obj) const;
+
+    void fromMACECOMMS_TestParameterization(const mavlink_ai_test_parameterization_t &obj);
+
+private:
+    std::string checkStringLength(const unsigned int &length, const std::string &str) const;
 
     //!///////////////////////////////////////////////
     //! Operators

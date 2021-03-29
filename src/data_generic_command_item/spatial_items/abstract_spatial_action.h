@@ -130,9 +130,20 @@ public: //The logic behind this is that every command item can be used to genera
     virtual void fromCommandItem(const mavlink_command_long_t &obj) override;
     /** End of interface imposed via Interface_CommandHelper<mavlink_command_long_t> */
 
+
+    /** Functional commands that populate the execute spatial action commands */
+public: //The logic behind this is that every command item can be used to generate a mission item
+    virtual void populateMACECOMMS_SpatialActionCommand(mavlink_execute_spatial_action_t &cmd) const;
+
+    virtual void fromMACECOMMS_SpatialActionCommand(const mavlink_execute_spatial_action_t &obj);
+//we know that you must cast to the specific type to get something explicit based on the command
+    /** End of functional commands related to executing spatial action commands */
+
+
 protected:
     void populatePositionObject(const mace::CoordinateFrameTypes &explicitFrame, const uint8_t &dim, const uint16_t &mask,
                                 const double &x=0.0, const double &y=0.0, const double &z=0.0);
+
 public:
     //!
     //! \brief operator =

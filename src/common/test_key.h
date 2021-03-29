@@ -20,9 +20,11 @@ typedef struct TestKey
         this->redAgent = rhs.redAgent;
         return *this;
     }
-        std::string toString(){
-            return "Test_" + std::to_string(testID) + "_Blue:_" + AdeptModelToString(blueAgent) + "_Red:_" + AdeptModelToString(redAgent);
-        }
+
+
+    std::string toString(){
+        return "Test_" + std::to_string(testID) + "_Blue:_" + AdeptModelToString(blueAgent) + "_Red:_" + AdeptModelToString(redAgent);
+    }
 
 } TestKey;
 

@@ -1,6 +1,8 @@
 #ifndef BASE_SPEED_H
 #define BASE_SPEED_H
 
+#include "mavlink.h"
+
 #include <string>
 #include <limits>
 #include <cmath>
@@ -11,25 +13,17 @@ namespace measurements {
 class Speed
 {
 public:
-    enum class SpeedTypes: uint8_t
-    {
-        AIRSPEED = 0,
-        GROUNDSPEED = 1,
-        UNKNOWN = 2
-    };
-
-public:
     Speed();
 
     Speed(const Speed &copy);
 
     void updateSpeedMeasurement(const double &value);
 
-    void updateSpeedType(const SpeedTypes &type);
+    void updateSpeedType(const SPEED_TYPE &type);
 
     double getSpeedMeasurement() const;
 
-    SpeedTypes getSpeedType() const;
+    SPEED_TYPE getSpeedType() const;
 
 
     /**
@@ -63,6 +57,42 @@ public:
     //!
     double getSpeed() const;
 
+    mavlink_vfr_hud_t getMAVLINKOBJ() const
+    {
+        mavlink_vfr_hud_t obj;
+        obj.airspeed = 0.0;
+        obj.groundspeed = 0.0;
+        switch (speedType) {
+        case SPEED_TYPE::SPEED_TYPE_AIRSPEED:
+        {
+            obj.airspeed = static_cast<float>(measurement);
+            break;
+        }
+        case SPEED_TYPE::SPEED_TYPE_GROUNDSPEED:
+        {
+            obj.groundspeed =static_cast<float>(measurement);
+            break;
+        }
+        default:
+            break;
+        }
+        return obj;
+    }
+
+    void fromMAVLINKMSG(const mavlink_vfr_hud_t &msg)
+    {
+        measurement = static_cast<double>(msg.airspeed);
+    }
+
+    mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const
+    {
+        mavlink_message_t msg;
+        mavlink_vfr_hud_t obj = getMAVLINKOBJ();
+        mavlink_msg_vfr_hud_encode_chan(systemID,compID,chan,&msg,&obj);
+        return msg;
+    }
+
+
 public:
     void operator = (const Speed &rhs)
     {
@@ -86,7 +116,7 @@ public:
 
 
 private:
-    SpeedTypes speedType = SpeedTypes::UNKNOWN;
+    SPEED_TYPE speedType = SPEED_TYPE::SPEED_TYPE_ENUM_END;
 
     double measurement = 0.0;
 

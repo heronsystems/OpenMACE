@@ -225,7 +225,7 @@ void GUItoMACE::setGoHere(const int &vehicleID, const QJsonDocument &data)
     command_item::Action_ExecuteSpatialItem cmdGoTo;
     cmdGoTo.setTargetSystem(vehicleID);
 
-    command_item::SpatialWaypointPtr spatialAction = std::make_shared<command_item::SpatialWaypoint>(vehicleID);
+    command_item::SpatialWaypointPtr spatialAction = std::make_shared<command_item::SpatialWaypoint>(m_parent->getParentMaceInstanceID(), vehicleID);
 //    spatialAction->getPosition().setCoordinateFrame(Data::CoordinateFrameType::CF_GLOBAL_RELATIVE_ALT);
 
     mace::pose::GeodeticPosition_3D goPosition(data.object().value("lat").toDouble(),
@@ -277,11 +277,11 @@ void GUItoMACE::takeoff(const int &vehicleID, const QJsonDocument &data)
 bool GUItoMACE::issuedCommand(const std::string &command, const int &vehicleID, const QJsonDocument &data)
 {
     if(command == "FORCE_DATA_SYNC") {
-//        mLogs->debug("Module Ground Station issuing command force data sync to system " + std::to_string(vehicleID) + ".");
-        m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
-            ptr->Event_ForceVehicleDataSync(m_parent, vehicleID);
-        });
-        return true;
+////        mLogs->debug("Module Ground Station issuing command force data sync to system " + std::to_string(vehicleID) + ".");
+//        m_parent->NotifyListeners([&](MaceCore::IModuleEventsGroundStation* ptr){
+//            ptr->Event_ForceVehicleDataSync(m_parent, vehicleID);
+//        });
+//        return true;
     }
     else if(command == "TAKEOFF"){
         takeoff(vehicleID, data);
@@ -545,7 +545,7 @@ void GUItoMACE::parseTCPRequest(const QJsonObject &jsonObj)
     QJsonArray data = jsonObj["data"].toArray();
 
     // Log to file:
-    logToFile(m_logger, QJsonDocument(jsonObj).toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, QJsonDocument(jsonObj).toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 
 
     int vehicleID = 0;

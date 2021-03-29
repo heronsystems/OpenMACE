@@ -50,7 +50,6 @@ SOURCES += module_vehicle_arducopter.cpp \
     flight_states/state_flight_guided_target_car.cpp \
     flight_states/state_flight_guided_spatial_item.cpp \
     flight_states/state_flight_guided_target_att.cpp \
-    vehicle_object/arducopter_component_flight_mode.cpp \
     vehicle_object/vehicle_object_arducopter.cpp
 
 HEADERS += module_vehicle_arducopter.h\
@@ -86,7 +85,6 @@ HEADERS += module_vehicle_arducopter.h\
     flight_states/state_flight_guided_target_car.h \
     flight_states/state_flight_guided_spatial_item.h \
     flight_states/state_flight_guided_target_att.h \
-    vehicle_object/arducopter_component_flight_mode.h \
     vehicle_object/vehicle_object_arducopter.h
 
 INCLUDEPATH += $$PWD/../
@@ -145,6 +143,10 @@ else:unix: LIBS += -L$$OUT_PWD/../comms/ -lcomms
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/release/ -lcommsMAVLINK
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../commsMAVLINK/debug/ -lcommsMAVLINK
 else:unix:!macx: LIBS += -L$$OUT_PWD/../commsMAVLINK/ -lcommsMAVLINK
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../controllers/release/ -lcontrollers
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../controllers/debug/ -lcontrollers
+else:unix:!macx: LIBS += -L$$OUT_PWD/../controllers/ -lcontrollers
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item/release/ -ldata_generic_item
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../data_generic_item/debug/ -ldata_generic_item

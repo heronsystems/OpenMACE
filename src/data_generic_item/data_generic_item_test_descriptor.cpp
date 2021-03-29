@@ -35,4 +35,11 @@ void TestDescriptor::setKeyModel(const Data::DogfightTeam &team, const AdeptMode
         m_key.blueAgent = model;
     }
 }
+
+void TestDescriptor::setTestKey(const uint8_t &testID, const uint8_t &blueType, const uint8_t &redType)
+{
+    m_key.testID = testID;
+    m_key.blueAgent = (AdeptModelType)blueType;
+    m_key.redAgent = (AdeptModelType)redType;
+}
 } //end of namespace DataGenericItem

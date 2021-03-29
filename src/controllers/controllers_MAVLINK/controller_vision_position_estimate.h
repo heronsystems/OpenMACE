@@ -83,7 +83,7 @@ protected:
 
 public:
     Controller_VisionPositionEstimate(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<mace::pose::Pose>(cb, queue, linkChan),
+        BasicMavlinkController_ModuleKeyed<mace::pose::Pose>(cb, queue, linkChan, "VissionPositionEstimate"),
         VisionPosititionBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_vision_position_estimate_t>(mavlink_msg_vision_position_estimate_encode_chan))
     {
 

@@ -17,9 +17,9 @@ public:
     // Virtual logging methods:
     // **************************************************************** //
 public:
-    virtual void logToFile(std::shared_ptr<spdlog::logger> logger, const std::string &str) {
+    virtual void logToFile(std::shared_ptr<spdlog::logger> logger, const std::string &str, const double &offset_msec) {
         if(logger) {
-            logger->info(str);
+            logger->info("[" + std::to_string(offset_msec) + "] " + str);
         }
     }
 

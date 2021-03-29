@@ -100,6 +100,14 @@ public:
         return _procedural;
     }
 
+    //!///////////////////////////////////////////////
+    //! TO/FROM MAVLINK Definitions
+    //!//////////////////////////////////////////////
+public:
+    void populateMACECOMMS_ExecuteProcedural(mavlink_ai_execute_procedural_t &obj) const;
+
+    void fromMACECOMMS_ExecuteProcedural(const mavlink_ai_execute_procedural_t &obj);
+
 public:
     void operator = (const Action_ProceduralCommand &rhs)
     {

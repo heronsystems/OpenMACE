@@ -3,7 +3,7 @@
 namespace DataGenericItem {
 
 DataGenericItem_Heartbeat::DataGenericItem_Heartbeat() :
-    autopilot(Data::AutopilotType::AUTOPILOT_TYPE_GENERIC), protocol(Data::CommsProtocol::COMMS_MACE), type(Data::SystemType::SYSTEM_TYPE_GENERIC),
+    autopilot(MAV_AUTOPILOT_GENERIC), protocol(Data::CommsProtocol::COMMS_MACE), type(MAV_TYPE::MAV_TYPE_GENERIC),
     missionState(Data::MissionExecutionState::MESTATE_UNEXECUTED), maceCompanion(true), currentHSMState(Data::MACEHSMState::STATE_UNKNOWN)
 {
 
@@ -18,6 +18,8 @@ DataGenericItem_Heartbeat::DataGenericItem_Heartbeat(const DataGenericItem_Heart
     this->maceCompanion = copyObj.getCompanion();
     this->mavlinkID = copyObj.getMavlinkID();
     this->currentHSMState = copyObj.getHSMState();
+    this->flightMode = copyObj.getFlightMode();
+    this->armed = copyObj.getArmed();
 }
 
 
@@ -26,11 +28,12 @@ mavlink_mace_heartbeat_t DataGenericItem_Heartbeat::getMACECommsObject() const
     mavlink_mace_heartbeat_t rtnObj;
 
     rtnObj.autopilot = (uint8_t)this->autopilot;
-    rtnObj.mace_companion = this->maceCompanion;
-    rtnObj.protocol = (uint8_t)this->protocol;
+    rtnObj.flight_mode = (uint8_t)this->flightMode;
+//    rtnObj.mavlink_version = ;
+    rtnObj.vehicle_hsm = (uint8_t)this->currentHSMState;
     rtnObj.type = (uint8_t)this->type;
-    rtnObj.mavlinkID = this->mavlinkID;
-//    rtnObj.currentHSMState = (uint8_t)this->currentHSMState; // TODO: Edit Heartbeat mavlink message to include HSM state
+    rtnObj.vehicle_id = this->mavlinkID;
+    rtnObj.armed = this->armed;
 
     return rtnObj;
 }
@@ -47,7 +50,7 @@ QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::s
 {
     QJsonObject json = toJSON_base(vehicleID, dataType);
     json["autopilot"] = QString::fromStdString(Data::AutopilotTypeToString(getAutopilot()));
-    json["vehicle_type"] = QString::fromStdString(Data::SystemTypeToString(getType()));
+    json["vehicle_type"] = QString::fromStdString(Data::MAVTypeToString(getType()));
     json["companion"] = getCompanion();
     json["protocol"] = QString::fromStdString(Data::CommsProtocolToString(getProtocol()));
     json["mission_state"] = QString::fromStdString(Data::MissionExecutionStateToString(getMissionState()));
@@ -56,6 +59,8 @@ QJsonObject DataGenericItem_Heartbeat::toJSON(const int &vehicleID, const std::s
     // TODO: Populate:
     json["behavior_state"] = ""; // Meant to be the behavior execution state?
     json["vehicle_state"] = QString::fromStdString(Data::MACEHSMStateToString(getHSMState())); // This can be where we store its state machine state. Can be used for button state machine on GUI
+    json["flight_mode"] = getFlightMode();
+    json["armed"] = getArmed();
 
     return json;
 }
@@ -69,11 +74,13 @@ void DataGenericItem_Heartbeat::fromJSON(const QJsonDocument &inputJSON)
     this->setExecutionState(Data::MissionExecutionStateFromString(inputJSON.object().value("mission_state").toString().toStdString()));
     this->setMavlinkID(inputJSON.object().value("mavlink_id").toInt());
     this->setHSMState(Data::MACEHSMStateFromString(inputJSON.object().value("vehicle_state").toString().toStdString()));
+    this->setFlightMode(inputJSON.object().value("flight_mode").toInt());
+    this->setArmed(inputJSON.object().value("armed").toBool());
 }
 
 std::string DataGenericItem_Heartbeat::toCSV(const std::string &delimiter) const
 {
-    std::string newline = Data::AutopilotTypeToString(getAutopilot()) + delimiter + Data::SystemTypeToString(getType())+ delimiter + (getCompanion() ? "true" : "false")  + delimiter + Data::CommsProtocolToString(getProtocol()) + delimiter + Data::MissionExecutionStateToString(getMissionState()) + delimiter + std::to_string(getMavlinkID()) + delimiter + Data::MACEHSMStateToString(getHSMState());
+    std::string newline = Data::AutopilotTypeToString(getAutopilot()) + delimiter + Data::MAVTypeToString(getType())+ delimiter + (getCompanion() ? "true" : "false")  + delimiter + Data::CommsProtocolToString(getProtocol()) + delimiter + Data::MissionExecutionStateToString(getMissionState()) + delimiter + std::to_string(getMavlinkID()) + delimiter + Data::MACEHSMStateToString(getHSMState());
     return newline;
 }
 } //end of namespace DataGenericItem

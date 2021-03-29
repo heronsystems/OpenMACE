@@ -56,8 +56,6 @@ bool AP_State_FlightAI_ExecuteDeflection::handleCommand(const std::shared_ptr<co
     switch (command->getCommandType()) {
     case MAV_CMD::SET_SURFACE_DEFLECTION_NORMALIZED:
     {
-        std::cout<<"Received a new deflection command!"<<std::endl;
-
         //We want to keep this command in scope to perform the action
         this->currentCommand = command->getClone();
 

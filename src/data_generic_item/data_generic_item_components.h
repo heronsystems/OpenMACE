@@ -9,6 +9,7 @@
 #include "data_generic_item_GPS.h"
 #include "data_generic_item_param_value.h"
 #include "data_generic_item_systemtime.h"
+#include "data_generic_item_timesync.h"
 #include "data_generic_item_text.h"
 
 #endif // DATA_GENERIC_ITEM_COMPONENTS_H

@@ -119,29 +119,6 @@ void AP_State_FlightAI_Initialize::OnEnter(const command_item::Action_Initialize
 void AP_State_FlightAI_Initialize::setupGuidedMode()
 {
     _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ROUTE;
-
-    //This helps us based on the current conditions in the present moment
-//    std::string currentModeString = Owner().status->vehicleMode.get().getFlightModeString();
-
-//    if(currentModeString != "LOITER") {
-//        MAVLINKUXVControllers::ControllerSystemMode* controllerSystemMode = AbstractStateArdupilot::prepareModeController();
-//        controllerSystemMode->AddLambda_Finished(this, [this](const bool completed, const uint8_t finishCode){
-//            if(completed && (finishCode == MAV_RESULT_ACCEPTED))
-//            else
-//                _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_TESTEND;
-//        });
-//        MavlinkEntityKey target = Owner().getMAVLINKID();
-//        MavlinkEntityKey sender = 255;
-
-//        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
-//        commandMode.targetID = Owner().getMAVLINKID();
-//        commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("LOITER");
-//        controllerSystemMode->Send(commandMode,sender,target);
-
-//    }
-//    else {
-//        _desiredState = Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ROUTE;
-//    }
 }
 
 

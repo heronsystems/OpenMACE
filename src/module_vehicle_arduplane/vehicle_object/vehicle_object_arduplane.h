@@ -22,7 +22,7 @@
 #ifndef VEHICLE_OBJECT_ARDUPLANE_H
 #define VEHICLE_OBJECT_ARDUPLANE_H
 
-#include "arduplane_component_flight_mode.h"
+#include "data/flight_modes/arduplane_component_flight_mode.h"
 
 #include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
 

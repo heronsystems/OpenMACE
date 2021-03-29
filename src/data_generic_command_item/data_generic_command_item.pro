@@ -36,6 +36,7 @@ SOURCES += \
     do_items/action_motor_test.cpp \
     do_items/action_mission_command.cpp \
     do_items/action_set_surface_deflection.cpp \
+    do_items/action_timesync.cpp \
     mace/ai_items/action_event_tag.cpp \
     mace/ai_items/action_initialize_test_setup.cpp \
     mace/ai_items/action_procedural_command.cpp \
@@ -81,6 +82,7 @@ HEADERS +=\
     do_items/action_set_surface_deflection.h \
     do_items/do_components.h \
     do_items/action_mission_command.h \
+    do_items/action_timesync.h \
     mace/ai_items/abstract_ai_command.h \
     mace/ai_items/action_event_tag.h \
     mace/ai_items/action_initialize_test_setup.h \

@@ -52,6 +52,7 @@ void AbstractStateArdupilot::OnExit()
 
 void AbstractStateArdupilot::clearCommand()
 {
+    currentCommand.reset();
     currentCommandSet = false;
 }
 
@@ -122,14 +123,14 @@ void AbstractStateArdupilot::updateOwner_ProgressionOfHSM()
 //    Owner()._currentHSMState.set(currentStateEnum);
 }
 
-MAVLINKUXVControllers::ControllerSystemMode* AbstractStateArdupilot::prepareModeController()
+MAVLINKUXVControllers::VehicleController::ControllerSystemMode* AbstractStateArdupilot::prepareModeController(const std::string controllerName)
 {
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
     //If there is an old mode controller still running, allow us to shut it down
-    if(collection->Exist("modeController"))
+    if(collection->Exist(controllerName))
     {
-        auto modeControllerOld = static_cast<MAVLINKUXVControllers::ControllerSystemMode*>(collection->At("modeController"));
+        auto modeControllerOld = static_cast<MAVLINKUXVControllers::VehicleController::ControllerSystemMode*>(collection->At(controllerName));
         if(modeControllerOld != nullptr)
         {
             std::cout << "Shutting down previous mode controller, which was still active" << std::endl;
@@ -143,26 +144,26 @@ MAVLINKUXVControllers::ControllerSystemMode* AbstractStateArdupilot::prepareMode
         }
     }
     //create "stateless" mode controller that exists within the module itself
-    MAVLINKUXVControllers::ControllerSystemMode* modeController = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = new MAVLINKUXVControllers::VehicleController::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
 
 //    modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
 //        UNUSED(this); UNUSED(completed); UNUSED(finishCode);
 //        modeController->Shutdown();
 //    });
 
-    modeController->setLambda_Shutdown([this, modeController]() mutable
+    modeController->setLambda_Shutdown([this, controllerName]() mutable
     {
-        auto ptr = static_cast<MAVLINKUXVControllers::ControllerSystemMode*>(Owner().ControllersCollection()->At("modeController"));
+        auto ptr = static_cast<MAVLINKUXVControllers::VehicleController::ControllerSystemMode*>(Owner().ControllersCollection()->At(controllerName));
         if (ptr != nullptr)
         {
-            auto ptr = Owner().ControllersCollection()->Remove("modeController");
+            auto ptr = this->Owner().ControllersCollection()->Remove(controllerName);
             delete ptr;
         }
         std::lock_guard<std::mutex> guard(m_mutex_ModeController);
         m_oldModeControllerShutdown = true;
         m_condition_ModeController.notify_one();
     });
-    collection->Insert("modeController", modeController);
+    collection->Insert(controllerName, modeController);
 
     return modeController;
 }

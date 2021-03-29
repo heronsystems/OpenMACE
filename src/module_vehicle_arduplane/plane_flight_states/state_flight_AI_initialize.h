@@ -60,7 +60,11 @@ public:
         if(acceptTransition == false)
         {
             _impendingModeChange = static_cast<PLANE_MODE>(mode);
-            _flagFlightModeChange = true;
+            if (currentInnerState->getCurrentStateEnum()==Data::MACEHSMState::STATE_FLIGHT_AI_INITIALIZE_ROUTE && (mode == PLANE_MODE::PLANE_MODE_AUTO)){
+                _flagFlightModeChange = false;
+            }else{
+                _flagFlightModeChange = true;
+            }
         }
         
         return acceptTransition;

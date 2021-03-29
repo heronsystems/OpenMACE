@@ -5,6 +5,8 @@
 #include "ai_test_boundary.h"
 #include "ai_test_criteria.h"
 
+#include "common/logging/macelog.h"
+
 namespace DataGenericItem {
 
 class AI_TestConditional
@@ -26,7 +28,7 @@ public:
     //! \param currentPosition
     //! \return
     //!
-    AI_PROCEDURAL_COMMANDS shouldTerminate(const unsigned int &elapsedTestDuration, const VehicleState_Cartesian3D &endState, const mace::pose::GeodeticPosition_3D &currentPosition) const;
+    AI_PROCEDURAL_COMMANDS shouldTerminate(const double &elapsedTestDuration, const mace::pose::GeodeticPosition_3D &currentPosition, const mace::pose::Rotation_3D &attitude) const;
 
 public:
     void operator = (const AI_TestConditional &rhs)

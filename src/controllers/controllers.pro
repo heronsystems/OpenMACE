@@ -29,6 +29,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    controllers_MAVLINK/TE_Controllers/command_test_procedural.cpp \
+    controllers_MAVLINK/TE_Controllers/distribute_test_parameterization.cpp \
     controllers_MAVLINK/commands/command_msg_interval.cpp \
     controllers_MAVLINK/controller_guided_mission_item.cpp \
     controllers_MAVLINK/controller_guided_target_item_attitude.cpp \
@@ -39,6 +41,10 @@ SOURCES += \
     controllers_MAVLINK/controller_set_surface_deflection.cpp
 
 HEADERS += \
+    controllers_MAVLINK/TE_Controllers/command_set_surface_deflection.h \
+    controllers_MAVLINK/TE_Controllers/command_test_procedural.h \
+    controllers_MAVLINK/TE_Controllers/command_write_event_to_logs.h \
+    controllers_MAVLINK/TE_Controllers/distribute_test_parameterization.h \
     controllers_MAVLINK/commands/command_arm.h \
     controllers_MAVLINK/commands/command_change_speed.h \
     controllers_MAVLINK/commands/command_home_position.h \
@@ -46,7 +52,6 @@ HEADERS += \
     controllers_MAVLINK/commands/command_msg_interval.h \
     controllers_MAVLINK/commands/command_msg_request.h \
     controllers_MAVLINK/commands/command_rtl.h \
-    controllers_MAVLINK/commands/command_set_surface_deflection.h \
     controllers_MAVLINK/commands/command_takeoff.h \
     controllers_MAVLINK/commands/generic_int_command.h \
     controllers_MAVLINK/commands/generic_long_command.h \
@@ -62,6 +67,7 @@ HEADERS += \
     controllers_MAVLINK/controller_set_gps_global_origin.h \
     controllers_MAVLINK/controller_set_surface_deflection.h \
     controllers_MAVLINK/controller_system_mode.h \
+    controllers_MAVLINK/controller_timesync.h \
     controllers_MAVLINK/controller_vision_position_estimate.h \
     controllers_MAVLINK/controller_write_event_to_log.h \
     controllers_MAVLINK/mavlink_controller_components.h \
@@ -103,6 +109,12 @@ contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+# Unix lib Install
+unix:!symbian {
+    target.path = $$(MACE_ROOT)/lib
+    INSTALLS += target
+}
 
 # Windows lib install
 lib.path    = $$(MACE_ROOT)/lib

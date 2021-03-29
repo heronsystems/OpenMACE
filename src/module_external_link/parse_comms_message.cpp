@@ -137,6 +137,21 @@ void ModuleExternalLink::ParseForData(const mavlink_message_t* message){
     {
         //This is message definition 74
         //Metrics typically displayed on a HUD for fixed wing aircraft
+
+        mavlink_vfr_hud_t decodedMSG;
+        mavlink_msg_vfr_hud_decode(message,&decodedMSG);
+
+        mace::measurements::Speed currentAirspeed;
+        currentAirspeed.setSpeed(static_cast<double>(decodedMSG.airspeed));
+        currentAirspeed.updateSpeedType(SPEED_TYPE::SPEED_TYPE_AIRSPEED);
+        mace::measurement_topics::Topic_AirSpeedPtr ptrAirspeedTopic = std::make_shared<mace::measurement_topics::Topic_AirSpeed>(currentAirspeed);
+
+        PublishVehicleData(sender, ptrAirspeedTopic);
+
+        mace::measurements::Speed currentGroundSpeed;
+        currentGroundSpeed.setSpeed(static_cast<double>(decodedMSG.groundspeed));
+        currentGroundSpeed.updateSpeedType(SPEED_TYPE::SPEED_TYPE_GROUNDSPEED);
+
         break;
     }
     case MAVLINK_MSG_ID_RADIO_STATUS:
@@ -228,28 +243,29 @@ void ModuleExternalLink::ParseForData(const mavlink_message_t* message){
         });
         break;
     }
+    */
     case MAVLINK_MSG_ID_HOME_POSITION:
     {
         mavlink_home_position_t decodedMSG;
         mavlink_msg_home_position_decode(message,&decodedMSG);
 
-        if(m_HomeController->isThreadActive())
-            m_HomeController->receivedMissionHome(decodedMSG);
-        else
-        {
-            CommandItem::SpatialHome newHome;
-            newHome.position->setX(decodedMSG.latitude / pow(10,7));
-            newHome.position->setY(decodedMSG.longitude / pow(10,7));
-            newHome.position->setZ(decodedMSG.altitude / pow(10,7));
-            newHome.setOriginatingSystem(systemID);
-            newHome.setTargetSystem(systemID);
-            cbiHomeController_ReceviedHome(newHome);
-        }
+        MaceLog::Emergency("Received home position message in EL. Should we do anything with it?");
+//        if(m_HomeController->isThreadActive())
+//            m_HomeController->receivedMissionHome(decodedMSG);
+//        else
+//        {
+//            CommandItem::SpatialHome newHome;
+//            newHome.position->setX(decodedMSG.latitude / pow(10,7));
+//            newHome.position->setY(decodedMSG.longitude / pow(10,7));
+//            newHome.position->setZ(decodedMSG.altitude / pow(10,7));
+//            newHome.setOriginatingSystem(systemID);
+//            newHome.setTargetSystem(systemID);
+//            cbiHomeController_ReceviedHome(newHome);
+//        }
 
         break;
     }
 
-    */
 
     ////////////////////////////////////////////////////////////////////////////
     /// MISSION BASED EVENTS:
@@ -279,6 +295,60 @@ void ModuleExternalLink::ParseForData(const mavlink_message_t* message){
         //bool valid = this->getDataObject()->getMissionKeyValidity(key);
         break;
     }
+//    case MAVLINK_MSG_ID_MISSION_REQUEST_LIST:
+//    {
+//        mavlink_mission_request_list_t decodedMSG;
+//        mavlink_msg_mission_request_list_decode(message,&decodedMSG);
+////        decodedMSG.target_component;
+////        decodedMSG.target_system;
+
+
+//        MissionItem::MISSIONTYPE missionType = static_cast<MissionItem::MISSIONTYPE>(decodedMSG.mission_type);
+
+//        ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsExternalLink* ptr){
+//            ptr->Event_GetOnboardMission(this, decodedMSG.target_system, missionType);
+//        });
+
+
+//        MaceLog::Info("Get onboard mission for: " + std::to_string(decodedMSG.target_system) + " (type: " + MissionItem::MissionTypeToString(missionType) + ")");
+
+
+//        break;
+//    }
+
+//    case MAVLINK_MSG_ID_MACE_MISSION_COUNT:
+//    {
+//        mavlink_mace_mission_count_t decodedMSG;
+//        mavlink_msg_mace_mission_count_decode(message, &decodedMSG);
+
+////        decodedMSG.count;
+////        decodedMSG.mission_creator;
+////        decodedMSG.mission_id;
+////        decodedMSG.mission_type;
+////        decodedMSG.target_component;
+////        decodedMSG.target_system;
+
+//        ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsExternalLink* ptr){
+////            ptr->Even (this, decodedMSG.target_system, missionType);
+//        });
+
+//        break;
+//    }
+//    case MAVLINK_MSG_ID_MACE_MISSION_REQUEST_INT:
+//    {
+//        mavlink_mace_mission_request_int_t decodedMSG;
+//        mavlink_msg_mace_mission_request_int_decode(message, &decodedMSG);
+
+//        break;
+//    }
+//    case MAVLINK_MSG_ID_MACE_MISSION_ITEM_INT:
+//    {
+//        mavlink_mace_mission_item_int_t decodedMSG;
+//        mavlink_msg_mace_mission_item_int_decode(message, &decodedMSG);
+
+//        break;
+//    }
+
     case MAVLINK_MSG_ID_MISSION_REQUEST_PARTIAL_LIST:
     {
         break;
@@ -350,14 +420,23 @@ void ModuleExternalLink::ParseForData(const mavlink_message_t* message){
         mavlink_msg_guided_target_stats_decode(message,&decodedMSG);
 
         std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrTarget = std::make_shared<MissionTopic::VehicleTargetTopic>(decodedMSG);
+        ptrTarget->setVehicleID(message->sysid);
 
 
-        PublishMissionData(sender, ptrTarget);
+         PublishMissionData(sender, ptrTarget);
+        break;
+    }
+    case MAVLINK_MSG_ID_COMMAND_ACK:
+    {
+        mavlink_command_ack_t decodedMSG;
+        mavlink_msg_command_ack_decode(message, &decodedMSG);
+        // TODO: Anything with this ACK?
+        MaceLog::Emergency("Received command_ack over external link, should we do anything with it?");
         break;
     }
     default:
     {
-        //std::cout<<"I received an unknown supported message with the ID "<<(int)message->msgid<<std::endl;
+        std::cout<<"I received an unknown supported message with the ID "<<(int)message->msgid<<std::endl;
     }
 
     }//end of switch statement

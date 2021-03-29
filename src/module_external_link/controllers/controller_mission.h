@@ -21,12 +21,14 @@
 #include "data_generic_command_item/mission_items/mission_item_factory.h"
 #include "data_generic_command_item/mission_items/mission_ack.h"
 
+#include "common/logging/macelog.h"
+
 namespace ExternalLink {
 
 using CONTROLLER_MISSION_TYPE = Controllers::GenericController<
     mavlink_message_t,
     MaceCore::ModuleCharacteristic,
-    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, ObjectMAVLINKMsgIDTuple<MaceCore::ModuleCharacteristic>, ObjectMAVLINKMsgIDTuple<MissionItem::MissionKey>>,
+    TransmitQueueWithKeys<MaceCore::ModuleCharacteristic, MAVLINKUXVControllers::ObjectMAVLINKMsgIDTuple<MaceCore::ModuleCharacteristic>, MAVLINKUXVControllers::ObjectMAVLINKMsgIDTuple<MissionItem::MissionKey>>,
     uint8_t,
     Controllers::DataItem<MaceCore::ModuleCharacteristic, MissionKey>,
     Controllers::DataItem<MissionKey, MissionList>

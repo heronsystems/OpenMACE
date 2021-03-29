@@ -11,9 +11,11 @@ namespace MaceCore
 
 MaceCore::MaceCore() :
     m_GroundStation(nullptr),
+    m_MLStation(nullptr),
     m_PathPlanning(nullptr),
     m_GlobalRTA(nullptr),
-    m_MaceInstanceIDSet(false)
+    m_MaceInstanceIDSet(false),
+    m_Adept(nullptr)
 {
 }
 
@@ -183,6 +185,12 @@ void MaceCore::AddLocalModule_ExternalLink(const std::shared_ptr<IModuleCommandE
         externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_GroundStation->GetCharacteristic(), ModuleClasses::GROUND_STATION);
     }
 
+    //if there is a ML station, notify this new external link about the existance of GS
+    if(m_MLStation != nullptr)
+    {
+        externalLink->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_MLStation->GetCharacteristic(), ModuleClasses::ML_STATION);
+    }
+
     //if there is an RTA module, notify this new external link about the existance of the rta module
     if(m_GlobalRTA != nullptr)
     {
@@ -224,6 +232,31 @@ void MaceCore::AddGroundStationModule(const std::shared_ptr<IModuleCommandGround
         }
     }
 
+
+}
+
+//!
+//! \brief AddMLStationModule Add ML station module
+//! \param MLStation ML station module setup
+//!
+void MaceCore::AddMLStationModule(const std::shared_ptr<IModuleCommandMLStation> &mlStation)
+{
+    AddLocalModule(mlStation);
+
+    mlStation->addListener(this);
+    mlStation->addTopicListener(this);
+    mlStation->StartTCPServer();
+    m_MLStation = mlStation;
+
+
+    //notify all existing external links about new ML station.
+    if(m_ExternalLink.size() > 0)
+    {
+        for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it=m_ExternalLink.begin(); it!=m_ExternalLink.end(); ++it)
+        {
+            (*it)->MarshalCommandTwoParameter(ExternalLinkCommands::NEWLY_AVAILABLE_MODULE, m_MLStation->GetCharacteristic(), ModuleClasses::ML_STATION);
+        }
+    }
 
 }
 
@@ -334,6 +367,29 @@ void MaceCore::AddSensorsModule(const std::shared_ptr<IModuleCommandSensors> &se
     m_Sensors = sensors;
 
     AddLocalModule(sensors);
+}
+
+//!
+//! \brief AddAdeptModule Add Adept module
+//! \param adept Adept module setup
+//!
+void MaceCore::AddAdeptModule(const std::shared_ptr<IModuleCommandAdept> &adept)
+{
+    std::lock_guard<std::mutex> guard(m_VehicleMutex);
+
+    adept->addListener(this);
+    adept->addTopicListener(this);
+    std::string ID = std::to_string(adept->GetID());
+    if(m_AdeptIDToPtr.find(ID) != m_AdeptIDToPtr.cend())
+        throw std::runtime_error("Adept ID already exists");
+
+    m_AdeptIDToPtr.insert({ID, adept.get()});
+    m_AdeptPTRToID.insert({adept.get(), ID});
+
+    m_Adept = adept;
+
+    AddLocalModule(adept);
+    m_DataFusion->AddMLVehicle(ID,adept->GetCharacteristic());
 }
 
 //This ends the functions adding appropriate modules
@@ -452,9 +508,11 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 
     std::vector<std::string> components = value.ListNonTerminals();
     ModuleCharacteristic senderModule;
-
-    senderModule = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
-
+    if (moduleFrom->ModuleClass() == ModuleClasses::ADEPT){
+        senderModule = m_DataFusion->GetMLModuleFromMAVLINKID(senderID);
+    } else {
+        senderModule = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
+    }
     m_DataFusion->setTopicDatagram(topicName, senderModule, time, value);
 
     ModuleCharacteristic sender = m_DataFusion->GetVehicleFromMAVLINKID(senderID);
@@ -493,6 +551,10 @@ void MaceCore::NewTopicDataValues(const ModuleBase* moduleFrom, const std::strin
 void MaceCore::RequestDummyFunction(const void *sender, const int &vehicleID)
 {
     UNUSED(sender);
+
+    if(m_Adept) {
+        m_Adept->MarshalCommand(AdeptCommands::TEST_FUNCTION, vehicleID);
+    }
 }
 
 
@@ -560,6 +622,9 @@ void MaceCore::Events_NewVehicle(const ModuleBase *sender, const uint8_t publicI
 
     if(m_GroundStation)
         m_GroundStation->MarshalCommand(GroundStationCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
+
+    if(m_MLStation)
+        m_MLStation->MarshalCommand(MLStationCommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
 
     if(m_GlobalRTA)
         m_GlobalRTA->MarshalCommand(RTACommands::NEWLY_AVAILABLE_VEHICLE, publicID, vehicleModule);
@@ -658,6 +723,120 @@ void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const command_it
 //    m_DataFusion->updateVehicleFlightMode(command.getTargetSystem(), command.getRequestMode());
 
     MarshalCommandToVehicle<command_item::ActionChangeMode>(vehicleID, VehicleCommands::CHANGE_VEHICLE_MODE, ExternalLinkCommands::CHANGE_VEHICLE_MODE, command, sender->ModuleClass(), sender->GetCharacteristic());
+}
+
+/////////////////////////////////////////////////////////////////////////
+/// AI SUPPORT EVENTS
+/////////////////////////////////////////////////////////////////////////
+
+//Gets a little complicated with 6 possible paths (to/from adept, external link, and ml station)
+void MaceCore::EventAI_EventTag(const ModuleBase* sender, const command_item::Action_EventTag &obj)
+{
+    //If this came over the external link, simulate the characteristic of the original sender so that the ml station understands
+    ModuleCharacteristic senderModule = sender->GetCharacteristic();
+    if(sender->ModuleClass() == ModuleClasses::EXTERNAL_LINK){
+        senderModule.ModuleID = obj.getTargetSystem();
+        senderModule.MaceInstance = obj.getOriginatingSystem();
+    //If it's not from the external link but we do have one, let them know
+    } else if (m_ExternalLink.size() > 0){
+        //If this command is going to a specific Adept module, only send to that port. 
+        if (sender->ModuleClass() == ModuleClasses::ML_STATION){
+            if (m_ExternalLinkIDToPort.find(obj.getTargetSystem()) != m_ExternalLinkIDToPort.cend()){
+                m_ExternalLinkIDToPort.at(obj.getTargetSystem())->MarshalCommand(ExternalLinkCommands::TAG_EVENT_TO_LOGS, obj, sender->GetCharacteristic());
+            }
+         //Otherwise, send to all so that the mlgui hears it //TODO-AARON: How to specify that mlgui is the only recipient instead?
+        } else {
+            for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it = m_ExternalLink.begin(); it != m_ExternalLink.end(); ++it)
+            {
+                (*it)->MarshalCommand(ExternalLinkCommands::TAG_EVENT_TO_LOGS, obj, sender->GetCharacteristic());
+            }
+        }
+    }
+
+    //Send a directed command to Adept. The target system when sent by Adept indicates the sender here (so the ml station knows who it was), so we have to guard to avoid sending back
+    if (sender->ModuleClass() != ModuleClasses::ADEPT && m_AdeptIDToPtr.size() > 0){
+        MarshalCommandToAdept<command_item::Action_EventTag>(obj.getTargetSystem(), AdeptCommands::TAG_EVENT_TO_LOGS, obj, sender->ModuleClass(), sender->GetCharacteristic());
+    }
+    
+    
+    if(sender->ModuleClass() != ModuleClasses::ML_STATION && m_MLStation){
+        m_MLStation->MarshalCommand(MLStationCommands::TAG_EVENT_TO_LOGS, obj, senderModule);
+    }
+}
+
+void MaceCore::EventAI_ExecuteTestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj)
+{
+    MarshalCommandToAdept<command_item::Action_ProceduralCommand>(0, AdeptCommands::EXECUTE_PROCEDURAL_ACTION, obj, sender->ModuleClass(), sender->GetCharacteristic());
+    
+    // Check if sender is vehicle. If so, don't send back to the vehicle:
+    if(sender->ModuleClass() != ModuleClasses::VEHICLE_COMMS) {
+        MarshalCommandToVehicle<command_item::Action_ProceduralCommand>(0, VehicleCommands::EXECUTE_PROCEDURAL_ACTION, ExternalLinkCommands::EXECUTE_PROCEDURAL_ACTION, obj, sender->ModuleClass(), sender->GetCharacteristic());
+    }
+    
+    if(sender->ModuleClass() != ModuleClasses::ML_STATION && m_MLStation) {
+        m_MLStation->MarshalCommand(MLStationCommands::EXECUTE_PROCEDURAL_ACTION, obj, sender->GetCharacteristic());
+    }
+
+    if(m_ExternalLink.size() > 0)
+    {
+        for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it = m_ExternalLink.begin(); it != m_ExternalLink.end(); ++it)
+        {
+            if(it->get() == sender)
+            {
+                continue;
+            }
+
+            (*it)->MarshalCommand(ExternalLinkCommands::EXECUTE_PROCEDURAL_ACTION, obj, sender->GetCharacteristic());
+        }
+    }
+}
+
+void MaceCore::EventAI_InitializeTestConditions(const ModuleBase* sender, const command_item::Action_InitializeTestSetup &obj)
+{
+    m_VehicleIDToPtr.at(std::to_string(obj.getTargetSystem()))->MarshalCommand(VehicleCommands::INITIALIZE_TEST_CONDITIONS,obj, sender->GetCharacteristic());
+}
+
+void MaceCore::EventAI_NewEvaluationTrial(const ModuleBase* sender, const DataGenericItem::AI_TestParameterization &obj)
+{
+    MarshalCommandToAdept<DataGenericItem::AI_TestParameterization>(0, AdeptCommands::NEW_EVALUATION_TRIAL, obj, sender->ModuleClass(), sender->GetCharacteristic());
+
+    if(m_ExternalLink.size() > 0)
+    {
+        for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it = m_ExternalLink.begin(); it != m_ExternalLink.end(); ++it)
+        {
+            if(it->get() == sender)
+            {
+                continue;
+            }
+
+            (*it)->MarshalCommand(ExternalLinkCommands::NEW_EVALUATION_TRIAL, obj, sender->GetCharacteristic());
+        }
+    }
+}
+
+void MaceCore::EventAI_SetSurfaceDeflection(const ModuleBase* sender, const command_item::Action_SetSurfaceDeflection &obj)
+{   
+    ModuleCharacteristic senderModule = sender->GetCharacteristic();
+    if(sender->ModuleClass() == ModuleClasses::EXTERNAL_LINK){
+        senderModule.ModuleID = obj.getTargetSystem();
+        senderModule.MaceInstance = obj.getOriginatingSystem();
+    } else {
+        m_VehicleIDToPtr.at(std::to_string(obj.getTargetSystem()))->MarshalCommand(VehicleCommands::SET_SURFACE_DEFLECTION,obj,sender->GetCharacteristic());
+       if(m_ExternalLink.size() > 0)
+       {
+           for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it = m_ExternalLink.begin(); it != m_ExternalLink.end(); ++it)
+           {
+               if(it->get() == sender)
+               {
+                   continue;
+               }
+               (*it)->MarshalCommand(ExternalLinkCommands::SET_SURFACE_DEFLECTION, obj, sender->GetCharacteristic());
+           }
+       }
+    }
+    
+    if(m_MLStation)
+        m_MLStation->MarshalCommand(MLStationCommands::SET_SURFACE_DEFLECTION, obj, senderModule);
 }
 
 
@@ -907,9 +1086,9 @@ void MaceCore::EventVehicle_NewOnboardVehicleMission(const ModuleBase *sender, c
 {
     UNUSED(sender);
     //Update the core about the information
-//    MissionItem::MissionKey key = missionList.getMissionKey();
+    MissionItem::MissionKey key = missionList.getMissionKey();
+    m_DataFusion->checkForCurrentMission(key);
     m_DataFusion->receivedNewMission(missionList);
-//    bool isMissionCurrent = m_DataFusion->checkForCurrentMission(key);
 
     //Now update all potential listeners based on the type
     if(m_GroundStation)
@@ -922,7 +1101,7 @@ void MaceCore::EventVehicle_NewOnboardVehicleMission(const ModuleBase *sender, c
     {
         for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it=m_ExternalLink.begin(); it!=m_ExternalLink.end(); ++it)
         {
-            (*it)->MarshalCommand(ExternalLinkCommands::NEWLY_AVAILABLE_ONBOARD_MISSION,missionList.getMissionKey(), sender->GetCharacteristic());
+            (*it)->MarshalCommand(ExternalLinkCommands::NEWLY_AVAILABLE_ONBOARD_MISSION, missionList.getMissionKey(), sender->GetCharacteristic());
         }
     }
 }
@@ -975,6 +1154,14 @@ void MaceCore::ExternalEvent_UpdateRemoteID(const void *sender, const unsigned i
     m_ExternalLinkIDToPort.insert({remoteID,externalLink});
 }
 
+void MaceCore::EventVehicle_ExecuteAITestProcedural(const ModuleBase* sender, const command_item::Action_ProceduralCommand &obj)
+{
+    // Send to adept module, vehicle module (not own), and ML station
+    MaceLog::Critical("In EventVehicle_ExecuteAITestProcedural");
+    EventAI_ExecuteTestProcedural(sender, obj);
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////
 /// VEHICLE EVENTS
@@ -993,8 +1180,8 @@ void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_
     //specific methods and information. Otherwise we may be blasting to an unknown world.
     //This is also bad as we are assuming that the only item calling this would be a vehicle instance
 
-    uint8_t vehicleID;
-    m_DataFusion->getMavlinkIDFromModule(sender->GetCharacteristic(), vehicleID);
+    uint8_t vehicleID = vehicleHome.getOriginatingSystem();
+    // m_DataFusion->getMavlinkIDFromModule(sender->getDataObject().get->GetCharacteristic(), vehicleID);
     m_DataFusion->UpdateVehicleHomePosition(vehicleID, vehicleHome);
 
     //If there is a ground station, and it didn't generate the home; send the home position

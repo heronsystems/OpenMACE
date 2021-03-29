@@ -74,7 +74,6 @@ public:
 };
 
 
-
 #define AI_SUPPORT_TE_COMMAND_ENUMS NEW_EVALUATION_TRIAL /* Command that should enable the accompanying module to execute any required setup procedures before running the test | */
 
 class MACE_CORESHARED_EXPORT IModuleCommand_TEAISupport : public IModuleCommand_GeneralAISupport

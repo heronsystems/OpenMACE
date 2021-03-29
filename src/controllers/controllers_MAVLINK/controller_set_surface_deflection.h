@@ -59,7 +59,7 @@ protected:
 
 public:
     Controller_SetSurfaceDeflection(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<command_item::Action_SetSurfaceDeflection>(cb, queue, linkChan),
+        BasicMavlinkController_ModuleKeyed<command_item::Action_SetSurfaceDeflection>(cb, queue, linkChan, "SetSurfaceDeflection"),
         OverrideSurfaceDeflectionBroadcast(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_execute_surface_deflection_override_t>(mavlink_msg_execute_surface_deflection_override_encode_chan))
     {
 

@@ -18,6 +18,7 @@ char GROUNDSTATION_STR[] = "GroundStation";
 char MLSTATION_STR[] = "MLStation";
 char RTA_STR[] = "RTA";
 char EXTERNAL_LINK_STR[] = "ExternalLink";
+char ADEPT_STR[] = "Adept";
 
 DigiMeshLink::DigiMeshLink(const DigiMeshConfiguration &config) :
     _config(config),
@@ -140,7 +141,7 @@ uint64_t DigiMeshLink::getConnectionSpeed() const
 
 bool DigiMeshLink::Connect()
 {
-    m_Link = new MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR,MLSTATION_STR, RTA_STR, EXTERNAL_LINK_STR>(_config.portName(), _config.baud());
+    m_Link = new MACEDigiMeshWrapper<MACE_INSTANCE_STR, VEHICLE_STR, GROUNDSTATION_STR,MLSTATION_STR, RTA_STR, EXTERNAL_LINK_STR, ADEPT_STR>(_config.portName(), _config.baud());
 
     m_Link->AddHandler_NewRemoteComponentItem_Generic([this](const ResourceKey &resourceKey, const ResourceValue &resourceValue, uint64_t addr){
         UNUSED(addr);

@@ -47,7 +47,7 @@ hsm::Transition AP_State_GroundedArmed::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we ended up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_Grounded_Armed."<<std::endl;
             break;
         }
     }
@@ -98,8 +98,11 @@ void AP_State_GroundedArmed::OnEnter()
 void AP_State_GroundedArmed::OnEnter(const std::shared_ptr<command_item::AbstractCommandItem> command)
 {
     //When entering this case we will have already armed and therefore have no reason to enter the OnEnter() function
-    if(command != nullptr)
+    if(command != nullptr) {
         handleCommand(command);
+    }
+
+    this->OnEnter();
 }
 
 } //end of namespace ardupilot

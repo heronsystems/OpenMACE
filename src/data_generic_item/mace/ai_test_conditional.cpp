@@ -71,12 +71,45 @@ AI_PROCEDURAL_COMMANDS AI_TestConditional::shouldStart(const mace::pose::BasicCa
     return rtnCondition;
 }
 
-AI_PROCEDURAL_COMMANDS AI_TestConditional::shouldTerminate(const unsigned int &elapsedTestDuration, const VehicleState_Cartesian3D &endState, const mace::pose::GeodeticPosition_3D &currentPosition) const
+AI_PROCEDURAL_COMMANDS AI_TestConditional::shouldTerminate(const double &elapsedTestDuration, const mace::pose::GeodeticPosition_3D &currentPosition, const mace::pose::Rotation_3D &currentRotation) const
 {
-    if(!m_Boundary.validateState(currentPosition))
+    // **** Attitude:
+    Eigen::Quaterniond orientationEstimate_NED = Eigen::Quaterniond(currentRotation.getQuaternion().w(), currentRotation.getQuaternion().x(), currentRotation.getQuaternion().y(), currentRotation.getQuaternion().z());
+    orientationEstimate_NED.normalize();
+    // Current rotation should be in NED:
+    double roll_deg = mace::math::convertRadiansToDegrees(currentRotation.getRoll());
+    double pitch_deg = mace::math::convertRadiansToDegrees(currentRotation.getPitch());
+
+
+    // CHECK ABORT CONDITIONS:
+    // TODO-PAT: Fix boundary load at test start. Long boundary waypoint lists don't load properly
+//    if(!m_Boundary.validateState(currentPosition)) {
+//        MaceLog::Emergency("ABORT DUE TO BOUNDARY VIOLATION: ");
+//        MaceLog::Emergency("POSITON: " + currentPosition.printPositionalInfo());
+//        return AI_PROCEDURAL_COMMANDS::ABORT;
+//    }
+    if(currentPosition.getAltitude() > this->m_Boundary._ceiling ||
+       currentPosition.getAltitude() < this->m_Boundary._floor) {
+        MaceLog::Emergency("ABORT DUE TO ALTITUDE VIOLATION: ");
+        MaceLog::Emergency("Altitude: " + std::to_string(currentPosition.getAltitude()));
         return AI_PROCEDURAL_COMMANDS::ABORT;
-    if(elapsedTestDuration > m_Criteria.getMaxTestDuration())
+    }
+
+    if(std::abs(roll_deg) > this->m_Criteria._stopCriteria.get_dRoll() || // Abort due to excessive roll
+       std::abs(pitch_deg) > this->m_Criteria._stopCriteria.get_dPitch() ) // Abort due to excessive pitch
+    {
+        MaceLog::Emergency("ABORT DUE TO EXCESSIVE MANEUVER: ");
+        MaceLog::Emergency("Roll: " + std::to_string(roll_deg) + " / Pitch: " + std::to_string(pitch_deg));
+
+        return AI_PROCEDURAL_COMMANDS::ABORT;
+    }
+
+    // TODO-PAT: Check yaw?? Is that cool?
+
+    if(elapsedTestDuration > m_Criteria.getMaxTestDuration()) {
+        MaceLog::Green("STOP DUE TO TIME LIMIT");
         return AI_PROCEDURAL_COMMANDS::STOP;
+    }
 
     return AI_PROCEDURAL_COMMANDS::RELEASE;
 }

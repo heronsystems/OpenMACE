@@ -64,7 +64,7 @@ void AP_State_FlightAI_TestEnd::Update()
 void AP_State_FlightAI_TestEnd::OnEnter()
 {
     //This should never happen, but if it does, we will handle it with an empty descriptor
-    MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+    MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
 
     modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
@@ -77,7 +77,7 @@ void AP_State_FlightAI_TestEnd::OnEnter()
     MavlinkEntityKey sender = 255;
     MavlinkEntityKey target = Owner().getMAVLINKID();
 
-    MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+    MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
     commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
     commandMode.vehicleMode = static_cast<uint8_t>(PLANE_MODE::PLANE_MODE_RTL);
     modeController->Send(commandMode,sender,target);
@@ -86,11 +86,11 @@ void AP_State_FlightAI_TestEnd::OnEnter()
 void AP_State_FlightAI_TestEnd::OnEnter(const PLANE_MODE &mode)
 {
     // Send out AI Abort command to other modules:
-    command_item::Action_ProceduralCommand abortCommand;
-    abortCommand.setDescriptor("Test ended by ML GUI");
-    abortCommand.setProcedural(AI_PROCEDURAL_COMMANDS::STOP);
+    command_item::Action_ProceduralCommand stopCommand;
+    stopCommand.setDescriptor("Test ended by ML GUI");
+    stopCommand.setProcedural(AI_PROCEDURAL_COMMANDS::STOP);
     MaceLog::Critical("Send cbi_AIProceduralCommand");
-//    Owner().getCallbackInterface()->cbi_AIProceduralCommand(Owner().getMAVLINKID(), abortCommand);
+    Owner().getCallbackInterface()->cbi_AIProceduralCommand(Owner().getMAVLINKID(), stopCommand);
     //We got into this state because externally the test has already ended and the mode has transitioned.
     //We just need to catch up to the current state.
     UNUSED(mode); //For right now I would rather have the outer state machine check where to appropriately transition

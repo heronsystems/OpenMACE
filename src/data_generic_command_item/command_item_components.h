@@ -29,6 +29,7 @@
 #include "data_generic_command_item/do_items/action_motor_test.h"
 #include "data_generic_command_item/do_items/action_set_global_origin.h"
 #include "data_generic_command_item/do_items/action_set_surface_deflection.h"
+#include "data_generic_command_item/do_items/action_timesync.h"
 
 #include "data_generic_command_item/mission_items/mission_ack.h"
 #include "data_generic_command_item/mission_items/mission_item_achieved.h"

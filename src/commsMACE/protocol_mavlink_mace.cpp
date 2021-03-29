@@ -121,6 +121,12 @@ void MavlinkProtocol::SendProtocolMessage(ILink *link, const mavlink_message_t &
 void MavlinkProtocol::ReceiveData(ILink *link, const std::vector<uint8_t> &buffer)
 {
 
+    // TODO-PAT: New mavlink messages for:
+//        - Request Resource
+//        - Distribute Resource presence
+//        - Add resource
+
+
 //     std::cout << "MavlinkProtocol::ReceiveData " << std::endl;
     uint8_t mavlinkChannel = m_MavlinkChannels.at(link);
 

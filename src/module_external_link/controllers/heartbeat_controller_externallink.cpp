@@ -40,12 +40,12 @@ void HeartbeatController_ExternalLink::run()
             mTimer.start();
             //formulate the appropriate hearbeat message
             mavlink_mace_heartbeat_t heartbeat;
-            heartbeat.autopilot = static_cast<uint8_t>(Data::AutopilotType::AUTOPILOT_TYPE_GENERIC);
-            heartbeat.mace_companion = 1;
-            heartbeat.mission_state = 0;
-            heartbeat.protocol = 0;
-            heartbeat.type = static_cast<uint8_t>(Data::SystemType::SYSTEM_TYPE_GCS);
-            heartbeat.mavlinkID = static_cast<uint8_t>(this->systemID);
+            heartbeat.autopilot = static_cast<uint8_t>(MAV_TYPE::MAV_TYPE_GENERIC);
+//            heartbeat.flight_mode = ;
+//            heartbeat.vehicle_hsm = ;
+//            heartbeat.mavlink_version = ;
+            heartbeat.type = static_cast<uint8_t>(MAV_TYPE::MAV_TYPE_GCS);
+            heartbeat.vehicle_id = static_cast<uint8_t>(this->systemID);
             if(m_CB)
                 m_CB->cbiHeartbeatController_transmitCommand(heartbeat);
         }

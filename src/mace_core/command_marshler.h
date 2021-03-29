@@ -249,11 +249,13 @@ public:
     template<typename P1T>
     void QueueCommand(T event, const P1T &param1, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>())
     {
+
         if(m_EventProcedures.find(event) == m_EventProcedures.cend())
             throw std::runtime_error("Given command does not have a behavior defined");
 
         OneParamCaller<P1T> *caller = (OneParamCaller<P1T>*)m_EventProcedures.at(event).get();
         caller->AddParameter(param1);
+
         if(sender.IsSet() == true)
         {
             caller->AddSender(sender.Value());

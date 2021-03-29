@@ -51,7 +51,7 @@ QJsonObject Action_EventTag::toJSON(const int &vehicleID, const std::string &dat
     UNUSED(dataType);
     QJsonObject json = toJSON_base(vehicleID,AICommandItemToString(getCommandType()));
     json["event"] = Data::LoggingEventToString(get_EventTag()).c_str();
-    json["time"] = _time.ToQTDateTime().toString(Qt::ISODateWithMs);
+    json["time"] = _time.ToString().toStdString().c_str(); //.ToQTDateTime().toString(Qt::ISODateWithMs);
     json["text"] = get_LoggingText().c_str();
     return json;
 }

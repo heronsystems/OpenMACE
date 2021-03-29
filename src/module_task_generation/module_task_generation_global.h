@@ -1,0 +1,14 @@
+#ifndef MODULE_TASK_GENERATION_GLOBAL_H
+#define MODULE_TASK_GENERATION_GLOBAL_H
+
+#ifdef _MSC_VER
+#  if defined(MODULE_TASK_GENERATION_LIBRARY)
+#    define MODULE_TASK_GENERATIONSHARED_EXPORT  __declspec(dllexport)
+#  else
+#    define MODULE_TASK_GENERATIONSHARED_EXPORT  __declspec(dllimport)
+#  endif
+#else
+#  define MODULE_TASK_GENERATIONSHARED_EXPORT
+#endif
+
+#endif // MODULE_TASK_GENERATION_GLOBAL_H

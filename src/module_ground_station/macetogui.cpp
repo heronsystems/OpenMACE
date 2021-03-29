@@ -1,20 +1,24 @@
 ﻿#include "macetogui.h"
 
 
-MACEtoGUI::MACEtoGUI() :
+MACEtoGUI::MACEtoGUI(const MaceCore::IModuleCommandGroundStation *ptrRef) :
     m_sendAddress(QHostAddress::LocalHost),
     m_sendPort(1234),
     m_udpConfig("127.0.0.1", 5678, "127.0.0.1", 8080)
 {
+    m_parent = ptrRef;
+
     m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
     m_udpLink->Connect();
 }
 
-MACEtoGUI::MACEtoGUI(const QHostAddress &sendAddress, const int &sendPort) :
+MACEtoGUI::MACEtoGUI(const MaceCore::IModuleCommandGroundStation *ptrRef, const QHostAddress &sendAddress, const int &sendPort) :
     m_sendAddress(sendAddress),
     m_sendPort(sendPort),
     m_udpConfig("127.0.0.1", 5678, sendAddress.toString().toStdString(), sendPort)
 {
+    m_parent = ptrRef;
+
     m_udpLink = std::make_shared<CommsMACE::UdpLink>(m_udpConfig);
     m_udpLink->Connect();
 }
@@ -76,7 +80,7 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -87,47 +91,50 @@ void MACEtoGUI::sendCurrentMissionItem(const int &vehicleID, const std::shared_p
 void MACEtoGUI::sendVehicleTarget(const int &vehicleID, const std::shared_ptr<MissionTopic::VehicleTargetTopic> &component)
 {
     QJsonObject obj;
-    switch (component->m_targetPosition->getCoordinateSystemType()) {
-    case CoordinateSystemTypes::GEODETIC:
-    {
-//        Abstract_GeodeticPosition* targetPosition;
-//        targetPosition = dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition);
-        obj = component->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET));
+    if(component->m_targetPosition != nullptr) {
+        switch (component->m_targetPosition->getCoordinateSystemType()) {
+            case CoordinateSystemTypes::GEODETIC:
+            {
+        //        Abstract_GeodeticPosition* targetPosition;
+        //        targetPosition = dynamic_cast<mace::pose::Abstract_GeodeticPosition*>(component->m_targetPosition);
+                obj = component->toJSON(vehicleID, guiMessageString(GuiMessageTypes::VEHICLE_TARGET));
 
-        break;
+                break;
+            }
+            case CoordinateSystemTypes::CARTESIAN:
+            {
+        //        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
+
+        //        if(!globalOrigin.isAnyPositionValid())
+        //            return;
+
+        //        mace::pose::GeodeticPosition_2D targetPosition;
+        //        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
+
+                break;
+            }
+            case CoordinateSystemTypes::UNKNOWN:
+            case CoordinateSystemTypes::NOT_IMPLIED:
+                break;
+            }
+
+
+        //    obj["distance_to_target"] = component->m_distanceToTarget;
+
+
+
+            QJsonDocument doc(obj);
+            //    bool bytesWritten = writeTCPData(doc.toJson());
+            bool bytesWritten = writeUDPData(doc.toJson());
+
+            if(!bytesWritten){
+                std::cout << "Write vehicle target failed..." << std::endl;
+            }
+
+            // Log to file:
+            logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
     }
-    case CoordinateSystemTypes::CARTESIAN:
-    {
-//        mace::pose::GeodeticPosition_3D globalOrigin = this->getDataObject()->GetGlobalOrigin();
-
-//        if(!globalOrigin.isAnyPositionValid())
-//            return;
-
-//        mace::pose::GeodeticPosition_2D targetPosition;
-//        DynamicsAid::LocalPositionToGlobal(&globalOrigin, dynamic_cast<mace::pose::Abstract_CartesianPosition*>(component->m_targetPosition), &targetPosition);
-
-        break;
-    }
-    case CoordinateSystemTypes::UNKNOWN:
-    case CoordinateSystemTypes::NOT_IMPLIED:
-        break;
-    }
-
-
-//    obj["distance_to_target"] = component->m_distanceToTarget;
-
-
-
-    QJsonDocument doc(obj);
-    //    bool bytesWritten = writeTCPData(doc.toJson());
-    bool bytesWritten = writeUDPData(doc.toJson());
-
-    if(!bytesWritten){
-        std::cout << "Write vehicle target failed..." << std::endl;
-    }
-
-    // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    
 }
 
 //!
@@ -143,14 +150,14 @@ void MACEtoGUI::sendVehicleHome(const int &vehicleID, const command_item::Spatia
         obj["name"] = QString::fromStdString("Agent " + std::to_string(vehicleID) + " Home");
         obj["type"] = "takeoff_land";
         QJsonDocument doc(obj);
-        //    bool bytesWritten = writeTCPData(doc.toJson());
-        bool bytesWritten = writeUDPData(doc.toJson());
+//            bool bytesWritten = writeTCPData(doc.toJson());
+         bool bytesWritten = writeUDPData(doc.toJson());
         if(!bytesWritten){
             std::cout << "Write Home position failed..." << std::endl;
         }
 
         // Log to file:
-        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
     }
 }
 
@@ -223,7 +230,7 @@ void MACEtoGUI::sendGlobalOrigin(const command_item::SpatialHome &origin)
         }
 
         // Log to file:
-        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
     }
 }
 
@@ -246,7 +253,7 @@ void MACEtoGUI::sendPositionData(const int &vehicleID, const std::shared_ptr<mac
         }
 
         // Log to file:
-        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
     }
 }
 
@@ -267,7 +274,7 @@ void MACEtoGUI::sendAttitudeData(const int &vehicleID, const std::shared_ptr<mac
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -286,7 +293,7 @@ void MACEtoGUI::sendVehicleAirspeed(const int &vehicleID, const mace::measuremen
         }
 
         // Log to file:
-        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+        logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -306,7 +313,7 @@ void MACEtoGUI::sendVehicleFuel(const int &vehicleID, const std::shared_ptr<Data
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -325,7 +332,7 @@ void MACEtoGUI::sendVehicleMode(const int &vehicleID, const std::shared_ptr<Data
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -344,7 +351,7 @@ void MACEtoGUI::sendVehicleText(const int &vehicleID, const std::shared_ptr<Data
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -363,7 +370,7 @@ void MACEtoGUI::sendVehicleGPS(const int &vehicleID, const std::shared_ptr<DataG
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -382,7 +389,7 @@ void MACEtoGUI::sendVehicleArm(const int &vehicleID, const std::shared_ptr<DataG
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -401,7 +408,7 @@ void MACEtoGUI::sendMissionItemReached(const int &vehicleID, const std::shared_p
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -413,6 +420,10 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
 {
     QJsonDocument doc(component->toJSON(vehicleID,guiMessageString(GuiMessageTypes::VEHICLE_HEARTBEAT)));
     //    bool bytesWritten = writeTCPData(doc.toJson());
+    if(doc.object()["vehicle_type"] == "") {
+        return; // We don't know what vehicle type this is, don't send to the GUI
+    }
+
     bool bytesWritten = writeUDPData(doc.toJson());
 
     if(!bytesWritten){
@@ -420,7 +431,7 @@ void MACEtoGUI::sendVehicleHeartbeat(const int &vehicleID, const std::shared_ptr
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -447,7 +458,7 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
     }
 
     // Log to file:
-    logToFile(m_logger, docMission.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, docMission.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 
 //    bytesWritten = writeTCPData(docPath.toJson());
     bytesWritten = writeUDPData(docPath.toJson());
@@ -457,7 +468,7 @@ void MACEtoGUI::sendVehicleMission(const int &vehicleID, const MissionItem::Miss
     }
 
     // Log to file:
-    logToFile(m_logger, docPath.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, docPath.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 void MACEtoGUI::sendVehiclePath(const int &vehicleID, const VehiclePath_Linear &waypointList)
@@ -475,7 +486,7 @@ void MACEtoGUI::sendVehiclePath(const int &vehicleID, const VehiclePath_Linear &
         std::cout << "Write Vehicle Path Data failed..." << std::endl;
     }
     // Log to file:
-    logToFile(m_logger, docPath.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, docPath.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -494,7 +505,7 @@ void MACEtoGUI::sendSensorFootprint(const int &vehicleID, const std::shared_ptr<
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 //!
@@ -528,7 +539,7 @@ void MACEtoGUI::sendEnvironmentVertices(const std::vector<mace::pose::GeodeticPo
     }
 
     // Log to file:
-    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString());
+    logToFile(m_logger, doc.toJson(QJsonDocument::Compact).toStdString(), m_parent->getDataObject()->getDeltaT_msec());
 }
 
 void MACEtoGUI::waypointListToJSON(const std::vector<mace::pose::GeodeticPosition_3D> &waypointList, QJsonArray &path)

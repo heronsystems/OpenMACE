@@ -85,6 +85,20 @@ std::string Action_ProceduralCommand::printCommandInfo() const
     return "";
 }
 
+void Action_ProceduralCommand::populateMACECOMMS_ExecuteProcedural(mavlink_ai_execute_procedural_t &obj) const
+{
+    obj.target_system = getTargetSystem();
+    obj.target_component = 0;
+    obj.procedural_type = static_cast<uint8_t>(_procedural);
+}
+
+void Action_ProceduralCommand::fromMACECOMMS_ExecuteProcedural(const mavlink_ai_execute_procedural_t &obj)
+{
+    setTargetSystem(obj.target_system);
+    setTargetComponent(obj.target_component);
+    setProcedural(static_cast<AI_PROCEDURAL_COMMANDS>(obj.procedural_type));
+}
+
 } //end of namespace command_item
 
 

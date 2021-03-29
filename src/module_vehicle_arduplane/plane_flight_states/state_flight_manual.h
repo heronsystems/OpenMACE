@@ -7,6 +7,8 @@
 namespace ardupilot {
 namespace state{
 
+class AP_State_GroundedDisarming;
+
 class AP_State_FlightManual : public AbstractStateArdupilot
 {
 public:

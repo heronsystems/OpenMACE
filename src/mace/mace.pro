@@ -35,7 +35,7 @@ INCLUDEPATH += $$(MACE_ROOT)/include
 INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
 contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
-  message("mace: Compiling with Heron support")
+  message("mace: Compiling with AI support")
   INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 }else{
   message("mace: Using standard mavlink libraries")
@@ -134,6 +134,10 @@ win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ground_stati
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ground_station/debug/ -lmodule_ground_station
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ground_station/ -lmodule_ground_station
 
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_ml_station/release/ -lmodule_ml_station
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_ml_station/debug/ -lmodule_ml_station
+else:unix:!macx: LIBS += -L$$OUT_PWD/../module_ml_station/ -lmodule_ml_station
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/release/ -lmodule_resource_task_allocation
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_resource_task_allocation/debug/ -lmodule_resource_task_allocation
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_resource_task_allocation/ -lmodule_resource_task_allocation
@@ -173,6 +177,10 @@ else:unix: LIBS += -L$$OUT_PWD/../module_vehicle_MAVLINK/ -lmodule_vehicle_MAVLI
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/release/ -lmodule_vehicle_sensors
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_sensors/debug/ -lmodule_vehicle_sensors
 else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_sensors/ -lmodule_vehicle_sensors
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/release/ -lmodule_vehicle_adept
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../module_vehicle_adept/debug/ -lmodule_vehicle_adept
+else:unix:!macx: LIBS += -L$$OUT_PWD/../module_vehicle_adept/ -lmodule_vehicle_adept
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../planners/release/ -lplanners
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../planners/debug/ -lplanners
@@ -253,4 +261,21 @@ DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 
 # Flann Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$PWD/../../tools/flann/src/cpp
+
+
+contains(DEFINES, WITH_LIBTORCH_SUPPORT) {
+  message("mace: Compiling with libtorch support")
+    exists($$(LIBTORCH_ROOT))
+    # Libtorch linking:
+    LIBS += -L$$(LIBTORCH_ROOT)/lib/ -lc10 -lc10_cuda -ltorch_cuda -ltorch_cpu -ltorch
+    INCLUDEPATH += $$(LIBTORCH_ROOT)/include
+    INCLUDEPATH += $$(LIBTORCH_ROOT)/include/torch/csrc/api/include
+
+    # Link ML agent wrapper:
+    unix|win32: LIBS += -L$$(ACE_AGENT_ROOT)/build/ -lagent_cpp
+    INCLUDEPATH += $$(ACE_AGENT_ROOT)/include
+    DEPENDPATH += $$(ACE_AGENT_ROOT)/include
+    }else{
+    message("mace: Not building against libtorch libraries")
+}
 

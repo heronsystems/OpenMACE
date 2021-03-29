@@ -29,7 +29,8 @@ void CommandMSGInterval::removeIntervalRequest(const unsigned int &messageID)
 
 bool CommandMSGInterval::removeCurrentAndTransmitNext()
 {
-    this->RemoveAllTransmissions(); //this should clear the existing queued object
+    std::cout << "Remove current and transmit next" << std::endl;
+//    this->RemoveAllTransmissions(); //this should clear the existing queued object
     unsigned int currentID = getCurrentRequestID();
     removeIntervalRequest(currentID);
     return transmitNextRequest();
@@ -47,7 +48,7 @@ bool CommandMSGInterval::transmitNextRequest()
     MavlinkEntityKey target = currentRequest.getTargetSystem();
     MavlinkEntityKey sender = currentRequest.getOriginatingSystem();
     this->Send(currentRequest,sender,target);
-
+    std::cout << "Sending interval request for message type " << std::to_string(m_CurrentRequestID) << std::endl;
     return true;
 }
 
