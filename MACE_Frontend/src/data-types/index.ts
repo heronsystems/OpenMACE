@@ -33,6 +33,7 @@ export type MessageType =
     | VehicleFuel_MessageType
     | VehicleTarget_MessageType
     | VehiclePath_MessageType
+    | VehicleMission_MessageType
     | VehicleParameterList_MessageType
 
 interface IMessage {
@@ -53,6 +54,7 @@ type VehicleMode_MessageType = "vehicle_mode";
 type VehicleFuel_MessageType = "vehicle_fuel";
 type VehicleTarget_MessageType = "vehicle_target";
 type VehiclePath_MessageType = "vehicle_path";
+type VehicleMission_MessageType = "vehicle_mission";
 type VehicleParameterList_MessageType = "vehicle_parameter_list"
 
 export type Message =
@@ -68,6 +70,7 @@ export type Message =
     | Aircraft.Mode
     | Aircraft.Fuel
     | Aircraft.Path
+    | Aircraft.Mission
     | Aircraft.Target
     | Aircraft.Parameters
 
@@ -156,6 +159,7 @@ export namespace Aircraft {
         airspeed: number;
         distance_to_target: number;
         flight_time: number;
+        origin_set: boolean;
     }
 
     export type HeartbeatPayload = {
@@ -326,6 +330,23 @@ export namespace Aircraft {
         message_type: VehiclePath_MessageType;
         agentID: string;
         vertices: Vertices;
+        date?: number;
+        should_display?: boolean;
+        lastUpdate?: number;
+    }
+
+    export type MissionPayload = {
+        agentID: string;
+        missionItems: Vertices;
+        date?: number;
+        should_display?: boolean;
+        lastUpdate?: number;
+    };
+
+    export interface Mission {
+        message_type: VehicleMission_MessageType;
+        agentID: string;
+        missionItems: Vertices;
         date?: number;
         should_display?: boolean;
         lastUpdate?: number;

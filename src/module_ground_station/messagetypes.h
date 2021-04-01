@@ -104,6 +104,8 @@ inline  GuiMessageTypes StringtoGuiMessage(const std::string &type) {
         return GuiMessageTypes::VEHICLE_TRACKANGLE;
     } else if(type == "vehicle_mode"){
         return GuiMessageTypes::VEHICLE_MODE;
+    } else if(type == "vehicle_mission"){
+        return GuiMessageTypes::VEHICLE_MISSION;
     } else if(type == "environment_icon"){
         return GuiMessageTypes::VEHICLE_HOME;
     } else if(type == "vehicle_text"){

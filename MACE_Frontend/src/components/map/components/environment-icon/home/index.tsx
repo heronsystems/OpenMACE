@@ -20,31 +20,38 @@ const HomeMarker = (props: Props) => {
   const _marker: React.RefObject<Marker> = useRef();
   const { icons, updateIcons, aircrafts  } = useContext<Context>(AppContext);
   const aircraft = aircrafts.find((a) => a.agentID === props.data.agentID);
-  
-  return (
-    <Marker
-      ref={_marker}
-      position={{lat: props.data.lat, lng: props.data.lng}}
-      icon={L.divIcon({
-        className: "home-icon",
-        html: renderToString(
-          <HomeIcon 
-            width={DEFAULT_WIDTH} 
-           height={DEFAULT_HEIGHT}
-           color={aircraft.color} />
-        ),
-        iconSize: L.point(DEFAULT_WIDTH, DEFAULT_HEIGHT, true)
-      })}
-      // @ts-ignore this exists?
-    >
-      <Tooltip
-        direction="right"
-        offset={[DEFAULT_WIDTH / 4, 0]}
-        data={props.data}
-      />
-     
-    </Marker> 
-  );
+
+//   console.log(aircraft);
+
+  if(aircraft) {
+    return (
+        <Marker
+          ref={_marker}
+          position={{lat: props.data.lat, lng: props.data.lng}}
+          icon={L.divIcon({
+            className: "home-icon",
+            html: renderToString(
+              <HomeIcon 
+                width={DEFAULT_WIDTH} 
+               height={DEFAULT_HEIGHT}
+               color={aircraft.color} />
+            ),
+            iconSize: L.point(DEFAULT_WIDTH, DEFAULT_HEIGHT, true)
+          })}
+          // @ts-ignore this exists?
+        >
+          <Tooltip
+            direction="right"
+            offset={[DEFAULT_WIDTH / 4, 0]}
+            data={props.data}
+          />
+         
+        </Marker> 
+      );
+  }
+  else {
+      return null;
+  }
 };
 
 export default HomeMarker;

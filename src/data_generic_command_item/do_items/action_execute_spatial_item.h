@@ -59,6 +59,15 @@ public: //The logic behind this is that every command item can be used to genera
     void generateMACEMSG_CommandItem(mavlink_message_t &msg) const override;
 /** End of interface imposed via AbstractCommandItem */
 
+    /** Functional commands that populate the execute spatial action commands */
+public: //The logic behind this is that every command item can be used to generate a mission item
+    void populateMACECOMMS_SpatialActionCommand(mavlink_execute_spatial_action_t &act) const;
+
+    void fromMACECOMMS_SpatialActionCommand(const mavlink_execute_spatial_action_t &obj);
+//we know that you must cast to the specific type to get something explicit based on the command
+    /** End of functional commands related to executing spatial action commands */
+
+
 public:
     Action_ExecuteSpatialItem();
     Action_ExecuteSpatialItem(const AbstractSpatialActionPtr cmd);

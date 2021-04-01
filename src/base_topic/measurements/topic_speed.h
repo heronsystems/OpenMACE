@@ -43,6 +43,7 @@ public:
     virtual void fromJSON(const QJsonDocument &inputJSON) ;
 
     virtual std::string toCSV(const std::string &delimiter) const;
+
 private:
     mace::measurements::Speed m_SpeedObj;
 };

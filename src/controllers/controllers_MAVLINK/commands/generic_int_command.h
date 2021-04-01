@@ -75,7 +75,11 @@ protected:
 
     virtual bool Finish_Receive(const mavlink_command_ack_t &msg, const MavlinkEntityKey &sender, uint8_t & ack, MavlinkEntityKey &queueObj)
     {
-        UNUSED(msg);
+        if(msg.command != COMMANDTYPE)
+        {
+            return false;
+        }
+
         queueObj = sender;
         ack = msg.result;
         return true;

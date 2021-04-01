@@ -60,6 +60,8 @@ public:
                     {
                         ((Controllers::DataItem<COMPONENT_KEY, FINAL_TYPE>*)BASE::m_Controller)->onDataReceived(finalKey, finalObj);
                     }
+
+                    return valid;
                 }
         );
     }

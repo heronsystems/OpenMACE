@@ -3,7 +3,7 @@
 
 #include "module_vehicle_MAVLINK/vehicle_object/mavlink_vehicle_object.h"
 
-#include "ardupilot_component_operating_mode.h"
+#include "data/flight_modes/ardupilot_component_operating_mode.h"
 
 #include "base/trajectory/agent_parameters.h"
 #include "base/vehicle/vehicle_path_linear.h"

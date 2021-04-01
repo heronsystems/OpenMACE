@@ -28,7 +28,6 @@ SOURCES += module_vehicle_ardupilot.cpp \
 
 HEADERS += module_vehicle_ardupilot.h\
         module_vehicle_ardupilot_global.h \
-    vehicle_object/ardupilot_component_operating_mode.h \
     ardupilot_target_progess.h \
     guided_timeout_controller.h \
     flight_states/ardupilot_state_components.h \

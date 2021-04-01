@@ -40,7 +40,6 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         DataGenericItem::DataGenericItem_SystemTime systemTime;
         systemTime.setTimeSinceEpoch(decodedMSG.time_unix_usec);
         systemTime.setTimeSinceBoot(decodedMSG.time_boot_ms);
-
         // Check the GPS fix is greater than 3D before updating system time
         DataGenericItem::DataGenericItem_GPS gpsItem = status->vehicleGPSStatus.get();
         // Check our system time is different from prior data before setting system time:
@@ -53,6 +52,53 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         break;
     }
+//    case MAVLINK_MSG_ID_TIMESYNC:
+//    {
+//        mavlink_timesync_t decodedMSG;
+//        mavlink_msg_timesync_decode(msg, &decodedMSG);
+//        /*
+//         * If it gets a message with tc1 == 0 it sends back a message with tc1 = its timestamp (now*1000ULL) and the timestamp from the sender message into ts1.
+//         * If it gets a message with tc1 <> 0 it knows this is a reply to its message. This contains the original timestamp and the timestamp of the remote system. From this the system gets the round trip time and an estimated offset between the systems.
+//         */
+
+//        MaceLog::Alert("TIMESYNC PUMPING OUT");
+//        MaceLog::Alert("tc1: " + std::to_string(decodedMSG.tc1) + " / ts1: " + std::to_string(decodedMSG.ts1));
+
+//        if(decodedMSG.tc1 == 0) {
+//            MaceLog::Alert("IN TIMESYNC IF");
+//            // This is being sent by the autopilot, respond with the current timestamp:
+//            std::chrono::nanoseconds now_usec = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch());
+//            decodedMSG.tc1 = now_usec.count();
+//            decodedMSG.ts1 = decodedMSG.ts1; // ts1 is in nanoseconds
+
+//            DataGenericItem::DataGenericItem_Timesync timesync;
+//            timesync.setTC1(decodedMSG.tc1);
+//            timesync.setTS1(decodedMSG.ts1);
+
+//            // respond to sender with MACE time -- Check that Offset being printed out gets smaller
+//            std::shared_ptr<DataGenericItem::DataGenericItem_Timesync> ptrTimesync = std::make_shared<DataGenericItem::DataGenericItem_Timesync>(timesync);
+//            if(this->m_CB) {
+//                this->m_CB->cbi_Timesync(systemID, ptrTimesync);
+//            }
+//        }
+//        else {
+//            MaceLog::Alert("Received a TIMESYNC reply");
+////            int64_t autopilotTimestamp = decodedMSG.tc1;
+////            int64_t maceCompanionTimestamp = decodedMSG.ts1;
+
+////            // Calculate round trip time:
+////            std::chrono::milliseconds now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+////            double roundTrip_msec = now_ms.count() - maceCompanionTimestamp;
+////            std::chrono::time_point offset = std::chrono::duration_cast<std::chrono::milliseconds>(now_ms - autopilotTimestamp).count();
+
+////            // TODO: Set offset in MAVLINK vehicle module to be used for logging
+////            if(this->m_CB) {
+////                this->m_CB->cbi_AutopilotTimeOffset(systemID, offset);
+////            }
+//        }
+
+//        break;
+//    }
     case MAVLINK_MSG_ID_PARAM_VALUE:
     {
         //This is message definition 22
@@ -94,10 +140,10 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                    static_cast<double>(decodedMSG.pitchspeed),
                                                    static_cast<double>(decodedMSG.yawspeed));
 
-        Data::EnvironmentTime currentTime;
-        Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
-//        std::cout<<"The elapsed currentTime is: "<<(static_cast<double>(currentTime - prevAttitude))/1000000.0<<std::endl;
-        prevAttitude = currentTime;
+        //Data::EnvironmentTime currentTime;
+        //Data::EnvironmentTime::CurrentTime(Data::Devices::SYSTEMCLOCK, currentTime);
+        //std::cout<<"The elapsed currentTime is: "<<(static_cast<double>(currentTime - prevAttitude))/1000000.0<<std::endl;
+        //prevAttitude = currentTime;
 
         if(state->vehicleAttitude.set(agentAttitude))
         {
@@ -191,7 +237,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         mace::measurements::Speed currentAirspeed;
         currentAirspeed.setSpeed(static_cast<double>(decodedMSG.airspeed));
-        currentAirspeed.updateSpeedType(mace::measurements::Speed::SpeedTypes::AIRSPEED);
+        currentAirspeed.updateSpeedType(SPEED_TYPE::SPEED_TYPE_AIRSPEED);
         if(state->vehicleAirspeed.set(currentAirspeed))
         {
             mace::measurement_topics::Topic_AirSpeedPtr ptrAirspeedTopic = std::make_shared<mace::measurement_topics::Topic_AirSpeed>(currentAirspeed);
@@ -201,7 +247,7 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
 
         mace::measurements::Speed currentGroundSpeed;
         currentGroundSpeed.setSpeed(static_cast<double>(decodedMSG.groundspeed));
-        currentGroundSpeed.updateSpeedType(mace::measurements::Speed::SpeedTypes::GROUNDSPEED);
+        currentGroundSpeed.updateSpeedType(SPEED_TYPE::SPEED_TYPE_GROUNDSPEED);
         if(state->vehicleGroundSpeed.set(currentGroundSpeed))
         {
             mace::measurement_topics::Topic_GroundSpeedPtr ptrGroundspeedTopic = std::make_shared<mace::measurement_topics::Topic_GroundSpeed>(currentGroundSpeed);
@@ -255,6 +301,31 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         /// MISSION ITEMS: The following case statements are executed
         /// for mission based message events.
         /////////////////////////////////////////////////////////////////////////
+    case MAVLINK_MSG_ID_NEW_ONBOARD_MISSION:
+    {
+        mavlink_new_onboard_mission_t decodedMSG;
+        mavlink_msg_new_onboard_mission_decode(msg,&decodedMSG);
+
+        MaceLog::Alert("NEW ONBOARD MISSION");
+
+//        MissionItem::MISSIONTYPE missionType = static_cast<MissionItem::MISSIONTYPE>(decodedMSG.mission_type);
+//        MissionItem::MISSIONSTATE missionState = static_cast<MissionItem::MISSIONSTATE>(decodedMSG.mission_state);
+
+//        MissionItem::MissionKey key(decodedMSG.mission_system,decodedMSG.mission_creator,decodedMSG.mission_id,missionType,missionState);
+
+//        ModuleExternalLink::NotifyListeners([&](MaceCore::IModuleEventsExternalLink* ptr){
+//            ptr->ExternalEvent_NewOnboardMission(this, key);
+//        });
+
+//        printf("Notified of Remote Mission. S_ID: %d M_ID: %d\n", key.m_systemID, key.m_missionID);
+
+
+
+//        //m_MissionController->requestMission(key, sender);
+
+//        //bool valid = this->getDataObject()->getMissionKeyValidity(key);
+        break;
+    }
     case MAVLINK_MSG_ID_MISSION_CURRENT:
     {
         //This is message definition 42
@@ -357,10 +428,13 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
                                                        static_cast<double>(decodedMSG.alt), "Target Position");
 
         MissionTopic::VehicleTargetTopic vehicleTarget(systemID, &targetPosition, -1); // TODO-PAT/KEN: Add distance to target.
-        std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrMissionTopic = std::make_shared<MissionTopic::VehicleTargetTopic>(vehicleTarget);
+        if(mission->_positionalTarget.set(targetPosition))
+        {
+            std::shared_ptr<MissionTopic::VehicleTargetTopic> ptrMissionTopic = std::make_shared<MissionTopic::VehicleTargetTopic>(vehicleTarget);
 
-        if(this->m_CB != nullptr)
-            m_CB->cbi_VehicleMissionData(systemID, ptrMissionTopic);
+            if(this->m_CB != nullptr)
+                m_CB->cbi_VehicleMissionData(systemID, ptrMissionTopic);
+        }
 
         break;
     }
@@ -397,6 +471,13 @@ bool MavlinkVehicleObject::parseMessage(const mavlink_message_t *msg){
         currentOrigin.setAltitudeReferenceFrame(AltitudeReferenceTypes::REF_ALT_MSL);
         environment->vehicleGlobalOrigin.set(currentOrigin);
 
+        DataGenericItem::DataGenericItem_Text statusText;
+        statusText.setText("Global Origin Set");
+        statusText.setSeverity(static_cast<MAV_SEVERITY>(MAV_SEVERITY::MAV_SEVERITY_INFO));
+        status->vehicleTextAlert.set(statusText);
+        std::shared_ptr<DataGenericItemTopic::DataGenericItemTopic_Text> ptrStatusText = std::make_shared<DataGenericItemTopic::DataGenericItemTopic_Text>(statusText);
+        if(this->m_CB)
+            this->m_CB->cbi_VehicleStateData(systemID,ptrStatusText);
         break;
     }
     case MAVLINK_MSG_ID_LOCAL_POSITION_NED_SYSTEM_GLOBAL_OFFSET:

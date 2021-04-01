@@ -78,7 +78,7 @@ bool State_Takeoff::handleCommand(const std::shared_ptr<command_item::AbstractCo
     case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
         success = AbstractStateArdupilot::handleCommand(command);
-        MAVLINKUXVControllers::ControllerSystemMode* modeController = (MAVLINKUXVControllers::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
+        MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = (MAVLINKUXVControllers::VehicleController::ControllerSystemMode*)Owner().ControllersCollection()->At("modeController");
         modeController->AddLambda_Finished(this, [this,modeController](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
             {
@@ -123,7 +123,7 @@ void State_Takeoff::OnEnter()
 {
     //check that the vehicle is truely armed and switch us into the guided mode
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto controllerSystemMode = new MAVLINKUXVControllers::VehicleController::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
         controllerSystemMode->Shutdown();
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
@@ -142,7 +142,7 @@ void State_Takeoff::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+    MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
     commandMode.targetID = Owner().getMAVLINKID();
     commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("GUIDED");
     controllerSystemMode->Send(commandMode,sender,target);

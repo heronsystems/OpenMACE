@@ -86,6 +86,11 @@ void AbstractSpatialAction::populateCommandItem(mavlink_command_long_t &obj) con
     obj.target_system = static_cast<uint8_t>(this->targetSystem);
     obj.target_component = static_cast<uint8_t>(this->targetComponent);
 
+    if(position == nullptr)
+    {
+        return;
+    }
+
     switch (position->getCoordinateSystemType()) {
     case CoordinateSystemTypes::GEODETIC:
     {
@@ -125,6 +130,67 @@ void AbstractSpatialAction::fromCommandItem(const mavlink_command_long_t &obj)
     UNUSED(obj);
     throw std::runtime_error("A request to generate a AbstractSpatialAction from a command long is not valid. Spatial items are never just a command.");
 }
+
+/** Functional commands that populate the execute spatial action commands */
+void AbstractSpatialAction::populateMACECOMMS_SpatialActionCommand(mavlink_execute_spatial_action_t &cmd) const
+{
+    cmd.target_system = static_cast<uint8_t>(getTargetSystem());
+    cmd.target_component = static_cast<uint8_t>(getTargetComponent());
+
+    if(position != nullptr)
+    {
+        cmd.frame = getMAVLINKCoordinateFrame(getPosition()->getExplicitCoordinateFrame());
+
+        switch (position->getCoordinateSystemType()) {
+        case CoordinateSystemTypes::GEODETIC:
+        {
+            if(position->is2D())
+            {
+                cmd.dimension = 2;
+                mace::pose::GeodeticPosition_2D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_2D>();
+                cmd.param5 = static_cast<float>(tmpPos->getLongitude()); cmd.param6 = static_cast<float>(tmpPos->getLatitude());
+            }
+            else if(position->is3D())
+            {
+                cmd.dimension = 3;
+                mace::pose::GeodeticPosition_3D* tmpPos = position->positionAs<mace::pose::GeodeticPosition_3D>();
+                cmd.param5 = static_cast<float>(tmpPos->getLongitude()); cmd.param6 = static_cast<float>(tmpPos->getLatitude()); cmd.param7 = static_cast<float>(tmpPos->getAltitude());
+            }
+            break;
+        }
+        case CoordinateSystemTypes::CARTESIAN:
+        {
+            if(position->is2D())
+            {
+                cmd.dimension = 2;
+                mace::pose::CartesianPosition_2D* tmpPos = position->positionAs<mace::pose::CartesianPosition_2D>();
+                cmd.param5 = static_cast<float>(tmpPos->getXPosition()); cmd.param6 = static_cast<float>(tmpPos->getYPosition());
+            }
+            else if(position->is3D())
+            {
+                cmd.dimension = 3;
+                mace::pose::CartesianPosition_3D* tmpPos = position->positionAs<mace::pose::CartesianPosition_3D>();
+                cmd.param5 = static_cast<float>(tmpPos->getXPosition()); cmd.param6 = static_cast<float>(tmpPos->getYPosition()); cmd.param7 = static_cast<float>(tmpPos->getAltitude());
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+}
+
+void AbstractSpatialAction::fromMACECOMMS_SpatialActionCommand(const mavlink_execute_spatial_action_t &obj)
+{
+    setTargetSystem(obj.target_system);
+    setTargetComponent(obj.target_component);
+    populatePositionObject(static_cast<mace::CoordinateFrameTypes>(obj.frame), obj.dimension, obj.mask,
+                           static_cast<double>(obj.param5), static_cast<double>(obj.param6), static_cast<double>(obj.param7));
+}
+
+//we know that you must cast to the specific type to get something explicit based on the command
+/** End of functional commands related to executing spatial action commands */
+
 
 void AbstractSpatialAction::populatePositionObject(const mace::CoordinateFrameTypes &explicitFrame, const uint8_t &dim, const uint16_t &mask,
                                 const double &x, const double &y, const double &z)

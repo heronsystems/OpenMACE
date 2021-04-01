@@ -347,7 +347,7 @@ protected:
     }
 public:
     ControllerMission(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        CONTROLLER_MISSION_TYPE(cb, queue, linkChan),
+        CONTROLLER_MISSION_TYPE(cb, queue, linkChan, "Mission"),
         MissionAction_RequestCurrentMission_Initiate(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_mission_request_list_t>(mavlink_msg_mission_request_list_encode_chan)),
         MissionAction_ReceiveAckDueToEmptyMission(this, mavlink_msg_mission_count_decode),
         MissionAction_ReceiveCountRespondItemRequest(this, mavlink_msg_mission_count_decode, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_mission_request_t>(mavlink_msg_mission_request_encode_chan)),

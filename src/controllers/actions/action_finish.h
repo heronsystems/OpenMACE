@@ -66,6 +66,8 @@ public:
                         BASE::m_Controller->onFinished(true, code);
                         BASE::m_Controller->RemoveTransmission(queueObj, MESSAGE_REQUEST_ID, sender);
                     }
+
+                    return valid;
                 }
         );
     }

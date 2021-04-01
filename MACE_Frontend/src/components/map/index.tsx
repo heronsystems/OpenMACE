@@ -12,7 +12,8 @@ import * as Types from "../../data-types/index";
 const { createRef } = React;
 const { ipcRenderer } = window.require("electron");
 
-const DEFAULT_CENTER: LatLng = new LatLng(-35.361196112174795, 149.15725708007815);
+// const DEFAULT_CENTER: LatLng = new LatLng(-35.361196112174795, 149.15725708007815); // Australia
+const DEFAULT_CENTER: LatLng = new LatLng(35.624873,-79.018777); // Woodys Rifle Club
 // const DEFAULT_CENTER: LatLng = new LatLng(
 //   38.28454701883166,
 //   -76.66688919067384
@@ -173,7 +174,7 @@ export default class MapView extends React.Component<Props, State> {
           this.props.onUpdateGoHerePts(e.latlng);
         }}
         minZoom={5}
-        maxZoom={18}
+        maxZoom={20}
         onZoomEnd={this.setZoom}
         animate={true}
         oncontextmenu={this.handleContextMenu}

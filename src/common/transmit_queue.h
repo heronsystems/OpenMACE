@@ -8,8 +8,10 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #include "common.h"
+
 
 //!
 //! \brief Stores an action to be executed on a seperate thread, and then reperformed if not dequeued.
@@ -37,11 +39,12 @@ private:
     {
     public:
 
-        TransmitTask(std::function<void(int transmitNumber)> action, std::function<void(int transmitNumber)> failure, bool execute = true) :
+        TransmitTask(std::function<void(int transmitNumber)> action, std::function<void(int transmitNumber)> failure, bool execute = true, std::string name = "") :
             numTries(0),
             transmitAction(action),
             failureAction(failure),
-            active(execute)
+            active(execute),
+            descriptor(name)
         {
         }
 
@@ -50,6 +53,7 @@ private:
         std::function<void(int transmitNumber)> failureAction;
         std::chrono::time_point<std::chrono::system_clock> lastTransmit;
         bool active;
+        std::string descriptor;
     };
 
 
@@ -92,7 +96,7 @@ public:
     //! \param execute [true] True if action is to be executed immediatly. If false action will not be performed until Execute is called.
     //! \return Number to identify the transmission, to be used to further reference the action.
     //!
-    int QueueTransmission(std::function<void(int transmitNumber)> transmitAction, const std::function<void(int transmitNumber)> onFailure = [](int transmitNumber){UNUSED(transmitNumber);}, bool execute = true)
+    int QueueTransmission(std::function<void(int transmitNumber)> transmitAction, const std::function<void(int transmitNumber)> onFailure = [](int transmitNumber){UNUSED(transmitNumber);}, bool execute = true, std::string name = "")
     {
         m_ActiveTransmitsMutex.lock();
         int num;
@@ -102,7 +106,7 @@ public:
         }
         while(this->m_ActiveTransmits.find(num) != m_ActiveTransmits.cend());
 
-        m_ActiveTransmits.insert({num, TransmitTask(transmitAction, onFailure, execute)});
+        m_ActiveTransmits.insert({num, TransmitTask(transmitAction, onFailure, execute, name)});
         m_ActiveTransmitsMutex.unlock();
 
         return num;
@@ -175,7 +179,7 @@ public:
                         if(it->second.numTries >= 1)
                         {
                             // +1 to include original transmission
-                            printf("Retransmitting for %d time\n", it->second.numTries+1);
+                            printf("[%s] Retransmitting for %d time\n", it->second.descriptor.c_str(), it->second.numTries+1);
                         }
 
                         it->second.lastTransmit = currTime;
@@ -274,13 +278,13 @@ private:
 
 public:
 
-    void QueueTransmission(const Head &key, const std::vector<COMPONENT_KEY> &targets, const std::function<void(const std::vector<COMPONENT_KEY> &)> &transmitAction, const std::function<void()> onFailure = [](){})
+    void QueueTransmission(const Head &key, const std::vector<COMPONENT_KEY> &targets, const std::function<void(const std::vector<COMPONENT_KEY> &)> &transmitAction, const std::function<void()> onFailure = [](){}, const std::string &name = "")
     {
         std::vector<Head> keys = {key};
-        return QueueTransmission(keys, targets, transmitAction, onFailure);
+        return QueueTransmission(keys, targets, transmitAction, onFailure, name);
     }
 
-    void QueueTransmission(const std::vector<Head> &keys, const std::vector<COMPONENT_KEY> &targets, const std::function<void(const std::vector<COMPONENT_KEY> &)> &transmitAction, const std::function<void()> onFailure = [](){})
+    void QueueTransmission(const std::vector<Head> &keys, const std::vector<COMPONENT_KEY> &targets, const std::function<void(const std::vector<COMPONENT_KEY> &)> &transmitAction, const std::function<void()> onFailure = [](){}, const std::string &name = "")
     {
         for(auto it = keys.cbegin() ; it != keys.cend() ; ++it)
         {
@@ -309,7 +313,7 @@ public:
         };
 
         m_QueueManipulationMutex.lock();
-        int num = m_Queue->QueueTransmission(transmitFunction, failFunction, false);
+        int num = m_Queue->QueueTransmission(transmitFunction, failFunction, false, name);
         for(auto it = keys.cbegin() ; it != keys.cend() ; ++it)
         {
             m_ActiveTransmissions.insert({*it, num});
@@ -432,12 +436,12 @@ public:
 
     void RemoveTransmission()
     {
-
+        std::cout << "In blank remove transmission" << std::endl;
     }
 
     void RemoveAllTransmissions()
     {
-
+        std::cout << "In blank remove all transmissions" << std::endl;
     }
 };
 

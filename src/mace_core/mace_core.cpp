@@ -661,39 +661,6 @@ void MaceCore::Event_ChangeSystemMode(const ModuleBase *sender, const command_it
 }
 
 
-/*
-//!
-//! \brief Event_StartRound Event to trigger and new testing round
-//! \param sender Sender module
-//! \param command test setup information
-//!
-void MaceCore::Event_StartRound(const ModuleBase* sender, const DataGenericItem::DataGenericItem_MLTest &testInfo)
-{
-    MarshalCommandToAdept<DataGenericItem::DataGenericItem_MLTest>(testInfo.getAgentIDs(), AdeptCommands::STARTTEST, testInfo, sender->GetCharacteristic());
-}
-
-//!
-//! \brief Event_EndRound Event to stop a running testing round
-//! \param sender Sender module
-//!
-void MaceCore::Event_EndRound(const ModuleBase* sender)
-{
-    std::vector<std::string> IDs = {"0"};
-    MarshalCommandToAdept<int>(IDs, AdeptCommands::ENDTEST, 0, sender->GetCharacteristic());
-}
-
-//!
-//! \brief Event_MarkTime Event to mark a timestamp on a test log for a particular vehicle
-//! \param sender Sender module
-//! \param command vehicle and timestamp
-//!
-void MaceCore::Event_MarkTime(const ModuleBase* sender, std::string vehicleID, const std::string &timestamp)
-{
-    std::vector<std::string> ID = {vehicleID};
-    MarshalCommandToAdept<std::string>(ID, AdeptCommands::MARKTIME, timestamp, sender->GetCharacteristic());
-}
-*/
-
 //!
 //! \brief Event_IssueGeneralCommand Event to trigger a general command
 //! \param sender Sender module
@@ -907,9 +874,9 @@ void MaceCore::EventVehicle_NewOnboardVehicleMission(const ModuleBase *sender, c
 {
     UNUSED(sender);
     //Update the core about the information
-//    MissionItem::MissionKey key = missionList.getMissionKey();
+    MissionItem::MissionKey key = missionList.getMissionKey();
+    m_DataFusion->checkForCurrentMission(key);
     m_DataFusion->receivedNewMission(missionList);
-//    bool isMissionCurrent = m_DataFusion->checkForCurrentMission(key);
 
     //Now update all potential listeners based on the type
     if(m_GroundStation)
@@ -922,7 +889,7 @@ void MaceCore::EventVehicle_NewOnboardVehicleMission(const ModuleBase *sender, c
     {
         for (std::list<std::shared_ptr<IModuleCommandExternalLink>>::iterator it=m_ExternalLink.begin(); it!=m_ExternalLink.end(); ++it)
         {
-            (*it)->MarshalCommand(ExternalLinkCommands::NEWLY_AVAILABLE_ONBOARD_MISSION,missionList.getMissionKey(), sender->GetCharacteristic());
+            (*it)->MarshalCommand(ExternalLinkCommands::NEWLY_AVAILABLE_ONBOARD_MISSION, missionList.getMissionKey(), sender->GetCharacteristic());
         }
     }
 }
@@ -976,6 +943,7 @@ void MaceCore::ExternalEvent_UpdateRemoteID(const void *sender, const unsigned i
 }
 
 
+
 /////////////////////////////////////////////////////////////////////////
 /// VEHICLE EVENTS
 /////////////////////////////////////////////////////////////////////////
@@ -993,8 +961,8 @@ void MaceCore::GVEvents_NewHomePosition(const ModuleBase *sender, const command_
     //specific methods and information. Otherwise we may be blasting to an unknown world.
     //This is also bad as we are assuming that the only item calling this would be a vehicle instance
 
-    uint8_t vehicleID;
-    m_DataFusion->getMavlinkIDFromModule(sender->GetCharacteristic(), vehicleID);
+    uint8_t vehicleID = vehicleHome.getOriginatingSystem();
+    // m_DataFusion->getMavlinkIDFromModule(sender->getDataObject().get->GetCharacteristic(), vehicleID);
     m_DataFusion->UpdateVehicleHomePosition(vehicleID, vehicleHome);
 
     //If there is a ground station, and it didn't generate the home; send the home position

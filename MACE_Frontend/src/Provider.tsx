@@ -37,6 +37,7 @@ export type State = {
   localTargets?: Types.Aircraft.TargetPayload[];
   globalTargets?: Types.Aircraft.TargetPayload[];
   paths?: Types.Aircraft.PathPayload[];
+  missions?: Types.Aircraft.MissionPayload[];
   connectionState?: "connecting" | "connected" | "disconnected";
   icons?: Types.Environment.IconPayload[];
   initialLocation?: Types.Vertex;
@@ -58,6 +59,7 @@ export default class AppProvider extends React.Component<Props, State> {
   _localTargets_list: {_localTargets: Types.Aircraft.TargetPayload[], last_updated: number} = {_localTargets: [], last_updated: Date.now()};
   _globalTargets_list: {_globalTargets: Types.Aircraft.TargetPayload[], last_updated: number} = {_globalTargets: [], last_updated: Date.now()};
   _paths_list: {_paths: Types.Aircraft.PathPayload[], last_updated: number} = {_paths: [], last_updated: Date.now()};
+  _missions_list: {_missions: Types.Aircraft.MissionPayload[], last_updated: number} = {_missions: [], last_updated: Date.now()};
   _icons_list: {_icons: Types.Environment.IconPayload[], last_updated: number} = {_icons: [], last_updated: Date.now()};
   constructor(props: Props) {
     super(props);
@@ -67,6 +69,7 @@ export default class AppProvider extends React.Component<Props, State> {
       localTargets: [],
       globalTargets: [],
       paths: [],
+      missions: [],
       icons: [],
       connectionState: "disconnected",
       initialLocation: null,
@@ -107,6 +110,11 @@ export default class AppProvider extends React.Component<Props, State> {
                 update = true;
                 // updateObject = updateObject && {paths: this._paths_list._paths};
             }  
+            if (!areObjectsSame(this._missions_list._missions, this.state.missions)) {
+                // this.setState({ missions: this._missions });
+                update = true;
+                // updateObject = updateObject && {missions: this._missions_list._missions};
+            }  
             if (!areObjectsSame(this._icons_list._icons, this.state.icons)) {
                 // this.setState({ icons: this._icons });
                 update = true;
@@ -119,6 +127,7 @@ export default class AppProvider extends React.Component<Props, State> {
                     localTargets: this._localTargets_list._localTargets,
                     globalTargets: this._globalTargets_list._globalTargets,
                     paths: this._paths_list._paths,
+                    missions: this._missions_list._missions,
                     icons: this._icons_list._icons
                 })
             }
@@ -143,7 +152,8 @@ export default class AppProvider extends React.Component<Props, State> {
       icons,
       localTargets,
       globalTargets,
-      paths
+      paths,
+      missions
     } = this.state;
     return (
       boundaries.length +
@@ -151,7 +161,8 @@ export default class AppProvider extends React.Component<Props, State> {
       icons.length +
       localTargets.length +
       globalTargets.length +
-      paths.length
+      paths.length +
+      missions.length
     );
   };
 
@@ -184,6 +195,7 @@ export default class AppProvider extends React.Component<Props, State> {
       this.setState({ messages: messages.concat(message) });
     }
     // this._messageBuffer.push(message);
+
       switch (message_type) {
           case "environment_boundary":
               this.updateBoundaries(rest as Types.Environment.BoundaryPayload);
@@ -219,7 +231,14 @@ export default class AppProvider extends React.Component<Props, State> {
               this.updateAircraftFuel(rest as Types.Aircraft.FuelPayload);
               break;
           case "vehicle_path":
+              console.log("Vehicle path received...");
+              console.log(rest);
               this.updatePaths(rest as Types.Aircraft.PathPayload);
+              break;
+          case "vehicle_path":
+              console.log("Vehicle path received...");
+              console.log(rest);
+              this.updateMissions(rest as Types.Aircraft.PathPayload);
               break;
           case "vehicle_target":
               this.updateTargets(rest as Types.Aircraft.TargetPayload);
@@ -611,13 +630,14 @@ export default class AppProvider extends React.Component<Props, State> {
         param_list: [
             {
                 param_id: "TKOFF_ALT",
-                value: 100
+                value: 40
             }
         ],
         airspeed: 0.0,
         distance_to_target: 0.0,
         flight_time: 0.0,
-        lastUpdate: Date.now()
+        lastUpdate: Date.now(),
+        origin_set: true // TODO-AARON/PAT: Fix this with External Link
     }
   }
 
@@ -761,7 +781,10 @@ export default class AppProvider extends React.Component<Props, State> {
             if ((aircrafts[existingIndex].text.textStr !== text.text) && (text.text === "Flight plan received")){
                 let command: string = "FORCE_DATA_SYNC";
                 let payload = [];
-                this.sendToMACE(command, [aircrafts[existingIndex]], payload);
+                // this.sendToMACE(command, [aircrafts[existingIndex]], payload);
+            }
+            if (text.text == "Global Origin Set"){
+              aircrafts[existingIndex].origin_set = true;
             }
 
             aircrafts[existingIndex].text = {
@@ -778,6 +801,9 @@ export default class AppProvider extends React.Component<Props, State> {
                 textSeverity: text.severity,
                 textTimestamp: now.getTime()
             };
+            if (text.text == "Global Origin Set"){
+              tmpAC.origin_set = true;
+            }
             tmpAC.lastUpdate = Date.now();
             aircrafts.push(tmpAC);
         }
@@ -937,6 +963,25 @@ export default class AppProvider extends React.Component<Props, State> {
         this._paths_list.last_updated = Date.now();
     }
   };
+  updateMissions = (mission: Types.Aircraft.MissionPayload) => {
+    const { ...all } = mission;
+    let missions = [...this._missions_list._missions];
+    const existingIndex = missions.findIndex((m) => mission.agentID === m.agentID);
+    if (existingIndex !== -1) {
+      if (!areObjectsSame(missions[existingIndex], { ...all })) {
+        missions[existingIndex] = { ...all };
+        missions[existingIndex].lastUpdate = Date.now();
+      }
+    } else {
+        mission.lastUpdate = Date.now();
+        missions.push(mission);
+    }
+    if (!areObjectsSame(missions, this._missions_list._missions)) {
+        this._missions_list._missions = missions;
+        this._missions_list.last_updated = Date.now();
+    }
+  };
+
   updateIcons = (icon: Types.Environment.IconPayload) => {
     const { ...all } = icon;
     const icons = [...this._icons_list._icons];

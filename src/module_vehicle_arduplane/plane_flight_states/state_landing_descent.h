@@ -8,7 +8,7 @@
 
 #include "module_vehicle_ardupilot/ardupilot_target_progess.h"
 
-#include "controllers/controllers_MAVLINK/controller_guided_mission_item.h"
+#include "controllers/controllers_MAVLINK/commands/command_land.h"
 
 namespace ardupilot {
 namespace state{

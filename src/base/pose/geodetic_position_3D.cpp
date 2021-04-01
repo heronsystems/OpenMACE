@@ -328,7 +328,7 @@ void GeodeticPosition_3D::fromMACEMsg(const mavlink_global_position_int_t &msg)
 {
     this->setLatitude(msg.lat / pow(10,7));
     this->setLongitude(msg.lon / pow(10,7));
-    this->setLatitude(msg.alt / pow(10,3));
+    this->setAltitude(msg.alt / pow(10,3));
 }
 
 mavlink_message_t GeodeticPosition_3D::getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const

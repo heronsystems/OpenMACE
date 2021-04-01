@@ -320,18 +320,6 @@ public:
     void Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
 
-
-    /////////////////////////////////////////////////////////////////////////
-    /// AI SUPPORT EVENTS: These events are explicit overrides in support of
-    /// AI based autonomy.
-    /////////////////////////////////////////////////////////////////////////
-
-    void NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
-
-    void NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
-
-    void NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
-
     //!
     //! \brief RequestDummyFunction
     //! \param vehicleID

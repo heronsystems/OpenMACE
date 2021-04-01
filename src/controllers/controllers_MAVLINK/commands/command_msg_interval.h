@@ -12,7 +12,7 @@ class CommandMSGInterval : public Controller_GenericLongCommand<command_item::Ac
 {
 public:
     CommandMSGInterval(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<command_item::ActionMessageInterval, MAV_CMD_SET_MESSAGE_INTERVAL>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::ActionMessageInterval, MAV_CMD_SET_MESSAGE_INTERVAL>(cb, queue, linkChan, "MSGInterval")
     {
 
     }
@@ -29,6 +29,11 @@ public:
 
     unsigned int getCurrentRequestID();
 
+    size_t getNumRequests() const
+    {
+        return m_MapIntervalRequest.size();
+    }
+
 
 protected:
 
@@ -42,6 +47,17 @@ protected:
     {
         UNUSED(message);
         UNUSED(data);
+    }
+
+    virtual bool Finish_Receive(const mavlink_command_ack_t &msg, const MavlinkEntityKey &sender, uint8_t & ack, MavlinkEntityKey &queueObj)
+    {
+        if(msg.command != MAV_CMD_SET_MESSAGE_INTERVAL)
+        {
+            return false;
+        }
+        queueObj = sender;
+        ack = msg.result;
+        return true;
     }
 
 private:

@@ -38,13 +38,12 @@ public:
        value_LatOperationalBoundaries = iniReader->Get(sectionTag, sectionField_LatOperationalBoundaries, value_LatOperationalBoundaries);
        std::string sectionField_LngOperationalBoundaries = "longitude", value_LngOperationalBoundaries = "";
        value_LngOperationalBoundaries = iniReader->Get(sectionTag, sectionField_LngOperationalBoundaries, value_LngOperationalBoundaries);
-
        //check that the lengths of each vector match
        std::vector<std::string> polygonLat = StringMethods::SplitString(value_LatOperationalBoundaries, ',');
        std::vector<std::string> polygonLng = StringMethods::SplitString(value_LngOperationalBoundaries, ',');
        if (polygonLat.size() != polygonLng.size())
        {
-           std::cout << "Boundary sizes are not of the same length." << std::endl;
+           std::cout << "Boundary sizes are not of the same length. Lat has " + std::to_string(polygonLat.size()) + " and Lng has " +  std::to_string(polygonLng.size()) << std::endl;
        }
 
        obj.clearPolygon();

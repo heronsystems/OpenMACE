@@ -283,8 +283,8 @@ protected:
             IssueOnModuleEventLoop = m_DefaultMarshalCommandOnEventLoop;
         else
             IssueOnModuleEventLoop = m_MarshalCommandsOnEventLoop.at(enumValue);
-
         if(IssueOnModuleEventLoop == true)
+
             this->m_CommandDispatcher.QueueCommand(enumValue, value, sender);
         else
             this->m_CommandDispatcher.ImmediatlyCallCommand(enumValue, value, sender);

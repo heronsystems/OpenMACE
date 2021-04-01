@@ -122,7 +122,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<command_item::AbstractCom
         if(executeModeChange)
         {
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-            auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            auto controllerSystemMode = new MAVLINKUXVControllers::VehicleController::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             controllerSystemMode->AddLambda_Finished(this, [controllerSystemMode](const bool completed, const uint8_t finishCode){
                 UNUSED(completed); UNUSED(finishCode);
                 controllerSystemMode->Shutdown();
@@ -139,7 +139,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<command_item::AbstractCom
             MavlinkEntityKey target = Owner().getMAVLINKID();
             MavlinkEntityKey sender = 255;
 
-            MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+            MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
             commandMode.targetID = Owner().getMAVLINKID();
             commandMode.vehicleMode = vehicleMode;
             controllerSystemMode->Send(commandMode,sender,target);
@@ -171,7 +171,7 @@ bool State_Flight::handleCommand(const std::shared_ptr<command_item::AbstractCom
         const command_item::SpatialRTL* cmd = command->as<command_item::SpatialRTL>();
 
         Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-        auto controllerRTL = new MAVLINKUXVControllers::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+        auto controllerRTL = new MAVLINKUXVControllers::VehicleController::CommandRTL(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
         controllerRTL->AddLambda_Finished(this, [this,controllerRTL](const bool completed, const uint8_t finishCode){
             if(completed && (finishCode == MAV_RESULT_ACCEPTED))
                 _desiredState = Data::MACEHSMState::STATE_FLIGHT_RTL;

@@ -117,6 +117,23 @@ public:
     }
 
     //!
+    //! \brief setTargetComponent sets the targetComponent of the commandItem object.
+    //! \param systemID value of the target system that should be receiving and enacting this command.
+    //! A value of 0 here means that all systems will receive the command.
+    //!
+    void setTargetComponent(const unsigned int &componentID){
+        targetComponent = componentID;
+    }
+
+    //!
+    //! \brief getTargetComponent retrieves the int value of the targetComponent of the commandItem object;
+    //! \return int value of the targetSystem member object.
+    //!
+    unsigned int getTargetComponent() const{
+        return targetComponent;
+    }
+
+    //!
     //! \brief setOriginatingSystem sets the originatingSystem of the commandItem object.
     //! \param systemID int value of the originatingSystem member object.
     //!

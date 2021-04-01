@@ -20,6 +20,8 @@ public:
     Data::DataGetSetNotifier<command_target::DynamicMissionQueue> currentDynamicQueue_GlobalCartesian;
 
 public:
+    Data::DataGetSetNotifier<mace::pose::GeodeticPosition_3D> _positionalTarget;
+
     Data::DataGetSetNotifier<MissionItem::MissionItemAchieved> missionItemReached;
     Data::DataGetSetNotifier<MissionItem::MissionItemCurrent> missionItemCurrent;
 };

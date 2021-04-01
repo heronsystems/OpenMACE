@@ -39,6 +39,7 @@ SOURCES += \
     controllers_MAVLINK/controller_set_surface_deflection.cpp
 
 HEADERS += \
+    controllers_MAVLINK/TE_Controllers/command_set_surface_deflection.h \
     controllers_MAVLINK/commands/command_arm.h \
     controllers_MAVLINK/commands/command_change_speed.h \
     controllers_MAVLINK/commands/command_home_position.h \
@@ -46,7 +47,6 @@ HEADERS += \
     controllers_MAVLINK/commands/command_msg_interval.h \
     controllers_MAVLINK/commands/command_msg_request.h \
     controllers_MAVLINK/commands/command_rtl.h \
-    controllers_MAVLINK/commands/command_set_surface_deflection.h \
     controllers_MAVLINK/commands/command_takeoff.h \
     controllers_MAVLINK/commands/generic_int_command.h \
     controllers_MAVLINK/commands/generic_long_command.h \
@@ -62,8 +62,8 @@ HEADERS += \
     controllers_MAVLINK/controller_set_gps_global_origin.h \
     controllers_MAVLINK/controller_set_surface_deflection.h \
     controllers_MAVLINK/controller_system_mode.h \
+    controllers_MAVLINK/controller_timesync.h \
     controllers_MAVLINK/controller_vision_position_estimate.h \
-    controllers_MAVLINK/controller_write_event_to_log.h \
     controllers_MAVLINK/mavlink_controller_components.h \
     controllers_MAVLINK/mavlink_entity_key.h \
     controllers_global.h \
@@ -103,6 +103,12 @@ contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
 INCLUDEPATH += $$(MACE_ROOT)/Eigen/include/eigen3
 # Eigen Warning suppression:
 QMAKE_CXXFLAGS += -isystem $$(MACE_ROOT)/Eigen/include/eigen3
+
+# Unix lib Install
+unix:!symbian {
+    target.path = $$(MACE_ROOT)/lib
+    INSTALLS += target
+}
 
 # Windows lib install
 lib.path    = $$(MACE_ROOT)/lib

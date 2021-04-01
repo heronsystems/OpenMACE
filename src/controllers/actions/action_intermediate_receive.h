@@ -53,6 +53,8 @@ public:
                         //BASE::m_Controller->Set(ack, vehicleFrom, queueObj, target);
                         nextStep(ack, vehicleFrom, respondQueueObj, target);
                     }
+
+                    return valid;
                 }
         );
     }

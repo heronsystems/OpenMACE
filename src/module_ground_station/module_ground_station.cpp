@@ -78,7 +78,7 @@ ModuleGroundStation::ModuleGroundStation() :
     m_timer->start(true);
 
     m_toMACEHandler = std::make_shared<GUItoMACE>(this);
-    m_toGUIHandler = std::make_shared<MACEtoGUI>();
+    m_toGUIHandler = std::make_shared<MACEtoGUI>(this);
 }
 
 ModuleGroundStation::~ModuleGroundStation()
@@ -536,8 +536,9 @@ void ModuleGroundStation::NewlyAvailableMissionExeState(const MissionItem::Missi
 //!
 void ModuleGroundStation::NewlyAvailableHomePosition(const command_item::SpatialHome &home, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender)
 {
-    uint8_t vehicleID;
-    this->getDataObject()->getMavlinkIDFromModule(sender.Value(), vehicleID);
+    uint8_t vehicleID = home.getOriginatingSystem();
+    // this->getDataObject()->getMavlinkIDFromModule(sender.Value(), vehicleID);
+
     std::cout<<"Ground Control: New available home position"<<std::endl;
 
     m_toGUIHandler->sendVehicleHome(vehicleID, home);

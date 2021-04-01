@@ -24,7 +24,7 @@
 
 #include "module_vehicle_ardupilot/vehicle_object/vehicle_object_ardupilot.h"
 
-#include "arducopter_component_flight_mode.h"
+#include "data/flight_modes/arducopter_component_flight_mode.h"
 
 //!
 //! \brief The VehicleObject_Arducopter class is the implementation of an explicit object inheriting the base vehicle object from the ardupilot code base.

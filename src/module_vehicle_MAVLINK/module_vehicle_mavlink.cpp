@@ -3,8 +3,25 @@
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConnectionSetup()
 {
-    //this->prepareModeController();
-    this->prepareOnboardLoggingController();
+    this->prepareTimesyncController();
+    MAVLINKUXVControllers::ControllerTimesync* timesyncController = static_cast<MAVLINKUXVControllers::ControllerTimesync*>(m_ControllersCollection.At("timesyncController"));
+    if(timesyncController)
+    {
+        timesyncController->AddLambda_Finished(this, [timesyncController](const bool completed, const uint8_t code){
+            UNUSED(code);
+            if (completed) {
+                MaceLog::Alert("Timesync Completed");
+            }
+            else {
+                MaceLog::Alert("Timesync Failed");
+            }
+            //Ken Fix: We should handle stuff related to the completion and the code
+            timesyncController->ClearTransmissions();
+
+            //timesyncController->Shutdown();
+        });
+    }
+
 
     //why isnt this rebuilding.
     if(setEKFOrigin == true)
@@ -38,12 +55,14 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
     {
         missionController->AddLambda_Finished(this, [missionController](const bool completed, const uint8_t code){
             UNUSED(code);
-            if (completed)
-                printf("Mission Download Completed\n");
-            else
-                printf("Mission Download Failed\n");
+            if (completed) {
+                MaceLog::Alert("Mission Download Completed");
+            }
+            else {
+                MaceLog::Alert("Mission Download Failed");
+            }
             //Ken Fix: We should handle stuff related to the completion and the code
-            missionController->RemoveAllTransmissions();
+            missionController->ClearTransmissions();
 
             //missionController->Shutdown();
         });
@@ -97,14 +116,41 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::handleFirstConne
             MSGRateController->Shutdown();
         });
 
+//        MSGRateController->AddLambda_Shutdown(this, [this, MSGRateController]() {
+
+//            if(MSGRateController->getNumRequests() == 0) {
+//                std::cout << "Shutting down " << std::endl;
+//                auto ptr = this->m_ControllersCollection->Remove("MSGRateController");
+//                delete ptr;
+//            }
+//            else {
+//                MSGRateController->removeCurrentAndTransmitNext();
+//            }
+//        });
+
         MavlinkEntityKey target = this->GetAttachedMavlinkEntity();
         MavlinkEntityKey sender = 255;
 
-        ActionMessageInterval msgInterval(sender,target);
-        msgInterval.setMessageID(MAVLINK_MSG_ID_ATTITUDE);
-        msgInterval.setMessageInterval(100000);
+        ActionMessageInterval gPosInterval(sender,target);
+        gPosInterval.setMessageID(MAVLINK_MSG_ID_GLOBAL_POSITION_INT); // ID 33
+        gPosInterval.setMessageInterval(20000);
+        MSGRateController->addIntervalRequest(gPosInterval);
 
-        MSGRateController->addIntervalRequest(msgInterval);
+        ActionMessageInterval lPosInterval(sender,target);
+        lPosInterval.setMessageID(MAVLINK_MSG_ID_LOCAL_POSITION_NED); // ID 32
+        lPosInterval.setMessageInterval(20000);
+        MSGRateController->addIntervalRequest(lPosInterval);
+
+        ActionMessageInterval attmsgInterval(sender,target);
+        attmsgInterval.setMessageID(MAVLINK_MSG_ID_ATTITUDE); // ID 30
+        attmsgInterval.setMessageInterval(20000);
+        MSGRateController->addIntervalRequest(attmsgInterval);
+        MSGRateController->transmitNextRequest();
+
+        ActionMessageInterval speedmsgInterval(sender,target);
+        speedmsgInterval.setMessageID(MAVLINK_MSG_ID_VFR_HUD); // ID 74
+        speedmsgInterval.setMessageInterval(20000);
+        MSGRateController->addIntervalRequest(speedmsgInterval);
         MSGRateController->transmitNextRequest();
     }
 }
@@ -371,86 +417,6 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareParameter
     m_ControllersCollection.Insert("parameterController", parameterController);
 }
 
-/*
-template <typename ...VehicleTopicAdditionalComponents>
-void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareModeController()
-{
-    //If there is an old mode controller still running, allow us to shut it down
-    if(m_ControllersCollection.Exist("modeController"))
-    {
-        auto modeControllerOld = static_cast<MAVLINKUXVControllers::ControllerSystemMode*>(m_ControllersCollection.At("modeController"));
-        if(modeControllerOld != nullptr)
-        {
-            std::cout << "Shutting down previous mode controller, which was still active" << std::endl;
-            modeControllerOld->Shutdown();
-            // Need to wait for the old controller to be shutdown.
-            std::unique_lock<std::mutex> controllerLock(m_mutex_ModeController);
-            while (!m_oldModeControllerShutdown)
-                m_condition_ModeController.wait(controllerLock);
-            m_oldModeControllerShutdown = false;
-            controllerLock.unlock();
-        }
-    }
-    //create "stateless" mode controller that exists within the module itself
-    auto modeController = new MAVLINKUXVControllers::ControllerSystemMode(m_SystemData, m_TransmissionQueue, m_LinkChan);
-
-    modeController->AddLambda_Finished(this, [this, modeController](const bool completed, const uint8_t finishCode){
-        UNUSED(completed); UNUSED(finishCode);
-        modeController->Shutdown();
-    });
-
-    modeController->setLambda_Shutdown([this, modeController]() mutable
-    {
-//        auto ptr = static_cast<MAVLINKUXVControllers::ControllerSystemMode*>(m_ControllersCollection.At("modeController"));
-//        if (ptr != nullptr)
-//        {
-//            auto ptr = m_ControllersCollection.Remove("modeController");
-//            delete ptr;
-//        }
-//        std::lock_guard<std::mutex> guard(m_mutex_ModeController);
-//        m_oldModeControllerShutdown = true;
-//        m_condition_ModeController.notify_one();
-    });
-    m_ControllersCollection.Insert("modeController", modeController);
-}
-*/
-
-template <typename ...VehicleTopicAdditionalComponents>
-void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareOnboardLoggingController()
-{
-    //If there is an old onboard logging controller still running, allow us to shut it down
-    if(m_ControllersCollection.Exist("onboardLoggingController"))
-    {
-        auto onboardLoggingControllerOld = static_cast<MAVLINKUXVControllers::Controller_WriteEventToLog*>(m_ControllersCollection.At("onboardLoggingController"));
-        if(onboardLoggingControllerOld != nullptr)
-        {
-            std::cout << "Shutting down previous onboard logging controller, which was still active" << std::endl;
-            onboardLoggingControllerOld->Shutdown();
-            // Need to wait for the old controller to be shutdown.
-            std::unique_lock<std::mutex> controllerLock(m_mutex_OnboardLoggingController);
-            while (!m_oldOnboardLoggingControllerShutdown)
-                m_condition_OnboardLoggingController.wait(controllerLock);
-            m_oldOnboardLoggingControllerShutdown = false;
-            controllerLock.unlock();
-        }
-    }
-    //create "stateless" onboard logging controller that exists within the module itself
-    auto onboardLoggingController = new MAVLINKUXVControllers::Controller_WriteEventToLog(m_SystemData, m_TransmissionQueue, m_LinkChan);
-    onboardLoggingController->setLambda_Shutdown([this, onboardLoggingController]() mutable
-    {
-        auto ptr = static_cast<MAVLINKUXVControllers::Controller_WriteEventToLog*>(m_ControllersCollection.At("onboardLoggingController"));
-        if (ptr != nullptr)
-        {
-            auto ptr = m_ControllersCollection.Remove("onboardLoggingController");
-            delete ptr;
-        }
-        std::lock_guard<std::mutex> guard(m_mutex_OnboardLoggingController);
-        m_oldOnboardLoggingControllerShutdown = true;
-        m_condition_OnboardLoggingController.notify_one();
-    });
-    m_ControllersCollection.Insert("onboardLoggingController", onboardLoggingController);
-}
-
 template <typename ...VehicleTopicAdditionalComponents>
 void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMSGRateController()
 {
@@ -474,15 +440,62 @@ void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareMSGRateCo
     auto MSGRateController = new MAVLINKUXVControllers::CommandMSGInterval(m_SystemData, m_TransmissionQueue, m_LinkChan);
     MSGRateController->setLambda_Shutdown([this, MSGRateController]() mutable
     {
-        auto ptr = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
-        if (ptr != nullptr)
-        {
-            auto ptr = m_ControllersCollection.Remove("MSGRateController");
-            delete ptr;
+        if(MSGRateController->getNumRequests() == 0) {
+            std::cout << "Shutting down MSGRateController" << std::endl;
+            auto ptr = static_cast<MAVLINKUXVControllers::CommandMSGInterval*>(m_ControllersCollection.At("MSGRateController"));
+            if (ptr != nullptr)
+            {
+                auto ptr = m_ControllersCollection.Remove("MSGRateController");
+                delete ptr;
+            }
+            std::lock_guard<std::mutex> guard(m_mutex_MSGRateController);
+            m_oldMSGRateControllerShutdown = true;
+            m_condition_MSGRateController.notify_one();
         }
-        std::lock_guard<std::mutex> guard(m_mutex_MSGRateController);
-        m_oldMSGRateControllerShutdown = true;
-        m_condition_MSGRateController.notify_one();
+        else {
+            MSGRateController->removeCurrentAndTransmitNext();
+        }
     });
     m_ControllersCollection.Insert("MSGRateController", MSGRateController);
 }
+
+
+template <typename ...VehicleTopicAdditionalComponents>
+void ModuleVehicleMAVLINK<VehicleTopicAdditionalComponents...>::prepareTimesyncController()
+{
+    MaceLog::Alert("Prepare timesync controller...");
+    //If there is an old timesync controller still running, allow us to shut it down
+    if(m_ControllersCollection.Exist("timesyncController"))
+    {
+        auto timesyncControllerOld = static_cast<MAVLINKUXVControllers::ControllerTimesync*>(m_ControllersCollection.At("timesyncController"));
+        if(timesyncControllerOld != nullptr)
+        {
+            std::cout << "Shutting down previous timesync controller, which was still active" << std::endl;
+            timesyncControllerOld->Shutdown();
+            // Need to wait for the old controller to be shutdown.
+            std::unique_lock<std::mutex> controllerLock(m_mutex_TimesyncController);
+            while (!m_oldTimesyncControllerShutdown)
+                m_condition_TimesyncController.wait(controllerLock);
+            m_oldTimesyncControllerShutdown = false;
+            controllerLock.unlock();
+        }
+    }
+    //create "stateless" timesync controller that exists within the module itself
+    auto timesyncController = new MAVLINKUXVControllers::ControllerTimesync(m_SystemData, m_TransmissionQueue, m_LinkChan);
+    timesyncController->setLambda_Shutdown([this, timesyncController]() mutable
+    {
+        auto ptr = static_cast<MAVLINKUXVControllers::ControllerTimesync*>(m_ControllersCollection.At("timesyncController"));
+        if (ptr != nullptr)
+        {
+            auto ptr = m_ControllersCollection.Remove("timesyncController");
+            delete ptr;
+        }
+        std::lock_guard<std::mutex> guard(m_mutex_TimesyncController);
+        m_oldTimesyncControllerShutdown = true;
+        m_condition_TimesyncController.notify_one();
+    });
+    m_ControllersCollection.Insert("timesyncController", timesyncController);
+}
+
+
+

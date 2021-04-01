@@ -1,51 +1,41 @@
 #ifndef AUTOPILOT_TYPES_H
 #define AUTOPILOT_TYPES_H
 
+#include "mavlink.h"
+
 #include <string>
 #include <stdexcept>
 
 namespace Data
 {
 
-enum class AutopilotType
-{
-    AUTOPILOT_TYPE_GENERIC=0, /* Generic autopilot, full support for everything | */
-    AUTOPILOT_TYPE_ARDUPILOTMEGA=1, /* ArduPilotMega / ArduCopter, http://diydrones.com | */
-    AUTOPILOT_TYPE_INVALID=2, /* No valid autopilot, e.g. a GCS or other MAVLink component | */
-    AUTOPILOT_TYPE_PX4=3, /* PX4 Autopilot - http://pixhawk.ethz.ch/px4/ | */
-    AUTOPILOT_TYPE_DJI=4 /* DJI Autopilot | */
-};
 
 
-inline std::string AutopilotTypeToString(const AutopilotType &autopilottype) {
+inline std::string AutopilotTypeToString(const  MAV_AUTOPILOT &autopilottype) {
     switch (autopilottype) {
-    case AutopilotType::AUTOPILOT_TYPE_GENERIC:
-        return "AUTOPILOT_TYPE_GENERIC";
-    case AutopilotType::AUTOPILOT_TYPE_ARDUPILOTMEGA:
-        return "AUTOPILOT_TYPE_ARDUPILOTMEGA";
-    case AutopilotType::AUTOPILOT_TYPE_INVALID:
-        return "AUTOPILOT_TYPE_INVALID";
-    case AutopilotType::AUTOPILOT_TYPE_PX4:
-        return "AUTOPILOT_TYPE_PX4";
-    case AutopilotType::AUTOPILOT_TYPE_DJI:
-        return "AUTOPILOT_TYPE_DJI";
+    case  MAV_AUTOPILOT:: MAV_AUTOPILOT_GENERIC:
+        return " MAV_AUTOPILOT_GENERIC";
+    case  MAV_AUTOPILOT:: MAV_AUTOPILOT_ARDUPILOTMEGA:
+        return " MAV_AUTOPILOT_ARDUPILOTMEGA";
+    case MAV_AUTOPILOT:: MAV_AUTOPILOT_INVALID:
+        return " MAV_AUTOPILOT_INVALID";
+    case MAV_AUTOPILOT:: MAV_AUTOPILOT_PX4:
+        return " MAV_AUTOPILOT_PX4";
     default:
-        throw std::runtime_error("Unknown autopilot type seen");
+        throw std::runtime_error("Unknown autopilot type seen (to string): " + std::to_string(autopilottype));
     }
 }
 
-inline AutopilotType AutopilotTypeFromString(const std::string &str) {
-    if(str == "AUTOPILOT_TYPE_GENERIC")
-        return AutopilotType::AUTOPILOT_TYPE_GENERIC;
-    if(str == "AUTOPILOT_TYPE_ARDUPILOTMEGA")
-        return AutopilotType::AUTOPILOT_TYPE_ARDUPILOTMEGA;
-    if(str == "AUTOPILOT_TYPE_INVALID")
-        return AutopilotType::AUTOPILOT_TYPE_INVALID;
-    if(str == "AUTOPILOT_TYPE_PX4")
-        return AutopilotType::AUTOPILOT_TYPE_PX4;
-    if(str == "AUTOPILOT_TYPE_DJI")
-        return AutopilotType::AUTOPILOT_TYPE_DJI;
-    throw std::runtime_error("Unknown autopilot type seen");
+inline MAV_AUTOPILOT AutopilotTypeFromString(const std::string &str) {
+    if(str == " MAV_AUTOPILOT_GENERIC")
+        return MAV_AUTOPILOT:: MAV_AUTOPILOT_GENERIC;
+    if(str == " MAV_AUTOPILOT_ARDUPILOTMEGA")
+        return MAV_AUTOPILOT:: MAV_AUTOPILOT_ARDUPILOTMEGA;
+    if(str == " MAV_AUTOPILOT_INVALID")
+        return MAV_AUTOPILOT:: MAV_AUTOPILOT_INVALID;
+    if(str == " MAV_AUTOPILOT_PX4")
+        return MAV_AUTOPILOT:: MAV_AUTOPILOT_PX4;
+    throw std::runtime_error("Unknown autopilot type seen (from string): " + str);
 }
 
 }

@@ -11,7 +11,7 @@
 
 #include "data/autopilot_types.h"
 #include "data/comms_protocol.h"
-#include "data/system_type.h"
+#include "data/mav_type_definitions.h"
 
 #include "data_generic_command_item/command_item_components.h"
 

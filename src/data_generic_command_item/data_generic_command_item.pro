@@ -36,9 +36,7 @@ SOURCES += \
     do_items/action_motor_test.cpp \
     do_items/action_mission_command.cpp \
     do_items/action_set_surface_deflection.cpp \
-    mace/ai_items/action_event_tag.cpp \
-    mace/ai_items/action_initialize_test_setup.cpp \
-    mace/ai_items/action_procedural_command.cpp \
+    do_items/action_timesync.cpp \
     spatial_items/spatial_home.cpp \
     spatial_items/spatial_land.cpp \
     spatial_items/spatial_loiter_time.cpp \
@@ -81,12 +79,7 @@ HEADERS +=\
     do_items/action_set_surface_deflection.h \
     do_items/do_components.h \
     do_items/action_mission_command.h \
-    mace/ai_items/abstract_ai_command.h \
-    mace/ai_items/action_event_tag.h \
-    mace/ai_items/action_initialize_test_setup.h \
-    mace/ai_items/action_procedural_command.h \
-    mace/ai_items/ai_command_components.h \
-    mace/ai_items/ai_command_type.h \
+    do_items/action_timesync.h \
     mission_items/mission_ack.h \
     mission_items/mission_list.h \
     spatial_items/spatial_components.h \

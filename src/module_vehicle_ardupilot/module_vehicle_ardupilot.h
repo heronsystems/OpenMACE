@@ -318,29 +318,6 @@ public:
     }
 
 
-    /////////////////////////////////////////////////////////////////////////
-    /// AI SUPPORT EVENTS: These events are explicit overrides in support of
-    /// AI based autonomy.
-    /////////////////////////////////////////////////////////////////////////
-
-    virtual void NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
-    {
-        UNUSED(sender);
-        UNUSED(logEvent);
-    }
-
-    virtual void NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
-    {
-        UNUSED(sender);
-        UNUSED(procedural);
-    }
-
-    virtual void NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
-    {
-        UNUSED(initialization);
-        UNUSED(sender);
-    }
-
     //!
     //! \brief RequestDummyFunction
     //! \param vehicleID

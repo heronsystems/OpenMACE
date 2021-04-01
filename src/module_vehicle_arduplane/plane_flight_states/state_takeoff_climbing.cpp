@@ -46,7 +46,7 @@ hsm::Transition AP_State_TakeoffClimbing::GetTransition()
             break;
         }
         default:
-            std::cout<<"I dont know how we ended up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_Takeoff_Climbing."<<std::endl;
             break;
         }
     }
@@ -54,9 +54,10 @@ hsm::Transition AP_State_TakeoffClimbing::GetTransition()
 }
 
 bool AP_State_TakeoffClimbing::handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command)
-{
+{    
     bool success = false;
     clearCommand();
+    
     switch (command->getCommandType()) {
     case MAV_CMD::MAV_CMD_NAV_TAKEOFF:
     {
@@ -122,10 +123,12 @@ bool AP_State_TakeoffClimbing::handleCommand(const std::shared_ptr<command_item:
 
             Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
 
-            auto controllerClimb = new MAVLINKUXVControllers::CommandTakeoff(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+            auto controllerClimb = new MAVLINKUXVControllers::VehicleController::CommandTakeoff(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
             controllerClimb->AddLambda_Finished(this, [this,controllerClimb](const bool completed, const uint8_t finishCode){
                 if(!completed && (finishCode != MAV_RESULT_ACCEPTED))
+                {
                     static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setDesiredStateEnum(Data::MACEHSMState::STATE_GROUNDED);
+                }
                 controllerClimb->Shutdown();
             });
 
@@ -159,7 +162,16 @@ bool AP_State_TakeoffClimbing::handleCommand(const std::shared_ptr<command_item:
 
 void AP_State_TakeoffClimbing::Update()
 {
+    // StatusData_MAVLINK* vehicleStatus = Owner().status;
 
+    // std::string modeStr = vehicleStatus->vehicleMode.get().getFlightModeString();
+    // if(modeStr == "BRAKE" || modeStr == "LOITER") {
+    //     static_cast<ardupilot::state::AbstractStateArdupilot*>(GetImmediateOuterState())->setDesiredStateEnum(Data::MACEHSMState::STATE_FLIGHT);
+
+    //     // Shutdown climbing controller:
+    //     auto controllerClimb = new MAVLINKUXVControllers::CommandTakeoff(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    //     controllerClimb->Shutdown();
+    // }
 }
 
 void AP_State_TakeoffClimbing::OnEnter()

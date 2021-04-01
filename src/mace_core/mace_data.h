@@ -156,7 +156,7 @@ public:
     //!
     void GetAvailableMLVehicles(std::vector<std::string> &vehicleIDs) const
     {
-        std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
+        std::lock_guard<std::mutex> guard(m_AvailableMLVehicleMutex);
         vehicleIDs = m_AvailableMLVehicles;
     }
 
@@ -343,7 +343,7 @@ private:
     //!
     void AddMLVehicle(const std::string &vehicleID, const ModuleCharacteristic &module)
     {
-        std::lock_guard<std::mutex> guard(m_AvailableVehicleMutex);
+        std::lock_guard<std::mutex> guard(m_AvailableMLVehicleMutex);
         m_AvailableMLVehicles.push_back(vehicleID);
         m_MAVLINKIDtoMLModule.insert({std::stoi(vehicleID), module});
     }
@@ -945,6 +945,7 @@ private:
     std::unordered_map<std::string, std::unordered_map<ModuleCharacteristic, std::unordered_map<std::string, TIME>>> m_LatestTopicComponentUpdateTime;
 
     mutable std::mutex m_AvailableVehicleMutex;
+    mutable std::mutex m_AvailableMLVehicleMutex;
     std::vector<unsigned int> m_AvailableVehicles;
     std::vector<unsigned int> m_LocalVehicles;
     std::vector<std::string> m_AvailableMLVehicles;

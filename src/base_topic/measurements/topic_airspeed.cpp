@@ -20,7 +20,7 @@ MaceCore::TopicDatagram Topic_AirSpeed::GenerateDatagram() const {
 
 void Topic_AirSpeed::CreateFromDatagram(const MaceCore::TopicDatagram &datagram)
 {
-    m_SpeedObj.updateSpeedType(mace::measurements::Speed::SpeedTypes::AIRSPEED);
+    m_SpeedObj.updateSpeedType(SPEED_TYPE::SPEED_TYPE_AIRSPEED);
     m_SpeedObj.setSpeed(datagram.GetTerminal<double>("Speed"));
 }
 

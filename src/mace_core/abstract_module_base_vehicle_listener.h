@@ -15,7 +15,7 @@
     REQUEST_ONBOARD_GUIDED_MISSION, CLEAR_ONBOARD_GUIDED_MISSION, \
     REQUEST_VEHICLE_HOME, SET_VEHICLE_HOME, \
     FOLLOW_NEW_COMMANDS,FINISH_AND_FOLLOW_COMMANDS,COMMANDS_APPENDED, \
-    EXECUTE_DYNAMIC_TARGET, SET_SURFACE_DEFLECTION
+    EXECUTE_DYNAMIC_TARGET, SET_SURFACE_DEFLECTION, TIMESYNC
 
 namespace MaceCore
 {
@@ -80,7 +80,6 @@ public:
             UNUSED(sender);
             Command_IssueGeneralCommand(command);
         });
-
 
         this->template AddCommandLogic<command_item::ActionChangeMode>(CT::CHANGE_VEHICLE_MODE, [this](const command_item::ActionChangeMode &command, const OptionalParameter<ModuleCharacteristic> &sender){
             Command_ChangeSystemMode(command, sender);

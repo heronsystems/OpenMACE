@@ -11,7 +11,7 @@ class CommandMSGRequest : public Controller_GenericLongCommand<command_item::Act
 {
 public:
     CommandMSGRequest(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        Controller_GenericLongCommand<command_item::ActionMessageRequest, MAV_CMD_REQUEST_MESSAGE>(cb, queue, linkChan)
+        Controller_GenericLongCommand<command_item::ActionMessageRequest, MAV_CMD_REQUEST_MESSAGE>(cb, queue, linkChan, "CommandMSGRequest")
     {
 
     }

@@ -2,6 +2,7 @@
 #define ACTION_REQUEST_H
 
 #include "action_base.h"
+#include <vector>
 
 namespace Controllers {
 

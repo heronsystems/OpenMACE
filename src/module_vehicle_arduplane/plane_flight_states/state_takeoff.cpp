@@ -77,7 +77,7 @@ bool AP_State_Takeoff::handleCommand(const std::shared_ptr<command_item::Abstrac
     }
     case MAV_CMD::MAV_CMD_DO_SET_MODE:
     {
-        MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+        MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
 
         modeController->AddLambda_Finished(this, [this,modeController](const bool completed, const uint8_t finishCode){
             if((completed) && (finishCode == MAV_RESULT_ACCEPTED))
@@ -95,7 +95,7 @@ bool AP_State_Takeoff::handleCommand(const std::shared_ptr<command_item::Abstrac
         MavlinkEntityKey target = Owner().getMAVLINKID();
         MavlinkEntityKey sender = 255;
 
-        MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+        MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
         commandMode.targetID = Owner().getMAVLINKID();
         commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString(command->as<command_item::ActionChangeMode>()->getRequestMode());
         modeController->Send(commandMode,sender,target);
@@ -132,7 +132,7 @@ void AP_State_Takeoff::OnEnter()
 {
     //check that the vehicle is truely armed and switch us into the guided mode
 
-    MAVLINKUXVControllers::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
+    MAVLINKUXVControllers::VehicleController::ControllerSystemMode* modeController = AbstractStateArdupilot::prepareModeController();
 
     modeController->AddLambda_Finished(this, [this,modeController](const bool completed, const uint8_t finishCode){
         if(completed && (finishCode == MAV_RESULT_ACCEPTED))
@@ -146,7 +146,7 @@ void AP_State_Takeoff::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+    MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
     commandMode.targetID = Owner().getMAVLINKID();
     commandMode.vehicleMode = Owner().m_ArdupilotMode->getFlightModeFromString("TAKEOFF");
     modeController->Send(commandMode,sender,target);

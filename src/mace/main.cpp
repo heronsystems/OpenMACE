@@ -44,23 +44,8 @@ int main(int argc, char *argv[])
     std::string filename = "";
 
     char* MACEPath = getenv("MACE_ROOT");
-    std::string loggingPath = "";
     if(MACEPath){
         std::string rootPath(MACEPath);
-        //rootPath += "/logs/";
-        QDir loggingDirectory(QString::fromStdString(rootPath + "/logs/"));
-
-        std::string newPath = currentTime.dateString() + "_Test_";
-        int testIndex = 0;
-        std::string finalPath = newPath + std::to_string(testIndex);
-
-        loggingDirectory.mkpath(QString::fromStdString(rootPath + "/logs/"));
-        while(!loggingDirectory.mkdir(QString::fromStdString(finalPath)))
-        {
-            testIndex++;
-            finalPath = newPath + std::to_string(testIndex);
-        }
-        loggingPath = loggingDirectory.absolutePath().toStdString() + "/" + finalPath;
 
         std::cout << "The current MACE_ROOT path is: " << rootPath << std::endl;
         filename = rootPath + kPathSeparator + "MaceSetup_Configs" + kPathSeparator + "Default.xml";
@@ -122,6 +107,68 @@ int main(int argc, char *argv[])
     std::map<std::shared_ptr<MaceCore::ModuleBase>, std::string > modules = parser.GetCreatedModules();
     std::vector<std::thread*> threads;
     std::vector<int> reservedIDs;
+
+
+    std::string loggingPath = "";
+    if(MACEPath){
+        std::string rootPath(MACEPath);
+        std::string typeString = "/Mace_logs";
+        std::string airLogName = "/Air_logs";
+        std::string groundLogName = "/Ground_logs";
+
+        for(auto it = modules.cbegin() ; it != modules.cend() ; ++it)
+        {
+            if (it->first->ModuleClass() == MaceCore::ModuleClasses::EXTERNAL_LINK){
+                std::shared_ptr<MaceCore::ModuleParameterValue> externalLinkSettings = parser.GetModuleConfiguration(it->first)->GetNonTerminalValue("ModuleParameters");
+                bool airborneInstance = externalLinkSettings->GetTerminalValue<bool>("AirborneInstance");
+                if(airborneInstance){
+                    typeString = airLogName;
+                    std::cout << "I AM AN AIRBORNE INSTANCE"<< std::endl;
+                } else {
+                    typeString = groundLogName;
+                    std::cout << "I AM A GROUND INSTANCE"<< std::endl;
+                }
+            }
+        }
+
+        QDir loggingDirectory(QString::fromStdString(rootPath + "/logs/"));
+
+        std::string newPath = currentTime.dateString() + "_Test_";
+        int testIndex = 0;
+        std::string finalPath = newPath + std::to_string(testIndex);
+
+
+        loggingDirectory.mkpath(QString::fromStdString(rootPath + "/logs/"));
+        while(!loggingDirectory.mkdir(QString::fromStdString(finalPath)))
+        {
+            testIndex++;
+            finalPath = newPath + std::to_string(testIndex);
+        }
+
+        if (typeString != "/Mace_logs"){
+            QString previouspath = QString::fromStdString(loggingDirectory.path().toStdString() + "/" +  newPath + std::to_string(testIndex - 1));
+            QDir prevdir(previouspath + "/"), prevsubdir(previouspath + "/Mace_logs/");
+            if (prevdir.exists() && !prevsubdir.exists()){
+                QDir thissubdir;
+                if (typeString == airLogName){
+                    prevsubdir.setPath(previouspath + groundLogName.c_str() + "/");
+                    thissubdir.setPath(previouspath + airLogName.c_str() + "/");
+                } else if (typeString == groundLogName){
+                    prevsubdir.setPath(previouspath + airLogName.c_str() + "/");
+                    thissubdir.setPath(previouspath + groundLogName.c_str() + "/");
+                }
+
+                if (prevsubdir.exists() && !thissubdir.exists()){
+                    loggingDirectory.rmdir(QString::fromStdString(finalPath));
+                    testIndex -= 1;
+                }
+            }
+        }
+
+        finalPath = newPath + std::to_string(testIndex) + typeString;
+        std::cout << "LOGGING AT: "<< finalPath<< std::endl;
+        loggingPath = loggingDirectory.absolutePath().toStdString() + "/" + finalPath;
+    }
 
     /// Configure modules
     for(auto it = modules.cbegin() ; it != modules.cend() ; ++it)

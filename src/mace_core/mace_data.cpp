@@ -614,6 +614,8 @@ void MaceData::updateCurrentSystemTimeDelta(const uint64_t &microsecondsSinceEpo
 
     double mSecSinceEpoch = microsecondsSinceEpoch/1000.0;
     this->deltaT_msec = mSecSinceEpoch - currentTime.ToMillisecondsSinceEpoch();
+
+//    MaceLog::Alert("Offset: " + std::to_string(deltaT_msec));
 }
 
 //!

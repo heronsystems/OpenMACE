@@ -58,12 +58,14 @@ const FIXED_WING_MODE_OPTIONS = [
   { value: "CIRCLE", label: "Circle" },
   { value: "CRUISE", label: "Cruise" },
   { value: "GUIDED", label: "Guided" },
-  { value: "INITIALISING", label: "Initialising" },
+  { value: "INITIALIZING", label: "Initializing" },
   { value: "LOITER", label: "Loiter" },
   { value: "MANUAL", label: "Manual" },
   { value: "RTL", label: "Return to launch" },
   { value: "STABILIZE", label: "Stabilize" },
-  { value: "TAKEOFF", label: "Takeoff" },
+  { value: "FBWA", label: "Fly by Wire (A)" },
+  { value: "FBWB", label: "Fly by Wire (B)" },
+  { value: "TAKEOFF", label: "Takeoff" }
   // { value: "QSTABILIZE", label: "QStabilize" },
   // { value: "QHOVER", label: "QHover" },
   // { value: "QLOITER", label: "QLoiter" },
@@ -172,7 +174,7 @@ export default React.memo((props: Props) => {
   const updateMission = () => {
     let command: string = "FORCE_DATA_SYNC";
     let payload = [];
-    props.onCommand(command, [props.data], payload);
+    // props.onCommand(command, [props.data], payload);
   };
 
   const arm = (shouldArm: boolean) => {
@@ -241,9 +243,11 @@ export default React.memo((props: Props) => {
     props.onCommand(command, [props.data], [JSON.stringify(payload)]);
   };
   const returnToLaunch = () => {
-    let command: string = "RTL";
-    let payload = [];
-    props.onCommand(command, [props.data], payload);
+    let command: string = "SET_VEHICLE_MODE";
+    let payload = {
+      mode: "RTL"
+    };
+    props.onCommand(command, [props.data], [JSON.stringify(payload)]);
   };
   const goHere = () => {
     props.toggleGoHerePt(false, props.data.agentID);
@@ -401,7 +405,7 @@ export default React.memo((props: Props) => {
   };
 
   const showButton = () => {
-    return getShowButton(props.data.vehicle_state, props.data.vehicle_type);
+    return getShowButton(props.data.vehicle_state, props.data.vehicle_type, fields["alt");
   };
 
   const getBatteryStringValue = () => {
@@ -566,7 +570,7 @@ export default React.memo((props: Props) => {
           <div style={styles.hudElement}>
             <MdBubbleChart color={ICON_COLOR} size={20} />
             <span style={styles.hudValue}>
-              {getStringValue(fields["behavior_state"])}
+              {getStringValue(fields["vehicle_state"])}
             </span>
           </div>
         </div>
@@ -662,12 +666,12 @@ export default React.memo((props: Props) => {
       <div style={styles.commandsContainer}>
         <div style={styles.commandButtons}>
           {showButton().takeoff.show && (
-            <button style={styles.centerButton}>
+            <button style={props.data.origin_set ? styles.centerButton : styles.disabled_centerButton} >
               <MdFlightTakeoff
                 data-for={props.data.agentID + "_takeoff_tooltip"}
                 data-tip="custom show"
                 data-event="click"
-                color={ICON_COLOR}
+                color={props.data.origin_set ? ICON_COLOR : DISABLED_ICON_COLOR}
                 size={20}
               />
             </button>
@@ -677,6 +681,7 @@ export default React.memo((props: Props) => {
               id={props.data.agentID + "_takeoff_tooltip"}
               place="left"
               globalEventOff="click"
+              disable={!props.data.origin_set}
               clickable={true}
               backgroundColor={colors.white}
             >

@@ -98,7 +98,7 @@ protected:
 
 public:
     ControllerGuidedMissionItem(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        BasicMavlinkController_ModuleKeyed<MISSIONITEM>(cb, queue, linkChan),
+        BasicMavlinkController_ModuleKeyed<MISSIONITEM>(cb, queue, linkChan, "GuidedMissionItem"),
         GuidedMISend<MISSIONITEM>(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_mission_item_t>(mavlink_msg_mission_item_encode_chan)),
         GuidedMIFinish<MISSIONITEM>(this, mavlink_msg_mission_ack_decode)
     {

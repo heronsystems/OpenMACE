@@ -543,7 +543,7 @@ namespace ExternalLink{
 
 
     ControllerBoundary::ControllerBoundary(const Controllers::IMessageNotifier<mavlink_message_t, MaceCore::ModuleCharacteristic> *cb, TransmitQueue *queue, int linkChan) :
-        CONTROLLER_BOUNDARY_TYPE(cb, queue, linkChan),
+        CONTROLLER_BOUNDARY_TYPE(cb, queue, linkChan, "Boundary"),
         SendBoundaryHelper_RequestDownload(this, ModuleToSysIDCompIDConverter<mavlink_boundary_request_list_t>(mavlink_msg_boundary_request_list_encode_chan)),
         BoundaryControllerAction_ReceiveUnsolicitedRequestList_SendCount(this, mavlink_msg_boundary_request_list_decode, ModuleToSysIDCompIDConverter<mavlink_boundary_count_t>(mavlink_msg_boundary_count_encode_chan)),
         SendBoundaryHelper_ReceiveCountRespondItemRequest(this, mavlink_msg_boundary_count_decode, ModuleToSysIDCompIDConverter<mavlink_boundary_request_item_t>(mavlink_msg_boundary_request_item_encode_chan)),

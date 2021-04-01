@@ -19,7 +19,7 @@ void Speed::updateSpeedMeasurement(const double &value)
     this->measurement = value;
 }
 
-void Speed::updateSpeedType(const SpeedTypes &type)
+void Speed::updateSpeedType(const SPEED_TYPE &type)
 {
     this->speedType = type;
 }
@@ -29,7 +29,7 @@ double Speed::getSpeedMeasurement() const
     return this->measurement;
 }
 
-Speed::SpeedTypes Speed::getSpeedType() const
+SPEED_TYPE Speed::getSpeedType() const
 {
     return this->speedType;
 }

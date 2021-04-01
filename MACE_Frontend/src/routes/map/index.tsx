@@ -75,6 +75,7 @@ class MapRoute extends React.Component<Props, State> {
 
   mapUpdateGoHerePt = (pts: L.LatLng) => {
     // console.log("MAP-UPDATE GO HERE>");
+    console.log(pts);
     let a = {
       lat: pts.lat,
       lng: pts.lng,

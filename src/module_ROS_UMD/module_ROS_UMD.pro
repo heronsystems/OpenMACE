@@ -52,7 +52,7 @@ INCLUDEPATH += $$(MACE_ROOT)/include
 
 
 contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
-  message("module_ROS_UMD: Compiling with Heron support")
+  message("module_ROS_UMD: Compiling with AI support")
   INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 }else{
   message("module_ROS_UMD: Using standard mavlink libraries")

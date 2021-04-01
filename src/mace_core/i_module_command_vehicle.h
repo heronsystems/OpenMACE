@@ -10,7 +10,6 @@
 #include "data_generic_command_item/command_item_components.h"
 #include "base/pose/pose.h"
 
-#include "i_module_command_ai_support.h"
 
 namespace MaceCore
 {
@@ -19,8 +18,6 @@ enum class VehicleCommands
 {
     BASE_MODULE_LISTENER_ENUMS,
     BASE_MODULE_VEHICLE_LISTENER_ENUMS,
-    AI_SUPPORT_GENERAL_COMMAND_ENUMS,
-    AI_SUPPORT_VEHICLE_COMMAND_ENUMS,
     REQUEST_DUMMY_FUNCTION,
     UPDATE_MISSION_KEY,
     UPDATED_DYNAMIC_MISSION_QUEUE,
@@ -30,8 +27,7 @@ enum class VehicleCommands
 
 class MaceCore;
 
-class MACE_CORESHARED_EXPORT IModuleCommandVehicle : public AbstractModule_VehicleListener<MetadataVehicle, IModuleEventsVehicle, VehicleCommands>,
-        public IModuleCommand_VehicleAISupport
+class MACE_CORESHARED_EXPORT IModuleCommandVehicle : public AbstractModule_VehicleListener<MetadataVehicle, IModuleEventsVehicle, VehicleCommands>
 {
 friend class MaceCore;
 public:
@@ -39,10 +35,8 @@ public:
     static ModuleClasses moduleClass;
 
     IModuleCommandVehicle():
-        AbstractModule_VehicleListener(),
-        IModuleCommand_VehicleAISupport()
+        AbstractModule_VehicleListener()
     {
-        IModuleCommand_VehicleAISupport::SetUp<MetadataVehicle, IModuleEventsVehicle, VehicleCommands>(this);
 
         //These are from MACE Core to modules
         this->template AddCommandLogic<int>(VehicleCommands::REQUEST_DUMMY_FUNCTION, [this](const int &vehicleID, const OptionalParameter<ModuleCharacteristic> &sender){

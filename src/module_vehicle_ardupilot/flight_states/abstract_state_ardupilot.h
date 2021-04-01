@@ -15,7 +15,6 @@
 #include "common/logging/macelog.h"
 
 #include "controllers/controllers_MAVLINK/controller_system_mode.h"
-#include "controllers/controllers_MAVLINK/controller_write_event_to_log.h"
 
 namespace ardupilot{
 namespace state{
@@ -74,16 +73,6 @@ public:
 
     virtual bool handleCommand(const std::shared_ptr<command_item::AbstractCommandItem> command);
 
-public:
-    virtual void initializeForTestEvaluation(const command_item::Action_InitializeTestSetup &initialization)
-    {
-        UNUSED(initialization);
-    }
-
-    virtual void handleTestProcedural(const command_item::Action_ProceduralCommand &command)
-    {
-        UNUSED(command);
-    }
 
 public:
     virtual void OnExit();
@@ -133,7 +122,7 @@ protected:
     virtual void updateOwner_ProgressionOfHSM();
 
 protected:
-    MAVLINKUXVControllers::ControllerSystemMode* prepareModeController();
+    MAVLINKUXVControllers::VehicleController::ControllerSystemMode* prepareModeController(const std::string controllerName = "modeController");
     std::mutex m_mutex_ModeController;
     std::condition_variable m_condition_ModeController;
     bool m_oldModeControllerShutdown = false;

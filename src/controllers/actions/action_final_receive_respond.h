@@ -53,6 +53,8 @@ public:
 //                        this->template FinalResponse(ack, moduleFor, queueObj, target);
                         this->FinalResponse(ack, moduleFor, queueObj, target);
                     }
+
+                    return valid;
                 }
         );
     }

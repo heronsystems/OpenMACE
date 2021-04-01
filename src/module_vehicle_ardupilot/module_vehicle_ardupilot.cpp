@@ -104,9 +104,9 @@ void ModuleVehicleArdupilot::Request_FullDataSync(const int &targetSystem, const
         missionController->AddLambda_Finished(this, [missionController](const bool completed, const uint8_t code){
             UNUSED(code);
             if (completed)
-                printf("Mission Download Completed\n");
+                MaceLog::Alert("Mission Download Completed");
             else
-                printf("Mission Download Failed\n");
+                MaceLog::Alert("Mission Download Failed");
 
             missionController->Shutdown();
         });

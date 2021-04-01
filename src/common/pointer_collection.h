@@ -2,6 +2,7 @@
 #define POINTER_COLLECTION_H
 
 #include <vector>
+#include <functional>
 
 template <typename ...T>
 class _PointerCollection;
@@ -90,6 +91,24 @@ public:
             }
             func((T*)*it);
         }
+    }
+
+    template<typename T>
+    bool ForEveryCheckConsumption(std::function<bool(T* ptr)> func)
+    {
+       bool consumed = false;
+       std::vector<void*> list = this->GetAll();
+       for(auto it = list.cbegin() ; it != list.cend() ; ++it)
+       {
+           if(*it == nullptr)
+           {
+               continue;
+           }
+           consumed = func((T*)*it);
+           if(consumed)
+               break;
+       }
+       return consumed;
     }
 };
 

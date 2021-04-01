@@ -9,7 +9,7 @@
 
 #include "data/autopilot_types.h"
 #include "data/comms_protocol.h"
-#include "data/system_type.h"
+#include "data/mav_type_definitions.h"
 #include "data/mission_execution_state.h"
 #include "data/mace_hsm_state.h"
 
@@ -30,11 +30,11 @@ public:
     {
         this->protocol = protocol;
     }
-    void setType(const Data::SystemType &type)
+    void setType(const MAV_TYPE &type)
     {
         this->type = type;
     }
-    void setAutopilot(const Data::AutopilotType &autopilot)
+    void setAutopilot(const MAV_AUTOPILOT &autopilot)
     {
         this->autopilot = autopilot;
     }
@@ -58,16 +58,26 @@ public:
         this->currentHSMState = currentState;
     }
 
+    void setFlightMode(const uint8_t &flightMode)
+    {
+        this->flightMode = flightMode;
+    }
+
+    void setArmed(const bool &armed)
+    {
+        this->armed = armed;
+    }
+
 public:
     Data::CommsProtocol getProtocol() const
     {
         return this->protocol;
     }
-    Data::SystemType getType() const
+    MAV_TYPE getType() const
     {
         return this->type;
     }
-    Data::AutopilotType getAutopilot() const
+    MAV_AUTOPILOT getAutopilot() const
     {
         return this->autopilot;
     }
@@ -90,6 +100,16 @@ public:
         return this->currentHSMState;
     }
 
+    uint8_t getFlightMode() const
+    {
+        return this->flightMode;
+    }
+
+    bool getArmed() const
+    {
+        return this->armed;
+    }
+
     mavlink_mace_heartbeat_t getMACECommsObject() const;
     mavlink_message_t getMACEMsg(const uint8_t systemID, const uint8_t compID, const uint8_t chan) const;
     virtual QJsonObject toJSON(const int &vehicleID, const std::string &dataType) const;
@@ -108,6 +128,8 @@ public:
         this->maceCompanion = rhs.maceCompanion;
         this->mavlinkID = rhs.mavlinkID;
         this->currentHSMState = rhs.currentHSMState;
+        this->flightMode = rhs.flightMode;
+        this->armed = rhs.armed;
     }
 
     bool operator == (const DataGenericItem_Heartbeat &rhs) {
@@ -132,6 +154,12 @@ public:
         if(this->currentHSMState != rhs.currentHSMState) {
             return false;
         }
+        if(this->flightMode != rhs.flightMode) {
+            return false;
+        }
+        if(this->armed != rhs.armed) {
+            return false;
+        }
         return true;
     }
 
@@ -141,13 +169,15 @@ public:
 
 
 protected:
-    Data::AutopilotType autopilot;
+    MAV_AUTOPILOT autopilot;
     Data::CommsProtocol protocol;
-    Data::SystemType type;
+    MAV_TYPE type;
     Data::MissionExecutionState missionState;
     bool maceCompanion;
     uint8_t mavlinkID;
     Data::MACEHSMState currentHSMState;
+    uint8_t flightMode;
+    bool armed;
 };
 
 } //end of namespace DataGenericItem

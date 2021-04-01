@@ -33,19 +33,13 @@ SOURCES += \
     data_generic_item_GPS.cpp \
     data_generic_item_param_value.cpp \
     data_generic_item_relative_pose.cpp \
-    data_generic_item_test_descriptor.cpp \
     data_generic_item_text.cpp \
     data_generic_item_battery.cpp \
     data_generic_item_heartbeat.cpp \
     data_generic_item_system_arm.cpp \
     data_generic_item_systemtime.cpp \
-    data_generic_item_weather.cpp \
-    mace/ai_agent_parameters.cpp \
-    mace/ai_test_boundary.cpp \
-    mace/ai_test_conditional.cpp \
-    mace/ai_test_criteria.cpp \
-    mace/ai_test_parameterization.cpp \
-    mace/mlagent_test_parameterization.cpp
+    data_generic_item_timesync.cpp \
+    data_generic_item_weather.cpp
 
 HEADERS +=\
         data_generic_item_global.h \
@@ -54,19 +48,13 @@ HEADERS +=\
     data_generic_item_GPS.h \
     data_generic_item_param_value.h \
     data_generic_item_relative_pose.h \
-    data_generic_item_test_descriptor.h \
     data_generic_item_text.h \
     data_generic_item_battery.h \
     data_generic_item_heartbeat.h \
     data_generic_item_system_arm.h \
     data_generic_item_systemtime.h \
-    data_generic_item_weather.h \
-    mace/ai_agent_parameters.h \
-    mace/ai_test_boundary.h \
-    mace/ai_test_conditional.h \
-    mace/ai_test_criteria.h \
-    mace/ai_test_parameterization.h \
-    mace/mlagent_test_parameterization.h
+    data_generic_item_timesync.h \
+    data_generic_item_weather.h
 
 # Unix lib Install
 unix:!symbian {
@@ -90,7 +78,7 @@ INCLUDEPATH += $$PWD/../
 INCLUDEPATH += $$(MACE_ROOT)/spdlog/
 
 contains(DEFINES, WITH_HERON_MAVLINK_SUPPORT) {
-  message("data_generic_item: Compiling with Heron support")
+  message("data_generic_item: Compiling with AI support")
   INCLUDEPATH += $$(MACE_ROOT)/tools/mavlink/ardupilot/generated_messages/HeronAI/
 }else{
   message("data_generic_item: Using standard ardupilot libraries")

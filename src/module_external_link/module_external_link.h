@@ -34,17 +34,18 @@
 
 #include "controllers/generic_controller.h"
 
-
-#include "controllers/commands/command_arm.h"
-#include "controllers/commands/command_land.h"
-#include "controllers/commands/command_mission_item.h"
-#include "controllers/commands/command_rtl.h"
-#include "controllers/commands/command_takeoff.h"
+#include "controllers/controllers_MAVLINK/commands/command_arm.h"
+#include "controllers/controllers_MAVLINK/commands/command_land.h"
+#include "controllers/controllers_MAVLINK/controller_guided_mission_item.h"
+#include "controllers/controllers_MAVLINK/commands/command_rtl.h"
+#include "controllers/controllers_MAVLINK/commands/command_takeoff.h"
+#include "controllers/controllers_MAVLINK/controller_system_mode.h"
 #include "controllers/commands/command_execute_spatial_action.h"
-#include "controllers/commands/command_system_mode.h"
 #include "controllers/controller_home.h"
 #include "controllers/controller_mission.h"
 #include "controllers/controller_boundary.h"
+
+#include "controllers/controllers_MAVLINK/TE_Controllers/command_set_surface_deflection.h"
 
 
 #include "mace_core/module_characteristics.h"
@@ -54,6 +55,8 @@
 #include "data/topic_components/position_local.h"
 #include "data/topic_components/topic_component_void.h"
 #include "data/topic_components/topic_component_string.h"
+#include "data/flight_modes/arducopter_component_flight_mode.h"
+#include "data/flight_modes/arduplane_component_flight_mode.h"
 
 #include "base_topic/base_topic_components.h"
 
@@ -391,11 +394,7 @@ public:
     //! \brief Command_SetSurfaceDeflection
     //! \param action
     //!
-    virtual void Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override
-    {
-        UNUSED(action);
-        UNUSED(sender);
-    }
+    virtual void Command_SetSurfaceDeflection(const command_item::Action_SetSurfaceDeflection &action, const OptionalParameter<MaceCore::ModuleCharacteristic>&sender = OptionalParameter<MaceCore::ModuleCharacteristic>()) override;
 
     ///////////////////////////////////////////////////////////////////////////////////////
     /// The following are public virtual functions imposed from IModuleCommandExternalLink.
@@ -407,21 +406,6 @@ public:
     virtual void NewlyAvailableModule(const MaceCore::ModuleCharacteristic &module, const MaceCore::ModuleClasses &type) override;
     virtual void ReceivedMissionACK(const MissionItem::MissionACK &ack) override;
     virtual void Command_RequestBoundaryDownload(const std::tuple<MaceCore::ModuleCharacteristic, uint8_t> &remote, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender) override;
-
-    virtual void NewAICommand_WriteToLogs(const command_item::Action_EventTag &logEvent, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>())
-    {
-
-    }
-
-    virtual void NewAICommand_ExecuteProcedural(const command_item::Action_ProceduralCommand &procedural, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>())
-    {
-
-    }
-
-    virtual void NewAICommand_HWInitializationCriteria(const command_item::Action_InitializeTestSetup &initialization, const OptionalParameter<MaceCore::ModuleCharacteristic> &sender = OptionalParameter<MaceCore::ModuleCharacteristic>())
-    {
-
-    }
 
 
 private:
@@ -472,17 +456,18 @@ private:
 
     ExternalLink::HeartbeatController_ExternalLink *m_HeartbeatController;
 
+
     PointerCollection<
-    ExternalLink::CommandARM,
-    ExternalLink::CommandLand,
-    ExternalLink::CommandMissionItem,
-    ExternalLink::CommandRTL,
-    ExternalLink::CommandTakeoff,
-    ExternalLink::Controller_GoTo,
-    ExternalLink::ControllerCommand_SystemMode,
+    MAVLINKUXVControllers::ModuleController::CommandARM,
+    MAVLINKUXVControllers::ModuleController::CommandLand,
+    MAVLINKUXVControllers::ModuleController::CommandRTL,
+    MAVLINKUXVControllers::ModuleController::CommandTakeoff,
+    MAVLINKUXVControllers::ModuleController::ControllerSystemMode,
+    MAVLINKUXVControllers::ModuleController::ControllerCommand_SetSurfaceDeflection,
     ExternalLink::ControllerHome,
     ExternalLink::ControllerMission,
-    ExternalLink::ControllerBoundary
+    ExternalLink::ControllerBoundary,
+    ExternalLink::Controller_GoTo
     > m_Controllers;
 
 
@@ -497,7 +482,7 @@ private:
     unsigned int associatedSystemID;
     std::map<unsigned int,unsigned int> systemIDMap;
 
-    MaceCore::SpooledTopic<BASE_POSE_TOPICS, DATA_GENERIC_VEHICLE_ITEM_TOPICS> m_VehicleDataTopic;
+    MaceCore::SpooledTopic<BASE_POSE_TOPICS, DATA_GENERIC_VEHICLE_ITEM_TOPICS, VEHICLE_MEASUREMENT_TOPICS> m_VehicleDataTopic;
     MaceCore::SpooledTopic<DATA_MISSION_GENERIC_TOPICS> m_MissionDataTopic;
 
 
@@ -509,6 +494,16 @@ protected:
 private:
 
     std::unordered_map<MaceCore::ModuleCharacteristic, std::vector<std::function<void()>>> m_TasksToDoWhenModuleComesOnline;
+
+
+private:
+    uint8_t _attitudeCounterThrottle = 0;
+    uint8_t _positionCounterThrottle = 0;
+    uint8_t _airspeedCounterThrottle = 0;
+    std::chrono::time_point<std::chrono::system_clock> m_lastAttitude = std::chrono::system_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> m_lastPosition = std::chrono::system_clock::now();
+    std::chrono::time_point<std::chrono::system_clock> m_lastDeflection = std::chrono::system_clock::now();
+    
 };
 
 #endif // MODULE_EXTERNAL_LINK_H

@@ -30,7 +30,7 @@ hsm::Transition AP_State_FlightLoiter::GetTransition()
         //for various other peripheral reasons
         switch (_desiredState) {
         default:
-            std::cout<<"I dont know how we ended up in this transition state from State_EStop."<<std::endl;
+            std::cout<<"I dont know how we ended up in this transition state from State_Flight_Loiter."<<std::endl;
             break;
         }
     }

@@ -24,13 +24,16 @@ SOURCES += \
     environment_time.cpp \
     timer_lambda.cpp \
     topic_components/topic_component_string.cpp \
-    topic_components/topic_component_void.cpp
+    topic_components/topic_component_void.cpp \
+    flight_modes/arducopter_component_flight_mode.cpp \
+    flight_modes/arduplane_component_flight_mode.cpp
 
 HEADERS += data_global.h \
     dogfight_teams.h \
     event_tag.h \
     i_topic_component_data_object.h \
     mace_hsm_state.h \
+    mav_type_definitions.h \
     timer_lambda.h \
     topic_data_object_collection.h \
     coordinate_frame.h \
@@ -43,7 +46,6 @@ HEADERS += data_global.h \
     controller_state.h \
     system_description.h \
     data_get_set_notifier.h \
-    system_type.h \
     comms_protocol.h \
     command_ack_type.h \
     mission_command.h \
@@ -56,7 +58,10 @@ HEADERS += data_global.h \
     topic_components/mission_key.h \
     mission_type.h \
     mission_state.h \
-    loiter_direction.h
+    loiter_direction.h \
+    flight_modes/arducopter_component_flight_mode.h \
+    flight_modes/arduplane_component_flight_mode.h \
+    flight_modes/ardupilot_component_operating_mode.h
 
 # Unix lib Install
 unix:!symbian {

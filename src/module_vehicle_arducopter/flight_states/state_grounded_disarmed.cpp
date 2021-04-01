@@ -57,7 +57,7 @@ void State_GroundedDisarmed::OnEnter()
 {
     //check that the vehicle is truely armed and switch us into the guided mode
     Controllers::ControllerCollection<mavlink_message_t, MavlinkEntityKey> *collection = Owner().ControllersCollection();
-    auto controllerSystemMode = new MAVLINKUXVControllers::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
+    auto controllerSystemMode = new MAVLINKUXVControllers::VehicleController::ControllerSystemMode(&Owner(), Owner().GetControllerQueue(), Owner().getCommsObject()->getLinkChannel());
     controllerSystemMode->AddLambda_Finished(this, [this,controllerSystemMode](const bool completed, const uint8_t finishCode){
         controllerSystemMode->Shutdown();
         //This does not matter as we shall transition to the idle state
@@ -75,7 +75,7 @@ void State_GroundedDisarmed::OnEnter()
     MavlinkEntityKey target = Owner().getMAVLINKID();
     MavlinkEntityKey sender = 255;
 
-    MAVLINKUXVControllers::MAVLINKModeStruct commandMode;
+    MAVLINKUXVControllers::VehicleController::VehicleMode_Struct commandMode;
     commandMode.targetID = static_cast<uint8_t>(Owner().getMAVLINKID());
     commandMode.vehicleMode = static_cast<uint8_t>(Owner().m_ArdupilotMode->getFlightModeFromString("STABILIZE"));
     controllerSystemMode->Send(commandMode,sender,target);

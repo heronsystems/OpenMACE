@@ -96,7 +96,7 @@ protected:
 
 public:
     Controller_SetGPSGlobalOrigin(const Controllers::IMessageNotifier<mavlink_message_t, MavlinkEntityKey> *cb, TransmitQueue *queue, int linkChan) :
-        CONTROLLER_GLOBALORIGIN_TYPE(cb, queue, linkChan),
+        CONTROLLER_GLOBALORIGIN_TYPE(cb, queue, linkChan, "SetGPSGlobalOrigin"),
         GPSOriginSend(this, MavlinkEntityKeyToSysIDCompIDConverter<mavlink_set_gps_global_origin_t>(mavlink_msg_set_gps_global_origin_encode_chan)),
         GPSOriginFinish(this, mavlink_msg_gps_global_origin_decode)
     {

@@ -4,6 +4,8 @@
 
 #include "module_vehicle_ardupilot/flight_states/abstract_state_ardupilot.h"
 
+#include "controllers/controllers_MAVLINK/commands/command_arm.h"
+
 namespace ardupilot {
 namespace state{
 
