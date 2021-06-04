@@ -157,6 +157,7 @@ function createWindow(layout) {
     show: true,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       preload: __dirname + "/preload.js"
     },
     id: "map"
