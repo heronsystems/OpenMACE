@@ -255,19 +255,4 @@ DEPENDPATH += $$PWD/../../tools/flann/src/cpp
 QMAKE_CXXFLAGS += -isystem $$PWD/../../tools/flann/src/cpp
 
 
-contains(DEFINES, WITH_LIBTORCH_SUPPORT) {
-  message("mace: Compiling with libtorch support")
-    exists($$(LIBTORCH_ROOT))
-    # Libtorch linking:
-    LIBS += -L$$(LIBTORCH_ROOT)/lib/ -lc10 -lc10_cuda -ltorch_cuda -ltorch_cpu -ltorch
-    INCLUDEPATH += $$(LIBTORCH_ROOT)/include
-    INCLUDEPATH += $$(LIBTORCH_ROOT)/include/torch/csrc/api/include
-
-    # Link ML agent wrapper:
-    unix|win32: LIBS += -L$$(ACE_AGENT_ROOT)/build/ -lagent_cpp
-    INCLUDEPATH += $$(ACE_AGENT_ROOT)/include
-    DEPENDPATH += $$(ACE_AGENT_ROOT)/include
-    }else{
-    message("mace: Not building against libtorch libraries")
-}
 

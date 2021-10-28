@@ -148,7 +148,7 @@ installMACE() {
     fi
 
     cd $MACE_ROOT/build
-    qmake ../src/src.pro
+    qmake DEFINES+="WITH_HERON_MAVLINK_SUPPORT" ../src/src.pro
     make
     make install
     # ldconfig
