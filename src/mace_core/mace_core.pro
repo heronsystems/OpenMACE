@@ -121,22 +121,12 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../maps/debug/ -lma
 else:unix:!macx: LIBS += -L$$OUT_PWD/../maps/ -lmaps
 
 unix {
-    exists($$(ROS_ROOT_DIR)/lib/) {
 
-      DEFINES += ROS_EXISTS
-      INCLUDEPATH += $$(ROS_ROOT_DIR)/include
-      INCLUDEPATH += $$(ROS_ROOT_DIR)/lib
-      LIBS += -L$$(ROS_ROOT_DIR)/lib -loctomath
-      LIBS += -L$$(ROS_ROOT_DIR)/lib -loctomap
-
-    } else {
-      message("ROS root" path has not been detected...)
       INCLUDEPATH += $$OUT_PWD/../../tools/octomap/octomap/include
       LIBS += -L$$OUT_PWD/../../tools/octomap/lib/ -loctomap -loctomath
 
       # Octomap Warning suppression:
       QMAKE_CXXFLAGS += -isystem $$OUT_PWD/../../tools/octomap/octomap/include
-    }
 }
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../tools/octomap/bin/ -loctomap -loctomath
